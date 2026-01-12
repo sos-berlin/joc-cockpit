@@ -46,7 +46,8 @@ import {
   OffsetValidator,
   FacetEditorComponent,
   ShowReferenceComponent,
-  NoticeBoardEditorComponent, ChangeImpactDialogComponent, DurationValidatorChange
+  NoticeBoardEditorComponent, ChangeImpactDialogComponent, DurationValidatorChange,
+  HistoryLogDialogComponent
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -91,7 +92,9 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent,JsonSchemaFieldComponent, ApiRequestDialogComponent, ApiFormDialogComponent];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent,JsonSchemaFieldComponent, ApiRequestDialogComponent, ApiFormDialogComponent,
+  HistoryLogDialogComponent
+];
 
 @NgModule({
     imports: [
