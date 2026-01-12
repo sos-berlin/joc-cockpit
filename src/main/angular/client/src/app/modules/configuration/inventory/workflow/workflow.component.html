@@ -45,7 +45,7 @@
                       <span class="text-dark text-sm _400">
                        <span class="p-l-sm p-r-sm">|</span>
                       <b translate>inventory.label.lastModified</b>
-                      <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+                      <a (click)="showHistoryLog()"><i class="text-muted text-hover-primary p-l-xs">{{lastModified | stringToDate}}</i></a>
                     </span>
                     }
                     <i (click)="helpPage('configuration-inventory-workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>

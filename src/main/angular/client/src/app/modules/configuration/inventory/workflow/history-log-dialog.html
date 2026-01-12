@@ -1,0 +1,163 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span class="drag-text" translate>workflow.label.historyDetails</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
+          type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body p-a">
+    <div class="">
+        <div class="table-responsive" id="auditLogTableId">
+        <nz-table
+            #ajaxTable
+            (nzPageIndexChange)="pageIndexChange($event)"
+            (nzPageSizeChange)="pageSizeChange($event)"
+            [nzBordered]="true"
+            [nzData]="auditLogs"
+            [nzLoading]="!isLoaded"
+            [nzPageIndex]="currentPage"
+            [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+            [nzPageSize]="entryPerPage || preferences.entryPerPage || 25"
+            [nzShowPagination]="auditLogs.length > 0"
+            [nzShowSizeChanger]="true"
+            [nzSize]="'small'"
+        >
+            <thead>
+            <tr>
+            <th (click)="sort('created')" nzWidth="185px"><a><span class="p-r-xs" translate>auditLog.label.created</span>
+                @if (filter.sortBy == 'created' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'created' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('account')"><a><span class="p-r-xs" translate>auditLog.label.account</span>
+                @if (filter.sortBy == 'account' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'account' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('request')"><a><span class="p-r-xs" translate>auditLog.label.request</span>
+                @if (filter.sortBy == 'request' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'request' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('category')"><a><span class="p-r-xs" translate>auditLog.label.category</span>
+                @if (filter.sortBy == 'category' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'category' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('comment')"><a><span class="p-r-xs" translate>auditLog.label.comment</span>
+                @if (filter.sortBy == 'comment' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'comment' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('timeSpent')"><a><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
+                @if (filter.sortBy == 'timeSpent' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'timeSpent' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('ticketLink')"><a><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
+                @if (filter.sortBy == 'ticketLink' && !reverse) {
+                <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'ticketLink' && reverse) {
+                <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (auditLog of ajaxTable.data; track trackByFn($index, auditLog)) {
+                <tr>
+                <td> 
+                    @if (!auditLog.show) {
+                        <i (click)="showDetail(auditLog);$event.stopPropagation()"
+                            class="cursor fa fa-caret-down fa-lg"></i>
+                    }
+                    @if (auditLog.show) {
+                        <i (click)="auditLog.show = false;$event.stopPropagation()"
+                            class="cursor fa fa-caret-up fa-lg"></i>
+                    }&nbsp;
+                    <span [innerHtml]="auditLog.created | stringToDate"></span>
+                </td>
+                <td><span [innerHtml]="auditLog.account"></span></td>
+                <td><span [innerHtml]="auditLog.request"></span></td>
+                <td><span [innerHtml]="auditLog['category'] | translate"></span></td>
+                <td><span [innerHtml]="auditLog.comment"></span></td>
+                <td>
+                    @if (auditLog.timeSpent) {
+                    <span>
+                    <span [innerHtml]="auditLog.timeSpent"></span>
+                    <span>m</span>
+                    </span>
+                    }
+                </td>
+                <td><a [innerHtml]="auditLog.ticketLink" class="text-hover-primary" href="{{auditLog.ticketLink}}"
+                        target="_blank"></a></td>
+                </tr>
+                @if (auditLog.show) {
+                <ng-container>
+                    <tr>
+                    <td></td>
+                    <td colspan="7">
+                        <div class="m-a-0">
+                        <span class="_500" translate>auditLog.label.requestBody</span>
+                        :
+                        <span [innerHtml]="auditLog.parameters"></span>
+                        </div>
+                    </td>
+                    </tr>
+                    @if (!auditLog.isLoaded) {
+                    <tr>
+                        <td></td>
+                        <td colspan="7">
+                        <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                        </td>
+                    </tr>
+                    }
+                    @if (auditLog.details && auditLog.details.length> 0) {
+                    <tr>
+                        <td></td>
+                        <td colspan="7">
+                        <div class="m-a-0">
+                            <span class="_500" translate>auditLog.label.details</span>
+                            :
+                            <span>{{auditLog.details | json}}</span>
+                        </div>
+                        </td>
+                    </tr>
+                    }
+                </ng-container>
+                }
+            }
+            </tbody>
+        </nz-table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-footer">
+    <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+        common.button.close
+    </button>
+</div>
