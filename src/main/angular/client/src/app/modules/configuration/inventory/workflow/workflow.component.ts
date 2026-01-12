@@ -43,6 +43,8 @@ import {FileUploaderComponent} from "../../../../components/file-uploader/file-u
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../../../components/notes/note.component";
+import { OrderPipe } from 'src/app/pipes/core.pipe';
+import { AuthService } from 'src/app/components/guard/auth.service';
 
 // Mx-Graph Objects
 declare const mxEditor: any;
@@ -5157,6 +5159,102 @@ export class ChangeImpactDialogComponent {
 
     sendRequest(0);
   }
+}
+
+@Component({
+  standalone: false,
+  selector: 'app-history-log-dialog',
+  templateUrl: './history-log-dialog.html',
+})
+export class HistoryLogDialogComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerIds: any = {};
+  preferences: any = {};
+
+  objectName: string = '';
+  objectType: string[] = ['WORKFLOW']; 
+
+  currentPage = 1;
+  entryPerPage = 10;
+  filter: any = {};
+  reverse = false;
+  isLoaded = false;
+  auditLogs: any = [];
+  data = [];
+
+  constructor(public activeModal: NzModalRef, private authService: AuthService, public coreService: CoreService, private orderPipe: OrderPipe) {}
+  
+  ngOnInit(): void {
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+
+    if(this.modalData.objectName) this.objectName = this.modalData.objectName;
+    if(this.modalData.objectType) this.objectType = this.modalData.objectType;
+    this.getHistoryLogs(null);
+  }
+
+  getHistoryLogs(date: string | null): void {
+    this.isLoaded = false;
+    let obj: any = {
+      controllerId: '',
+      limit: parseInt(this.preferences.maxAuditLogRecords, 10) || 5000,
+      objectTypes: this.objectType,
+      objectName: this.objectName,
+
+    };
+    this.coreService.post('audit_log', obj).subscribe({
+      next: (res: any) => {
+        res.auditLog = this.orderPipe.transform(res.auditLog, this.filter.sortBy, this.reverse);
+        if (res.auditLog && res.auditLog.length === 0) {
+          this.currentPage = 1;
+        }
+        this.auditLogs = res.auditLog;
+        this.isLoaded = true;
+      }, error: () => {
+        this.data = [];
+        this.isLoaded = true
+      }
+    });
+  }
+
+  pageIndexChange($event: number): void {
+    this.currentPage = $event;
+  }
+
+  pageSizeChange($event: number): void {
+    this.entryPerPage = $event;
+  }
+
+  trackByFn(index: number, el: any): number {
+    return el.id || el.loginDate;
+  }
+
+  sort(propertyName: string): void {
+    this.reverse = !this.reverse;
+    this.filter.sortBy = propertyName;
+    this.data = this.orderPipe.transform(this.data, this.filter.sortBy, this.reverse);
+  }
+
+  showDetail(auditLog: any): void {
+    auditLog.show = true;
+    if (!auditLog.isLoaded) {
+      this.coreService.post('audit_log/details', {
+        auditLogId: auditLog.id
+      }).subscribe({
+        next: (res: any) => {
+          auditLog.details = res.auditLogDetails;
+          auditLog.isLoaded = true;
+        }, error: () => auditLog.isLoaded = true
+      });
+    }
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+
+
 }
 
 @Component({
@@ -15934,6 +16032,22 @@ export class WorkflowComponent {
       nzMaskClosable: false,
       nzStyle: { width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px',  minHeight: '200px' }
     });
+  }
+
+  showHistoryLog() {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HistoryLogDialogComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        objectName: this.workflow.name,
+        objectType: ['WORKFLOW'],
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 
 
