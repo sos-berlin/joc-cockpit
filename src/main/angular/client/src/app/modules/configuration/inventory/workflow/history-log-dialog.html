@@ -88,14 +88,14 @@
             <tbody>
             @for (auditLog of ajaxTable.data; track trackByFn($index, auditLog)) {
                 <tr>
-                <td> 
+                <td>
                     @if (!auditLog.show) {
                         <i (click)="showDetail(auditLog);$event.stopPropagation()"
-                            class="cursor fa fa-caret-down fa-lg"></i>
+                            class="p-r-xs cursor fa fa-caret-down fa-lg"></i>
                     }
                     @if (auditLog.show) {
                         <i (click)="auditLog.show = false;$event.stopPropagation()"
-                            class="cursor fa fa-caret-up fa-lg"></i>
+                            class="p-r-xs cursor fa fa-caret-up fa-lg"></i>
                     }&nbsp;
                     <span [innerHtml]="auditLog.created | stringToDate"></span>
                 </td>
