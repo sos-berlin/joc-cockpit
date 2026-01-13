@@ -30,6 +30,8 @@ export interface MarkdownOptions {
   xhtml: boolean;
   highlight?: (code: string, lang?: string) => string;
   rawHtml?: boolean;
+  accessToken?: string;
+  imageLoader?: (src: string) => string;
 }
 
 
@@ -102,20 +104,41 @@ export class MarkdownParserService {
     xhtml: false,
     rawHtml: false
   };
-  private baseImagePath: string = 'assets/help-files/images/';
+  private baseImagePath: string = './api/help-files/images/';
 
   constructor(private readonly sanitizer: DomSanitizer) {
   }
 
   render(markdown: string, opts: Partial<MarkdownOptions> = {}): string | SafeHtml {
     const options = {...this.defaults, ...opts} as MarkdownOptions;
-    const src = (markdown ?? '').replace(/\r\n?|\u2028|\u2029/g, '\n');
+    let src = (markdown ?? '').replace(/\r\n?|\u2028|\u2029/g, '\n');
+
+    if (options.imageLoader) {
+      src = src.replace(/<img([^>]+)src=["']([^"']+)["']([^>]*)>/gi, (match, before, imgSrc, after) => {
+        let processedSrc = imgSrc;
+
+        if (processedSrc && !processedSrc.startsWith('http') && !processedSrc.startsWith('#') && !processedSrc.startsWith('data:')) {
+          processedSrc = processedSrc.replace(/^(\.\.\/)+/, '').replace(/^\.\//, '');
+
+          if (!processedSrc.startsWith('/api/help-files/images/') && !processedSrc.startsWith('./api/help-files/images/')) {
+            const filename = processedSrc.split('/').pop() || processedSrc;
+            processedSrc = './api/help-files/images/' + filename;
+          }
+        }
+
+        if (processedSrc.startsWith('/api/') || processedSrc.startsWith('./api/')) {
+          processedSrc = options.imageLoader(processedSrc);
+        }
+
+        return `<img${before}src="${processedSrc}"${after}>`;
+      });
+    }
 
     const tokens = this.lex(src, options);
     let html = this.parse(tokens, options);
 
     if (options.smartypants) html = this.smartypants(html);
-    if (options.sanitize) html = this.sanitize(html);
+    if (options.sanitize) html = this.sanitize(html, options);
 
     return options.sanitize ? html : this.sanitizer.bypassSecurityTrustHtml(html);
   }
@@ -426,6 +449,10 @@ export class MarkdownParserService {
               src = this.baseImagePath + src;
             }
 
+            if (options.imageLoader && (src.startsWith('/api/') || src.startsWith('./api/'))) {
+              src = options.imageLoader(src);
+            }
+
             const safeSrc = this.safeUrl(src);
             if (!safeSrc) return '';
             let titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
@@ -628,7 +655,7 @@ export class MarkdownParserService {
   }
 
 
-  private sanitize(html: string): string {
+  private sanitize(html: string, options: MarkdownOptions): string {
     const allowedTags = new Set([
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'em', 'strong', 'del', 'code', 'pre',
       'a', 'img', 'ul', 'ol', 'li', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
@@ -680,6 +707,10 @@ export class MarkdownParserService {
               if (attrValue && !attrValue.includes('/') &&
                 !attrValue.startsWith('http') && !attrValue.startsWith('#')) {
                 attrValue = this.baseImagePath + attrValue;
+              }
+
+              if (options.imageLoader && (attrValue.startsWith('/api/') || attrValue.startsWith('./api/'))) {
+                attrValue = options.imageLoader(attrValue);
               }
             }
 
@@ -738,6 +769,10 @@ export class MarkdownParserService {
 
     if (!trimmed) {
       return null;
+    }
+
+    if (trimmed.toLowerCase().startsWith('data:image/')) {
+      return trimmed;
     }
 
     if (trimmed.toLowerCase().startsWith('javascript:') ||

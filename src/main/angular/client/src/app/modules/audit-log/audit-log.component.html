@@ -339,11 +339,11 @@
                     <td (click)="$event.stopPropagation()" nowrap>
                       @if (!auditLog.show && adtLog.current) {
                         <i (click)="showDetail(auditLog);$event.stopPropagation()"
-                           class="cursor fa fa-caret-down fa-lg"></i>
+                           class="p-r-xs cursor fa fa-caret-down fa-lg"></i>
                       }
                       @if (auditLog.show && adtLog.current) {
                         <i (click)="auditLog.show = false;$event.stopPropagation()"
-                           class="cursor fa fa-caret-up fa-lg"></i>
+                           class="p-r-xs cursor fa fa-caret-up fa-lg"></i>
                       }&nbsp;
                       <span [innerHtml]="auditLog.created | stringToDate | highlight : adtLog.searchText"></span></td>
                     <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
