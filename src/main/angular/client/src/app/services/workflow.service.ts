@@ -1136,6 +1136,9 @@ export class WorkflowService {
             if (json.instructions[x].remainWhenTerminated !== undefined) {
               _node.setAttribute('remainWhenTerminated', json.instructions[x].remainWhenTerminated);
             }
+            if (json.instructions[x].forceJobAdmission !== undefined) {
+              _node.setAttribute('forceJobAdmission', json.instructions[x].forceJobAdmission);
+            }
             if (json.instructions[x].startPosition !== undefined && isArray(json.instructions[x].startPosition)) {
               _node.setAttribute('startPosition', JSON.stringify(json.instructions[x].startPosition));
             }
@@ -3040,7 +3043,7 @@ export class WorkflowService {
           const weekdayIndex = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) % 7 + 1;
           const weekNumber = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (7 * 24 * 3600)) + 1;
 
-          
+
           const baseSecondOfWeeks = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) * (24 * 3600);
 
           periodItem = {
