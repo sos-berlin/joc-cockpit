@@ -43,8 +43,8 @@ import {FileUploaderComponent} from "../../../../components/file-uploader/file-u
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../../../components/notes/note.component";
-import { OrderPipe } from 'src/app/pipes/core.pipe';
-import { AuthService } from 'src/app/components/guard/auth.service';
+import {OrderPipe} from 'src/app/pipes/core.pipe';
+import {AuthService} from 'src/app/components/guard/auth.service';
 
 // Mx-Graph Objects
 declare const mxEditor: any;
@@ -738,7 +738,7 @@ export class CycleInstructionComponent {
       this.selectedNode.obj.listIndex = listIndex;
       this.selectedNode.data.isRestrictedEdit = true;
       this.selectedNode.data.periodList = [];
-    }else{
+    } else {
       this.selectedNode.isEdit = listIndex > -1;
       this.selectedNode.obj.show = true;
       this.selectedNode.repeatObject = data.repeat;
@@ -1012,7 +1012,6 @@ export class CycleInstructionComponent {
   }
 
 
-
   removeRestrictedPeriodItem(restrictedItem: any, period: any): void {
     const schemeIndex = restrictedItem.schemeIndex;
     const restrictedSchemeIndex = restrictedItem.restrictedSchemeIndex;
@@ -1174,24 +1173,24 @@ export class AdmissionTimeComponent {
   }
 
 
-ngOnInit(): void {
-  if (!this.job.admissionTimeScheme) {
-    this.job.admissionTimeScheme = {};
-  }
-  if (this.repeatObject && !this.repeatObject.TYPE) {
-    this.repeatObject.TYPE = 'Periodic';
-  }
-  if (!this.job.admissionTimeScheme.restrictedSchemes) {
-    this.job.admissionTimeScheme.restrictedSchemes = [];
-  }
-  this.days = this.coreService.getLocale().days;
-  this.days.push(this.days[0]);
+  ngOnInit(): void {
+    if (!this.job.admissionTimeScheme) {
+      this.job.admissionTimeScheme = {};
+    }
+    if (this.repeatObject && !this.repeatObject.TYPE) {
+      this.repeatObject.TYPE = 'Periodic';
+    }
+    if (!this.job.admissionTimeScheme.restrictedSchemes) {
+      this.job.admissionTimeScheme.restrictedSchemes = [];
+    }
+    this.days = this.coreService.getLocale().days;
+    this.days.push(this.days[0]);
 
 
-  if (this.isEdit && this.data.isRestrictedEdit) {
-    let actualSchemeIndex = -1;
-    let localPeriodIndex = -1;
-    let periodCounter = 0;
+    if (this.isEdit && this.data.isRestrictedEdit) {
+      let actualSchemeIndex = -1;
+      let localPeriodIndex = -1;
+      let periodCounter = 0;
 
       const regularPeriods = this.workflowService.convertAdmissionTimeToList(this.job.admissionTimeScheme.periods || [], this.days, {});
       periodCounter += regularPeriods.length;
@@ -1210,49 +1209,49 @@ ngOnInit(): void {
         periodCounter += numPeriodsInScheme;
       }
 
-    if (actualSchemeIndex > -1) {
-      const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[actualSchemeIndex];
-      const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
-      const targetPeriod = periodListForForm[localPeriodIndex];
+      if (actualSchemeIndex > -1) {
+        const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[actualSchemeIndex];
+        const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
+        const targetPeriod = periodListForForm[localPeriodIndex];
 
-      if (restrictedScheme && targetPeriod) {
-        this.isEditingRestrictedFrequency = true;
-        this.restrictedSchemeIndex = actualSchemeIndex;
-        this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
-        this.checkMonths();
-        this.onChangeMonths();
-        this.editFrequency(targetPeriod);
+        if (restrictedScheme && targetPeriod) {
+          this.isEditingRestrictedFrequency = true;
+          this.restrictedSchemeIndex = actualSchemeIndex;
+          this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
+          this.checkMonths();
+          this.onChangeMonths();
+          this.editFrequency(targetPeriod);
+        } else {
+        }
       } else {
+        const targetPeriod = regularPeriods[this.index];
+        if (targetPeriod) {
+          this.isEditingRestrictedFrequency = false;
+          this.editFrequency(targetPeriod);
+        } else {
+        }
       }
     } else {
-      const targetPeriod = regularPeriods[this.index];
-      if (targetPeriod) {
-        this.isEditingRestrictedFrequency = false;
-        this.editFrequency(targetPeriod);
-      } else {
-      }
-    }
-  } else {
-    if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
-      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
-      if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
-        this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
-      }
-      if (this.data.periodList.length > 0) {
-        if (this.repeatObject && !this.data.periodList[0].frequency) {
-          this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
-          this.frequency.all = true;
+      if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
+        this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+        if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
+          this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
+        }
+        if (this.data.periodList.length > 0) {
+          if (this.repeatObject && !this.data.periodList[0].frequency) {
+            this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+            this.frequency.all = true;
+          }
         }
       }
     }
-  }
 
 
-  if (this.repeatObject) {
-    this.checkDays();
-    this.checkFrequency();
+    if (this.repeatObject) {
+      this.checkDays();
+      this.checkFrequency();
+    }
   }
-}
 
   ngOnDestroy(): void {
     this.cleanupAdmissionTimeScheme();
@@ -1362,15 +1361,15 @@ ngOnInit(): void {
 
 
   onChangeMonths(): void {
-  if (this.selectedMonthsForRestriction) {
-    this.selectedMonthsForRestriction.sort();
+    if (this.selectedMonthsForRestriction) {
+      this.selectedMonthsForRestriction.sort();
+    }
+    this.showMonthRange = this.selectedMonthsForRestriction.length > 0;
+
+    this.allMonthsSelected = this.selectedMonthsForRestriction.length === 12;
+
+    this.updateMonthCheckboxes();
   }
-  this.showMonthRange = this.selectedMonthsForRestriction.length > 0;
-
-  this.allMonthsSelected = this.selectedMonthsForRestriction.length === 12;
-
-  this.updateMonthCheckboxes();
-}
 
 
   selectAllMonth(): void {
@@ -1545,6 +1544,7 @@ ngOnInit(): void {
     }
     this.clearRowSelections();
   }
+
   private saveFromCycleInstruction(myForm: NgForm): void {
     this.isValid = true;
     let p: any;
@@ -2506,7 +2506,6 @@ ngOnInit(): void {
   }
 
 
-
   private loadRestrictedScheme(index: number): void {
     const scheme = this.job.admissionTimeScheme.restrictedSchemes[index];
     if (scheme && scheme.restriction.TYPE === 'MonthRestriction') {
@@ -3093,7 +3092,8 @@ export class JobComponent {
     this.selectedNode.job.executable.v1Compatible = result.executable.v1Compatible;
     if (result.executable.internalType === 'JavaScript_Graal') {
       this.selectedNode.job.executable.TYPE = "JavaScript";
-    } if (result.executable.internalType === 'Python_Graal') {
+    }
+    if (result.executable.internalType === 'Python_Graal') {
       this.selectedNode.job.executable.TYPE = "Python";
     } else if (result.executable.internalType === 'Java') {
       this.selectedNode.job.executable.TYPE = "Java";
@@ -4084,7 +4084,7 @@ export class JobComponent {
   }
 
   private fetchJobTags() {
-    if(this.selectedNode.job.jobName){
+    if (this.selectedNode.job.jobName) {
       const obj = {
         path: this.workflowPath,
         jobNames: [this.selectedNode.job.jobName]
@@ -4709,7 +4709,7 @@ export class JobComponent {
     this.sideBar.isVisible = false;
   }
 
-  helpPage(): void{
+  helpPage(): void {
     let param: string;
     switch (this.tabIndex) {
       case 0:
@@ -4780,23 +4780,23 @@ export class ScriptEditorComponent {
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
 
-ngOnInit(): void {
-  this.script = this.modalData.script;
-  this.scriptTree = this.modalData.scriptTree;
-  this.disabled = this.modalData.disabled;
-  this.isSkip = this.modalData.isSkip;
-  this.cmOption.mode = this.modalData.mode;
-  if (this.modalData.disabled) {
-    this.cmOption.readOnly = true;
+  ngOnInit(): void {
+    this.script = this.modalData.script;
+    this.scriptTree = this.modalData.scriptTree;
+    this.disabled = this.modalData.disabled;
+    this.isSkip = this.modalData.isSkip;
+    this.cmOption.mode = this.modalData.mode;
+    if (this.modalData.disabled) {
+      this.cmOption.readOnly = true;
+    }
+    if (this.cmOption.mode === 'javascript') {
+      this.cmOption.autoCloseBrackets = true;
+    }
+    this.cmOption.tabSize = this.modalData.tabSize;
+    if (this.disabled) {
+      this.cmOption.readOnly = true;
+    }
   }
-  if (this.cmOption.mode === 'javascript') {
-    this.cmOption.autoCloseBrackets = true;
-  }
-  this.cmOption.tabSize = this.modalData.tabSize;
-  if (this.disabled) {
-    this.cmOption.readOnly = true;
-  }
-}
 
   ngAfterViewInit(): void {
     $('#resizable').resizable({
@@ -4858,7 +4858,7 @@ ngOnInit(): void {
           }
         })
       } else {
-  }
+      }
     }, 0);
 
     setTimeout(() => {
@@ -5172,7 +5172,7 @@ export class HistoryLogDialogComponent {
   preferences: any = {};
 
   objectName: string = '';
-  objectType: string[] = ['WORKFLOW']; 
+  objectType: string[] = ['WORKFLOW'];
 
   currentPage = 1;
   entryPerPage = 10;
@@ -5182,14 +5182,15 @@ export class HistoryLogDialogComponent {
   auditLogs: any = [];
   data = [];
 
-  constructor(public activeModal: NzModalRef, private authService: AuthService, public coreService: CoreService, private orderPipe: OrderPipe) {}
-  
+  constructor(public activeModal: NzModalRef, private authService: AuthService, public coreService: CoreService, private orderPipe: OrderPipe) {
+  }
+
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
 
-    if(this.modalData.objectName) this.objectName = this.modalData.objectName;
-    if(this.modalData.objectType) this.objectType = this.modalData.objectType;
+    if (this.modalData.objectName) this.objectName = this.modalData.objectName;
+    if (this.modalData.objectType) this.objectType = this.modalData.objectType;
     this.getHistoryLogs(null);
   }
 
@@ -5252,7 +5253,6 @@ export class HistoryLogDialogComponent {
   cancel(): void {
     this.activeModal.destroy();
   }
-
 
 
 }
@@ -5579,8 +5579,8 @@ export class WorkflowComponent {
           } else if (args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/) && (path == args.eventSnapshots[j].path
             || this.data.name == args.eventSnapshots[j].path)) {
             this.fetchWorkflowTags(args.eventSnapshots[j].path);
-          }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)&& (path == args.eventSnapshots[j].path
-            || this.data.name == args.eventSnapshots[j].path)){
+          } else if (args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/) && (path == args.eventSnapshots[j].path
+            || this.data.name == args.eventSnapshots[j].path)) {
             this.getWorkflowObject();
           }
         }
@@ -6363,7 +6363,7 @@ export class WorkflowComponent {
             delete job?.executable.arguments;
           }
           request.configuration = job;
-          if(!request?.configuration?.arguments){
+          if (!request?.configuration?.arguments) {
             request.configuration.arguments = {}
           }
           this.coreService.post('inventory/store', request).subscribe(() => {
@@ -6475,7 +6475,7 @@ export class WorkflowComponent {
       var texts = [
         "", "Job", "Try", "Retry", "Finish", "Fail",
         "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
-        "Sleep", "Prompt","Admission<br>Times", "AddOrder", "Post<br>Notices",
+        "Sleep", "Prompt", "Admission<br>Times", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
         "Option", "Paste"
@@ -8652,7 +8652,7 @@ export class WorkflowComponent {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
               val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
-            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'onlyOnePeriod' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed'  || attr[j].name === 'skipIfNoAdmissionForOrderDay' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
+            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'onlyOnePeriod' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'skipIfNoAdmissionForOrderDay' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
               val = val ? val.split(',') : '';
@@ -9283,20 +9283,20 @@ export class WorkflowComponent {
         });
 
         // Handle Cut: Ctrl + v
-          self.keyHandler.bindControlKey(86, function (evt?: KeyboardEvent) {
-            const target =
-              dropTargetForPaste ||
-              graph.getSelectionCell() ||
-              graph.getDefaultParent();
+        self.keyHandler.bindControlKey(86, function (evt?: KeyboardEvent) {
+          const target =
+            dropTargetForPaste ||
+            graph.getSelectionCell() ||
+            graph.getDefaultParent();
 
-            if (target) {
-              createClickInstruction('paste', target);
-              if (evt && evt.preventDefault) evt.preventDefault(); // stop browser default
-            }
-          });
+          if (target) {
+            createClickInstruction('paste', target);
+            if (evt && evt.preventDefault) evt.preventDefault(); // stop browser default
+          }
+        });
 
 
-          // Handle Cut: Ctrl + a
+        // Handle Cut: Ctrl + a
         self.keyHandler.bindControlKey(65, function () {
           selectAll()
         });
@@ -11092,7 +11092,7 @@ export class WorkflowComponent {
         (sourName === 'Cycle' && tarName === 'EndCycle') || (sourName === 'ElseWhen' && tarName === 'EndElse') ||
         (sourName === 'ForkList' && tarName === 'EndForkList') ||
         (sourName === 'Lock' && tarName === 'EndLock') ||
-        (sourName === 'Options' && tarName === 'EndOptions')||
+        (sourName === 'Options' && tarName === 'EndOptions') ||
         (sourName === 'AdmissionTime' && tarName === 'EndAdmissionTime') ||
         (sourName === 'StickySubagent' && tarName === 'EndStickySubagent');
     }
@@ -11842,7 +11842,7 @@ export class WorkflowComponent {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'onlyOnePeriod', self.selectedNode.newObj.onlyOnePeriod);
             graph.getModel().execute(edit2);
-          }else if (self.selectedNode.type === 'AdmissionTime') {
+          } else if (self.selectedNode.type === 'AdmissionTime') {
             const edit = new mxCellAttributeChange(
               obj.cell,
               'admissionTimeScheme',
@@ -12079,7 +12079,7 @@ export class WorkflowComponent {
             self.selectedNode.job.admissionTimeScheme = {};
           }
           self.selectedNode.job.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.periodList);
-        }else if (self.selectedNode.type === 'AdmissionTime') {
+        } else if (self.selectedNode.type === 'AdmissionTime') {
           if (self.selectedNode.data && self.selectedNode.data.admissionTimeScheme) {
             if (self.selectedNode.data.periodList && self.selectedNode.data.periodList.length > 0) {
               self.selectedNode.data.admissionTimeScheme.periods =
@@ -12117,9 +12117,7 @@ export class WorkflowComponent {
           if (self.selectedNode.newObj.defaultArguments) {
             if (isArray(self.selectedNode.newObj.defaultArguments)) {
               self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
-                if (!self.isExpression(argu.value)) {
-                  self.coreService.addSlashToString(argu, 'value');
-                }
+                self.coreService.addSlashToString(argu, 'value');
                 return !argu.invalid;
               });
             }
@@ -12333,7 +12331,7 @@ export class WorkflowComponent {
               obj.schedule = {};
             }
           }
-        }else if (cell.value.tagName === 'AdmissionTime') {
+        } else if (cell.value.tagName === 'AdmissionTime') {
           let admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
 
           if (admissionTimeScheme && typeof admissionTimeScheme === 'string') {
@@ -12343,12 +12341,12 @@ export class WorkflowComponent {
                 admissionTimeScheme = JSON.parse(admissionTimeScheme);
               }
             } catch (e) {
-              admissionTimeScheme = { periods: [], restrictedSchemes: [] };
+              admissionTimeScheme = {periods: [], restrictedSchemes: []};
             }
           }
 
           if (!admissionTimeScheme || typeof admissionTimeScheme !== 'object') {
-            admissionTimeScheme = { periods: [], restrictedSchemes: [] };
+            admissionTimeScheme = {periods: [], restrictedSchemes: []};
           }
 
           obj.admissionTimeScheme = admissionTimeScheme;
@@ -12356,8 +12354,7 @@ export class WorkflowComponent {
           obj.skipIfNoAdmissionForOrderDay = obj.skipIfNoAdmissionForOrderDay == 'true';
 
 
-        }
-        else if (cell.value.tagName === 'ForkList') {
+        } else if (cell.value.tagName === 'ForkList') {
           let children = cell.getAttribute('children');
           if (children) {
             obj.children = children;
@@ -15042,7 +15039,7 @@ export class WorkflowComponent {
               instructions: json.instructions[x].instructions
             };
             delete json.instructions[x].instructions;
-          }else if (json.instructions[x].TYPE === 'AdmissionTime') {
+          } else if (json.instructions[x].TYPE === 'AdmissionTime') {
             let admissionTimeSchemeObj = json.instructions[x].admissionTimeScheme ? clone(json.instructions[x].admissionTimeScheme) : null;
             const skipIfNoAdmissionForOrderDay = clone(json.instructions[x].skipIfNoAdmissionForOrderDay);
 
@@ -15055,8 +15052,7 @@ export class WorkflowComponent {
               instructions: json.instructions[x].instructions
             };
             delete json.instructions[x].instructions;
-          }
-          else if (json.instructions[x].TYPE === 'Cycle') {
+          } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
@@ -15460,23 +15456,11 @@ export class WorkflowComponent {
   }
 
   private isExpression(value: string): boolean {
-
     if (typeof value !== 'string') {
       return false;
     }
-
-    const cleanValue = value.replace(/^"(.*)"$/, '$1').trim();
-
-    if (/^\d+(\.\d+)?$/.test(cleanValue)) {
-      return false;
-    }
-
-    if (!/[+\-*/()]/.test(cleanValue)) {
-      return false;
-    }
-
-    const expressionRegex = /^[\d\s+\-*/().\w]+$/;
-    return expressionRegex.test(cleanValue);
+    const expressionRegex = /^[\d\s+\-*/().]+$/;
+    return expressionRegex.test(value.replace(/"/g, ''));
   }
 
   private convertToExpression(value: any): string {
@@ -16000,7 +15984,7 @@ export class WorkflowComponent {
     this.storeJobTags();
   }
 
-  helpPage(key): void{
+  helpPage(key): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -16030,7 +16014,7 @@ export class WorkflowComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false,
-      nzStyle: { width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px',  minHeight: '200px' }
+      nzStyle: {width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px', minHeight: '200px'}
     });
   }
 
