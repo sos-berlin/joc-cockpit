@@ -7626,6 +7626,15 @@ export class WorkflowComponent {
     }
   }
 
+  onTriesChange(): void {
+    if (!this.selectedNode.obj.retryDelays || this.selectedNode.obj.retryDelays.length === 0) {
+      this.selectedNode.obj.retryDelays = [{value: ''}];
+    }
+    if (this.selectedNode.obj.tries === 'limited') {
+      this.checkDelayEntries();
+    }
+  }
+
   addAllDelay(): void {
     if (this.selectedNode.obj.maxTries > (this.selectedNode.obj.retryDelays.length - 1)) {
       const len = (this.selectedNode.obj.maxTries - (this.selectedNode.obj.retryDelays.length + 1));
@@ -11766,7 +11775,6 @@ export class WorkflowComponent {
           } else if (self.selectedNode.type === 'Retry') {
             if (self.selectedNode.newObj.tries == 'unlimited') {
               self.selectedNode.newObj.maxTries = '';
-              self.selectedNode.newObj.retryDelays = '';
             } else {
               if (!self.selectedNode.newObj.maxTries && self.selectedNode.newObj.maxTries !== 0) {
                 self.selectedNode.newObj.maxTries = 1;
@@ -12315,7 +12323,7 @@ export class WorkflowComponent {
               obj.retryDelays = [{value: ''}];
             }
           }
-          if (obj.tries == 'unlimited' || obj.retryDelays?.length == 0) {
+          if (obj.retryDelays?.length == 0) {
             obj.retryDelays = [{value: ''}];
           }
         } else if (cell.value.tagName === 'Cycle') {
