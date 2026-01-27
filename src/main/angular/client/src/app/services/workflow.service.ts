@@ -679,6 +679,8 @@ export class WorkflowService {
     instruction.label = label;
     if (maxTries || maxTries === 0) {
       instruction.maxTries = parseInt(maxTries, 10);
+    }
+    if (retryDelays && retryDelays.length > 0) {
       instruction.retryDelays = retryDelays;
     }
   }
