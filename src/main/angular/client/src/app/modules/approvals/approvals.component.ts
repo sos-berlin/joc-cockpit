@@ -4,7 +4,6 @@ import {CoreService} from "../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../services/data.service";
 import {AddApproverModalComponent, ApproversComponent} from "./approvers/approvers.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -107,17 +106,7 @@ export class ApprovalsComponent {
     }else if (this.approvalsFilters.tabIndex === 2){
       key = 'approval-notification-settings'
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
+
   }
 }

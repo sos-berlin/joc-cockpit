@@ -22,7 +22,6 @@ import {WorkflowService} from 'src/app/services/workflow.service';
 import {EncryptArgumentModalComponent} from '../inventory.component';
 import {AuthService} from 'src/app/components/guard';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 import { NoteComponent } from 'src/app/components/notes/note.component';
 
 
@@ -1965,18 +1964,7 @@ export class ScheduleComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
   notes(name): void {
     this.modal.create({

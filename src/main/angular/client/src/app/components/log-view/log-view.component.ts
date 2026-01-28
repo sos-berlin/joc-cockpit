@@ -4,7 +4,6 @@ import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
 import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
-import {HelpViewerComponent} from "../help-viewer/help-viewer.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {HelpRenderResult, HelpService} from "../../services/help.service";
 

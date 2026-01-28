@@ -13,7 +13,6 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
 import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -395,15 +394,7 @@ export class AccountModalComponent {
 
     helpKey = 'identity-service-account-configuration'
 
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(helpKey);
   }
 }
 // Main Component

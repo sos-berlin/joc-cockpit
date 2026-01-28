@@ -28,7 +28,6 @@ import {InventoryForHistory} from '../../models/enums';
 import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -375,18 +374,7 @@ export class OrderSearchComponent {
   }
 
   helpPage(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -629,18 +617,7 @@ export class TaskSearchComponent {
   }
 
   helpPage(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -760,18 +737,7 @@ export class DeploymentSearchComponent {
   }
 
   helpPage(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -913,18 +879,7 @@ ngOnInit(): void {
   }
 
   helpPage(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -4924,14 +4879,6 @@ export class HistoryComponent {
         helpKey = 'history-orders';
     }
 
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(helpKey);
   }
 }

@@ -13,7 +13,6 @@ import {CommentModalComponent} from '../../components/comment-modal/comment.comp
 import {AddCertificateModalComponent, AgentModalComponent, ShowCertificateListModalComponent, SubagentModalComponent} from "./agent/agent.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 import {SearchPipe} from "../../pipes/core.pipe";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -2131,17 +2130,6 @@ export class ControllersComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'manage-controllers-agents'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('manage-controllers-agents');
   }
 }

@@ -7,7 +7,6 @@ import {AddEnciphermentModalComponent} from "../encipherment/encipherment.compon
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -686,18 +685,7 @@ export class AddChangesModalComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(key);
   }
 
   getDisplayName(path: string): string {
@@ -888,18 +876,8 @@ export class ChangesComponent {
     });
   }
 
-  helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'changes'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+  helpPage(): void {
+    this.coreService.openHelpPage('changes');
   }
-}
+
+  }

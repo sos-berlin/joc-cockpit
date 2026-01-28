@@ -11,7 +11,6 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {EncryptArgumentModalComponent} from '../../configuration/inventory/inventory.component';
 import {NgModel} from "@angular/forms";
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -1938,18 +1937,7 @@ addArguments(orderIndex): void {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'workflows-orders-add'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('workflows-orders-add');
   }
 }
 

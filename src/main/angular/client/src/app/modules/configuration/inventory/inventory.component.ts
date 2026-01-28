@@ -25,7 +25,6 @@ import {FileUploaderComponent} from "../../../components/file-uploader/file-uplo
 import {WorkflowService} from "../../../services/workflow.service";
 import {NzSelectComponent} from 'ng-zorro-antd/select';
 import {AddChangesModalComponent} from "../../changes/changes.component";
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -305,18 +304,7 @@ export class CreateTagModalComponent {
   protected readonly Array = Array;
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -1858,18 +1846,7 @@ export class SingleDeployComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   getInvalidObjects(): string[] {
@@ -4484,18 +4461,7 @@ export class DeployComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   getInvalidObjects(): string[] {
@@ -6770,18 +6736,7 @@ export class ExportComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   getDisplayName(path: string): string {
@@ -9146,18 +9101,7 @@ export class GitComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -9660,18 +9604,7 @@ export class CreateFolderModalComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -16282,18 +16215,7 @@ export class InventoryComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 

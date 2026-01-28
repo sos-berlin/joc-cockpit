@@ -41,7 +41,6 @@ import {UpdateJobTemplatesComponent} from "../job-template/job-template.componen
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
-import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../../../components/notes/note.component";
 import {OrderPipe} from 'src/app/pipes/core.pipe';
 import {AuthService} from 'src/app/components/guard/auth.service';
@@ -4731,18 +4730,7 @@ export class JobComponent {
       default:
         param = 'configuration-inventory-workflow-job-properties';
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: param
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(param);
   }
 }
 
@@ -15993,18 +15981,7 @@ export class WorkflowComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   notes(): void {

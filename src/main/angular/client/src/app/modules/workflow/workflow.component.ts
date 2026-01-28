@@ -19,7 +19,6 @@ import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {PostModalComponent} from "../resource/board/board.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../components/notes/note.component";
 
 
@@ -317,18 +316,7 @@ ngOnInit(): void {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -2853,18 +2841,7 @@ export class WorkflowComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   notes(name): void {

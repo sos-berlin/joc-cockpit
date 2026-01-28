@@ -23,7 +23,6 @@ import {ExportComponent} from "./projection/projection.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 import {PostModalComponent} from '../resource/board/board.component';
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../components/notes/note.component";
 
 declare const JSGantt: any;
@@ -710,18 +709,7 @@ export class SearchComponent {
   }
 
   helpPage(): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -3735,15 +3723,7 @@ export class DailyPlanComponent {
     if (cal) {
       helpKey = 'daily-plan-calendar';
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(helpKey);
   }
 
 

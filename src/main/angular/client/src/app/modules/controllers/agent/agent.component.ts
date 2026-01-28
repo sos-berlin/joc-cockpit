@@ -1,4 +1,4 @@
-import {Component,Output,EventEmitter , HostListener, inject, ViewChild} from '@angular/core';
+import {Component, Output, EventEmitter, HostListener, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
@@ -12,7 +12,6 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {DataService} from "../../../services/data.service";
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $;
 declare const mxEditor;
@@ -89,7 +88,7 @@ export class SubagentModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = { controllerId: this.controllerId, agentId: this.clusterAgent.agentId };
+    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
     const subagent: any = this.coreService.clone(this.subagent);
 
     if (this.display) {
@@ -109,19 +108,8 @@ export class SubagentModalComponent {
     });
   }
 
-  helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+  helpPage(key): void {
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -425,19 +413,8 @@ export class AgentModalComponent {
     });
   }
 
-  helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+  helpPage(key): void {
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -475,7 +452,7 @@ export class AddCertificateModalComponent {
     this.getEnciphermentCertificate();
   }
 
-  getEnciphermentCertificate(){
+  getEnciphermentCertificate() {
     let certAliasesObj = {
       certAliases: []
     };
@@ -500,7 +477,7 @@ export class AddCertificateModalComponent {
     if (this.comments.ticketLink) {
       auditLog.ticketLink = this.comments.ticketLink;
     }
-    if(auditLog.comment){
+    if (auditLog.comment) {
       this.certificateObj.auditLog = auditLog;
     }
     this.coreService.post('encipherment/assignment/add', this.certificateObj).subscribe({
@@ -525,7 +502,8 @@ export class ShowCertificateListModalComponent {
   certificateList: any = [];
   sub: any;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
+  }
 
   ngOnInit(): void {
     this.data = this.modalData.agent;
@@ -537,13 +515,13 @@ export class ShowCertificateListModalComponent {
     this.getCertificates();
   }
 
-  getCertificates(){
-    let certAliases = { agentIds: [] };
-    if(this.agentType === 'cluster'){
+  getCertificates() {
+    let certAliases = {agentIds: []};
+    if (this.agentType === 'cluster') {
       this.data.subagents.forEach(agent => {
         certAliases.agentIds.push(agent.subagentId);
       })
-    }else{
+    } else {
       certAliases.agentIds.push(this.data.agentId);
     }
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
@@ -555,7 +533,7 @@ export class ShowCertificateListModalComponent {
     });
   }
 
-  deleteCertificateAlias(certAlias){
+  deleteCertificateAlias(certAlias) {
     let obj: any;
     if (this.data.subagents && this.data.subagents.length > 0) {
       obj = {
@@ -620,13 +598,14 @@ export class ShowCertificateListModalComponent {
     }
   }
 
-  private _deleteCertificateAlias(certAliasesObj){
+  private _deleteCertificateAlias(certAliasesObj) {
     this.coreService.post('encipherment/assignment/remove', certAliasesObj).subscribe({
-     next: (res: any) => {
-      this.getCertificates();
-     }, error: () => {}
-   });
- }
+      next: (res: any) => {
+        this.getCertificates();
+      }, error: () => {
+      }
+    });
+  }
 }
 
 @Component({
@@ -647,27 +626,38 @@ export class AddPriorityModalComponent {
   cluster: any
   node: any;
   indicatorItems = [
-    { value: '$js7SubagentProcessCount'},
-    { value: '$js7ClusterSubagentProcessCount'},
-    { value: '$js7CpuLoad'},
-    { value: '$js7CommittedVirtualMemorySize'},
-    { value: '$js7FreeMemorySize'},
-    { value: '$js7TotalMemorySize'}
+    {value: '$js7SubagentProcessCount'},
+    {value: '$js7ClusterSubagentProcessCount'},
+    {value: '$js7CpuLoad'},
+    {value: '$js7CommittedVirtualMemorySize'},
+    {value: '$js7FreeMemorySize'},
+    {value: '$js7TotalMemorySize'}
   ];
   dataSource = [
-    { variable: '-$js7SubagentProcessCount', expression: 'expression1'},
-    { variable: '-$js7ClusterSubagentProcessCount', expression: 'expression2'},
-    { variable: 'if $js7SubagentProcessCount == 0 then 1 else missing', expression: 'expression3'},
-    { variable: 'if $js7ClusterSubagentProcessCount == 0 then 1 else missing', expression: 'expression4'},
-    { variable: 'if $js7SubagentProcessCount < 10 then -$js7SubagentProcessCount else missing', expression: 'expression5'},
-    { variable: 'if $js7ClusterSubagentProcessCount < 10 then -$js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
-    { variable: '-$js7CpuLoad * 2 + $js7FreeMemorySize / 1000000000 - $js7SubagentProcessCount * 3', expression: 'expression7'}
+    {variable: '-$js7SubagentProcessCount', expression: 'expression1'},
+    {variable: '-$js7ClusterSubagentProcessCount', expression: 'expression2'},
+    {variable: 'if $js7SubagentProcessCount == 0 then 1 else missing', expression: 'expression3'},
+    {variable: 'if $js7ClusterSubagentProcessCount == 0 then 1 else missing', expression: 'expression4'},
+    {
+      variable: 'if $js7SubagentProcessCount < 10 then -$js7SubagentProcessCount else missing',
+      expression: 'expression5'
+    },
+    {
+      variable: 'if $js7ClusterSubagentProcessCount < 10 then -$js7ClusterSubagentProcessCount else missing',
+      expression: 'expression6'
+    },
+    {
+      variable: '-$js7CpuLoad * 2 + $js7FreeMemorySize / 1000000000 - $js7SubagentProcessCount * 3',
+      expression: 'expression7'
+    }
   ];
   priorityFromDropdown: string = '';
   isTableVisible = false;
 
   @Output() submitAll = new EventEmitter<string>();
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
+
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
+  }
 
   ngOnInit(): void {
     if (sessionStorage['preferences']) {
@@ -688,11 +678,12 @@ export class AddPriorityModalComponent {
   }
 
   submitToAllSubagents(flag): void {
-    if(flag){
+    if (flag) {
       this.onSubmit(flag)
     }
     this.activeModal.close()
   }
+
   onDropdownSelect(selectedValue: string): void {
     this.priority = selectedValue;
   }
@@ -702,7 +693,7 @@ export class AddPriorityModalComponent {
   }
 
   onCopyExpression(expression: string): void {
-      this.priority = expression;
+    this.priority = expression;
   }
 
 }
@@ -845,7 +836,7 @@ export class AgentComponent {
       agentIds: [this.agentId]
     }).subscribe({
       next: (data: any) => {
-        if(cb) cb();
+        if (cb) cb();
         this.clusters = data.subagentClusters;
         if (this.selectedCluster.subagentClusterId) {
           let isFound = false;
@@ -864,7 +855,7 @@ export class AgentComponent {
         this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
         this.searchInResult();
       }, error: () => {
-        if(cb) cb();
+        if (cb) cb();
         this.isLoading = false;
       }
     });
@@ -1230,38 +1221,38 @@ export class AgentComponent {
     }
   }
 
- drop($event): void {
+  drop($event): void {
     if ($event.isPointerOverContainer && this.dropTarget) {
-        const dropTargetCell = this.editor.graph.getModel().getCell(this.dropTarget);
-        if (dropTargetCell) {
-            const subagentId = this.agentList[$event.previousIndex].subagentId;
-            this.agentList.splice($event.previousIndex, 1);
-            const obj = {
-                subagentId,
-                priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
-            };
-            if (obj.priority === -1) {
-                obj.priority = 0;
-                for (let cluster of this.clusters) {
-                    if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
-                        this.selectedCluster.subagentIds.forEach((item) => {
-                            item.priority = parseInt(item.priority, 10) + 1;
-                        });
-                        cluster.subagentIds.forEach((item) => {
-                            item.priority = parseInt(item.priority, 10) + 1;
-                        });
-                        break;
-                    }
-                }
+      const dropTargetCell = this.editor.graph.getModel().getCell(this.dropTarget);
+      if (dropTargetCell) {
+        const subagentId = this.agentList[$event.previousIndex].subagentId;
+        this.agentList.splice($event.previousIndex, 1);
+        const obj = {
+          subagentId,
+          priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
+        };
+        if (obj.priority === -1) {
+          obj.priority = 0;
+          for (let cluster of this.clusters) {
+            if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
+              this.selectedCluster.subagentIds.forEach((item) => {
+                item.priority = parseInt(item.priority, 10) + 1;
+              });
+              cluster.subagentIds.forEach((item) => {
+                item.priority = parseInt(item.priority, 10) + 1;
+              });
+              break;
             }
-
-            this.selectedCluster.subagentIds.push(obj);
-
-            this.updateCluster();
-            this.storeCluster(obj);
+          }
         }
+
+        this.selectedCluster.subagentIds.push(obj);
+
+        this.updateCluster();
+        this.storeCluster(obj);
+      }
     }
-}
+  }
 
 
   private storeCluster(subagent?, isBulkUpdate = false) {
@@ -2019,9 +2010,9 @@ export class AgentComponent {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          if(result.flag){
+          if (result.flag) {
             this.submitToAllSubagents(result.priority)
-          }else{
+          } else {
             this.updatePriority(result.priority, currentNode);
           }
         }
@@ -2059,10 +2050,8 @@ export class AgentComponent {
     }
 
     this.updateCluster();
-    this.storeCluster({ subagentId, priority: newPriority });
+    this.storeCluster({subagentId, priority: newPriority});
   }
-
-
 
 
   private updateList(): void {
@@ -2105,95 +2094,95 @@ export class AgentComponent {
     }
   }
 
-private createClusterWorkflow(): void {
-  const graph = this.editor.graph;
-  const doc = mxUtils.createXmlDocument();
-  const defaultParent = graph.getDefaultParent();
-  let i = 0, j = 1;
-  let priority = -1;
-  let v1;
-  let styleColor = '#fafafa';
-  if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
-    styleColor = '#3d464d';
-  }
-  if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
-    let colorIndex = 0;
-    this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
-      const _node = this.getCellNode('Agent', subagent.subagentId);
+  private createClusterWorkflow(): void {
+    const graph = this.editor.graph;
+    const doc = mxUtils.createXmlDocument();
+    const defaultParent = graph.getDefaultParent();
+    let i = 0, j = 1;
+    let priority = -1;
+    let v1;
+    let styleColor = '#fafafa';
+    if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
+      styleColor = '#3d464d';
+    }
+    if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
+      let colorIndex = 0;
+      this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
+        const _node = this.getCellNode('Agent', subagent.subagentId);
 
-      _node.setAttribute('priority', subagent.priority.toString());
+        _node.setAttribute('priority', subagent.priority.toString());
 
-      let source;
-      let colorCode;
-      let flag = this.selectedCluster.subagentIds.length === 1;
-      let currentPriority = parseInt(subagent.priority, 10);
+        let source;
+        let colorCode;
+        let flag = this.selectedCluster.subagentIds.length === 1;
+        let currentPriority = parseInt(subagent.priority, 10);
         if (isNaN(currentPriority)) {
-              currentPriority = 0;
-            }
-      if (priority > -1 && priority !== currentPriority) {
-        j++;
-      }
-      let y = j * 70;
-      if (priority === currentPriority) {
-
-        i++;
-        if (v1) {
-          source = v1;
+          currentPriority = 0;
         }
-      } else {
-        i = 0;
-        if (priority > -1) {
-          colorIndex++;
+        if (priority > -1 && priority !== currentPriority) {
+          j++;
         }
-      }
+        let y = j * 70;
+        if (priority === currentPriority) {
 
-      if (isNaN(Number(subagent.priority)) && !/^\d+$/.test(subagent.priority)) {
-        colorCode = '#31c331';
-      } else {
-        colorCode = this.colors[colorIndex];
-      }
-      if (!flag) {
-        if (this.selectedCluster.subagentIds[index + 1]) {
-          if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
-            flag = true;
+          i++;
+          if (v1) {
+            source = v1;
           }
         } else {
-          flag = true;
+          i = 0;
+          if (priority > -1) {
+            colorIndex++;
+          }
         }
-      }
-      priority = currentPriority;
-      let x = (230 * i) + 10;
-      v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
-      if (source) {
-        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
-      }
-      if (flag) {
-        const mainNode = doc.createElement('Process');
-        mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
-        mainNode.setAttribute('priority', priority.toString());
-        const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
-      }
-      if (0 === index) {
-        const mainNode = doc.createElement('Process');
-        mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-        mainNode.setAttribute('priority', (priority + 1).toString());
-        graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-      }
-      if (this.selectedCluster.subagentIds.length - 1 === index) {
-        const mainNode = doc.createElement('Process');
-        mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-        mainNode.setAttribute('priority', '-1');
-        graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-      }
-    });
-  } else {
-    const mainNode = doc.createElement('Process');
-    mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-    mainNode.setAttribute('priority', '0');
-    graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+
+        if (isNaN(Number(subagent.priority)) && !/^\d+$/.test(subagent.priority)) {
+          colorCode = '#31c331';
+        } else {
+          colorCode = this.colors[colorIndex];
+        }
+        if (!flag) {
+          if (this.selectedCluster.subagentIds[index + 1]) {
+            if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
+              flag = true;
+            }
+          } else {
+            flag = true;
+          }
+        }
+        priority = currentPriority;
+        let x = (230 * i) + 10;
+        v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
+        if (source) {
+          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
+        }
+        if (flag) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
+          mainNode.setAttribute('priority', priority.toString());
+          const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
+        }
+        if (0 === index) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+          mainNode.setAttribute('priority', (priority + 1).toString());
+          graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+        }
+        if (this.selectedCluster.subagentIds.length - 1 === index) {
+          const mainNode = doc.createElement('Process');
+          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+          mainNode.setAttribute('priority', '-1');
+          graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+        }
+      });
+    } else {
+      const mainNode = doc.createElement('Process');
+      mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+      mainNode.setAttribute('priority', '0');
+      graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+    }
   }
-}
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
@@ -2245,19 +2234,8 @@ private createClusterWorkflow(): void {
     this.isVisible = false;
   }
 
-  helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+  helpPage(key): void {
+    this.coreService.openHelpPage(key);
   }
 }
 

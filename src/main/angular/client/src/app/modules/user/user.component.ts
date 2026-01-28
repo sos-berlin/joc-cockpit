@@ -16,7 +16,6 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {ByteToSizePipe} from "../../pipes/core.pipe";
 import { isArray } from 'underscore';
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare var $;
 
@@ -1602,18 +1601,7 @@ export class UserComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 

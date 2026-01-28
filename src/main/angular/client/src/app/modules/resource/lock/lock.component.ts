@@ -7,7 +7,6 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
-import {HelpViewerComponent} from 'src/app/components/help-viewer/help-viewer.component';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NoteComponent} from "../../../components/notes/note.component";
 
@@ -558,18 +557,7 @@ export class LockComponent {
   }
 
   helpPage(key): void {
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   notes(name): void {

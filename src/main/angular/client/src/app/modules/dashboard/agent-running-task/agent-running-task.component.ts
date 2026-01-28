@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
@@ -112,17 +111,6 @@ export class AgentRunningTaskComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'dashboard-agent-running-jobs'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('dashboard-agent-running-jobs');
   }
 }
