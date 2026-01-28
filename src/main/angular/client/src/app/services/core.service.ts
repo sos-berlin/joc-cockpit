@@ -14,6 +14,8 @@ import {LogViewComponent} from "../components/log-view/log-view.component";
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {KioskService} from "./kiosk.service";
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {HelpViewerComponent} from '../components/help-viewer/help-viewer.component';
 
 declare const $: any;
 
@@ -66,7 +68,7 @@ export class CoreService {
   private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder,private modal: NzModalService) {
     this.init();
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -4273,6 +4275,24 @@ private checkParentNode(lastPos, data, item, nodes): any {
       case 'INFO': return '#1890ff';
       default: return '';
     }
+  }
+
+  openHelpPage(helpKey: string, title?: string): void {
+    const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+
+    this.modal.create({
+      nzTitle: title || undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: preferences,
+        helpKey: helpKey,
+        title: title
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
 }

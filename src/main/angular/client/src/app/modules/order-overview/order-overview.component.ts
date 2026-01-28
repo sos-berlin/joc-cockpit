@@ -33,7 +33,6 @@ import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.comp
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 import { ValueEditorComponent } from 'src/app/components/value-editor/value.component';
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $;
 
@@ -2186,17 +2185,6 @@ export class OrderOverviewComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'orders-overview'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('orders-overview');
   }
 }

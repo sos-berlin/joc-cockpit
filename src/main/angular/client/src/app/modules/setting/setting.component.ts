@@ -604,18 +604,7 @@ static generateChildStoreObject(children): any {
       default:
         param = 'settings';
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: param
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(param);
   }
 }
 

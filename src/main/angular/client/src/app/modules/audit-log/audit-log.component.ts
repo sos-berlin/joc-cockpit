@@ -14,7 +14,6 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component';
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -202,18 +201,7 @@ export class SearchComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -1060,17 +1048,6 @@ export class AuditLogComponent {
     }else{
       helpKey = 'identity-service-faíled-logins'
     }
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: helpKey
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(helpKey);
   }
 }

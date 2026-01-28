@@ -338,18 +338,7 @@ export class FileTransferSearchComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -1063,17 +1052,6 @@ export class FileTransferComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'history-file-transfers'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('history-file-transfers');
   }
 }

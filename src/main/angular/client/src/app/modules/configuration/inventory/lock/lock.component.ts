@@ -17,7 +17,6 @@ import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
-import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 import {NoteComponent} from "../../../../components/notes/note.component";
 
 @Component({
@@ -353,18 +352,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   notes(name): void {

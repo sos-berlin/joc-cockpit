@@ -11,7 +11,6 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 @Component({
@@ -811,18 +810,7 @@ export class DocumentationComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 

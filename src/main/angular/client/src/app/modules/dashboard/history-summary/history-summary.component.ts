@@ -4,7 +4,6 @@ import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
@@ -148,17 +147,6 @@ export class HistorySummaryComponent {
     this.router.navigate(['/history']).then();
   }
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'dashboard-history'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('dashboard-history');
   }
 }

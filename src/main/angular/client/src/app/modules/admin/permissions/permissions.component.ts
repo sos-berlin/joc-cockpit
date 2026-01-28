@@ -8,7 +8,6 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare var $: any;
 declare var d3: any;

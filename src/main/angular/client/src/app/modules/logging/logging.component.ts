@@ -4,7 +4,6 @@ import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 declare const $;
@@ -160,17 +159,6 @@ ngOnInit(): void {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }

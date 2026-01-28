@@ -589,18 +589,7 @@ export class BoardComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
   notes(name): void {
     this.modal.create({

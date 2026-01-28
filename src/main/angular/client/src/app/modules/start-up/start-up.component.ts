@@ -6,7 +6,6 @@ import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $;
 
@@ -183,18 +182,7 @@ export class StartUpModalComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 

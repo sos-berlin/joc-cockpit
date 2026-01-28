@@ -10,7 +10,6 @@ import {SearchPipe} from '../../../pipes/core.pipe';
 import {ExcelService} from '../../../services/excel.service';
 import {EditFilterModalComponent} from '../../../components/filter-modal/filter.component';
 import {SaveService} from '../../../services/save.service';
-import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -193,18 +192,7 @@ export class SearchComponent {
   }
 
   helpPage(): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: 'advanced-filter'
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage('advanced-filter');
   }
 }
 
@@ -802,18 +790,7 @@ export class AgentJobExecutionComponent {
   }
 
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 

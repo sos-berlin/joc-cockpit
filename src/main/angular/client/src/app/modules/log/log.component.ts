@@ -6,7 +6,6 @@ import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {AuthService} from '../../components/guard';
 import {CoreService} from '../../services/core.service';
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 declare const $;
@@ -1146,18 +1145,7 @@ export class LogComponent {
 
   helpPage(): void{
     let key = this.taskId ? 'task-log' : 'order-log';
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 
   @HostListener('window:beforeunload', ['$event'])

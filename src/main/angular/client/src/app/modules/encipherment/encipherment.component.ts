@@ -13,7 +13,6 @@ import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
 import {ShowAgentsModalComponent} from "../configuration/inventory/inventory.component";
 import {ClipboardService} from "ngx-clipboard";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -162,18 +161,7 @@ export class AddEnciphermentModalComponent {
     this.clipboardService.copy(this.encryptedText);
   }
   helpPage(key): void{
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {
-        preferences: this.preferences,
-        helpKey: key
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    })
+    this.coreService.openHelpPage(key);
   }
 }
 
@@ -602,14 +590,6 @@ export class EnciphermentComponent {
   helpPage(): void {
     let helpKey: string;
     helpKey = 'encryption-manage-keys';
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(helpKey);
   }
 }

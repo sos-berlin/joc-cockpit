@@ -7,7 +7,6 @@ import {AuthService} from "../../components/guard";
 import {SharingDataService} from "./sharing-data.service";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
-import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -306,15 +305,7 @@ export class ReportingComponent {
         helpKey = 'report-creation';
     }
 
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    this.coreService.openHelpPage(helpKey);
   }
 
 }
