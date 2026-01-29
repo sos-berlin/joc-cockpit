@@ -6,7 +6,9 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <i (click)="helpPage('resources-calendars')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          @if (preferences.showHelpPages) {
+            <i (click)="helpPage('resources-calendars')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }
           <div class="inline">
             <div class="show-block">
               <div class="inline">
@@ -368,7 +370,9 @@
 <nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
-    <i (click)="helpPage('resources-calendar-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+    @if (preferences.showHelpPages) {
+      <i (click)="helpPage('resources-calendar-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+    }
     @if (isSearchVisible) {
       <div>
         <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>

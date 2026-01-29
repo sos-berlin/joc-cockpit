@@ -18,7 +18,9 @@
                 {{'settings.button.importSetting' | translate}}
               </button>
             }
-            <i (click)="helpPage('settings')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
+            @if (preferences.showHelpPages) {
+              <i (click)="helpPage('settings')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
+            }
           </div>
         </div>
       </div>
@@ -35,7 +37,9 @@
               @for (setting of settingArr; track setting; let i = $index) {
                 <div cdkDrag class="p-b-sm p-l-sm">
                   <div cdkDragHandle class="pos-abt drag-handler m-t-n-xxs">
-                    <i (click)="helpPage(setting.name)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-settings cur-point fa fa-info-circle m-l-12 text-20"></i>
+                    @if (preferences.showHelpPages) {
+                      <i (click)="helpPage(setting.name)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-settings cur-point fa fa-info-circle m-l-12 text-20"></i>
+                    }
                     <i aria-hidden="true" class="fa fa-bars"></i>
                   </div>
                   <h5 class="m-l-48 p-l-sm">

@@ -572,7 +572,7 @@
           </perfect-scrollbar>
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
-        @if (sideView.inventory.width > 315 && !isTrash) {
+        @if (sideView.inventory.width > 315 && !isTrash && preferences.showHelpPages) {
           <i (click)="helpPage('configuration-inventory-navigation')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         }
       </div>
@@ -1064,7 +1064,9 @@
 <nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
-    <i (click)="helpPage('searching-inventory')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+    @if (preferences.showHelpPages) {
+      <i (click)="helpPage('searching-inventory')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+    }
     @if (isSearchVisible) {
       <div>
         <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>

@@ -1,6 +1,10 @@
 <div id="jobSchedulerStatus1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.JS7Status<span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
+    <h3 translate>dashboard.label.JS7Status
+      @if (preferences.showHelpPages) {
+        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+      }
+    </h3>
   </div>
   <div [ngClass]="{'p-t-0' : controllersList && controllersList.length==0}" [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}"
        class="box-body overflow-y">

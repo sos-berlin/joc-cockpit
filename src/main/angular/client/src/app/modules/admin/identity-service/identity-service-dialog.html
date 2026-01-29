@@ -5,7 +5,9 @@
         <span translate>user.label.editIdentityService</span>:
         <span [innerHtml]="identityService.identityServiceName"></span>
       </span>
-      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
     }
     @if (!identityService) {
       <span translate>user.label.addIdentityService</span>

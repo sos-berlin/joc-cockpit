@@ -2874,6 +2874,7 @@
     "label.vertical": "Vertical",
     "label.enterColor": "Entrer la couleur",
     "label.resetDefault": "Réinitialiser les valeurs par défaut",
+    "label.showHelpPages": "Show Help Pages",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
