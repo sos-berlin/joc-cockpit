@@ -453,7 +453,9 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          @if (preferences.showHelpPages) {
+            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }
           @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
               <div class="btn-group m-l-12 hidden-btn-group">
@@ -838,8 +840,10 @@
                     </div>
                   }
                 </div>
-                <i (click)="helpPage(true)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-info-circle text-20"></i>
-              </div>
+                @if (preferences.showHelpPages) {
+                  <i (click)="helpPage(true)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-info-circle text-20"></i>
+                }
+                </div>
             </div>
             <div id="rightPanel">
               <div class="row">

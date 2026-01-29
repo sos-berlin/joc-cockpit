@@ -750,6 +750,7 @@ export class LayoutComponent {
     preferences.historyTab = 'order';
     preferences.expandOption = 'both';
     preferences.currentController = true;
+    preferences.showHelpPages = true;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
     preferences.interRankCellSpacing = '100';
@@ -861,6 +862,9 @@ export class LayoutComponent {
         data.edgeRounded = true;
       }
 
+      if (data.showHelpPages === undefined) {
+        data.showHelpPages = true;
+      }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
       }

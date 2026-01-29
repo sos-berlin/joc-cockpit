@@ -4,7 +4,9 @@
     @if (path) {
       <span>: {{path}}</span>
     }
+    @if (preferences.showHelpPages) {
       <i (click)="helpPage('configuration-inventory-operations-export-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

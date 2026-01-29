@@ -52,13 +52,15 @@
           <label [(ngModel)]="object.checkBoxs.detail" class="m-r"
                  nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span translate>log.label.detail</span></label>
         }
-        <a (click)="helpPage()" class="m-r pull-right">
-          <i
-            [nzTooltipMouseEnterDelay]="0.5"
-            [nz-tooltip]="'common.tooltip.help' | translate"
-            nz-icon nzTheme="fill" nzType="info-circle"
-          ></i>
-        </a>
+        @if (preferences.showHelpPages) {
+          <a (click)="helpPage()" class="m-r pull-right">
+            <i
+              [nzTooltipMouseEnterDelay]="0.5"
+              [nz-tooltip]="'common.tooltip.help' | translate"
+              nz-icon nzTheme="fill" nzType="info-circle"
+            ></i>
+          </a>
+        }
         @if (!isCancel && !finished) {
           <a (click)="cancel()" class="m-r m-l pull-right">
             <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>

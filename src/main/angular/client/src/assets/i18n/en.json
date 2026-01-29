@@ -2873,6 +2873,7 @@
     "label.vertical": "Vertical",
     "label.enterColor": "Enter color",
     "label.resetDefault": "Reset to default",
+    "label.showHelpPages": "Show Help Pages",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",

@@ -13,8 +13,10 @@
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
-          <i (click)="helpPage('configuration-inventory-file-order-sources')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-          <i (click)="notes(fileOrder.name)"
+            @if (preferences.showHelpPages) {
+              <i (click)="helpPage('configuration-inventory-file-order-sources')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+            }
+            <i (click)="notes(fileOrder.name)"
              [nzTooltipMouseEnterDelay]="0.5"
              [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
              nz-icon

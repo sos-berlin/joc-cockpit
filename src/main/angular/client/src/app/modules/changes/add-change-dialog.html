@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>{{'changes.label.'+ title}}</span>
-    @if(title === 'addChange' || title === 'updateChange'){
+    @if((title === 'addChange' || title === 'updateChange') && preferences.showHelpPages) {
       <i (click)="helpPage('changes-properties')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>

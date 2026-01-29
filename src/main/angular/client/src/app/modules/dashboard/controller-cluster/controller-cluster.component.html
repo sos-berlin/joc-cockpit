@@ -7,7 +7,10 @@
       @if (selectedController.role === 'STANDALONE' || !selectedController.role) {
         <span translate>dashboard.label.productStatus</span>
       }
-      <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
+      @if (preferences.showHelpPages) {
+        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+      }
+    </h3>
   </div>
   <div [hidden]="!isLoaded || !clusterStatusData" [ngStyle]="{'height': (clusterStatusData ? (ybody * 55 + ((ybody -1) *20 -50)) : 0)+'px'}"
        class="box-body overflow-y">

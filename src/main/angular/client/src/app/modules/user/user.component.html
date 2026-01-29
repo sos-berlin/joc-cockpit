@@ -6,7 +6,9 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <i (click)="helpPage('profile')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          @if (preferences.showHelpPages) {
+            <i (click)="helpPage('profile')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }
 
           <div class="show-inline">
             <button (click)="resetProfile();" class="btn btn-sm btn-grey" type="button">
@@ -66,12 +68,14 @@
             <nz-tab [nzTitle]="tabTitle1">
               <ng-template #tabTitle1>
                 {{ 'profile.label.preferences' | translate }}
-                <i
-                  (click)="helpPage('profile-preferences')"
-                  [nzTooltipMouseEnterDelay]="0.5"
-                  [nz-tooltip]="'common.tooltip.help' | translate"
-                  class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                </i>
+                @if (preferences.showHelpPages) {
+                  <i
+                    (click)="helpPage('profile-preferences')"
+                    [nzTooltipMouseEnterDelay]="0.5"
+                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                  </i>
+                }
               </ng-template>
               <div class="m-l-12 p-b-xs">
                 <div class="row">
@@ -617,6 +621,13 @@
                     </nz-radio-group>
                   </div>
                 </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHelpPages</div>
+                  <div class="col-md-6">
+                    <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
+                           (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
                 <div class="row m-t b-t p-t">
                   <div class="col-md-12">
                     <h6>
@@ -676,12 +687,14 @@
               <nz-tab [nzTitle]="tabTitle2">
                 <ng-template #tabTitle2>
                   {{ 'profile.label.permissions' | translate }}
-                  <i
-                    (click)="helpPage('profile-permissions')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
-                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                  </i>
+                  @if (preferences.showHelpPages) {
+                    <i
+                      (click)="helpPage('profile-permissions')"
+                      [nzTooltipMouseEnterDelay]="0.5"
+                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                    </i>
+                  }
                 </ng-template>
                 <div class="m-l-12">
                   <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
@@ -692,12 +705,14 @@
               <nz-tab [nzTitle]="tabTitle3">
                 <ng-template #tabTitle3>
                   {{ 'profile.label.keyManagement' | translate }}
-                  <i
-                    (click)="helpPage('profile-signature-key-management')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
-                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                  </i>
+                  @if (preferences.showHelpPages) {
+                    <i
+                      (click)="helpPage('profile-signature-key-management')"
+                      [nzTooltipMouseEnterDelay]="0.5"
+                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                    </i>
+                  }
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
@@ -787,12 +802,14 @@
               <nz-tab [nzTitle]="tabTitle4">
                 <ng-template #tabTitle4>
                   {{ 'profile.label.caManagement' | translate }}
-                  <i
-                    (click)="helpPage('profile-ssl-key-management')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
-                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                  </i>
+                  @if (preferences.showHelpPages) {
+                    <i
+                      (click)="helpPage('profile-ssl-key-management')"
+                      [nzTooltipMouseEnterDelay]="0.5"
+                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                    </i>
+                  }
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
@@ -869,12 +886,14 @@
               <nz-tab [nzTitle]="tabTitle5">
                 <ng-template #tabTitle5>
                   {{ 'profile.label.gitManagement' | translate }}
-                  <i
-                    (click)="helpPage('profile-git-management')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
-                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                  </i>
+                  @if (preferences.showHelpPages) {
+                    <i
+                      (click)="helpPage('profile-git-management')"
+                      [nzTooltipMouseEnterDelay]="0.5"
+                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                    </i>
+                  }
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-xs p-b-xs">
@@ -957,12 +976,14 @@
             <nz-tab [nzTitle]="tabTitle5">
               <ng-template #tabTitle5>
                 {{ 'profile.label.favoriteManagement' | translate }}
-                <i
-                  (click)="helpPage('profile-favorite-management')"
-                  [nzTooltipMouseEnterDelay]="0.5"
-                  [nz-tooltip]="'common.tooltip.help' | translate"
-                  class="help-info-dashboard cur-point fa fa-info-circle text-20">
-                </i>
+                @if (preferences.showHelpPages) {
+                  <i
+                    (click)="helpPage('profile-favorite-management')"
+                    [nzTooltipMouseEnterDelay]="0.5"
+                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                  </i>
+                }
               </ng-template>
               <div class="p-l-sm p-r-rm m-t-n-sm">
                 <nz-tabset (nzSelectChange)="innnerTabChange($event)">

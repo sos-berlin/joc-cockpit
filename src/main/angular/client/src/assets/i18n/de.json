@@ -2873,6 +2873,7 @@
     "label.vertical": "Vertikal",
     "label.enterColor": "Farben angeben",
     "label.resetDefault": "Auf Voreinstellung zurücksetzen",
+    "label.showHelpPages": "Show Help Pages",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
