@@ -11118,13 +11118,33 @@ export class PublishChangeModalComponent {
   }
 
   updateParentCheckboxAffected(objectType: string): void {
-    const allSelected = this.affectedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
-    this.selectAllAffected[objectType] = allSelected;
+    const objects = this.getFilteredAffectedObjects(objectType);
+    if (objects.length === 0) {
+      this.selectAllAffected[objectType] = false;
+      return;
+    }
+
+    const enabledObjects = objects.filter((obj: any) => !obj.disabled);
+    if (enabledObjects.length === 0) {
+      this.selectAllAffected[objectType] = objects.every((obj: any) => obj.selected);
+    } else {
+      this.selectAllAffected[objectType] = enabledObjects.every((obj: any) => obj.selected);
+    }
   }
 
   updateParentCheckboxReferenced(objectType: string): void {
-    const allSelected = this.referencedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
-    this.selectAllReferenced[objectType] = allSelected;
+    const objects = this.getFilteredReferencedObjects(objectType);
+    if (objects.length === 0) {
+      this.selectAllReferenced[objectType] = false;
+      return;
+    }
+
+    const enabledObjects = objects.filter((obj: any) => !obj.disabled);
+    if (enabledObjects.length === 0) {
+      this.selectAllReferenced[objectType] = objects.every((obj: any) => obj.selected);
+    } else {
+      this.selectAllReferenced[objectType] = enabledObjects.every((obj: any) => obj.selected);
+    }
   }
 
   getIcon(objectType: string): string {
@@ -11426,6 +11446,16 @@ export class PublishChangeModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  getFilteredAffectedObjects(type: string): any[] {
+    const objects = this.affectedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
+  getFilteredReferencedObjects(type: string): any[] {
+    const objects = this.referencedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
   }
 
   private removeDuplicateConfigurationsForRelease(obj: any): void {
