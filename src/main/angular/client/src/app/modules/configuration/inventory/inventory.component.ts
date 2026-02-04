@@ -2414,6 +2414,8 @@ export class DeployComponent {
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
+          checked: true,
+          selected: true,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
             path: item.path,
@@ -3058,9 +3060,8 @@ export class DeployComponent {
     } else {
       obj.update = [];
     }
-    if (this.releasable) {
+    if (this.releasable || this.object.deployType === 'changes') {
       this.getReleaseObject()
-
       if (this.object.update.length > 0) {
         obj.update = this.object.update;
       }
@@ -3127,7 +3128,7 @@ export class DeployComponent {
 
     if (this.dependencyMode !== 'none') {
       this.nodes.forEach(node => this.handleDependenciesForDeploy(node, obj));
-      if (this.object.type !== 'changes') {
+      if (this.object.deployType !== 'changes') {
         this.handleAffectedItemsForDeploy(obj);
       }
     }
@@ -3658,6 +3659,7 @@ export class DeployComponent {
   }
 
   getJSObject(): void {
+    console.log(">>>")
     this.object.store = {draftConfigurations: [], deployConfigurations: []};
     this.object.deleteObj = {deployConfigurations: []};
     const self = this;
@@ -3669,9 +3671,15 @@ export class DeployComponent {
       selectFolder = false
     }
 
+    const deployableTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
+
     function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
+
+          if (nodes[i].type && !deployableTypes.includes(nodes[i].type)) {
+            continue;
+          }
           const objDep: any = {};
           if (nodes[i].deployId || nodes[i].deploymentId || (!nodes[i].type && !nodes[i].object)) {
             if ((!nodes[i].type && !nodes[i].object)) {
@@ -3683,8 +3691,14 @@ export class DeployComponent {
                 };
               }
             } else {
+
+
+              const fullPath = nodes[i].path === nodes[i].key
+                ? nodes[i].path
+                : nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name;
+
               objDep.configuration = {
-                path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+                path: fullPath,
                 objectType: nodes[i].type
               };
               if (nodes[i].deployablesVersions) {
@@ -3698,8 +3712,14 @@ export class DeployComponent {
               }
             }
           } else {
+
+
+            const fullPath = nodes[i].path === nodes[i].key
+              ? nodes[i].path
+              : nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name;
+
             objDep.configuration = {
-              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              path: fullPath,
               objectType: nodes[i].type
             };
           }
@@ -3752,8 +3772,9 @@ export class DeployComponent {
             }
           }
         }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
-          if (!nodes[i].checked || !selectFolder) {
+
+        if ((!nodes[i].type && !nodes[i].object && nodes[i].children) || (nodes[i].object && nodes[i].children)) {
+          if (!nodes[i].checked || !selectFolder || nodes[i].object) {
             recursive(nodes[i].children);
           } else if (!self.object.isRecursive) {
             for (let j = 0; j < nodes[i].children.length; j++) {
@@ -3774,13 +3795,23 @@ export class DeployComponent {
     this.object.delete = [];
     this.object.releasables = [];
     const self = this;
+    const releaseableType = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     function recursive(nodes: any) {
       for (let i = 0; i < nodes.length; i++) {
         if ((!nodes[i].object) && nodes[i].checked) {
           if (nodes[i].type) {
+            if (nodes[i].type && !releaseableType.includes(nodes[i].type)) {
+              continue;
+            }
+
+
+            const fullPath = nodes[i].path === nodes[i].key
+              ? nodes[i].path
+              : nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name;
+
             const obj: any = {
-              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              path: fullPath,
               objectType: nodes[i].type
             };
             if (nodes[i].deleted) {
@@ -3789,12 +3820,13 @@ export class DeployComponent {
               self.object.update.push(obj);
             }
             self.object.releasables.push({
-              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
+              path: fullPath,
               objectType: nodes[i].type
             });
           }
         }
-        if (!nodes[i].type && !nodes[i].object && nodes[i].children) {
+
+        if ((!nodes[i].type && !nodes[i].object && nodes[i].children) || (nodes[i].object && nodes[i].children)) {
           recursive(nodes[i].children);
         }
       }
@@ -3897,6 +3929,7 @@ export class DeployComponent {
   }
 
   deploy(): void {
+    console.log(this.nodes,">>>")
     this.submitted = true;
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
     if (this.operation === 'recall') {
@@ -3969,7 +4002,7 @@ export class DeployComponent {
       this.nodes.forEach(node => {
         this.handleDependenciesForRelease(node, obj, recall);
       });
-      if (this.object.type !== 'changes') {
+      if (this.object.deployType !== 'changes') {
         this.handleAffectedItemsForRelease(obj, recall);
       }
     }
@@ -5500,6 +5533,7 @@ export class ExportComponent {
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
+          selected: true,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
             path: item.path,
@@ -7449,6 +7483,7 @@ export class RepositoryComponent {
           expanded: true,
           isLeaf: false,
           disabled: shouldDisable,
+          selected: true,
           children: groupedObjects[type].map((item: any) => {
             return {
               name: item.name,
@@ -10739,6 +10774,7 @@ export class PublishChangeModalComponent {
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
+          selected: true,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
             path: item.path,
