@@ -62,7 +62,7 @@ export class OIDCAuthService {
 
   configure(config: any) {
     this.issuer = config.iamOidcAuthenticationUrl;
-    this.redirectUri = window.location.origin + '/joc';
+    this.redirectUri = window.location.origin + window.location.pathname.replace(/\/$/, "")
     this.showDebugInformation = true;
     if (config.iamOidcGroupScopes && Array.isArray(config.iamOidcGroupScopes)) {
       this.iamOidcGroupScopes = config.iamOidcGroupScopes;
