@@ -11276,21 +11276,21 @@ export class PublishChangeModalComponent {
       });
     }
 
-    this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
-        if (!obj.store) {
-          obj.store = {draftConfigurations: [], deployConfigurations: []};
-        }
-        const config = {
-          configuration: {
-            path: item.path,
-            objectType: item.objectType,
-            recursive: false
-          }
-        };
-        obj.store.draftConfigurations.push(config);
-      }
-    });
+    // this.filteredAffectedItems.forEach(item => {
+    //   if (item.valid && item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+    //     if (!obj.store) {
+    //       obj.store = {draftConfigurations: [], deployConfigurations: []};
+    //     }
+    //     const config = {
+    //       configuration: {
+    //         path: item.path,
+    //         objectType: item.objectType,
+    //         recursive: false
+    //       }
+    //     };
+    //     obj.store.draftConfigurations.push(config);
+    //   }
+    // });
 
     if (node.children && node.children.length > 0) {
       node.children.forEach(childNode => {
@@ -11340,17 +11340,17 @@ export class PublishChangeModalComponent {
       });
     }
 
-    this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
-        if (!obj.update) {
-          obj.update = [];
-        }
-        obj.update.push({
-          path: item.path,
-          objectType: item.objectType,
-        });
-      }
-    });
+    // this.filteredAffectedItems.forEach(item => {
+    //   if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+    //     if (!obj.update) {
+    //       obj.update = [];
+    //     }
+    //     obj.update.push({
+    //       path: item.path,
+    //       objectType: item.objectType,
+    //     });
+    //   }
+    // });
 
     if (node.children && node.children.length > 0) {
       node.children.forEach(childNode => {
