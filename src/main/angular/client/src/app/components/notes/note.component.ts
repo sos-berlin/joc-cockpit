@@ -112,6 +112,10 @@ export class NoteComponent {
     userName: ''
   };
 
+  mentionUsers: string[] = [];
+  filteredMentionUsers: string[] = [];
+
+
   constructor(
     private markdownParser: MarkdownParserService,
     private sanitizer: DomSanitizer,
@@ -133,6 +137,29 @@ export class NoteComponent {
     this.noteColor = 'NORMAL';
 
     this.loadNote();
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    const obj = {
+      name: this.objectName,
+      objectType: this.objectType
+    };
+
+    this.coreService.post('note/users', obj).subscribe({
+      next: (res: any) => {
+        if (res && res.users) {
+          this.mentionUsers = res.users;
+        } else {
+          this.mentionUsers = [];
+        }
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.mentionUsers = [];
+      }
+    });
+
   }
 
 
@@ -286,9 +313,12 @@ export class NoteComponent {
 
   highlightMentions(content: string): string {
     return content.replace(
-      /@\[([^\]]+)\]/g,
+      /@([\w.@-]+)/g,
       (match, username) => {
-        return `<span class="user-mention" data-username="${username}">@${username}</span>`;
+        if (this.mentionUsers.includes(username)) {
+          return `<span class="user-mention-tag" data-username="${username}">${username}</span>`;
+        }
+        return match;
       }
     );
   }
@@ -391,7 +421,7 @@ export class NoteComponent {
     if (this.isFullscreenEdit) {
       return document.querySelector('.fullscreen-textarea') as HTMLTextAreaElement;
     } else {
-      return document.querySelector('.new-post-section textarea') as HTMLTextAreaElement;
+      return document.querySelector('.new-post-section  textarea') as HTMLTextAreaElement;
     }
   }
 
@@ -535,28 +565,21 @@ export class NoteComponent {
 
   onTextareaInput(event: Event): void {
     this.updatePreview();
-    const textarea = event.target as HTMLTextAreaElement;
-    const cursorPos = textarea.selectionStart;
-    const textBeforeCursor = this.noteContent.substring(0, cursorPos);
+  }
 
-    if (textBeforeCursor.endsWith('@ ')) {
-      const charBeforeAt = textBeforeCursor[textBeforeCursor.length - 3];
-      const isValidPosition = !charBeforeAt || charBeforeAt === ' ' || charBeforeAt === '\n';
+  onMentionSearch(searchChange: any): void {
+    const searchText = typeof searchChange === 'string' ? searchChange : searchChange.value || '';
+    this.filterMentionUsers(searchText);
+  }
 
-      if (isValidPosition) {
-        const before = this.noteContent.substring(0, cursorPos - 1); // Remove the space
-        const after = this.noteContent.substring(cursorPos);
-
-        this.noteContent = before + '[]' + after;
-
-        this.updatePreview();
-
-        setTimeout(() => {
-          const newPos = cursorPos;
-          textarea.setSelectionRange(newPos, newPos);
-          textarea.focus();
-        }, 0);
-      }
+  filterMentionUsers(filter: string = ''): void {
+    if (!filter) {
+      this.filteredMentionUsers = [...this.mentionUsers];
+    } else {
+      const filterLower = filter.toLowerCase();
+      this.filteredMentionUsers = this.mentionUsers.filter(user =>
+        user.toLowerCase().includes(filterLower)
+      );
     }
   }
 

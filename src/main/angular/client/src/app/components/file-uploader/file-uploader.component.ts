@@ -91,6 +91,9 @@ export class FileUploaderComponent {
 
   ngOnInit(): void {
     this.type = this.modalData.type;
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;

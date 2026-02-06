@@ -10,6 +10,7 @@ import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
 import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
+import {NzMentionModule} from "ng-zorro-antd/mention";
 import {NzRadioModule} from 'ng-zorro-antd/radio';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
@@ -90,7 +91,7 @@ import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
 import {NzResizableDirective} from "ng-zorro-antd/resizable";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
-  NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
+  NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzMentionModule, NzTagModule, NzSelectModule,
   NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule, CodeMirrorModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
