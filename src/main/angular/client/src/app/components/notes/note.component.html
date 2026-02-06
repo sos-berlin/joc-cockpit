@@ -28,11 +28,18 @@
         }
       </div>
       <div class="new-post-section" style="margin-bottom: 0px;">
-        <textarea [(ngModel)]="noteContent"
-                  (input)="onTextareaInput($event)"
-                  rows="3"
-                  class="note-textarea"
-                  placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
+        <nz-mention [nzSuggestions]="filteredMentionUsers"
+                    [nzPrefix]="['@']"
+                    [nzNotFoundContent]="'No users found'"
+                    (nzOnSearchChange)="onMentionSearch($event)">
+          <textarea nzMentionTrigger
+                    nz-input
+                    [(ngModel)]="noteContent"
+                    (input)="onTextareaInput($event)"
+                    rows="3"
+                    class="note-textarea"
+                    placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
+        </nz-mention>
 
         <div class="message-actions">
           <div>
@@ -149,10 +156,17 @@
           <div class="modal-header">
             <span translate>inventory.notes.label.editor</span>
           </div>
-          <textarea [(ngModel)]="noteContent"
-                    (input)="onTextareaInput($event)"
-                    class="fullscreen-textarea"
-                    placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
+          <nz-mention [nzSuggestions]="filteredMentionUsers"
+                      [nzPrefix]="['@']"
+                      [nzNotFoundContent]="'No users found'"
+                      (nzOnSearchChange)="onMentionSearch($event)">
+            <textarea nzMentionTrigger
+                      nz-input
+                      [(ngModel)]="noteContent"
+                      (input)="onTextareaInput($event)"
+                      class="fullscreen-textarea"
+                      placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
+          </nz-mention>
         </div>
 
         <div class="preview-panel">

@@ -3670,6 +3670,9 @@ export class DeployComponent {
     if (self.hasDependencies()) {
       selectFolder = false
     }
+    if (self.object.deployType === 'changes') {
+      selectFolder = false
+    }
 
     const deployableTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
 
@@ -11361,17 +11364,8 @@ export class PublishChangeModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-    if (shouldDeploy) {
-      this.processDependenciesForDeploy();
-    } else {
-      this.activeModal.close();
-    }
-    if (shouldRelease) {
-      this.processDependenciesForRelease();
-    } else {
-      this.activeModal.close();
-    }
+    this.processDependenciesForDeploy();
+    this.processDependenciesForRelease();
   }
 
   private shouldDeployOrRelease(): { shouldDeploy: boolean, shouldRelease: boolean } {
@@ -11413,14 +11407,6 @@ export class PublishChangeModalComponent {
       checkNodeForDependencies(node);
     });
 
-    this.filteredAffectedItems.forEach(item => {
-      if (item.valid && allowedDeployTypes.includes(item.objectType)) {
-        shouldDeploy = true;
-      }
-      if (item.valid && !item.released && allowedReleaseTypes.includes(item.objectType)) {
-        shouldRelease = true;
-      }
-    });
 
     return {shouldDeploy, shouldRelease};
   }
