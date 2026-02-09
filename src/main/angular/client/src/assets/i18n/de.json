@@ -1936,6 +1936,7 @@
     "label.addTagToGroup": "Kennz. zu Gruppen zuweisen",
     "label.renameGroup": "Gruppe umbenennen",
     "label.includeDependencies": "Inklusive Abhängigkeiten",
+    "label.showDependencies": "Show Dependencies",
     "label.deployType": "Ausroll-Typ",
     "label.high": "Hoch",
     "label.aboveNormal": "Höher als normal",

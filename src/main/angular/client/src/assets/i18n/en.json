@@ -1936,6 +1936,7 @@
     "label.addTagToGroup": "Assign Tags to Group",
     "label.renameGroup": "Rename Group",
     "label.includeDependencies": "Include Dependencies",
+    "label.showDependencies": "Show Dependencies",
     "label.deployType": "Deploy Type",
     "label.high": "High",
     "label.aboveNormal": "Above Normal",
