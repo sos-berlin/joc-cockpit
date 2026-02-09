@@ -205,6 +205,15 @@
         </div>
       }
 
+      @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none') {
+        <div class="form-group row">
+          <label class="col-md-3" translate>inventory.label.showDependencies</label>
+          <div class="col-md-6">
+            <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
+          </div>
+        </div>
+      }
+
 
 
       @if (nodes.length > 0) {
@@ -374,7 +383,7 @@
                   </div>
                 }
               </div>
-               @if (node.origin.dependencies) {
+               @if (showDependencies && node.origin.dependencies) {
             @for (filteredDeps of [getFilteredNodeDependencies(node.origin)]; track filteredDeps) {
               @if (filteredDeps.referencedBy.length > 0 || filteredDeps.references.length > 0) {
                 <div style="width: 400px">
@@ -478,7 +487,7 @@
           }
             </ng-template>
 
-            @if (relatedObjectTypes.length > 0 && dependencyMode !== 'none' && object.deployType !== 'changes') {
+            @if (showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none' && object.deployType !== 'changes') {
               <div class="form-group row m-t-md">
                 <div class="col-md-12">
                   <i class="cursor text-16 fa"
@@ -609,7 +618,7 @@
                 </div>
               </div>
 
-              @if (node.origin.dependencies) {
+              @if (showDependencies && node.origin.dependencies) {
                 @for (filteredDeps of [getFilteredNodeDependencies(node.origin)]; track filteredDeps) {
                   @if (filteredDeps.referencedBy.length > 0 || filteredDeps.references.length > 0) {
                     <div style="width: 400px">
