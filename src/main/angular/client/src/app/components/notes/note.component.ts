@@ -196,10 +196,12 @@ export class NoteComponent {
   addPost(): void {
     if (!this.noteContent.trim()) return;
 
+    const contentForApi = this.convertMentionsForApi(this.noteContent);
+
     const obj = {
       name: this.objectName,
       objectType: this.objectType,
-      content: this.noteContent,
+      content: contentForApi,
       severity: this.getCurrentSeverity()
     };
 
@@ -311,14 +313,33 @@ export class NoteComponent {
     return this.sanitizer.bypassSecurityTrustHtml(rendered);
   }
 
+  convertMentionsForApi(content: string): string {
+    const sortedUsers = [...this.mentionUsers].sort((a, b) => b.length - a.length);
+
+    let result = content;
+    sortedUsers.forEach(username => {
+      const regex = new RegExp(`@(${username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?=\\s|$|[^a-zA-Z0-9_-])`, 'gi');
+      result = result.replace(regex, (match, foundUsername) => {
+        return `@[${foundUsername}]`;
+      });
+    });
+
+    result = result.replace(
+      /@([a-zA-Z0-9_-]+)(?![^\[]*\])/g,
+      (match, username) => {
+        return `@[${username}]`;
+      }
+    );
+
+    return result;
+  }
+
   highlightMentions(content: string): string {
     return content.replace(
-      /@([\w.@-]+)/g,
-      (match, username) => {
-        if (this.mentionUsers.includes(username)) {
-          return `<span class="user-mention-tag" data-username="${username}">${username}</span>`;
-        }
-        return match;
+      /@(?:\[([^\]]+)\]|([a-zA-Z0-9_-]+))/g,
+      (match, bracketedUsername, plainUsername) => {
+        const username = bracketedUsername || plainUsername;
+        return `<span class="tag-oval">${username}</span>`;
       }
     );
   }
