@@ -508,6 +508,8 @@ export class SingleDeployComponent {
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   relatedParentMap: Map<number, Set<number>> = new Map();
   isPathDisplay = false;
+  showDependencies = false;
+  private _dependenciesPromise: Promise<void> | null = null;
 
   private _filteredDepsCache: Map<string, any> = new Map();
 
@@ -526,6 +528,7 @@ export class SingleDeployComponent {
     this.isChecked = this.modalData.isChecked;
     this.isRemoved = this.modalData.isRemoved;
     this.operation = this.modalData.operation;
+    this.showDependencies = this.modalData.showDependencies || false;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -534,7 +537,7 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    this.getDependencies()
+    this._dependenciesPromise = this.getDependencies()
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
@@ -759,20 +762,43 @@ export class SingleDeployComponent {
       this.submitted = false;
       return;
     }
-    this.submitted = true
+    this.submitted = true;
+
+    if (!this.showDependencies) {
+      this.activeModal.close();
+      sessionStorage.setItem('backgroundOperationInProgress', 'true');
+    }
+
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        if (this.showDependencies) {
+          this.activeModal.close();
+        } else {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
       }, error: () => {
         this.submitted = false;
-        this.activeModal.close();
+        if (!this.showDependencies) {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
       }
     });
   }
 
-  deploy(): void {
+  async deploy(): Promise<void> {
     this.submitted = true;
     this.ref.detectChanges();
+
+    if (this.showDependencies && this._dependenciesPromise) {
+      try {
+        await this._dependenciesPromise;
+      } catch (error) {
+        console.error('Error loading dependencies:', error);
+        this.submitted = false;
+        return;
+      }
+    }
+
     if (this.isRemoved) {
       this.remove();
       return;
@@ -841,18 +867,33 @@ export class SingleDeployComponent {
           this.submitted = false;
           return;
         }
-        this.submitted = true
+        this.submitted = true;
+
+        if (!this.showDependencies) {
+          this.activeModal.close();
+          sessionStorage.setItem('backgroundOperationInProgress', 'true');
+        }
+
         this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
           next: () => {
-            this.activeModal.close();
+            if (this.showDependencies) {
+              this.activeModal.close();
+            } else {
+              sessionStorage.removeItem('backgroundOperationInProgress');
+            }
           },
           error: () => {
             this.submitted = false;
-            this.activeModal.close();
+            if (!this.showDependencies) {
+              sessionStorage.removeItem('backgroundOperationInProgress');
+            }
           }
         });
       }).catch(() => {
       this.submitted = false;
+      if (this.showDependencies) {
+        sessionStorage.removeItem('backgroundOperationInProgress');
+      }
     });
   }
 
@@ -888,11 +929,26 @@ export class SingleDeployComponent {
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.submitted = true;
     this.ref.detectChanges();
+
+    if (!this.showDependencies) {
+      this.activeModal.close();
+      sessionStorage.setItem('backgroundOperationInProgress', 'true');
+    }
+
     this.coreService.post('inventory/release', obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        if (this.showDependencies) {
+          this.activeModal.close();
+        } else {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
       },
-      error: () => this.submitted = false
+      error: () => {
+        this.submitted = false;
+        if (!this.showDependencies) {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
+      }
     });
   }
 
@@ -994,11 +1050,26 @@ export class SingleDeployComponent {
     const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
     this.submitted = true
     this.ref.detectChanges();
+
+    if (!this.showDependencies) {
+      this.activeModal.close();
+      sessionStorage.setItem('backgroundOperationInProgress', 'true');
+    }
+
     this.coreService.post(releaseURL, obj).subscribe({
       next: () => {
-        this.activeModal.close();
+        if (this.showDependencies) {
+          this.activeModal.close();
+        } else {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
       },
-      error: () => this.submitted = false
+      error: () => {
+        this.submitted = false;
+        if (!this.showDependencies) {
+          sessionStorage.removeItem('backgroundOperationInProgress');
+        }
+      }
     });
 
   }
@@ -1187,41 +1258,45 @@ export class SingleDeployComponent {
     }
   }
 
-  private getDependencies(): void {
-    const configurations = [{
-      name: this.data.name,
-      type: this.data.objectType || this.data.type
-    }];
+  private getDependencies(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const configurations = [{
+        name: this.data.name,
+        type: this.data.objectType || this.data.type
+      }];
 
-    let operationType = 'DEPLOY';
+      let operationType = 'DEPLOY';
 
-    if (this.isRevoke) {
-      operationType = 'REVOKE';
-    } else if (this.operation === 'recall') {
-      operationType = 'RECALL';
-    } else if (this.releasable) {
-      operationType = 'RELEASE';
-    } else if (this.isRemoved) {
-      operationType = 'REMOVE';
-    }
-
-    const requestBody = {
-      configurations: configurations,
-      operationType: operationType
-    };
-
-    this.coreService.post('inventory/dependencies', requestBody).subscribe({
-      next: (res: any) => {
-        if (res.requestedItems && res.requestedItems.length > 0) {
-          this.dependencies = res;
-          this.updateNodeDependencies(res);
-          this.prepareObject(res);
-        }
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
+      if (this.isRevoke) {
+        operationType = 'REVOKE';
+      } else if (this.operation === 'recall') {
+        operationType = 'RECALL';
+      } else if (this.releasable) {
+        operationType = 'RELEASE';
+      } else if (this.isRemoved) {
+        operationType = 'REMOVE';
       }
+
+      const requestBody = {
+        configurations: configurations,
+        operationType: operationType
+      };
+
+      this.coreService.post('inventory/dependencies', requestBody).subscribe({
+        next: (res: any) => {
+          if (res.requestedItems && res.requestedItems.length > 0) {
+            this.dependencies = res;
+            this.updateNodeDependencies(res);
+            this.prepareObject(res);
+          }
+          this.loading = false;
+          resolve();
+        },
+        error: (err) => {
+          this.loading = false;
+          reject(err);
+        }
+      });
     });
   }
 
@@ -3681,7 +3756,6 @@ export class DeployComponent {
   }
 
   getJSObject(): void {
-    console.log(">>>")
     this.object.store = {draftConfigurations: [], deployConfigurations: []};
     this.object.deleteObj = {deployConfigurations: []};
     const self = this;
@@ -6063,7 +6137,7 @@ export class ExportComponent {
     let selectFolder = true;
     if (this.exportType && this.exportType !== 'CONTROLLER' && this.exportType !== 'DAILYPLAN' && this.exportType !== 'BOTH') {
       selectFolder = false;
-    } else if (this.exportObj.exportType !== 'folders') {
+    } else if (this.exportObj.exportType !== 'folders' ) {
       selectFolder = false;
     }
 
@@ -7395,7 +7469,7 @@ export class RepositoryComponent {
                   const checkedNodes = this.collectCheckedObjects(this.nodes);
 
                   if (checkedNodes.length > 0) {
-                    this.getDependencies(checkedNodes, this.nodes[0]);
+                    this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
                   }
                   this.ref.detectChanges();
                   this.nodes = [...this.nodes];
@@ -7566,7 +7640,7 @@ export class RepositoryComponent {
 
           const checkedNodes = this.collectCheckedObjects(this.nodes);
           if (checkedNodes.length > 0) {
-            this.getDependencies(checkedNodes, this.nodes[0]);
+            this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
           }
 
           this.cdr.detectChanges();
@@ -7780,7 +7854,7 @@ export class RepositoryComponent {
         const checkedNodes = this.collectCheckedObjects(this.nodes);
         if (checkedNodes.length > 0) {
           this.loading = true;
-          this.getDependencies(checkedNodes, this.nodes[0]);
+          this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
         }
       }, true);
     } else {
@@ -7801,7 +7875,7 @@ export class RepositoryComponent {
         const checkedNodes = this.collectCheckedObjects(this.nodes);
         if (checkedNodes.length > 0) {
           this.loading = true;
-          this.getDependencies(checkedNodes, this.nodes[0]);
+          this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
         }
       }, true);
     }
@@ -7952,8 +8026,19 @@ export class RepositoryComponent {
     return checkedNodes;
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     this.submitted = true;
+
+    if (this.showDependencies && this._dependenciesPromise) {
+      try {
+        await this._dependenciesPromise;
+      } catch (error) {
+        console.error('Error loading dependencies:', error);
+        this.submitted = false;
+        return;
+      }
+    }
+
     if (this.link) {
       this.storeLinking()
       return;
@@ -8051,10 +8136,25 @@ export class RepositoryComponent {
         this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
       obj.category = this.category;
+
+      if (!this.showDependencies) {
+        this.activeModal.close();
+        sessionStorage.setItem('backgroundOperationInProgress', 'true');
+      }
+
       this.coreService.post('inventory/repository/' + this.operation, obj).subscribe({
         next: (res) => {
-          this.activeModal.close(res);
-        }, error: () => this.submitted = false
+          if (this.showDependencies) {
+            this.activeModal.close(res);
+          } else {
+            sessionStorage.removeItem('backgroundOperationInProgress');
+          }
+        }, error: () => {
+          this.submitted = false;
+          if (!this.showDependencies) {
+            sessionStorage.removeItem('backgroundOperationInProgress');
+          }
+        }
       });
     } else {
       this.submitted = false;
