@@ -46,6 +46,15 @@
             </nz-radio-group>
           </div>
         </div>
+
+        @if (dependencyMode !== 'none') {
+          <div class="form-group row">
+            <label class="col-md-3" translate>inventory.label.showDependencies</label>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
+            </div>
+          </div>
+        }
       }
 
       <div class="row">
@@ -111,7 +120,7 @@
               </div>
             </div>
 
-            @if (node.origin.dependencies) {
+            @if (showDependencies && node.origin.dependencies) {
               <div style="width: 400px">
                 @for (filteredDeps of getFilteredNodeDependencies(node); track filteredDeps) {
                   <div class="dependencies-list m-l-20 m-t-xs">
@@ -230,6 +239,72 @@
 
         </div>
       </div>
+
+            @if (showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
+        <div class="form-group row m-t-md">
+          <div class="col-md-12">
+            <i class="cursor text-16 fa"
+               [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
+               (click)="toggleAllRelatedCollapse()"></i>
+            <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+
+            @if (isRelatedCollapsed) {
+              <div class="m-t-sm m-l-sm">
+                @for (objectType of relatedObjectTypes; track objectType) {
+                  <ng-container>
+                    @if (getFilteredRelatedObjects(objectType)?.length) {
+                      <div class="m-t-sm">
+                        <i class="cursor text-16 fa"
+                           [ngClass]="{'fa-caret-right': !relatedCollapsed[objectType], 'fa-caret-down': relatedCollapsed[objectType]}"
+                           (click)="toggleRelatedCollapse(objectType)"></i>
+                        <label class="m-l-sm font-600 cursor">
+                          <label nz-checkbox
+                                 [(ngModel)]="selectAllRelated[objectType]"
+                                 [name]="'checkbox-related-all-' + objectType"
+                                 (ngModelChange)="toggleAllRelated(objectType, $event)">
+                            @if (!isCustomIcon(objectType)) {
+                              <span class="icon-color">
+                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                              </span>
+                            }
+                            @if (isCustomIcon(objectType)) {
+                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                            }
+                            {{ getObjectTypeLabel(objectType) | translate }}
+                          </label>
+                        </label>
+
+                        @if (relatedCollapsed[objectType]) {
+                          <div class="m-t-sm m-l-md">
+                            @for (obj of getFilteredRelatedObjects(objectType); track obj.id) {
+                              <div>
+                                <label nz-checkbox
+                                       [(ngModel)]="obj.selected"
+                                       [name]="'checkbox-related-' + obj.path"
+                                       [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}"
+                                       (ngModelChange)="updateParentCheckboxRelated(objectType)" [nz-tooltip]="getRelatedParentTooltip(obj.id)"
+                                       nzTooltipPlacement="right">
+                                        <span [ngClass]="{
+                                            'fa-circle-o': !obj.valid,
+                                            'fa-circle dark-blue': obj.deployed || obj.released
+                                        }" class="fa fa-check-circle-o orange text-xs"></span>
+                                  {{ getDisplayName(obj.path) }}
+                                </label>
+                              </div>
+                            }
+
+                          </div>
+                        }
+                      </div>
+                    }
+                  </ng-container>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
     </div>
     @if (nodes.length===0 && !loading) {
       <div class="m-t-md">

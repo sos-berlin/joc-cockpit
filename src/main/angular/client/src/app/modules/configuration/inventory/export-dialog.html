@@ -630,38 +630,44 @@
                             <label (click)="toggleAffectedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
                             @if (affectedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
-                                @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
-                                  @if (getObjectsByType(filteredDeps.referencedBy, objectType)?.length) {
-                                    <div class="m-t-sm">
-                                      <label>
-                                        @if (!isCustomIcon(objectType)) {
-                                          <span class="icon-color">
-                                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                                          </span>
+                                @for (objectType of getUniqueObjectTypes(filteredDeps?.referencedBy); track objectType) {
+                                  <ng-container>
+                                    @if (getObjectsByType(filteredDeps?.referencedBy, objectType)?.length) {
+                                      <div class="m-t-sm">
+                                        <ng-container>
+                                          <label>
+                                            @if (!isCustomIcon(objectType)) {
+                                              <span class="icon-color">
+                                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                              </span>
+                                            }
+                                            @if (isCustomIcon(objectType)) {
+                                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                            }
+                                            {{ getObjectTypeLabel(objectType) | translate }}
+                                          </label>
+                                        </ng-container>
+                                        @if (affectedCollapsed[objectType]) {
+                                          <div class="m-t-sm m-l-md">
+                                            @for (obj of getObjectsByType(filteredDeps?.referencedBy, objectType); track obj) {
+                                              <div>
+                                                <ng-container>
+                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                                                         [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                                    <span [ngClass]="{
+                                                        'fa-circle-o': !obj.valid,
+                                                        'fa-circle dark-blue': obj.deployed || obj.released
+                                                    }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                    {{ getDisplayName(obj.path) }}
+                                                  </label>
+                                                </ng-container>
+                                              </div>
+                                            }
+                                          </div>
                                         }
-                                        @if (isCustomIcon(objectType)) {
-                                          <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                                        }
-                                        {{ getObjectTypeLabel(objectType) | translate }}
-                                      </label>
-
-                                      @if (affectedCollapsed[objectType]) {
-                                        <div class="m-t-sm m-l-md">
-                                          @for (obj of getObjectsByType(filteredDeps.referencedBy, objectType); track obj.path) {
-                                            <div>
-                                              <label>
-                                                <span [ngClass]="{
-                                                    'fa-circle-o': !obj.valid,
-                                                    'fa-circle dark-blue': obj.deployed || obj.released
-                                                }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                {{ getDisplayName(obj.path) }}
-                                              </label>
-                                            </div>
-                                          }
-                                        </div>
-                                      }
-                                    </div>
-                                  }
+                                      </div>
+                                    }
+                                  </ng-container>
                                 }
                               </div>
                             }
@@ -674,38 +680,44 @@
                             <label (click)="toggleReferencedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
                             @if (referencedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
-                                @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
-                                  @if (getObjectsByType(filteredDeps.references, objectType)?.length) {
-                                    <div class="m-t-sm">
-                                      <label>
-                                        @if (!isCustomIcon(objectType)) {
-                                          <span class="icon-color">
-                                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                                          </span>
+                                @for (objectType of getUniqueObjectTypes(filteredDeps?.references); track objectType) {
+                                  <ng-container>
+                                    @if (getObjectsByType(filteredDeps?.references, objectType)?.length) {
+                                      <div class="m-t-sm">
+                                        <ng-container>
+                                          <label>
+                                            @if (!isCustomIcon(objectType)) {
+                                              <span class="icon-color">
+                                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                              </span>
+                                            }
+                                            @if (isCustomIcon(objectType)) {
+                                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                            }
+                                            {{ getObjectTypeLabel(objectType) | translate }}
+                                          </label>
+                                        </ng-container>
+                                        @if (referencedCollapsed[objectType]) {
+                                          <div class="m-t-sm m-l-md">
+                                            @for (obj of getObjectsByType(filteredDeps?.references, objectType); track obj) {
+                                              <div>
+                                                <ng-container>
+                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
+                                                         [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
+                                                    <span [ngClass]="{
+                                                        'fa-circle-o': !obj.valid,
+                                                        'fa-circle dark-blue': obj.deployed || obj.released
+                                                    }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                    {{ getDisplayName(obj.path) }}
+                                                  </label>
+                                                </ng-container>
+                                              </div>
+                                            }
+                                          </div>
                                         }
-                                        @if (isCustomIcon(objectType)) {
-                                          <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                                        }
-                                        {{ getObjectTypeLabel(objectType) | translate }}
-                                      </label>
-
-                                      @if (referencedCollapsed[objectType]) {
-                                        <div class="m-t-sm m-l-md">
-                                          @for (obj of getObjectsByType(filteredDeps.references, objectType); track obj.path) {
-                                            <div>
-                                              <label>
-                                                <span [ngClass]="{
-                                                    'fa-circle-o': !obj.valid,
-                                                    'fa-circle dark-blue': obj.deployed || obj.released
-                                                }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                {{ getDisplayName(obj.path) }}
-                                              </label>
-                                            </div>
-                                          }
-                                        </div>
-                                      }
-                                    </div>
-                                  }
+                                      </div>
+                                    }
+                                  </ng-container>
                                 }
                               </div>
                             }
@@ -713,9 +725,9 @@
                         }
                       </div>
                     </div>
-                  }
+                    }
                 }
-              }
+            }
             </ng-template>
           </div>
         </div>
