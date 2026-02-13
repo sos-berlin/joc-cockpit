@@ -3698,6 +3698,7 @@ export class DeployComponent {
 
   filterList(): void {
     if (this.object.deployType === 'changes') {
+      this.relatedObjectTypes = []
       if (this.changesNodes.length) {
         this.nodes = [...this.changesNodes]
       }
@@ -5724,6 +5725,7 @@ export class ExportComponent {
 
   filterList(isChecked = true): void {
     if (this.exportObj.exportType === 'changes') {
+      this.relatedObjectTypes = []
       if (this.changesNodes.length) {
         this.nodes = [...this.changesNodes]
       }
@@ -7053,12 +7055,12 @@ export class RepositoryComponent {
   private relatedParentMap = new Map<number, Set<number>>();
   private recursiveDependenciesCache: any = null;
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
-  private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   private checkedObject = new Set<string>();
   isPathDisplay = false;
   showDependencies = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private _deployablesReleasablesPromise: Promise<void> | null = null;
+  private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef, private translate: TranslateService) {
@@ -7579,6 +7581,7 @@ export class RepositoryComponent {
 
   filterList(): void {
     if (this.object.type === 'changes') {
+      this.relatedObjectTypes = []
       if (this.changesNodes.length) {
         this.nodes = [...this.changesNodes]
       }
@@ -7906,7 +7909,7 @@ export class RepositoryComponent {
   handleRecursive(): void {
     this.ref.detectChanges();
 
-    if (this.exportObj.isRecursive) {
+    if (this.exportObj.isRecursive && this.operation !== 'update'&& this.operation !== 'delete') {
       if (this.recursiveDependenciesCache) {
         this.updateNodeDependencies(this.recursiveDependenciesCache, new Set(), true);
         this.prepareObject(this.recursiveDependenciesCache);
@@ -7967,9 +7970,13 @@ export class RepositoryComponent {
     const checkedNodes = this.collectCheckedNodes(node);
     if (checkedNodes.length > 0) {
       if (node.isChecked) {
-        this._dependenciesPromise = this.getDependencies(checkedNodes, node, true);
-      } else {
-        this._dependenciesPromise = this.getDependencies(checkedNodes, node, false);
+        if(this.operation !== 'update'&& this.operation !== 'delete') {
+          this._dependenciesPromise = this.getDependencies(checkedNodes, node, true);
+        }
+        } else {
+        if(this.operation !== 'update'&& this.operation !== 'delete') {
+          this._dependenciesPromise = this.getDependencies(checkedNodes, node, false);
+        }
       }
     } else {
       this.clearDependenciesForNode(node);
@@ -8294,17 +8301,45 @@ export class RepositoryComponent {
       this.nodes.forEach(node => {
         this.handleDependenciesForGit(node, obj);
       });
-      if (this.object.type !== 'changes') {
-        this.handleAffectedItemsForGit(obj)
-      }
+      this.handleAffectedItemsForGit(obj);
+
       if (this.comments.comment) {
         obj.auditLog = {};
         this.coreService.getAuditLogObj(this.comments, obj.auditLog);
       }
+
+      if (!this.showDependencies) {
+        this.activeModal.close();
+        sessionStorage.setItem('backgroundOperationInProgress', 'true');
+      }
+      const isAllConfigsEmpty = (configObj: any) => {
+        if (!configObj) return true;
+
+        return (!configObj.releasedConfigurations?.length &&
+          !configObj.deployConfigurations?.length &&
+          !configObj.draftConfigurations?.length);
+      };
+
+      if (isAllConfigsEmpty(obj.local) && isAllConfigsEmpty(obj.rollout)) {
+        this.submitted == true
+        return;
+      }
       this.coreService.post('inventory/repository/store', obj).subscribe({
         next: () => {
-          this.activeModal.close();
-        }, error: () => this.submitted = false
+          if (this.showDependencies) {
+            this.activeModal.close();
+          } else {
+            sessionStorage.removeItem('backgroundOperationInProgress');
+          }
+        },
+        error: () => {
+          this.submitted = false;
+          if (!this.showDependencies) {
+            sessionStorage.removeItem('backgroundOperationInProgress');
+          } else {
+            this.activeModal.close();
+          }
+        }
       });
     } else {
       this.submitted = false;
@@ -8551,6 +8586,9 @@ export class RepositoryComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node: any, isChecked = false): Promise<void> {
+    if (this.operation === 'update'|| this.operation === 'delete') {
+      return Promise.resolve();
+    }
     return new Promise(async (resolve, reject) => {
       try {
 
@@ -9078,30 +9116,28 @@ export class RepositoryComponent {
     return dependencies;
   }
 
-  getFilteredNodeDependencies(node: any): { references: any[], referencedBy: any[] }[] {
-
-    const nodeOrigin = node.origin || node;
-
-    if (!nodeOrigin || !nodeOrigin.dependencies) {
-      return [{references: [], referencedBy: []}];
+  getFilteredNodeDependencies(node: any): { references: any[], referencedBy: any[] } {
+    if (!node || !node.dependencies) {
+      return {references: [], referencedBy: []};
     }
 
-    const cacheKey = this.dependencyMode;
-    const cached = this.filteredDepsCache.get(nodeOrigin);
 
-    if (cached && (nodeOrigin as any).lastFilterMode === cacheKey) {
-      return [cached];
+    const cacheKey = `${this.dependencyMode}`;
+
+    const cached = this._filteredDepsCache.get(node);
+    if (cached && node._lastFilterMode === cacheKey) {
+      return cached;
     }
 
     const result = {
-      references: this.filterDependenciesByMode(nodeOrigin.dependencies.references || []),
-      referencedBy: this.filterDependenciesByMode(nodeOrigin.dependencies.referencedBy || [])
+      references: this.filterDependenciesByMode(node.dependencies.references || []),
+      referencedBy: this.filterDependenciesByMode(node.dependencies.referencedBy || [])
     };
 
-    (nodeOrigin as any).lastFilterMode = cacheKey;
-    this.filteredDepsCache.set(nodeOrigin, result);
+    node._lastFilterMode = cacheKey;
+    this._filteredDepsCache.set(node, result);
 
-    return [result];
+    return result;
   }
 
   private clearFilterModeTracking(nodes: any[]): void {
@@ -9117,7 +9153,7 @@ export class RepositoryComponent {
 
   onDependencyModeChange(): void {
 
-    this.filteredDepsCache = new WeakMap();
+    this._filteredDepsCache = new WeakMap();
     this.clearFilterModeTracking(this.nodes);
 
     if (this.dependencies) {
@@ -10982,12 +11018,14 @@ export class PublishChangeModalComponent {
       next: (res) => {
         if (res.changes) {
           this.data = res.changes;
-          this.nodes = this.prepareGroupedTree(this.data[0].configurations);
-          const checkedNodes = this.collectCheckedObjects(this.nodes);
-          if (checkedNodes.length > 0) {
-            this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes);
+          if(this.data){
+            this.nodes = this.prepareGroupedTree(this.data[0].configurations);
+            const checkedNodes = this.collectCheckedObjects(this.nodes);
+            if (checkedNodes.length > 0) {
+              this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes);
+            }
+            this.nodes = [...this.nodes];
           }
-          this.nodes = [...this.nodes];
         }
       },
       error: () => {
