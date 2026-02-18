@@ -1937,6 +1937,7 @@
     "label.renameGroup": "グループ名変更",
     "label.includeDependencies": "依存関係を含む",
     "label.showDependencies": "Show Dependencies",
+    "label.showRelatedObjects": "Show Related Objects",
     "label.deployType": "配置タイプ",
     "label.high": "高",
     "label.aboveNormal": "高中",
