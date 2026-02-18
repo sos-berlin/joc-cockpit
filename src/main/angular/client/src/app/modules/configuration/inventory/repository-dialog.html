@@ -128,6 +128,15 @@
             </div>
           </div>
         }
+
+        @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies) {
+          <div class="form-group row">
+            <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+            <div class="col-md-6">
+              <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
+            </div>
+          </div>
+        }
         @if (nodes.length > 0 && object.type === 'individual') {
           <div class="form-group row">
             <div class="col-md-3">
@@ -610,7 +619,7 @@
           </div>
         }
       </div>
-      @if (showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
+      @if (showRelatedObjects && showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
         <div class="form-group row m-t-md">
           <div class="col-md-12">
             <i class="cursor text-16 fa"
@@ -671,6 +680,16 @@
                 }
               </div>
             }
+          </div>
+        </div>
+      }
+      @if (showRelatedObjects && showDependencies && relatedObjectTypes.length == 0 && dependencyMode !== 'none') {
+        <div class="form-group row m-t-md">
+          <div class="col-md-12">
+            <label class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+              <div class="m-t-md">
+                <app-empty-data></app-empty-data>
+              </div>
           </div>
         </div>
       }

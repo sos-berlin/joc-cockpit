@@ -1937,6 +1937,7 @@
     "label.renameGroup": "Renommer Groupe",
     "label.includeDependencies": "Inclut les Dépendances",
     "label.showDependencies": "Show Dependencies",
+    "label.showRelatedObjects": "Show Related Objects",
     "label.deployType": "Type de Déploiement",
     "label.high": "Supérieure",
     "label.aboveNormal": "Supérieure à la normale",

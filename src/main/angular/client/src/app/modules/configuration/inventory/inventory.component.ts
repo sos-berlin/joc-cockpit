@@ -509,6 +509,7 @@ export class SingleDeployComponent {
   relatedParentMap: Map<number, Set<number>> = new Map();
   isPathDisplay = false;
   showDependencies = false;
+  showRelatedObjects = false;
   private _dependenciesPromise: Promise<void> | null = null;
 
   private _filteredDepsCache: Map<string, any> = new Map();
@@ -2016,6 +2017,7 @@ export class DeployComponent {
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   useDependencies = true;
   showDependencies = false;
+  showRelatedObjects = false;
 
   affectedObjectsByType: { [key: string]: any[] } = {};
   affectedObjectTypes: string[] = [];
@@ -4769,6 +4771,7 @@ export class ExportComponent {
   ]
   useDependencies = false;
   showDependencies = false;
+  showRelatedObjects = false;
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
@@ -7058,6 +7061,7 @@ export class RepositoryComponent {
   private checkedObject = new Set<string>();
   isPathDisplay = false;
   showDependencies = false;
+  showRelatedObjects = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private _deployablesReleasablesPromise: Promise<void> | null = null;
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
@@ -10970,6 +10974,7 @@ export class PublishChangeModalComponent {
 
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   showDependencies = false;
+  showRelatedObjects = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
 

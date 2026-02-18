@@ -133,6 +133,15 @@
           </div>
         }
 
+        @if (dependencyMode !== 'none' && showDependencies) {
+          <div class="form-group row">
+            <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+            <div class="col-md-6">
+              <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects" />
+            </div>
+          </div>
+        }
+
         @if (isRemoved && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)) {
           <div class="m-b-sm opacity-0_5">
             <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
@@ -372,7 +381,7 @@
             </div>
           }
         <!-- Related Objects Section -->
-        @if (showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none' && getFilteredRelatedObjectsCount() > 0) {
+        @if (showRelatedObjects && showDependencies && relatedObjectTypes.length > 0 && dependencyMode !== 'none' && getFilteredRelatedObjectsCount() > 0) {
           <div class="col-md-12 m-t-md">
             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
                (click)="toggleAllRelatedCollapse()"></i>
@@ -435,6 +444,16 @@
                 }
               </div>
             }
+          </div>
+        }
+        @if (showRelatedObjects && showDependencies && relatedObjectTypes.length == 0 && dependencyMode !== 'none' && getFilteredRelatedObjectsCount() == 0) {
+          <div class="form-group row m-t-md">
+            <div class="col-md-12">
+              <label class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+                <div class="m-t-md">
+                  <app-empty-data></app-empty-data>
+                </div>
+            </div>
           </div>
         }
         </div>
