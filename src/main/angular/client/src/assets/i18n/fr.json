@@ -1724,6 +1724,7 @@
     "label.systemMonitorEvent": "Avertissements et Erreurs du Système",
     "label.notification": "Alertes",
     "label.pendingRequests": "Demandes d'Autorisation en attente",
+    "label.notes": "Notes",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "À propos de JS7",
     "button.js7Download": "Télécharger JS7",

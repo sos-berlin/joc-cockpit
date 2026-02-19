@@ -18,6 +18,19 @@
     <!-- / brand -->
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
+      <ng-template #notesEventTemp>
+        <div class="pos-abt" style="top:6px;right: 16px">
+          <a (click)="clearNotesEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+        </div>
+        <div class="notification">
+          @for(notesNotification of notesNotificationList; track notesNotification.id) {
+            <div class="cursor primary-text-hover-color" (click)="openModalNoteNoti(notesNotification)" [style.color]="coreService.getColorByNoteSeverity(notesNotification.severity)">
+              <span>{{ notesNotification.objectType }}</span> - <span>{{ notesNotification.name }}</span>
+            </div>
+          }
+        </div>
+      </ng-template>
+
       <ng-template #approvalEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
           <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
@@ -105,6 +118,19 @@
           }
         </div>
       </ng-template>
+      @if (notesEvent.numOfUnreadNotes > 0) {
+        <li class="nav-item">
+            <a class="nav-link pointer text-warning" style="top: 3px">
+              <span (click)="getNotesList()" [nzPopoverContent]="notesEventTemp" class="p-l-xs cursor"
+                    nz-popover nzPopoverPlacement="bottomRight"
+                    nzPopoverTitle="{{'info.label.notes' | translate}}"
+                    nzPopoverTrigger="click">
+                <i nz-icon nzType="paper-clip" nzTheme="outline" class="text-18 t-1 pos-rel" style="line-height: 0"></i>
+                <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ notesEvent.numOfUnreadNotes }}</i>
+              </span>
+            </a>
+        </li>
+      }
       @if (approvalEvent.numOfPendingApprovals > 0 && (isApprover)) {
       <li class="nav-item">
           <a class="nav-link pointer text-warning" style="top: 3px">

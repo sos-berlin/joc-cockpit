@@ -23,7 +23,8 @@
              nzType="paper-clip"
              nzTheme="outline"
              class="cur-point text-16 m-r-sm"
-             [style.color]="coreService.getColorByNoteSeverity(report?.hasNote)"></i>
+             [ngClass]="{ 'blink-icon': report?.hasNote?.notified }"
+             [style.color]="coreService.getColorByNoteSeverity(report?.hasNote?.severity)"></i>
           </span>
           @if (!isTrash) {
             <div class="inline pull-right">

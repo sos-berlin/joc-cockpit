@@ -302,7 +302,8 @@
                                nzType="paper-clip"
                                nzTheme="outline"
                                class="cur-point text-14 p-0"
-                               [style.color]="coreService.getColorByNoteSeverity(lock?.hasNote)"></i>
+                               [ngClass]="{ 'blink-icon': lock?.hasNote?.notified }"
+                               [style.color]="coreService.getColorByNoteSeverity(lock?.hasNote?.severity)"></i>
                             @if (permission.joc && permission.joc.inventory.view && !isPathDisplay) {
                               <i (click)="coreService.navToInventoryTab(lock.path, 'LOCK');"
                                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
