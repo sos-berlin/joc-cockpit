@@ -23,7 +23,8 @@
             nzType="paper-clip"
             nzTheme="outline"
             class="cur-point text-16 m-r-sm"
-            [style.color]="coreService.getColorByNoteSeverity(script?.hasNote)"></i>
+            [ngClass]="{ 'blink-icon': script?.hasNote?.notified }"
+            [style.color]="coreService.getColorByNoteSeverity(script?.hasNote?.severity)"></i>
           </span>
           @if (!isTrash) {
             <div class="inline pull-right">

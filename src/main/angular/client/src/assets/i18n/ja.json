@@ -1724,6 +1724,7 @@
     "label.systemMonitorEvent": "System Monitor Event",
     "label.notification": "Notification",
     "label.pendingRequests": "保留承認依頼",
+    "label.notes": "Notes",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "JS7について",
     "button.js7Download": "JS7ダウンロード",

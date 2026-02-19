@@ -636,7 +636,8 @@
                                    nzType="paper-clip"
                                    nzTheme="outline"
                                    class="cur-point text-14 p-0"
-                                   [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote)"></i>
+                                   [ngClass]="{ 'blink-icon': workflow?.hasNote?.notified }"
+                                   [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote?.severity)"></i>
                                 <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
                                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="workflow.title"></span>
                                 @if (workflow.workflowTags?.length > 0) {
@@ -994,7 +995,8 @@
                                nzType="paper-clip"
                                nzTheme="outline"
                                class="cur-point text-14 p-0"
-                               [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote)"></i>
+                               [ngClass]="{ 'blink-icon': workflow?.hasNote?.notified }"
+                               [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote?.severity)"></i>
                             @if (permission.joc && permission.joc.inventory.view && !isPathDisplay) {
                               <i (click)="coreService.navToInventoryTab(workflow.path, 'WORKFLOW');"
                                  class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>

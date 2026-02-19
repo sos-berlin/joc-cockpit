@@ -8,6 +8,7 @@ import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
 import {AboutModalComponent} from '../info-menu/info-menu.component';
 import { KioskService } from '../../services/kiosk.service';
+import { NoteComponent } from '../notes/note.component';
 
 @Component({
   standalone: false,
@@ -33,6 +34,12 @@ export class HeaderComponent {
   problemEvent: any = {};
   approvalEvent: any = {};
   requestorEvent: any = {};
+  notesEvent: any = {};
+  notesNotificationList: any = [];
+
+  modalWidth = 800;
+  modalHeight = 600;
+
   isApprover: any = false;
   isRequestor: any = false;
   subscription1: Subscription;
@@ -144,6 +151,11 @@ export class HeaderComponent {
       sessionStorage.removeItem('$SOS$NODELOSS');
     }, 250);
   }
+  clearNotesEvent(): void {
+    setTimeout(() => {
+      this.notesEvent = {};
+    }, 250);
+  }
   clearApprovalEvent(): void {
     setTimeout(() => {
       this.approvalEvent = {};
@@ -186,6 +198,7 @@ export class HeaderComponent {
     }
     this.router.navigate(['/monitor']).then();
   }
+
   navToApprovalsApp(index: number, data: any): void {
     let filter = this.coreService.getApprovalsTab();
     filter.tabIndex = index;
@@ -344,6 +357,10 @@ export class HeaderComponent {
             for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
                           this.requestorEvent = res.eventsFromApprovalRequests[j];
                         }
+            for (let j = 0; j < res.eventsFromNotes.length; j++) {
+                          this.notesEvent = res.eventsFromNotes[j];
+                        }
+
 
             for (let j = 0; j < res.eventsFromOrderMonitoring.length; j++) {
               this.colorOfJOCEvent = res.eventsFromOrderMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
@@ -397,5 +414,36 @@ export class HeaderComponent {
     } else {
       dom.classList.add('in');
     }
+  }
+
+  getNotesList() {
+    const obj = {};
+    this.coreService.post('note/notifications', obj).subscribe({
+        next: (res: any) => {
+          this.notesNotificationList = res.notifications;
+        }
+        , error: (err) => {}
+    });
+
+  }
+
+  openModalNoteNoti(noti: any) {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: this.modalWidth,
+        height: this.modalHeight,
+        objectName: noti.name,
+        objectType: noti.objectType,
+        objectPath: noti.path
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: {width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px', minHeight: '200px'}
+    });
   }
 }

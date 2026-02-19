@@ -302,7 +302,8 @@
              nzType="paper-clip"
              nzTheme="outline"
              class="cur-point text-16 m-r-sm"
-             [style.color]="coreService.getColorByNoteSeverity(schedule?.hasNote)"></i>
+             [ngClass]="{ 'blink-icon': schedule?.hasNote?.notified }"
+             [style.color]="coreService.getColorByNoteSeverity(schedule?.hasNote?.severity)"></i>
         </span>
         <div class="inline pull-right">
           @if (!isTrash) {

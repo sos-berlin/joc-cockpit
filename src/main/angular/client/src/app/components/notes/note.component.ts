@@ -77,6 +77,7 @@ export class NoteComponent {
   permission: any = {};
   objectName: string = '';
   objectType: string = 'WORKFLOW';
+  objectPath: string = '';
 
   colorPresets: ColorPreset[] = [
     {
@@ -130,6 +131,7 @@ export class NoteComponent {
     if(this.modalData.height) this.height = this.modalData.height;
     if(this.modalData.objectName) this.objectName = this.modalData.objectName;
     if(this.modalData.objectType) this.objectType = this.modalData.objectType;
+    if(this.modalData.objectPath) this.objectPath = this.modalData.objectPath;
     this.currentUser = {
       userName: this.authService.currentUserData || 'unknown'
     };

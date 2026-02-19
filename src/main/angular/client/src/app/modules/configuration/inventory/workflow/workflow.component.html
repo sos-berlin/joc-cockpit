@@ -58,7 +58,8 @@
                        nzType="paper-clip"
                        nzTheme="outline"
                        class="cur-point text-16 m-r-sm"
-                       [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote)"></i>
+                       [ngClass]="{ 'blink-icon': workflow?.hasNote?.notified }"
+                       [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote?.severity)"></i>
                   </div>
                 </div>
               }
