@@ -282,7 +282,9 @@
                       <div class="m-t-sm">
                         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
                            (click)="toggleAffectedCollapse(objectType)"></i>
-                        <label class="m-l-sm">
+                        <label class="m-l-sm" nz-checkbox [(ngModel)]="affectedSharedCheckboxState['single' + objectType].checked" 
+                          [nzIndeterminate]="affectedSharedCheckboxState['single' + objectType].indeterminate" 
+                          [name]="'checkbox-affected-single-' + objectType" (ngModelChange)="onChangeParentObjTyp(objectType, $event, 'affected')">
                           @if (!isCustomIcon(objectType)) {
                             <span class="icon-color">
                               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
@@ -336,7 +338,9 @@
                         <div class="m-t-sm">
                           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[objectType], 'fa-caret-down': referencedCollapsed[objectType]}"
                              (click)="toggleReferencedCollapse(objectType)"></i>
-                          <label class="m-l-sm">
+                          <label class="m-l-sm"  nz-checkbox [(ngModel)]="referencedSharedCheckboxState['single' + objectType].checked" 
+                          [nzIndeterminate]="referencedSharedCheckboxState['single' + objectType].indeterminate" 
+                          [name]="'checkbox-referenced-single-' + objectType" (ngModelChange)="onChangeParentObjTyp(objectType, $event, 'referenced')">
                             <ng-container>
                               <label>
                                 @if (!isCustomIcon(objectType)) {
@@ -398,9 +402,10 @@
 
                         <label class="m-l-sm">
                           <label nz-checkbox
-                                 [(ngModel)]="selectAllRelated[objectType]"
+                                 [(ngModel)]="relatedSharedCheckboxState['single' + objectType].checked"
+                                 [nzIndeterminate]="relatedSharedCheckboxState['single' + objectType].indeterminate"
                                  [name]="'checkbox-all-related-' + objectType"
-                                 (ngModelChange)="toggleAllRelated(objectType, $event)">
+                                 (ngModelChange)="onChangeParentObjTyp(objectType, $event, 'related')">
                             @if (!isCustomIcon(objectType)) {
                               <span class="icon-color">
                         <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
@@ -444,16 +449,6 @@
                 }
               </div>
             }
-          </div>
-        }
-        @if (showRelatedObjects && showDependencies && relatedObjectTypes.length == 0 && dependencyMode !== 'none' && getFilteredRelatedObjectsCount() == 0) {
-          <div class="form-group row m-t-md">
-            <div class="col-md-12">
-              <label class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
-                <div class="m-t-md">
-                  <app-empty-data></app-empty-data>
-                </div>
-            </div>
           </div>
         }
         </div>

@@ -44,11 +44,13 @@
                           @for (obj of getFilteredAffectedObjects(objectType); track obj) {
                             <div>
                               <label class="m-l-sm">
+                                <i (click)="navToObj(obj.path, obj.objectType)"
+                                   class="cursor fa fa-pencil text-hover-primary p-r-xs text-11"></i>
                                 <span [ngClass]="{
                                   'fa-circle-o': !obj.valid,
                                   'fa-circle dark-blue': obj.deployed || obj.released,
                                   'opacity7': obj.syncState
-                                }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                }" class="fa fa-check-circle-o orange text-xs"></span>
                                 {{ getDisplayName(obj.path) }}
                               </label>
                             </div>
@@ -96,11 +98,13 @@
                           @for (obj of getFilteredReferencedObjects(objectType); track obj) {
                             <div>
                               <label class="m-l-sm">
+                                <i (click)="navToObj(obj.path, obj.objectType)"
+                                   class="cursor fa fa-pencil text-hover-primary p-r-xs text-11"></i>
                                 <span [ngClass]="{
                                   'fa-circle-o': !obj.valid,
                                   'fa-circle dark-blue': obj.deployed || obj.released,
                                   'opacity7': obj.syncState
-                                }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                }" class="fa fa-check-circle-o orange text-xs"></span>
                                 {{ getDisplayName(obj.path) }}
                               </label>
                             </div>
@@ -154,11 +158,13 @@
                     @for (obj of relatedObjectsByType[objectType]; track obj) {
                       <div>
                         <label class="m-l-sm">
+                          <i (click)="navToObj(obj.path, obj.objectType)"
+                                   class="cursor fa fa-pencil text-hover-primary p-r-xs text-11"></i>
                         <span [ngClass]="{
                           'fa-circle-o': !obj.valid,
                           'fa-circle dark-blue': obj.deployed || obj.released,
                           'opacity7': obj.syncState
-                        }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                        }" class="fa fa-check-circle-o orange text-xs"></span>
                           {{ getDisplayName(obj.path) }}
                         </label>
                       </div>
