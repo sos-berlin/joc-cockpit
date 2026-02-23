@@ -503,6 +503,9 @@ export class SingleDeployComponent {
   selectAllRelated: { [key: string]: boolean } = {};
   relatedCollapsed: { [key: string]: boolean } = {};
   isRelatedCollapsed: boolean = true;
+  affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  referencedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
   useDependencies = false;
   preferences: any = {};
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
@@ -1727,17 +1730,25 @@ export class SingleDeployComponent {
 
     if (objects.length === 0) {
       this.selectAllRelated[objectType] = false;
+      this.relatedSharedCheckboxState['single' + objectType] = { checked: false, indeterminate: false };
       return;
     }
 
     const enabledObjects = objects.filter((obj: any) => !obj.disabled);
+    const totalEnabled = enabledObjects.length;
+    const selectedCount = enabledObjects.filter((obj: any) => obj.selected).length;
 
     if (enabledObjects.length === 0) {
-
       this.selectAllRelated[objectType] = objects.every((obj: any) => obj.selected);
+      this.relatedSharedCheckboxState['single' + objectType] = { checked: false, indeterminate: false };
     } else {
-
       this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
+      const allSelected = selectedCount === totalEnabled;
+      const someSelected = selectedCount > 0 && selectedCount < totalEnabled;
+      this.relatedSharedCheckboxState['single' + objectType] = {
+        checked: allSelected,
+        indeterminate: someSelected
+      };
     }
 
     this.ref.detectChanges();
@@ -1746,6 +1757,17 @@ export class SingleDeployComponent {
   updateParentCheckboxAffected(objectType: string): void {
     const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
     this.selectAllAffected[objectType] = allSelected;
+
+    const objects = this.affectedObjectsByType[objectType] || [];
+    const total = objects.length;
+    const selectedCount = objects.filter(obj => obj.selected).length;
+    const allChecked = selectedCount === total && total > 0;
+    const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+    this.affectedSharedCheckboxState['single' + objectType] = {
+      checked: allChecked,
+      indeterminate: partiallySelected
+    };
 
     this.rebuildRelatedObjects();
   }
@@ -1774,6 +1796,17 @@ export class SingleDeployComponent {
   updateParentCheckboxReferenced(objectType: string): void {
     const allSelected = this.referencedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
     this.selectAllReferenced[objectType] = allSelected;
+
+    const objects = this.referencedObjectsByType[objectType] || [];
+    const total = objects.length;
+    const selectedCount = objects.filter(obj => obj.selected).length;
+    const allChecked = selectedCount === total && total > 0;
+    const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+    this.referencedSharedCheckboxState['single' + objectType] = {
+      checked: allChecked,
+      indeterminate: partiallySelected
+    };
 
     this.rebuildRelatedObjects();
   }
@@ -1885,6 +1918,67 @@ export class SingleDeployComponent {
     });
 
     this.ref.detectChanges();
+  }
+
+  onChangeParentObjTyp(objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected') {
+      const objects = this.affectedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxAffected(objectType);
+    }
+
+    if (nodeType === 'referenced') {
+      const objects = this.referencedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxReferenced(objectType);
+    }
+
+    if (nodeType === 'related') {
+      const objects = this.relatedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxRelated(objectType);
+    }
+  }
+
+  initializeSharedCheckboxState(): void {
+    const key = 'single';
+    this.affectedObjectTypes.forEach(objectType => {
+      const objects = this.affectedObjectsByType[objectType] || [];
+      const total = objects.length;
+      const selectedCount = objects.filter(obj => obj.selected).length;
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+      this.affectedSharedCheckboxState[key + objectType] = {
+        checked: allSelected,
+        indeterminate: partiallySelected
+      };
+    });
+
+    this.referencedObjectTypes.forEach(objectType => {
+      const objects = this.referencedObjectsByType[objectType] || [];
+      const total = objects.length;
+      const selectedCount = objects.filter(obj => obj.selected).length;
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+      this.referencedSharedCheckboxState[key + objectType] = {
+        checked: allSelected,
+        indeterminate: partiallySelected
+      };
+    });
   }
 
 
@@ -2023,17 +2117,20 @@ export class DeployComponent {
   affectedObjectTypes: string[] = [];
   selectAllAffected: { [key: string]: boolean } = {};
   affectedCollapsed: { [key: string]: boolean } = {};
+  affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   referencedObjectsByType: { [key: string]: any[] } = {};
   referencedObjectTypes: string[] = [];
   selectAllReferenced: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
+  referencedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   relatedObjectsByType: { [key: string]: any[] } = {};
   relatedObjectTypes: string[] = [];
   selectAllRelated: { [key: string]: boolean } = {};
   relatedCollapsed: { [key: string]: boolean } = {};
   isRelatedCollapsed: boolean = true;
+  relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   sharedCheckboxState: { [key: string]: boolean } = {};
   isPathDisplay = false;
@@ -2791,6 +2888,88 @@ export class DeployComponent {
     }
   }
 
+  isCheckParentObjectType(nodeKey: string, referencedBy: any, objectType: string = '', nodeType: string) {
+    if (objectType != '') {
+      const objectsArr = this.getObjectsByType(referencedBy, objectType);
+
+      const total = objectsArr.length;
+      const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+      if (nodeType === 'affected') {
+        this.affectedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+      if (nodeType === 'referenced') {
+        this.referencedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+    } else {
+      const uniqueObjectTypes = this.getUniqueObjectTypes(referencedBy);
+      uniqueObjectTypes.forEach(type => {
+        const objectsArr = this.getObjectsByType(referencedBy, type);
+
+        const total = objectsArr.length;
+        const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+        const allSelected = selectedCount === total && total > 0;
+        const partiallySelected = selectedCount > 0 && selectedCount < total;
+        if (nodeType === 'affected') {
+          this.affectedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+        if (nodeType === 'referenced') {
+          this.referencedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+      });
+    }
+    this.rebuildRelatedObjects();
+    this.cdRef.detectChanges();
+  }
+
+  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
+      node.origin.dependencies.referencedBy.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+    }
+
+    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
+      node.origin.dependencies.references.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+    }
+
+    if (nodeType === 'related') {
+      const objects = this.relatedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxRelated(objectType);
+    }
+  }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -3341,12 +3520,14 @@ export class DeployComponent {
   }
 
 
-  toggleAffectedCollapse(nodeKey: string): void {
+  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string): void {
+  toggleReferencedCollapse(nodeKey: string, references: any): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
 
@@ -3363,6 +3544,10 @@ export class DeployComponent {
 
     if (objects.length === 0) {
       this.selectAllRelated[objectType] = false;
+      this.relatedSharedCheckboxState[objectType] = {
+        checked: false,
+        indeterminate: false
+      };
       return;
     }
 
@@ -3374,10 +3559,20 @@ export class DeployComponent {
       this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
     }
 
+    const total = objects.length;
+    const selectedCount = objects.filter(obj => obj.selected).length;
+    const allChecked = selectedCount === total && total > 0;
+    const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+    this.relatedSharedCheckboxState[objectType] = {
+      checked: allChecked,
+      indeterminate: partiallySelected
+    };
+
     this.ref.detectChanges();
   }
 
-  onAffectedCheckboxChange(changedObj: any, objectType: string): void {
+  onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
 
 
     setTimeout(() => {
@@ -3388,10 +3583,11 @@ export class DeployComponent {
       }
 
       this.updateParentCheckboxAffected(objectType);
+      this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
     }, 0);
   }
 
-  onReferencedCheckboxChange(changedObj: any, objectType: string): void {
+  onReferencedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, references: any): void {
 
 
     setTimeout(() => {
@@ -3402,6 +3598,7 @@ export class DeployComponent {
       }
 
       this.updateParentCheckboxReferenced(objectType);
+      this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
     }, 0);
   }
 
@@ -4754,6 +4951,9 @@ export class ExportComponent {
   relatedCollapsed: { [key: string]: boolean } = {};
   isRelatedCollapsed: boolean = true;
   isPathDisplay = false;
+  affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  referencedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   private storedDependencies: any = null;
   private recursiveDependenciesCache: any = null;
@@ -5942,7 +6142,7 @@ export class ExportComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  onAffectedCheckboxChange(changedObj: any, objectType: string): void {
+  onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
 
 
     setTimeout(() => {
@@ -5953,10 +6153,11 @@ export class ExportComponent {
       }
 
       this.updateParentCheckboxAffected(objectType);
+      this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
     }, 0);
   }
 
-  onReferencedCheckboxChange(changedObj: any, objectType: string): void {
+  onReferencedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, references: any): void {
 
 
     setTimeout(() => {
@@ -5967,6 +6168,7 @@ export class ExportComponent {
       }
 
       this.updateParentCheckboxReferenced(objectType);
+      this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
     }, 0);
   }
 
@@ -5975,6 +6177,10 @@ export class ExportComponent {
 
     if (objects.length === 0) {
       this.selectAllRelated[objectType] = false;
+      this.relatedSharedCheckboxState[objectType] = {
+        checked: false,
+        indeterminate: false
+      };
       return;
     }
 
@@ -5985,6 +6191,16 @@ export class ExportComponent {
     } else {
       this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
     }
+
+    const total = objects.length;
+    const selectedCount = objects.filter(obj => obj.selected).length;
+    const allChecked = selectedCount === total && total > 0;
+    const partiallySelected = selectedCount > 0 && selectedCount < total;
+
+    this.relatedSharedCheckboxState[objectType] = {
+      checked: allChecked,
+      indeterminate: partiallySelected
+    };
 
     this.ref.detectChanges();
   }
@@ -6036,12 +6252,14 @@ export class ExportComponent {
     return this.filterDependenciesByMode(filtered);
   }
 
-  toggleAffectedCollapse(nodeKey: string): void {
+  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string): void {
+  toggleReferencedCollapse(nodeKey: string, references: any): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
   toggleAllRelated(objectType: string, isChecked: boolean): void {
@@ -6087,6 +6305,88 @@ export class ExportComponent {
     this.rebuildRelatedObjects();
   }
 
+  isCheckParentObjectType(nodeKey: string, referencedBy: any, objectType: string = '', nodeType: string) {
+    if (objectType != '') {
+      const objectsArr = this.getObjectsByType(referencedBy, objectType);
+
+      const total = objectsArr.length;
+      const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+      if (nodeType === 'affected') {
+        this.affectedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+      if (nodeType === 'referenced') {
+        this.referencedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+    } else {
+      const uniqueObjectTypes = this.getUniqueObjectTypes(referencedBy);
+      uniqueObjectTypes.forEach(type => {
+        const objectsArr = this.getObjectsByType(referencedBy, type);
+
+        const total = objectsArr.length;
+        const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+        const allSelected = selectedCount === total && total > 0;
+        const partiallySelected = selectedCount > 0 && selectedCount < total;
+        if (nodeType === 'affected') {
+          this.affectedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+        if (nodeType === 'referenced') {
+          this.referencedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+      });
+    }
+    this.rebuildRelatedObjects();
+    this.ref.detectChanges();
+  }
+
+  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
+      node.origin.dependencies.referencedBy.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+    }
+
+    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
+      node.origin.dependencies.references.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+    }
+
+    if (nodeType === 'related') {
+      const objects = this.relatedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxRelated(objectType);
+    }
+  }
 
   getIcon(objectType: string): string {
     const iconMapping = {
@@ -7065,6 +7365,9 @@ export class RepositoryComponent {
   private _dependenciesPromise: Promise<void> | null = null;
   private _deployablesReleasablesPromise: Promise<void> | null = null;
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
+  affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  referencedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef, private translate: TranslateService) {
@@ -9051,14 +9354,25 @@ export class RepositoryComponent {
     const objects = this.relatedObjectsByType[objectType];
     if (!objects || objects.length === 0) {
       this.selectAllRelated[objectType] = false;
+      this.relatedSharedCheckboxState[objectType] = { checked: false, indeterminate: false };
       return;
     }
 
     const enabledObjects = objects.filter((obj: any) => !obj.disabled);
-    if (enabledObjects.length === 0) {
+    const totalEnabled = enabledObjects.length;
+    const selectedCount = enabledObjects.filter((obj: any) => obj.selected).length;
+
+    if (totalEnabled === 0) {
       this.selectAllRelated[objectType] = objects.every((obj: any) => obj.selected);
+      this.relatedSharedCheckboxState[objectType] = { checked: false, indeterminate: false };
     } else {
       this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
+      const allSelected = selectedCount === totalEnabled;
+      const someSelected = selectedCount > 0 && selectedCount < totalEnabled;
+      this.relatedSharedCheckboxState[objectType] = {
+        checked: allSelected,
+        indeterminate: someSelected
+      };
     }
     this.ref.detectChanges();
   }
@@ -9194,15 +9508,17 @@ export class RepositoryComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  toggleAffectedCollapse(nodeKey: string): void {
+  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string): void {
+  toggleReferencedCollapse(nodeKey: string, references: any): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
-  onAffectedCheckboxChange(changedObj: any, objectType: string): void {
+  onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
     setTimeout(() => {
       const list = this.affectedObjectsByType[objectType] || [];
       const idx = list.findIndex(o => o.id === changedObj.id);
@@ -9211,10 +9527,11 @@ export class RepositoryComponent {
       }
 
       this.updateParentCheckboxAffected(objectType);
+      this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
     }, 0);
   }
 
-  onReferencedCheckboxChange(changedObj: any, objectType: string): void {
+  onReferencedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, references: any): void {
     setTimeout(() => {
       const list = this.referencedObjectsByType[objectType] || [];
       const idx = list.findIndex(o => o.id === changedObj.id);
@@ -9223,6 +9540,7 @@ export class RepositoryComponent {
       }
 
       this.updateParentCheckboxReferenced(objectType);
+      this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
     }, 0);
   }
 
@@ -9261,6 +9579,88 @@ export class RepositoryComponent {
     this.updateParentCheckboxRelated(objectType);
   }
 
+  isCheckParentObjectType(nodeKey: string, referencedBy: any, objectType: string = '', nodeType: string) {
+    if (objectType != '') {
+      const objectsArr = this.getObjectsByType(referencedBy, objectType);
+
+      const total = objectsArr.length;
+      const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+      if (nodeType === 'affected') {
+        this.affectedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+      if (nodeType === 'referenced') {
+        this.referencedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+    } else {
+      const uniqueObjectTypes = this.getUniqueObjectTypes(referencedBy);
+      uniqueObjectTypes.forEach(type => {
+        const objectsArr = this.getObjectsByType(referencedBy, type);
+
+        const total = objectsArr.length;
+        const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+        const allSelected = selectedCount === total && total > 0;
+        const partiallySelected = selectedCount > 0 && selectedCount < total;
+        if (nodeType === 'affected') {
+          this.affectedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+        if (nodeType === 'referenced') {
+          this.referencedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+      });
+    }
+    this.rebuildRelatedObjects();
+    this.ref.detectChanges();
+  }
+
+  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
+      node.origin.dependencies.referencedBy.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+    }
+
+    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
+      node.origin.dependencies.references.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+    }
+
+    if (nodeType === 'related') {
+      const objects = this.relatedObjectsByType[objectType] || [];
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxRelated(objectType);
+    }
+  }
 
   getIcon(objectType: string): string {
     const iconMapping = {
@@ -10977,6 +11377,9 @@ export class PublishChangeModalComponent {
   showRelatedObjects = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
+  affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  referencedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
+  relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   constructor(
     public activeModal: NzModalRef,
@@ -11568,14 +11971,25 @@ export class PublishChangeModalComponent {
     const objects = this.getFilteredRelatedObjects(objectType);
     if (objects.length === 0) {
       this.selectAllRelated[objectType] = false;
+      this.relatedSharedCheckboxState[objectType] = { checked: false, indeterminate: false };
       return;
     }
 
     const enabledObjects = objects.filter((obj: any) => !obj.disabled);
+    const totalEnabled = enabledObjects.length;
+    const selectedCount = enabledObjects.filter((obj: any) => obj.selected).length;
+
     if (enabledObjects.length === 0) {
       this.selectAllRelated[objectType] = objects.every((obj: any) => obj.selected);
+      this.relatedSharedCheckboxState[objectType] = { checked: false, indeterminate: false };
     } else {
       this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
+      const allSelected = selectedCount === totalEnabled;
+      const someSelected = selectedCount > 0 && selectedCount < totalEnabled;
+      this.relatedSharedCheckboxState[objectType] = {
+        checked: allSelected,
+        indeterminate: someSelected
+      };
     }
   }
 
@@ -11733,12 +12147,14 @@ export class PublishChangeModalComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  toggleAffectedCollapse(nodeKey: string): void {
+  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string): void {
+  toggleReferencedCollapse(nodeKey: string, references: any): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
+    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
   updateParentCheckboxFilteredAffected(objectType: string): void {
@@ -11763,6 +12179,32 @@ export class PublishChangeModalComponent {
     this.updateRelatedObjectsVisibility();
   }
 
+  onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
+    setTimeout(() => {
+      const list = this.affectedObjectsByType[objectType] || [];
+      const idx = list.findIndex(o => o.id === changedObj.id);
+      if (idx !== -1) {
+        list[idx].selected = changedObj.selected;
+      }
+
+      this.updateParentCheckboxAffected(objectType);
+      this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
+    }, 0);
+  }
+
+  onReferencedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, references: any): void {
+    setTimeout(() => {
+      const list = this.referencedObjectsByType[objectType] || [];
+      const idx = list.findIndex(o => o.id === changedObj.id);
+      if (idx !== -1) {
+        list[idx].selected = changedObj.selected;
+      }
+
+      this.updateParentCheckboxReferenced(objectType);
+      this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
+    }, 0);
+  }
+
   updateParentCheckboxReferenced(objectType: string): void {
     const objects = this.getFilteredReferencedObjects(objectType);
     if (objects.length === 0) {
@@ -11778,6 +12220,89 @@ export class PublishChangeModalComponent {
     }
 
     this.updateRelatedObjectsVisibility();
+  }
+
+  isCheckParentObjectType(nodeKey: string, referencedBy: any, objectType: string = '', nodeType: string) {
+    if (objectType != '') {
+      const objectsArr = this.getObjectsByType(referencedBy, objectType);
+
+      const total = objectsArr.length;
+      const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+      const allSelected = selectedCount === total && total > 0;
+      const partiallySelected = selectedCount > 0 && selectedCount < total;
+      if (nodeType === 'affected') {
+        this.affectedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+      if (nodeType === 'referenced') {
+        this.referencedSharedCheckboxState[nodeKey + objectType] = {
+          checked: allSelected,
+          indeterminate: partiallySelected
+        };
+      }
+    } else {
+      const uniqueObjectTypes = this.getUniqueObjectTypes(referencedBy);
+      uniqueObjectTypes.forEach(type => {
+        const objectsArr = this.getObjectsByType(referencedBy, type);
+
+        const total = objectsArr.length;
+        const selectedCount = objectsArr.filter(obj => obj.selected).length;
+
+        const allSelected = selectedCount === total && total > 0;
+        const partiallySelected = selectedCount > 0 && selectedCount < total;
+        if (nodeType === 'affected') {
+          this.affectedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+        if (nodeType === 'referenced') {
+          this.referencedSharedCheckboxState[nodeKey + type] = {
+            checked: allSelected,
+            indeterminate: partiallySelected
+          };
+        }
+      });
+    }
+    this.rebuildRelatedObjects();
+    this.ref.detectChanges();
+  }
+
+  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
+      node.origin.dependencies.referencedBy.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+    }
+
+    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
+      node.origin.dependencies.references.forEach(ref => {
+        if (ref.objectType === objectType) {
+          if (!ref.disabled) {
+            ref.selected = isChecked;
+          }
+        }
+      });
+      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+    }
+
+    if (nodeType === 'related') {
+      const objects = this.getFilteredRelatedObjects(objectType);
+      objects.forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+      this.updateParentCheckboxRelated(objectType);
+    }
   }
 
   getIcon(objectType: string): string {
@@ -12625,6 +13150,16 @@ export class ShowDependenciesModalComponent {
     }
     const parts = path.split('/');
     return parts[parts.length - 1];
+  }
+
+  navToObj(path: string, type: string): void {
+    if (type) {
+      this.activeModal.close({
+        name: path, type: type
+      });
+    } else {
+      this.activeModal.close();
+    }
   }
 }
 
@@ -16874,7 +17409,12 @@ export class InventoryComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    })
+    }).afterClose.subscribe(result => {
+      if (result) {
+        const name = result.name.substring(result.name.lastIndexOf('/') + 1);
+        this.dataService.reloadTree.next({navigate: {name, type: result.type}});
+      }
+    });
   }
 
   removeFromChange(node): void {
