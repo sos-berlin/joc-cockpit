@@ -2807,6 +2807,7 @@ export class DeployComponent {
         }
       }
     }
+    this._filteredDepsCache = new WeakMap();
     const checkedNodes = this.collectCheckedNodes(node);
     if (checkedNodes.length > 0) {
       if (node.isChecked) {
@@ -2836,7 +2837,7 @@ export class DeployComponent {
     this.updateChildCheckboxes(node, node.isChecked);
 
     this.updateParentCheckboxes(node);
-
+    this._filteredDepsCache = new WeakMap();
     const checkedNodes = this.collectCheckedNodes(node);
 
     if (checkedNodes.length > 0) {
@@ -2913,7 +2914,6 @@ export class DeployComponent {
       const uniqueObjectTypes = this.getUniqueObjectTypes(referencedBy);
       uniqueObjectTypes.forEach(type => {
         const objectsArr = this.getObjectsByType(referencedBy, type);
-
         const total = objectsArr.length;
         const selectedCount = objectsArr.filter(obj => obj.selected).length;
 
@@ -2934,30 +2934,30 @@ export class DeployComponent {
       });
     }
     this.rebuildRelatedObjects();
-    this.cdRef.detectChanges();
+    this.ref.detectChanges();
   }
 
-  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
-    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
-      node.origin.dependencies.referencedBy.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+  onChangeParentObjTyp(referenced: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+      this.ref.detectChanges();
     }
 
-    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
-      node.origin.dependencies.references.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+    if (nodeType === 'referenced' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+      this.ref.detectChanges();
     }
 
     if (nodeType === 'related') {
@@ -3242,6 +3242,9 @@ export class DeployComponent {
           references: dep.references || []
         };
 
+        this.isCheckParentObjectType(node.key, node.dependencies.referencedBy, '', 'affected');
+        this.isCheckParentObjectType(node.key, node.dependencies.references, '', 'referenced');
+
         return;
       }
 
@@ -3520,16 +3523,13 @@ export class DeployComponent {
   }
 
 
-  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
+  toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string, references: any): void {
+  toggleReferencedCollapse(nodeKey: string): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
-
 
   toggleRelatedCollapse(objectType: string): void {
     this.relatedCollapsed[objectType] = !this.relatedCollapsed[objectType];
@@ -3940,7 +3940,7 @@ export class DeployComponent {
 
           this.onDependencyModeChange();
 
-          this.cdr.detectChanges();
+          this.ref.detectChanges();
         }
       },
       error: () => {
@@ -5362,6 +5362,9 @@ export class ExportComponent {
           references: dep.references || []
         };
 
+        this.isCheckParentObjectType(node.key, node.dependencies.referencedBy, '', 'affected');
+        this.isCheckParentObjectType(node.key, node.dependencies.references, '', 'referenced');
+
         this.ref.detectChanges();
         return node;
       }
@@ -6048,6 +6051,7 @@ export class ExportComponent {
         }
       }
     }
+    this._filteredDepsCache = new WeakMap();
     const checkedNodes = this.collectCheckedNodes(node);
     if (checkedNodes.length > 0) {
       if (node.isChecked) {
@@ -6252,14 +6256,12 @@ export class ExportComponent {
     return this.filterDependenciesByMode(filtered);
   }
 
-  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
+  toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string, references: any): void {
+  toggleReferencedCollapse(nodeKey: string): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
   toggleAllRelated(objectType: string, isChecked: boolean): void {
@@ -6354,27 +6356,27 @@ export class ExportComponent {
     this.ref.detectChanges();
   }
 
-  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
-    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
-      node.origin.dependencies.referencedBy.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+  onChangeParentObjTyp(referenced: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+      this.ref.detectChanges();
     }
 
-    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
-      node.origin.dependencies.references.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+    if (nodeType === 'referenced' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+      this.ref.detectChanges();
     }
 
     if (nodeType === 'related') {
@@ -7370,7 +7372,7 @@ export class RepositoryComponent {
   relatedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private cdr: ChangeDetectorRef, private translate: TranslateService) {
+              private inventoryService: InventoryService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -7944,7 +7946,7 @@ export class RepositoryComponent {
             this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
           }
 
-          this.cdr.detectChanges();
+          this.ref.detectChanges();
         }
       },
       error: () => {
@@ -8274,6 +8276,7 @@ export class RepositoryComponent {
         }
       }
     }
+    this._filteredDepsCache = new WeakMap();
     const checkedNodes = this.collectCheckedNodes(node);
     if (checkedNodes.length > 0) {
       if (node.isChecked) {
@@ -9050,6 +9053,9 @@ export class RepositoryComponent {
           references: dep.references || []
         };
 
+        this.isCheckParentObjectType(node.key, node.dependencies.referencedBy, '', 'affected');
+        this.isCheckParentObjectType(node.key, node.dependencies.references, '', 'referenced');
+
         this.ref.detectChanges();
         return node;
       }
@@ -9508,14 +9514,12 @@ export class RepositoryComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
+  toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string, references: any): void {
+  toggleReferencedCollapse(nodeKey: string): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
   onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
@@ -9628,27 +9632,27 @@ export class RepositoryComponent {
     this.ref.detectChanges();
   }
 
-  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
-    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
-      node.origin.dependencies.referencedBy.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+  onChangeParentObjTyp(referenced: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+      this.ref.detectChanges();
     }
 
-    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
-      node.origin.dependencies.references.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+    if (nodeType === 'referenced' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+      this.ref.detectChanges();
     }
 
     if (nodeType === 'related') {
@@ -11657,6 +11661,9 @@ export class PublishChangeModalComponent {
           references: dep.references || []
         };
 
+        this.isCheckParentObjectType(node.key, node.dependencies.referencedBy, '', 'affected');
+        this.isCheckParentObjectType(node.key, node.dependencies.references, '', 'referenced');
+
         return;
       }
 
@@ -12075,7 +12082,7 @@ export class PublishChangeModalComponent {
 
     this.updateChildCheckboxes(node, node.isChecked);
     this.updateParentCheckboxes(node);
-
+    this.filteredDepsCache = new WeakMap();
     const checkedNodes = this.collectCheckedNodes(node);
     if (checkedNodes.length > 0) {
       if (node.isChecked) {
@@ -12147,14 +12154,12 @@ export class PublishChangeModalComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  toggleAffectedCollapse(nodeKey: string, referencedBy: any): void {
+  toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, referencedBy, '', 'affected');
   }
 
-  toggleReferencedCollapse(nodeKey: string, references: any): void {
+  toggleReferencedCollapse(nodeKey: string): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
-    this.isCheckParentObjectType(nodeKey, references, '', 'referenced');
   }
 
   updateParentCheckboxFilteredAffected(objectType: string): void {
@@ -12271,27 +12276,27 @@ export class PublishChangeModalComponent {
     this.ref.detectChanges();
   }
 
-  onChangeParentObjTyp(node: any, objectType: string, isChecked: boolean, nodeType: string): void {
-    if (nodeType === 'affected' && node.origin.dependencies && node.origin.dependencies.referencedBy.length > 0) {
-      node.origin.dependencies.referencedBy.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+  onChangeParentObjTyp(referenced: any, objectType: string, isChecked: boolean, nodeType: string): void {
+    if (nodeType === 'affected' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.referencedBy, objectType, 'affected');
+      this.ref.detectChanges();
     }
 
-    if (nodeType === 'referenced' && node.origin.dependencies && node.origin.dependencies.references.length > 0) {
-      node.origin.dependencies.references.forEach(ref => {
-        if (ref.objectType === objectType) {
-          if (!ref.disabled) {
-            ref.selected = isChecked;
+    if (nodeType === 'referenced' && referenced && referenced.length > 0) {
+      referenced.forEach(reference => {
+        if (reference.objectType === objectType) {
+          if (!reference.disabled) {
+            reference.selected = isChecked;
           }
         }
       });
-      this.isCheckParentObjectType(node.key, node.origin.dependencies.references, objectType, 'referenced');
+      this.ref.detectChanges();
     }
 
     if (nodeType === 'related') {
