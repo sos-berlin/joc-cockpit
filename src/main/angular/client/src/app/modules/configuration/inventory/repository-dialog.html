@@ -231,8 +231,8 @@
                         @if (filteredDeps.referencedBy.length > 0) {
                           <div class="col-md-6" class="form-group">
                             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
-                               (click)="toggleAffectedCollapse(node.key, filteredDeps?.referencedBy)"></i>
-                            <label (click)="toggleAffectedCollapse(node.key, filteredDeps?.referencedBy)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                               (click)="toggleAffectedCollapse(node.key)"></i>
+                            <label (click)="toggleAffectedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
                             @if (affectedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
                                 @for (objectType of getUniqueObjectTypes(filteredDeps?.referencedBy); track objectType) {
@@ -242,7 +242,7 @@
                                         <ng-container>
                                           <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
                                           [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
-                                          [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(node, objectType, $event, 'affected')">
+                                          [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.referencedBy, objectType, $event, 'affected')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
                                                 <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
@@ -283,8 +283,8 @@
                         @if (filteredDeps.references.length > 0) {
                           <div class="col-md-6" class="form-group">
                             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
-                               (click)="toggleReferencedCollapse(node.key, filteredDeps.references)"></i>
-                            <label (click)="toggleReferencedCollapse(node.key, filteredDeps.references)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                               (click)="toggleReferencedCollapse(node.key)"></i>
+                            <label (click)="toggleReferencedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
                             @if (referencedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
                                 @for (objectType of getUniqueObjectTypes(filteredDeps?.references); track objectType) {
@@ -294,7 +294,7 @@
                                         <ng-container>
                                           <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
                                           [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
-                                          [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(node, objectType, $event, 'referenced')">
+                                          [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.references, objectType, $event, 'referenced')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
                                                 <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
@@ -504,8 +504,8 @@
               <div class="col-md-6" class="form-group">
                 <i class="cursor text-16 fa"
                    [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
-                   (click)="toggleAffectedCollapse(node.key, filteredDeps?.referencedBy)"></i>
-                <label (click)="toggleAffectedCollapse(node.key, filteredDeps?.referencedBy)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                   (click)="toggleAffectedCollapse(node.key)"></i>
+                <label (click)="toggleAffectedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
                 @if (affectedCollapsed[node.key]) {
                   <div class="m-t-sm m-l-md">
                     @for (objectType of getUniqueObjectTypes(filteredDeps?.referencedBy); track objectType) {
@@ -515,7 +515,7 @@
                             <ng-container>
                               <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
                                     [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
-                                    [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(node, objectType, $event, 'affected')">
+                                    [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.referencedBy, objectType, $event, 'affected')">
                                 @if (!isCustomIcon(objectType)) {
                                   <span class="icon-color">
                                     <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
@@ -536,7 +536,7 @@
                                              [(ngModel)]="obj.selected"
                                              [name]="'checkbox-' + obj.path"
                                              [disabled]="obj.disabled"
-                                             (ngModelChange)="onAffectedCheckboxChange(node.key, obj, objectType, filteredDeps.referencedBy)">
+                                             (ngModelChange)="onAffectedCheckboxChange(filteredDeps?.referencedBy, obj, objectType, filteredDeps.referencedBy)">
                                         <span [ngClass]="{
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released
@@ -562,8 +562,8 @@
               <div class="col-md-6" class="form-group">
                 <i class="cursor text-16 fa"
                    [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
-                   (click)="toggleReferencedCollapse(node.key, filteredDeps.references)"></i>
-                <label (click)="toggleReferencedCollapse(node.key, filteredDeps.references)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                   (click)="toggleReferencedCollapse(node.key)"></i>
+                <label (click)="toggleReferencedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
                 @if (referencedCollapsed[node.key]) {
                   <div class="m-t-sm m-l-md">
                     @for (objectType of getUniqueObjectTypes(filteredDeps?.references); track objectType) {
@@ -573,7 +573,7 @@
                             <ng-container>
                               <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
                                     [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
-                                    [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(node, objectType, $event, 'referenced')">
+                                    [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.references, objectType, $event, 'referenced')">
                                 @if (!isCustomIcon(objectType)) {
                                   <span class="icon-color">
                                     <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
