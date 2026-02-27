@@ -440,7 +440,7 @@ export class SingleBoardComponent {
     }
   }
   notes(name): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -455,6 +455,15 @@ export class SingleBoardComponent {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        const board = this.boards.find(b => b.name === result.objectName);
+        if (board && board.hasNote) {
+          board.hasNote.notified = false;
+        }
+      }
     });
   }
 }
@@ -1291,7 +1300,7 @@ export class BoardComponent {
   }
 
   notes(name): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -1306,6 +1315,20 @@ export class BoardComponent {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        const boardInBoards = this.boards.find(b => b.name === result.objectName);
+        if (boardInBoards && boardInBoards.hasNote) {
+          boardInBoards.hasNote.notified = false;
+        }
+
+        const boardInData = this.data.find(b => b.name === result.objectName);
+        if (boardInData && boardInData.hasNote) {
+          boardInData.hasNote.notified = false;
+        }
+      }
     });
   }
 

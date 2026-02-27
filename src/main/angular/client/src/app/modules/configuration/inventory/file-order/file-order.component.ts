@@ -570,7 +570,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.coreService.openHelpPage(key);
   }
   notes(name): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -585,6 +585,14 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        if (this.fileOrder && this.fileOrder.hasNote) {
+          this.fileOrder.hasNote.notified = false;
+        }
+      }
     });
   }
 

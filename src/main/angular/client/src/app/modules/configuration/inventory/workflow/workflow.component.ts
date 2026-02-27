@@ -15985,7 +15985,7 @@ export class WorkflowComponent {
   }
 
   notes(): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -16000,6 +16000,14 @@ export class WorkflowComponent {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: {width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px', minHeight: '200px'}
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        if (this.workflow && this.workflow.hasNote) {
+          this.workflow.hasNote.notified = false;
+        }
+      }
     });
   }
 
