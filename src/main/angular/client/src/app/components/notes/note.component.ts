@@ -244,11 +244,11 @@ export class NoteComponent {
     this.coreService.post('note/delete', obj).subscribe({
       next: (res: NoteResponse) => {
         this.submitted = false;
-        this.activeModal.destroy();
+        this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       },
       error: (err) => {
         this.submitted = false;
-        this.activeModal.destroy();
+        this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       }
     });
   }
@@ -534,7 +534,7 @@ export class NoteComponent {
     }, 0);
   }
   cancel(): void {
-    this.activeModal.destroy();
+    this.activeModal.destroy({ action: 'viewed', objectName: this.objectName, objectType: this.objectType });
   }
 
   @HostListener('document:keydown', ['$event'])

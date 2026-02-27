@@ -1111,8 +1111,8 @@ export class AccountsComponent {
 
     navigator.credentials.create({
       publicKey: publicKeyCredentialCreationOptions
-    }).then((credential: any) => {
-      const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
+    }).then(async (credential: any) => {
+      const {jwk, publicKey} = await this.authService.getPublicKey(credential.response.attestationObject);
       this.coreService.post('iam/fido/add_device', {
         identityServiceName: this.identityServiceName,
         accountName: account.accountName,

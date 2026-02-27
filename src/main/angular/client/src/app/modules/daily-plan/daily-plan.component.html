@@ -135,7 +135,7 @@
               <i (click)="coreService.navToInventoryTab(value?.schedulePath, 'SCHEDULE');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
-            <i (click)="notesForSchedule(value?.schedulePath)"
+            <i (click)="notesForSchedule(value?.schedulePath, value)"
                [nzTooltipMouseEnterDelay]="0.5"
                [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon
@@ -160,7 +160,7 @@
               <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
-            <i (click)="notesForWorkflow(value?.workflowPath)"
+            <i (click)="notesForWorkflow(value?.workflowPath, value)"
                [nzTooltipMouseEnterDelay]="0.5"
                [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon

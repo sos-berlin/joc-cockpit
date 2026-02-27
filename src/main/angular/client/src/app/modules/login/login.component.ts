@@ -327,9 +327,9 @@
         res.fidoProperties, this.user);
       navigator.credentials.create({
         publicKey: publicKeyCredentialCreationOptions
-      }).then((credential: any) => {
+      }).then(async (credential: any) => {
 
-        const {jwk, publicKey} = this.authService.getPublicKey(credential.response.attestationObject);
+        const {jwk, publicKey} = await this.authService.getPublicKey(credential.response.attestationObject);
         this.coreService.post('iam/fidoregistration/request_registration', {
           identityServiceName: this.identityServiceName,
           accountName: this.user.userName,

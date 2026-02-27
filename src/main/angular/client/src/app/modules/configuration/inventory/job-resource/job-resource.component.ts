@@ -812,7 +812,7 @@ export class JobResourceComponent {
   }
 
   notes(name): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -827,6 +827,14 @@ export class JobResourceComponent {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        if (this.jobResource && this.jobResource.hasNote) {
+          this.jobResource.hasNote.notified = false;
+        }
+      }
     });
   }
 }

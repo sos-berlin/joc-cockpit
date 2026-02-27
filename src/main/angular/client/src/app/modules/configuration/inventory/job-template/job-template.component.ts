@@ -1633,7 +1633,7 @@ export class JobTemplateComponent {
   }
 
   notes(name): void {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -1648,6 +1648,14 @@ export class JobTemplateComponent {
       nzClosable: false,
       nzMaskClosable: false,
       nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+
+    modal.afterClose.subscribe((result) => {
+      if (result && result.objectName) {
+        if (this.job && this.job.hasNote) {
+          this.job.hasNote.notified = false;
+        }
+      }
     });
   }
 

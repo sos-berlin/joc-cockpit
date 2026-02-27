@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import * as jwkToPem from "jwk-to-pem";
 
 @Injectable({
   providedIn: 'root'
@@ -241,8 +240,39 @@ export class AuthService {
     };
   }
 
+  // Convert JWK to PEM format using native Web Crypto API 
+  private async jwkToPemNative(jwk: any): Promise<string> {
+    try {
+      // Determine the algorithm based on key type
+      const algorithm = jwk.kty === 'EC'
+        ? { name: 'ECDSA', namedCurve: jwk.crv }
+        : { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' };
+
+      // Import the JWK as a CryptoKey using browser's native crypto
+      const key = await crypto.subtle.importKey(
+        'jwk',
+        jwk,
+        algorithm,
+        true,
+        ['verify']
+      );
+
+      // Export as SPKI (SubjectPublicKeyInfo) format
+      const exported = await crypto.subtle.exportKey('spki', key);
+
+      // Convert to PEM format
+      const exportedAsString = String.fromCharCode(...new Uint8Array(exported));
+      const exportedAsBase64 = btoa(exportedAsString);
+      const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64.match(/.{1,64}/g)?.join('\n')}\n-----END PUBLIC KEY-----`;
+
+      return pemExported;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Get public key from attestation object
-  getPublicKey(attestationObject: any): any {
+  async getPublicKey(attestationObject: any): Promise<any> {
     const decodedAttestationObject = window['CBOR'].decode(
       attestationObject);
     const {authData} = decodedAttestationObject;
@@ -264,41 +294,38 @@ export class AuthService {
       publicKeyBytes.buffer);
 
     let jwk: any = {};
-    let publicKeyJwk = COSEtoJWK(publicKeyObject);
 
-    function convertEcToPEM(curve, x, y) {
-      // Create a JWK (JSON Web Key) object from the public key components
+    // Function to base64url encode data
+    const base64urlEncode = (data: any): string => {
+      const base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
+
+    // Convert EC JWK to PEM format using native Web Crypto API
+    const convertEcToPEM = async (curve: string, x: any, y: any): Promise<string> => {
       jwk = {
         crv: curve,
         kty: 'EC',
         x: base64urlEncode(x),
         y: base64urlEncode(y)
       };
+      const pem = await this.jwkToPemNative(jwk);
+      return pem;
+    };
 
-      // Convert the JWK to PEM format
-      return jwkToPem(jwk);
-    }
-
-    function convertRsaToPEM(x, y) {
-      // Create a JWK (JSON Web Key) object from the public key components
+    // Convert RSA JWK to PEM format using native Web Crypto API
+    const convertRsaToPEM = async (n: any, e: any): Promise<string> => {
       jwk = {
         kty: 'RSA',
-        n: base64urlEncode(x),
-        e: base64urlEncode(y)
+        n: base64urlEncode(n),
+        e: base64urlEncode(e)
       };
-
-      // Convert the JWK to PEM format
-      return jwkToPem(jwk);
-    }
-
-    // Function to base64url encode data
-    function base64urlEncode(data) {
-      const base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
-      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
+      const pem = await this.jwkToPemNative(jwk);
+      return pem;
+    };
 
     // Function to convert COSE format to JWK format
-    function COSEtoJWK(parsedCoseKey) {
+    const COSEtoJWK = async (parsedCoseKey: any): Promise<string> => {
       const COSE_ALGORITHM_LABEL = 3;
 
       // Extract the values from the COSE public key
@@ -306,15 +333,17 @@ export class AuthService {
 
       // Set the specific key parameters based on the algorithm and public key values
       if (algorithm === -7) {
-        return convertEcToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
-        // ECDSA algorithm
+        // ECDSA algorithm (P-256)
+        return await convertEcToPEM('P-256', parsedCoseKey[-2], parsedCoseKey[-3]);
       } else if (algorithm === -257) {
         // RSASSA-PKCS1-v1_5 algorithm
-        return convertRsaToPEM(parsedCoseKey[-1], parsedCoseKey[-2]);
+        return await convertRsaToPEM(parsedCoseKey[-1], parsedCoseKey[-2]);
       } else {
         return jwk;
       }
-    }
+    };
+
+    const publicKeyJwk = await COSEtoJWK(publicKeyObject);
 
     return {publicKey: publicKeyJwk, jwk: this.bufferToBase64Url(jwk) || btoa(JSON.stringify(jwk))}; // The extracted public key in JWK format
   }
