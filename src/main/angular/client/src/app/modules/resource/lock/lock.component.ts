@@ -121,6 +121,7 @@ export class SingleLockComponent {
         if (lock && lock.hasNote) {
           lock.hasNote.notified = false;
         }
+        this.dataService.announceNoteUpdate({ objectName: name, objectType: 'LOCK', action: 'read' });
       }
     });
   }
@@ -151,6 +152,8 @@ export class LockComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
+
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
@@ -162,6 +165,20 @@ export class LockComponent {
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+    });
+    this.subscription3 = dataService.noteUpdated$.subscribe((data: any) => {
+      if (data && data.objectType === 'LOCK') {
+        this.locks.forEach(lock => {
+          if (lock.id === data.objectName && lock.hasNote) {
+            lock.hasNote.notified = false;
+          }
+        });
+        this.data.forEach(lock => {
+          if (lock.id === data.objectName && lock.hasNote) {
+            lock.hasNote.notified = false;
+          }
+        });
+      }
     });
   }
 
@@ -184,6 +201,7 @@ export class LockComponent {
     }, []);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
@@ -598,6 +616,8 @@ export class LockComponent {
         if (lockInData && lockInData.hasNote) {
           lockInData.hasNote.notified = false;
         }
+
+        this.dataService.announceNoteUpdate({ objectName: name, objectType: 'LOCK', action: 'read' });
       }
     });
   }

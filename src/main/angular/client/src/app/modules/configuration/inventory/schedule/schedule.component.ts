@@ -66,6 +66,7 @@ export class ScheduleComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
   tag: any;
   tags = [];
   allTags = [];
@@ -101,6 +102,15 @@ export class ScheduleComponent {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.schedule.name) {
+        const currentPath = this.schedule.name;
+        if (update.objectName === currentPath) {
+          this.schedule.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -142,6 +152,7 @@ export class ScheduleComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     this.storeExpandedProperties();
     if (this.schedule.name) {
       this.saveJSON();

@@ -180,6 +180,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   isInterval: string = 'absolute';
   units: any = [
@@ -217,6 +218,15 @@ export class ReportComponent implements OnChanges, OnDestroy {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.report.name) {
+        const currentPath = this.report.name;
+        if (update.objectName === currentPath) {
+          this.report.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -256,6 +266,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.report.name) {
       this.saveJSON();
     }

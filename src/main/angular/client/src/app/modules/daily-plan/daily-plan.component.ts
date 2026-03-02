@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {forkJoin, map, Observable, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -804,6 +804,7 @@ export class DailyPlanComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
   setOfCheckedId = new Set<number>();
   mapOfCheckedId = new Set();
@@ -812,13 +813,87 @@ export class DailyPlanComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
               private modal: NzModalService, private translate: TranslateService, private searchPipe: SearchPipe,
-              public message: NzMessageService, private orderPipe: OrderPipe, private excelService: ExcelService, private router: Router) {
+              public message: NzMessageService, private orderPipe: OrderPipe, private excelService: ExcelService,
+              private router: Router, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
 
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.initConf();
+    });
+    this.subscription3 = this.dataService.noteUpdated$.subscribe((update: { objectName: string; objectType: string; action: string }) => {
+      let updated = false;
+
+      if (update.objectType === 'WORKFLOW') {
+        this.plans.forEach(plan => {
+          plan.orders?.forEach(order => {
+            if (order.workflowPath === update.objectName && order.workflowHasNote) {
+              order.workflowHasNote.notified = false;
+              updated = true;
+            } else if (order.workflowPath && order.workflowPath.endsWith('/' + update.objectName) && order.workflowHasNote) {
+              order.workflowHasNote.notified = false;
+              updated = true;
+            }
+          });
+        });
+
+        this.planOrders.forEach(group => {
+          if (group.value && Array.isArray(group.value)) {
+            group.value.forEach(order => {
+              if (order.workflowPath === update.objectName && order.workflowHasNote) {
+                order.workflowHasNote.notified = false;
+                updated = true;
+              } else if (order.workflowPath && order.workflowPath.endsWith('/' + update.objectName) && order.workflowHasNote) {
+                order.workflowHasNote.notified = false;
+                updated = true;
+              }
+            });
+          } else if (group.workflowPath === update.objectName && group.workflowHasNote) {
+            group.workflowHasNote.notified = false;
+            updated = true;
+          } else if (group.workflowPath && group.workflowPath.endsWith('/' + update.objectName) && group.workflowHasNote) {
+            group.workflowHasNote.notified = false;
+            updated = true;
+          }
+        });
+      } else if (update.objectType === 'SCHEDULE') {
+        this.plans.forEach(plan => {
+          plan.orders?.forEach(order => {
+            if (order.schedulePath === update.objectName && order.scheduleHasNote) {
+              order.scheduleHasNote.notified = false;
+              updated = true;
+            } else if (order.schedulePath && order.schedulePath.endsWith('/' + update.objectName) && order.scheduleHasNote) {
+              order.scheduleHasNote.notified = false;
+              updated = true;
+            }
+          });
+        });
+
+        this.planOrders.forEach(group => {
+          if (group.value && Array.isArray(group.value)) {
+            group.value.forEach(order => {
+              if (order.schedulePath === update.objectName && order.scheduleHasNote) {
+                order.scheduleHasNote.notified = false;
+                updated = true;
+              } else if (order.schedulePath && order.schedulePath.endsWith('/' + update.objectName) && order.scheduleHasNote) {
+                order.scheduleHasNote.notified = false;
+                updated = true;
+              }
+            });
+          } else if (group.schedulePath === update.objectName && group.scheduleHasNote) {
+            group.scheduleHasNote.notified = false;
+            updated = true;
+          } else if (group.schedulePath && group.schedulePath.endsWith('/' + update.objectName) && group.scheduleHasNote) {
+            group.scheduleHasNote.notified = false;
+            updated = true;
+          }
+        });
+      }
+
+      if (updated) {
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -837,6 +912,9 @@ export class DailyPlanComponent {
 
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    if (this.subscription3) {
+      this.subscription3.unsubscribe();
+    }
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
@@ -3750,6 +3828,7 @@ export class DailyPlanComponent {
         if (order && order.workflowHasNote) {
           order.workflowHasNote.notified = false;
         }
+        this.dataService.announceNoteUpdate({ objectName: workflowPath, objectType: 'WORKFLOW', action: 'read' });
       }
     });
   }
@@ -3777,6 +3856,7 @@ export class DailyPlanComponent {
         if (order && order.scheduleHasNote) {
           order.scheduleHasNote.notified = false;
         }
+        this.dataService.announceNoteUpdate({ objectName: schedulePath, objectType: 'SCHEDULE', action: 'read' });
       }
     });
   }

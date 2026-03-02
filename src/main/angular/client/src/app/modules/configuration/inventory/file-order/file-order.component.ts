@@ -66,6 +66,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
@@ -87,6 +88,15 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.fileOrder.name) {
+        const currentPath = this.fileOrder.name;
+        if (update.objectName === currentPath) {
+          this.fileOrder.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -125,6 +135,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.fileOrder.name) {
       this.saveJSON();
     }

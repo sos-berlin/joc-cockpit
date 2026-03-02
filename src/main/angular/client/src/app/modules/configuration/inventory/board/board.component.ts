@@ -45,6 +45,8 @@ export class BoardComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
+
   units = [
     {label: 'inventory.label.milliseconds', value: 'Milliseconds'},
     {label: 'inventory.label.seconds', value: 'Seconds'},
@@ -92,6 +94,14 @@ export class BoardComponent {
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+    this.subscription4 = dataService.noteUpdated$.subscribe((data: any) => {
+      if (data && data.objectType === 'NOTICEBOARD' && this.board) {
+        if (this.board.name === data.objectName && this.board.hasNote) {
+          this.board.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -122,6 +132,7 @@ export class BoardComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.board.name) {
       this.saveJSON();
     }

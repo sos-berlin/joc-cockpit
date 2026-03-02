@@ -5351,6 +5351,7 @@ export class WorkflowComponent {
   workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   isCopiedWorkflow = false;
   copiedWorkflowJobTags: any = {};
   lastSavedOrderPreparation: any = null;
@@ -5383,6 +5384,14 @@ export class WorkflowComponent {
     });
     this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription3 = this.dataService.noteUpdated$.subscribe((update: { objectName: string; objectType: string; action: string }) => {
+      if (this.data?.name && update.objectType === this.objectType) {
+        if (update.objectName === this.data.name) {
+          this.workflow.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
 
     coreService.getTimeZoneList((timezones) => {
@@ -5508,6 +5517,9 @@ export class WorkflowComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    if (this.subscription3) {
+      this.subscription3.unsubscribe();
+    }
     if (this.data.type) {
       this.saveCopyInstruction();
       this.saveJSON(false);

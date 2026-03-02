@@ -428,7 +428,7 @@ export class HeaderComponent {
   }
 
   openModalNoteNoti(noti: any) {
-    this.modal.create({
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: NoteComponent,
       nzClassName: 'custom-resizable-modal',
@@ -445,5 +445,6 @@ export class HeaderComponent {
       nzMaskClosable: false,
       nzStyle: {width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px', minHeight: '200px'}
     });
+
   }
 }

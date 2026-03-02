@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -463,6 +463,8 @@ export class SingleBoardComponent {
         if (board && board.hasNote) {
           board.hasNote.notified = false;
         }
+        // Emit global update to stop blinking in all components
+        this.dataService.announceNoteUpdate({ objectName: name, objectType: 'NOTICEBOARD', action: 'read' });
       }
     });
   }
@@ -499,17 +501,39 @@ export class BoardComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe) {
+              private searchPipe: SearchPipe, private dataService: DataService, private orderPipe: OrderPipe,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+    });
+    this.subscription3 = dataService.noteUpdated$.subscribe((data: any) => {
+      if (data && data.objectType === 'NOTICEBOARD') {
+        let updated = false;
+        this.boards.forEach(board => {
+          if (board.name === data.objectName && board.hasNote) {
+            board.hasNote.notified = false;
+            updated = true;
+          }
+        });
+        this.data.forEach(board => {
+          if (board.name === data.objectName && board.hasNote) {
+            board.hasNote.notified = false;
+            updated = true;
+          }
+        });
+        if (updated) {
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 
@@ -533,6 +557,7 @@ export class BoardComponent {
     }, []);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
@@ -1328,6 +1353,8 @@ export class BoardComponent {
         if (boardInData && boardInData.hasNote) {
           boardInData.hasNote.notified = false;
         }
+
+        this.dataService.announceNoteUpdate({ objectName: name, objectType: 'NOTICEBOARD', action: 'read' });
       }
     });
   }

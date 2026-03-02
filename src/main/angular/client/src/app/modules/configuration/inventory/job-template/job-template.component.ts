@@ -390,6 +390,7 @@ export class JobTemplateComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   @ViewChild('codeEditor', {static: false}) cm: any;
 
@@ -415,6 +416,15 @@ export class JobTemplateComponent {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.job.name) {
+        const currentPath = this.job.name;
+        if (update.objectName === currentPath) {
+          this.job.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -471,6 +481,7 @@ export class JobTemplateComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.job.name) {
       this.saveJSON();
     }

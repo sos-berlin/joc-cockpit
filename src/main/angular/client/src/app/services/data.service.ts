@@ -20,6 +20,7 @@ export class DataService implements OnDestroy {
   public sidebarOrdersSource = new BehaviorSubject<any>({});
   private functionSource = new Subject<string>();
   private refreshWidgetSource = new Subject<any>();
+  private noteUpdatedSource = new Subject<any>();
 
   // Observable string streams
   eventAnnounced$ = this.eventAnnouncedSource.asObservable();
@@ -28,6 +29,7 @@ export class DataService implements OnDestroy {
   switchSchedulerAnnounced$ = this.switchSchedulerSource.asObservable();
   functionAnnounced$ = this.functionSource.asObservable();
   sidebarOrders$ = this.sidebarOrdersSource.asObservable();
+  noteUpdated$ = this.noteUpdatedSource.asObservable();
 
   // Service message commands
   announceEvent(event: any): void {
@@ -50,12 +52,17 @@ export class DataService implements OnDestroy {
     this.refreshWidgetSource.next(event);
   }
 
+  announceNoteUpdate(data: { objectName: string, objectType: string, action: string }): void {
+    this.noteUpdatedSource.next(data);
+  }
+
   ngOnDestroy(): void {
     this.eventAnnouncedSource.unsubscribe();
     this.refreshUISource.unsubscribe();
     this.switchSchedulerSource.unsubscribe();
     this.functionSource.unsubscribe();
     this.refreshWidgetSource.unsubscribe();
+    this.noteUpdatedSource.unsubscribe();
     this.reloadLicenseCheck.unsubscribe();
     this.isCalendarReload.unsubscribe();
     this.isProfileReload.unsubscribe();
