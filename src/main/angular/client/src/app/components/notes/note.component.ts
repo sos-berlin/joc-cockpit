@@ -189,7 +189,12 @@ export class NoteComponent {
           this.height = res.metadata.displayPreferences.height || this.height;
           this.updateModalSize();
         }
-
+        setTimeout(() => {
+          const chatThread = document.querySelector('.chat-thread');
+          if (chatThread) {
+            chatThread.scrollTop = chatThread.scrollHeight;
+          }
+        }, 100);
         this.dataService.announceNoteUpdate({
           objectName: this.objectName,
           objectType: this.objectType,
