@@ -4,6 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
 import {CoreService} from "../../services/core.service";
 import {AuthService} from "../guard";
+import {DataService} from "../../services/data.service";
 
 interface Author {
   userName: string;
@@ -123,6 +124,7 @@ export class NoteComponent {
     private activeModal: NzModalRef,
     public coreService: CoreService,
     public authService: AuthService,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
@@ -187,6 +189,12 @@ export class NoteComponent {
           this.height = res.metadata.displayPreferences.height || this.height;
           this.updateModalSize();
         }
+
+        this.dataService.announceNoteUpdate({
+          objectName: this.objectName,
+          objectType: this.objectType,
+          action: 'viewed'
+        });
       },
       error: (err) => {
         console.error('Error loading note:', err);
@@ -244,10 +252,20 @@ export class NoteComponent {
     this.coreService.post('note/delete', obj).subscribe({
       next: (res: NoteResponse) => {
         this.submitted = false;
+        this.dataService.announceNoteUpdate({
+          objectName: this.objectName,
+          objectType: this.objectType,
+          action: 'deleted'
+        });
         this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       },
       error: (err) => {
         this.submitted = false;
+        this.dataService.announceNoteUpdate({
+          objectName: this.objectName,
+          objectType: this.objectType,
+          action: 'deleted'
+        });
         this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       }
     });
@@ -534,6 +552,11 @@ export class NoteComponent {
     }, 0);
   }
   cancel(): void {
+    this.dataService.announceNoteUpdate({
+      objectName: this.objectName,
+      objectType: this.objectType,
+      action: 'viewed'
+    });
     this.activeModal.destroy({ action: 'viewed', objectName: this.objectName, objectType: this.objectType });
   }
 

@@ -99,6 +99,7 @@ export class JobResourceComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, public inventoryService: InventoryService) {
@@ -128,6 +129,15 @@ export class JobResourceComponent {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.jobResource.name) {
+        const currentPath = this.jobResource.name;
+        if (update.objectName === currentPath) {
+          this.jobResource.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -164,6 +174,7 @@ export class JobResourceComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.jobResource.name) {
       this.saveJSON();
     }

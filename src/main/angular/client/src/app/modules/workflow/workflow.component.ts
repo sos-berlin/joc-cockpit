@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -637,6 +637,7 @@ export class WorkflowComponent {
 
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
 
   @ViewChild(PerfectScrollbarComponent) scrollbar?: PerfectScrollbarComponent;
@@ -646,12 +647,30 @@ export class WorkflowComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private workflowService: WorkflowService,
               private translate: TranslateService, private searchPipe: SearchPipe, private excelService: ExcelService,
-              private toasterService: ToastrService, private router: Router, private orderPipe: OrderPipe) {
+              private toasterService: ToastrService, private router: Router, private orderPipe: OrderPipe,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe((res) => {
       this.refresh(res);
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+    });
+    this.subscription3 = dataService.noteUpdated$.subscribe((data: any) => {
+      if (data && data.objectType === 'WORKFLOW') {
+        let updated = false;
+        this.workflows.forEach(workflow => {
+          if ((workflow.name === data.objectName ||
+               workflow.name?.endsWith('/' + data.objectName) ||
+               data.objectName?.endsWith('/' + workflow.name)) &&
+              workflow.hasNote) {
+            workflow.hasNote.notified = false;
+            updated = true;
+          }
+        });
+        if (updated) {
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 
@@ -684,6 +703,7 @@ export class WorkflowComponent {
     this.coreService.setSideView(this.sideView);
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     $('.scroll-y').remove();
@@ -2868,6 +2888,7 @@ export class WorkflowComponent {
         if (workflow && workflow.hasNote) {
           workflow.hasNote.notified = false;
         }
+        this.dataService.announceNoteUpdate({ objectName: name, objectType: 'WORKFLOW', action: 'read' });
       }
     });
   }

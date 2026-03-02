@@ -45,6 +45,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   constructor(public coreService: CoreService, private dataService: DataService, private translate: TranslateService,
               private ref: ChangeDetectorRef, private router: Router, public inventoryService: InventoryService, private modal: NzModalService) {
@@ -64,6 +65,15 @@ export class LockComponent implements OnChanges, OnDestroy {
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+    });
+    this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
+      if (update && update.objectType === this.objectType && this.lock.name) {
+        const currentPath = this.lock.name;
+        if (update.objectName === currentPath) {
+          this.lock.hasNote.notified = false;
+          this.ref.detectChanges();
+        }
+      }
     });
   }
 
@@ -95,6 +105,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     if (this.lock.name) {
       this.saveJSON();
     }
