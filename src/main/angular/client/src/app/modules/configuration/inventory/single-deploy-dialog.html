@@ -282,8 +282,8 @@
                       <div class="m-t-sm">
                         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
                            (click)="toggleAffectedCollapse(objectType)"></i>
-                        <label class="m-l-sm" nz-checkbox [(ngModel)]="affectedSharedCheckboxState['single' + objectType].checked" 
-                          [nzIndeterminate]="affectedSharedCheckboxState['single' + objectType].indeterminate" 
+                        <label class="m-l-sm" nz-checkbox [(ngModel)]="affectedSharedCheckboxState['single' + objectType].checked"
+                          [nzIndeterminate]="affectedSharedCheckboxState['single' + objectType].indeterminate"
                           [name]="'checkbox-affected-single-' + objectType" (ngModelChange)="onChangeParentObjTyp(objectType, $event, 'affected')">
                           @if (!isCustomIcon(objectType)) {
                             <span class="icon-color">
@@ -334,12 +334,12 @@
                 <div class="m-t-sm m-l-sm">
                   @for (objectType of referencedObjectTypes; track objectType) {
                     <ng-container>
-                      @if (referencedObjectsByType[objectType]?.length) {
+                      @if (getFilteredReferencedObjects(objectType).length > 0) {
                         <div class="m-t-sm">
                           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[objectType], 'fa-caret-down': referencedCollapsed[objectType]}"
                              (click)="toggleReferencedCollapse(objectType)"></i>
-                          <label class="m-l-sm"  nz-checkbox [(ngModel)]="referencedSharedCheckboxState['single' + objectType].checked" 
-                          [nzIndeterminate]="referencedSharedCheckboxState['single' + objectType].indeterminate" 
+                          <label class="m-l-sm"  nz-checkbox [(ngModel)]="referencedSharedCheckboxState['single' + objectType].checked"
+                          [nzIndeterminate]="referencedSharedCheckboxState['single' + objectType].indeterminate"
                           [name]="'checkbox-referenced-single-' + objectType" (ngModelChange)="onChangeParentObjTyp(objectType, $event, 'referenced')">
                             <ng-container>
                               <label>
@@ -357,7 +357,7 @@
                           </label>
                           @if (referencedCollapsed[objectType]) {
                             <div class="m-t-sm m-l-md">
-                              @for (obj of referencedObjectsByType[objectType]; track obj) {
+                              @for (obj of getFilteredReferencedObjects(objectType); track obj) {
                                 <div>
                                   <ng-container>
                                     <label class="m-l-sm">
