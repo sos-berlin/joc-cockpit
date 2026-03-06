@@ -1477,6 +1477,11 @@ export class SingleDeployComponent {
     return this.filterDependenciesByMode(objects);
   }
 
+  getFilteredReferencedObjects(type: string): any[] {
+    const objects = this.referencedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
   private prepareObject(dependencies: any): void {
     const requestedItemIds = dependencies.requestedItems || [];
     const objectsMap = dependencies.objects || {};
