@@ -160,7 +160,7 @@
 - [ワークフロー - オーダー追加](/workflows-orders-add)
 - [ワークフロー - 検索](/workflows-search)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

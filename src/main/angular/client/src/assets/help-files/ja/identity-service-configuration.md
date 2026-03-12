@@ -27,7 +27,7 @@ IDサービスは、以下の設定が必要です：
 - [IDサービス管理 - 構成](/identity-service-settings)
 - [IDサービス管理](/identity-services)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 

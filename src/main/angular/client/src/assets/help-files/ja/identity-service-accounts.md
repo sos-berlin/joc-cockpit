@@ -75,7 +75,7 @@ IDサービスは、認証と認可によってJOCコックピットへのアク
 - [設定 - Identity Service](/settings-identity-service)
 - [設定 - JOC](/settings-joc)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 

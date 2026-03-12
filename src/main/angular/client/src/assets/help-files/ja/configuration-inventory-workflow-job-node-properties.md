@@ -26,7 +26,7 @@
   - [ジョブ定義 - インベントリー - ワークフロー - 通知](/configuration-inventory-workflows-job-notifications)
   - [ジョブ定義 - インベントリー - ワークフロー - ジョブタグ](/configuration-inventory-workflows-job-tags)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)

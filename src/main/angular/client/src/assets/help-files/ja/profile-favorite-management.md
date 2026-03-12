@@ -70,7 +70,7 @@
 - [初期設定 - サブエージェントクラスター登録](/initial-operation-register-agent-subagent-cluster)
 - [プロファイル](/profile)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Inventory Favorites](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Favorites)
 - [JS7 - Profiles - Favorite Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Favorite+Management)

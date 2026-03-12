@@ -50,7 +50,7 @@
 - [初期設定 - スタンドアロンエージェント登録](/initial-operation-register-agent-standalone)
 - [初期設定 - コントローラー登録](/initial-operation-register-controller)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - How to troubleshoot Controller Cluster Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Controller+Cluster+Initial+Operation)
 - [JS7 - Initial Operation for Controller Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Initial+Operation+for+Controller+Cluster)

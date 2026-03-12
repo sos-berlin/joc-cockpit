@@ -82,7 +82,7 @@ Windows プラットフォームで PowerShell を使用する場合、スクリ
 - [ジョブ定義 - インベントリー - ワークフロー - ジョブオプション](/configuration-inventory-workflow-job-options)
 - [オブジェクト命名規則](/object-naming-rules)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - How to run PowerShell scripts from jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+run+PowerShell+scripts+from+jobs)
 - [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)

@@ -60,7 +60,7 @@
   - [ジョブ定義 - インベントリー - Wワークフロー - ジョブタグ](/configuration-inventory-workflows-job-tags)
 - [リソース - ドキュメント](/resources-documentations)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates)
 - [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API)

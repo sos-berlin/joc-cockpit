@@ -117,7 +117,7 @@
 - [設定 - Daily Plan](/settings-daily-plan)
 - [タスク履歴](/history-tasks)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)
 - [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction)

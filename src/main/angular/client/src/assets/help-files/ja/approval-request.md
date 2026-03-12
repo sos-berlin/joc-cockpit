@@ -36,7 +36,7 @@
 - [承認者プロファイル](/approval-profiles)
 - [承認依頼](/approval-requests)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
 

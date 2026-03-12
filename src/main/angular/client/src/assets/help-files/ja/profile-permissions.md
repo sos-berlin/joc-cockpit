@@ -22,7 +22,7 @@
 
 - [プロファイル](/profile)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Management of User Accounts, Roles and Permisshons](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+User+Accounts%2C+Roles+and+Permissions)

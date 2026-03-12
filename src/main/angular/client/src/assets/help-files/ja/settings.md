@@ -17,7 +17,7 @@ JOCコックピットは[JS7 - 設定](https://kb.sos-berlin.com/display/JS7/JS7
 - [設定 - Git](/settings-git)
 - [設定 - Kiosk](/settings-kiosk)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
 

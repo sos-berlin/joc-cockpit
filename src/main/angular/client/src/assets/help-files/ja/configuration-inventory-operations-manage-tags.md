@@ -32,7 +32,7 @@ JS7はワークフロー、ジョブ、オーダーに[JS7 - Tagging](https://kb
 - [ジョブ定義 - インベントリー - ワークフロー - ジョブタグ](/configuration-inventory-workflow-job-tags)
 - [実行計画](/daily-plan)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
   - [JS7 - Tagging - Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs)

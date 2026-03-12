@@ -44,7 +44,7 @@
 - [Settings - JOC Cockpit](/settings-joc)
 - [Settings - Identity Service](/settings-identity-service)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)
 

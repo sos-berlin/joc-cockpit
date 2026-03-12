@@ -113,7 +113,7 @@
 - [クリーンアップサービス](/service-cleanup)
 - [設定](/settings)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
 

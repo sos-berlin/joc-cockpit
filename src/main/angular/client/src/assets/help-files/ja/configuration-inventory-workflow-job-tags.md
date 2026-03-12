@@ -27,7 +27,7 @@
   - [ジョブ定義 - インベントリー - ワークフロー - ジョブ通知](/configuration-inventory-workflows-job-notifications)
 - [タグ](/tags)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
   - [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs)

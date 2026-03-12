@@ -126,7 +126,7 @@ Notifications は、前述の *Fragment* 要素を参照することで、通知
 - [モニター - システム通知](/monitor-notifications-system)
 - [モニターサービス](/service-monitor)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - How to set up e-mail notification for jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+jobs)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

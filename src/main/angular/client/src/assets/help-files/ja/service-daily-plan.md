@@ -21,7 +21,7 @@ Dailyplanサービスの設定については、[設定 - Daily Plan](/settings-
 - [実行計画](/daily-plan)
 - [設定 - Daily Plan](/settings-daily-plan)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service)

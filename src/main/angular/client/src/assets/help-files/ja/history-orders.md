@@ -75,7 +75,7 @@
 - [タスクログ画面](/task-log)
 - [ワークフロー](/workflows)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

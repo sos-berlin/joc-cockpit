@@ -40,7 +40,7 @@
 - [モニター - システム通知](/monitor-notifications-system)
 - [通知](/notifications)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
 

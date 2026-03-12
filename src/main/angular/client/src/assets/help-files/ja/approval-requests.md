@@ -39,7 +39,7 @@
 - [承認依頼](/approval-request)
 - [REST Web Service API](/rest-api)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
 

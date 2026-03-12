@@ -49,7 +49,7 @@
 - [レポート - 実行履歴](/report-run-history)
 - [レポートテンプレート](/report-templates)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation)

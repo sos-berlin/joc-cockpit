@@ -29,7 +29,7 @@ IDサービスは、認証と認可によってJOCコックピットへのアク
 - [IDサービス管理](/identity-services)
 - [設定 - Identity Service](/settings-identity-service)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 

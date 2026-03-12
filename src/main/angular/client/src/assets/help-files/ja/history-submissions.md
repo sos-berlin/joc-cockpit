@@ -71,7 +71,7 @@
 - [設定 - Daily Plan](/settings-daily-plan)
 - [ワークフロー](/workflows)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 

@@ -48,7 +48,7 @@ Daily Planサービスでは、デフォルトで1つのトランザクション
 - [リソース - 通知ボード](/resources-notice-boards)
 - [設定](/settings)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
 

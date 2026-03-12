@@ -83,7 +83,7 @@
 - [レポート - 実行レポート](/report-creation)
 - [レポート - 実行履歴](/report-run-history)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - レポート
   - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)

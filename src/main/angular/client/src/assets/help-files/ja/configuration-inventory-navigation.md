@@ -209,7 +209,7 @@
   - [Git - クローンリポジトリ](/configuration-inventory-operations-git-clone)
   - [タグ管理](/configuration-inventory-operations-manage-tags)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - コントローラーオブジェクト
   - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

@@ -150,7 +150,7 @@
 - [設定 - JOC](/settings-joc)
 - [ワークフロー - オーダー追加](/workflows-orders-add)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 

@@ -31,7 +31,7 @@ IDサービスでログインするユーザーは、初回ログイン時に関
 - [設定 - Cleanup](/settings-cleanup)
 - [設定 - JOC](/settings-joc)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 

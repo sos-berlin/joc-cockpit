@@ -74,7 +74,7 @@ LDAPでは、*簡略構成* および *詳細構成* のタブが提供されま
 - [IDサービス管理 - 設定](/identity-service-configuration)
 - [IDサービス管理](/identity-services)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
   - [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)

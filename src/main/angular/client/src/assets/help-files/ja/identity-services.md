@@ -60,7 +60,7 @@ IDサービスは、オプションまたは必須として設定することが
 - [IDサービス管理 - 設定管理](/identity-service-configuration)
 - [IDサービス管理 - ロール管理](/identity-service-roles)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity and Access Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+and+Access+Management)
   - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

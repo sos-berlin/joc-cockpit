@@ -65,7 +65,7 @@
 - [ジョブ定義 - インベントリー - ワークフロー](/configuration-inventory-workflows)
 - [依存関係](/dependencies-matrix)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
 

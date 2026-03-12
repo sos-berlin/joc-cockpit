@@ -60,7 +60,7 @@
 - [依存関係](/dependencies-matrix)
 - [オブジェクト命名規則](/object-naming-rules)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
 

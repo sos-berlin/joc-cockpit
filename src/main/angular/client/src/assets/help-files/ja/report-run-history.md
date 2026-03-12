@@ -27,7 +27,7 @@
 - [レポート](/reports)
 - [レポート - 実行レポート](/report-creation)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)

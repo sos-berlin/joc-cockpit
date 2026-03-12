@@ -33,7 +33,7 @@ Git接続は、以下の項目を持つリストから表示されます：
 - [プロファイル](/profile)
 - [プロファイル - CA管理](/profile-ssl-key-management)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)

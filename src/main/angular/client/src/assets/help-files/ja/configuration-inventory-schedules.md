@@ -89,7 +89,7 @@
 - [設定 - Daily Plan](/settings-daily-plan)
 - [タスク履歴](/history-tasks)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

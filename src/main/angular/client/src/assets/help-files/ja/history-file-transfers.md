@@ -57,7 +57,7 @@
 - [履歴 - オーダー](/history-orders)
 - [履歴 - タスク](/history-tasks)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

@@ -34,7 +34,7 @@
 - [タスク履歴](/history-tasks)
 - [設定 - Cleanup](/settings-cleanup)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Cleanup Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Cleanup+Service)
 - [JS7 - Database](https://kb.sos-berlin.com/display/JS7/JS7+-+Database)

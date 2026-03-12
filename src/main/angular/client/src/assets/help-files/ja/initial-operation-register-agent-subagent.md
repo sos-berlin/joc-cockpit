@@ -43,7 +43,7 @@
 - [初期設定 - コントローラー登録](/initial-operation-register-controller)
 - [初期設定 - サブエージェントクラスター登録](/initial-operation-register-agent-subagent-cluster)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
 - [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)

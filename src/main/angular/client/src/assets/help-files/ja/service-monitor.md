@@ -21,7 +21,7 @@
 - [モニター - オーダー通知](/monitor-notifications-order)
 - [モニター - システム通知](/monitor-notifications-system)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Monitor Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor+Service)

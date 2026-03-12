@@ -32,7 +32,7 @@
 - [初期設定 - エージェントクラスター登録](/initial-operation-register-agent-cluster)
 - [初期設定 - コントローラー登録](/initial-operation-register-controller)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - How to troubleshoot Agent Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Agent+Initial+Operation)
 - [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)

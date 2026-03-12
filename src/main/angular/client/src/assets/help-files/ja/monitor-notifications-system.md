@@ -68,7 +68,7 @@ JS7製品からのシステム通知を表示します。
 - [モニター - オーダー通知](/monitor-notifications-order)
 - [ワークフロー](/workflows)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications)

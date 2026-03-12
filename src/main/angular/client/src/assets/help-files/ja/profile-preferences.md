@@ -126,7 +126,7 @@
 - [タスクログ表示](/task-log)
 - [ワークフロー](/workflows)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
@@ -136,4 +136,3 @@
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

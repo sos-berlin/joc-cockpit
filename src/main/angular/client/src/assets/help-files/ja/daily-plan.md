@@ -131,7 +131,7 @@
 - [オーダー履歴](/history-orders)
 - [設定 - Daily Plan](/settings-daily-plan)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 

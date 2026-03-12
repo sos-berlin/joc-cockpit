@@ -65,7 +65,7 @@ Kioskモードでの操作に使用するアカウントに割り当てられる
 - [タスク履歴](/history-tasks)
 - [設定](/settings)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

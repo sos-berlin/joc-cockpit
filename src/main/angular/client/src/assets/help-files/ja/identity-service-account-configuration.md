@@ -28,7 +28,7 @@ IDサービス管理では、アカウントの追加、更新、削除の操作
 - [IDサービス管理](/identity-services)
 - [設定 - Identity Service](/settings-identity-service)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 

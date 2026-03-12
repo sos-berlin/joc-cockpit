@@ -91,7 +91,7 @@
 - [ジョブタグ](/configuration-inventory-workflow-job-tags)
 - [オブジェクト命名規則](/object-naming-rules)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates)
   - [JS7 - JITL Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+Integration+Job+Templates)

@@ -36,7 +36,7 @@ Identity Serviceのパスワードの最小長を指定します。
 - [Identity Services](/identity-services)
 - [設定](/settings)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service)
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)

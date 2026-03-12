@@ -57,7 +57,7 @@
 - [プロファイル - 設定値](/profile-preferences)
 - [ワークフロー](/workflows)
 
-###Product Knowledge Base
+### Product Knowledge Base
 
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)
