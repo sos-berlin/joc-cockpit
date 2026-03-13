@@ -322,6 +322,169 @@ ngOnInit(): void {
 
 @Component({
   standalone: false,
+  selector: 'app-bulk-add-order',
+  templateUrl: './bulk-add-order-dialog.html'
+})
+export class BulkAddOrderComponent {
+
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  permission: any;
+  preferences: any;
+  workflows: any = [];
+  paths: any = [];
+  bulkOrders: any = [];
+  orders: any = [];
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
+
+  dateFormat: any;
+  display: any;
+  required = false;
+  comments: any = {};
+  submitted = false;
+  zones = [];
+
+  allowEmptyArguments: any;
+  commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
+
+  constructor(public coreService: CoreService, private activeModal: NzModalRef,
+    private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.permission = this.modalData.permission;
+    this.preferences = this.modalData.preferences;
+    this.workflows = this.modalData.workflows;
+    if (this.workflows && this.workflows.length > 0) {
+      this.workflows.forEach(workflow => {
+        this.paths.push(workflow.path);
+      });
+    }
+    this.bulkOrders = this.modalData.bulkOrders;
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] === 'true';
+    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
+    this.display = this.preferences.auditLog;
+    this.comments.radio = 'predefined';
+
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+
+    this.orders = [{
+      orderId: '',
+      timeZone: this.preferences.zone,
+      at: 'now',
+      forceJobAdmission: false,
+      priority: 0,
+      tags: [],
+      arguments: [],
+      startPosition: '',
+      endPositions: [],
+      blockPosition: '',
+      reload: false,
+      planId: {
+        planSchemaId: 'DailyPlan',
+        noticeSpaceKey: ''
+      },
+      openClosedPlan: false
+    }];
+
+    this.orders[0].timeZone = this.preferences.zone;
+    this.commonStartDate.timeZone = this.preferences.zone;
+    this.orders[0].at = 'now';
+  }
+
+  onTimeChange(e: any, index: number): void {
+    delete this.orders[index].atTime;
+    delete this.orders[index].fromDate;
+    delete this.orders[index].fromTime;
+    delete this.orders[index].fromTime1;
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+  convertToSeconds(timeString: string): number {
+    const timePattern = /(\d+)\s*h|\s*(\d+)\s*m|\s*(\d+)\s*s/g;
+    let totalSeconds = 0;
+
+    let match;
+    while ((match = timePattern.exec(timeString)) !== null) {
+      if (match[1]) {
+        totalSeconds += parseInt(match[1], 10) * 3600; // Convert hours to seconds
+      }
+      if (match[2]) {
+        totalSeconds += parseInt(match[2], 10) * 60; // Convert minutes to seconds
+      }
+      if (match[3]) {
+        totalSeconds += parseInt(match[3], 10); // Seconds
+      }
+    }
+
+    return totalSeconds;
+  }
+
+  onSubmit() {
+
+    this.submitted = true;
+    this.bulkOrders = this.bulkOrders.map(ord => {
+      const orderObj: any = {
+        ...ord,
+        orderName: this.orders[0].orderId,
+        forceJobAdmission: this.orders[0].forceJobAdmission,
+        priority: this.orders[0].priority,
+      }
+
+      if (this.orders[0].at === 'now' || this.orders[0].at === 'never') {
+        orderObj.scheduledFor = this.orders[0].at;
+      } else if (this.orders[0].at === 'later') {
+        let atTime = this.orders[0].atTime
+        if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
+          atTime = this.convertToSeconds(atTime);
+        }
+        orderObj.scheduledFor = 'now + ' + atTime;
+      } else if (this.orders[0].at === 'date') {
+        this.coreService.getDateAndTime(this.orders[0]);
+        orderObj.scheduledFor = this.coreService.getDateByFormat(this.orders[0].fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        orderObj.timeZone = this.orders[0].timeZone;
+      }
+
+      return orderObj;
+    });
+
+    const reqObj = {
+      controllerId: this.schedulerId,
+      orders: this.bulkOrders,
+      auditLog: {}
+    };
+
+    this.coreService.getAuditLogObj(this.comments, reqObj.auditLog);
+    this.coreService.post('orders/add', reqObj).subscribe({
+      next: (res: any) => {
+        this.activeModal.close('Done');
+        this.submitted = false;
+      },
+      error: (err) => {
+        this.submitted = false;
+      }
+    });
+  }
+}
+
+@Component({
+  standalone: false,
   selector: 'app-single-workflow',
   templateUrl: './single-workflow.component.html'
 })
@@ -947,7 +1110,8 @@ export class WorkflowComponent {
 
   refreshCheckedStatus(allWorkflow = false): void {
     const workflows = allWorkflow ? this.data : this.getCurrentData(this.data, this.workflowFilters);
-    this.object.checked = this.object.mapOfCheckedId.size === workflows.length;
+    const allCurrentPageChecked = workflows.length > 0 && workflows.every(item => this.object.mapOfCheckedId.has(item.path));
+    this.object.checked = allCurrentPageChecked;
     this.object.isSuspend = true;
     this.object.isResume = true;
     this.object.mapOfCheckedId.forEach(workflow => {
@@ -1410,6 +1574,44 @@ export class WorkflowComponent {
         this.resetCheckBox();
       });
     }
+  }
+
+  addBulkOrder() {
+    const filteredMap = new Map(
+      [...this.object.mapOfCheckedId.entries()].filter(([_, w]) =>
+        !w.orderPreparation &&
+        w.state?._text !== 'NOT_IN_SYNC'
+      )
+    );
+    const orders = [];
+    const workflows = [];
+    filteredMap.forEach((workflow) => {
+      orders.push({ workflowPath: workflow.path });
+      workflows.push(workflow);
+    });
+
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: BulkAddOrderComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerIds.selected,
+        workflows: workflows,
+        bulkOrders: orders
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.loadWorkflow();
+        this.resetCheckBox();
+      }
+    });
   }
 
   showDependency(workflow): void {

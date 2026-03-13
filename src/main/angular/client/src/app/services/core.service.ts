@@ -2342,7 +2342,12 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
 
   addSlashToStringForEvn(obj: any): void {
     obj.env.forEach((env: any) => {
-      if (env.value) {
+      if (env['default1'] === '""' && typeof env.value == 'string') {
+        env.value = JSON.stringify(env.value);
+        return;
+      }
+
+      if (env.value !== null && env.value !== undefined && env.value !== '' && env.value !== "") {
         if (!(/[$+]/.test(env.value)) || (/\s/g.test(env.value) && !/[+]/.test(env.value))) {
           const startChar = env.value.substring(0, 1);
           const endChar = env.value.substring(env.value.length - 1);
@@ -2361,14 +2366,12 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
             }
           }
         }
-      } else if (env.value === "" || env.value === '') {
-        //env.value = JSON.stringify(env.value);
       }
     });
   }
 
   addSlashToString(data: any, type: string): void {
-    if (data[type]) {
+    if (data[type] !== null && data[type] !== undefined) {
       // Check if the value originally had double quotes (marked by default1)
       if (data['default1'] === '""' && typeof data[type] == 'string') {
         // Wrap the value in quotes using JSON.stringify to properly escape
@@ -2491,7 +2494,7 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
       } else {
         d.setSeconds(0);
       }
-      data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : val.match('end') ? val : 'toTime1'] = new Date(d);
+      data[val === 'from' ? 'fromTime1' : val === 'start' ? 'startTime1' : val.match('end') ? val + '1' : 'toTime1'] = new Date(d);
     }
   }
 

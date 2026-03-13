@@ -300,7 +300,7 @@
                             @for (obj of getFilteredAffectedObjects(objectType); track obj.path) {
                               <div>
                                 <label class="m-l-sm">
-                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
+                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + objectType + '-' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
                                          [nzDisabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
                                     <span [ngClass]="{
                                       'fa-circle-o': !obj.valid,
@@ -361,7 +361,7 @@
                                 <div>
                                   <ng-container>
                                     <label class="m-l-sm">
-                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
+                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_'+ objectType + '-' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
                                              [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
                                         <span [ngClass]="{
                                           'fa-circle-o': !obj.valid,
