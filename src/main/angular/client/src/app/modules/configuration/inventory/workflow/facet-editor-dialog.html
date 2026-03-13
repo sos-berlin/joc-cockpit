@@ -48,7 +48,7 @@
         @for (param of variable.value.list; track $index; let j = $index) {
           <div class="form-group row">
             <div class="col-md-11 col-lg-11 p-r-0" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-              <input identifierWithQuotesValidation #name="ngModel" autocomplete="off" type="text"
+              <input #name="ngModel" autocomplete="off" type="text"
                      class="form-control" name="list{{j}}" [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}">
               @if (name.invalid && name.errors && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">

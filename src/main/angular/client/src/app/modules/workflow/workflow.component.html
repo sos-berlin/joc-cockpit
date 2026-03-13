@@ -197,6 +197,10 @@
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}" class="hide">
+            <button (click)="addBulkOrder()" class="btn btn-grey btn-sm m-l-12">
+              <i class="fa fa-plus p-r-xs"></i>
+              <span class="hidden-sm-down" translate>workflow.button.addOrder</span>
+            </button>
             <button (click)="suspendAll()" [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>

@@ -398,7 +398,7 @@
                                         @for (obj of getObjectsByType(filteredDeps.referencedBy, objectType); track obj.path) {
                                           <div>
                                             @if (isRemove) {
-                                              <label nz-checkbox [(ngModel)]="sharedCheckboxState[obj.path]" [name]="'checkbox-'+ node.origin.key + obj.path"
+                                              <label nz-checkbox [(ngModel)]="sharedCheckboxState[obj.path]" [name]="'checkbox-'+ node.origin.key + '-' + objectType + '-' + obj.path"
                                                      [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}" (ngModelChange)="onAffectedCheckboxChange(node.key, obj, objectType, filteredDeps.referencedBy)">
                                                 <span [ngClass]="{
                                                     'fa-circle-o': !obj.valid,
@@ -407,7 +407,7 @@
                                                 {{ getDisplayName(obj.path) }}
                                               </label>
                                             } @else {
-                                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-'+ node.origin.key + obj.path"
+                                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-'+ node.origin.key + '-' + objectType + '-' + obj.path"
                                                      [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}" (ngModelChange)="onAffectedCheckboxChange(node.key, obj, objectType, filteredDeps.referencedBy)">
                                                 <span [ngClass]="{
                                                     'fa-circle-o': !obj.valid,
@@ -455,7 +455,7 @@
                                       <div class="m-t-sm m-l-md">
                                         @for (obj of getObjectsByType(filteredDeps.references, objectType); track obj.path) {
                                           <div>
-                                            <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
+                                            <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_'+ node.origin.key + '-' + objectType + '-' + obj.path"
                                                    [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}" (ngModelChange)="onReferencedCheckboxChange(node.key, obj, objectType, filteredDeps.references)">
                                               <span [ngClass]="{
                                                   'fa-circle-o': !obj.valid,
@@ -585,7 +585,7 @@
                                             @for (obj of getObjectsByType(filteredDeps?.referencedBy, objectType); track obj) {
                                               <div>
                                                 <ng-container>
-                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-'+ node.origin.key + obj.path"
+                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-'+ node.origin.key + '-' + objectType + '-' + obj.path"
                                                          [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
                                                     <span [ngClass]="{
                                                         'fa-circle-o': !obj.valid,
@@ -637,7 +637,7 @@
                                             @for (obj of getObjectsByType(filteredDeps?.references, objectType); track obj) {
                                               <div>
                                                 <ng-container>
-                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
+                                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_'+ node.origin.key + '-' + objectType + '-' + obj.path"
                                                          [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
                                                     <span [ngClass]="{
                                                         'fa-circle-o': !obj.valid,
