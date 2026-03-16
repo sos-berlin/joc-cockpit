@@ -1,0 +1,147 @@
+<ng-container>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <span translate>workflow.label.addNewOrderTo</span> {{paths.join(',')}}
+        </h4>
+        <button (click)="cancel()" aria-label="Close" class="close" type="button">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+    </div>
+
+    <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body p-a">
+            <div [ngClass]="{'show': display}" class="hide">
+                <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
+                <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
+                    <input #orderId="ngModel" [(ngModel)]="orders[0].orderId" [appAutofocus]="true" autocomplete="off"
+                        class="form-control" identifierValidation maxlength="30" name="orderId0"
+                        placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
+                    @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
+                        <div class="text-danger help-block">
+                            @if (orderId.errors['invalidIdentifier']) {
+                                <div translate>common.message.invalid</div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Force Job Admission -->
+            <div class="form-group row">
+                <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
+                <div class="col-md-8">
+                    <label [(ngModel)]="orders[0].forceJobAdmission" name="ignoreAdmissionTimes0" nz-checkbox>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Start Time -->
+            <!-- @if (orders.length < 2) { -->
+              <div class="form-group row">
+                    <label class="col-sm-4 " translate>common.label.startTime</label>
+                    <div class="col-md-8">
+                        <nz-radio-group [(ngModel)]="orders[0].at" name="at" (ngModelChange)="onTimeChange($event, 0)">
+                            <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+                            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+                            <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
+                            <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                        </nz-radio-group>
+                    </div>
+              </div>
+            <!-- } -->
+
+            <!-- Time for 'later' option -->
+            @if (orders[0].at == 'later') {
+              <div class="form-group row">
+                    <label class="col-sm-4 form-control-label" translate>common.label.time
+                        <sup class="text-danger text-sm">*</sup>
+                    </label>
+                    <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+                        <input #time="ngModel" [(ngModel)]="orders[0].atTime" [required]="orders[0].at == 'later'" class="form-control"
+                                name="atTime0" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
+                                timeRelativeStartValidatorReqex (blur)="onBlur(time, 'atTime', orderIndex)">
+                        @if (time.errors && (time.dirty || time.touched)) {
+                            <div class="help-block text-danger">
+                                @if (!time.valid) {
+                                    <div translate>common.message.invalid</div>
+                                }
+                            </div>
+                        }
+                    </div>
+              </div>
+            }
+
+            <!-- Date for 'date' option -->
+            @if (orders[0].at == 'date') {
+              <div class="form-group row">
+                    <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+                        <sup class="text-danger text-sm">*</sup>
+                    </label>
+                    <div class="col-sm-6">
+                        <app-date-input [object]="orders[0]" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                                        [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
+                                        [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                                        [placeholder]="( dateFormat | uppercase )"></app-date-input>
+                    </div>
+              </div>
+            }
+
+            <!-- Time Zone for 'date' option -->
+            @if (orders[0].at =='date') {
+              <div class="form-group row">
+                    <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+                    <div class="col-sm-6">
+                        <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
+                                            [listArray]="zones" [name]="'timeZone0'" [ignoreTranslate]="true"
+                                            [object]="orders[0]"></app-select-input>
+                    </div>
+              </div>
+            }
+
+            <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                        class="col-sm-4 form-control-label"
+                        translate>order.label.priority</label>
+                <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+                    class="col-sm-6">
+                    <nz-space-compact nzBlock>
+                        <nz-input-number #priority="ngModel" [(ngModel)]="orders[0].priority"
+                                        name="priority"
+                                        nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                                        style="width: 60%;">
+                        </nz-input-number>
+                        <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
+                                            [listArray]="priorities" [name]="'priorities'"
+                                            [optionLabel]="'label'" [optionValue]="'value'"
+                                            [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                                            [object]="orders[0]">
+                        </app-select-input>
+                    </nz-space-compact>
+
+                    @if (priority.invalid && (priority.dirty || priority.touched)) {
+                        <div class="text-danger help-block">
+                            @if (priority.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="modal-footer text-left">
+            <button [disabled]="submitted || !myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+                @if (submitted) {
+                    <i class="fa fa-spin fa-spinner p-r-xs"></i>
+                }
+                {{'common.button.submit' | translate}}
+            </button>
+            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+        </div>
+    </form>

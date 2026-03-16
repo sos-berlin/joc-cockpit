@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
-import {FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
+import {BulkAddOrderComponent, FilterModalComponent, SearchComponent, SingleWorkflowComponent, WorkflowComponent} from './workflow.component';
 import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {
@@ -45,7 +45,8 @@ import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
     FilterModalComponent,
     TooltipInfoComponent,
     SearchComponent,
-    TypeComponent
+    TypeComponent,
+    BulkAddOrderComponent
   ],
   exports: [
     OrderListSidebarComponent,
