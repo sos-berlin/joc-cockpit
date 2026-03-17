@@ -313,13 +313,6 @@ export class BulkAddOrderComponent {
   paths: any = [];
   bulkOrders: any = [];
   orders: any = [];
-  priorities = [
-    {label: 'inventory.label.high', value: 20000},
-    {label: 'inventory.label.aboveNormal', value: 10000},
-    {label: 'inventory.label.normal', value: 0},
-    {label: 'inventory.label.belowNormal', value: -10000},
-    {label: 'inventory.label.Low', value: -20000},
-  ];
 
   dateFormat: any;
   display: any;
@@ -332,7 +325,7 @@ export class BulkAddOrderComponent {
   commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-    private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
+    private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -348,9 +341,7 @@ export class BulkAddOrderComponent {
     this.bulkOrders = this.modalData.bulkOrders;
     this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] === 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.coreService.getTimeZoneList((timezones) => {
-      this.zones = timezones;
-    });
+    this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
 
@@ -364,7 +355,6 @@ export class BulkAddOrderComponent {
       timeZone: this.preferences.zone,
       at: 'now',
       forceJobAdmission: false,
-      priority: 0,
       tags: [],
       arguments: [],
       startPosition: '',
@@ -422,7 +412,6 @@ export class BulkAddOrderComponent {
         ...ord,
         orderName: this.orders[0].orderId,
         forceJobAdmission: this.orders[0].forceJobAdmission,
-        priority: this.orders[0].priority,
       }
 
       if (this.orders[0].at === 'now' || this.orders[0].at === 'never') {

@@ -102,37 +102,6 @@
               </div>
             }
 
-            <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
-                        class="col-sm-4 form-control-label"
-                        translate>order.label.priority</label>
-                <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
-                    class="col-sm-6">
-                    <nz-space-compact nzBlock>
-                        <nz-input-number #priority="ngModel" [(ngModel)]="orders[0].priority"
-                                        name="priority"
-                                        nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
-                                        style="width: 60%;">
-                        </nz-input-number>
-                        <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
-                                            [listArray]="priorities" [name]="'priorities'"
-                                            [optionLabel]="'label'" [optionValue]="'value'"
-                                            [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
-                                            [object]="orders[0]">
-                        </app-select-input>
-                    </nz-space-compact>
-
-                    @if (priority.invalid && (priority.dirty || priority.touched)) {
-                        <div class="text-danger help-block">
-                            @if (priority.errors['required']) {
-                            <div translate>common.message.requiredError</div>
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
-
-
         </div>
 
         <div class="modal-footer text-left">
