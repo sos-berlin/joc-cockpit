@@ -1273,6 +1273,18 @@
                             [innerHtml]="history.startTime | duration:history.endTime"></td>
                       </tr>
                       @if (history.show && history.arguments) {
+                        @if (history.orderState && (history.orderState._text === 'RUNNING' || history.orderState._text === 'INPROGRESS')) {
+                          <tr>
+                            <td></td>
+                            <td colspan="10">
+                              <app-job-progress-bar
+                                [order]="history"
+                                [controllerId]="schedulerIds.selected"
+                                [showDetails]="true">
+                              </app-job-progress-bar>
+                            </td>
+                          </tr>
+                        }
                         <tr>
                           <td></td>
                           <td colspan="10">

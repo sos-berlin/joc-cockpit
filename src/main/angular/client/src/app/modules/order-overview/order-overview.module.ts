@@ -4,6 +4,7 @@ import {OrderOverviewComponent, OrderPieChartComponent, RelativeDateValidator, A
 import {SharedModule} from '../shared/shared.module';
 import {OrderOverviewRoutingModule} from './order-overview-routing.module';
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {WorkflowModule} from '../workflow/workflow.module';
 
 @NgModule({
   declarations: [OrderOverviewComponent, OrderPieChartComponent, RelativeDateValidator, AllOrderResumeModelComponent],
@@ -11,7 +12,8 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
         SharedModule,
         NzTabsModule,
         OrderOverviewRoutingModule,
-        NzTooltipDirective
+        NzTooltipDirective,
+        WorkflowModule
     ]
 })
 export class OrderOverviewModule {
