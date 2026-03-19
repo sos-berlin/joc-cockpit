@@ -3991,6 +3991,7 @@
     "label.sleep": "Sleep",
     "label.duration": "Duration",
     "label.historyDetails": "History Details",
+    "label.addBulkOrderToWorkflows": "Add Bulk Orders",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
