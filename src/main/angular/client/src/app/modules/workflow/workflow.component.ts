@@ -1579,7 +1579,7 @@ export class WorkflowComponent {
   addBulkOrder() {
     const filteredMap = new Map(
       [...this.object.mapOfCheckedId.entries()].filter(([_, w]) =>
-        !w.orderPreparation &&
+        !w.orderPreparation && w.isCurrentVersion &&
         w.state?._text !== 'NOT_IN_SYNC'
       )
     );
