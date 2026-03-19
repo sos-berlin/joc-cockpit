@@ -2495,6 +2495,9 @@ getTimeZoneList(): any {
 
   getDateAndTime(data: any, val = 'from'): any {
     if (data[val + 'Date'] && data[val + 'Time']) {
+      if (!(data[val + 'Date'] instanceof Date)) {
+        data[val + 'Date'] = new Date(data[val + 'Date']);
+      }
       const arr = data[val + 'Time'].split(':');
       if (arr[0] && arr[0].length === 2) {
         data[val + 'Date'].setHours(arr[0])
