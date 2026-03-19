@@ -13,13 +13,15 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {FileTransferService} from '../../services/file-transfer.service';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {WorkflowModule} from '../workflow/workflow.module';
 
 @NgModule({
     imports: [
         SharedModule,
         HistoryRoutingModule,
         NzTabsModule,
-        NzTooltipDirective
+        NzTooltipDirective,
+        WorkflowModule
     ],
   providers: [FileTransferService],
   declarations: [
