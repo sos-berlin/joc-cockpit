@@ -2398,7 +2398,7 @@ export class XmlEditorComponent {
     let valueArr: any = [];
     let value: any = {};
     for (let i = 0; i < ele.length; i++) {
-      if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger') {
+      if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger' || ele[i].nodeValue === 'BooleanOrVarType') {
         value.base = ele[i].nodeValue;
         value.parent = nodeValue.ref;
         value.grandFather = nodeValue.parent;
