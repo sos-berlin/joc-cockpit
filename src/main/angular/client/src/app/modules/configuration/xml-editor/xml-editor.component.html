@@ -608,13 +608,13 @@
                           }
                         </div>
                         <div class="col-md-12 m-t-xs">
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''" class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}" type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" xmlAutofocus>
                           }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <i (click)="showPassword(selectedNode.values[0])" [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
                           }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
                             <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 3}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
                           }
                           @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'html') {
@@ -636,11 +636,27 @@
                               }
                             </div>
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean') {
-                            <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
-                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                            </nz-select>
+                          @if (selectedNode && selectedNode.values && (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType')) {
+                            <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
+                            @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'BooleanOrVarType') {
+                              <input 
+                                nz-input 
+                                [(ngModel)]="selectedNode.values[0].data"
+                                (ngModelChange)="submitValue($event, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                                [nzAutocomplete]="auto" 
+                                placeholder="true, false or ${VAR}" />
+                              <nz-autocomplete #auto>
+                                <nz-auto-option nzValue="true">true</nz-auto-option>
+                                <nz-auto-option nzValue="false">false</nz-auto-option>
+                                <nz-auto-option nzValue="${VAR}">{{'${VAR}'}}</nz-auto-option>
+                              </nz-autocomplete>
+                            } @else {
+                              <!-- xs:boolean - not editable -->
+                              <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                              </nz-select>
+                            }
                           }
                           @if (selectedNode && selectedNode.values && selectedNode.values[0].values) {
                             <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
