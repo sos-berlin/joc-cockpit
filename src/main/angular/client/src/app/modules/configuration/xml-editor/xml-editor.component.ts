@@ -398,7 +398,7 @@ export class ShowChildModalComponent {
           if (typeElement[0].attributes[i].nodeName === 'type') {
             this.addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode, data);
           }
-          if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
+          if (typeElement[0].attributes[i].nodeValue === 'xs:boolean' || typeElement[0].attributes[i].nodeValue === 'BooleanOrVarType') {
             nodes = Object.assign(nodes, {values: []});
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
