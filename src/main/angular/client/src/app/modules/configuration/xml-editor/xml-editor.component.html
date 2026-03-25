@@ -556,11 +556,27 @@
                               @if (node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger') {
                                 <nz-input-number [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [nzMin]="0" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="hideError()" class="w-full" id="{{node.name}}" required xmlAutofocus></nz-input-number>
                               }
-                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:boolean') {
-                                <label class="md-check w">
-                                  <input (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" type="checkbox">
-                                  <i class="primary"></i>
-                                </label>
+                              @if (node.values && node.values.length==0 && node.name && (node.type === 'xs:boolean' || node.type === 'BooleanOrVarType')) {
+                                <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
+                                @if (node.type === 'BooleanOrVarType') {
+                                  <input 
+                                    nz-input 
+                                    [(ngModel)]="node.data"
+                                    (ngModelChange)="submitValue($event, node)"
+                                    [nzAutocomplete]="auto" 
+                                    placeholder="true, false or ${VAR}" />
+                                  <nz-autocomplete #auto>
+                                    <nz-auto-option nzValue="true">true</nz-auto-option>
+                                    <nz-auto-option nzValue="false">false</nz-auto-option>
+                                    <nz-auto-option nzValue="${VAR}">{{'${VAR}'}}</nz-auto-option>
+                                  </nz-autocomplete>
+                                } @else {
+                                  <!-- xs:boolean - not editable -->
+                                  <label class="md-check w">
+                                    <input (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" type="checkbox">
+                                    <i class="primary"></i>
+                                  </label>
+                                }
                               }
                               @if (node.values && node.values.length > 0 && node.type !== 'xs:list') {
                                 <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="w-full" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" id="{{node.name}}">
@@ -638,7 +654,7 @@
                           }
                           @if (selectedNode && selectedNode.values && (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType')) {
                             <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
-                            @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'BooleanOrVarType') {
+                            @if (selectedNode.values[0].base === 'BooleanOrVarType') {
                               <input 
                                 nz-input 
                                 [(ngModel)]="selectedNode.values[0].data"
