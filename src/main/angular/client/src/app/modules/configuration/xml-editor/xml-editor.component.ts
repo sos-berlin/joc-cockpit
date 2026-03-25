@@ -3039,6 +3039,13 @@ export class XmlEditorComponent {
     const attr = select(xmlEditorPath, this.doc);
     if (attr.length > 0) {
       value.base = attr[0].nodeValue;
+      if (value.base === 'combobox') { //<XmlEditor type="combobox" options="opt1;opt2" />
+        const optionsPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@options';
+        const optionsAttr = select(optionsPath, this.doc);
+        if (optionsAttr.length > 0 && optionsAttr[0].nodeValue) {
+          value.values = optionsAttr[0].nodeValue.split(';').map(opt => ({ value: opt }));
+        }
+      }
     }
 
     if (isEmpty(value)) {
@@ -3057,6 +3064,15 @@ export class XmlEditorComponent {
           if (x !== undefined) {
             value.base = x;
             value.parent = node;
+            
+            if (x === 'combobox') { //<XmlEditor type="combobox" options="opt1;opt2" />
+              for (let i = 0; i < attr1[0].attributes.length; i++) {
+                if (attr1[0].attributes[i].nodeName === 'options') {
+                  value.values = attr1[0].attributes[i].nodeValue.split(';').map(opt => ({ value: opt }));
+                  break;
+                }
+              }
+            }            
           }
         }
       }
