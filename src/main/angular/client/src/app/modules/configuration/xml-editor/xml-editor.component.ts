@@ -3036,49 +3036,38 @@ export class XmlEditorComponent {
         value.parent = node;
       }
     }
-    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
-    const attr = select(xmlEditorPath, this.doc);
-    if (attr.length > 0) {
-      value.base = attr[0].nodeValue;
-      if (value.base === 'combobox') { //<XmlEditor type="combobox" options="opt1;opt2" />
-        const optionsPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@options';
-        const optionsAttr = select(optionsPath, this.doc);
-        if (optionsAttr.length > 0 && optionsAttr[0].nodeValue) {
-          value.values = optionsAttr[0].nodeValue.split(';').map(opt => ({ value: opt }));
-        }
-      }
-    }
-
-    if (isEmpty(value)) {
-      let x;
-      const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
-      const attr1 = select(valueFromXmlEditorPath, this.doc);
-      if (attr1.length > 0) {
-        if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-          for (let i = 0; i < attr1[0].attributes.length; i++) {
-            if (attr1[0].attributes[i].nodeName === 'type') {
-              x = attr1[0].attributes[i].nodeValue;
-              break;
-            }
+    
+    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+    const elements = select(xmlEditorPath, this.doc);
+    let options;
+    if (elements.length > 0) {
+      let element = elements[0];
+      if (element.attributes && element.attributes.length > 0) {
+        for (let i = 0; i < element.attributes.length; i++) {
+          if (element.attributes[i].nodeName === 'type') {
+            value.base = element.attributes[i].nodeValue;
+          } else if (element.attributes[i].nodeName === 'options') {  //<XmlEditor type="combobox" options="opt1;opt2" />
+            options = element.attributes[i].nodeValue;
           }
-
-          if (x !== undefined) {
-            value.base = x;
-            value.parent = node;
-            
-            if (x === 'combobox') { //<XmlEditor type="combobox" options="opt1;opt2" />
-              for (let i = 0; i < attr1[0].attributes.length; i++) {
-                if (attr1[0].attributes[i].nodeName === 'options') {
-                  value.values = attr1[0].attributes[i].nodeValue.split(';').map(opt => ({ value: opt }));
-                  break;
-                }
-              }
-            }            
+          else if (element.attributes[i].nodeName === 'enc' && element.attributes[i].nodeValue === 'true') {
+              value.enc = true;
+          }
+          else if (element.attributes[i].nodeName === 'cs' && element.attributes[i].nodeValue === 'true') {
+              value.cs = true;
           }
         }
       }
+    }  
+    if (value.base === 'combobox') {
+      if (options && options.length > 0) {
+        value.values = options.split(';').map(opt => ({ value: opt }));
+      }
     }
-
+    
+    if (!value.parent) {
+      value.parent = node;
+    }
+    
     if (!isEmpty(value)) {
       valueArr.push(value);
     }
