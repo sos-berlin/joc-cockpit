@@ -503,6 +503,7 @@
                                 <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}" type="{{!node.pShow ? 'password' : 'text'}}" xmlAutofocus>
                               }
                               @if (node.values && node.values.length==0 && (node.type=='password' || node.name=='password')) {
+                                <a><i (click)="encryptValue(env, 'env')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                                 <i (click)="showPassword(node)" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
                               }
                               @if (node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
@@ -619,21 +620,20 @@
                       <div class="row">
                         <div class="col-md-12">
                           <span translate>xml.label.value</span>
-                          @if (!(selectedNode.values && selectedNode.values[0].use)) {
+                          @if (!(selectedNode.values[0].use)) {
                             <sup class="text-danger text-sm">*</sup>
                           }
                         </div>
                         <div class="col-md-12 m-t-xs">
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                          @if (!selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''" class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}" type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" xmlAutofocus>
-                          }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <i (click)="showPassword(selectedNode.values[0])" [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
+                            <i style="cursor:pointer;" (click)="encryptValue((selectedNode.ref  || selectedNode.name),selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
                           }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
+                          @if (!selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
                             <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 1}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'html') {
+                          @if (selectedNode.values[0].base === 'html') {
                             <div [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}" class="form-group">
                               <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}" class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
                               <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}" class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
@@ -652,7 +652,7 @@
                               }
                             </div>
                           }
-                          @if (selectedNode && selectedNode.values && (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType')) {
+                          @if (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType') {
                             <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
                             @if (selectedNode.values[0].base === 'BooleanOrVarType') {
                               <input 
@@ -674,7 +674,7 @@
                               </nz-select>
                             }
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].values) {
+                          @if (selectedNode.values[0].values) {
                             @if (selectedNode.values[0].base === 'combobox') {
                               <!-- Editable Combobox mit Autocomplete -->
                               <input 

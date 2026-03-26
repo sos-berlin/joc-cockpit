@@ -16,6 +16,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {EncryptArgumentModalComponent, NotificationComponent} from "../inventory/inventory.component";
 
 declare const require: any;
 declare const $: any;
@@ -3754,6 +3755,36 @@ export class XmlEditorComponent {
       this.coreService.showCopyMessage(this.message);
     }
   }
+  
+  encryptValue(ref, argument){   
+    let argu = {
+          name: ref,
+          value: argument.data
+        };
+    let selectedAgent  = [];
+    const type = 'job';
+    const controllerId = '';
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type,
+        controllerId: controllerId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        argument.data = result.value;
+      }
+    });
+  }
+
 
   // check rules before paste
   private checkRules(pasteNode, copyNode): void {
