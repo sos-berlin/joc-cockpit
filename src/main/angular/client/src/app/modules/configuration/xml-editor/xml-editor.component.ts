@@ -16,7 +16,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
-import {EncryptArgumentModalComponent, NotificationComponent} from "../inventory/inventory.component";
+import {EncryptArgumentModalComponent} from "../inventory/inventory.component";
 
 declare const require: any;
 declare const $: any;
