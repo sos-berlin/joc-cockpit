@@ -504,6 +504,9 @@
                               }
                               @if (node.values && node.values.length==0 && (node.type=='password' || node.name=='password')) {
                                 <i (click)="showPassword(node)" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
+                                @if (node.enc) {
+                                  <i style="cursor:pointer !important;" (click)="encryptValue(node.name,node)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                                }
                               }
                               @if (node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
                                !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))) {
@@ -556,11 +559,27 @@
                               @if (node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger') {
                                 <nz-input-number [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [nzMin]="0" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="hideError()" class="w-full" id="{{node.name}}" required xmlAutofocus></nz-input-number>
                               }
-                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:boolean') {
-                                <label class="md-check w">
-                                  <input (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" type="checkbox">
-                                  <i class="primary"></i>
-                                </label>
+                              @if (node.values && node.values.length==0 && node.name && (node.type === 'xs:boolean' || node.type === 'BooleanOrVarType')) {
+                                <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
+                                @if (node.type === 'BooleanOrVarType') {
+                                  <input 
+                                    nz-input 
+                                    [(ngModel)]="node.data"
+                                    (ngModelChange)="submitValue($event, node)"
+                                    [nzAutocomplete]="auto" 
+                                    placeholder="true, false or ${VAR}" />
+                                  <nz-autocomplete #auto>
+                                    <nz-auto-option nzValue="true">true</nz-auto-option>
+                                    <nz-auto-option nzValue="false">false</nz-auto-option>
+                                    <nz-auto-option nzValue="${VAR}">{{'${VAR}'}}</nz-auto-option>
+                                  </nz-autocomplete>
+                                } @else {
+                                  <!-- xs:boolean - not editable -->
+                                  <label class="md-check w">
+                                    <input (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" type="checkbox">
+                                    <i class="primary"></i>
+                                  </label>
+                                }
                               }
                               @if (node.values && node.values.length > 0 && node.type !== 'xs:list') {
                                 <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="w-full" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" id="{{node.name}}">
@@ -603,21 +622,25 @@
                       <div class="row">
                         <div class="col-md-12">
                           <span translate>xml.label.value</span>
-                          @if (!(selectedNode.values && selectedNode.values[0].use)) {
+                          @if (!(selectedNode.values[0].use)) {
                             <sup class="text-danger text-sm">*</sup>
                           }
                         </div>
                         <div class="col-md-12 m-t-xs">
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                          @if (!selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''" class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}" type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" xmlAutofocus>
-                          }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <i (click)="showPassword(selectedNode.values[0])" [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
+                            @if (selectedNode.values[0].enc) {
+                              <i style="cursor:pointer !important;" (click)="encryptValue((selectedNode.ref  || selectedNode.name),selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                            }
                           }
-                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
-                            <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 3}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
+                          @if (!selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
+                            <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 1}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
+                            @if (selectedNode.values[0].enc){
+                              <i style="cursor:pointer !important;" (click)="encryptValue((selectedNode.ref  || selectedNode.name),selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                            }
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'html') {
+                          @if (selectedNode.values[0].base === 'html') {
                             <div [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}" class="form-group">
                               <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}" class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
                               <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}" class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
@@ -636,18 +659,50 @@
                               }
                             </div>
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean') {
-                            <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
-                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                            </nz-select>
+                          @if (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType') {
+                            <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
+                            @if (selectedNode.values[0].base === 'BooleanOrVarType') {
+                              <input 
+                                nz-input 
+                                [(ngModel)]="selectedNode.values[0].data"
+                                (ngModelChange)="submitValue($event, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                                [nzAutocomplete]="auto" 
+                                placeholder="true, false or ${VAR}" />
+                              <nz-autocomplete #auto>
+                                <nz-auto-option nzValue="true">true</nz-auto-option>
+                                <nz-auto-option nzValue="false">false</nz-auto-option>
+                                <nz-auto-option nzValue="${VAR}">{{'${VAR}'}}</nz-auto-option>
+                              </nz-autocomplete>
+                            } @else {
+                              <!-- xs:boolean - not editable -->
+                              <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                              </nz-select>
+                            }
                           }
-                          @if (selectedNode && selectedNode.values && selectedNode.values[0].values) {
-                            <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
-                              @for (value of selectedNode.values[0].values; track value) {
-                                <nz-option [nzLabel]="value.value" [nzValue]="value.value"></nz-option>
-                              }
-                            </nz-select>
+                          @if (selectedNode.values[0].values) {
+                            @if (selectedNode.values[0].base === 'combobox') {
+                              <!-- Editable Combobox mit Autocomplete -->
+                              <input 
+                                nz-input 
+                                [(ngModel)]="selectedNode.values[0].data"
+                                (ngModelChange)="submitValue($event, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                                [nzAutocomplete]="auto" 
+                                class="w-full"
+                                placeholder="select or enter value" />
+                                <nz-autocomplete #auto>
+                                  @for (value of selectedNode.values[0].values; track value) {
+                                    <nz-auto-option [nzValue]="value.value">{{value.value}}</nz-auto-option>
+                                  }
+                                </nz-autocomplete>
+                            } @else {
+                               <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                                  @for (value of selectedNode.values[0].values; track value) {
+                                    <nz-option [nzLabel]="value.value" [nzValue]="value.value"></nz-option>
+                                  }
+                              </nz-select>
+                            }                           
                           }
                           @if (error && errorName === (selectedNode.ref || selectedNode.name)) {
                             <div [innerText]="text" class="help-block text-danger" id="{{nodes.ref || nodes.ref}}Alert" role="alert"></div>

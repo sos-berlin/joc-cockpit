@@ -3476,41 +3476,86 @@ export class HistoryComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.isLoading && this.historyFilters.type === 'ORDER') {
-          if (!isEmpty(this.orderSearch)) {
-            this.search(this.orderSearch, false);
-          } else {
-            this.init(true);
+        const event = args.eventSnapshots[j];
+        const eventType = event.eventType;
+
+        // Order History Tab
+        if (this.isLoading && this.historyFilters.type === 'ORDER') {
+          // Handle order-related events
+          if (eventType && (eventType.match('HistoryOrder') || eventType.match('HistoryChildOrder'))) {
+            if (!isEmpty(this.orderSearch)) {
+              this.search(this.orderSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
           }
-          break;
-        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.isLoading && this.historyFilters.type === 'TASK') {
-          if (!isEmpty(this.jobSearch)) {
-            this.search(this.jobSearch, false);
-          } else {
-            this.init(true);
+          // Handle workflow state changes
+          else if (eventType === 'WorkflowStateChanged') {
+            if (!isEmpty(this.orderSearch)) {
+              this.search(this.orderSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
           }
-          break;
-        } else if (args.eventSnapshots[j].eventType.match(/Deploy/) && this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
-          if (!isEmpty(this.deploymentSearch)) {
-            this.search(this.deploymentSearch, false);
-          } else {
-            this.init(true);
+          // Handle task/job events that affect order progress
+          else if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
+            if (!isEmpty(this.orderSearch)) {
+              this.search(this.orderSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
           }
-          break;
-        } else if (args.eventSnapshots[j].eventType === 'DailyPlanUpdated' && this.isLoading && this.historyFilters.type === 'SUBMISSION') {
-          if (!isEmpty(this.submissionSearch)) {
-            this.search(this.submissionSearch, false);
-          } else {
-            this.init(true);
+        }
+        
+        // Task History Tab
+        else if (this.isLoading && this.historyFilters.type === 'TASK') {
+          if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
+            if (!isEmpty(this.jobSearch)) {
+              this.search(this.jobSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
           }
-          break;
-        } else if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
-          if (!isEmpty(this.submissionSearch)) {
-            this.search(this.submissionSearch, false);
-          } else {
-            this.init(true);
+        }
+        
+        // Deployment History Tab
+        else if (this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
+          if (eventType && eventType.match(/Deploy/)) {
+            if (!isEmpty(this.deploymentSearch)) {
+              this.search(this.deploymentSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
           }
-          break;
+        }
+        
+        // Submission History Tab
+        else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
+          if (eventType === 'DailyPlanUpdated') {
+            if (!isEmpty(this.submissionSearch)) {
+              this.search(this.submissionSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
+          }
+        }
+        
+        // YADE/File Transfer Tab
+        else if (this.isLoading && this.historyFilters.type === 'YADE') {
+          if (eventType === 'FILETRANSFER' || eventType === 'FileTransferUpdated') {
+            if (!isEmpty(this.yadeSearch)) {
+              this.search(this.yadeSearch, false);
+            } else {
+              this.init(true);
+            }
+            break;
+          }
         }
       }
     }

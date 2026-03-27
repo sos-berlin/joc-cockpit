@@ -16,6 +16,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {EncryptArgumentModalComponent} from "../inventory/inventory.component";
 
 declare const require: any;
 declare const $: any;
@@ -398,7 +399,7 @@ export class ShowChildModalComponent {
           if (typeElement[0].attributes[i].nodeName === 'type') {
             this.addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode, data);
           }
-          if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
+          if (typeElement[0].attributes[i].nodeValue === 'xs:boolean' || typeElement[0].attributes[i].nodeValue === 'BooleanOrVarType') {
             nodes = Object.assign(nodes, {values: []});
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
@@ -2398,7 +2399,7 @@ export class XmlEditorComponent {
     let valueArr: any = [];
     let value: any = {};
     for (let i = 0; i < ele.length; i++) {
-      if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger') {
+      if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger' || ele[i].nodeValue === 'BooleanOrVarType') {
         value.base = ele[i].nodeValue;
         value.parent = nodeValue.ref;
         value.grandFather = nodeValue.parent;
@@ -3035,33 +3036,38 @@ export class XmlEditorComponent {
         value.parent = node;
       }
     }
-    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor/@type';
-    const attr = select(xmlEditorPath, this.doc);
-    if (attr.length > 0) {
-      value.base = attr[0].nodeValue;
-    }
-
-    if (isEmpty(value)) {
-      let x;
-      const valueFromXmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
-      const attr1 = select(valueFromXmlEditorPath, this.doc);
-      if (attr1.length > 0) {
-        if (attr1[0].attributes && attr1[0].attributes.length > 0) {
-          for (let i = 0; i < attr1[0].attributes.length; i++) {
-            if (attr1[0].attributes[i].nodeName === 'type') {
-              x = attr1[0].attributes[i].nodeValue;
-              break;
-            }
+    
+    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+    const elements = select(xmlEditorPath, this.doc);
+    let options;
+    if (elements.length > 0) {
+      let element = elements[0];
+      if (element.attributes && element.attributes.length > 0) {
+        for (let i = 0; i < element.attributes.length; i++) {
+          if (element.attributes[i].nodeName === 'type') {
+            value.base = element.attributes[i].nodeValue;
+          } else if (element.attributes[i].nodeName === 'options') {  //<XmlEditor type="combobox" options="opt1;opt2" />
+            options = element.attributes[i].nodeValue;
           }
-
-          if (x !== undefined) {
-            value.base = x;
-            value.parent = node;
+          else if (element.attributes[i].nodeName === 'enc' && element.attributes[i].nodeValue === 'true') {
+              value.enc = true;
+          }
+          else if (element.attributes[i].nodeName === 'cs' && element.attributes[i].nodeValue === 'true') {
+              value.cs = true;
           }
         }
       }
+    }  
+    if (value.base === 'combobox') {
+      if (options && options.length > 0) {
+        value.values = options.split(';').map(opt => ({ value: opt }));
+      }
     }
-
+    
+    if (!value.parent) {
+      value.parent = node;
+    }
+    
     if (!isEmpty(value)) {
       valueArr.push(value);
     }
@@ -3738,6 +3744,36 @@ export class XmlEditorComponent {
       this.coreService.showCopyMessage(this.message);
     }
   }
+  
+  encryptValue(ref, argument){   
+    let argu = {
+          name: ref,
+          value: argument.data
+        };
+    let selectedAgent  = [];
+    const type = 'job';
+    const controllerId = '';
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type,
+        controllerId: controllerId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        argument.data = result.value;
+      }
+    });
+  }
+
 
   // check rules before paste
   private checkRules(pasteNode, copyNode): void {

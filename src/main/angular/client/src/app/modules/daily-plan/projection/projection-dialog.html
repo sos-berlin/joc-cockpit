@@ -114,7 +114,7 @@
                  <span class="show-in-single-line">
                    @if (permission.joc && permission.joc.inventory.view) {
                      <a class="cursor text-hover-primary p-r-xxs"
-                        (click)="coreService.navToInventoryTab(sch['workflow'], 'WORKFLOW');"><i
+                        (click)="navigateToPath(sch['workflow'], 'WORKFLOW');"><i
                        class="fa fa-pencil"></i>
                      </a>
                    }
@@ -125,7 +125,7 @@
               <span class="show-in-single-line">
                 @if (permission.joc?.inventory?.view) {
                   <a class="cursor text-hover-primary p-r-xxs"
-                     (click)="coreService.navToInventoryTab(sch.schedule, 'SCHEDULE')">
+                     (click)="navigateToPath(sch.schedule, 'SCHEDULE')">
                     <i class="fa fa-pencil"></i>
                   </a>
                 }

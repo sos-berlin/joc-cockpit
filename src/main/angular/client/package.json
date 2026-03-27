@@ -14,14 +14,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.3.15",
-    "@angular/common": "^20.3.15",
-    "@angular/compiler": "^20.3.15",
-    "@angular/core": "^20.3.15",
-    "@angular/forms": "^20.3.15",
-    "@angular/platform-browser": "^20.3.15",
-    "@angular/platform-browser-dynamic": "^20.3.15",
-    "@angular/router": "^20.3.15",
+    "@angular/animations": "^20.3.18",
+    "@angular/common": "^20.3.18",
+    "@angular/compiler": "^20.3.18",
+    "@angular/core": "^20.3.18",
+    "@angular/forms": "^20.3.18",
+    "@angular/platform-browser": "^20.3.18",
+    "@angular/platform-browser-dynamic": "^20.3.18",
+    "@angular/router": "^20.3.18",
     "@cyclonedx/cyclonedx-npm": "^4.1.1",
     "@juggle/resize-observer": "^3.4.0",
     "@ngx-translate/core": "^15.0.0",
@@ -41,7 +41,7 @@
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "jsoneditor": "^9.10.2",
-    "jspdf": "^4.0.0",
+    "jspdf": "^4.2.1",
     "moment-timezone": "^0.5.42",
     "ng-zorro-antd": "^20.3.1",
     "ng2-charts": "^3.0.5",
@@ -66,7 +66,7 @@
     "@angular-devkit/build-angular": "^20.3.13",
     "@angular-devkit/core": "^20.3.13",
     "@angular/cli": "^20.3.13",
-    "@angular/compiler-cli": "^20.3.15",
+    "@angular/compiler-cli": "^20.3.18",
     "@types/crypto-js": "^4.1.1",
     "@types/d3-scale": "^4.0.3",
     "@types/d3-selection": "^3.0.5",
@@ -91,6 +91,7 @@
     "typescript": "^5.5.3"
   },
   "overrides": {
-    "ajv": "8.18.0"
+    "ajv": "8.18.0",
+    "brace-expansion": "5.0.5"
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, DoCheck} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {interval, Subscription} from 'rxjs';
 
@@ -8,15 +8,35 @@ import {interval, Subscription} from 'rxjs';
   templateUrl: './job-progress-bar.component.html',
   styleUrls: ['./job-progress-bar.component.css']
 })
-export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() order: any;
+export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
+  private _job: any;
+  private _lastJobState: string;
+  private _lastJobId: string;
+  
+  @Input() 
+  set job(value: any) {
+    console.debug('[JobProgressBar] Job setter called:', {
+      previousJob: this._job?.job,
+      newJob: value?.job,
+      previousState: this._job?.state?._text,
+      newState: value?.state?._text,
+      taskId: value?.taskId
+    });
+    this._job = value;
+  }
+  
+  get job(): any {
+    return this._job;
+  }
+  
+  @Input() workflowPath: string;
   @Input() controllerId: any;
   @Input() showDetails: boolean = true;
 
   progress: number = 0;
   timeElapsed: number = 0;
   estimatedTime: number = 0;
-  expectedTime: number = 0; // From job warning configuration
+  expectedTime: number = 0;
   timeRemaining: number = 0;
   isOverdue: boolean = false;
   isRunning: boolean = false;
@@ -25,10 +45,59 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
   private updateSubscription: Subscription;
   private historyData: any[] = [];
 
-  constructor(private coreService: CoreService) {}
+  constructor(private coreService: CoreService, private cdr: ChangeDetectorRef) {}
+
+  ngDoCheck(): void {
+    // Check if job state changed without reference change (event updates)
+    if (this.job && this.job.state) {
+      const currentState = this.job.state._text;
+      const currentJobId = this.job.taskId || this.job.job + this.job.startTime;
+      
+      // If state changed for same job or job changed
+      if (this._lastJobState !== currentState || this._lastJobId !== currentJobId) {
+        console.debug('[JobProgressBar] ngDoCheck detected change:', {
+          previousJobId: this._lastJobId,
+          currentJobId: currentJobId,
+          previousState: this._lastJobState,
+          currentState: currentState,
+          jobName: this.job.job,
+          fullJob: this.job
+        });
+        
+        this._lastJobState = currentState;
+        this._lastJobId = currentJobId;
+        
+        const previousRunning = this.isRunning;
+        this.checkJobState();
+        
+        console.debug('[JobProgressBar] State after check:', {
+          previousRunning: previousRunning,
+          currentRunning: this.isRunning,
+          willStart: !previousRunning && this.isRunning,
+          willStop: previousRunning && !this.isRunning
+        });
+        
+        // Handle state transitions
+        if (!previousRunning && this.isRunning) {
+          // Job just started
+          console.debug('[JobProgressBar] Starting tracking from DoCheck');
+          this.startProgressTracking();
+        } else if (previousRunning && !this.isRunning) {
+          // Job just finished
+          console.debug('[JobProgressBar] Stopping tracking from DoCheck');
+          this.stopProgressTracking();
+          this.resetState();
+        }
+      }
+    }
+  }
 
   ngOnInit(): void {
-    this.checkOrderState();
+    if (!this.job) {
+      return;
+    }
+    
+    this.checkJobState();
 
     if (this.isRunning) {
       this.startProgressTracking();
@@ -36,17 +105,22 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['order'] && !changes['order'].firstChange) {
-      const previousState = this.isRunning;
-      this.checkOrderState();
-
-      if (previousState && !this.isRunning) {
-        this.stopProgressTracking();
-      }
-      else if (!previousState && this.isRunning) {
-        this.startProgressTracking();
-      }
+    // Handle workflowPath changes
+    if (changes['workflowPath'] && !changes['workflowPath'].firstChange && this.isRunning) {
+      this.stopProgressTracking();
+      this.startProgressTracking();
     }
+  }
+
+  private resetState(): void {
+    this.progress = 0;
+    this.timeElapsed = 0;
+    this.estimatedTime = 0;
+    this.expectedTime = 0;
+    this.timeRemaining = 0;
+    this.isOverdue = false;
+    this.maxHistoricalTime = 0;
+    this.historyData = [];
   }
 
   ngOnDestroy(): void {
@@ -54,8 +128,15 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private startProgressTracking(): void {
+    console.debug('[JobProgressBar] startProgressTracking called:', {
+      job: this.job?.job,
+      workflowPath: this.workflowPath,
+      controllerId: this.controllerId,
+      state: this.job?.state?._text
+    });
+    
     this.checkExpectedTime();
-    this.fetchHistoryData();
+    this.fetchJobHistoryData();
     this.updateSubscription = interval(1000).subscribe(() => {
       this.updateProgress();
     });
@@ -63,72 +144,104 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
 
   private stopProgressTracking(): void {
     if (this.updateSubscription) {
+      console.debug('[JobProgressBar] stopProgressTracking called:', {
+        job: this.job?.job,
+        state: this.job?.state?._text
+      });
       this.updateSubscription.unsubscribe();
       this.updateSubscription = null;
     }
   }
 
   private checkExpectedTime(): void {
-    if (this.order.expectedExecutionTime) {
-      this.expectedTime = this.order.expectedExecutionTime * 1000;
-    } else if (this.order.warnIfLonger) {
-      this.expectedTime = this.order.warnIfLonger * 1000;
+    if (this.job && this.job.expectedExecutionTime) {
+      this.expectedTime = this.job.expectedExecutionTime * 1000;
+    } else if (this.job && this.job.warnIfLonger) {
+      this.expectedTime = this.job.warnIfLonger * 1000;
     }
   }
 
-  private checkOrderState(): void {
+  private checkJobState(): void {
     let stateText = null;
+    const previousRunningState = this.isRunning;
 
-    if (this.order && this.order.orderState && this.order.orderState._text) {
-      stateText = this.order.orderState._text.toUpperCase();
-    }
-    else if (this.order && this.order.state && this.order.state._text) {
-      stateText = this.order.state._text.toUpperCase();
+    if (this.job && this.job.state && this.job.state._text) {
+      stateText = this.job.state._text.toUpperCase();
     }
 
     if (stateText) {
-      this.isRunning = (stateText === 'RUNNING' || stateText === 'INPROGRESS' || stateText === 'IN_PROGRESS');
+      this.isRunning = (stateText === 'RUNNING' || stateText === 'INPROGRESS' || stateText === 'IN_PROGRESS' || stateText === 'INCOMPLETE');
+    } else {
+      this.isRunning = false;
+    }
+    
+    console.debug('[JobProgressBar] checkJobState:', {
+      jobName: this.job?.job,
+      stateText: stateText,
+      isRunning: this.isRunning,
+      previousRunningState: previousRunningState
+    });
+    
+    // If state changed from running to not running, clean up
+    if (previousRunningState && !this.isRunning) {
+      console.debug('[JobProgressBar] State changed to not running, cleaning up');
+      this.stopProgressTracking();
+      this.resetState();
     }
   }
 
-  private fetchHistoryData(): void {
-    if (!this.order) {
-      return;
-    }
-
-    let workflowPath = null;
-    let workflowVersionId = null;
-
-    if (this.order.workflowId && this.order.workflowId.path) {
-      workflowPath = this.order.workflowId.path;
-      workflowVersionId = this.order.workflowId.versionId;
-    }
-    else if (this.order.workflow) {
-      workflowPath = this.order.workflow;
-    }
-
-    if (!workflowPath) {
+  private fetchJobHistoryData(): void {
+    if (!this.job || !this.job.job) {
+      console.debug('[JobProgressBar] fetchJobHistoryData skipped - no job');
       this.estimateWithoutHistory();
       return;
     }
 
+    let workflowPath = this.workflowPath || this.job.workflow;
+    let jobName = this.job.job;
+
+    if (!workflowPath || !jobName) {
+      console.debug('[JobProgressBar] fetchJobHistoryData skipped - missing data:', {
+        workflowPath: workflowPath,
+        jobName: jobName
+      });
+      this.estimateWithoutHistory();
+      return;
+    }
+
+    console.debug('[JobProgressBar] Fetching job history for:', {
+      workflowPath: workflowPath,
+      jobName: jobName,
+      controllerId: this.controllerId
+    });
+
     const obj = {
       controllerId: this.controllerId,
-      compact: false,
-      workflowIds: [{
-        path: workflowPath,
-        versionId: workflowVersionId
+      jobs: [{
+        workflowPath: workflowPath,
+        job: jobName
       }],
       limit: 10,
       historyStates: ['SUCCESSFUL']
     };
 
-    this.coreService.post('orders/history', obj).subscribe({
+    this.coreService.post('tasks/history', obj).subscribe({
       next: (res: any) => {
+        console.debug('[JobProgressBar] History response:', {
+          hasHistory: !!res.history,
+          historyLength: res.history?.length || 0
+        });
+        
         if (res.history && res.history.length > 0) {
-          const filteredHistory = res.history.filter(item => item.workflow === workflowPath);
+          const filteredHistory = res.history.filter(item => 
+            item.workflow === workflowPath && item.job === jobName
+          );
 
           this.historyData = filteredHistory;
+          
+          console.debug('[JobProgressBar] Filtered history:', {
+            filteredCount: filteredHistory.length
+          });
 
           if (filteredHistory.length > 0) {
             this.calculateEstimatedTime();
@@ -140,7 +253,8 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
           this.estimateWithoutHistory();
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('[JobProgressBar] Error fetching history:', err);
         this.estimateWithoutHistory();
       }
     });
@@ -183,22 +297,32 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private updateProgress(): void {
-    if (!this.order || !this.isRunning) {
+    if (!this.job || !this.isRunning) {
+      console.debug('[JobProgressBar] updateProgress skipped:', {
+        hasJob: !!this.job,
+        isRunning: this.isRunning
+      });
       return;
     }
 
     const now = new Date().getTime();
     let startTime: number;
 
-    if (this.order.startTime) {
-      startTime = new Date(this.order.startTime).getTime();
-    } else if (this.order.scheduledFor) {
-      startTime = new Date(this.order.scheduledFor).getTime();
+    if (this.job.startTime) {
+      startTime = new Date(this.job.startTime).getTime();
+    } else if (this.job.scheduledFor) {
+      startTime = new Date(this.job.scheduledFor).getTime();
     } else {
       startTime = now;
     }
 
     this.timeElapsed = now - startTime;
+    
+    // Additional safety check: if job already has an endTime, it's completed
+    if (this.job.endTime) {
+      this.stopProgressTracking();
+      return;
+    }
 
     if (this.estimatedTime > 0) {
       this.progress = (this.timeElapsed / this.estimatedTime) * 100;
@@ -235,6 +359,9 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.progress = 0;
     }
+    
+    // Mark for check to ensure view updates
+    this.cdr.markForCheck();
   }
 
   formatTime(milliseconds: number): string {
