@@ -353,6 +353,13 @@ export class ShowProjectionModalComponent {
     this.activeModal.destroy();
   }
 
+  navigateToPath(path, objectType) {
+    this.coreService.navToInventoryTab(path, objectType);
+    setTimeout(() => {
+      this.activeModal.destroy();
+    }, 100);
+  }
+
 }
 
 @Component({
@@ -539,6 +546,15 @@ export class ProjectionComponent {
   }
 
   /* ----------- Advance Filter ------------ **/
+
+  getTree() {
+    if (this.workflowTree.length == 0) {
+      this.getWorkflowTree();
+    }
+    if (this.scheduleTree.length == 0) {
+      this.getScheduleTree();
+    }
+  }
 
   private getWorkflowTree(): void {
     this.coreService.post('tree', {

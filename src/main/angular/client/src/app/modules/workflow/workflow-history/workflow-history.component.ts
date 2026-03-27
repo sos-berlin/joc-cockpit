@@ -77,6 +77,9 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   jobHistory: any = [];
   workflowFilters: any = {};
   subscription: Subscription;
+  private expandedOrderState: Map<string, any> = new Map();
+  private expandedTaskState: Map<string, any> = new Map();
+  private expandedJobState: Map<string, any> = new Map();
 
   constructor(public coreService: CoreService, private authService: AuthService, public message: NzMessageService,
               private router: Router, private dataService: DataService, public viewContainerRef: ViewContainerRef) {
@@ -129,25 +132,63 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if ((args.eventSnapshots[j].eventType && (args.eventSnapshots[j].eventType.match('HistoryOrder') || args.eventSnapshots[j].eventType.match('HistoryChildOrder'))) && this.index == 0) {
-          if (!this.workflow || !this.workflow.path) {
-            this.loadOrderHistory();
-            break;
-          } else if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
-            this.loadOrderHistory();
-            break;
+        const event = args.eventSnapshots[j];
+        const eventType = event.eventType;
+        const eventWorkflow = event.workflow;
+        
+        // Check if event is related to current workflow
+        const isRelevantWorkflow = !this.workflow || !this.workflow.path || 
+          (eventWorkflow && eventWorkflow.path === this.workflow.path);
+
+        // Order History Tab (index 0)
+        if (this.index == 0) {
+          // Handle order events
+          if (eventType && (eventType.match('HistoryOrder') || eventType.match('HistoryChildOrder'))) {
+            if (isRelevantWorkflow) {
+              this.loadOrderHistory();
+              break;
+            }
           }
-        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && this.index == 1) {
-          this.loadTaskHistory();
-          break;
-        } else if (args.eventSnapshots[j].eventType === 'WorkflowAuditLogChanged' && ((this.jobName && this.index == 3) || (!this.jobName && this.index == 2))) {
-          if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
+          // Handle workflow state changes (affects progress bar)
+          else if (eventType === 'WorkflowStateChanged') {
+            if (isRelevantWorkflow) {
+              this.loadOrderHistory();
+              break;
+            }
+          }
+          // Handle task events to update progress bar when jobs complete/start
+          else if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
+            if (isRelevantWorkflow) {
+              this.loadOrderHistory();
+              break;
+            }
+          }
+        }
+        
+        // Task History Tab (index 1)
+        else if (this.index == 1) {
+          if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
+            if (isRelevantWorkflow) {
+              this.loadTaskHistory();
+              break;
+            }
+          }
+        }
+        
+        // Job History Tab (index 2 with jobName)
+        else if (this.jobName && this.index == 2) {
+          if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
+            if (isRelevantWorkflow) {
+              this.loadJobHistory();
+              break;
+            }
+          }
+        }
+        
+        // Audit Log Tab
+        else if (eventType === 'WorkflowAuditLogChanged' && ((this.jobName && this.index == 3) || (!this.jobName && this.index == 2))) {
+          if (isRelevantWorkflow) {
             this.loadAuditLogs();
-            break;
-          }
-        } else if ((args.eventSnapshots[j].eventType === 'HistoryTaskTerminated' || args.eventSnapshots[j].eventType === 'HistoryTaskStarted' || args.eventSnapshots[j].eventType === 'HistoryTaskUpdated') && ((this.jobName && this.index == 2))) {
-          if (args.eventSnapshots[j].workflow && args.eventSnapshots[j].workflow.path === this.workflow.path) {
-            this.loadJobHistory();
             break;
           }
         }
@@ -187,7 +228,65 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.isCalled = true;
   }
 
+  private preserveExpandedState(data: any[], stateMap: Map<string, any>, idField: string): void {
+    if (data && data.length > 0) {
+      data.forEach(item => {
+        const id = item[idField];
+        if (id && (item.show || item.showAll)) {
+          // Only preserve the expansion flags, not the actual children data
+          stateMap.set(id, {
+            show: item.show,
+            showAll: item.showAll
+          });
+        }
+      });
+    }
+  }
+
+  private restoreExpandedState(data: any[], stateMap: Map<string, any>, idField: string): any[] {
+    if (data && data.length > 0) {
+      data.forEach(item => {
+        const id = item[idField];
+        if (id && stateMap.has(id)) {
+          const state = stateMap.get(id);
+          // Only restore expansion flags, let children/states be fresh
+          item.show = state.show;
+          item.showAll = state.showAll;
+          // If row was expanded, reload its children with fresh data
+          if (item.show && item.historyId) {
+            this.reloadOrderChildren(item);
+          }
+        }
+      });
+    }
+    return data;
+  }
+
+  private reloadOrderChildren(data: any): void {
+    if (!data.historyId) return;
+    
+    data.loading = true;
+    const obj = {
+      controllerId: data.controllerId || this.schedulerIds.selected,
+      historyId: data.historyId
+    };
+    this.coreService.post('order/history', obj).subscribe({
+      next: (res: any) => {
+        data.children = res.children;
+        data.states = res.states;
+        data.level = 1;
+        data.loading = false;
+        this.coreService.calRowWidth(null);
+      }, error: () => {
+        data.loading = false;
+      }
+    });
+  }
+
   loadOrderHistory(): void {
+    // Preserve expanded state before loading
+    this.preserveExpandedState(this.orderHistory, this.expandedOrderState, 'historyId');
+    
     const obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workflow.name}],
@@ -195,7 +294,8 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     };
     this.coreService.post('orders/history', obj).subscribe({
       next: (res: any) => {
-        this.orderHistory = res.history;
+        // Restore expanded state after loading
+        this.orderHistory = this.restoreExpandedState(res.history, this.expandedOrderState, 'historyId');
         this.loading = false;
       }, error: () => {
         this.loading = false;
@@ -272,17 +372,24 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   loadTaskHistory(): void {
+    // Preserve expanded state before loading
+    this.preserveExpandedState(this.taskHistory, this.expandedTaskState, 'taskId');
+    
     let obj = {
       controllerId: this.schedulerIds.selected,
       jobs: [{workflowPath: this.workflow.name}],
       limit: this.preferences.maxHistoryPerTask
     };
     this.coreService.post('tasks/history', obj).subscribe((res: any) => {
-      this.taskHistory = res.history;
+      // Restore expanded state after loading
+      this.taskHistory = this.restoreExpandedState(res.history, this.expandedTaskState, 'taskId');
     });
   }
 
   loadJobHistory(): void {
+    // Preserve expanded state before loading
+    this.preserveExpandedState(this.jobHistory, this.expandedJobState, 'taskId');
+    
     let obj = {
       controllerId: this.schedulerIds.selected,
       jobs: [{workflowPath: this.workflow.name, job: this.jobName}],
@@ -291,7 +398,8 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
     this.coreService.post('tasks/history', obj).subscribe({
       next: (res: any) => {
-        this.jobHistory = res.history;
+        // Restore expanded state after loading
+        this.jobHistory = this.restoreExpandedState(res.history, this.expandedJobState, 'taskId');
       }, error: () => {
         this.jobHistory = [];
       }

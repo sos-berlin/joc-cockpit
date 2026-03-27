@@ -53,7 +53,7 @@
             </thead>
           }
           <tbody>
-            @for (ch of innerChildTaskTable.data; track ch) {
+            @for (ch of innerChildTaskTable.data; track ch.taskId || ch.job + ch.startTime) {
               <tr>
                 <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">
                 <span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
@@ -79,6 +79,20 @@
                 <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.criticality | translate}}</td>
                 <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.exitCode}}</td>
               </tr>
+              @if (ch.state && (ch.state._text === 'RUNNING' || ch.state._text === 'INPROGRESS' || ch.state._text === 'INCOMPLETE')) {
+                <tr>
+                  <td colspan="8" style="padding: 0 !important;">
+                    <div [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}">
+                      <app-job-progress-bar
+                        [job]="ch"
+                        [workflowPath]="history.workflow || history.workflowId?.path"
+                        [controllerId]="schedulerId"
+                        [showDetails]="true">
+                      </app-job-progress-bar>
+                    </div>
+                  </td>
+                </tr>
+              }
             }
           </tbody>
         </nz-table>

@@ -11,7 +11,7 @@
                 <i class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>
               }
             </h4>
-            <button type="button" class="close" aria-label="Close" (click)="isHide = !isHide">
+            <button type="button" class="close" aria-label="Close" (click)="isHide = !isHide; getTree()">
               @if (!isHide) {
                 <span aria-hidden="true" class="fa fa-caret-down"></span>
               }
