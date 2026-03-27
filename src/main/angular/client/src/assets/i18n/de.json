@@ -2098,7 +2098,7 @@
     "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
     "message.noTagFound": "Keine Kennzeichnung gefunden",
     "message.impactedSchedules": "Die folgenden Zeitpläne wurden in den Entwurfszustand versetzt und müssen angepasst und freigegeben werden.",
-    "message.remove": "Ausgewählte Objekte werden vom Controller und aus dem Inventar entfernt. Nicht ausgewählte, referenzierende Objekte werden vom Controller entfernt.",
+    "message.remove": "Ausgewählte Objekte werden vom Controller und aus dem Inventar entfernt. Nicht ausgewählte, referenzierende Objekte werden zurückgenommen/zurückgezogen.",
     "message.revoke": "Ausgewählte Objekte werden vom Controller zurückgezogen, sie verbleiben im Inventar.",
     "message.recall": "Ausgewählte Objekte werden zurückgenommen, sie verbleiben im Inventar.",
     "message.link": "Verbindet den Inventarordner mit einem vorhandenen lokalen Klon eines Git Repository.",
