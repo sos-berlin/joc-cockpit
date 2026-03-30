@@ -17,6 +17,7 @@ import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {EncryptArgumentModalComponent} from "../inventory/inventory.component";
+import {YADEHandler} from "./yade/yade.handler";
 
 declare const require: any;
 declare const $: any;
@@ -854,6 +855,7 @@ export class XmlEditorComponent {
   beforeDrop;
   jobResourcesTree = [];
   zones = [];
+  yadeHandler?: YADEHandler;
 
   subscription1: Subscription;
 
@@ -919,6 +921,7 @@ export class XmlEditorComponent {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.sideView = this.coreService.getSideView();
+    this.destroyYADEHandler();
     if (!this.sideView.xml) {
       this.sideView.xml = {width: 500, show: true};
     }
@@ -971,6 +974,7 @@ export class XmlEditorComponent {
     }
     this.coreService.tabs._configuration.state = (this.objectType === 'YADE' || !this.objectType) ? 'file_transfer' : this.objectType.toLowerCase();
     $('.scroll-y').remove();
+    this.destroyYADEHandler();
   }
 
   contextMenu(node: any, evt): void {
@@ -1751,7 +1755,7 @@ export class XmlEditorComponent {
           if (((attrs[i].name === 'name' && attrs[i].parent === 'JobResource') || attrs[i].name === 'job_resources') && !flag) {
             flag = true;
             this.getJobResourceTree(attrs[i]);
-          }
+          }           
         }
       }
     }
@@ -2905,9 +2909,9 @@ export class XmlEditorComponent {
     }
   }
 
-  getValues(node) {
+  getValues(nodeName) {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let extensionPath = '//xs:element[@name=\'' + node + '\']/xs:complexType/xs:simpleContent/xs:extension/@*';
+    let extensionPath = '//xs:element[@name=\'' + nodeName + '\']/xs:complexType/xs:simpleContent/xs:extension/@*';
     let value: any = {};
     let valueArr: any = [];
     let b;
@@ -2916,7 +2920,7 @@ export class XmlEditorComponent {
       let a = element[0].nodeName;
       let x = element[0].nodeValue;
       value = Object.assign(value, this._defineProperty({}, a, x));
-      let defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+      let defultPath = '//xs:element[@name=\'' + nodeName + '\']/@*';
       let defAttr = select(defultPath, this.doc);
       if (defAttr.length > 0) {
         for (let s = 0; s < defAttr.length; s++) {
@@ -2946,7 +2950,7 @@ export class XmlEditorComponent {
         value = Object.assign(value, this._defineProperty({}, a, b));
       }
 
-      let _defultPath = '//xs:element[@name=\'' + node + '\']/@*';
+      let _defultPath = '//xs:element[@name=\'' + nodeName + '\']/@*';
 
       let _defAttr = select(_defultPath, this.doc);
 
@@ -2959,9 +2963,9 @@ export class XmlEditorComponent {
         }
       }
 
-      value.parent = node;
+      value.parent = nodeName;
     } else {
-      let extensionPath1 = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/@*';
+      let extensionPath1 = '//xs:element[@name=\'' + nodeName + '\']/xs:simpleType/xs:restriction/@*';
       element = select(extensionPath1, this.doc);
 
       if (element.length > 0) {
@@ -2969,7 +2973,7 @@ export class XmlEditorComponent {
         let c = element[0].nodeValue;
         value = Object.assign(value, this._defineProperty({}, a, c));
 
-        let _defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+        let _defultPath2 = '//xs:element[@name=\'' + nodeName + '\']/@*';
 
         let _defAttr2 = select(_defultPath2, this.doc);
 
@@ -2982,17 +2986,17 @@ export class XmlEditorComponent {
           }
         }
 
-        let _minLengthPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
+        let _minLengthPath = '//xs:element[@name=\'' + nodeName + '\']/xs:simpleType/xs:restriction/xs:minLength/@*';
 
         element = select(_minLengthPath, this.doc);
-        let enumPath = '//xs:element[@name=\'' + node + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
+        let enumPath = '//xs:element[@name=\'' + nodeName + '\']/xs:simpleType/xs:restriction/xs:enumeration/@*';
         let ele = select(enumPath, this.doc);
 
         if (element.length > 0) {
           a = element[0].nodeName;
           b = element[0].nodeValue;
           value = Object.assign(value, this._defineProperty({}, a, b));
-          let defultPath1 = '//xs:element[@name=\'' + node + '\']/@*';
+          let defultPath1 = '//xs:element[@name=\'' + nodeName + '\']/@*';
 
           let _defAttr3 = select(defultPath1, this.doc);
 
@@ -3017,7 +3021,7 @@ export class XmlEditorComponent {
             value.values.push(z);
           }
 
-          let defultPath2 = '//xs:element[@name=\'' + node + '\']/@*';
+          let defultPath2 = '//xs:element[@name=\'' + nodeName + '\']/@*';
 
           let _defAttr4 = select(defultPath2, this.doc);
 
@@ -3033,13 +3037,13 @@ export class XmlEditorComponent {
       }
 
       if (!isEmpty(value)) {
-        value.parent = node;
+        value.parent = nodeName;
       }
     }
     
-    const xmlEditorPath = '//xs:element[@name=\'' + node + '\']/xs:annotation/xs:appinfo/XmlEditor';
+    const xmlEditorPath = '//xs:element[@name=\'' + nodeName + '\']/xs:annotation/xs:appinfo/XmlEditor';
     const elements = select(xmlEditorPath, this.doc);
-    let options;
+    let options: any;
     if (elements.length > 0) {
       let element = elements[0];
       if (element.attributes && element.attributes.length > 0) {
@@ -3065,7 +3069,7 @@ export class XmlEditorComponent {
     }
     
     if (!value.parent) {
-      value.parent = node;
+      value.parent = nodeName;
     }
     
     if (!isEmpty(value)) {
@@ -3073,6 +3077,24 @@ export class XmlEditorComponent {
     }
 
     return valueArr;
+  }
+ 
+  getYADEHandler(): YADEHandler | undefined {
+    if (this.objectType !== 'YADE') {
+      return undefined;
+    }
+    
+    if (!this.yadeHandler) {
+      this.yadeHandler = new YADEHandler(this);
+    }
+    return this.yadeHandler;
+  }
+
+  private destroyYADEHandler(){
+    if(this.yadeHandler){
+      this.yadeHandler.cleanup();
+      this.yadeHandler = undefined;
+    }
   }
 
   /**
@@ -3745,36 +3767,6 @@ export class XmlEditorComponent {
     }
   }
   
-  encryptValue(ref, argument){   
-    let argu = {
-          name: ref,
-          value: argument.data
-        };
-    let selectedAgent  = [];
-    const type = 'job';
-    const controllerId = '';
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: EncryptArgumentModalComponent,
-      nzAutofocus: null,
-      nzData: {
-        argu,
-        selectedAgent,
-        type,
-        controllerId: controllerId
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        argument.data = result.value;
-      }
-    });
-  }
-
-
   // check rules before paste
   private checkRules(pasteNode, copyNode): void {
     if (copyNode !== undefined) {
@@ -6429,7 +6421,7 @@ export class XmlEditorComponent {
     }
   }
 
-  private showErrorToast(msg: string, title: string): void {
+  showErrorToast(msg: string, title: string): void {
     this.toasterService.error(msg, title).onTap
       .pipe(take(1))
       .subscribe(() => this.gotoErrorLocation());

@@ -484,7 +484,7 @@
                                   }
                                 </div>
                               }
-                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources' && node.name !== 'time_zone') {
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources' && node.name !== 'time_zone' && node.name !== 'encryption_key') {
                                 <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError();previousName = node.data;" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
                               }
                               @if (node.values && node.values.length==0 && node.name && node.type === 'xs:NCName') {
@@ -504,11 +504,11 @@
                               }
                               @if (node.values && node.values.length==0 && (node.type=='password' || node.name=='password')) {
                                 <i (click)="showPassword(node)" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
-                                @if (node.enc) {
-                                  <i style="cursor:pointer !important;" (click)="encryptValue(node.name,node)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                              @if (getYADEHandler()?.showEncryptValueIcon(node)) {
+                                  <i style="cursor:pointer !important;" (click)="yadeHandler.encryptValue(selectedNode, node)" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
                                 }
                               }
-                              @if (node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
+                              @if (node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources'  && node.name !== 'encryption_key' &&
                                !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))) {
                                 <input (blur)="validateAttr(node.data, node);checkDupProfileId(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" (keydown)="stopPressingSpace(node.name)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
                               }
@@ -535,6 +535,21 @@
                                     </div>
                                   }
                                 </ng-container>
+                              }
+                              @if (getYADEHandler() && node.name && node.type === 'xs:NMTOKEN' && node.parent === 'DecryptionFragment' && node.name === 'encryption_key') {
+                                <input 
+                                  nz-input 
+                                  [(ngModel)]="node.data"
+                                  (click)="getYADEHandler().setDecryptionFragmentEncryptionKeysValues(selectedNode, node)"
+                                  (ngModelChange)="getYADEHandler().submitEncryptionKeyData(selectedNode, node.data, node)"
+                                  [nzAutocomplete]="auto" 
+                                  class="w-full"
+                                  />
+                                  <nz-autocomplete #auto>
+                                    @for (value of node.values; track value) {
+                                      <nz-auto-option [nzValue]="value.value">{{value.value}}</nz-auto-option>
+                                    }
+                                  </nz-autocomplete>
                               }
                               @if (node.name && node.type === 'xs:anyURI' && !node.refer) {
                                 <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" title="{{node.name}} should not contain spaces" type="url" xmlAutofocus>
@@ -565,7 +580,7 @@
                                   <input 
                                     nz-input 
                                     [(ngModel)]="node.data"
-                                    (ngModelChange)="submitValue($event, node)"
+                                    (ngModelChange)="submitData(node.data, node)"
                                     [nzAutocomplete]="auto" 
                                     placeholder="true, false or ${VAR}" />
                                   <nz-autocomplete #auto>
@@ -581,7 +596,7 @@
                                   </label>
                                 }
                               }
-                              @if (node.values && node.values.length > 0 && node.type !== 'xs:list') {
+                              @if (node.values && node.values.length > 0 && node.type !== 'xs:list' && (node.name && node.name !== 'encryption_key')) {
                                 <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="w-full" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" id="{{node.name}}">
                                   @for (key of node.values; track key) {
                                     <nz-option [nzLabel]="key.value" [nzValue]="key.value"></nz-option>
@@ -630,14 +645,14 @@
                           @if (!selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
                             <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''" class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}" type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" xmlAutofocus>
                             <i (click)="showPassword(selectedNode.values[0])" [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
-                            @if (selectedNode.values[0].enc) {
-                              <i style="cursor:pointer !important;" (click)="encryptValue((selectedNode.ref  || selectedNode.name),selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                            @if (getYADEHandler()?.showEncryptValueIcon(selectedNode.values[0])) {
+                              <i style="cursor:pointer !important;" (click)="yadeHandler.encryptValue(selectedNode, selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
                             }
                           }
                           @if (!selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'BooleanOrVarType' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
                             <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 1}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
-                            @if (selectedNode.values[0].enc){
-                              <i style="cursor:pointer !important;" (click)="encryptValue((selectedNode.ref  || selectedNode.name),selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
+                            @if (getYADEHandler()?.showEncryptValueIcon(selectedNode.values[0])){
+                              <i style="cursor:pointer !important;" (click)="yadeHandler.encryptValue(selectedNode, selectedNode.values[0])" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i>
                             }
                           }
                           @if (selectedNode.values[0].base === 'html') {
@@ -665,7 +680,7 @@
                               <input 
                                 nz-input 
                                 [(ngModel)]="selectedNode.values[0].data"
-                                (ngModelChange)="submitValue($event, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                                (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
                                 [nzAutocomplete]="auto" 
                                 placeholder="true, false or ${VAR}" />
                               <nz-autocomplete #auto>
@@ -687,7 +702,7 @@
                               <input 
                                 nz-input 
                                 [(ngModel)]="selectedNode.values[0].data"
-                                (ngModelChange)="submitValue($event, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                                (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
                                 [nzAutocomplete]="auto" 
                                 class="w-full"
                                 placeholder="select or enter value" />
@@ -697,7 +712,7 @@
                                   }
                                 </nz-autocomplete>
                             } @else {
-                               <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                              <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
                                   @for (value of selectedNode.values[0].values; track value) {
                                     <nz-option [nzLabel]="value.value" [nzValue]="value.value"></nz-option>
                                   }
