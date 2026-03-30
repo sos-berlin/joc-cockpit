@@ -207,7 +207,7 @@
 
       @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none') {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.showDependencies</label>
+          <label class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
           </div>
@@ -406,8 +406,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
                                 @if (getObjectsByType(filteredDeps.referencedBy, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.referencedBy, objectType, $event, 'affected')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -453,8 +453,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
                                 @if (getObjectsByType(filteredDeps.references, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.references, objectType, $event, 'referenced')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -647,8 +647,8 @@
                                     @if (getObjectsByType(filteredDeps?.referencedBy, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.referencedBy, objectType, $event, 'affected')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
@@ -699,8 +699,8 @@
                                     @if (getObjectsByType(filteredDeps?.references, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps?.references, objectType, $event, 'referenced')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
@@ -754,7 +754,7 @@
         <app-empty-data></app-empty-data>
       </div>
     }
-    @if (loading) {
+    @if (loading || dependenciesLoading) {
       <div [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
         <nz-spin nzSimple></nz-spin>
       </div>
@@ -762,7 +762,7 @@
   </div>
   <div class="modal-footer text-left">
     @if (nodes.length > 0) {
-      <button [disabled]="!myForm.form.valid || submitted || loading || inValid" class="btn btn-primary btn-sm"
+      <button [disabled]="!myForm.form.valid || submitted || loading || inValid || dependenciesLoading" class="btn btn-primary btn-sm"
               type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner"></i>
