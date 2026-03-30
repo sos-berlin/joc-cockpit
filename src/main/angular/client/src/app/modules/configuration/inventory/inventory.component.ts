@@ -513,6 +513,7 @@ export class SingleDeployComponent {
   isPathDisplay = false;
   showDependencies = false;
   showRelatedObjects = false;
+  dependenciesLoading = false;
   private _dependenciesPromise: Promise<void> | null = null;
 
   private _filteredDepsCache: Map<string, any> = new Map();
@@ -1263,6 +1264,7 @@ export class SingleDeployComponent {
   }
 
   private getDependencies(): Promise<void> {
+    this.dependenciesLoading = true;
     return new Promise((resolve, reject) => {
       const configurations = [{
         name: this.data.name,
@@ -1294,10 +1296,12 @@ export class SingleDeployComponent {
             this.prepareObject(res);
           }
           this.loading = false;
+          this.dependenciesLoading = false;
           resolve();
         },
         error: (err) => {
           this.loading = false;
+          this.dependenciesLoading = false;
           reject(err);
         }
       });
@@ -2139,6 +2143,7 @@ export class DeployComponent {
 
   sharedCheckboxState: { [key: string]: boolean } = {};
   isPathDisplay = false;
+  dependenciesLoading = false;
 
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
   private recursiveDependenciesCache: any = null;
@@ -2948,6 +2953,9 @@ export class DeployComponent {
         if (reference.objectType === objectType) {
           if (!reference.disabled) {
             reference.selected = isChecked;
+            if (this.isRemove) {
+              this.sharedCheckboxState[reference.path] = isChecked;
+            }
           }
         }
       });
@@ -2977,6 +2985,7 @@ export class DeployComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): Promise<void> {
+    this.dependenciesLoading = true;
     return new Promise((resolve, reject) => {
 
       const configurations = checkedNodes.map(node => ({
@@ -3030,12 +3039,14 @@ export class DeployComponent {
             this.ref.detectChanges();
           }
           this.loading = false;
+          this.dependenciesLoading = false;
           this.rebuildRelatedObjects();
           this.ref.detectChanges();
           resolve();
         },
         error: (err) => {
           this.loading = false;
+          this.dependenciesLoading = false;
           reject(err);
         }
       });
@@ -3581,6 +3592,9 @@ export class DeployComponent {
 
 
     setTimeout(() => {
+      if (this.isRemove) {
+        changedObj.selected = this.sharedCheckboxState[changedObj.path];
+      }
       const list = this.affectedObjectsByType[objectType] || [];
       const idx = list.findIndex(o => o.id === changedObj.id);
       if (idx !== -1) {
@@ -4977,6 +4991,7 @@ export class ExportComponent {
   useDependencies = false;
   showDependencies = false;
   showRelatedObjects = false;
+  dependenciesLoading = false;
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
@@ -5212,6 +5227,7 @@ export class ExportComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): Promise<void> {
+    this.dependenciesLoading = true;
     return new Promise(async (resolve, reject) => {
       try {
 
@@ -5255,10 +5271,12 @@ export class ExportComponent {
             this.loading = false;
             this.rebuildRelatedObjects();
             this.ref.detectChanges();
+            this.dependenciesLoading = false;
             resolve();
           },
           error: (err) => {
             this.loading = false;
+            this.dependenciesLoading = false;
             reject(err);
           }
         });
@@ -7369,6 +7387,7 @@ export class RepositoryComponent {
   isPathDisplay = false;
   showDependencies = false;
   showRelatedObjects = false;
+  dependenciesLoading = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private _deployablesReleasablesPromise: Promise<void> | null = null;
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
@@ -8904,6 +8923,7 @@ export class RepositoryComponent {
     if (this.operation === 'update'|| this.operation === 'delete') {
       return Promise.resolve();
     }
+    this.dependenciesLoading = true;
     return new Promise(async (resolve, reject) => {
       try {
 
@@ -8950,17 +8970,20 @@ export class RepositoryComponent {
             }
 
             this.loading = false;
+            this.dependenciesLoading = false;
             this.rebuildRelatedObjects();
             this.ref.detectChanges();
             resolve();
           },
           error: (err) => {
             this.loading = false;
+            this.dependenciesLoading = false;
             reject(err);
           }
         });
       } catch (error) {
         this.loading = false;
+        this.dependenciesLoading = false;
         reject(error);
       }
     });
@@ -11384,6 +11407,7 @@ export class PublishChangeModalComponent {
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   showDependencies = false;
   showRelatedObjects = false;
+  dependenciesLoading = false;
   private _dependenciesPromise: Promise<void> | null = null;
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
   affectedSharedCheckboxState: { [key: string]: { checked: boolean, indeterminate: boolean } } = {};
@@ -11524,6 +11548,7 @@ export class PublishChangeModalComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): Promise<void> {
+    this.dependenciesLoading = true;
     return new Promise((resolve, reject) => {
 
       const configurations = checkedNodes.map(node => ({
@@ -11555,12 +11580,14 @@ export class PublishChangeModalComponent {
             this.ref.detectChanges();
           }
           this.loading = false;
+          this.dependenciesLoading = false;
           this.rebuildRelatedObjects();
           this.ref.detectChanges();
           resolve();
         },
         error: (err) => {
           this.loading = false;
+          this.dependenciesLoading = false;
           reject(err);
         }
       });

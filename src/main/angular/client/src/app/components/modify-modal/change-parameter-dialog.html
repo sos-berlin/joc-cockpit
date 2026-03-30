@@ -236,7 +236,7 @@
                 @if (item.isTextField) {
                   <div class="col-md-5 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
                     <input #name="ngModel" required autocomplete="off" type="text" class="form-control"
-                           name="name_{{i}}"
+                           name="name_{{i}}_{{item.name}}"
                            [(ngModel)]="item.name" placeholder="{{'common.placeholder.name' | translate}}">
                   </div>
                 }

@@ -126,7 +126,7 @@
 
         @if (dependencyMode !== 'none') {
           <div class="form-group row">
-            <label class="col-md-3" translate>inventory.label.showDependencies</label>
+            <label class="col-md-3" translate>inventory.label.manageDependencies</label>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
             </div>
@@ -308,8 +308,12 @@
                                       'opacity7': obj.syncState
                                     }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
                                     {{ getDisplayName(obj.path) }}
-                                    @if (obj.enforce) {
-                                      <span class="badge badge-warning m-l-xs">Enforced</span>
+                                    @if (obj.enforce && obj.selected) {
+                                      <span class="badge badge-warning m-l-xs" translate>inventory.label.enforcedRemoval</span>
+                                    } @else if (obj.enforce && !obj.selected && releasable) {
+                                      <span class="badge badge-warning m-l-xs" translate>inventory.label.enforcedRecall</span>
+                                    } @else if (obj.enforce && !obj.selected && !releasable) {
+                                      <span class="badge badge-warning m-l-xs" translate>inventory.label.enforcedRevoke</span>
                                     }
                                   </label>
                                 </label>
@@ -459,7 +463,7 @@
         <app-empty-data></app-empty-data>
       </div>
     }
-    @if (loading) {
+    @if (loading || dependenciesLoading) {
       <div class="text-center m-t-md">
         <nz-spin nzSimple></nz-spin>
       </div>
@@ -468,7 +472,7 @@
   <div class="modal-footer text-left">
     @if (!isRemoved) {
       <button   [nz-tooltip]="hasUncheckedInvalid() ? invalidTooltip : null"
-                nzTooltipPlacement="top" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted || hasUncheckedInvalid()" class="btn btn-primary btn-sm" translate type="submit">
+                nzTooltipPlacement="top" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted || dependenciesLoading || hasUncheckedInvalid()" class="btn btn-primary btn-sm" translate type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }

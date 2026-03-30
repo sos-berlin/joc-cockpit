@@ -2538,7 +2538,7 @@ export class JobWizardComponent {
   }
 
   selectJobTemp(job): void {
-    if (job.loading == undefined) {
+    if (job.loading == undefined || job.loading === false) {
       job.loading = true;
       this.coreService.post('job_template', {
         jobTemplatePath: job.path

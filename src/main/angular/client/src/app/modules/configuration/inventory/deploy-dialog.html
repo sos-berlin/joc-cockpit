@@ -169,7 +169,7 @@
 
       @if (nodes.length > 0 && dependencyMode !== 'none') {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.showDependencies</label>
+          <label class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
           </div>
@@ -738,7 +738,7 @@
         <app-empty-data></app-empty-data>
       </div>
     }
-    @if (loading) {
+    @if (loading || dependenciesLoading) {
       <div [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
         <nz-spin nzSimple></nz-spin>
       </div>
@@ -748,7 +748,7 @@
     @if (nodes.length > 0 && !isRemove) {
       <button [nz-tooltip]="hasUncheckedInvalid() ? invalidTooltip : null"
       nzTooltipPlacement="top"
-              [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading || hasUncheckedInvalid()" class="btn btn-primary btn-sm"
+              [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading || dependenciesLoading || hasUncheckedInvalid()" class="btn btn-primary btn-sm"
               type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
