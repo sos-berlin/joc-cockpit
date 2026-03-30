@@ -3062,17 +3062,18 @@ export class XmlEditorComponent {
         }
       }
     }  
-    if (value.base === 'combobox') {
-      if (options && options.length > 0) {
-        value.values = options.split(';').map(opt => ({ value: opt }));
-      }
-    }
-    
-    if (!value.parent) {
-      value.parent = nodeName;
-    }
     
     if (!isEmpty(value)) {
+      if (value.base === 'combobox') {
+        if (options && options.length > 0) {
+          value.values = options.split(';').map(opt => ({ value: opt }));
+        }
+      }
+    
+      if (!value.parent) {
+        value.parent = nodeName;
+      }
+
       valueArr.push(value);
     }
 
