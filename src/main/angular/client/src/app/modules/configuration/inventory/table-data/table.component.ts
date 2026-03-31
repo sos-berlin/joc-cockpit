@@ -386,6 +386,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzClassName: 'lg',
       nzData: {
         schedulerIds: this.getAllowedControllerOnly(),
+        preferences: this.preferences,
         display: this.preferences.auditLog,
         path: this.dataObj.path,
         data: {
@@ -412,6 +413,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzClassName: 'lg',
       nzData: {
         schedulerIds: this.getAllowedControllerOnly(),
+        preferences: this.preferences,
         display: this.preferences.auditLog,
         path: this.dataObj.path,
         data: {

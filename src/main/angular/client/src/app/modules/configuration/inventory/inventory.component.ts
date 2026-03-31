@@ -16861,7 +16861,9 @@ export class InventoryComponent {
                 paths = paths.filter((path) => {
                   return path !== args.eventSnapshots[j].path;
                 });
-                this.updateFolders(args.eventSnapshots[j].path, isTrash, true, () => {
+                const eventPath = args.eventSnapshots[j].path;
+                this.updateFolders(eventPath, isTrash, true, () => {
+                  this.reloadTree(isTrash);
                   this.updateTree(isTrash);
                 });
               }
