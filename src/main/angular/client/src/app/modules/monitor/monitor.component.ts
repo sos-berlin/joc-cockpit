@@ -84,7 +84,7 @@ export class MonitorComponent {
   }
 
   controllerChange(): void {
-    this.dataService.announceFunction(this.monitorFilters[this.index === 0 ? 'controller' : this.index === 1 ? 'agent' : 'notification']);
+    this.dataService.announceFunction(this.monitorFilters[this.index === 0 ? 'controller' : this.index === 1 ? 'agent' : this.index === 2 ? 'orderNotification' : 'systemNotification']);
   }
 
   changeTypes(type): void {
