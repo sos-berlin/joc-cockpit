@@ -93,7 +93,11 @@ Spécifie la période de conservation de l'historique des connexions échouées.
 
 ### Paramètre : *reporting\_age*, Défaut : *365*d
 
-Spécifie la période de rétention pour [Rapports](/reports).
+Spécifie la période de rétention pour les [Rapports](/reports).
+
+### Paramètre : *approval\_requests\_age*, Défaut : *7*d
+
+Spécifie la période de rétention pour les [Demandes d'Autorisation](/approval-requests).
 
 ### Paramètre : *deployment\_history\_versions*, Défaut : *10*
 
@@ -103,6 +107,7 @@ Indique le nombre de versions à conserver pour chaque objet déployé. Les vers
 
 ### Aide contextuelle
 
+- [Demandes d'Autorisation](/approval-requests)
 - [Journal d'Audit](/audit-log)
 - [Plan Quotidien](/daily-plan)
 - [Profil](/profile)

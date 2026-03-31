@@ -34,9 +34,14 @@ The Daily Plan Service by default submits Orders from a single transaction that 
 
 Specifies the number of days after which the Daily Plan will be closed and will not allow adding Orders that resolve dependencies for [Resources - Notice Boards](/resources-notice-boards) for the original date.
 
+### Setting: *projections\_month\_before*, Default: *2*
+
+Specifies the number of months before the current date for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate Order execution. This allows users to compare past Daily Plan dates to projections based on the current changes to schedules.
+
 ### Setting: *projections\_month\_ahead*, Default: *6*
 
 Specifies the number of months in advance for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate future Order execution.
+
 
 ## References
 

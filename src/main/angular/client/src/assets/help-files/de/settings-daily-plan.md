@@ -34,6 +34,10 @@ Der Tagesplandienst übermittelt standardmäßig Aufträge aus einer einzigen Tr
 
 Legt die Anzahl der Tage fest, nach denen der Tagesplan geschlossen wird und das Hinzufügen von Aufträgen, die Abhängigkeiten für [Ressourcen - Notizbretter](/resources-notice-boards) auflösen, für das ursprüngliche Datum nicht mehr zulässt.
 
+### Einstellung: *projections\_month\_before*, Default: *2*
+
+Gibt die Anzahl der zurückliegenden Monate an, für die die [Tagesplan - Projektion](/daily-plan-projections) berechnet wird, die auf die Ausführung von Aufträgen hinweisen. Die Projektion auf zurückliegende Monate erlaubt es, den Tagesplan mit späteren Änderungen Zeitpläne zu vergleichen.
+
 ### Einstellung: *projections\_month\_ahead*, Standard: *6*
 
 Gibt die Anzahl der Monate im Voraus an, für die die [Tagesplan - Projektion](/daily-plan-projections) berechnet wird, die auf die zukünftige Ausführung von Aufträgen hinweisen.
