@@ -990,14 +990,13 @@ export class XmlEditorComponent {
     this.checkOrder(node.origin);
   }
 
-  onChangeJobResource($event, node): void {
+  onSelectJobResource($event, node): void {
     this.isTreeShow = false;
     node.data = $event;
     if (this.objectType === 'NOTIFICATION') {
-      this.extraInfo.released = false;
+      this.setDeploymentState(false);
     } else {
       this.checkJobResource($event);
-      this.extraInfo.sync = false;
       this.autoValidate();
     }
     this.isChange = true;
@@ -1007,7 +1006,11 @@ export class XmlEditorComponent {
     this.isTreeShow = false;
   }
 
-  onTreeSearch(term, node) {
+  onJobResourceTreeSearch(term, node) {
+    if(node.data && node.data !== term){ // initial load
+      // workraund - app-search-input does not provide a noResult event
+      this.clearDeploymentState();
+    }
     node.data = term;
   }
 
@@ -1018,8 +1021,10 @@ export class XmlEditorComponent {
       objectType: 'JOBRESOURCE',
     };
     this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
+      // res exists because this block is only executed if the value was previously selected from the tree
       this.extraInfo.isExist = true;
-      this.extraInfo.deployed = false;
+      // not ideal: the input value might be the same as the previous selection
+      this.clearDeploymentState();      
     });
   }
 
@@ -1257,6 +1262,7 @@ export class XmlEditorComponent {
           this.prevXML = this.mainXml;
           this.extraInfo = {
             released: res.released,
+            sync: res.released,
             configurationDate: res.configurationDate,
             state: res.state,
             hasReleases: res.hasReleases
@@ -1326,8 +1332,7 @@ export class XmlEditorComponent {
         if (res.validationError) {
           this.showError(res.validationError);
         } else {
-          this.extraInfo.sync = true;
-          this.extraInfo.deployed = res.released
+          this.setDeploymentState(res.released);
         }
       }, error: (error) => {
         if (error && error.error) {
@@ -1613,6 +1618,8 @@ export class XmlEditorComponent {
         this.submitXsd = true;
         this.extraInfo = {
           released: res.released,
+          deployed: res.released,
+          sync: res.released,
           state: res.state,
           hasReleases: res.hasReleases,
           configurationDate: res.configurationDate,
@@ -1722,7 +1729,7 @@ export class XmlEditorComponent {
         if (typeof node.data == 'string') {
           // this.checkJobResource(node.data);
           this.extraInfo.isExist = true;
-          this.extraInfo.deployed = this.data.released;
+          this.setDeploymentState(this.data.released);
         }
       }
     }
@@ -2744,8 +2751,7 @@ export class XmlEditorComponent {
         this.scrollTreeToGivenId(this.selectedNode.uuid);
       }
     }
-    this.extraInfo.released = false;
-    this.extraInfo.deployed = false;
+    this.clearDeploymentState();
     this.isChange = true;
     this.validateSer(false)
   }
@@ -3572,9 +3578,7 @@ export class XmlEditorComponent {
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);
     }
-    this.extraInfo.released = false;
-    this.extraInfo.deployed = false;
-
+    this.clearDeploymentState();
     this.isChange = true;
     this.validateSer(false);
   }
@@ -3885,7 +3889,7 @@ export class XmlEditorComponent {
     }
     this.getIndividualData(this.selectedNode, undefined);
     this.scrollTreeToGivenId(this.selectedNode.uuid);
-    this.extraInfo.released = false;
+    this.clearDeploymentState();
     this.isChange = true;
     this.printArraya(false);
     this.validateSer(false);
@@ -4424,7 +4428,7 @@ export class XmlEditorComponent {
 
   updateListData(node): void {
     node.data = node.data1.join(' ');
-    this.extraInfo.released = false;
+    this.clearDeploymentState();
     this.isChange = true;
   }
 
@@ -4687,8 +4691,7 @@ export class XmlEditorComponent {
         this.autoValidate();
       }
     }
-    this.extraInfo.released = false;
-    this.extraInfo.deployed = false;
+    this.clearDeploymentState();
   }
 
 // validation for node value property
@@ -4735,7 +4738,7 @@ export class XmlEditorComponent {
       tag.data = value;
       this.autoValidate();
     }
-    this.extraInfo.released = false;
+    this.clearDeploymentState();
   }
 
   getDataAttr(refer): void {
@@ -4997,8 +5000,7 @@ export class XmlEditorComponent {
               }
               this.getXsdSchema();
             } else {
-              this.extraInfo.released = false;
-              this.extraInfo.deployed = false;
+              this.clearDeploymentState();
               this.xmlToJsonService(res.uploadData);
             }
           } else {
@@ -5342,6 +5344,8 @@ export class XmlEditorComponent {
 
       this.extraInfo = {
         released: res.released,
+        deployed: res.released,
+        sync: res.released,
         state: res.state,
         hasReleases: res.hasReleases,
         configurationDate: res.configurationDate,
@@ -5934,6 +5938,7 @@ export class XmlEditorComponent {
       next: (res: any) => {
         this.extraInfo = {
           released: res.released,
+          sync: res.released,
           state: res.state,
           hasReleases: res.hasReleases
         };
@@ -6267,7 +6272,7 @@ export class XmlEditorComponent {
     this.coreService.post('xmleditor/xml2json', obj).subscribe({
       next: (res: any) => {
         this.validConfig = false;
-        this.extraInfo.deployed = false;
+        this.clearDeploymentState();
         let _tempArrToExpand = [];
         let arr = JSON.parse(res.configurationJson);
         let a = [arr];
@@ -6353,6 +6358,8 @@ export class XmlEditorComponent {
           this.isChange = true;
           this.extraInfo = {
             released: res.released,
+            deployed: res.released,
+            sync: res.released,
             state: res.state,
             configurationDate: res.configurationDate,
             hasReleases: res.hasReleases,
@@ -6419,6 +6426,18 @@ export class XmlEditorComponent {
       }
     } else {
       return null;
+    }
+  }
+
+  private clearDeploymentState(){
+    this.setDeploymentState(false);
+  }
+
+  private setDeploymentState(state: boolean){
+    if(this.extraInfo){
+      this.extraInfo.released = state; // NOTIFICATION
+      this.extraInfo.deployed = state; // YADE
+      this.extraInfo.sync = state; // YADE
     }
   }
 
