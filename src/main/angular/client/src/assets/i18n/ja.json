@@ -3331,7 +3331,8 @@
       "reporting_age": "レポートおよびレポート実行履歴の保存期間を指定します。指定した値より古いレポートエントリはすべて削除されます。",
       "history_pause_duration": "履歴停止期間",
       "history_pause_delay": "履歴停止遅延",
-      "force_cleanup": "強制クリーンアップ"
+      "force_cleanup": "強制クリーンアップ",
+      "approval_requests_age": "approval_requests_age"
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",

@@ -26,6 +26,13 @@ export class AgentRunningTaskComponent {
   };
   preferences: any = {};
 
+  xAxisTickFormatting = (val: number): string => {
+    if (val % 1 !== 0) {
+      return val.toString();
+    }
+    return val.toLocaleString();
+  };
+
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService,public modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
