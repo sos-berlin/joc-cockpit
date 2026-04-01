@@ -471,7 +471,7 @@
                             <div class="col-sm-5">
                               @if (node.name === 'job_resources') {
                                 <div>
-                                  <app-multi-select [attribute]="'data'" [list]="node" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'" (onSelectCall)="onChangeJobResource(node.data, node)"></app-multi-select>
+                                  <app-multi-select [attribute]="'data'" [list]="node" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'" (onSelectCall)="onSelectJobResource(node.data, node)"></app-multi-select>
                                 </div>
                               }
                               @if (node.name === 'name' && node.parent === 'JobResource') {
@@ -479,7 +479,7 @@
                                   <input (click)="isTreeShow = true;" [(ngModel)]="node.data" autocomplete="off" class="form-control" name="jobResourceName" type="text">
                                   @if (isTreeShow) {
                                     <div [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                                      <app-search-input (searchTermChange)="onTreeSearch($event, node)" (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" [isDisplay]="true" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
+                                      <app-search-input (searchTermChange)="onJobResourceTreeSearch($event, node)" (onBlur)="onBlur()"  (onSelect)="onSelectJobResource($event, node)" [isDisplay]="true" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
                                     </div>
                                   }
                                 </div>
