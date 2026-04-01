@@ -543,18 +543,18 @@
                            class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm text-16 cursor"></i>
                       </h5>
                       <div [ngClass]="{'fade-in show': obj.isAgentExpanded}" class="m-l-md hide">
-                        @for (agent of data.agents.controllerRefs; track agent.controllerId) {
-                          <div [ngClass]="{'b-t m-t': $index != 0}">
+                        @for (agent of data.agents.controllerRefs; track agent.controllerId; let agentIdx = $index) {
+                          <div [ngClass]="{'b-t m-t': agentIdx != 0}">
                             <h6 class="m-t-12 hover-icon">
                               @if (agent.controllerId) {
                                 <label [nzChecked]="object.setOfCheckedId.has(agent.controllerId + '__AGENT')"
                                        class="m-r-sm" nz-checkbox (nzCheckedChange)="onItemChecked(agent.controllerId, $event, '__AGENT')"></label>
                               }
-                              {{agent.controllerId || 'Controller_ID_' + ($index + 1)}}
+                              {{agent.controllerId || 'Controller_ID_' + (agentIdx + 1)}}
                               <i (click)="agent.isAgentExpanded = !agent.isAgentExpanded"
                                  [ngClass]="{'fa-caret-up': agent.isAgentExpanded}"
                                  class="fa fa-caret-down p-l-xs text-hover-primary"></i>
-                              <i (click)="removeAgent($index)"
+                              <i (click)="removeAgent(agentIdx)"
                                  class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                                  nz-tooltip="{{'deploymentService.agent.button.removeAgent' | translate}}"></i>
                             </h6>
@@ -571,7 +571,7 @@
                                   <input #controllerId="ngModel" (blur)="convertJSON()"
                                          [(ngModel)]="agent.controllerId"
                                          [nzAutocomplete]="auto" [readOnly]="isTrash" class="form-control"
-                                         id="acontrollerId{{$index}}" name="acontrollerId{{$index}}" placeholder="{{'deploymentService.agent.placeholder.controllerId' | translate}}"
+                                         id="acontrollerId{{agentIdx}}" name="acontrollerId{{agentIdx}}" placeholder="{{'deploymentService.agent.placeholder.controllerId' | translate}}"
                                          required type="text"/>
                                   <nz-autocomplete #auto [compareWith]="compareFun">
                                     @for (option of data.controllers; track option.controllerId) {
@@ -591,7 +591,7 @@
                                   }
                                 </div>
                               </div>
-                              @for (item of agent.members; track item.agentId) {
+                              @for (item of agent.members; track item.agentId; let memberIdx = $index) {
                                 <div [ngClass]="{'b-t m-t': $index != 0}">
                                   <h6 class="m-t-12 hover-icon">
                                     @if (item.agentId) {
@@ -606,11 +606,11 @@
                                     <i (click)="removeSecondaryObj(agent.members, $index)"
                                        class="fa fa-trash fa-icon pull-right text-hover-color p-r-sm font14 cursor"
                                        nz-tooltip="{{'deploymentService.agent.button.removeSecondaryAgent' | translate}}"></i>
-                                    <i (click)="paste('agents', 'instance', $parent.$index, $index)"
+                                    <i (click)="paste('agents', 'instance', agentIdx, $index)"
                                        [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'instance' )}"
                                        class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                        nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                                    <i (click)="copy('agents', 'instance', $parent.$index, $index)"
+                                    <i (click)="copy('agents', 'instance', agentIdx, $index)"
                                        class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                        nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                   </h6>
@@ -626,7 +626,7 @@
                                            class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-28">
                                         <input #agentId="ngModel" (blur)="convertJSON()" [(ngModel)]="item.agentId" [readOnly]="isTrash"
                                                autocomplete="off" class="form-control"
-                                               id="agentId{{$parent.$index}}{{$index}}" name="agentId{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.agentId' | translate}}"
+                                               id="agentId{{agentIdx}}{{$index}}" name="agentId{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.agentId' | translate}}"
                                                required
                                                type="text">
                                         @if (agentId.invalid && (agentId.dirty || agentId.touched)) {
@@ -641,11 +641,11 @@
                                       </div>
                                     </div>
                                     <h6 class="m-t-sm hover-icon" translate>deploymentService.label.target
-                                      <i (click)="paste('agents', 'target', $parent.$index, $index)"
+                                      <i (click)="paste('agents', 'target', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'target' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                                      <i (click)="copy('agents', 'target', $parent.$index, $index)"
+                                      <i (click)="copy('agents', 'target', agentIdx, $index)"
                                          class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
@@ -663,7 +663,7 @@
                                                class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                             <input #host="ngModel" (blur)="convertJSON()" [(ngModel)]="item.target.connection.host" [readOnly]="isTrash"
                                                    autocomplete="off" class="form-control"
-                                                   id="ahost{{$parent.$index}}{{$index}}" name="ahost{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.host' | translate}}"
+                                                   id="ahost{{agentIdx}}{{$index}}" name="ahost{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.host' | translate}}"
                                                    required
                                                    type="text">
                                             @if (host.invalid && (host.dirty || host.touched)) {
@@ -688,7 +688,7 @@
                                               <nz-input-number (nzBlur)="convertJSON()"
                                                                [(ngModel)]="item.target.connection.port"
                                                                [nzMin]="1" [nzReadOnly]="isTrash" [nzStep]="1"
-                                                               name="aport{{$parent.$index}}{{$index}}"
+                                                               name="aport{{agentIdx}}{{$index}}"
                                                                nzPlaceHolder="{{'deploymentService.agent.placeholder.port' | translate}}"></nz-input-number>
                                             </div>
                                           </div>
@@ -705,8 +705,8 @@
                                           </div>
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                             <app-select-input (modelChange)="convertJSON()" [attributeName]="'method'" [isSelectDisabled]="isTrash"
-                                                              [id]="'amethod' + $parent.$index + $index" [isRequired]="true"
-                                                              [listArray]="methods" [name]="'amethod' + $parent.$index + $index"
+                                                              [id]="'amethod' + agentIdx + $index" [isRequired]="true"
+                                                              [listArray]="methods" [name]="'amethod' + agentIdx + $index"
                                                               [placeholder]="'deploymentService.agent.placeholder.method'"
                                                               [object]="item.target.authentication"></app-select-input>
                                           </div>
@@ -722,7 +722,7 @@
                                                class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                             <input #user="ngModel" (blur)="convertJSON()" [(ngModel)]="item.target.authentication.user" [readOnly]="isTrash"
                                                    autocomplete="off" class="form-control"
-                                                   id="auser{{$parent.$index}}{{$index}}" name="auser{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.user' | translate}}"
+                                                   id="auser{{agentIdx}}{{$index}}" name="auser{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.user' | translate}}"
                                                    required
                                                    type="text">
                                             @if (user.invalid && (user.dirty || user.touched)) {
@@ -746,7 +746,7 @@
                                             <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input (blur)="convertJSON()" [(ngModel)]="item.target.authentication.keyFile" [readOnly]="isTrash" autocomplete="off"
                                                      class="form-control"
-                                                     name="akeyFile{{$parent.$index}}{{$index}}"
+                                                     name="akeyFile{{agentIdx}}{{$index}}"
                                                      placeholder="{{'deploymentService.agent.placeholder.keyFile' | translate}}"
                                                      type="text">
                                             </div>
@@ -764,7 +764,7 @@
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                           <input #packageLocation="ngModel" (blur)="convertJSON()" [(ngModel)]="item.target.packageLocation"
                                                  [readOnly]="isTrash" autocomplete="off"
-                                                 class="form-control" id="apackageLocation{{$parent.$index}}{{$index}}" name="apackageLocation{{$parent.$index}}{{$index}}"
+                                                 class="form-control" id="apackageLocation{{agentIdx}}{{$index}}" name="apackageLocation{{agentIdx}}{{$index}}"
                                                  placeholder="{{'deploymentService.agent.placeholder.packageLocation' | translate}}"
                                                  required
                                                  type="text">
@@ -789,7 +789,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.target.execPre" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="aexecPre{{$parent.$index}}{{$index}}"
+                                                   name="aexecPre{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.execPre' | translate}}"
                                                    type="text">
                                           </div>
@@ -805,7 +805,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.target.execPost" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="aexecPost{{$parent.$index}}{{$index}}"
+                                                   name="aexecPost{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.execPost' | translate}}"
                                                    type="text">
                                           </div>
@@ -820,7 +820,7 @@
                                           </div>
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <label (ngModelChange)="convertJSON()" [(ngModel)]="item.target.makeService"
-                                                   name="amakeService{{$parent.$index}}{{$index}}"
+                                                   name="amakeService{{agentIdx}}{{$index}}"
                                                    nz-checkbox></label>
                                           </div>
                                         </div>
@@ -833,7 +833,7 @@
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
-                                            <label [(ngModel)]="item.target.forceSudo" name="aforceSudo{{$parent.$index}}{{$index}}"
+                                            <label [(ngModel)]="item.target.forceSudo" name="aforceSudo{{agentIdx}}{{$index}}"
                                                    nz-checkbox (ngModelChange)="convertJSON()"></label>
                                           </div>
                                         </div>
@@ -848,7 +848,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.target.serviceName" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="aserviceName{{$parent.$index}}{{$index}}"
+                                                   name="aserviceName{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.serviceName' | translate}}"
                                                    type="text">
                                           </div>
@@ -864,7 +864,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.target.serviceDir" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="aserviceDir{{$parent.$index}}{{$index}}"
+                                                   name="aserviceDir{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.serviceDir' | translate}}"
                                                    type="text">
                                           </div>
@@ -873,11 +873,11 @@
                                     </div>
                                     <h6 class="m-t-12 hover-icon" translate>
                                       deploymentService.label.media
-                                      <i (click)="paste('agents', 'media', $parent.$index, $index)"
+                                      <i (click)="paste('agents', 'media', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'media' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                                      <i (click)="copy('agents', 'media', $parent.$index, $index)"
+                                      <i (click)="copy('agents', 'media', agentIdx, $index)"
                                          class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
@@ -893,7 +893,7 @@
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                           <input #release="ngModel" (blur)="convertJSON()" [(ngModel)]="item.media.release" [readOnly]="isTrash"
                                                  autocomplete="off"
-                                                 class="form-control" id="arelease{{$parent.$index}}{{$index}}" name="arelease{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.release' | translate}}"
+                                                 class="form-control" id="arelease{{agentIdx}}{{$index}}" name="arelease{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.release' | translate}}"
                                                  required
                                                  type="text">
                                           @if (release.invalid && (release.dirty || release.touched)) {
@@ -918,7 +918,7 @@
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                           <input #tarball="ngModel" (blur)="convertJSON()" [(ngModel)]="item.media.tarball" [readOnly]="isTrash"
                                                  autocomplete="off"
-                                                 class="form-control" id="atarball{{$parent.$index}}{{$index}}" name="atarball{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.tarball' | translate}}"
+                                                 class="form-control" id="atarball{{agentIdx}}{{$index}}" name="atarball{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.tarball' | translate}}"
                                                  required
                                                  type="text">
                                           @if (tarball.invalid && (tarball.dirty || tarball.touched)) {
@@ -934,11 +934,11 @@
                                       </div>
                                     </div>
                                     <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
-                                      <i (click)="paste('agents', 'installation', $parent.$index, $index)"
+                                      <i (click)="paste('agents', 'installation', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'installation' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                                      <i (click)="copy('agents', 'installation', $parent.$index, $index)"
+                                      <i (click)="copy('agents', 'installation', agentIdx, $index)"
                                          class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
@@ -954,7 +954,7 @@
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                           <input #home="ngModel" (blur)="convertJSON()" [(ngModel)]="item.installation.home" [readOnly]="isTrash"
                                                  autocomplete="off" class="form-control"
-                                                 id="ahome{{$parent.$index}}{{$index}}" name="ahome{{$parent.$index}}{{$index}}"
+                                                 id="ahome{{agentIdx}}{{$index}}" name="ahome{{agentIdx}}{{$index}}"
                                                  placeholder="{{'deploymentService.agent.placeholder.home' | translate}}"
                                                  required type="text">
                                           @if (home.invalid && (home.dirty || home.touched)) {
@@ -979,7 +979,7 @@
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                           <input #aData="ngModel" (blur)="convertJSON()" [(ngModel)]="item.installation.data" [readOnly]="isTrash"
                                                  autocomplete="off" class="form-control"
-                                                 id="adata{{$parent.$index}}{{$index}}" name="adata{{$parent.$index}}{{$index}}"
+                                                 id="adata{{agentIdx}}{{$index}}" name="adata{{agentIdx}}{{$index}}"
                                                  placeholder="{{'deploymentService.agent.placeholder.data' | translate}}"
                                                  required type="text">
                                           @if (aData.invalid && (aData.dirty || aData.touched)) {
@@ -1004,7 +1004,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.installation.homeOwner" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="ahomeOwner{{$parent.$index}}{{$index}}"
+                                                   name="ahomeOwner{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.homeOwner' | translate}}"
                                                    type="text">
                                           </div>
@@ -1021,7 +1021,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.installation.dataOwner" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="adataOwner{{$parent.$index}}{{$index}}"
+                                                   name="adataOwner{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.dataOwner' | translate}}"
                                                    type="text">
                                           </div>
@@ -1037,7 +1037,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.installation.runUser" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="arunUser{{$parent.$index}}{{$index}}"
+                                                   name="arunUser{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.runUser' | translate}}"
                                                    type="text">
                                           </div>
@@ -1057,8 +1057,8 @@
                                           <input #httpPort="ngModel" (blur)="convertJSON()" [(ngModel)]="item.installation.httpPort" [readOnly]="isTrash"
                                                  [required]="!item.installation.httpsPort"
                                                  autocomplete="off" class="form-control"
-                                                 id="ahttpPort{{$parent.$index}}{{$index}}"
-                                                 name="ahttpPort{{$parent.$index}}{{$index}}"
+                                                 id="ahttpPort{{agentIdx}}{{$index}}"
+                                                 name="ahttpPort{{agentIdx}}{{$index}}"
                                                  placeholder="{{'deploymentService.agent.placeholder.httpPort' | translate}}"
                                                  type="text">
                                           @if (httpPort.invalid && (httpPort.dirty || httpPort.touched)) {
@@ -1086,8 +1086,8 @@
                                           <input #httpsPort="ngModel" (blur)="convertJSON()" [(ngModel)]="item.installation.httpsPort" [readOnly]="isTrash"
                                                  [required]="!item.installation.httpPort"
                                                  autocomplete="off" class="form-control"
-                                                 id="ahttpsPort{{$parent.$index}}{{$index}}"
-                                                 name="ahttpsPort{{$parent.$index}}{{$index}}"
+                                                 id="ahttpsPort{{agentIdx}}{{$index}}"
+                                                 name="ahttpsPort{{agentIdx}}{{$index}}"
                                                  placeholder="{{'deploymentService.agent.placeholder.httpsPort' | translate}}"
                                                  type="text">
                                           @if (httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)) {
@@ -1111,7 +1111,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.installation.javaHome" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="ajavaHome{{$parent.$index}}{{$index}}"
+                                                   name="ajavaHome{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.javaHome' | translate}}"
                                                    type="text">
                                           </div>
@@ -1127,7 +1127,7 @@
                                           <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                             <input (blur)="convertJSON()" [(ngModel)]="item.installation.javaOptions" [readOnly]="isTrash" autocomplete="off"
                                                    class="form-control"
-                                                   name="ajavaOptions{{$parent.$index}}{{$index}}"
+                                                   name="ajavaOptions{{agentIdx}}{{$index}}"
                                                    placeholder="{{'deploymentService.agent.placeholder.javaOptions' | translate}}"
                                                    type="text">
                                           </div>
@@ -1136,11 +1136,11 @@
                                     </div>
                                     @if (item.isMoreKeyFileDetail) {
                                       <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
-                                        <i (click)="paste('agents', 'configuration', $parent.$index, $index)"
+                                        <i (click)="paste('agents', 'configuration', agentIdx, $index)"
                                            [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'configuration' )}"
                                            class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                            nz-tooltip="{{'deploymentService.button.paste' | translate}}"></i>
-                                        <i (click)="copy('agents', 'configuration', $parent.$index, $index)"
+                                        <i (click)="copy('agents', 'configuration', agentIdx, $index)"
                                            class="fa fa-copy fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
                                            nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                       </h6>
@@ -1158,7 +1158,7 @@
                                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input #keyStore="ngModel" (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.keyStore"
                                                      [readOnly]="isTrash" autocomplete="off" class="form-control"
-                                                     id="akeyStore{{$parent.$index}}{{$index}}" name="akeyStore{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.keyStore' | translate}}"
+                                                     id="akeyStore{{agentIdx}}{{$index}}" name="akeyStore{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.keyStore' | translate}}"
                                                      required
                                                      type="text">
                                               @if (keyStore.invalid && (keyStore.dirty || keyStore.touched)) {
@@ -1183,8 +1183,8 @@
                                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input #keyStorePassword="ngModel" (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.keyStorePassword"
                                                      [readOnly]="isTrash"
-                                                     autocomplete="off" class="form-control" id="akeyStorePassword{{$parent.$index}}{{$index}}"
-                                                     name="akeyStorePassword{{$parent.$index}}{{$index}}"
+                                                     autocomplete="off" class="form-control" id="akeyStorePassword{{agentIdx}}{{$index}}"
+                                                     name="akeyStorePassword{{agentIdx}}{{$index}}"
                                                      placeholder="{{'deploymentService.agent.placeholder.keyStorePassword' | translate}}"
                                                      required
                                                      type="text">
@@ -1210,7 +1210,7 @@
                                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input #keyPassword="ngModel" (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.keyPassword"
                                                      [readOnly]="isTrash" autocomplete="off"
-                                                     class="form-control" id="akeyPassword{{$parent.$index}}{{$index}}" name="akeyPassword{{$parent.$index}}{{$index}}"
+                                                     class="form-control" id="akeyPassword{{agentIdx}}{{$index}}" name="akeyPassword{{agentIdx}}{{$index}}"
                                                      placeholder="{{'deploymentService.agent.placeholder.keyPassword' | translate}}"
                                                      required
                                                      type="text">
@@ -1235,7 +1235,7 @@
                                               <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                                 <input (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.keyAlias" [readOnly]="isTrash" autocomplete="off"
                                                        class="form-control"
-                                                       name="akeyAlias{{$parent.$index}}{{$index}}"
+                                                       name="akeyAlias{{agentIdx}}{{$index}}"
                                                        placeholder="{{'deploymentService.agent.placeholder.keyAlias' | translate}}"
                                                        type="text">
                                               </div>
@@ -1252,7 +1252,7 @@
                                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input #trustStore="ngModel" (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.trustStore"
                                                      [readOnly]="isTrash" autocomplete="off" class="form-control"
-                                                     id="atrustStore{{$parent.$index}}{{$index}}" name="atrustStore{{$parent.$index}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.trustStore' | translate}}"
+                                                     id="atrustStore{{agentIdx}}{{$index}}" name="atrustStore{{agentIdx}}{{$index}}" placeholder="{{'deploymentService.agent.placeholder.trustStore' | translate}}"
                                                      required
                                                      type="text">
                                               @if (trustStore.invalid && (trustStore.dirty || trustStore.touched)) {
@@ -1277,8 +1277,8 @@
                                                  class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
                                               <input #trustStorePassword="ngModel" (blur)="convertJSON()" [(ngModel)]="item.configuration.certificates.trustStorePassword"
                                                      [readOnly]="isTrash"
-                                                     autocomplete="off" class="form-control" id="atrustStorePassword{{$parent.$index}}{{$index}}"
-                                                     name="atrustStorePassword{{$parent.$index}}{{$index}}"
+                                                     autocomplete="off" class="form-control" id="atrustStorePassword{{agentIdx}}{{$index}}"
+                                                     name="atrustStorePassword{{agentIdx}}{{$index}}"
                                                      placeholder="{{'deploymentService.agent.placeholder.trustStorePassword' | translate}}"
                                                      required
                                                      type="text">
@@ -1308,7 +1308,7 @@
                                             <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
                                               <input (blur)="convertJSON()" [(ngModel)]="temp.name" [readOnly]="isTrash" autocomplete="off"
                                                      class="form-control"
-                                                     name="atemplates{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                                     name="atemplates{{agentIdx}}{{memberIdx}}{{$index}}"
                                                      placeholder="{{'deploymentService.agent.placeholder.templates' | translate}}" type="text">
                                               <i (click)="addTemplates(item.configuration.templates)"
                                                  class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>

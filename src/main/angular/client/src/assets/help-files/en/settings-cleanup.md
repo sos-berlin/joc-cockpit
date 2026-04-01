@@ -95,6 +95,10 @@ Specifies the retention period for the history of failed logins. Unsuccessful lo
 
 Specifies the retention period for [Reports](/reports).
 
+### Setting: *approval\_requests\_age*, Default: *7*d
+
+Specifies the retention period for [Approval Requests](/approval-requests).
+
 ### Setting: *deployment\_history\_versions*, Default: *10*
 
 Specifies the number of versions per deployed object that should be retained. Versions can be used to re-deploy an object from an earlier state. Any earlier deployed versions of deployed objects are removed.
@@ -103,6 +107,7 @@ Specifies the number of versions per deployed object that should be retained. Ve
 
 ### Context Help
 
+- [Approval Requests](/approval-requests)
 - [Audit Log](/audit-log)
 - [Daily Plan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)

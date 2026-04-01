@@ -1714,7 +1714,7 @@
     "tab.dailyPlan": "Soumissions"
   },
   "info": {
-    "label.welcome": "Bienvenue",
+    "label.welcome": "Bienvenue au JS7",
     "label.allRightReserved": "Tous droits réservés",
     "label.licenseType": "Type de Licence",
     "label.licenseValidity": "Validité de la Licence",
@@ -3331,7 +3331,8 @@
       "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées.",
       "history_pause_duration": "Spécifie la durée pendant laquelle le Service de l'Historique sera mis en pause lorsque le Service d'Assainissement est lancé.",
       "history_pause_delay": "Spécifie le délai entre les exécutions répétées du Service d'Assainissement.",
-      "force_cleanup": "Force le démarrage du Service d'Assainissement, y compris lorsque le Service de l'Historique est en train de créer des entrées d'historique. Le Service d'Assainissement met en pause le Service de l'Historique pendant une durée maximale configurable ou jusqu'à l'arrêt du Service d'Assainissement, selon ce qui se produit en premier."
+      "force_cleanup": "Force le démarrage du Service d'Assainissement, y compris lorsque le Service de l'Historique est en train de créer des entrées d'historique. Le Service d'Assainissement met en pause le Service de l'Historique pendant une durée maximale configurable ou jusqu'à l'arrêt du Service d'Assainissement, selon ce qui se produit en premier.",
+      "approval_requests_age": "approval_requests_age"
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",

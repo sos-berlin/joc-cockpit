@@ -34,9 +34,13 @@ Par défaut, le service du Plan Quotidien soumet les Ordres à partir d'une tran
 
 Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des Ordres qui résolvent des dépendances pour [Ressources - Tableaux de Condition](/resources-notice-boards) pour la date d'origine.
 
+### Paramètre : *projections\_month\_before, Défaut : *2*
+
+Spécifie le nombre de mois passé pour lesquels la [Projection du Plan Quotidien](/daily-plan-projections) est calculé et qui indique l'exécution des Ordres. La projection sur les mois précédents permet de comparer le planning quotidien avec les modifications apportées aux plannings actuels. 
+
 ### Paramètre : *projections\_month\_ahead*, Défaut : *6*
 
-Spécifie le nombre de mois à l'avance pour lequel [Projection du Plan Quotidien](/daily-plan-projections) est calculé et qui indique l'exécution future de l'Ordre.
+Spécifie le nombre de mois à l'avance pour lequel [Projection du Plan Quotidien](/daily-plan-projections) est calculé et qui indique l'exécution future des Ordres.
 
 ## Références
 

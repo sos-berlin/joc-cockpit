@@ -424,6 +424,18 @@
             }
           </tr>
           @if (order.show) {
+            @if (order.state && (order.state._text === 'RUNNING' || order.state._text === 'INPROGRESS')) {
+              <tr>
+                <td></td>
+                <td colspan="7">
+                  <app-order-progress-bar
+                    [order]="order"
+                    [controllerId]="schedulerId"
+                    [showDetails]="true">
+                  </app-order-progress-bar>
+                </td>
+              </tr>
+            }
             <!-- Variables row -->
             <tr>
               <td colspan="3"></td>

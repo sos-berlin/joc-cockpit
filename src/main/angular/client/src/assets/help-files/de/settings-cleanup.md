@@ -95,6 +95,10 @@ Legt den Aufbewahrungszeitraum der Historie für [Fehlgeschlagene Anmeldungen](/
 
 Legt die Aufbewahrungsfrist für [Berichte](/reports) fest.
 
+### Einstellung: *approval\_requests\_age*, Default: *7*d
+
+Legt die Aufbewahrungsfrist für [Autorisierungsanfragen](/approval-requests) fest.
+
 ### Einstellung: *deployment\_history\_versions*, Voreinstellung: *10*
 
 Gibt die Anzahl der Versionen pro ausgerolltem Objekt an, die beibehalten werden sollen. Versionen können verwendet werden, um ein Objekt von einem früheren Zustand aus erneut auszurollen. Alle früher ausgerollten Versionen von Objekten werden entfernt.
@@ -103,6 +107,7 @@ Gibt die Anzahl der Versionen pro ausgerolltem Objekt an, die beibehalten werden
 
 ### Kontext-Hilfe
 
+- [Autorisierungsanfragen](/approval-requests)
 - [Bereinigungsdienst](/service-cleanup)
 - [Berichte](/reports)
 - [Einstellungen](/settings)
