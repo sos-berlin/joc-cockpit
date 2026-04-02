@@ -3340,6 +3340,7 @@
       "period_begin": "Spécifie le début de la période du Plan Quotidien de 24 heures avec le fuseau horaire indiqué.",
       "days_ahead_plan": "Spécifie le nombre de jours à venir pour lesquels les ordres sont générés et mises à disposition avec l'état PLANIFIE.",
       "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS.",
+      "projections_month_before": "Spécifie le nombre de mois passé pour lesquels la Projection du Plan Quotidien est calculé et qui indique l'exécution des Ordres. La projection sur les mois précédents permet de comparer le planning quotidien avec les modifications apportées aux plannings actuels.",
       "projections_month_ahead": "Spécifie le nombre de mois à venir pour lesquels sont calculées les projections indiquant l'exécution future des ordres.",
       "submit_orders_individually": "Le Service du Plan Quotidien soumet par défaut des ordres à partir d'une transaction unique qui est annulée si la soumission d'un ordre échoue. Avec ce paramètre, les ordres sont soumis individuellement et indépendamment de l'échec de la soumission d'autres ordres. Le Service du Plan Quotidien nécessitera plus de temps pour soumettre les ordres individuellement.",
       "age_of_plans_to_be_closed_automatically": "Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."

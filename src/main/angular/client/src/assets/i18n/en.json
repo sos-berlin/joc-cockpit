@@ -3340,6 +3340,7 @@
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
+      "projections_month_before": "Specifies the number of months before the current date for which projections are calculated that indicate order execution. This allows users to compare past Daily Plan dates to projections based on current changes to schedules.",
       "projections_month_ahead": "Specifies the number of months ahead for which projections are calculated that indicate future order execution.",
       "submit_orders_individually": "The Daily Plan Service by default submits orders from a single transaction that is rolled back if submission of an order fails. With the setting in place orders are submitted individually and independently from failure to submit other orders. The Daily Plan Service will require more time to submit orders individually.",
       "age_of_plans_to_be_closed_automatically": "Specifies the number of days after which the Daily Plan will be closed and will not allow to add orders that resolve dependencies such as Notice Boards for the original date."

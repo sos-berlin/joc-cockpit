@@ -36,7 +36,7 @@ Legt die Anzahl der Tage fest, nach denen der Tagesplan geschlossen wird und das
 
 ### Einstellung: *projections\_month\_before*, Default: *2*
 
-Gibt die Anzahl der zurückliegenden Monate an, für die die [Tagesplan - Projektion](/daily-plan-projections) berechnet wird, die auf die Ausführung von Aufträgen hinweisen. Die Projektion auf zurückliegende Monate erlaubt es, den Tagesplan mit späteren Änderungen Zeitpläne zu vergleichen.
+Gibt die Anzahl der zurückliegenden Monate an, für die die [Tagesplan - Projektion](/daily-plan-projections) berechnet wird, die auf die Ausführung von Aufträgen hinweisen. Die Projektion auf zurückliegende Monate erlaubt es, den Tagesplan mit späteren Änderungen der Zeitpläne zu vergleichen.
 
 ### Einstellung: *projections\_month\_ahead*, Standard: *6*
 

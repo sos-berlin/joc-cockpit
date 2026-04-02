@@ -3340,6 +3340,7 @@
       "period_begin": "24時間のデイリープランの開始時間を、指定されたタイムゾーンで指定します。",
       "days_ahead_plan": "オーダーを生成し計画済状態で利用可能にする日数を指定します。",
       "days_ahead_submit": "計画済オーダーがコントローラーに送信され、保留状態で利用可能になる日数を指定します。",
+      "projections_month_before": "Specifies the number of months before the current date for which projections are calculated that indicate order execution. This allows users to compare past Daily Plan dates to projections based on current changes to schedules.",
       "projections_month_ahead": "翌月のプロジェクション",
       "submit_orders_individually": "デイリープランサービスでは、デフォルトで1つの取引からオーダーが登録され、オーダーが失敗するとロールバックされます。この設定により、オーダーは個別に登録され、他のオーダー登録の失敗とは独立して登録されます。デイリープランサービスでは、オーダーを個別に登録するため、より多くの時間を要します。",
       "age_of_plans_to_be_closed_automatically": "通知ボードなどの依存関係が解決できる、オーダーが登録できなくなるまでの実行計画の日数を指定します"
