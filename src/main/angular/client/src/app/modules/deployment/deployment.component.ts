@@ -1797,7 +1797,7 @@ export class DeploymentComponent {
       });
     }
 
-    this.validate(true);
+    this.validate();
   }
 
   private updateMissingObjects(obj, type): void {

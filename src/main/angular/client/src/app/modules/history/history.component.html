@@ -1272,20 +1272,6 @@
                         <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,null)"
                             [innerHtml]="history.startTime | duration:history.endTime"></td>
                       </tr>
-                      @if (history.show) {
-                        @if (history.orderState && (history.orderState._text === 'RUNNING' || history.orderState._text === 'INPROGRESS')) {
-                          <tr>
-                            <td></td>
-                            <td colspan="10">
-                              <app-order-progress-bar
-                                [order]="history"
-                                [controllerId]="schedulerIds.selected"
-                                [showDetails]="true">
-                              </app-order-progress-bar>
-                            </td>
-                          </tr>
-                        }
-                      }
                       @if (history.show && history.arguments) {
                         <tr>
                           <td></td>

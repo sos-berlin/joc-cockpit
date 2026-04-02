@@ -23,7 +23,6 @@ import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {NzSpaceCompactComponent} from "ng-zorro-antd/space";
 import {JobProgressBarComponent} from '../../components/job-progress-bar/job-progress-bar.component';
-import { OrderProgressBarComponent } from 'src/app/components/order-progress-bar/order-progress-bar.component';
 
 @NgModule({
     imports: [
@@ -54,13 +53,11 @@ import { OrderProgressBarComponent } from 'src/app/components/order-progress-bar
     TypeComponent,
     BulkAddOrderComponent,
     JobProgressBarComponent,
-    OrderProgressBarComponent
   ],
   exports: [
     OrderListSidebarComponent,
     TypeComponent,
     JobProgressBarComponent,
-    OrderProgressBarComponent
   ]
 })
 export class WorkflowModule {
