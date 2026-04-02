@@ -4,6 +4,11 @@
     "country": "US",
     "name": "English"
   },
+  "es": {
+    "lang": "es",
+    "country": "ES",
+    "name": "Español"
+  },
   "fr": {
     "lang": "fr",
     "country": "FR",
