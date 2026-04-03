@@ -2775,7 +2775,7 @@
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
     "message.confirmAllSelectedOrders": "Êtes-vous sûr de vouloir confirmer tous les ordres sélectionnés ?",
     "message.remove": "Glisser-déposer l'ordre pour déplacer sa position",
-    "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle en secondes ou en heures:minutes:secondes. Les utilisateurs peuvent spécifier une période plus courte que celle prédéfinie pour la fin du cycle. L'ordre reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'ordre reviendra au début du cycle. Les heures de fin de cycle dépassant la période prédéfinie seront ignorées.",
+    "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle en secondes ou en heures:minutes:secondes. Les utilisateurs peuvent spécifier une période plus courte ou plus longue que celle prédéfinie pour la fin du cycle à condition que le cycle ait été effectué une fois. L'ordre reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'ordre reviendra au début du cycle.",
     "treeView": {
       "label": {
         "state": "Étape",
@@ -3332,7 +3332,7 @@
       "history_pause_duration": "Spécifie la durée pendant laquelle le Service de l'Historique sera mis en pause lorsque le Service d'Assainissement est lancé.",
       "history_pause_delay": "Spécifie le délai entre les exécutions répétées du Service d'Assainissement.",
       "force_cleanup": "Force le démarrage du Service d'Assainissement, y compris lorsque le Service de l'Historique est en train de créer des entrées d'historique. Le Service d'Assainissement met en pause le Service de l'Historique pendant une durée maximale configurable ou jusqu'à l'arrêt du Service d'Assainissement, selon ce qui se produit en premier.",
-      "approval_requests_age": "approval_requests_age"
+      "approval_requests_age": "Spécifie la période de conservation des Demandes d'Autorisation. Toutes les demandes antérieures à la valeur spécifiée seront supprimées."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
@@ -3340,6 +3340,7 @@
       "period_begin": "Spécifie le début de la période du Plan Quotidien de 24 heures avec le fuseau horaire indiqué.",
       "days_ahead_plan": "Spécifie le nombre de jours à venir pour lesquels les ordres sont générés et mises à disposition avec l'état PLANIFIE.",
       "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS.",
+      "projections_month_before": "Spécifie le nombre de mois passé pour lesquels la Projection du Plan Quotidien est calculé et qui indique l'exécution des Ordres. La projection sur les mois précédents permet de comparer le planning quotidien avec les modifications apportées aux plannings actuels.",
       "projections_month_ahead": "Spécifie le nombre de mois à venir pour lesquels sont calculées les projections indiquant l'exécution future des ordres.",
       "submit_orders_individually": "Le Service du Plan Quotidien soumet par défaut des ordres à partir d'une transaction unique qui est annulée si la soumission d'un ordre échoue. Avec ce paramètre, les ordres sont soumis individuellement et indépendamment de l'échec de la soumission d'autres ordres. Le Service du Plan Quotidien nécessitera plus de temps pour soumettre les ordres individuellement.",
       "age_of_plans_to_be_closed_automatically": "Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."

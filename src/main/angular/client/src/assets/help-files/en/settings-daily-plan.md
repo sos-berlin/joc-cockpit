@@ -36,7 +36,7 @@ Specifies the number of days after which the Daily Plan will be closed and will 
 
 ### Setting: *projections\_month\_before*, Default: *2*
 
-Specifies the number of months before the current date for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate Order execution. This allows users to compare past Daily Plan dates to projections based on the current changes to schedules.
+Specifies the number of months before the current date for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate Order execution. This allows users to compare past Daily Plan dates to projections based on current changes to schedules.
 
 ### Setting: *projections\_month\_ahead*, Default: *6*
 

@@ -2716,7 +2716,7 @@
     "label.selectOrder": "Auftragsvorlage auswählen",
     "label.listOfConstants": "Variablen mit konstanten Werten",
     "label.listOfDynamicallyVariables": "Variablen mit änderbaren Werten",
-    "label.cycleEndTime": "Zyklus Ende Zeit",
+    "label.cycleEndTime": "Zyklus Endzeit",
     "label.ignoreAdmissionTimes": "Zutrittszeiten der Anweisungen/Jobs ignorieren",
     "label.blockPosition": "Block Position",
     "label.stickToDailyPlanDate": "Zuordnung zum Tagesplan beibehalten",
@@ -2775,7 +2775,7 @@
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
     "message.confirmAllSelectedOrders": "Sind Sie sicher, dass Sie alle ausgewählten Aufträge bestätigen wollen?",
     "message.remove": "Ziehen Sie den Auftrag per Mausklick an die gewünschte Position",
-    "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus in Sekunden oder Stunden:Minuten:Sekunden an. Der Anwender kann eine kürzere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben. Der Auftrag wird an der vom Anwender gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt. Zyklusendzeiten, die die vordefinierte Zyklusdauer überschreiten, werden ignoriert.",
+    "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus in Sekunden oder Stunden:Minuten:Sekunden an. Anwender können eine kürzere oder längere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben sofern der Zyklus einmal durchlaufen wurde. Der Auftrag wird an der vom Anwender gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt.",
     "treeView": {
       "label": {
         "state": "Zustand",
@@ -3332,7 +3332,7 @@
       "history_pause_duration": "Gibt die Dauer an, für die der Historiendienst angehalten wird, wenn der Bereinigungsdienst gestartet wird.",
       "history_pause_delay": "Gibt die Verzögerung zwischen wiederholten Ausführungen des Bereinigungsdienstes an.",
       "force_cleanup": "Erzwingt den Start des Bereinigungsdienstes auch dann, wenn der Historiendienst aktiv Historieneinträge erstellt. Der Bereinigungsdienst hält den Historiendienst für eine konfigurierbare Höchstdauer oder bis zur Beendigung des Bereinigungsdienstes an, je nachdem, was zuerst eintritt.",
-      "approval_requests_age": "approval_requests_age"
+      "approval_requests_age": "Gibt die maximale Anzahl von Tagen an, für die Autorisierungsanfragen vorgehalten werden. Alle Anfragen, die älter als der angegebene Wert sind, werden gelöscht."
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
@@ -3340,6 +3340,7 @@
       "period_begin": "Benennt den Beginn der 24 Stunden Periode des Tagesplans auf Basis der angegebenen Zeitzone.",
       "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die Aufträge erzeugt werden und den Zustand GEPLANT erhalten.",
       "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die Aufträge, die sich im Zustand GEPLANT befinden, an die Controller übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
+      "projections_month_before": "Gibt die Anzahl der zurückliegenden Monate an, für die die Projektionen berechnet werden, die auf zurückliegende Ausführung von Aufträgen hinweisen. Die Projektion auf zurückliegende Monate erlaubt es, den Tagesplan mit späteren Änderungen der Zeitpläne zu vergleichen.",
       "projections_month_ahead": "Gibt die Anzahl der Monate an, für die Projektionen berechnet werden, die die zukünftige Auftragsausführung anzeigen.",
       "submit_orders_individually": "Der Tagesplandienst übermittelt standardmäßig Aufträge in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt. Mit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt. Der Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
       "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der Tagesplan geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."
