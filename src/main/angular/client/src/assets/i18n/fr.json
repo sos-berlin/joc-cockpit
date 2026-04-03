@@ -4229,7 +4229,8 @@
       "placeholder.script": "// ajouter script ici",
       "placeholder.endPoint": "Entrer l'adresse de fin, par ex. /orders/add",
       "message.invalidBody": "JSON invalide dans le Corps de Requête",
-      "message.invalidAuth": "Nom d'utilisateur et mot de passe requis pour se connecter avec Basic Authentication."}
+      "message.invalidAuth": "Nom d'utilisateur et mot de passe requis pour se connecter avec Basic Authentication."
+    }
   },
   "xml": {
     "label.assignedSchema": "Schéma Assigné",

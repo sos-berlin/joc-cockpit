@@ -4229,7 +4229,8 @@
       "placeholder.script": "// write script here",
       "placeholder.endPoint": "Enter an endpoint, e.g. (/orders/add)",
       "message.invalidBody": "Invalid JSON in Request body",
-      "message.invalidAuth": "Username and password are required for Basic Auth login."}
+      "message.invalidAuth": "Username and password are required for Basic Auth login."
+    }
   },
   "xml": {
     "label.assignedSchema": "適用スキーマ",
