@@ -1024,7 +1024,7 @@ export class XmlEditorComponent {
       // res exists because this block is only executed if the value was previously selected from the tree
       this.extraInfo.isExist = true;
       // not ideal: the input value might be the same as the previous selection
-      this.clearDeploymentState();      
+      this.clearDeploymentState();
     });
   }
 
@@ -1762,7 +1762,7 @@ export class XmlEditorComponent {
           if (((attrs[i].name === 'name' && attrs[i].parent === 'JobResource') || attrs[i].name === 'job_resources') && !flag) {
             flag = true;
             this.getJobResourceTree(attrs[i]);
-          }           
+          }
         }
       }
     }
@@ -2104,6 +2104,26 @@ export class XmlEditorComponent {
 
       if (element1.length > 0) {
 
+        const cPath = `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:element`;
+        const cElement = select(cPath, this.doc);
+
+        if (cElement.length > 0) {
+          for (let i = 0; i < cElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < cElement[i].attributes.length; j++) {
+              const a = cElement[i].attributes[j].nodeName;
+              const b = cElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
+            }
+            nodes.parent = node;
+            childArr.push(nodes);
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
+          }
+        }
         const dPath =
           `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:element`;
         const dElement = select(dPath, this.doc);
@@ -2117,26 +2137,6 @@ export class XmlEditorComponent {
             }
             nodes.parent = node;
             nodes.choice = node;
-            childArr.push(nodes);
-            if (data) {
-              data.children = childArr;
-            } else {
-              this.childNode = childArr;
-            }
-          }
-        }
-        const cPath = `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:element`;
-        const cElement = select(cPath, this.doc);
-
-        if (cElement.length > 0) {
-          for (let i = 0; i < cElement.length; i++) {
-            nodes = {};
-            for (let j = 0; j < cElement[i].attributes.length; j++) {
-              const a = cElement[i].attributes[j].nodeName;
-              const b = cElement[i].attributes[j].nodeValue;
-              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
-            }
-            nodes.parent = node;
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -3046,7 +3046,7 @@ export class XmlEditorComponent {
         value.parent = nodeName;
       }
     }
-    
+
     const xmlEditorPath = '//xs:element[@name=\'' + nodeName + '\']/xs:annotation/xs:appinfo/XmlEditor';
     const elements = select(xmlEditorPath, this.doc);
     let options: any;
@@ -3067,15 +3067,15 @@ export class XmlEditorComponent {
           }
         }
       }
-    }  
-    
+    }
+
     if (!isEmpty(value)) {
       if (value.base === 'combobox') {
         if (options && options.length > 0) {
           value.values = options.split(';').map(opt => ({ value: opt }));
         }
       }
-    
+
       if (!value.parent) {
         value.parent = nodeName;
       }
@@ -3085,12 +3085,12 @@ export class XmlEditorComponent {
 
     return valueArr;
   }
- 
+
   getYADEHandler(): YADEHandler | undefined {
     if (this.objectType !== 'YADE') {
       return undefined;
     }
-    
+
     if (!this.yadeHandler) {
       this.yadeHandler = new YADEHandler(this);
     }
@@ -3771,7 +3771,7 @@ export class XmlEditorComponent {
       this.coreService.showCopyMessage(this.message);
     }
   }
-  
+
   // check rules before paste
   private checkRules(pasteNode, copyNode): void {
     if (copyNode !== undefined) {
