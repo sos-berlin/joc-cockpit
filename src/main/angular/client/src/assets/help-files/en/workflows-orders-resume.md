@@ -34,7 +34,7 @@ The subsequent Workflow instruction is the same or the one to which a users will
 
 #### Forcing jobs to be restarted
 
-The **Force Resumption** checkbox affects jobs that are configured being *not restartable*, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options.md). Such jobs will not be executed once again in case that they have been terminated by the Agent or by the operating system. The option does not affect *suspended* Order or Orders that *failed* due to job errors.
+The **Force Resumption** checkbox affects jobs that are configured being *not restartable*, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). Such jobs will not be executed once again in case that they have been terminated by the Agent or by the operating system. The option does not affect *suspended* Order or Orders that *failed* due to job errors.
 
 The intention is to prevent jobs not designed for restart capabilities from being automatically resumed after forceful termination. Instead, users have to hit the related checkbox. Typical use cases include for example, jobs performing financial transactions for which the outcome should be checked before causing a restart.
 
@@ -70,7 +70,7 @@ When unchanged, the Order will be resumed from its current Workflow position.
 
 ## Bulk Operations on Orders
 
-The bulk operation is available from the [Orders Overview](/orders-overview.md) view which allows selecting a number of Orders from the same or different Workflows.
+The bulk operation is available from the [Orders Overview](/orders-overview) view which allows selecting a number of Orders from the same or different Workflows.
 
 - **Resume from same Position** allows resumption from the current Workflow instruction at which the Order is *suspended* or *failed*.
 - **Resume from current Block** offers resumption from the begin of the current block instruction. For example,
