@@ -431,4 +431,8 @@ export class ResumeOrderModalComponent {
   trackByArgument(index: number, item: any): string {
     return item.name || item.id || index;
   }
+
+  helpPage(): void{
+    this.coreService.openHelpPage('workflows-orders-resume');
+  }
 }
