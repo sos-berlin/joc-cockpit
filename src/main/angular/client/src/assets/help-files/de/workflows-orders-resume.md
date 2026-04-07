@@ -23,10 +23,10 @@ Benutzer können die Werte von *Dynamischen Variablen* ändern.
 - **Operationen**
   - **Wert beibehalten**: Die Variable wird mit ihrem aktuellen Wert an die nachfolgende Anweisung im Arbeitsablauf übergeben.
   - **Wert ändern**: Der geänderte Wert der Variable wird verwendet, sofern das entsprechende Kontrollkästchen *aktiviert* ist.
-  - **Variable entfernen**: Es wird der ursprüngliche Wert der Variable verwendet, der vor der aktuellen Anweisung gültig war.
+  - **Variable entfernen**: Es wird der ursprüngliche Wert der Variable verwendet, der für den Job gültig war, aber dem der Auftrag fortgesetzt wird.
   - **Variable hinzufügen**: Ermöglicht das Hinzufügen des Namens und Werts einer neuen *Dynamischen Variable*.
 - **Variablen**
-  - **returnCode**: ist eine integrierte Variable, die das numerische Ergebnis der vorherigen Anweisung im Arbeitsablauf enthält. Standardmäßig bedeutet der Wert Null Erfolg, Werte ungleich Null bedeuten einen Fehler.
+  - **returnCode**: ist eine integrierte Variable, die das numerische Ergebnis der vorherigen Anweisung im Arbeitsablauf enthält. Standardmäßig bedeutet der Wert *0* Erfolg, Werte ungleich *0* bedeuten einen Fehler.
 
 Die nachfolgende Anweisung im Arbeitsablauf ist dieselbe oder jene, in die ein Benutzer den Auftrag per Ziehen & Ablegen verschiebt, einschließlich Anweisungen, die vor oder nach der aktuellen Position des Auftrags liegen.
 
@@ -82,10 +82,10 @@ Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview.md)
 
 ### Kontext-Hilfe
 
-- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options.md)
-- [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows.md)
-- [Auftragsübersicht](/orders-overview.md)
-- [Arbeitsabläufe](/workflows.md)
+- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options)
+- [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows)
+- [Auftragsübersicht](/orders-overview)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 
