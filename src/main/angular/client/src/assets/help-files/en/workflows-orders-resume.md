@@ -82,10 +82,10 @@ The bulk operation is available from the [Orders Overview](/orders-overview.md) 
 
 ### Context Help
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options.md)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows.md)
-- [Orders Overview](/orders-overview.md)
-- [Workflows](/workflows.md)
+- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Orders Overview](/orders-overview)
+- [Workflows](/workflows)
 
 ### Product Knowledge Base
 
