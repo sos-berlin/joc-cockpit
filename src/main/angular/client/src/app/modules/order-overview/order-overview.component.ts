@@ -460,6 +460,10 @@ export class AllOrderResumeModelComponent {
       });
     }
 
+  helpPage(): void{
+    this.coreService.openHelpPage('workflows-orders-resume');
+  }
+
   // getPositions(){
   //   const obj = {
   //     controllerId: this.controllerId,
