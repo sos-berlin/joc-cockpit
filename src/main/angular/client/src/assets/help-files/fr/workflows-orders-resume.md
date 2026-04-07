@@ -82,10 +82,10 @@ L'opération en bloc est disponible depuis la vue [Aperçu des Ordres](/orders-o
 
 ### Aide contextuelle
 
-- [Configuration - Inventaire - Workflow - Job Options](/configuration-inventory-workflow-job-options.md)
-- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows.md)
-- [Aperçu des Ordres](/orders-overview.md)
-- [Workflows](/workflows.md)
+- [Configuration - Inventaire - Workflow - Job Options](/configuration-inventory-workflow-job-options)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Aperçu des Ordres](/orders-overview)
+- [Workflows](/workflows)
 
 
 ### Product Knowledge Base

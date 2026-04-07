@@ -82,10 +82,10 @@ Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview.md)
 
 ### Kontext-Hilfe
 
-- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options.md)
-- [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows.md)
-- [Auftragsübersicht](/orders-overview.md)
-- [Arbeitsabläufe](/workflows.md)
+- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options)
+- [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows)
+- [Auftragsübersicht](/orders-overview)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 
