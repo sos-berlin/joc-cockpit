@@ -23,7 +23,7 @@ Users can modify the values of *Dynamic Variables*.
 - **Operations**
   - **Keep Value**: the variable is passed to the subsequent Workflow instruction with its current value.
   - **Change Value**: the changed value of the variable will be used, provided that the related checkbox is in *checked* state.
-  - **Remove Variable**: the original value of the variable will be used that was assigned before the current Workflow instruction.
+  - **Remove Variable**: the original value of the variable will be used that was in place with the respective job from which the Order will be resumed.
   - **Add Variable**: offers adding the name and value of a new *Dynamic Variable*.
 - **Variables**
   - **returnCode**: is a built-in variable that holds the numeric outcome of the previous Workflow instruction. By default, a zero value indicates success, non-zero values indicate failure.
