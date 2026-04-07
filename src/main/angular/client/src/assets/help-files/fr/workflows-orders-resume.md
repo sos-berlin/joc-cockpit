@@ -34,7 +34,7 @@ L'instruction de Workflow suivante est la même ou celle vers laquelle un utilis
 
 #### Forcer la reprise des tâches
 
-La case à cocher **Forcer la reprise** s'applique aux tâches configurées comme *non redémarrables*, voir [Configuration - Inventaire - Workflow - Job Options](/configuration-inventaire-workflow-options-de-tâche). Ces tâches ne seront pas réexécutées si elles ont été interrompues par l'Agent ou par le système d'exploitation. Cette option n'affecte pas les Ordres *suspendus* ni les Ordres ayant *échoué* en raison d'erreurs de tâche.
+La case à cocher **Forcer la reprise** s'applique aux tâches configurées comme *non redémarrables*, voir [Configuration - Inventaire - Workflow - Job Options](//configuration-inventory-workflow-job-options). Ces tâches ne seront pas réexécutées si elles ont été interrompues par l'Agent ou par le système d'exploitation. Cette option n'affecte pas les Ordres *suspendus* ni les Ordres ayant *échoué* en raison d'erreurs de tâche.
 
 L'objectif est d'empêcher que les tâches non conçues pour être redémarrées ne soient automatiquement relancées après une interruption forcée. Les utilisateurs doivent alors cocher la case correspondante. Parmi les cas d'utilisation typiques, on peut citer par exemple les tâches effectuant des transactions financières dont le résultat doit être vérifié avant de déclencher un redémarrage.
 

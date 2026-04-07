@@ -34,7 +34,7 @@ Die nachfolgende Anweisung im Arbeitsablauf ist dieselbe oder jene, in die ein B
 
 #### Erzwingen des Neustarts von Jobs
 
-Das Kontrollkästchen **Wiederaufnahme erzwingen** wirkt sich auf Jobs aus, die als *nicht wiederanlauffähig* konfiguriert sind, siehe [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options). Solche Jobs werden nicht erneut ausgeführt, sofern sie durch den Agenten oder das Betriebssystem abgebrochen wurden. Dies betrifft nicht *ausgesetzte* Aufträge und *fehlgeschlagene* Aufträge, die nach Job-Fehler fortgesetzt werden.
+Das Kontrollkästchen **Wiederaufnahme erzwingen** wirkt sich auf Jobs aus, die als *nicht wiederanlauffähig* konfiguriert sind, siehe [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventory-workflow-job-options). Solche Jobs werden nicht erneut ausgeführt, sofern sie durch den Agenten oder das Betriebssystem abgebrochen wurden. Dies betrifft nicht *ausgesetzte* Aufträge und *fehlgeschlagene* Aufträge, die nach Job-Fehler fortgesetzt werden.
 
 Damit soll verhindert werden, dass Jobs, die nicht für einen Neustart ausgelegt sind, nach Abbruch automatisch fortgesetzt werden. Stattdessen müssen Benutzer das entsprechende Kontrollkästchen aktivieren. Typische Anwendungsfälle sind beispielsweise Jobs, die Finanztransaktionen ausführen, bei denen das Ergebnis überprüft werden sollte, bevor ein Neustart veranlasst wird.
 
@@ -82,7 +82,7 @@ Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview) ve
 
 ### Kontext-Hilfe
 
-- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options)
+- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows)
 - [Auftragsübersicht](/orders-overview)
 - [Arbeitsabläufe](/workflows)
