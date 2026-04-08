@@ -1,31 +1,31 @@
-# Configuration - Inventory - Operations - Import
+# ジョブ定義 - インベントリー - 操作 - インポート
 
-Importing objects includes adding them to the inventory from a .zip or .tar.gz archive file.
+オブジェクトのインポートには、.zipまたは.tar.gz形式のアーカイブファイルからインベントリーに追加する処理が含まれます。
 
-This applies to objects from the *Controller* and *Automation* system folders and to objects from user folders. Objects can be imported from the same or from a different JOC Cockpit instance.
+この機能は、*コントローラー* システムフォルダおよび *実行計画* システムフォルダ内のオブジェクト、およびユーザーフォルダー内のオブジェクトに適用されます。インポート元は、同じJOCコックピットインスタンス内のオブジェクトでも、異なるインスタンスのオブジェクトでもかまいません。
 
-When using different JOC Cockpit versions for export and import, then import to a newer version will be supported, import to older versions will not.
+エキスポートとインポートで異なるJOCコックピットバージョンを使用する場合、新しいバージョンへのインポートはサポートされますが、古いバージョンへのインポートはサポートされません。
 
-When importing objects using the related *Import* operation from the a button with the same caption in the right-upper corner of the window, then a pop-up window will be displayed:
+ウィンドウ右上隅にある *インポート* ボタンを使用してオブジェクトをインポートする場合、ポップアップウィンドウが表示されます：
 
-- **Folder** specifies the inventory folder to which objects will be imported. 
-  - If the folder does not exist, then it will be created. More than one folder can be specified using slashes (/) as in */a/b/c*.
-  - The folder hierarchy available in the archive file will added to the *Folder* specified.
-- **File Format** specifies either .zip or .tar.gz for the compression type.
-- **Overwrite** specifies that existing objects with the same name will be overwritten.
-  - In the JOC Cockpit inventory object names are unique per object type such as Workflows, Schedules etc.
-- **Overwrite Tags** specifies that tags of existing objects such as Workflows will be overwritten by tags from imported objects with the same name.
-- **Object Name** offers options available if the *Overwrite* option is not selected: 
-  - **Ignore if exists**: The object will not be imported. An existing object of the same type with the same name remains in place.
-  - **Add Prefix**: A prefix is specified that will be prepended any imported objects, separated by an additional dash.
-  - **Add Suffix**: A suffix is specified that will be appended any imported objects, separated by an additional dash.
-- **File Name**: Users can drag&amp;drop a file or can use the *choose files for upload* option to select a file for import.
+- **フォルダー**：インポート対象のオブジェクトを保存するインベントリーフォルダーを指定します。
+  - 指定したフォルダーが存在しない場合、自動的に作成されます。スラッシュ（/）で区切って複数のフォルダを指定することも可能です（例：*/a/b/c*）。
+  - アーカイブファイルに存在するフォルダー階層が、指定した *フォルダー* に追加されます。
+- **ファイル形式**：圧縮形式として.zipまたは.tar.gzのいずれかを指定します。
+- **上書き**：同名の既存オブジェクトがある場合、それらを上書きすることを指定します。
+  - JOCコックピットのインベントリーでは、オブジェクト名はワークフローやスケジュールなどのオブジェクトタイプごとに一意である必要があります。
+- **上書きタグ**：同名の既存オブジェクトのタグを、インポートするオブジェクトのタグで上書きすることを指定します。
+- **オブジェクト名**：*上書き* オプションを選択しない場合に利用可能なオプションを提供します：
+  - **無視**：オブジェクトはインポートされません。同じタイプで同名の既存オブジェクトはそのまま保持されます。
+  - **接頭語追加**：インポートするすべてのオブジェクトの先頭に指定する接頭語を設定します（追加のハイフンで区切られます）。
+  - **接尾語追加**：インポートするすべてのオブジェクトの末尾に指定する接尾語を設定します（追加のハイフンで区切られます）。
+- **ファイル名**：ユーザーはファイルをドラッグ＆ドロップするか、*アップロードファイルを選択* オプションを使用してインポートするファイルを選択できます。
   
-## References
+## 参照
 
-### Context Help
+### コンテキストヘルプ
 
-- [Dependency Matrix](/dependencies-matrix)
+- [依存関係](/dependencies-matrix)
 
 ### Product Knowledge Base
 
