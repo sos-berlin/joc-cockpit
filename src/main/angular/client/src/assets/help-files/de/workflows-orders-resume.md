@@ -34,7 +34,7 @@ Die nachfolgende Anweisung im Arbeitsablauf ist dieselbe oder jene, in die ein B
 
 #### Erzwingen des Neustarts von Jobs
 
-Das Kontrollkästchen **Wiederaufnahme erzwingen** wirkt sich auf Jobs aus, die als *nicht wiederanlauffähig* konfiguriert sind, siehe [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options.md). Solche Jobs werden nicht erneut ausgeführt, sofern sie durch den Agenten oder das Betriebssystem abgebrochen wurden. Dies betrifft nicht *ausgesetzte* Aufträge und *fehlgeschlagene* Aufträge, die nach Job-Fehler fortgesetzt werden.
+Das Kontrollkästchen **Wiederaufnahme erzwingen** wirkt sich auf Jobs aus, die als *nicht wiederanlauffähig* konfiguriert sind, siehe [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventory-workflow-job-options). Solche Jobs werden nicht erneut ausgeführt, sofern sie durch den Agenten oder das Betriebssystem abgebrochen wurden. Dies betrifft nicht *ausgesetzte* Aufträge und *fehlgeschlagene* Aufträge, die nach Job-Fehler fortgesetzt werden.
 
 Damit soll verhindert werden, dass Jobs, die nicht für einen Neustart ausgelegt sind, nach Abbruch automatisch fortgesetzt werden. Stattdessen müssen Benutzer das entsprechende Kontrollkästchen aktivieren. Typische Anwendungsfälle sind beispielsweise Jobs, die Finanztransaktionen ausführen, bei denen das Ergebnis überprüft werden sollte, bevor ein Neustart veranlasst wird.
 
@@ -70,7 +70,7 @@ Wenn keine Änderung der Position vorgenommen wird, dann wird der Auftrag an sei
 
 ## Massenoperationen für Aufträge
 
-Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview.md) verfügbar, in der mehrere Aufträge aus demselben oder aus unterschiedlichen Arbeitsabläufen ausgewählt werden können.
+Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview) verfügbar, in der mehrere Aufträge aus demselben oder aus unterschiedlichen Arbeitsabläufen ausgewählt werden können.
 
 - **Von derselben Position wiederaufnehmen** ermöglicht die Fortsetzung ab der aktuellen Anweisung im Arbeitsablauf, an der der Auftrag *ausgesetzt* oder *fehlgeschlagen* ist.
 - **Vom aktuellen Block wiederaufnehmen** bietet die Fortsetzung ab dem Beginn der aktuellen Blockanweisung. Zum Beispiel:
@@ -82,7 +82,7 @@ Die Massenoperation ist in der Ansicht [Auftragsübersicht](/orders-overview.md)
 
 ### Kontext-Hilfe
 
-- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventary-workflow-job-options)
+- [Konfiguration – Inventar – Arbeitsablauf – Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Konfiguration – Inventar – Arbeitsabläufe](/configuration-inventory-workflows)
 - [Auftragsübersicht](/orders-overview)
 - [Arbeitsabläufe](/workflows)

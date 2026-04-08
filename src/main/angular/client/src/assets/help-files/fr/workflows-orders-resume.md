@@ -34,7 +34,7 @@ L'instruction de Workflow suivante est la même ou celle vers laquelle un utilis
 
 #### Forcer la reprise des tâches
 
-La case à cocher **Forcer la reprise** s'applique aux tâches configurées comme *non redémarrables*, voir [Configuration - Inventaire - Workflow - Job Options](/configuration-inventaire-workflow-options-de-tâche.md). Ces tâches ne seront pas réexécutées si elles ont été interrompues par l'Agent ou par le système d'exploitation. Cette option n'affecte pas les Ordres *suspendus* ni les Ordres ayant *échoué* en raison d'erreurs de tâche.
+La case à cocher **Forcer la reprise** s'applique aux tâches configurées comme *non redémarrables*, voir [Configuration - Inventaire - Workflow - Job Options](//configuration-inventory-workflow-job-options). Ces tâches ne seront pas réexécutées si elles ont été interrompues par l'Agent ou par le système d'exploitation. Cette option n'affecte pas les Ordres *suspendus* ni les Ordres ayant *échoué* en raison d'erreurs de tâche.
 
 L'objectif est d'empêcher que les tâches non conçues pour être redémarrées ne soient automatiquement relancées après une interruption forcée. Les utilisateurs doivent alors cocher la case correspondante. Parmi les cas d'utilisation typiques, on peut citer par exemple les tâches effectuant des transactions financières dont le résultat doit être vérifié avant de déclencher un redémarrage.
 
@@ -70,7 +70,7 @@ Si la position n'est pas modifiée, l'Ordre reprendra à partir de sa position a
 
 ## Opérations en bloc sur les Ordres
 
-L'opération en bloc est disponible depuis la vue [Aperçu des Ordres](/orders-overview.md), qui permet de sélectionner plusieurs Ordres issues du même Workflow ou de Workflows différents.
+L'opération en bloc est disponible depuis la vue [Aperçu des Ordres](/orders-overview), qui permet de sélectionner plusieurs Ordres issues du même Workflow ou de Workflows différents.
 
 - **Reprendre à partir de la même position** permet de reprendre à partir de l'instruction du Workflow à laquelle l'Ordre a été *suspendue* ou a *échoué*.
 - **Reprendre à partir du bloc actuel** permet de reprendre à partir du début de l'instruction de bloc actuelle. Par exemple,
