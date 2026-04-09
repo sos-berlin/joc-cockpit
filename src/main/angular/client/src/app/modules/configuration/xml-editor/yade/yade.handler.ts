@@ -60,7 +60,7 @@ export class YADEHandler {
 
       const encryptionKey = decryptionFragment.attributes?.find((a: any) => a.name === "encryption_key")?.data;
       if(!encryptionKey){
-        this.xmlEditor.showErrorToast("DecryptionFragment name='"+decryptionFragmentName+"'. The encryption_key is not set.", toastTitle);
+        this.xmlEditor.showErrorToast("DecryptionFragment name='"+decryptionFragmentName+"'. The 'encryption_key' attribute is not set.", toastTitle);
         return;
       }
       //const privateKey = decryptionFragment.children?.find((c: any) => c.ref === "EnciphermentPrivateKey")?.values?.[0]?.data;
