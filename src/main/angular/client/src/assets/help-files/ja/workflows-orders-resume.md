@@ -1,91 +1,88 @@
-# Resume Orders
+# オーダー回復
 
-The *Resume Orders* pop-up window is displayed for *suspended* and *failed* Orders that should be resumed. A number of sections are offered for user input depending on resumption being performed for a single Order or from a bulk operation on Orders.
+*一時停止* または *失敗* ステータスのオーダーを再開するために *オーダー回復* ポップアップウィンドウが表示されます。単一オーダーを再開する場合と複数オーダーに対する一括操作に応じて、複数の入力項目が提供されます。
 
-- **Variables** are displayed with values that are historically specific before the current Workflow position. For example, if a failed job did modify a *Dynamic Variable*, then the variable will be displayed from its historic value before executing the job.
-- **Options** allow changing the behavior of resumed Orders.
-- **Positions** allow resuming Orders from an earlier or later position in the Workflow.
+- **変数**には、現在のワークフロー位置より前の時点での変数の値が表示されます。例えば、処理失敗となったジョブが *動的変数* を変更していた場合、その変数はジョブ実行前の値で表示されます。
+- **オプション**では、再開するオーダーの動作を変更することができます。
+- **ポジション**では、ワークフローのより前の位置または後の位置からオーダーを再開することができます。
 
-## Operations on single Orders
+## 単一オーダーの操作
 
-### Variables with constant values
+### 固定値の変数
 
-The section displays *Workflow Variables* with their effective values carried by the Order.
+この項目では、オーダーによって引き継がれる有効な値を持つ *ワークフロー変数* を表示します。
+これらの変数は変更不可能な固定値を保持しています。
 
-Such variables hold constant values that cannot be modified.
+### 変更可能な変数
 
-### Variables with modifiable values
+この項目では、ワークフローで宣言されていない *動的変数* を表示します。これらの変数は、オーダーによって実行されるジョブによって動的に生成されます。
+ユーザーは *動的変数* の値を変更することができます。
 
-The section displays *Dynamic Variables* not declared with the workflow. Such variables are dynamically created by jobs executed by the Order.
+- **操作**
+  - **値を保持**：変数は現在の値を保持したまま、次のワークフロー命令に渡されます。
+  - **値を変更**：関連チェックボックスがチェックされている場合、変更された変数値が使用されます。
+  - **変数を削除**：オーダーを再開する元のジョブで設定されていた変数の初期値が使用されます。
+  - **変数を追加**：新しい「動的変数」の名前と値を追加するためのオプションを提供します。
+- **変数**
+  - **返り値**：前のワークフロー命令の結果を保持する組み込み変数です。デフォルトでは、0の値が成功を示し、0以外の値は失敗を示します。
 
-Users can modify the values of *Dynamic Variables*. 
+次のワークフロー命令は、現在のオーダー位置より前または後にある命令を含む、ユーザーがドラッグ＆ドロップしたオーダー
 
-- **Operations**
-  - **Keep Value**: the variable is passed to the subsequent Workflow instruction with its current value.
-  - **Change Value**: the changed value of the variable will be used, provided that the related checkbox is in *checked* state.
-  - **Remove Variable**: the original value of the variable will be used that was in place with the respective job from which the Order will be resumed.
-  - **Add Variable**: offers adding the name and value of a new *Dynamic Variable*.
-- **Variables**
-  - **returnCode**: is a built-in variable that holds the numeric outcome of the previous Workflow instruction. By default, a zero value indicates success, non-zero values indicate failure.
+### オプション
 
-The subsequent Workflow instruction is the same or the one to which a users will drag&drop the Order which includes instructions earlier or later to the Order's current position.
+#### 強制ジョブ再開
 
-### Options
+**強制再開** チェックボックスは、*再起動不可* に設定されているジョブに影響を及ぼします（詳細は［設定 - インベントリー - ワークフロー - ジョブオプション］(/configuration-inventory-workflow-job-options.md)を参照）。このようなジョブは、エージェントまたはオペレーティングシステムによって強制終了された場合、再度実行されることはありません。このオプションは、*一時停止中* のオーダーや、ジョブエラーによって *失敗* したオーダーには適用されません。
 
-#### Forcing jobs to be restarted
+この機能の目的は、再起動機能を想定していないジョブが強制終了後に自動的に再開されるのを防ぐことです。代わりに、ユーザーは該当するチェックボックスを手動で選択する必要があります。典型的な使用例としては、金融取引を実行するジョブなどが挙げられます。このような場合、再起動を実行する前に取引結果を確認する必要があります。
 
-The **Force Resumption** checkbox affects jobs that are configured being *not restartable*, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). Such jobs will not be executed once again in case that they have been terminated by the Agent or by the operating system. The option does not affect *suspended* Order or Orders that *failed* due to job errors.
+#### サイクル終了時間設定
 
-The intention is to prevent jobs not designed for restart capabilities from being automatically resumed after forceful termination. Instead, users have to hit the related checkbox. Typical use cases include for example, jobs performing financial transactions for which the outcome should be checked before causing a restart.
+**サイクル終了時間** は、*サイクル命令* において少なくとも1サイクルを開始したオーダーに対して利用可能です。
 
-#### Specifying the Cycle End Time
+*サイクル命令* で設定された期間よりも短いまたは長い期間を指定することができます。
+期間は *秒単位* または *時:分:秒* で指定します。期間に値 *0* を指定すると、オーダーは
 
-The **Cycle End Time** input field is available for Orders that started a minimum of one cycle in a *Cycle Instruction*.
+- ワークフローの再開位置から継続されます
+- 後続のジョブを実行します
+- 次回 *サイクル命令* に合致した時点でサイクルを終了します
 
-A period shorter or longer than configured with the *Cycle Instruction* can be specified.
-Periods are specified by *seconds* or *hours:minutes:seconds*. Specifying a value *0* for the period will cause the Order
+### ドラッグ＆ドロップ操作が可能なオーダー位置
 
-- to continue from the resumed position in the Workflow,
-- to execute subsequent jobs,
-- to leave the cycle next time it meets the *Cycle Instruction*.
+オーダーは、ワークフローの任意の位置から再開することができます。
+ユーザーは、ワークフローの指示内容から、オーダーを再開すべき適切な位置へドラッグ＆ドロップで移動させることができます。
 
-### Positions for dragging & dropping Orders
+- **許可されている位置**
+  - 現在のワークフロー位置と同じブロックレベルにある後続のワークフロー命令位置から、オーダーを再開できます。
+  - *If* 命令のtrue分岐またはfalse分岐の任意の位置から、オーダーを再開できます。
+  - *ConsumeNotices* 命令内の位置からオーダーを再開することも可能です。これにより、関連する通知の存在確認をスキップできます。
+- **禁止されている位置**
+  - *Fork* 命令分岐内の位置へオーダーを移動させることはできません。これは、*親オーダー* が *Fork* 命令に保持されたままとなり、*子オーダー* が各分岐ごとに作成されるためです。
+    - *子オーダー* を *Fork* 命令の異なる分岐間で移動させることはできません。ただし、*子オーダー* をその分岐内の位置から再開することは可能です。
+    - *Fork* 命令から直接オーダーを再開することは許可されています。
+  - *Lock* 命令内の位置へオーダーを移動させることはできません。この操作は、*リソースロック*の取得状態に影響を与えるため禁止されています。*Lock* 命令のブロック開始位置からオーダーを再開することは許可されています。
 
-Orders can be resumed from a previous or later position in the Workflow.
-Users can drag&drop the Order to the Workflow instruction from which it should be resumed.
+上記の規則は、入れ子になったワークフロー命令にも適用されます。例えば、外側の *Fork* 命令の分岐内にある内側の *Fork* 命令についても同様です。
+変更がない場合、オーダーは現在のワークフロー位置から再開されます。
 
-- **Allowed Positions**
-  - Orders can be resumed from later Workflow instructions at the same block level as the current Workflow position.
-  - Orders can be resumed from a position in the *true* branch or *false* branch of an *If Instruction*.
-  - Orders can be resumed from a position inside the *ConsumeNotices* instruction, therefore skipping the check for existence of related Notices.
-- **Denied Positions**
-  - Orders cannot be moved to a position inside the branch of a *Fork Instruction*. The reason being that the *Parent Order* remains with the *Fork Instruction* while *Child Orders* are created per branch.
-    - *Child Orders* cannot be moved between branches of a *Fork Instruction*. Resuming a *Child Order* from a position within its branch is accepted.
-    - Orders can be resumed directly from a *Fork Instruction*.
-  - Orders cannot be moved to a position inside *Lock Instructions*. The operation is denied as it affects the condition of a *Resource Lock* being acquired. Resuming an Order from the block begin of the *Lock Instruction* is accepted.
+## オーダーの一括処理
 
-The above similarly applies to nested Workflow instructions, for example an inner *Fork Instruction* inside the branch of an outer *Fork Instruction*.
+一括処理機能は、[オーダー概要](/orders-overview.md)画面から利用可能です。この機能では、同一または異なるワークフローに属する複数のオーダーを選択できます。
 
-When unchanged, the Order will be resumed from its current Workflow position.
+- **同じ位置から再開**：オーダーが *一時停止* または *失敗* ステータスとなっている現在のワークフロー命令位置から処理を再開します。
+- **現在のブロックの先頭から再開**：現在のブロック命令の先頭位置から処理を再開します。具体的には：
+  - オーダーが *Lock* 命令内の特定の命令で停止している場合、その *Lock* 命令の先頭位置から再開されます。
+  - オーダーが *Fork* 命令の分岐内の特定の命令で停止している場合、その分岐の先頭位置から再開されます。
+- **ラベルから再開**：すべてのワークフローに共通する *ラベル* の名前を指定することで、そのラベルに対応するワークフロー位置から注文の処理を再開できます。該当する *ラベル* がワークフロー内に存在しない場合、オーダーは現在の位置から再開されます。
 
-## Bulk Operations on Orders
+## 参照
 
-The bulk operation is available from the [Orders Overview](/orders-overview) view which allows selecting a number of Orders from the same or different Workflows.
+### コンテキストヘルプ
 
-- **Resume from same Position** allows resumption from the current Workflow instruction at which the Order is *suspended* or *failed*.
-- **Resume from current Block** offers resumption from the begin of the current block instruction. For example,
-  - if an Order is sitting with some instruction inside a *Lock Instruction*, then it will be resumed from begin of the *Lock Instruction*.
-  - if an Order is sitting with some instruction inside a branch of the *Fork Instruction*, then it will be resumed from begin of the branch.
-- **Resume from Label** allows specifying the name of a *Label* that is common to all Workflows for which Orders should be resumed. Resumption of Orders will be effected from the Workflow position indicated by the *Label*. If the *Label* does not exist in a Workflow, then the Order is resumed from its current position.
-
-## References
-
-### Context Help
-
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Orders Overview](/orders-overview)
-- [Workflows](/workflows)
+- [ジョブ定義 - インベントリー - ワークフロー - ジョブオプション](/configuration-inventory-workflow-job-options.md)
+- [ジョブ定義 - インベントリー - ワークフロー](/configuration-inventory-workflows.md)
+- [オーダー概要](/orders-overview.md)
+- [ワークフロー](/workflows.md)
 
 ### Product Knowledge Base
 
