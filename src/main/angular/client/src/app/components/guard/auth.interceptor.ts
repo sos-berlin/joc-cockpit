@@ -165,7 +165,8 @@ export class AuthInterceptor implements HttpInterceptor {
                   try {
                     let _err = JSON.parse(err.error);
                     if (!isEmpty(_err.error)) {
-                      this.toasterService.error(_err.error.code, _err.error.message);
+                      const code = _err.error.code || '';
+                      this.toasterService.error(_err.error.message, code);
                     }
                     flag = true;
                   } catch (e) {
@@ -188,11 +189,13 @@ export class AuthInterceptor implements HttpInterceptor {
                         this.toasterService.error(title, msg);
                       }
                     } else if (err.error.error.message) {
-                      this.toasterService.error('', err.error.error.message);
+                      const code = err.error.error.code || '';
+                      this.toasterService.error(err.error.error.message, code);
                     }
 
                   } else if (err.error.message) {
-                    this.toasterService.error(err.error.message);
+                    const status = err.error.status || '';
+                    this.toasterService.error(err.error.message, status);
                   } else {
 
                     if (err.error.errors) {

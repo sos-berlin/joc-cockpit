@@ -238,14 +238,23 @@ export class PostModalComponent {
       const noticeBoardPath = this.board.path;
       obj.notices.push({noticeBoardPath: noticeBoardPath});
     } else if (!this.singular) {
-      if (!obj.notices) {
-        obj.notices = {};
+      const noticeEntries: { noticeBoardPath: string; noticeId: string }[] = this.modalData.noticeEntries || [];
+      if (noticeEntries.length > 0) {
+        obj.notices = paths.map((path: any) => ({ noticeBoardPath: path }));
+        const noticeMap = new Map<string, string[]>();
+        noticeEntries.forEach((entry: any) => {
+          if (!noticeMap.has(entry.noticeBoardPath)) {
+            noticeMap.set(entry.noticeBoardPath, []);
+          }
+          noticeMap.get(entry.noticeBoardPath)!.push(entry.noticeId);
+        });
+        noticeMap.forEach((noticeIds, noticeBoardPath) => {
+          obj.notices.push({ noticeBoardPath, noticeIds });
+        });
+      } else {
+        // Only fully-selected boards — no noticeId needed
+        obj.notices = paths.map((path: any) => ({ noticeBoardPath: path }));
       }
-
-      // Create an array of noticeBoardPath objects from paths
-      obj.notices = paths.map((path: any) => {
-        return {noticeBoardPath: path};
-      });
     }
     if (this.singular && !this.showNoticeId && this.globalSingle) {
       obj.noticeBoardPath = this.board.path;
@@ -495,7 +504,9 @@ export class BoardComponent {
     mapOfCheckedId: new Set(),
     isDelete: false,
     checked: false,
-    indeterminate: false
+    indeterminate: false,
+    isAllPosted: false,
+    isNonePosted: false
   };
   isPathDisplay = false;
 
@@ -907,6 +918,8 @@ export class BoardComponent {
     this.object.indeterminate = false;
     this.object.checked = false;
     this.object.isDelete = false;
+    this.object.isAllPosted = false;
+    this.object.isNonePosted = false;
     this.data.forEach((item) => {
       delete item.checked;
       delete item.indeterminate;
@@ -931,78 +944,102 @@ export class BoardComponent {
   }
 
   checkAll(value: boolean, board?): void {
+    const boards = this.boards.length > 0 ? this.getCurrentData(this.data, this.boardsFilters) : [];
+
     if (board) {
+      // Sub-table check-all: only affect THIS board, not all boards on the page
       this.checkChild(value, board);
-    }
-    let boards = [];
-    if (this.boards.length > 0) {
-      boards = this.getCurrentData(this.data, this.boardsFilters);
+      if (value) {
+        const checkableCount = board.notices?.filter((n: any) => !(n.state && n.state._text === 'EXPECTED')).length ?? 0;
+        if (checkableCount > 0) {
+          if (board.numOfNotices !== board.numOfExpectingOrders) {
+            this.object.isDelete = true;
+          }
+          this.object.setOfCheckedId.add(board.path);
+          board.checked = true;
+        } else {
+          board.checked = false;
+        }
+      } else {
+        this.object.setOfCheckedId.delete(board.path);
+        board.checked = false;
+        if (this.object.setOfCheckedId.size === 0 && this.object.mapOfCheckedId.size === 0) {
+          this.object.isDelete = false;
+        }
+      }
+      board.indeterminate = false;
+    } else {
+      // Main table check-all: affect all boards and all their sub-notices
       boards.forEach(item => {
+        item.checked = value;
+        this.checkChild(value, item);
         if (value) {
           if (item.numOfNotices !== item.numOfExpectingOrders) {
             this.object.isDelete = true;
           }
           this.object.setOfCheckedId.add(item.path);
         }
-        if (!board) {
-          item.checked = value;
-          this.checkChild(value, item);
-        }
       });
-    }
-    if (!value && !board) {
-      this.object.setOfCheckedId.clear();
-      this.object.isDelete = false;
-    } else if (board) {
-      if (this.object.mapOfCheckedId.size == 0) {
+      if (!value) {
         this.object.setOfCheckedId.clear();
         this.object.isDelete = false;
       }
     }
-    if (board) {
-      this.object.checked = boards.length == this.object.setOfCheckedId.size;
-    }
-    this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
+
+    // Parent checked only when ALL boards on the page are in setOfCheckedId
+    this.object.checked = boards.length > 0 && boards.every(b => this.object.setOfCheckedId.has(b.path));
+    this.object.indeterminate = (this.object.setOfCheckedId.size > 0 || this.object.mapOfCheckedId.size > 0) && !this.object.checked;
+    this.updatePostFlag();
+    this.updateDeleteFlag();
   }
 
   onItemChecked(board: any, notice: any, checked: boolean): void {
-    if (checked) {
-      if (notice) {
+    if (notice) {
+      // Sub-table individual notice checkbox
+      if (checked) {
         if (notice.state && notice.state._text !== 'EXPECTED') {
           this.object.mapOfCheckedId.add(notice.id + '__' + board.path);
+          this.object.isDelete = true;
         }
       } else {
-        board.checked = true;
-        this.object.setOfCheckedId.add(board.path);
+        this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
+      }
+
+      // Recount how many checkable notices are selected for this board
+      if (board.notices) {
+        const checkableCount = board.notices.filter((n: any) => !(n.state && n.state._text === 'EXPECTED')).length;
+        let count = 0;
+        board.notices.forEach(item => {
+          if (item.state && item.state._text !== 'EXPECTED' && this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
+            ++count;
+          }
+        });
+        // Board-row checkbox: checked only when ALL checkable notices are selected
+        board.checked = checkableCount > 0 && count === checkableCount;
+        board.indeterminate = count > 0 && !board.checked;
+
+        if (board.checked) {
+          if (board.numOfNotices !== board.numOfExpectingOrders) {
+            this.object.isDelete = true;
+          }
+          this.object.setOfCheckedId.add(board.path);
+        } else {
+          this.object.setOfCheckedId.delete(board.path);
+        }
       }
     } else {
-      if (notice) {
-        this.object.mapOfCheckedId.delete(notice.id + '__' + board.path);
+      // Main-table board-row checkbox
+      if (checked) {
+        board.checked = true;
+        this.object.setOfCheckedId.add(board.path);
+        if (board.numOfNotices !== board.numOfExpectingOrders) {
+          this.object.isDelete = true;
+        }
       } else {
         board.checked = false;
         this.object.setOfCheckedId.delete(board.path);
       }
-    }
-    const boards = this.getCurrentData(this.data, this.boardsFilters);
-    if (notice) {
-      let count = 0;
-      if (board.notices) {
-        board.notices.forEach(item => {
-          if (this.object.mapOfCheckedId.has(item.id + '__' + board.path)) {
-            if (item.state && item.state._text !== 'EXPECTED') {
-              ++count;
-            }
-          }
-        });
-        board.checked = count === board.notices.length;
-        board.indeterminate = count > 0 && !board.checked;
-      }
-      this.checkParent(boards, checked);
-    } else {
-      board.checked = checked;
-      if (board.numOfNotices !== board.numOfExpectingOrders) {
-        this.object.isDelete = true;
-      }
+      // Sync all child notices to match the board-row state
       board.notices?.forEach(val => {
         if (val.state && val.state._text !== 'EXPECTED') {
           if (checked) {
@@ -1013,11 +1050,17 @@ export class BoardComponent {
         }
       });
     }
-    if (this.object.setOfCheckedId.size == 0) {
+
+    if (this.object.setOfCheckedId.size === 0 && this.object.mapOfCheckedId.size === 0) {
       this.object.isDelete = false;
     }
-    this.object.checked = this.object.setOfCheckedId.size === boards.length;
-    this.object.indeterminate = this.object.setOfCheckedId.size > 0 && !this.object.checked;
+
+    const boards = this.getCurrentData(this.data, this.boardsFilters);
+    // Parent checked only when ALL boards on the page are fully checked
+    this.object.checked = boards.length > 0 && boards.every(b => this.object.setOfCheckedId.has(b.path));
+    this.object.indeterminate = (this.object.setOfCheckedId.size > 0 || this.object.mapOfCheckedId.size > 0) && !this.object.checked;
+    this.updatePostFlag();
+    this.updateDeleteFlag();
   }
 
   private checkParent(boards, isChecked, isParent = false): void {
@@ -1060,21 +1103,91 @@ export class BoardComponent {
     }
   }
 
+  private updatePostFlag(): void {
+    // If any fully-selected board is in setOfCheckedId, we can't confirm all are POSTED
+    if (this.object.setOfCheckedId.size > 0 || this.object.mapOfCheckedId.size === 0) {
+      this.object.isAllPosted = false;
+      return;
+    }
+    // Check every individually-selected notice — disable Post if all are already POSTED
+    let allPosted = true;
+    this.object.mapOfCheckedId.forEach((entry: string) => {
+      const sep = entry.lastIndexOf('__');
+      if (sep > -1) {
+        const noticeBoardPath = entry.substring(sep + 2);
+        const noticeId = entry.substring(0, sep);
+        const board = this.boards.find((b: any) => b.path === noticeBoardPath);
+        const notice = board?.notices?.find((n: any) => n.id === noticeId);
+        if (!notice || notice.state?._text !== 'POSTED') {
+          allPosted = false;
+        }
+      }
+    });
+    this.object.isAllPosted = allPosted;
+  }
+
+  private updateDeleteFlag(): void {
+    // If any fully-selected board is in setOfCheckedId, assume deletable notices exist
+    if (this.object.setOfCheckedId.size > 0 || this.object.mapOfCheckedId.size === 0) {
+      this.object.isNonePosted = false;
+      return;
+    }
+    // Disable Delete All only when NO individually-selected notice is POSTED
+    let nonePosted = true;
+    this.object.mapOfCheckedId.forEach((entry: string) => {
+      const sep = entry.lastIndexOf('__');
+      if (sep > -1) {
+        const noticeBoardPath = entry.substring(sep + 2);
+        const noticeId = entry.substring(0, sep);
+        const board = this.boards.find((b: any) => b.path === noticeBoardPath);
+        const notice = board?.notices?.find((n: any) => n.id === noticeId);
+        if (notice && notice.state?._text === 'POSTED') {
+          nonePosted = false;
+        }
+      }
+    });
+    this.object.isNonePosted = nonePosted;
+  }
+
   postAllNotices(): void {
     const paths = Array.from(this.object.setOfCheckedId);
-    this.modal.create({
+    const pathSet = new Set(paths);
+    // Build individual notice entries from mapOfCheckedId, but only for boards NOT fully selected
+    const noticeEntries: { noticeBoardPath: string; noticeId: string }[] = [];
+    this.object.mapOfCheckedId.forEach((entry: string) => {
+      const sep = entry.lastIndexOf('__');
+      if (sep > -1) {
+        const noticeBoardPath = entry.substring(sep + 2);
+        const noticeId = entry.substring(0, sep);
+        if (!pathSet.has(noticeBoardPath)) {
+          // Skip notices that are already POSTED
+          const board = this.boards.find((b: any) => b.path === noticeBoardPath);
+          const notice = board?.notices?.find((n: any) => n.id === noticeId);
+          if (!notice || notice.state?._text !== 'POSTED') {
+            noticeEntries.push({ noticeId, noticeBoardPath });
+          }
+        }
+      }
+    });
+    const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
         paths,
+        noticeEntries,
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences
       },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.reset();
+      }
     });
   }
 
@@ -1094,7 +1207,7 @@ export class BoardComponent {
       this.coreService.post(endpoint, obj).subscribe({
         next: (res) => {}});
     } else if (board.boardType === "PLANNABLE" && notice === null) {
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: PostModalComponent,
         nzClassName: 'lg',
@@ -1111,8 +1224,13 @@ export class BoardComponent {
         nzClosable: false,
         nzMaskClosable: false
       });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this.reset();
+        }
+      });
     } else if(board.boardType === "GLOBAL" && notice === null) {
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: PostModalComponent,
         nzClassName: 'lg',
@@ -1128,8 +1246,13 @@ export class BoardComponent {
         nzClosable: false,
         nzMaskClosable: false
       });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this.reset();
+        }
+      });
     }else {
-      this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: PostModalComponent,
         nzClassName: 'lg',
@@ -1145,6 +1268,11 @@ export class BoardComponent {
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this.reset();
+        }
       });
     }
   }
@@ -1213,90 +1341,82 @@ export class BoardComponent {
         }
         board.notices = [...board.notices];
       });
+      this.reset();
     } else {
       this.deleteAll(board, comments);
     }
   }
 
   private deleteAll(board, comments): void {
+    const notices: { noticeBoardPath: string; noticeIds?: string[] }[] = [];
     if (board) {
-      if (!board.notices) {
-        this.getNoticeBoards({
-          noticeBoardPaths: [board.path],
-          controllerId: this.schedulerIds.selected
-        }, (data) => {
-          if (data && data.length > 0) {
-            board.notices = data[0].notices;
-            this._deleteAll(board, comments);
+      notices.push({ noticeBoardPath: board.path });
+    } else {
+      const paths = Array.from(this.object.setOfCheckedId) as string[];
+      const pathSet = new Set(paths);
+      if (this.object.setOfCheckedId.size > 0) {
+        paths.forEach(path => {
+          notices.push({ noticeBoardPath: path });
+        });
+      }
+      if (this.object.mapOfCheckedId.size > 0) {
+        const noticeMap = new Map<string, string[]>();
+        this.object.mapOfCheckedId.forEach((entry: string) => {
+          const sep = entry.lastIndexOf('__');
+          if (sep > -1) {
+            const noticeBoardPath = entry.substring(sep + 2);
+            const noticeId = entry.substring(0, sep);
+            if (!pathSet.has(noticeBoardPath)) {
+              const b = this.boards.find((b: any) => b.path === noticeBoardPath);
+              const n = b?.notices?.find((n: any) => n.id === noticeId);
+              if (!n || n.state?._text !== 'EXPECTED') {
+                if (!noticeMap.has(noticeBoardPath)) {
+                  noticeMap.set(noticeBoardPath, []);
+                }
+                noticeMap.get(noticeBoardPath)!.push(noticeId);
+              }
+            }
           }
         });
-      } else {
-        this._deleteAll(board, comments);
+        noticeMap.forEach((noticeIds, noticeBoardPath) => {
+          notices.push({ noticeBoardPath, noticeIds });
+        });
       }
-    } else {
-
-      let arr = Array.from(this.object.mapOfCheckedId);
-      let obj: any = {};
-      arr.forEach((item: string) => {
-        let path = item.substring(item.lastIndexOf('__') + 2, item.length);
-        if (path) {
-          this.object.setOfCheckedId.delete(path);
-        }
-        let id = item.substring(0, item.lastIndexOf('__'));
-        if (!obj[path]) {
-          obj[path] = [];
-        }
-        obj[path].push(id);
-      });
-      for (let i in obj) {
-        this.coreService.post('notices/delete', {
-          controllerId: this.schedulerIds.selected,
-          noticeBoardPath: i,
-          noticeIds: obj[i],
-          auditLog: comments
-        }).subscribe();
-      }
-      const arr2 = Array.from(this.object.setOfCheckedId);
-      this.getPathAndDelete(arr2, comments);
-      this.reset();
     }
-  }
 
-  private getPathAndDelete(paths, comments): void {
-    this.getNoticeBoards({
-      noticeBoardPaths: paths,
-      controllerId: this.schedulerIds.selected
-    }, (data) => {
-      if (data && data.length > 0) {
-        data.forEach(board => {
-          this._deleteAll(board, comments);
-        })
-      }
-    });
-  }
-
-  private _deleteAll(board, comments): void {
-    let ids = [];
-    if (board.notices) {
-      board.notices.forEach(item => {
-        if (item.state && item.state._text !== 'EXPECTED') {
-          ids.push(item.id);
-        }
-      });
-    }
-    if (ids.length > 0) {
+    if (notices.length > 0) {
       this.coreService.post('notices/delete', {
         controllerId: this.schedulerIds.selected,
-        noticeBoardPath: board.path,
-        noticeIds: ids,
+        notices,
         auditLog: comments
       }).subscribe(() => {
-        board.notices = board.notices.filter(item => {
-          return (item.state && item.state._text === 'EXPECTED');
+        notices.forEach((entry: { noticeBoardPath: string; noticeIds?: string[] }) => {
+          if (entry.noticeIds && entry.noticeIds.length > 0) {
+            // Remove only the specific notices; keep the board and all other notices
+            const b = this.boards.find((b: any) => b.path === entry.noticeBoardPath);
+            if (b && b.notices) {
+              b.notices = b.notices.filter((n: any) => !entry.noticeIds!.includes(n.id));
+              b.notices = [...b.notices];
+            }
+          } else {
+            // Board-level entry (no noticeIds)
+            const b = this.boards.find((b: any) => b.path === entry.noticeBoardPath);
+            if (b && b.notices && b.notices.some((n: any) => n.state?._text === 'EXPECTED')) {
+              // Board has EXPECTED notices — keep it but remove all non-EXPECTED notices
+              b.notices = b.notices.filter((n: any) => n.state?._text === 'EXPECTED');
+              b.notices = [...b.notices];
+            } else {
+              b.notices = [];
+            }
+          }
         });
-        board.notices = [...board.notices];
+        this.boards = [...this.boards];
+        this.reset();
       });
+    } else {
+      this.reset();
     }
+    this.cdr.detectChanges();
   }
 
   reload(): void {
