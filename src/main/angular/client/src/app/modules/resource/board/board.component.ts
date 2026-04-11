@@ -1401,9 +1401,9 @@ export class BoardComponent {
           } else {
             // Board-level entry (no noticeIds)
             const b = this.boards.find((b: any) => b.path === entry.noticeBoardPath);
-            if (b && b.notices && b.notices.some((n: any) => n.state?._text === 'EXPECTED')) {
-              // Board has EXPECTED notices — keep it but remove all non-EXPECTED notices
-              b.notices = b.notices.filter((n: any) => n.state?._text === 'EXPECTED');
+            if (b && b.notices && b.notices.some((n: any) => (n.state?._text === 'EXPECTED' || n.state?._text === 'ANNOUNCED'))) {
+              // Board has EXPECTED or ANNOUNCED notices — keep it but remove all non-EXPECTED and non-ANNOUNCED notices
+              b.notices = b.notices.filter((n: any) => n.state?._text === 'EXPECTED' || n.state?._text === 'ANNOUNCED');
               b.notices = [...b.notices];
             } else {
               b.notices = [];
