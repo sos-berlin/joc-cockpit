@@ -3848,7 +3848,7 @@
     "label.plannable": "スケジューラブル",
     "label.sleep": "スリープ",
     "label.duration": "期間",
-    "label.addBulkOrderToWorkflows": "Add Bulk Orders",
+    "label.addBulkOrderToWorkflows": "オーダー一括追加",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
