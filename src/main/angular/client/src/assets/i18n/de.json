@@ -4217,7 +4217,8 @@
       "placeholder.script": "// Skript hier einfügen",
       "placeholder.endPoint": "Endpunkt angeben, z.B. /orders/add",
       "message.invalidBody": "Ungültiges JSON in Request Body",
-      "message.invalidAuth": "Benutzername und Kennwort erforderlich für Anmeldung mit Basic Authentication"}
+      "message.invalidAuth": "Benutzername und Kennwort erforderlich für Anmeldung mit Basic Authentication"
+    }
   },
   "xml": {
     "label.assignedSchema": "Zugewiesenes XSD Schema",
