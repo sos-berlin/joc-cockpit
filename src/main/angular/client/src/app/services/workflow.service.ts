@@ -900,6 +900,7 @@ export class WorkflowService {
   checkEmptyObjects(mainJson: any, cb: any): void {
     function recursive(json: any) {
       if (json.instructions) {
+        json.instructions = json.instructions.filter((item: any) => item != null);
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].instructions) {
             recursive(json.instructions[x]);
