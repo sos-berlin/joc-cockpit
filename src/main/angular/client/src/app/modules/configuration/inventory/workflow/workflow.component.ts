@@ -155,8 +155,11 @@ export class DurationValidatorChange implements Validator {
         }
 
         if (lastChar.match(/[hmsdwyM]/i)) {
-          target.value = target.value.replace(/:/g, '');
-          target.dispatchEvent(new Event('input', { bubbles: true }));
+          const stripped = target.value.replace(/:/g, '');
+          if (stripped !== target.value) {
+            target.value = stripped;
+            target.dispatchEvent(new Event('input', {bubbles: true}));
+          }
         }
       }
     }
@@ -8091,6 +8094,7 @@ export class WorkflowComponent {
      * Function: Remove selected cells from JSON
      */
     function deleteInstructionFromJSON(cells): void {
+      cells = cells.filter((cell) => cell != null && cell.id != null);
       cells.forEach((cell, index) => {
         deleteRecursively(self.workflow.configuration, cell, '', (index === cells.length - 1) ? () => {
           setTimeout(() => {
@@ -8133,12 +8137,17 @@ export class WorkflowComponent {
     }
 
     function deleteRecursively(_json, _cell, _type, cb) {
+      if (!_cell || _cell.id == null) {
+        if (cb) { cb(); }
+        return;
+      }
       if (self.selectedNode && self.selectedNode.cell.id === _cell.id) {
         self.selectedNode = null;
       }
 
       function iterateJson(json, cell, type) {
         if (json && json.instructions) {
+          json.instructions = json.instructions.filter((item) => item != null);
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
               if (self.node && self.node.isCloseable && !self.node.deleteAll) {
