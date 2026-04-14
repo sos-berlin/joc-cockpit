@@ -1945,7 +1945,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Inférieure à la normale",
     "label.Low": "Inférieure",
-    "label.both": "Les deux",
+    "label.all": "All",
     "label.none": "Aucun",
     "label.enforcedOnly": "Appliqué",
     "label.unenforcedOnly": "Non appliqué",
