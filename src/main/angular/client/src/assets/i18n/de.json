@@ -4448,22 +4448,5 @@
       "description": "Keine Daten"
     }
   },
-  "of": "von",
-  "helpSearch": {
-    "placeholder": "Im Dokument finden...",
-    "button.search": "Suchen",
-    "button.previous": "Vorherige",
-    "button.next": "Nächste",
-    "button.close": "Schließen",
-    "label.matchCase": "Übereinstimmung Groß-/Kleinschreibung",
-    "label.wholeWord": "Übereinstimmung Wort",
-    "status.noResults": "Keine Ergebnisse",
-    "status.matchCount": "{{current}} von {{total}}",
-    "tooltip.search": "Im Dokument suchen (Ctrl+F)",
-    "tooltip.previous": "Vorherige (Shift+Enter)",
-    "tooltip.next": "Nächste (Enter)",
-    "tooltip.close": "Schließen (Esc)",
-    "tooltip.matchCase": "Übereinstimmung Groß-/Kleinschreibung",
-    "tooltip.wholeWord": "Übereinstimmung Wort"
-  }
+  "of": "von"
 }

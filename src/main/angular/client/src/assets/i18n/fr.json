@@ -4448,22 +4448,5 @@
       "description": "Aucune donnée"
     }
   },
-  "of": "de",
-  "helpSearch": {
-    "placeholder": "Rechercher dans le document...",
-    "button.search": "Rechercher",
-    "button.previous": "Précédent",
-    "button.next": "Suivant",
-    "button.close": "Fermer",
-    "label.matchCase": "Correspondance majuscules/minuscules",
-    "label.wholeWord": "Correspondance mot entier",
-    "status.noResults": "Aucun résultat",
-    "status.matchCount": "{{current}} de {{total}}",
-    "tooltip.search": "Rechercher dans le document (Ctrl+F)",
-    "tooltip.previous": "Précédent (Shift+Enter)",
-    "tooltip.next": "Suivant (Enter)",
-    "tooltip.close": "Fermer (Esc)",
-    "tooltip.matchCase": "Correspondance majuscules/minuscules",
-    "tooltip.wholeWord": "Correspondance mot entier"
-  }
+  "of": "de"
 }
