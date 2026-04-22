@@ -458,7 +458,7 @@
           @if (preferences.showHelpPages) {
             <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
-          @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0) {
+          @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
               <div class="btn-group m-l-12 hidden-btn-group">
                 @for (btn of filterBtn; track btn.status) {
@@ -470,7 +470,7 @@
               </div>
             </div>
           }
-          @if (dailyPlanFilters.tabIndex == 0) {
+          @if (dailyPlanFilters.tabIndex == 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline m-b-xs">
               <div class="btn-group m-l-12 hidden-btn-group">
                 @for (btn of filterBtn; track btn.status) {
@@ -500,7 +500,7 @@
             </div>
           }
           <div [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline">
-            @if (dailyPlanFilters.tabIndex == 0) {
+            @if (dailyPlanFilters.tabIndex == 0 && showMoreAdvanceOptions) {
               <div class="btn-group m-l-12">
                 <button (click)="changeLate()" [disabled]="savedFilter.selected"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" class="btn btn-grey btn-sm button-group-ellipsis">
@@ -653,7 +653,7 @@
             @if (dailyPlanFilters.tabIndex == 0) {
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             }
-<!--            <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>-->
+            <!--  <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>-->
           </div>
           @if (dailyPlanFilters.tabIndex == 0) {
             <div [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
@@ -1041,24 +1041,26 @@
                             <i class="icon icon-workflows-icon"></i>
                             <span translate>dailyPlan.button.groupByWorkflow</span>
                           </button>
-                          <button (click)="filterByOrders('')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
-                                  class="btn btn-grey btn-sm hidden-btn-text m-l-12">
-                            <i class="icon icon-orders-icon"></i>
-                            <span translate>dailyPlan.label.all</span>
-                          </button>
-                          <button (click)="filterByOrders('ONETIMEORDERS')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
-                                  class="btn btn-grey btn-sm hidden-btn-text">
-                            <i class="icon icon-calendar-icon"></i>
-                            <span translate>dailyPlan.label.oneTimeOrders</span>
-                          </button>
-                          <button (click)="filterByOrders('CYCLICORDER')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
-                                  class="btn btn-grey btn-sm hidden-btn-text">
-                            <i class="icon icon-workflows-icon"></i>
-                            <span translate>dailyPlan.label.cyclicOrders</span>
-                          </button>
+                          @if (showMoreAdvanceOptions) {
+                            <button (click)="filterByOrders('')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
+                                    class="btn btn-grey btn-sm hidden-btn-text m-l-12">
+                              <i class="icon icon-orders-icon"></i>
+                              <span translate>dailyPlan.label.all</span>
+                            </button>
+                            <button (click)="filterByOrders('ONETIMEORDERS')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
+                                    class="btn btn-grey btn-sm hidden-btn-text">
+                              <i class="icon icon-calendar-icon"></i>
+                              <span translate>dailyPlan.label.oneTimeOrders</span>
+                            </button>
+                            <button (click)="filterByOrders('CYCLICORDER')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
+                                    class="btn btn-grey btn-sm hidden-btn-text">
+                              <i class="icon icon-workflows-icon"></i>
+                              <span translate>dailyPlan.label.cyclicOrders</span>
+                            </button>
+                          }
                           <button (click)="showSearchPanel ? cancel() : advancedSearch()"
                                   class="btn btn-sm inline pull-right m-l btn-grey">
                             <span translate>common.button.advancedSearch</span>

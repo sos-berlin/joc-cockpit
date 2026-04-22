@@ -50,6 +50,7 @@ export class ScheduleComponent {
   workflowTree = [];
   invalidMsg: string;
   isLocalChange: string;
+  showMoreAdvanceOptions = false;
   workflow: any = {};
   variableList = [];
   documentationTree = [];
@@ -1654,6 +1655,7 @@ export class ScheduleComponent {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       if (!this.schedule.configuration.orderParameterisations) {
         this.schedule.configuration.orderParameterisations = [];
       }
@@ -1972,6 +1974,14 @@ export class ScheduleComponent {
 
   changePriority($event): void {
     this.saveJSON();
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

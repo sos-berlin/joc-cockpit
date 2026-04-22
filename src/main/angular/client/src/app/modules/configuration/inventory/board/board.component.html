@@ -72,6 +72,21 @@
         </div>
         @if (board.configuration) {
           <form>
+            <div class="m-b-sm text-right">
+              <div>
+                @if (!showMoreAdvanceOptions) {
+                  <a class="text-primary cursor" (click)="showMoreOptions()">
+                    <i class="fa fa-caret-right m-r-xs"></i>
+                    <span translate>common.label.showMoreOptions</span>
+                  </a>
+                } @else {
+                  <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+                    <i class="fa fa-caret-down m-r-xs"></i>
+                    <span translate>common.label.showFewerOptions</span>
+                  </a>
+                }
+              </div>
+            </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
@@ -106,7 +121,7 @@
                        name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
               </div>
             </div>
-            @if (coreService.expertMode) {
+            @if (showMoreAdvanceOptions) {
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
 

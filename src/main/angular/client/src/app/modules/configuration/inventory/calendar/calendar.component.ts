@@ -1510,6 +1510,7 @@ export class CalendarComponent {
   objectType = 'CALENDAR';
   invalidMsg: string;
   isLocalChange: string;
+  showMoreAdvanceOptions = false;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -1993,6 +1994,7 @@ export class CalendarComponent {
         this.data.valid = res.valid;
       }
       this.calendar = res;
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.calendar.path1 = this.data.path;
       this.calendar.name = this.data.name;
       this.calendar.configuration.includesFrequency = [];
@@ -2232,6 +2234,14 @@ export class CalendarComponent {
       }
     }
     return obj;
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

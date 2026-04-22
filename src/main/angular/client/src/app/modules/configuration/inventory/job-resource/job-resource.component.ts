@@ -80,6 +80,7 @@ export class JobResourceComponent {
   jobResource: any = {};
   invalidMsg: string;
   isLocalChange: string;
+  showMoreAdvanceOptions = false;
   isStore = false;
   objectType = InventoryObject.JOBRESOURCE;
   documentationTree = [];
@@ -682,6 +683,7 @@ export class JobResourceComponent {
       }
       this.data.syncState = res.syncState;
       this.jobResource = res;
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
       this.setErrorMessage(res);
@@ -818,6 +820,14 @@ export class JobResourceComponent {
       });
     }
   }
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
+  }
+
   helpPage(key): void{
     this.coreService.openHelpPage(key);
   }

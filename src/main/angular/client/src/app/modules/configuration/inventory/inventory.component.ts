@@ -514,6 +514,7 @@ export class SingleDeployComponent {
   showDependencies = false;
   showRelatedObjects = false;
   dependenciesLoading = false;
+  showMoreAdvanceOptions = false;
   private _dependenciesPromise: Promise<void> | null = null;
 
   private _filteredDepsCache: Map<string, any> = new Map();
@@ -524,6 +525,7 @@ export class SingleDeployComponent {
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
     this.schedulerIds = this.modalData.schedulerIds;
     this.data = this.modalData.data;
     this.type = this.modalData.type;
@@ -1173,6 +1175,14 @@ export class SingleDeployComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   private remove(): void {
@@ -2144,6 +2154,7 @@ export class DeployComponent {
   sharedCheckboxState: { [key: string]: boolean } = {};
   isPathDisplay = false;
   dependenciesLoading = false;
+  showMoreAdvanceOptions = false;
 
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
   private recursiveDependenciesCache: any = null;
@@ -2158,6 +2169,7 @@ export class DeployComponent {
   ngOnInit(): void {
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
+    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
     this.path = this.modalData.path;
     this.releasable = this.modalData.releasable;
     this.display = this.modalData.display;
@@ -4857,6 +4869,14 @@ export class DeployComponent {
     this.activeModal.destroy();
   }
 
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
+  }
+
   helpPage(key): void {
     this.coreService.openHelpPage(key);
   }
@@ -4994,6 +5014,7 @@ export class ExportComponent {
   dependenciesLoading = false;
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
+  showMoreAdvanceOptions = false;
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
@@ -5004,6 +5025,7 @@ export class ExportComponent {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
+    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
     this.origin = this.modalData.origin;
     this.display = this.modalData.display;
     this.flag = this.modalData.flag;
@@ -7297,6 +7319,14 @@ export class ExportComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void {
@@ -16512,9 +16542,6 @@ export class InventoryComponent {
         this.initConf(isReload);
       }, 50);
       return;
-    }
-    if (this.coreService.expertMode == undefined || this.coreService.expertMode == null) {
-      this.coreService.expertMode = this.preferences.showMoreOptions;
     }
     this.getAgents();
     this.securityLevel = sessionStorage['securityLevel'];

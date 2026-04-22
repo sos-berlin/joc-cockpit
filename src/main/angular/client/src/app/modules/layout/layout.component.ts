@@ -751,6 +751,7 @@ export class LayoutComponent {
     preferences.expandOption = 'both';
     preferences.currentController = true;
     preferences.showHelpPages = true;
+    preferences.showMoreOptions = false;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
     preferences.interRankCellSpacing = '100';
@@ -864,6 +865,9 @@ export class LayoutComponent {
 
       if (data.showHelpPages === undefined) {
         data.showHelpPages = true;
+      }
+      if (data.showMoreOptions === undefined) {
+        data.showMoreOptions = false;
       }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';

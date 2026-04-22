@@ -285,10 +285,25 @@
 
     <form #myForm="ngForm" (ngSubmit)="onSubmit()">
       <div class="modal-body p-a">
+        <div class="m-b-sm text-right">
+          <div>
+            @if (!showMoreAdvanceOptions) {
+              <a class="text-primary cursor" (click)="showMoreOptions()">
+                <i class="fa fa-caret-right m-r-xs"></i>
+                <span translate>common.label.showMoreOptions</span>
+              </a>
+            } @else {
+              <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+                <i class="fa fa-caret-down m-r-xs"></i>
+                <span translate>common.label.showFewerOptions</span>
+              </a>
+            }
+          </div>
+        </div>
         <div [ngClass]="{'show': display}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
         </div>
-        @if (orders.length > 1) {
+        @if (orders.length > 1 && (showMoreAdvanceOptions || commonStartTime !== 'now')) {
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>common.label.startTime</label>
             <div class="col-md-8">
@@ -384,48 +399,52 @@
             </div>
 
             <!-- Tags -->
-            <div class="form-group row">
-              <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
-              <div class="col-sm-6">
-                <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                  <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
-                       class="d-inline-block">
-                    @for (tag of order.tags; track tag; let i = $index) {
-                      <nz-tag class="cursor" style="transition: none !important;"
-                              cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
-                        {{ sliceTagName(tag) }}
+            @if (showMoreAdvanceOptions || order.tags?.length > 0) {
+              <div class="form-group row">
+                <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
+                <div class="col-sm-6">
+                  <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                    <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
+                        class="d-inline-block">
+                      @for (tag of order.tags; track tag; let i = $index) {
+                        <nz-tag class="cursor" style="transition: none !important;"
+                                cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
+                          {{ sliceTagName(tag) }}
+                        </nz-tag>
+                      }
+                    </div>
+                    @if (!order.inputVisible) {
+                      <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
+                        <span nz-icon nzType="plus"></span>
+                        {{'inventory.button.newTag' | translate}}
                       </nz-tag>
                     }
+                    @if (order.inputVisible) {
+                      <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                        <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
+                              type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
+                              style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
+                              (keydown.enter)="handleInputConfirm(orderIndex)">
+                        <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
+                      </div>
+                    }
                   </div>
-                  @if (!order.inputVisible) {
-                    <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
-                      <span nz-icon nzType="plus"></span>
-                      {{'inventory.button.newTag' | translate}}
-                    </nz-tag>
-                  }
-                  @if (order.inputVisible) {
-                    <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                      <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
-                             type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
-                             style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
-                             (keydown.enter)="handleInputConfirm(orderIndex)">
-                      <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
-                    </div>
-                  }
                 </div>
               </div>
-            </div>
+            }
             <!-- Force Job Admission -->
-            <div class="form-group row">
-              <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
-              <div class="col-md-8">
-                <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox>
-                </label>
+            @if (showMoreAdvanceOptions || order.forceJobAdmission) {
+              <div class="form-group row">
+                <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
+                <div class="col-md-8">
+                  <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox>
+                  </label>
+                </div>
               </div>
-            </div>
+            }
 
             <!-- Start Time -->
-            @if (orders.length < 2) {
+            @if (orders.length < 2 && (showMoreAdvanceOptions || order.at !== 'now')) {
               <div class="form-group row">
                 <label class="col-sm-4 " translate>common.label.startTime</label>
                 <div class="col-md-8">
@@ -486,17 +505,19 @@
                 </div>
               </div>
             }
-            <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
-              <div class="col-sm-6">
-                <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
-                                [ignoreThirdParam]="true" [isAllowClear]="true"
-                                [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
-                                [placeholder]="( dateFormat | uppercase )"></app-date-input>
+            @if (showMoreAdvanceOptions || order.planId?.noticeSpaceKey) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
+                <div class="col-sm-6">
+                  <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
+                                  [ignoreThirdParam]="true" [isAllowClear]="true"
+                                  [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
+                                  [placeholder]="( dateFormat | uppercase )"></app-date-input>
+                </div>
               </div>
-            </div>
+            }
             <!-- Block Position -->
-            @if (permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0) {
+            @if ((showMoreAdvanceOptions || order.blockPosition) && permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0) {
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
                 <div class="col-sm-6">
@@ -507,7 +528,7 @@
             }
 
             <!-- Start Node -->
-            @if (permission.currentController && permission.currentController.orders.managePositions) {
+            @if ((showMoreAdvanceOptions || order.startPosition) && permission.currentController && permission.currentController.orders.managePositions) {
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
                 <div class="col-sm-6">
@@ -518,7 +539,7 @@
             }
 
             <!-- End Node -->
-            @if (permission.currentController && permission.currentController.orders.managePositions) {
+            @if ((showMoreAdvanceOptions || order.endPositions?.length > 0) && permission.currentController && permission.currentController.orders.managePositions) {
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
                 <div class="col-sm-6">
@@ -527,40 +548,44 @@
                 </div>
               </div>
             }
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
-                     class="col-sm-4 form-control-label"
-                     translate>order.label.priority</label>
-              <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
-                   class="col-sm-6">
-                <nz-space-compact nzBlock>
-                  <nz-input-number #priority="ngModel" [(ngModel)]="order.priority"
-                                   name="priority{{orderIndex}}"
-                                   nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
-                                   style="width: 60%;">
-                  </nz-input-number>
-                  <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
-                                    [listArray]="priorities" [name]="'priorities'"
-                                    [optionLabel]="'label'" [optionValue]="'value'"
-                                    [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
-                                    [object]="order">
-                  </app-select-input>
-                </nz-space-compact>
+            @if (showMoreAdvanceOptions || order.priority !== 0) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                      class="col-sm-4 form-control-label"
+                      translate>order.label.priority</label>
+                <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+                    class="col-sm-6">
+                  <nz-space-compact nzBlock>
+                    <nz-input-number #priority="ngModel" [(ngModel)]="order.priority"
+                                    name="priority{{orderIndex}}"
+                                    nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                                    style="width: 60%;">
+                    </nz-input-number>
+                    <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
+                                      [listArray]="priorities" [name]="'priorities'"
+                                      [optionLabel]="'label'" [optionValue]="'value'"
+                                      [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                                      [object]="order">
+                    </app-select-input>
+                  </nz-space-compact>
 
-                @if (priority.invalid && (priority.dirty || priority.touched)) {
-                  <div class="text-danger help-block">
-                    @if (priority.errors['required']) {
-                      <div translate>common.message.requiredError</div>
-                    }
-                  </div>
-                }
+                  @if (priority.invalid && (priority.dirty || priority.touched)) {
+                    <div class="text-danger help-block">
+                      @if (priority.errors['required']) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-sm-12">
-                <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
+            }
+            @if (showMoreAdvanceOptions) {
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
+                </div>
               </div>
-            </div>
+            }
             @if (schedules && schedules.length > 0 && !isAssignedFromSchedule) {
               <div class="form-group row">
                 <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
@@ -754,31 +779,35 @@
                 }
               </div>
             </div>
-            <div class="form-group row">
-              @if (variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)) {
-                <div class="col-sm-12"
-                     [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
-                  <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
-                  <a (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
-                </div>
-              }
-              @if (workflow.orderPreparation?.allowUndeclared) {
-                <div class="col-sm-12">
-                  <a class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
-                </div>
-              }
-            </div>
+            @if (showMoreAdvanceOptions) {
+              <div class="form-group row">
+                @if (variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)) {
+                  <div class="col-sm-12"
+                      [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
+                    <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
+                    <a (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
+                  </div>
+                }
+                @if (workflow.orderPreparation?.allowUndeclared) {
+                  <div class="col-sm-12">
+                    <a class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
+                  </div>
+                }
+              </div>
+            }
             @if (orderIndex < orders.length - 1) {
               <hr class="b-2b">
             }
           </div>
         }
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <a (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
-            <a (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
+        @if (showMoreAdvanceOptions) {
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <a (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
+              <a (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
+            </div>
           </div>
-        </div>
+        }
       </div>
       <div class="modal-footer text-left">
         <button [disabled]="areArgumentsEmpty() || submitted || !myForm.form.valid" class="btn btn-primary btn-sm" type="submit">

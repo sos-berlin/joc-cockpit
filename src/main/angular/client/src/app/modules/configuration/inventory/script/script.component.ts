@@ -37,6 +37,7 @@ export class ScriptComponent {
   objectType = InventoryObject.INCLUDESCRIPT;
   invalidMsg: string;
   isLocalChange = '';
+  showMoreAdvanceOptions = false;
   documentationTree = [];
   indexOfNextAdd = 0;
   history = [];
@@ -375,6 +376,7 @@ export class ScriptComponent {
         this.data.valid = res.valid;
       }
       this.script = this.coreService.clone(res);
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       if (this.script.configuration.script) {
         if (this.cm && this.cm.codeEditor) {
           this.cm.codeEditor.setValue(this.script.configuration.script);
@@ -421,6 +423,14 @@ export class ScriptComponent {
       }
     }
     this.ref.detectChanges();
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

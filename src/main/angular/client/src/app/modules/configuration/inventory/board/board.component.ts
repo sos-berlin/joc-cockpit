@@ -35,6 +35,7 @@ export class BoardComponent {
   };
   invalidMsg: string;
   isLocalChange: string;
+  showMoreAdvanceOptions = false;
   objectType = InventoryObject.NOTICEBOARD;
   documentationTree = [];
   indexOfNextAdd = 0;
@@ -191,6 +192,7 @@ export class BoardComponent {
       }
       this.data.syncState = res.syncState;
       this.board = res;
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.board.path1 = this.data.path;
       this.board.name = this.data.name;
       this.boardObj = {
@@ -597,6 +599,14 @@ export class BoardComponent {
         }, error: () => this.ref.detectChanges()
       });
     }
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

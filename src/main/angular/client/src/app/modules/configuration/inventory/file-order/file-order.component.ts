@@ -38,6 +38,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   invalidMsg: string;
   isLocalChange: string;
+  showMoreAdvanceOptions = false;
   favList = [];
   zones = [];
   agentList = [];
@@ -209,6 +210,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.coreService.removeSlashToString(res.configuration, 'directoryExpr');
       }
       this.fileOrder = res;
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
@@ -575,6 +577,14 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
   changePriority($event): void {
     this.saveJSON();
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

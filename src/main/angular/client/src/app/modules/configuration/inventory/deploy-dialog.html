@@ -40,11 +40,26 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
+    <div class="m-b-sm text-right">
+      <div>
+        @if (!showMoreAdvanceOptions) {
+          <a class="text-primary cursor" (click)="showMoreOptions()">
+            <i class="fa fa-caret-right m-r-xs"></i>
+            <span translate>common.label.showMoreOptions</span>
+          </a>
+        } @else {
+          <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+            <i class="fa fa-caret-down m-r-xs"></i>
+            <span translate>common.label.showFewerOptions</span>
+          </a>
+        }
+      </div>
+    </div>
     <div>
       <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      @if (!releasable && !isRemove && nodes.length > 0) {
+      @if (!releasable && !isRemove && nodes.length > 0 && (showMoreAdvanceOptions || selectedSchedulerIds.length > 1)) {
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
@@ -65,7 +80,7 @@
         </div>
       }
 
-      @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))) {
+      @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan)) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
         <div class="form-group row">
           <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
           <div class="col-md-9">
@@ -90,7 +105,7 @@
           </div>
         </div>
       }
-      @if (!data || !data.object && !releasable && !isRemove && !isRevoke) {
+      @if (!data || !data.object && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) {
         <div class="row m-b-12">
           <div class="col-md-3" translate>inventory.label.deployType</div>
           <div class="col-md-6">
@@ -101,7 +116,7 @@
           </div>
         </div>
       }
-      @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects) {
+      @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
         <div class="form-group row">
           <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
           <div class="col-md-6">
@@ -109,7 +124,7 @@
           </div>
         </div>
       }
-      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual') {
+      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.export.label.filter</label>
@@ -124,7 +139,7 @@
           </div>
         </div>
       }
-      @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual') {
+      @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || object.isRecursive)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
@@ -152,7 +167,7 @@
         </div>
       }
 
-      @if (nodes.length > 0) {
+      @if (nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.includeDependencies</label>
@@ -167,7 +182,7 @@
         </div>
       }
 
-      @if (nodes.length > 0 && dependencyMode !== 'none') {
+      @if (nodes.length > 0 && dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
         <div class="form-group row">
           <label class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
@@ -176,7 +191,7 @@
         </div>
       }
 
-      @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies) {
+      @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies && (showMoreAdvanceOptions || showRelatedObjects)) {
         <div class="form-group row">
           <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
           <div class="col-md-6">
@@ -379,8 +394,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
                                 @if (getObjectsByType(filteredDeps.referencedBy, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.referencedBy, objectType, $event, 'affected')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -437,8 +452,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
                                 @if (getObjectsByType(filteredDeps.references, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.references, objectType, $event, 'referenced')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -566,8 +581,8 @@
                                     @if (getObjectsByType(filteredDeps?.referencedBy, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.referencedBy, objectType, $event, 'affected')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
@@ -618,8 +633,8 @@
                                     @if (getObjectsByType(filteredDeps?.references, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.references, objectType, $event, 'referenced')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">

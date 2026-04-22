@@ -739,6 +739,7 @@ export class WorkflowComponent {
   isProcessing = false;
   isSearchVisible = false;
   isDropdownOpen = false;
+  showMoreAdvanceOptions = false;
   sideView: any = {};
   selectedFiltered: any = {};
   savedFilter: any = {};
@@ -1126,6 +1127,7 @@ export class WorkflowComponent {
 
   private init(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
@@ -1550,6 +1552,14 @@ export class WorkflowComponent {
 
   suspend(workflow) {
     this.actionChild.suspend(workflow);
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   suspendAll(all = false) {

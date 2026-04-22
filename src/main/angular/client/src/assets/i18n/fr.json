@@ -605,6 +605,8 @@
     "label.updateDependencies": "Actualiser les dépendances",
     "label.closedPlanType": "Le plan est fermé.",
     "label.none": "Aucun",
+    "label.showMoreOptions": "Show More Options",
+    "label.showFewerOptions": "Show Fewer Options",
     "button.all": "Tous",
     "button.save": "Enregistrer",
     "button.apply": "Appliquer",

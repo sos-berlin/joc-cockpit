@@ -2743,6 +2743,7 @@ export class JobComponent {
   @Input() timeZone;
   @Input() checkboxObjects: any = {};
   @Input() workflowPath: any = {};
+  @Input() showMoreAdvanceOptions = false;
   @Output() jobTagsEvent = new EventEmitter<any>();
   history = [];
   showToken = /\w/;
@@ -5330,6 +5331,7 @@ export class WorkflowComponent {
   isExpandVariable = true;
   isExpandReference = true;
   isExpandTag = true;
+  showMoreAdvanceOptions = false;
   isLocalChange: string;
   positions: any;
   newPositions: any;
@@ -5485,6 +5487,7 @@ export class WorkflowComponent {
       this.selectedNode = null;
     }
     if (changes['data']) {
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       if (changes['data'].currentValue?.copied) {
         this.isCopiedWorkflow = true;
         this.copiedWorkflowJobTags.copiedWorkflowPath = changes['data'].currentValue?.copied.path + '/' + changes['data'].currentValue?.copied.name
@@ -5515,6 +5518,14 @@ export class WorkflowComponent {
         this.ref.detectChanges();
       }
     }
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   ngOnDestroy(): void {
@@ -12071,7 +12082,7 @@ export class WorkflowComponent {
           graph.getModel().execute(editLabel);
         } finally {
           graph.getModel().endUpdate();
-          if (!self.coreService.expertMode && self.hasLicense) {
+          if (self.hasLicense) {
             if (self.selectedNode.type === 'ForkList') {
               self.updateForkListOrStickySubagentJobs(self.selectedNode, false);
             } else if (self.selectedNode.type === 'StickySubagent') {

@@ -148,7 +148,7 @@
               </div>
             }
           </div>
-          @if ((coreService.expertMode || isModal)) {
+          @if ((showMoreAdvanceOptions || isModal)) {
             <div [hidden]="fullScreen" class="form-group row doc-in-workflow">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
@@ -166,7 +166,7 @@
               }
             </div>
           }
-          @if (hasLicense && (coreService.expertMode || isModal)) {
+          @if (hasLicense && (showMoreAdvanceOptions || isModal)) {
             <div [hidden]="fullScreen" class="form-group row">
               <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
                    class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
@@ -1025,7 +1025,7 @@
           </div>
         }
       </div>
-      @if (coreService.expertMode || isModal) {
+      @if (showMoreAdvanceOptions || isModal) {
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
@@ -1087,7 +1087,7 @@
           </div>
         }
       </div>
-      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)) {
+      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
@@ -1128,7 +1128,7 @@
           </div>
         }
       </div>
-      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)) {
+      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobNotRestartable' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
@@ -1149,7 +1149,7 @@
           }
         </div>
       }
-      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)) {
+      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
@@ -1176,7 +1176,7 @@
           }
         </div>
       }
-      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)) {
+      @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"

@@ -14,6 +14,21 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-150">
+    <div class="m-b-sm text-right">
+      <div>
+        @if (!showMoreAdvanceOptions) {
+          <a class="text-primary cursor" (click)="showMoreOptions()">
+            <i class="fa fa-caret-right m-r-xs"></i>
+            <span translate>common.label.showMoreOptions</span>
+          </a>
+        } @else {
+          <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+            <i class="fa fa-caret-down m-r-xs"></i>
+            <span translate>common.label.showFewerOptions</span>
+          </a>
+        }
+      </div>
+    </div>
     <div>
       <div [ngClass]="{'show': display}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
@@ -38,16 +53,18 @@
           }
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.fileFormat</label>
-        <div class="col-md-6">
-          <app-select-input [attributeName]="'fileFormat'"
-                            [extraLabelText]="'local'"
-                            [listArray]="fileFormat" [name]="'format'" [optionLabel]="'name'" [optionValue]="'value'"
-                            [object]="exportObj"></app-select-input>
+      @if (showMoreAdvanceOptions || exportObj.fileFormat !== 'ZIP') {
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label" translate>inventory.label.fileFormat</label>
+          <div class="col-md-6">
+            <app-select-input [attributeName]="'fileFormat'"
+                              [extraLabelText]="'local'"
+                              [listArray]="fileFormat" [name]="'format'" [optionLabel]="'name'" [optionValue]="'value'"
+                              [object]="exportObj"></app-select-input>
+          </div>
         </div>
-      </div>
-      @if (securityLevel === 'HIGH') {
+      }
+      @if (securityLevel === 'HIGH' && (showMoreAdvanceOptions || exportObj.controllerId)) {
         <div class="form-group row">
           <div class="col-md-3 form-control-label">
             <label translate>common.label.controllerId</label>
@@ -59,7 +76,7 @@
           </div>
         </div>
       }
-      @if (!origin || !origin.object) {
+      @if ((!origin || !origin.object) && (showMoreAdvanceOptions || exportObj.exportType !== 'folders')) {
         <div class="row m-b-12">
           <div class="col-md-3" translate>inventory.label.exportType</div>
           <div class="col-md-6">
@@ -71,7 +88,7 @@
           </div>
         </div>
       }
-      @if ((!origin || !origin.object) && exportObj.exportType === 'folders') {
+      @if (((!origin || !origin.object) && exportObj.exportType === 'folders') && (showMoreAdvanceOptions || exportObj.objectTypes?.length > 0)) {
         <div class="form-group row">
           <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
           <div class="col-md-6">
@@ -81,7 +98,7 @@
           </div>
         </div>
       }
-      @if (securityLevel === 'HIGH') {
+      @if (securityLevel === 'HIGH' && (showMoreAdvanceOptions || exportObj.forSigning)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.forSigning</label>
@@ -92,7 +109,7 @@
           </div>
         </div>
       }
-      @if (!exportObj.forSigning && exportObj.exportType != 'changes') {
+      @if (!exportObj.forSigning && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || exportObj.inclAllTags)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.inclusiveAllTags</label>
@@ -102,7 +119,7 @@
           </div>
         </div>
       }
-      @if (exportType === 'BOTH'  && exportObj.exportType != 'changes') {
+      @if (exportType === 'BOTH'  && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || !filter.controller || !filter.dailyPlan)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.export.label.filterType</label>
@@ -118,7 +135,7 @@
           </div>
         </div>
       }
-      @if (exportObj.exportType != 'changes') {
+      @if (exportObj.exportType != 'changes' && (showMoreAdvanceOptions || filter.valid || !filter.draft || filter.deploy || !filter.release)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.export.label.filter</label>
@@ -148,7 +165,7 @@
           </div>
         </div>
       }
-      @if (nodes.length > 0 && (path && path != '/')) {
+      @if (nodes.length > 0 && (path && path != '/') && (showMoreAdvanceOptions || exportObj.useShortPath)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
@@ -158,7 +175,7 @@
           </div>
         </div>
       }
-      @if (nodes.length > 0 && exportObj.exportType != 'changes') {
+      @if (nodes.length > 0 && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || exportObj.isRecursive)) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.handleRecursively</label>
@@ -168,7 +185,7 @@
           </div>
         </div>
       }
-      @if (exportObj.exportType === 'changes') {
+      @if (exportObj.exportType === 'changes' && (showMoreAdvanceOptions || selectedChange)) {
         <div [ngClass]="{'has-error' : ((change.dirty || change.touched) && change.invalid)}" class="form-group row">
           <label class="col-sm-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
@@ -190,7 +207,7 @@
           </div>
         </div>
       }
-      @if ((exportObj.exportType === 'individual' || (origin && origin.object)) || exportObj.exportType === 'changes') {
+      @if (((exportObj.exportType === 'individual' || (origin && origin.object)) || exportObj.exportType === 'changes') && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.includeDependencies</label>
@@ -205,7 +222,7 @@
         </div>
       }
 
-      @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none') {
+      @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
         <div class="form-group row">
           <label class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
@@ -214,7 +231,7 @@
         </div>
       }
 
-      @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none' && showDependencies) {
+        @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none' && showDependencies && (showMoreAdvanceOptions || showRelatedObjects)) {
         <div class="form-group row">
           <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
           <div class="col-md-6">

@@ -42,6 +42,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   history = [];
   lastModified: any = '';
   isLocalChange = '';
+  showMoreAdvanceOptions = false;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -164,6 +165,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       }
       this.data.syncState = res.syncState;
       this.lock = res;
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.lock.path1 = this.data.path;
       this.lock.name = this.data.name;
       this.lock.actual = JSON.stringify(res.configuration);
@@ -360,6 +362,14 @@ export class LockComponent implements OnChanges, OnDestroy {
         }, error: () => this.ref.detectChanges()
       });
     }
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   helpPage(key): void{

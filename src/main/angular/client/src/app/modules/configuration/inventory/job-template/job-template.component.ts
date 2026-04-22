@@ -386,6 +386,7 @@ export class JobTemplateComponent {
 
   isTreeShow = false;
   isDisplay = true;
+  showMoreAdvanceOptions = false;
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -522,6 +523,7 @@ export class JobTemplateComponent {
       this.history = [];
       this.indexOfNextAdd = 0;
       this.returnCodes = {on: 'success'};
+      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
       this.getDocumentations();
 
       this.reset();
@@ -1641,6 +1643,14 @@ export class JobTemplateComponent {
 
   helpPage(key): void{
     this.coreService.openHelpPage(key);
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
   }
 
   notes(name): void {

@@ -47,11 +47,26 @@
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a max-ht-120">
     @if ((deployablesObject.length > 0 || isRemoved) && !loading) {
+      <div class="m-b-sm text-right">
+        <div>
+          @if (!showMoreAdvanceOptions) {
+            <a class="text-primary cursor" (click)="showMoreOptions()">
+              <i class="fa fa-caret-right m-r-xs"></i>
+              <span translate>common.label.showMoreOptions</span>
+            </a>
+          } @else {
+            <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+              <i class="fa fa-caret-down m-r-xs"></i>
+              <span translate>common.label.showFewerOptions</span>
+            </a>
+          }
+        </div>
+      </div>
       <div>
         <div [ngClass]="{'show': display}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
         </div>
-        @if (!releasable && !isRemoved) {
+        @if (!releasable && !isRemoved && (showMoreAdvanceOptions || selectedSchedulerIds.length > 1)) {
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label translate>inventory.label.controllers</label>
@@ -71,7 +86,7 @@
             </div>
           </div>
         }
-        @if (!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) {
+        @if ((!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
           <div class="form-group row">
             <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
             <div class="col-md-9">
@@ -101,7 +116,7 @@
             </div>
           </div>
         }
-        @if (!isRevoke && !isRemoved && operation != 'recall' &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR')) {
+        @if (!isRevoke && !isRemoved && operation != 'recall' &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate)) {
           <div class="form-group row">
             <div class="col-md-6">
               <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
@@ -110,6 +125,7 @@
           </div>
         }
 
+        @if (showMoreAdvanceOptions || dependencyMode !== 'all') {
           <div class="form-group row">
             <div class="col-md-3">
               <label translate>inventory.label.includeDependencies</label>
@@ -119,12 +135,12 @@
                 <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
                 <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
                 <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-
               </nz-radio-group>
             </div>
           </div>
+        }
 
-        @if (dependencyMode !== 'none') {
+        @if (dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
           <div class="form-group row">
             <label class="col-md-3" translate>inventory.label.manageDependencies</label>
             <div class="col-md-6">
@@ -133,7 +149,7 @@
           </div>
         }
 
-        @if (dependencyMode !== 'none' && showDependencies) {
+        @if (dependencyMode !== 'none' && showDependencies && (showMoreAdvanceOptions || showRelatedObjects)) {
           <div class="form-group row">
             <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
             <div class="col-md-6">
