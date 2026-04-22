@@ -45,6 +45,7 @@ export class HeaderComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
+  subscription4: Subscription;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
@@ -65,6 +66,11 @@ export class HeaderComponent {
         if(res){
           this.isBackUp = res;
         }
+      }
+    });
+    this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
+      if (res && sessionStorage['preferences']) {
+        this.preferences = JSON.parse(sessionStorage['preferences']);
       }
     });
   }
@@ -129,6 +135,7 @@ export class HeaderComponent {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.subscription3.unsubscribe();
+    this.subscription4.unsubscribe();
     this.modal.closeAll();
     if (this.timeout) {
       clearTimeout(this.timeout);

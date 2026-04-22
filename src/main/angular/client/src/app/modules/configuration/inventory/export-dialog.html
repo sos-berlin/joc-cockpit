@@ -109,7 +109,7 @@
           </div>
         </div>
       }
-      @if (!exportObj.forSigning && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || exportObj.inclAllTags)) {
+      @if (!exportObj.forSigning && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || exportObj.inclAllTags) && preferences.enableTagging) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.inclusiveAllTags</label>

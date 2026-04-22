@@ -233,6 +233,7 @@
                   <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
                 </div>
               </div>
+              @if (preferences.enableTagging) {
               <div class="form-group row">
                 <label class="col-md-3">
                   <label translate>inventory.label.overwriteTags</label>
@@ -241,6 +242,7 @@
                   <label [(ngModel)]="requestObj.overwriteTags" name="overwriteTags" nz-checkbox></label>
                 </div>
               </div>
+            }
               @if (!requestObj.overwrite) {
                 <div class="form-group row">
                   <label class="col-md-3" translate>inventory.label.objectName</label>

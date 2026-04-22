@@ -2136,7 +2136,7 @@
               }
             </div>
           }
-          @if (!isTrash) {
+          @if (!isTrash && preferences?.enableTagging) {
             <div class="box-body p-t-0">
               <div class="b-t p-t-sm font14 _500" translate>
                 inventory.label.workflowTags

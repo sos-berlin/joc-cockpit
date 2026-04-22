@@ -144,7 +144,7 @@
           </a>
       </li>
       }
-      @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && (isRequestor)) {
+      @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && isRequestor && preferences.isFeatureEnabled) {
       <li class="nav-item">
           <a class="nav-link pointer text-warning" style="top: 3px">
             <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
@@ -247,12 +247,14 @@
                   </li>
                 }
                 @if (permission && permission.joc) {
-                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/approvals">
-                    <a>
-                      <i class="wd-14 fa fa-gavel" style="transform: rotate(90deg)"></i>
-                      {{'header.button.manageApprovals' | translate}}
-                    </a>
-                  </li>
+                  @if (preferences.enableApprovalRequests) {
+                    <li [routerLinkActive]="['active']" nz-menu-item routerLink="/approvals">
+                      <a>
+                        <i class="wd-14 fa fa-gavel" style="transform: rotate(90deg)"></i>
+                        {{'header.button.manageApprovals' | translate}}
+                      </a>
+                    </li>
+                  }
                 }
                 @if (permission && permission.joc && permission.joc.administration.settings.view) {
                   <li [routerLinkActive]="['active']" nz-menu-item routerLink="/settings">

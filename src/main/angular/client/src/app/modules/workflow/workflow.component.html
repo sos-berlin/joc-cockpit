@@ -239,16 +239,20 @@
                       <span>{{ 'inventory.tab.folders' | translate }}</span>
                     </ng-template>
                   </nz-tab>
+                   @if (preferences.enableTagging) {
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('workflowTags');workflowFilters.selectedIndex = 1;" [nzTitle]="workflowTagsTitle">
                     <ng-template #workflowTagsTitle>
                       <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
                     </ng-template>
                   </nz-tab>
+                  }
+                 @if (preferences.enableTagging) {
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('orderTags');workflowFilters.selectedIndex = 2;" [nzTitle]="orderTagsTitle">
                     <ng-template #orderTagsTitle>
                       <span [ngClass]="workflowFilters.filtersOrdersAsWell ? 'custom-tab-btn-background' : ''">{{ 'inventory.tab.orderTagging' | translate }}</span>
                     </ng-template>
                   </nz-tab>
+                }
                 </nz-tabset>
               </div>
 

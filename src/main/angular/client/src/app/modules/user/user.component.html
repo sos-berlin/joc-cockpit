@@ -628,6 +628,20 @@
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
+                 <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableTagging</div>
+                  <div class="col-md-6">
+                    <label nz-checkbox [(ngModel)]="preferences.enableTagging"
+                           (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
+                <div class="row m-t">
+                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableApprovalRequests</div>
+                  <div class="col-md-6">
+                    <label nz-checkbox [(ngModel)]="preferences.enableApprovalRequests"
+                           (ngModelChange)="changeConfiguration()"></label>
+                  </div>
+                </div>
                 <div class="row m-t b-t p-t">
                   <div class="col-md-12">
                     <h6>

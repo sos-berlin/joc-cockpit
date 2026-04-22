@@ -830,7 +830,7 @@
 
     <div class="row scroll-y max-ht2">
       <div class="col-sm-12">
-        @if (historyFilters.type == 'ORDER' || historyFilters.type == 'TASK') {
+        @if ((historyFilters.type == 'ORDER' || historyFilters.type == 'TASK') && preferences?.enableTagging) {
           <div [sideView]="sideView.history" appResizable class="sticky leftPanel resource reports-tags" id="leftPanel">
             <div>
               <div class="editor-tree">
@@ -1010,7 +1010,7 @@
             </div>
           </div>
         }
-        <div id="rightPanel">
+        <div id="rightPanel" [ngStyle]="preferences?.enableTagging ? {} : {'margin-left': '0px'}">
           @if (showSearchPanel && historyFilters.type !== 'YADE' && historyFilters.type !== 'DEPLOYMENT' && historyFilters.type !== 'SUBMISSION') {
             <div class="row m-b">
               <div class="col-md-12">

@@ -2889,6 +2889,8 @@
     "label.enterColor": "Entrer la couleur",
     "label.resetDefault": "Réinitialiser les valeurs par défaut",
     "label.showHelpPages": "Afficher l'aide contextuelle",
+    "label.enableTagging": "Enable Tagging",
+    "label.enableApprovalRequests": "Enable Approval Requests",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",

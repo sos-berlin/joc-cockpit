@@ -2889,6 +2889,8 @@
     "label.enterColor": "Enter color",
     "label.resetDefault": "Reset to default",
     "label.showHelpPages": "Show Context Help",
+    "label.enableTagging": "Enable Tagging",
+    "label.enableApprovalRequests": "Enable Approval Requests",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",

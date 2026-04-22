@@ -2889,6 +2889,8 @@
         "label.enterColor": "色入力",
         "label.resetDefault": "初期設定にリセット",
         "label.showHelpPages": "ヘルプページ表示",
+        "label.enableTagging": "Enable Tagging",
+        "label.enableApprovalRequests": "Enable Approval Requests",
         "button.resetPreferences": "プリファレンスリセット",
         "button.groupLimit": "グループリミット",
         "button.changePassword": "パスワード変更",

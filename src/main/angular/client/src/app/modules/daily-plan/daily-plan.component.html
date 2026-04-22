@@ -849,6 +849,7 @@
             </div>
             <div id="rightPanel">
               <div class="row">
+                @if (preferences?.enableTagging) {
                 <div class="col-lg-2 col-sm-3 p-r-xs">
                   <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
                     <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
@@ -1009,7 +1010,8 @@
                     }
                   </div>
                 </div>
-                <div class="col-lg-10 col-sm-9">
+                }
+                <div [class]="preferences?.enableTagging ? 'col-lg-10 col-sm-9' : 'col-lg-12 col-sm-12'">
                     @if (!(object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage))) {
                       <div class="row m-b-12">
                         <div class="col-lg-12">

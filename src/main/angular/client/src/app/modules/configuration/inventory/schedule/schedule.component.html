@@ -484,6 +484,7 @@
                       </div>
                     </div>
 
+                    @if (preferences.enableTagging) {
                     <div class="form-group row">
                       <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>
                         inventory.label.tagName
@@ -542,6 +543,7 @@
                         </div>
                       </div>
                     </div>
+                  }
 
                     @if (blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">

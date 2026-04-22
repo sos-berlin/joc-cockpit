@@ -757,6 +757,8 @@ export class LayoutComponent {
     preferences.interRankCellSpacing = '100';
     preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
+    preferences.enableTagging = false;
+    preferences.enableApprovalRequests = false;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -868,6 +870,12 @@ export class LayoutComponent {
       }
       if (data.showMoreOptions === undefined) {
         data.showMoreOptions = false;
+      }
+      if (data.enableTagging === undefined) {
+        data.enableTagging = false;
+      }
+      if (data.enableApprovalRequests === undefined) {
+        data.enableApprovalRequests = false;
       }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
