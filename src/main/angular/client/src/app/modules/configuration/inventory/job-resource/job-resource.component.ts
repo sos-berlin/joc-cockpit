@@ -683,7 +683,7 @@ export class JobResourceComponent {
       }
       this.data.syncState = res.syncState;
       this.jobResource = res;
-      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.jobResource.path1 = this.data.path;
       this.jobResource.name = this.data.name;
       this.setErrorMessage(res);
@@ -822,10 +822,12 @@ export class JobResourceComponent {
   }
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['inventoryShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['inventoryShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void{

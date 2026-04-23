@@ -1655,7 +1655,7 @@ export class ScheduleComponent {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
-      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       if (!this.schedule.configuration.orderParameterisations) {
         this.schedule.configuration.orderParameterisations = [];
       }
@@ -1978,10 +1978,12 @@ export class ScheduleComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['inventoryShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['inventoryShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void{

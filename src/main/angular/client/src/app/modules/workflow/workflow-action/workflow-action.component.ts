@@ -147,7 +147,7 @@ export class AddOrderModalComponent {
     this.schedulerId = this.modalData.schedulerId;
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.workflow = this.modalData.workflow;
     this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] === 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -1944,10 +1944,12 @@ addArguments(orderIndex): void {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 }
 

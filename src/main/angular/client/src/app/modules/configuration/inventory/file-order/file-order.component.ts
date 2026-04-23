@@ -210,7 +210,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.coreService.removeSlashToString(res.configuration, 'directoryExpr');
       }
       this.fileOrder = res;
-      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.fileOrder.path1 = this.data.path;
       this.fileOrder.name = this.data.name;
       this.fileOrder.actual = JSON.stringify(res.configuration);
@@ -581,10 +581,12 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['inventoryShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['inventoryShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void{

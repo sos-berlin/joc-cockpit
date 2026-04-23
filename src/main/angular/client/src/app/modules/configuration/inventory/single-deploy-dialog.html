@@ -47,7 +47,7 @@
 <form #myForm="ngForm" (ngSubmit)="deploy()" spellcheck="false">
   <div class="modal-body p-a max-ht-120">
     @if ((deployablesObject.length > 0 || isRemoved) && !loading) {
-      <div class="m-b-sm text-right">
+      <div class="m-l-sm m-r-sm m-b-sm text-right">
         <div>
           @if (!showMoreAdvanceOptions) {
             <a class="text-primary cursor" (click)="showMoreOptions()">

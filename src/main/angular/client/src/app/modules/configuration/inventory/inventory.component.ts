@@ -525,7 +525,7 @@ export class SingleDeployComponent {
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.schedulerIds = this.modalData.schedulerIds;
     this.data = this.modalData.data;
     this.type = this.modalData.type;
@@ -1179,10 +1179,12 @@ export class SingleDeployComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 
   private remove(): void {
@@ -2169,7 +2171,7 @@ export class DeployComponent {
   ngOnInit(): void {
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.path = this.modalData.path;
     this.releasable = this.modalData.releasable;
     this.display = this.modalData.display;
@@ -4871,10 +4873,12 @@ export class DeployComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void {
@@ -5025,7 +5029,7 @@ export class ExportComponent {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.origin = this.modalData.origin;
     this.display = this.modalData.display;
     this.flag = this.modalData.flag;
@@ -7323,10 +7327,12 @@ export class ExportComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void {

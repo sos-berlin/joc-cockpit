@@ -869,7 +869,7 @@ export class LayoutComponent {
         data.showHelpPages = true;
       }
       if (data.showMoreOptions === undefined) {
-        data.showMoreOptions = false;
+        data.showMoreOptions = true;
       }
       if (data.enableTagging === undefined) {
         data.enableTagging = false;

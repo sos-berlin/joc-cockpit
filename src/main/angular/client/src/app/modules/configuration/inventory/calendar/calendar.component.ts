@@ -1994,7 +1994,7 @@ export class CalendarComponent {
         this.data.valid = res.valid;
       }
       this.calendar = res;
-      this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.calendar.path1 = this.data.path;
       this.calendar.name = this.data.name;
       this.calendar.configuration.includesFrequency = [];
@@ -2238,10 +2238,12 @@ export class CalendarComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['inventoryShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['inventoryShowMoreOptions'] = 'false';
   }
 
   helpPage(key): void{
