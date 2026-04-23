@@ -454,6 +454,7 @@
         @if (pageView !== 'bulk') {
           <div id="rightPanel1">
             <div class="row">
+              @if(preferences.enableTagging) {
               <div class="col-lg-2 col-sm-3 p-r-xs">
                 <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
                   <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="orderFilters.selectedIndex">
@@ -614,7 +615,8 @@
                   }
                 </div>
               </div>
-              <div class="col-lg-10 col-sm-9">
+              }
+              <div [ngClass]="preferences.enableTagging ? 'col-lg-10' : 'col-lg-12'" class="col-sm-9">
                 @if (!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))) {
                   <div class="row m-b">
                     <div class="col-lg-12">

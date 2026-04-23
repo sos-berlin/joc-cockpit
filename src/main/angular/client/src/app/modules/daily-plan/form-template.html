@@ -142,6 +142,7 @@
         </div>
       </div>
     }
+    @if(preferences.tagsEnabled) {
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
       <div class=" col-sm-6">
@@ -166,6 +167,7 @@
         </nz-select>
       </div>
     </div>
+    }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.state</label>
       <div [ngClass]="{'col-md-6': isSearch}" class="col-sm-8">

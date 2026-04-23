@@ -29,10 +29,12 @@
                 <i class="fa fa-refresh" style="transform: rotate(90deg)"></i>&nbsp;
                 <span translate>inventory.label.changes</span>
               </button>
+              @if (preferences.enableTagging) {
               <button (click)="openGroupTagDrawer()" class="btn btn-sm btn-grey m-l-12">
                 <i nz-icon nzTheme="outline" nzType="tags"></i>&nbsp;
                 <span translate>common.button.tagGroups</span>
               </button>
+             }
               @if (permission.joc.inventory.manage) {
                 <div class="btn-group">
                   <div class="btn-group dropdown ">
@@ -779,9 +781,11 @@
       }
       @if (permission.joc.inventory.manage && (node.origin.type === 'WORKFLOW' || node.origin.object === 'WORKFLOW' ||
         node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan))) {
-        <li (click)="addTags(node);" nz-menu-item>
-          <a translate>inventory.button.manageTags</a>
-        </li>
+        @if (preferences.enableTagging) {
+          <li (click)="addTags(node);" nz-menu-item>
+            <a translate>inventory.button.manageTags</a>
+          </li>
+        }
       }
       @if (!node.origin.type) {
         <li (click)="exportObject(node);" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" nz-menu-item>
