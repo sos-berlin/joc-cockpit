@@ -305,7 +305,7 @@
         </div>
         @if (orders.length > 1) {
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>common.label.startTime</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.startTime' | translate) : ''" class="col-sm-4 form-control-label" translate>common.label.startTime</label>
             <div class="col-md-8">
               <nz-radio-group [(ngModel)]="commonStartTime" name="commonStartTime" (ngModelChange)="onCommonTimeChange($event)">
                 <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -320,7 +320,7 @@
         <!-- Time for 'later' option -->
         @if (commonStartTime == 'later' && orders.length > 1) {
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>common.label.time
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.time' | translate) : ''" class="col-sm-4 form-control-label" translate>common.label.time
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -341,7 +341,7 @@
         <!-- Date for 'date' option -->
         @if (commonStartTime == 'date' && orders.length > 1) {
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.enterDateAndTime' | translate) : ''" class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -356,7 +356,7 @@
         <!-- Time Zone for 'date' option -->
         @if (orders.length > 1) {
           <div [hidden]="!(commonStartTime =='date')" class="form-group row">
-            <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+            <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.timeZone' | translate) : ''" class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
             <div class="col-sm-6">
               <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
                                 [listArray]="zones" [name]="'timeZoneCommon'" [ignoreTranslate]="true"
@@ -384,7 +384,7 @@
 
             @if (showMoreAdvanceOptions || order.orderId) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.orderName</label>
                 <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
                   <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
                         class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
@@ -404,7 +404,7 @@
             @if (showMoreAdvanceOptions || order.tags?.length > 0) {
               @if (preferences.enableTagging) {
                 <div class="form-group row">
-                  <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.tagName' | translate) : ''" class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
                   <div class="col-sm-6">
                     <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
                       <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
@@ -439,7 +439,7 @@
             <!-- Force Job Admission -->
             @if (showMoreAdvanceOptions || order.forceJobAdmission) {
               <div class="form-group row">
-                <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''" class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
                 <div class="col-md-8">
                   <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox>
                   </label>
@@ -450,7 +450,7 @@
             <!-- Start Time -->
             @if (orders.length < 2) {
               <div class="form-group row">
-                <label class="col-sm-4 " translate>common.label.startTime</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.startTime' | translate) : ''" class="col-sm-4 " translate>common.label.startTime</label>
                 <div class="col-md-8">
                   <nz-radio-group [(ngModel)]="order.at" name="at{{orderIndex}}" (ngModelChange)="onTimeChange($event, orderIndex)">
                     <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -465,7 +465,7 @@
             <!-- Time for 'later' option -->
             @if (order.at == 'later' && orders.length < 2) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>common.label.time
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.time' | translate) : ''" class="col-sm-4 form-control-label" translate>common.label.time
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -486,7 +486,7 @@
             <!-- Date for 'date' option -->
             @if (order.at == 'date' && orders.length < 2) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.enterDateAndTime' | translate) : ''" class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-6">
@@ -501,7 +501,7 @@
             <!-- Time Zone for 'date' option -->
             @if (orders.length < 2) {
               <div [hidden]="!(order.at =='date')" class="form-group row">
-                <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.timeZone' | translate) : ''" class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
                 <div class="col-sm-6">
                   <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
                                     [listArray]="zones" [name]="'timeZone{{orderIndex}}'" [ignoreTranslate]="true"
@@ -511,7 +511,7 @@
             }
             @if (showMoreAdvanceOptions || order.planId?.noticeSpaceKey) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.planKey' | translate) : ''" class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
                 <div class="col-sm-6">
                   <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
                                   [ignoreThirdParam]="true" [isAllowClear]="true"
@@ -523,7 +523,7 @@
             <!-- Block Position -->
             @if ((showMoreAdvanceOptions || order.blockPosition) && permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
                 <div class="col-sm-6">
                   <app-node-position [obj]="order" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
                                      [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, orderIndex)"></app-node-position>
@@ -534,7 +534,7 @@
             <!-- Start Node -->
             @if ((showMoreAdvanceOptions || order.startPosition) && permission.currentController && permission.currentController.orders.managePositions) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.startNode</label>
                 <div class="col-sm-6">
                   <app-node-position [obj]="order" [newPositions]="newPositions" [positions]="positions" [reload]="order.reload"
                                      [type]="'START'" [workflow]="workflow"></app-node-position>
@@ -545,7 +545,7 @@
             <!-- End Node -->
             @if ((showMoreAdvanceOptions || order.endPositions?.length > 0) && permission.currentController && permission.currentController.orders.managePositions) {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.endNode</label>
                 <div class="col-sm-6">
                   <app-node-position [obj]="order" [newPositions]="newPositions" [position]="order.startPosition" [positions]="positions"
                                      [reload]="order.reload" [type]="'END'" [workflow]="workflow"></app-node-position>
@@ -586,13 +586,13 @@
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
                 <div class="col-sm-12">
-                  <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
+                  <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.assignParameterizationFromSchedules' | translate) : ''" (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
                 </div>
               </div>
             }
             @if (schedules && schedules.length > 0 && !isAssignedFromSchedule) {
               <div class="form-group row">
-                <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.selectSchedule' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
                 <div class="col-sm-6">
                   <nz-select [(ngModel)]="order.name" name="schedule{{orderIndex}}" nzAllowClear
                              (ngModelChange)="selectSchedule($event, orderIndex)" nzShowSearch>
@@ -605,7 +605,7 @@
             }
             @if (order.selectedSchedule && order.selectedSchedule.orderParameterisations && order.selectedSchedule.orderParameterisations.length > 1) {
               <div class="form-group row">
-                <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.selectOrder' | translate) : ''" class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
                 <div class="col-sm-6">
                   <nz-select [(ngModel)]="order.orderName" name="order{{orderIndex}}" nzAllowClear
                              nzShowSearch (ngModelChange)="selectOrder($event, null, null, null, orderIndex)">
@@ -788,13 +788,13 @@
                 @if (variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)) {
                   <div class="col-sm-12"
                       [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
-                    <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
-                    <a (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
+                    <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.modifyVariable' | translate) : ''" (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
+                    <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.modifyVariables' | translate) : ''" (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
                   </div>
                 }
                 @if (workflow.orderPreparation?.allowUndeclared) {
                   <div class="col-sm-12">
-                    <a class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
+                    <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addVariable' | translate) : ''" class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
                   </div>
                 }
               </div>
@@ -807,8 +807,8 @@
         @if (showMoreAdvanceOptions) {
           <div class="form-group row">
             <div class="col-sm-12">
-              <a (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
-              <a (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
+              <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addOrderParameterization' | translate) : ''" (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
+              <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addOrdersFromAllSchedules' | translate) : ''" (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
             </div>
           </div>
         }

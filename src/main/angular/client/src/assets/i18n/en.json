@@ -2374,8 +2374,33 @@
           "onlyOnePeriod": "A cycle can specify more than one period, for example for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an order arriving at 1.45pm will run both cycles for 2pm and 3pm. When using the setting 'One period only' then an order will run the first matching period only and will not consider later periods."
         }
       },
+      "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "useRelativePathOnly": "When exporting scheduling objects then by default an absolute path is used. Users can specify a relative path to be used starting from the selected folder. If no folder is selected but scheduling objects only then using a relative path maps to exporting as top-level objects to the export archive file."
+        "useRelativePathOnly": "When exporting scheduling objects then by default an absolute path is used. Users can specify a relative path to be used starting from the selected folder. If no folder is selected but scheduling objects only then using a relative path maps to exporting as top-level objects to the export archive file.",
+        "fileName":"File Name",
+        "fileFormat": "File Format",
+        "exportType": "Export Type",
+        "objectTypes": "Object Types",
+        "filterType": "Filter Type",
+        "filter": "Filter",
+        "handleRecursively": "Handle recursively",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "name": "Name"
+      },
+      "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
+      "deploy": {
+        "controllers": "Controllers",
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "deployType": "Deploy Type",
+        "includeTodaysLateOrders": "Include today's late Orders",
+        "filter": "Filter",
+        "handleRecursively": "Handle recursively",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "name": "Name",
+        "showRelatedObjects": "Show Related Objects"
       }
     },
     "search": {
@@ -2809,6 +2834,24 @@
       "label": {
         "sleepState": "Sleep State",
         "until": "Until"
+      }
+    },
+    "--------ADD ORDER MISSING TOOLTIPS------------": "",
+    "tooltips": {
+      "addOrder": {
+        "startTime": "Start Time",
+        "time": "Time",
+        "enterDateAndTime": "Enter date And time",
+        "timeZone": "Time zone",
+        "planKey" : "Notice Space Key",
+        "assignParameterizationFromSchedules": "Assign parameterization from Schedule",
+        "selectSchedule": "Select Schedule",
+        "selectOrder": "Select Order Template",
+        "modifyVariable": "Modify Variable",
+        "modifyVariables": "Modify Variables",
+        "addVariable": "Add Variable",
+        "addOrderParameterization": "Add Order Parameterization",
+        "addOrdersFromAllSchedules": "Add Orders from Schedules"
       }
     }
   },

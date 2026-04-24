@@ -62,7 +62,7 @@
       @if (!releasable && !isRemove && nodes.length > 0 && (showMoreAdvanceOptions || selectedSchedulerIds.length > 1)) {
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.controllers</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.controllers' | translate) : ''" translate>inventory.label.controllers</label>
           </label>
           <div class="col-md-6">
             <nz-select
@@ -82,7 +82,7 @@
 
       @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan)) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
         <div class="form-group row">
-          <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.updateDailyPlan' | translate) : ''" class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
               <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
@@ -94,7 +94,7 @@
       }
       @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         <div class="form-group row">
-          <label class="col-md-3 form-control-label" translate>common.label.specificDate
+          <label class="col-md-3 form-control-label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.specificDate' | translate) : ''" translate>common.label.specificDate
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-6">
@@ -107,7 +107,7 @@
       }
       @if (!data || !data.object && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) {
         <div class="row m-b-12">
-          <div class="col-md-3" translate>inventory.label.deployType</div>
+          <div class="col-md-3" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.deployType' | translate) : ''" translate>inventory.label.deployType</div>
           <div class="col-md-6">
             <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
               <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
@@ -118,7 +118,7 @@
       }
       @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
         <div class="form-group row">
-          <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.includeTodaysLateOrders' | translate) : ''" class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
           </div>
@@ -127,7 +127,7 @@
       @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.export.label.filter</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.filter' | translate) : ''" translate>inventory.export.label.filter</label>
           </div>
           <div class="col-md-9">
             <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
@@ -142,7 +142,7 @@
       @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || object.isRecursive)) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.handleRecursively</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.handleRecursively' | translate) : ''" translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6">
             <label [(ngModel)]="object.isRecursive" name="isRecursive"
@@ -170,7 +170,7 @@
       @if (nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.includeDependencies' | translate) : ''" translate>inventory.label.includeDependencies</label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
@@ -184,7 +184,7 @@
 
       @if (nodes.length > 0 && dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.manageDependencies</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.manageDependencies' | translate) : ''" class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
           </div>
@@ -193,7 +193,7 @@
 
       @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies && (showMoreAdvanceOptions || showRelatedObjects)) {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.showRelatedObjects' | translate) : ''" class="col-md-3" translate>inventory.label.showRelatedObjects</label>
           <div class="col-md-6">
             <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
           </div>
@@ -214,7 +214,7 @@
       }
       @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
         <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>common.label.name
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.name' | translate) : ''" class="col-sm-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">

@@ -2374,8 +2374,33 @@
           "onlyOnePeriod": "Un ciclo puede especificar más de un período, por ejemplo para la 1pm, 2pm, 3pm con cada ciclo de 30 minutos de duración. Por defecto, una Orden que llega a la 1:45pm ejecutará tanto los ciclos de las 2pm como de las 3pm. Al usar la configuración 'Solo un período', una Orden ejecutará únicamente el primer período que coincida y no considerará períodos posteriores."
         }
       },
+      "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "useRelativePathOnly": "Al exportar objetos de Planificación, por defecto se usa una ruta absoluta. Los usuarios pueden especificar una ruta relativa a usar, comenzando desde la carpeta seleccionada. Si no se selecciona ninguna carpeta sino solo objetos de Planificación, el uso de una ruta relativa equivale a exportar como objetos de nivel superior al archivo de exportación."
+        "useRelativePathOnly": "Al exportar objetos de Planificación, por defecto se usa una ruta absoluta. Los usuarios pueden especificar una ruta relativa a usar, comenzando desde la carpeta seleccionada. Si no se selecciona ninguna carpeta sino solo objetos de Planificación, el uso de una ruta relativa equivale a exportar como objetos de nivel superior al archivo de exportación.",
+        "fileName":"File Name",
+        "fileFormat": "File Format",
+        "exportType": "Export Type",
+        "objectTypes": "Object Types",
+        "filterType": "Filter Type",
+        "filter": "Filter",
+        "handleRecursively": "Handle recursively",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "name": "Name"
+      },
+      "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
+      "deploy": {
+        "controllers": "Controllers",
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "deployType": "Deploy Type",
+        "includeTodaysLateOrders": "Include today's late Orders",
+        "filter": "Filter",
+        "handleRecursively": "Handle recursively",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "name": "Name",
+        "showRelatedObjects": "Show Related Objects"
       }
     },
     "search": {
@@ -2809,6 +2834,24 @@
       "label": {
         "sleepState": "Estado de espera",
         "until": "Hasta"
+      }
+    },
+    "--------ADD ORDER MISSING TOOLTIPS------------": "",
+    "tooltips": {
+      "addOrder": {
+        "startTime": "Start Time",
+        "time": "Time",
+        "enterDateAndTime": "Enter date And time",
+        "timeZone": "Time zone",
+        "planKey" : "Notice Space Key",
+        "assignParameterizationFromSchedules": "Assign parameterization from Schedule",
+        "selectSchedule": "Select Schedule",
+        "selectOrder": "Select Order Template",
+        "modifyVariable": "Modify Variable",
+        "modifyVariables": "Modify Variables",
+        "addVariable": "Add Variable",
+        "addOrderParameterization": "Add Order Parameterization",
+        "addOrdersFromAllSchedules": "Add Orders from Schedules"
       }
     }
   },

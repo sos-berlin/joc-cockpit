@@ -2374,8 +2374,33 @@
                     "onlyOnePeriod": "１回のみ"
                 }
             },
+            "--------ADD EXPORT MISSING TOOLTIPS------------": "",
             "export": {
-                "useRelativePathOnly": "相対パスを使用してください"
+                "useRelativePathOnly": "相対パスを使用してください",
+                "fileName":"File Name",
+                "fileFormat": "File Format",
+                "exportType": "Export Type",
+                "objectTypes": "Object Types",
+                "filterType": "Filter Type",
+                "filter": "Filter",
+                "handleRecursively": "Handle recursively",
+                "includeDependencies": "Include Dependencies",
+                "manageDependencies": "Manage Dependencies",
+                "name": "Name"
+            },
+            "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
+            "deploy": {
+                "controllers": "Controllers",
+                "updateDailyPlan": "Update Daily Plan",
+                "specificDate": "Specific Date",
+                "deployType": "Deploy Type",
+                "includeTodaysLateOrders": "Include today's late Orders",
+                "filter": "Filter",
+                "handleRecursively": "Handle recursively",
+                "includeDependencies": "Include Dependencies",
+                "manageDependencies": "Manage Dependencies",
+                "name": "Name",
+                "showRelatedObjects": "Show Related Objects"
             }
         },
         "search": {
@@ -2809,6 +2834,24 @@
             "label": {
                 "sleepState": "スリープステート",
                 "until": "まで"
+            }
+        },
+        "--------ADD ORDER MISSING TOOLTIPS------------": "",
+        "tooltips": {
+            "addOrder": {
+                "startTime": "Start Time",
+                "time": "Time",
+                "enterDateAndTime": "Enter date And time",
+                "timeZone": "Time zone",
+                "planKey" : "Notice Space Key",
+                "assignParameterizationFromSchedules": "Assign parameterization from Schedule",
+                "selectSchedule": "Select Schedule",
+                "selectOrder": "Select Order Template",
+                "modifyVariable": "Modify Variable",
+                "modifyVariables": "Modify Variables",
+                "addVariable": "Add Variable",
+                "addOrderParameterization": "Add Order Parameterization",
+                "addOrdersFromAllSchedules": "Add Orders from Schedules"
             }
         }
     },

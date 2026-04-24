@@ -34,7 +34,7 @@
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.fileName
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.fileName' | translate) : ''" class="col-md-3 form-control-label" translate>inventory.label.fileName
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}" class="col-md-6">
@@ -55,7 +55,7 @@
       </div>
       @if (showMoreAdvanceOptions || exportObj.fileFormat !== 'ZIP') {
         <div class="form-group row">
-          <label class="col-md-3 form-control-label" translate>inventory.label.fileFormat</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.fileFormat' | translate) : ''" class="col-md-3 form-control-label" translate>inventory.label.fileFormat</label>
           <div class="col-md-6">
             <app-select-input [attributeName]="'fileFormat'"
                               [extraLabelText]="'local'"
@@ -78,7 +78,7 @@
       }
       @if ((!origin || !origin.object) && (showMoreAdvanceOptions || exportObj.exportType !== 'folders')) {
         <div class="row m-b-12">
-          <div class="col-md-3" translate>inventory.label.exportType</div>
+          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.exportType' | translate) : ''" class="col-md-3" translate>inventory.label.exportType</div>
           <div class="col-md-6">
             <nz-radio-group [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
               <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
@@ -90,7 +90,7 @@
       }
       @if (((!origin || !origin.object) && exportObj.exportType === 'folders') && (showMoreAdvanceOptions || exportObj.objectTypes?.length > 0)) {
         <div class="form-group row">
-          <label class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.objectTypes' | translate) : ''" class="col-md-3 form-control-label" translate>inventory.label.objectTypes</label>
           <div class="col-md-6">
             <app-select-input (modelChange)="filterList(false)" [attributeName]="'objectTypes'" [isSearchable]="true" [placeholder]="'inventory.placeholder.objectTypes'"
                               [listArray]="objectTypes" [name]="'objectTypes'" [isMultiple]="true"
@@ -122,7 +122,7 @@
       @if (exportType === 'BOTH'  && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || !filter.controller || !filter.dailyPlan)) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.export.label.filterType</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.filterType' | translate) : ''" class="col-md-3 form-control-label" translate>inventory.export.label.filterType</label>
           </div>
           <div class="col-md-9">
             <label [(ngModel)]="filter.controller" name="controller" nz-checkbox (ngModelChange)="filterList()">
@@ -138,7 +138,7 @@
       @if (exportObj.exportType != 'changes' && (showMoreAdvanceOptions || filter.valid || !filter.draft || filter.deploy || !filter.release)) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.export.label.filter</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.filter' | translate) : ''" class="col-md-3 form-control-label" translate>inventory.export.label.filter</label>
           </div>
           <div class="col-md-9">
             <label [(ngModel)]="filter.valid" [disabled]="exportObj.forSigning" name="valid" (ngModelChange)="filterList()"
@@ -178,7 +178,7 @@
       @if (nodes.length > 0 && exportObj.exportType != 'changes' && (showMoreAdvanceOptions || exportObj.isRecursive)) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.handleRecursively</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.handleRecursively' | translate) : ''" translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6">
             <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" (ngModelChange)="handleRecursive()" nz-checkbox></label>
@@ -187,7 +187,7 @@
       }
       @if (exportObj.exportType === 'changes' && (showMoreAdvanceOptions || selectedChange)) {
         <div [ngClass]="{'has-error' : ((change.dirty || change.touched) && change.invalid)}" class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>common.label.name
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.name' | translate) : ''" class="col-sm-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -210,7 +210,7 @@
       @if (((exportObj.exportType === 'individual' || (origin && origin.object)) || exportObj.exportType === 'changes') && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.includeDependencies' | translate) : ''" translate>inventory.label.includeDependencies</label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
@@ -224,7 +224,7 @@
 
       @if ((exportObj.exportType === 'individual' || (origin && origin.object) || exportObj.exportType === 'changes') && dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.manageDependencies</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.export.manageDependencies' | translate) : ''" class="col-md-3" translate>inventory.label.manageDependencies</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
           </div>
