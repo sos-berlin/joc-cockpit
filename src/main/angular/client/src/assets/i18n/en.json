@@ -2201,7 +2201,7 @@
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs.",
         "tagName": "Any number of Tags can be added that will be assigned the orders created from the Schedule.",
-        "priority": "Priority."
+        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000."
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",

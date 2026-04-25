@@ -2201,7 +2201,7 @@
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "L'exécution des tâches peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches.",
         "tagName": "Il est possible d'ajouter un nombre quelconque de Tags qui seront affectées aux ordres crées à partir de la Planification.",
-        "priority": "Priority."
+        "priority": "Si l'Ordre doit répondre à une instruction Lock d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente. Les Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes : Basse : -20000, Inférieur à la normale : -10000, Normal : 0, Au-dessus de la normale : 10000, Haut : 20000."
       },
       "script": {
         "name": "Un Bloc Script est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Bloc Script est unique dans l'inventaire. Pour le nom du Bloc Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",

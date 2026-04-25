@@ -2201,7 +2201,7 @@
                 "blockPosition": "ブロック位置",
                 "ignoreAdmissionTimes": "ジョブの実行は、許可時間によって制限することができますが、このオプションは、許可時間を無視し、ジョブの開始を強制します。",
                 "tagName": "スケジュールから作成されたオーダーに割り当てられるタグはいくつでも追加できます。",
-                "priority": "優先度"
+                "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000."
             },
             "script": {
                 "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",

@@ -2201,7 +2201,7 @@
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
         "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
-        "priority": "Priority."
+        "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge. Prioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang. Die Abkürzungen bieten die folgenden Werte: Niedrig: -20000, Niedriger als Normal: -10000, Normal: 0, Höher als Normal: 10000, Hoch: 20000."
       },
       "script": {
         "name": "Ein Skript-Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript-Bausteins ist eindeutig im Inventar. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
