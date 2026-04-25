@@ -40,7 +40,7 @@ Objekte können mit den folgenden Optionen gefiltert werden:
 
 ## Einschließlich Unterordner
 
-Die Option **Rekursiv behandeln** ermöglicht es, Objekte aus Unterordnern rekursiv in das Ausrollen aufzunehmen.
+Die Option **Unterordner einbeziehen** ermöglicht es, Objekte aus Unterordnern rekursiv in das Ausrollen aufzunehmen.
 
 ## Abhängigkeiten einbeziehen
 

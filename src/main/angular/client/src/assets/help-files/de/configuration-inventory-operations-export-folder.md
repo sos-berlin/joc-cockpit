@@ -1,15 +1,15 @@
 # Konfiguration - Inventar - Operationen - Ordner exportieren
 
-Das Exportieren von Objekten beinhaltet das Hinzufügen zu einer .zip oder .tar.gz Archivdatei, die zum Herunterladen angeboten wird. Dies gilt für Objekte aus den Systemordnern *Controller* und *Automation* und für Objekte in Benutzerordnern. Archivdateien können für den späteren Import in dieselbe oder eine andere JOC Cockpit Instanz verwendet werden.
+Das Exportieren von Objekten beinhaltet das Hinzufügen zu einer .zip oder .tar.gz Exportdatei, die zum Herunterladen angeboten wird. Dies gilt für Objekte aus den Systemordnern *Controller* und *Automation* und für Objekte in Benutzerordnern. Exportdateien können für den späteren Import in dieselbe oder eine andere JOC Cockpit Instanz verwendet werden.
 
 Wenn Sie Objekte aus Ordnern exportieren, indem Sie die entsprechende *Exportieren* Operation aus dem 3-Punkte Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster angezeigt, das Folgendes anbietet 
 
-- **Dateiname** gibt den Namen der Archivdatei an.
-- **Dateiformat** gibt entweder .zip oder .tar.gz für den Komprimierungstyp an.
+- **Dateiname** gibt den Namen der Exportdatei an.
+- **Dateiformat** gibt .zip oder .tar.gz für den Komprimierungstyp an.
 - **Exporttyp** ist eine der folgenden Optionen
-  - exportieren von *Einzelnen Objekten*
-  - exportieren von *Ordnern*
-  - exportieren von *Änderungen*
+  - Export von *Einzelnen Objekten*
+  - Export von *Ordnern*
+  - Export von Objekten im Zusammenhang mit *Änderungen*
 - **Filtertyp**
   - **Controller** berücksichtigt Objekte wie Arbeitsabläufe und Job-Ressourcen, die in *Controller* Systemordnern gespeichert sind.
   - **Automation** berücksichtigt Objekte wie Zeitpläne und Kalender, die in *Automation* Systemordnern gespeichert sind.
@@ -18,8 +18,8 @@ Wenn Sie Objekte aus Ordnern exportieren, indem Sie die entsprechende *Exportier
   - **Entwurf** schließt Objekte im Entwurfsstatus ein.
   - **Ausgerollt** umfasst Objekte wie Arbeitsabläufe und Job-Ressourcen im Status *ausgerollt*.
   - **Freigegeben** schließt Objekte wie Zeitpläne und Kalender im freigegebenen Status ein. 
-  - **Relativen Pfad verwenden** gibt an, ob die Exportdatei die Ordnerhierarchie aus einem absoluten Pfad oder aus einem relativen Pfad enthält, der durch den ersten Ordner in der Hierarchie angegeben wird, für den der Export durchgeführt wird.
-- **Rekursiv verarbeiten** ermöglicht das rekursive Hinzufügen von Objekten aus Unterordnern zum Exportarchiv.
+- **Relativen Pfad verwenden** gibt an, ob die Exportdatei die Ordnerhierarchie aus einem absoluten Pfad oder aus einem relativen Pfad enthält, der durch den ersten Ordner in der Hierarchie angegeben wird, für den der Export durchgeführt wird.
+- **Unterordner einbeziehen** fügt Objekte aus Unterordnern der Exportdatei hinzu.
 
 ## Exporttypen
 
@@ -33,7 +33,7 @@ Mit dem *Exporttyp* können Sie einzelne Objekte aus der angezeigten Liste ausw�
 
 ### Objekte aus Ordnern exportieren
 
-Der *Exporttyp* bietet die Möglichkeit, den Export auf bestimmte Objekttypen wie Arbeitsabläufe oder Zeitpläne zu beschränken. Sie können die gewünschten Objekttypen auswählen, die der Export-Archivdatei hinzugefügt werden sollen.
+Der *Exporttyp* bietet die Möglichkeit, den Export auf bestimmte Objekttypen wie Arbeitsabläufe oder Zeitpläne zu beschränken. Sie können die gewünschten Objekttypen auswählen, die der Exportdatei hinzugefügt werden sollen.
 
 <img src="export-folder.png" alt="Export Folder" width="600" height="580" />
 
@@ -56,7 +56,7 @@ Die Benutzer steuern den konsistenten Export über die folgenden Optionen:
 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte in einem beliebigen Ordner berücksichtigt.
-  - wenn diese Option nicht aktiviert ist, werden keine Abhängigkeiten berücksichtigt. Der Benutzer muss überprüfen, ob die verknüpften Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten Ausrollens/Freigabe im Anschluss an den Import der Archivdatei fehlen.
+  - wenn diese Option nicht aktiviert ist, werden keine Abhängigkeiten berücksichtigt. Der Benutzer muss überprüfen, ob die verknüpften Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten Ausrollens/Freigabe im Anschluss an den Import der Exportdatei fehlen.
   
 ## Referenzen
 
