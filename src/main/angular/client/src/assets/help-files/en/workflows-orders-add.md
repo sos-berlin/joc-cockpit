@@ -52,7 +52,7 @@ If an Order should not start from the first node in the Workflow, then a positio
 
 - **Assign Parameterization from Schedule**: If the Workflow is assigned a Schedule, then the Schedule can be selected to copy its parameterization such as variables and tags to the current Order.
 - **Modify Variable**: 
-  - If the Workflow specifies variables without default values, then the current Order has to specify related values.
+  - If the Workflow specifies variables without default values, then the current Order must specify related values.
   - If the Workflow specifies variables with default values, then the link allows to select a variable for which a new value should be specified.
 - **Modify Variables**: Behaves similarly to *Modify Variable* but displays all available variables.
 

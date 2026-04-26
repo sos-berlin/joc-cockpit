@@ -2,19 +2,19 @@
 
 Aufträge können bei Bedarf hinzugefügt werden und werden unabhängig vom Tagesplan ausgeführt.
 
-Benutzer, die mit den Standardwerten zufrieden sind und einen Auftrag zur sofortigen Ausführung einreichen möchten, müssen keine weiteren Eingaben vornehmen. 
+Anwender, die mit den Standardwerten zufrieden sind und einen Auftrag zur sofortigen Ausführung hinzufügen möchten, müssen keine weiteren Eingaben vornehmen. 
 
 ### Attribute des Auftrags
 
 - **Auftragsname**: Ein optionaler Name, der zum Filtern von Aufträgen in einer Reihe von Ansichten verwendet werden kann.
 - **Kennzeichnung**: Hier können Sie eine beliebige Anzahl von Kennzeichnungen angeben, die dem Auftrag hinzugefügt werden. Kennzeichnungen werden in einer Reihe von Ansichten angezeigt, wenn Sie sie auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) angeben.
-- **Zutrittszeiten der Jobs ignorieren**: Jobs können auf die Ausführung an bestimmten Tagen und/oder in bestimmten Zeitfenstern beschränkt werden. Aufträge, die außerhalb eines Zeitfensters eintreffen, müssen auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Jobs unabhängig von solchen Beschränkungen.
+- **Zutrittszeiten der Jobs ignorieren**: Jobs können auf die Ausführung an bestimmten Tagen und/oder in bestimmten Zeitfenstern beschränkt werden. Aufträge, die außerhalb eines Zeitfensters eintreffen, müssen auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Jobs unabhängig von zeitlichen Beschränkungen.
 
 ### Startzeit
 
-- **Jetzt**: Der Auftrag wird sofort beginnen.
-- **Bestimmtes Datum**: Der Auftrag beginnt zu dem angegebenen Datum und der angegebenen Uhrzeit.
-- **Relativ zur Uhrzeit**: Der Auftrag beginnt mit einem Versatz von Stunden, Minuten und Sekunden gegenüber der aktuellen Uhrzeit. Beispiele:
+- **Jetzt**: Der Auftrag wird sofort starten.
+- **Bestimmtes Datum**: Der Auftrag startet zu dem angegebenen Datum und der angegebenen Uhrzeit.
+- **Relativ zur Uhrzeit**: Der Auftrag startet mit einem Versatz von Stunden, Minuten und Sekunden gegenüber der aktuellen Uhrzeit. Beispiele:
   - **30s**: 30 Sekunden später
   - **15m**: 15 Minuten später
   - **1h**: 1 Stunde später
@@ -33,11 +33,11 @@ Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kan
 
 - **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join kann die entsprechende Anweisung ausgewählt werden.
 - **Startposition**: Wenn keine Startposition angegeben wird, beginnt der Auftrag mit dem ersten Knoten.
-  - Wenn keine Blockposition angegeben ist, kann eine beliebige Anweisung der obersten Ebene des Arbeitsablaufs ausgewählt werden, von der aus der Auftrag gestartet wird.
+  - Wenn keine Blockposition angegeben ist, kann eine beliebige Anweisung der obersten Ebene des Arbeitsablaufs ausgewählt werden, von der aus der Auftrag starten soll.
   - Wenn eine Blockposition angegeben ist, ist die Startposition ein Knoten der gleichen Ebene innerhalb des Blocks.
 - **Endpositionen**:
   - Wenn keine Blockposition angegeben ist, kann eine beliebige Anweisung der obersten Ebene des Arbeitsablaufs ausgewählt werden, vor der der Auftrag endet.
-  - Wenn eine Blockposition angegeben ist, kann ein beliebiger Knoten innerhalb des Blocks ausgewählt werden, vor dem der Auftrag beendet wird.
+  - Wenn eine Blockposition angegeben ist, können eine oder mehrere, beliebige Anweisungen innerhalb des Blocks ausgewählt werden, vor dem der Auftrag beendet wird.
   - Es kann mehr als eine Endposition angegeben werden.
 - **Priorität**:
   - Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine *Priorität* die Position in der Warteschlange der *wartenden* Aufträge.

@@ -1,8 +1,8 @@
 # Tagesplan
 
-Die Ansicht *Tagesplan* bietet einen Überblick über die Aufträge, die für die zukünftige Ausführung geplant sind, und ermöglicht es den Benutzern, den *Tagesplan* zu verwalten. 
+Die Ansicht *Tagesplan* bietet einen Überblick über die Aufträge, die zur zukünftigen Ausführung geplant sind, und ermöglicht es den Anwendern, den *Tagesplan* zu verwalten. 
 
-Die [Tagesplandienst](/service-daily-plan) wird verwendet, um Aufträge für den Tagesplan zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
+Die [Tagesplandienst](/service-daily-plan) wird verwendet, um Aufträge für den Tagesplan zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund täglich ausgeführt, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
 
 Der Tagesplan unterliegt der Bereinigung der Datenbank, die vom [Bereinigungsdienst](/service-cleanup) durchgeführt wird.
 
@@ -13,7 +13,7 @@ Für Operationen im Zusammenhang mit dem *Kalenderbereich* siehe [Tagesplan - Ka
 Der Tagesplan enthält Aufträge, die einen der folgenden Zustände haben:
 
 - **Geplant**: Die Aufträge wurden erstellt, aber noch nicht an den Controller und die Agenten *übermittelt*.
-- **Übermittelt**: Die Aufträge wurden an den Controller und die Agenten weitergeleitet, die die Aufträge selbstständig starten werden. Dieser Zustand gilt für Aufträge, die für eine zukünftige Ausführung geplant sind, und für Aufträge, die gerade ausgeführt werden.
+- **Übermittelt**: Die Aufträge wurden an den Controller und die Agenten weitergeleitet, die Aufträge selbstständig starten werden. Dieser Zustand gilt für Aufträge, die für eine zukünftige Ausführung geplant sind, und für Aufträge, die aktuell in Ausführung sind.
 - **Beendet**: Die Aufträge wurden abgeschlossen. Die Ansicht [Auftragshistorie](/history-orders) zeigt, ob die Ausführung erfolgreich war oder fehlgeschlagen ist.
 
 ## Auftragszustand Transitionen
@@ -21,37 +21,37 @@ Der Tagesplan enthält Aufträge, die einen der folgenden Zustände haben:
 Der Tagesplan bietet die folgenden Zustandstransitionen:
 
 <pre>
-      ┌──────────────────┐
-      ▼                  ▲
-   Erstellen             │
-      │                  │
-      ▼                  │
-  ┌───├──────┐  Löschen  ▲
-  │ Geplante │───────────┘
-  │ Aufträge │───────────┐
-  ┖───┌──────┘           ▲
-      │                  │
-   Übermitteln           │
-      │                  │
-      ▼                  │
-  ┌───├──────────┐       │
-  │ Übermittelte │       │
-  │ Aufträge     │       │
-  ┖───┌──────────┘       │
-      │                  │
-      ▼       Abbrechen  ▲
-      ├──────────────────┘
-      │                  ▲
-   Ausführen             │
-      │                  │
-      ▼                  │
-  ┌───├───────┐          │
-  │ Beendete  │          │
-  │ Aufträge  │          │
-  ┖───┌───────┘          │
-      │                  │
-      ▼       Abbrechen  ▲
-      ┖──────────────────┘
+      ┌────────────────────┐
+      ▼                    ▲
+   Erstellen               │
+      │                    │
+      ▼                    │
+  ┌───├──────┐  Löschen    ▲
+  │ Geplante │─────────────┘
+  │ Aufträge │─────────────┐
+  ┖───┌──────┘             ▲
+      │                    │
+   Übermitteln             │
+      │                    │
+      ▼                    │
+  ┌───├──────────┐         │
+  │ Übermittelte │         │
+  │ Aufträge     │         │
+  ┖───┌──────────┘         │
+      │                    │
+      ▼         Abbrechen  ▲
+      ├────────────────────┘
+      │                   ▲
+   Ausführen/Laufen lassen │
+      │                    │
+      ▼                    │
+  ┌───├───────┐            │
+  │ Beendete  │            │
+  │ Aufträge  │            │
+  ┖───┌───────┘            │
+      │                    │
+      ▼         Abbrechen  ▲
+      ┖────────────────────┘
 </pre>
 
 ## Bereich: Tagesplan
@@ -66,14 +66,14 @@ Die folgenden Filterschaltflächen schränken den Umfang der Operationen ein:
 - **Geplant**: Die Operationen *Übermitteln* und *Entfernen* können auf *geplante* Aufträge angewendet werden, die noch nicht an den Controller *übermittelt* wurden.
 - **Übermittelt**: Die Operationen *Ausführen lassen* und *Abbrechen* können auf Aufträge angewendet werden, die dem Controller und den Agenten *übermittelt* wurden.
 - **Beendet**: Die Operation *Abbrechen* kann auf Aufträge angewandt werden, die abgeschlossen wurden.
-- **Verspätet** ist ein zusätzlicher Filter über den Auftragszustand, der anzeigt, dass Aufträge später als erwartet gestartet wurden.
+- **Verspätet** ist ein zusätzlicher Filter des Auftragszustands, der anzeigt, dass Aufträge später als erwartet gestartet wurden.
 
 #### Operationen für Lebenszyklus
 
 - **Auftrag laufen lassen**
   - Wenn diese Option auf *übermittelte* Aufträge angewendet wird, werden diese sofort gestartet. Aufträge im Rahmen einer Massenoperation werden gleichzeitig gestartet.
 - **Auftrag übermitteln**
-  - Wenn diese Option auf *geplante* Aufträge angewandt wird, werden diese auf den Status *übermittelt* gesetzt und an den Controller und die Agenten weitergeleitet.
+  - Wenn diese Option auf *geplante* Aufträge angewendet wird, werden diese auf den Status *übermittelt* gesetzt und an den Controller und die Agenten weitergeleitet.
 - **Auftrag abbrechen**
   - Wenn diese Option auf *übermittelte* Aufträge angewendet wird, werden die Aufträge vom Controller und den Agenten zurückgezogen und auf den Zustand *geplant* gesetzt.
 - **Auftrag entfernen**
@@ -81,7 +81,7 @@ Die folgenden Filterschaltflächen schränken den Umfang der Operationen ein:
 - **Auftrag kopieren**
   - **Startzeit**: Kopiert die Aufträge auf ein zukünftiges Datum des Tagesplans. Die Eingabe von Datum/Uhrzeit ist ähnlich wie die Änderung der Startzeit eines Auftrags.
   - **Tagesplan-Zuordnung beibehalten**: Kalenderbasierte Abhängigkeiten von Notizbrettern werden zum ursprünglichen Tagesplandatum aufgelöst.
-  - **Job Zutrittszeiten ignorieren**: Aufträge können darauf beschränkt werden, an bestimmten Tagen und/oder in bestimmten Zeitfenstern zu laufen. Ankommende Aufträge müssen dann auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Aufträgen unabhängig von solchen Beschränkungen.
+  - **Job Zutrittszeiten ignorieren**: Aufträge können darauf beschränkt werden, an bestimmten Tagen und/oder in bestimmten Zeitfenstern zu laufen. Eintreffende Aufträge müssen dann auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Aufträgen unabhängig von solchen Beschränkungen.
 
 #### Startzeit ändern
 
@@ -98,15 +98,15 @@ Für verwandte Arbeitsabläufe, die Variablen angeben, können die Werte geände
   - Wenn der Arbeitsablauf Variablen ohne Standardwerte benennt, muss der Auftrag die entsprechenden Werte angeben.
   - Wenn der Arbeitsablauf Variablen mit Standardwerten benennt, ist ihre Angabe in einem Auftrag optional.
 
-Eine Position kann angegeben werden, wenn der Auftrag nicht beim ersten Knoten im Arbeitsablauf, sondern bei einem späteren Knoten beginnen soll.
+Eine Position kann angegeben werden, wenn der Auftrag nicht bei der ersten Anweisung im Arbeitsablauf, sondern bei einer späteren Anweisung starten soll.
 
 - **Blockposition**: Für Arbeitsabläufe, die Blockanweisungen wie *Try/Catch*, *Lock*, *Fork/Join* enthalten, kann die entsprechende Anweisung ausgewählt werden.
-- **Startposition**: Wenn keine *Startposition* angegeben ist, beginnt der Auftrag beim ersten Knoten im Arbeitsablauf oder bei der *Blockposition*
-  - Wenn keine *Blockposition* angegeben wird, kann eine beliebige Anweisung der obersten Ebene im Arbeitsablauf ausgewählt werden, von der aus der Auftrag gestartet wird.
-  - Wenn eine *Blockposition* angegeben ist, dann ist die Startposition ein Knoten auf gleicher Ebene innerhalb des Blocks.
+- **Startposition**: Wenn keine *Startposition* angegeben ist, beginnt der Auftrag bei der ersten Anweisung im Arbeitsablauf oder bei der *Blockposition*
+  - Wenn keine *Blockposition* angegeben wird, kann eine beliebige Anweisung der ersten Ebene im Arbeitsablauf ausgewählt werden, von der aus der Auftrag gestartet wird.
+  - Wenn eine *Blockposition* angegeben ist, dann ist die Startposition eine Anweisung auf gleicher Ebene innerhalb des Blocks.
 - **Endpositionen**:
-  - Wenn keine *Blockposition* angegeben ist, kann eine beliebige Anweisung der obersten Ebene im Arbeitsablauf ausgewählt werden, vor der der Auftrag endet.
-  - Wenn eine *Blockposition* angegeben wird, kann ein beliebiger Knoten auf gleicher Ebene innerhalb des Blocks ausgewählt werden, vor dem der Auftrag beendet wird.
+  - Wenn keine *Blockposition* angegeben ist, können eine oder mehrere, beliebige Anweisungen der ersten Ebene im Arbeitsablauf ausgewählt werden, vor der der Auftrag endet.
+  - Wenn eine *Blockposition* angegeben wird, können eine oder mehrere, beliebige Anweisungen auf gleicher Ebene innerhalb des Blocks ausgewählt werden, vor dem der Auftrag beendet wird.
   - Es kann mehr als eine *Endposition* angegeben werden.
 
 #### Priorität ändern

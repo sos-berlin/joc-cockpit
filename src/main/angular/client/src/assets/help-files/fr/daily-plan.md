@@ -31,7 +31,7 @@ Le Plan Quotidien offre les transitions d'état suivantes :
   │ Planifiés│───────────┐
   ┖───┌──────┘           ▲
       │                  │
-   Submit                │
+   Soumettre             │
       │                  │
       ▼                  │
   ┌───├───────┐          │
@@ -42,7 +42,7 @@ Le Plan Quotidien offre les transitions d'état suivantes :
       ▼         Annuler  ▲
       ├──────────────────┘
       │                  ▲
-   Execute / Let Run     │
+   Executer/Faire courir │
       │                  │
       ▼                  │
   ┌───├───────┐          │
@@ -71,7 +71,7 @@ Les boutons de filtrage suivants limitent la portée des opérations :
 
 #### Opérations du cycle de vie
 
-- **Laisser courir l'Ordre**
+- **Faire courir les Ordres**
   - Lorsqu'il est appliqué à des Ordres *soumis*, ceux-ci démarrent immédiatement. Les Ordres faisant l'objet d'une opération groupée démarreront simultanément.
 - **Soumettre des Ordres**
   - Lorsqu'il s'agit d'Ordres *planifiés*, ils passent à l'état *soumis* et sont transmis au Contrôleur et aux Agents.
@@ -84,7 +84,7 @@ Les boutons de filtrage suivants limitent la portée des opérations :
   - **Maintenir l'adhérence au Plan Quotidien** : Les dépendances basées sur le Calendrier des tableaux d'affichage seront résolues à la date du Plan Quotidien d'origine.
   - **Ignorer les Heures d'Admission** : Les tâches et l'*instruction AdmissionTimes* peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent doivent attendre le prochain créneau horaire disponible. Cette option permet de forcer les tâches à démarrer ou de passer l'*instruction AdmissionTimes* indépendamment de ces limitations.
 
-#### Modifier l'heure de début
+#### Modifier l'heure de démarrage
 
 - **Maintenant** : Les Ordres commencent immédiatement.
 - **Date spécifique** : Les Ordres commenceront à la date et à l'heure indiquées. Les Ordres se verront attribuer la date du Plan Quotidien correspondante lorsqu'il s'agit de résoudre des dépendances basées sur le Calendrier.

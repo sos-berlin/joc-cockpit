@@ -1,4 +1,4 @@
-# Ajouter des Ordres aux Workflow
+# Ajouter des Ordres aux Workflows
 
 Les Ordres peuvent être ajoutés à la demande et seront exécutés indépendamment du Plan Quotidien.
 
