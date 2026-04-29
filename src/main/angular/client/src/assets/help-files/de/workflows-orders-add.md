@@ -31,7 +31,7 @@ Anwender, die mit den Standardwerten zufrieden sind und einen Auftrag zur sofort
 
 Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kann eine Position angegeben werden.
 
-- **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join kann die entsprechende Anweisung ausgewählt werden.
+- **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join, Cycle kann die entsprechende Anweisung ausgewählt werden. Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.
 - **Startposition**: Wenn keine Startposition angegeben wird, beginnt der Auftrag mit dem ersten Knoten.
   - Wenn keine Blockposition angegeben ist, kann eine beliebige Anweisung der obersten Ebene des Arbeitsablaufs ausgewählt werden, von der aus der Auftrag starten soll.
   - Wenn eine Blockposition angegeben ist, ist die Startposition ein Knoten der gleichen Ebene innerhalb des Blocks.

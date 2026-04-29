@@ -31,13 +31,13 @@ Für einen Zeitplan sind die folgenden Eingaben möglich:
 
 - **Auftragsname**: Ein optionaler Name, der zum Filtern von Aufträgen in einer Reihe von Ansichten verwendet werden kann.
 - **Kennzeichnung**: Es kann eine beliebige Anzahl von Kennzeichnungen angegeben werden, die dem Auftrag hinzugefügt werden sollen. Auftrags-Kennzeichnungen werden in einer Reihe von Ansichten angezeigt, wenn sie auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) angegeben werden.
-- **Zutrittszeiten der Anweisungen/Jobs ignorieren**: Jobs können auf die Ausführung an bestimmten Tagen und/oder in bestimmten Zeitfenstern beschränkt werden. Dasselbe gilt bei Verwendung der *AdmissionTimes Anweisung*. Aufträge, die außerhalb eines Zeitfensters ankommen, müssen auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Jobs und anderen Anweisungen unabhängig von solchen Beschränkungen.
+- **Zutrittszeiten ignorieren**: Jobs können auf die Ausführung an bestimmten Tagen und/oder in bestimmten Zeitfenstern beschränkt werden. Dasselbe gilt bei Verwendung der *AdmissionTimes Anweisung*. Aufträge, die außerhalb eines Zeitfensters ankommen, müssen auf das nächste verfügbare Zeitfenster warten. Diese Option erzwingt den Start von Jobs und anderen Anweisungen unabhängig von solchen Beschränkungen.
 
 ### Auftragsposition
 
 Wenn ein Auftrag nicht vom ersten Knoten im Arbeitsablauf aus starten soll, kann eine Position angegeben werden.
 
-- **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join kann die entsprechende Anweisung ausgewählt werden.
+- **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join, Cycle kann die entsprechende Anweisung ausgewählt werden. Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.
 - **Startposition**: Wenn keine *Startposition* angegeben wird, beginnt der Auftrag mit dem ersten Knoten.
   - Wenn keine *Blockposition* angegeben wird, kann eine beliebige Anweisung der ersten Ebene im Arbeitsablauf ausgewählt werden, von der aus der Auftrag gestartet werden soll.
   - Wenn eine *Blockposition* angegeben ist, ist die *Startposition* ein Knoten auf gleicher Ebene innerhalb des Blocks.

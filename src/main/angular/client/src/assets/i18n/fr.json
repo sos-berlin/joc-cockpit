@@ -2203,8 +2203,8 @@
         "orderName": "Le nom de l'ordre est un élément non qualifiant de l'identifiant de la ID ordre. Les utilisateurs peuvent indiquer librement le nom de l'ordre lors de la création des planifiations et de l'ajout des ordres ad hoc.",
         "startNode": "La position de départ d'une tâche peut être antérieure à l'instruction indiquée dans le Workflow. L'ordre commence à partir de la position indiquée.",
         "endNode": "La position finale d'un ordre peut être antérieure à l'instruction indiquée dans le Workflow. L'ordre va se terminer avant la position indiquée.",
-        "blockPosition": "Block Position",
-        "ignoreAdmissionTimes": "L'exécution des tâches peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches.",
+        "blockPosition": "Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, Cycle, l'instruction correspondante peut être sélectionnée. L'Ordre quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.",
+        "ignoreAdmissionTimes": "L'exécution des tâches peut être limitée par les heures d'admission des tâches et par l'instruction AdmissionTimes. Cette option ignore les heures d'admission et force le lancement des tâches.",
         "tagName": "Il est possible d'ajouter un nombre quelconque de Tags qui seront affectées aux ordres crées à partir de la Planification.",
         "priority": "Si l'Ordre doit répondre à une instruction Lock d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente. Les Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes : Basse : -20000, Inférieur à la normale : -10000, Normal : 0, Au-dessus de la normale : 10000, Haut : 20000."
       },
@@ -2334,7 +2334,7 @@
           "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
           "agentCluster": "Sélectionne le Cluster d'Agents pour lequel la ID du Cluster de Sous-Agents est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
           "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-Agents à partir d'une variable. Si aucune variable n'est spécifiée, un défaut intégré devient actif si le job est inclus dans une instruction ForkList ou StickySubagent. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si les jobs prédécesseurs sont utilisés pour déterminer le Cluster de Sous-Agents sur lequel exécuter un job successeur.",
-          "jobNotRestartable": "Job Not Restartable"
+          "jobNotRestartable": "S'applique aux Tâches qui ont été interrompus de force par l'Agent ou lors de l'arrêt ou de l'annulation de l'Agent. Par défaut, les tâches sont considérés comme redémarrables et seront redémarrés lorsque l'Agent sera redémarré. Les utilisateurs peuvent empêcher ce comportement en activant la case à cocher."
         },
         "admissionTime": {
           "admissionType": "Le type d'heures d'admission permet de spécifier les jours de la semaine, les jours de la semaine spécifiques et les jours du mois.",
@@ -2430,7 +2430,7 @@
         "advanced": "Avancée",
         "agent": "Nom de l'Agent",
         "workflow": "Workflow",
-        "fileOrderSource": "Source D'Ordres de Fichiers",
+        "fileOrderSource": "Source d'Ordres de Fichiers",
         "jobResources": "Ressource de Tâche",
         "boards": "Tableaux de Condition",
         "lock": "Verrou",

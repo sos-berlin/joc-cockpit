@@ -57,7 +57,7 @@ Les opérations sur JOC Cockpit sont proposées pour l'instance à laquelle le n
   - **Service Historique** reçoit l'historique des tâches et les journaux de sortie des tâches du Contrôleur via le Service Proxy.
   - **Service de Notification des logs** est un service syslog qui reçoit les erreurs et les avertissements des instances de Contrôleur et d'Agent enregistrées.
   - **Service de Surveillance** crée des notifications pour la vue *Moniteur* et envoie éventuellement des alertes par courrier.
-  - **Service Proxy** établit la connexion avec l'instance active du Contrôleur. L'Historique permet d'envoyer des commandes au Contrôleur et de recevoir l'historique des tâches et le journal de sortie des tâches.
+  - **Service Proxy** établit la connexion avec l'instance active du Contrôleur. L'Historique permet d'envoyer des Ordres au Contrôleur et de recevoir l'historique des tâches et le journal de sortie des tâches.
 - **Démarrer Service** force l'exécution immédiate du service :
   - **Service d'Assainissement** purge la base de données.
   - **Service Plan Quotidien** crée des Ordres pour le Plan Quotidien. Le service peut être exécuté autant de fois que vous le souhaitez par jour. Une exécution individuelle n'empêchera pas le service de s'exécuter à l'heure spécifiée par ses paramètres.

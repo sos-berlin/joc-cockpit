@@ -31,7 +31,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peut être spécifiée.
 
-- **Position de Bloc** : Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, l'instruction correspondante peut être sélectionnée.
+- **Position de Bloc** : Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, Cycle, l'instruction correspondante peut être sélectionnée. L'Ordre quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.
 - **Position de Départ** : Si aucune position de départ n'est spécifiée, l'Ordre commencera à partir du premier nœud.
   - Si aucune position de blocage n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
   - Si une position de bloc est spécifiée, la position de départ est un nœud de même niveau à l'intérieur du bloc.

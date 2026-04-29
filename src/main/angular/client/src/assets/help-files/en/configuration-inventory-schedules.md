@@ -31,13 +31,13 @@ For a Schedule the following inputs are available:
 
 - **Order Name**: An optional name that can be used to filter Orders in a number of views.
 - **Tag Name**: Any number of Tags can be specified that will be added to the Order. Order Tags are displayed in a number of views if specified from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Ignore Instruction/Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. This similarly applies to use of the *AdmissionTimes Instruction*. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs and other instructions to start independently from such limitations.
+- **Ignore Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. This similarly applies to use of the *AdmissionTimes Instruction*. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs and other instructions to start independently from such limitations.
 
 ### Order Position
 
 If an Order should not start from the first node in the Workflow, then a position can be specified.
 
-- **Block Position**: For Workflows holding block instructions such as Try/Catch, Lock, Fork/Join the related instruction can be selected.
+- **Block Position**: For Workflows holding block instructions such as Try/Catch, Lock, Fork/Join, Cycle the related instruction can be selected. The Order will leave the workflow when reaching the end of the block instruction.
 - **Start Position**: If no *Start Position* is specified, then the Order will start from the first node.
   - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
   - If a *Block Position* is specified, then the *Start Position* is a same-level node inside the block.

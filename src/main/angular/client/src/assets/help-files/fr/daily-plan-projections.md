@@ -51,7 +51,7 @@ La projection peut être exportées vers un fichier .xlsx avec la date du Plan Q
   - **Workflows**, **Planifications** : Les utilisateurs peuvent limiter l'exportation à certaines Planifications et à certains Workflow, éventuellement limités par des dossiers.
   - **Projection inversée** : 
     - *Décoché* : Exporte les dates pour lesquelles les Ordres sont calculés.
-    - *Coché* : exporte les dates pour lesquelles les commandes sont calculées : Exporte les dates pour lesquelles aucun Ordre n'est calculé. Ceci peut être utilisé pour vérifier si les jours non ouvrables sont pris en compte.
+    - *Coché* : exporte les dates pour lesquelles les Ordres sont calculées : Exporte les dates pour lesquelles aucun Ordre n'est calculé. Ceci peut être utilisé pour vérifier si les jours non ouvrables sont pris en compte.
 
 ## Références
 

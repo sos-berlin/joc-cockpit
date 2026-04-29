@@ -34,7 +34,7 @@ Les conditions préalables à l'installation sont les suivantes
 - L'Agent Directeur Secondaire doit contenir dans son fichier ./config/agent.conf le paramètre : *js7.journal.Cluster.node.is-backup = yes*
 - Les instances de Directeur Agent Primaire et Secondaire doivent être opérationnelles.
 
-Les utilisateurs doivent vérifier que les connexions réseau entre le serveur du Contrôleur et les serveurs des deux Agents Director sont disponibles et que les règles du pare-feu autorisent les connexions aux ports des Agents Director.
+Les utilisateurs doivent vérifier que les connexions réseau entre le serveur du Contrôleur et les serveurs des deux Agents Directeur sont disponibles et que les règles du pare-feu autorisent les connexions aux ports des Agents Directeur.
 
 La page *Gérer Contrôleurs/Agents* est accessible à partir de l'icône de la roue dans la barre de menu principale et propose l'opération *Ajouter Agent Cluster* dans le menu d'action du Contrôleur. Cette opération fait apparaître la fenêtre contextuelle d'enregistrement d'un Cluster d'Agents.
 

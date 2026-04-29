@@ -31,13 +31,13 @@ Pour une Planification, les entrées suivantes sont disponibles :
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Nom Tags** : Il est possible de spécifier un nombre quelconque de Tags qui seront ajoutées à l'Ordre. Les Tags de l'Ordre sont affichées dans un certain nombre de vues si elles sont spécifiées à partir de la page [Réglages - JOC Cockpit](/settings-joc).
-- **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'Ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
+- **Ignorer les heures d'Admission** : Les Ordres peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Position de l'Ordre
 
 Si un Ordre ne doit pas démarrer à partir du premier nœud du Workflow, une position peut être spécifiée.
 
-- **Position de Bloc** : Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, l'instruction correspondante peut être sélectionnée.
+- **Position de Bloc** : Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, Cycle, l'instruction correspondante peut être sélectionnée. L'Ordre quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.
 - **Position de Départ avant Instruction** : Si aucune *Position de départ* n'est spécifiée, l'Ordre commencera à partir du premier nœud.
   - Si aucune *position de bloc* n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
   - Si une *position de bloc* est spécifiée, la *position de départ* est un nœud de même niveau à l'intérieur du bloc.

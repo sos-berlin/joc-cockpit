@@ -28,7 +28,7 @@ Les utilisateurs fournissent les données suivantes :
 - **Titre** est une description qui peut être ajoutée pour un Sous-Agent.
 - **URL** attend l'URL du protocole, de l'hôte et du port utilisés par les Agents Directeur pour se connecter au Sous-Agent, par exemple http://localhost:4445.
   - L'URL commence par le protocole *http* si le Sous-Agent utilise le protocole HTTP ordinaire. Le protocole *https* est utilisé si le Sous-Agent est configuré pour HTTPS.
-  - Le nom d'hôte peut être *localhost* si le Sous-Agent est installé sur la même machine que les Agents Director. Dans le cas contraire, il convient d'indiquer le FQDN de l'hôte du Sous-Agent.
+  - Le nom d'hôte peut être *localhost* si le Sous-Agent est installé sur la même machine que les Agents Directeur. Dans le cas contraire, il convient d'indiquer le FQDN de l'hôte du Sous-Agent.
   - Le *port* du Subagent est déterminé lors de l'installation. 
   - **Comme Cluster Sous-Agent** crée éventuellement un Cluster Sous-Agent pour le Sous-Agent, voir [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster).
 

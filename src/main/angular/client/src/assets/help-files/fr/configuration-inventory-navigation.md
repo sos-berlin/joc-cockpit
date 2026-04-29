@@ -136,7 +136,7 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
   - **Retirer** annule une opération *Publier* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et les *Calendriers* provisoires ne seront pas pris en compte par le système [Plan Quotidien](/daily-plan). Pour plus de détails, voir [Retirer Dossier](/configuration-inventory-operations-recall-folder).
 - Opérations de retrait
   - l'opération **Supprimer** déplace le dossier, tous les sous-dossiers et les objets inclus dans la Corbeille. Les objets d'inventaire supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus de détails, voir [Supprimer Dossier](/configuration-inventory-operations-remove-folder).
-  - la commande **Rétablir le brouillon** supprime la version actuelle des objets du dossier et des sous-dossiers. Si une version *déployée* ou *publiée* existe, elle deviendra la version actuelle de l'objet concerné.
+  - l'opération **Rétablir le brouillon** supprime la version actuelle des objets du dossier et des sous-dossiers. Si une version *déployée* ou *publiée* existe, elle deviendra la version actuelle de l'objet concerné.
 - Opérations sur les Modèles de Tâche
   - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier qui contient des références à des *Modèles de Tâche* inclus dans le *dossier de l'utilisateur* sélectionné ou dans n'importe quel sous-dossier.
   - **Appliquer le Modèle aux Tâches** mettra à jour les tâches dans les Workflows situés dans le *Dossier de l'utilisateur* sélectionné à partir des *Modèles de Tâche* situés dans n'importe quel dossier.
