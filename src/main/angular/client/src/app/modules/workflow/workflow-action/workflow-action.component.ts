@@ -195,6 +195,7 @@ export class AddOrderModalComponent {
     this.updateVariableList(0);
     this.checkClipboardContent();
     this.initializeOrders();
+    this.getSchedules();
     if (this.modalData.order) {
       this.orders[0].at = 'date';
       if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor === 'number') {
@@ -1145,15 +1146,17 @@ export class AddOrderModalComponent {
       value: ''
     };
     if (this.orders[orderIndex].arguments) {
-      const lastArgument = this.orders[orderIndex].arguments[this.orders[orderIndex].arguments.length - 1];
+      // "Add Variable" (undeclared) always adds immediately, regardless of outstanding mandatory fields
+      if (isNew) {
+        param.isTextField = true;
+        this.orders[orderIndex].arguments.push(param);
+        return;
+      }
 
+      const lastArgument = this.orders[orderIndex].arguments[this.orders[orderIndex].arguments.length - 1];
       if (!this.coreService.isLastEntryEmpty(this.orders[orderIndex].arguments, 'name', '') || !lastArgument) {
-        if (isNew) {
-          param.isTextField = true;
-        }
         this.orders[orderIndex].arguments.push(param);
       } else if (lastArgument && (lastArgument.type === 'Map' || lastArgument.type === 'List')) {
-
         this.orders[orderIndex].arguments.push(param);
       }
     }
@@ -1709,6 +1712,20 @@ addArguments(orderIndex): void {
             actualMap: actualMap,
             map: val.listParameters
           });
+        }
+      });
+    }
+  }
+
+  getSchedules() {
+    if (!this.schedules) {
+      this.coreService.post('workflow/order_templates', {
+        controllerId: this.schedulerId,
+        workflowPath: this.workflow.path
+      }).subscribe({
+        next: (res) => {
+          this.schedules = res.schedules;
+          this.schedules.sort((a, b) => a.name.localeCompare(b.name));
         }
       });
     }

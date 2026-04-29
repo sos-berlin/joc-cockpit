@@ -397,6 +397,9 @@ export class PermissionsComponent {
           return !val.match(':joc:');
         });
       }
+      this.permissions = this.permissions.filter((val) => {
+        return !val.match(':joc:others');
+      });
 
       this.getFolderList();
       this.getPermissionList();

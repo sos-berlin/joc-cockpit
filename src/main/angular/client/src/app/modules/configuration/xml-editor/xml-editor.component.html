@@ -172,18 +172,6 @@
               </a>
             </li>
           }
-          @if (permission.joc && permission.joc.others.view && (permission.joc.notification.view || permission.joc.fileTransfer.view || permission.joc.inventory.view)) {
-            <li class="nav-item dropdown-separator">
-              <span class="separator"></span>
-            </li>
-          }
-          @if (permission.joc && permission.joc.others.view) {
-            <li class="nav-item">
-              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/other']" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
-              </a>
-            </li>
-          }
         </ul>
       </div>
       <div class="pos-abt" style="right: 13px;top: 4px">

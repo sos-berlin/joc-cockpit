@@ -1695,7 +1695,7 @@
       @if (workflow.id && !selectedNode) {
         <div class="m-l-sm m-r-sm text-left">
           <div class="box-body p-b-0">
-            @if (jobs && jobs.length > 0) {
+            @if (jobs && jobs.length > 0 && showMoreAdvanceOptions) {
               <div class="pos-abt" style="top: 8px; right: 22px">
                 <button (click)="findAndReplace()" class="btn btn-default btn-sm">
                   <i aria-hidden="true" class="fa fa-search-plus"></i>

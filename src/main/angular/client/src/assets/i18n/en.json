@@ -2128,6 +2128,11 @@
       "button.convert": "Convert"
     },
     "export": {
+      "--------ADD EXPORT SECTION------------": "",
+      "section.destination": "Destination",
+      "section.scope": "Scope",
+      "section.execution": "Execution",
+      "section.advanced": "Advanced",
       "label.filter": "Filter",
       "label.filterType": "Filter Type",
       "label.validOnly": "Valid Only",
@@ -2721,6 +2726,14 @@
     }
   },
   "order": {
+    "--------ADD ORDER SECTION------------": "",
+    "section.identification": "Identification",
+    "section.executionTiming": "Execution Timing",
+    "section.dependencyContext": "Dependency Context",
+    "section.scopeOfExecution": "Scope of Execution",
+    "section.executionBehavior": "Execution Behavior",
+    "section.variables": "Variables",
+    "section.bulkActions": "Bulk Actions",
     "label.allOrders": "All Orders",
     "label.orderId": "Order ID",
     "label.orderName": "Order Name",

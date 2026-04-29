@@ -16,9 +16,12 @@ import {NzTagModule} from "ng-zorro-antd/tag";
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
 import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {OverlayModule} from '@angular/cdk/overlay';
 import {Shared2Module} from './shared2.module';
 import {ChartsModule} from "../charts/charts.module";
 import {NzTooltipComponent, NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {RichTooltipDirective} from '../../directives/rich-tooltip.directive';
+import {RichTooltipContentComponent} from '../../components/rich-tooltip/rich-tooltip-content.component';
 import {
   DurationPipe,
   DurationFromCurrentPipe,
@@ -90,20 +93,21 @@ import {NzSpaceCompactComponent, NzSpaceComponent} from "ng-zorro-antd/space";
 import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
 import {NzResizableDirective} from "ng-zorro-antd/resizable";
 
-const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
+const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzMentionModule, NzTagModule, NzSelectModule,
   NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule, CodeMirrorModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent,
+  RichTooltipContentComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,
-  FacetValidator, AutofocusDirective];
+  FacetValidator, AutofocusDirective, RichTooltipDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent, RichTooltipContentComponent];
 
 @NgModule({
     imports: [

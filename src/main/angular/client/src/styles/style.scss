@@ -60,6 +60,11 @@
   --date-planned-hover: rgba(14, 138, 139, 0.8);
   --date-unplanned: rgba(255, 140, 0, 0.87);
   --date-unplanned-hover: rgba(255, 140, 0, 0.7);
+  /* Rich tooltip — default (light theme) values; overridden per-theme */
+  --rich-tooltip-bg: #3c4a58;
+  --rich-tooltip-text: #e8edf3;
+  --rich-tooltip-strong: #ffffff;
+  --rich-tooltip-code-bg: rgba(255, 255, 255, 0.14);
 }
 
 /***
@@ -5709,6 +5714,65 @@ tr.disabled-row td:not(.menu):not(.chk) {
 .ant-tooltip-inner {
   max-height: 360px;
   overflow-y: auto;
+}
+
+/* ── Section box (used in dialog forms) ── */
+.section-box {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.section-box-header {
+  padding: 5px 10px;
+  // background: var(--menu-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-box-title {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+}
+
+/* ── Rich tooltip panel (CDK overlay, replaces nz-tooltip for formatted content) ── */
+.rich-tooltip-panel {
+  pointer-events: auto !important; /* allows text selection */
+  z-index: 1070;
+}
+
+.rich-tooltip-box {
+  background: var(--rich-tooltip-bg);
+  color: var(--rich-tooltip-text);
+  // border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  width: max-content;
+  max-width: min(320px, 90vw);
+  min-width: 120px;
+  max-height: min(400px, 80vh);
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  /* Allow the user to select and copy text */
+  user-select: text;
+  cursor: text;
+  word-break: break-word;
+
+  strong { font-weight: 600; color: var(--rich-tooltip-strong); }
+  em     { font-style: italic; opacity: 0.9; }
+  code   {
+    background: var(--rich-tooltip-code-bg);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-family: monospace;
+    font-size: 11px;
+  }
+  a {
+    color: var(--primary);
+    text-decoration: underline;
+    &:hover { opacity: 0.85; }
+  }
+  br { display: block; content: ''; margin-top: 4px; }
 }
 
 .tooltip {

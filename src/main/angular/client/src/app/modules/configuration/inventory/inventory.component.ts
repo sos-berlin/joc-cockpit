@@ -4951,7 +4951,7 @@ export class ExportComponent {
   securityLevel = '';
   exportObj = {
     useShortPath: false,
-    isRecursive: false,
+    isRecursive: true,
     includeDependencies: false,
     controllerId: '',
     forSigning: false,
@@ -13808,6 +13808,7 @@ export class InventoryComponent {
   allObjects: any = [];
   objectHistory = [];
   backgroundOperationsInProgress = false;
+  showMoreAdvanceOptions = false;
   searchNode = {
     loading: false,
     token: '',
@@ -16539,6 +16540,10 @@ export class InventoryComponent {
     this.coreService.showLeftPanel();
   }
 
+  onMoreOptionsChange(value: boolean): void {
+    this.showMoreAdvanceOptions = value;
+  }
+
   private initConf(isReload): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
@@ -16551,6 +16556,7 @@ export class InventoryComponent {
     }
     this.getAgents();
     this.securityLevel = sessionStorage['securityLevel'];
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     if (isReload) {
       this.sideView = this.coreService.getSideView();
       if (this.sideView.inventory && !this.sideView.inventory.show) {

@@ -2128,6 +2128,11 @@
             "button.convert": "変換"
         },
         "export": {
+            "--------ADD EXPORT SECTION------------": "",
+            "section.destination": "Destination",
+            "section.scope": "Scope",
+            "section.execution": "Execution",
+            "section.advanced": "Advanced",
             "label.filter": "フィルター",
             "label.filterType": "フィルタータイプ",
             "label.validOnly": "有効のみ",
@@ -2721,6 +2726,14 @@
         }
     },
     "order": {
+        "--------ADD ORDER SECTION------------": "",
+        "section.identification": "Identification",
+        "section.executionTiming": "Execution Timing",
+        "section.dependencyContext": "Dependency Context",
+        "section.scopeOfExecution": "Scope of Execution",
+        "section.executionBehavior": "Execution Behavior",
+        "section.variables": "Variables",
+        "section.bulkActions": "Bulk Actions",
         "label.allOrders": "全オーダー",
         "label.orderId": "オーダーID",
         "label.orderName": "オーダー名",

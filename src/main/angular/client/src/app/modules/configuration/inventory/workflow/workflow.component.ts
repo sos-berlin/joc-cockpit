@@ -5265,6 +5265,7 @@ export class WorkflowComponent {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
   @ViewChild('codeEditor', {static: false}) cm;
 
   searchNode = {
@@ -5523,11 +5524,13 @@ export class WorkflowComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   ngOnDestroy(): void {

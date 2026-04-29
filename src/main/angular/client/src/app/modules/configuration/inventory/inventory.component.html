@@ -17,10 +17,12 @@
           </div>
           @if (permission.joc) {
             <div class="inline">
+              @if (showMoreAdvanceOptions) {
               <div class="inline valign m-l">
                 <nz-switch [(ngModel)]="inventoryService.checkDeploymentStatus.isChecked" (ngModelChange)="reloadFolders($event)"></nz-switch>
                 <span style="padding-left: 6px">{{'inventory.button.checkDeploymentStatus' | translate}}</span>
               </div>
+            }
               <button (click)="search()" class="btn btn-sm btn-grey m-l-12">
                 <i nz-icon nzTheme="outline" nzType="search"></i>&nbsp;
                 <span translate>common.button.search</span>
@@ -110,18 +112,6 @@
             <li class="nav-item">
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
                 <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
-              </a>
-            </li>
-          }
-          @if (permission.joc && permission.joc.others.view) {
-            <li class="nav-item dropdown-separator">
-              <span class="separator"></span>
-            </li>
-          }
-          @if (permission.joc && permission.joc.others.view) {
-            <li class="nav-item">
-              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/other']" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
               </a>
             </li>
           }
@@ -607,7 +597,8 @@
           <div>
             <app-workflow [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                           [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                          [schedulerId]="schedulerIds.selected"></app-workflow>
+                          [schedulerId]="schedulerIds.selected"
+                          (moreOptionsChange)="onMoreOptionsChange($event)"></app-workflow>
           </div>
         }
         @if (type == 'FILEORDERSOURCE') {

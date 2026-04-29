@@ -36,6 +36,10 @@
   --date-planned-hover: rgba(255, 140, 0, 0.8);
   --date-unplanned: rgba(36, 148, 191, 0.9);
   --date-unplanned-hover: rgba(36, 148, 191, 0.8);
+  --rich-tooltip-bg: #2d3238;
+  --rich-tooltip-text: rgba(255, 255, 255, 0.87);
+  --rich-tooltip-strong: #ffffff;
+  --rich-tooltip-code-bg: rgba(255, 255, 255, 0.14);
 }
 
 body {

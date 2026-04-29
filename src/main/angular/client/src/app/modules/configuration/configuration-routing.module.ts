@@ -22,11 +22,6 @@ const routes: Routes = [
         loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
         data: {breadcrumb: 'configuration.tab.notification'}
       },
-      {
-        path: 'other',
-        loadChildren: () => import('./xml-editor/xml-editor.module').then(m => m.XmlEditorModule),
-        data: {breadcrumb: 'configuration.tab.others'}
-      }
     ]
   },
 ];
