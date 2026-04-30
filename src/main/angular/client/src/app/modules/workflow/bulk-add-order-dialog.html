@@ -103,7 +103,7 @@
             }
 
             <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
                         class="col-sm-4 form-control-label"
                         translate>order.label.priority</label>
                 <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"

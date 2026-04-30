@@ -8,14 +8,14 @@
       </div>
       @if (previousPermission.length>0) {
         <button (click)="undoPermission()"
-                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate"
+                [appRichTooltip]="'workflow.button.undo' | translate"
                 class="btn btn-sm btn-grey m-t-n-xs">
           <i nz-icon nzTheme="outline" nzType="undo"></i>
         </button>
       }
       @if (isReset) {
         <button (click)="resetPermission()"
-                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.button.reset' | translate"
+                [appRichTooltip]="'agent.button.reset' | translate"
                 class="btn btn-sm btn-grey m-l-sm m-t-n-xs">
           <i nz-icon nzTheme="outline" nzType="sync"></i>
         </button>

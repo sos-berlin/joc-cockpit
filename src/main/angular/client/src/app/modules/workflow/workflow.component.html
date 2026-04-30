@@ -16,7 +16,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('workflows')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           @if (showMoreAdvanceOptions) {
             <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
@@ -157,7 +157,7 @@
             </div>
             @if (permission.joc && permission.joc.administration.customization.view) {
               <div class="btn-group dropdown">
-                <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                <button [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                         class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" type="button">
                   {{'customization.label.customizations' | translate}}
                   <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
@@ -182,10 +182,10 @@
                       <li (click)="changeFilter(filter)" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
                           nz-menu-item>
                         <a>
-                          <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                          <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                           @if (savedFilter.selected == filter.id) {
                             <i (click)="changeFilter(null);$event.stopPropagation();"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                               [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                class="fa fa-times-circle-o remove"></i>
                           }
                         </a>
@@ -196,7 +196,7 @@
               </div>
             }
             <button (click)="exportToExcel()" [disabled]="data.length===0"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
+                    [appRichTooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -276,8 +276,7 @@
                         <nz-auto-option (click)="selectTagOnSearch(tag)"
                                         [nzValue]="tag.name" class="min-ht-opt">
                           <div class="node-wrapper p-l-xs">
-                            <div class="node-content-wrapper2"
-                                 nzTooltipPlacement="right">
+                            <div class="node-content-wrapper2">
                               <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                               <span class="p-l-sm">{{tag.name}}</span>
                             </div>
@@ -297,13 +296,13 @@
                     @if (workflowFilters.tagType === 'workflowTags') {
                       <div class="fade-in">
                         <div class="p-l-xxs m-b-12">
-                          <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                          <a (click)="selectTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                             <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                           </a>
-                          <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                          <a (click)="selectAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                             <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                           </a>
-                          <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                          <a (click)="removeAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                             <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                           </a>
                         </div>
@@ -358,8 +357,7 @@
                         <nz-auto-option (click)="selectOrderTagOnSearch(tag)"
                                         [nzValue]="tag.name" class="min-ht-opt">
                           <div class="node-wrapper p-l-xs">
-                            <div class="node-content-wrapper2"
-                                 nzTooltipPlacement="right">
+                            <div class="node-content-wrapper2">
                               <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                               <span class="p-l-sm">{{tag.name}}</span>
                             </div>
@@ -379,13 +377,13 @@
                     @if (workflowFilters.tagType === 'orderTags') {
                       <div class="fade-in">
                         <div class="p-l-xxs m-b-12">
-                          <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                          <a (click)="selectOrderTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                             <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                           </a>
-                          <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                          <a (click)="selectAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                             <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                           </a>
-                          <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                          <a (click)="removeAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                             <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                           </a>
                         </div>
@@ -439,22 +437,22 @@
             <div class="row m-b-12">
               <div class="col-lg-12">
                 <button (click)="expandDetails()" [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
-                        class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
+                        class="hide btn btn-sm btn-grey" [appRichTooltip]="'common.button.expandDetails' | translate">
                   <i class="fa fa-expand text"></i>
                 </button>
                 <button (click)="collapseDetails()"
                         [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
-                        class="hide btn btn-sm btn-grey m-l-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}">
+                        class="hide btn btn-sm btn-grey m-l-sm" [appRichTooltip]="'common.button.collapseDetails' | translate">
                   <i class="fa fa-compress text"></i>
                 </button>
                 <button (click)="resetPanel()"
                         [ngClass]="{'show-block':data.length>0 && pageView!='grid'}"
-                        class="hide btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.resetPanel' | translate}}">
+                        class="hide btn btn-sm btn-grey m-l-sm m-r-sm" [appRichTooltip]="'common.button.resetPanel' | translate">
                   <i class="fa fa-repeat text"></i>
                 </button>
                 <button (click)="toggleCompactView()" [ngClass]="{'btn-primary': workflowFilters.isCompact == true, 'show-block':data.length>0}"
                         class="hide btn btn-grey btn-sm"
-                        nz-tooltip="{{'common.button.compactView' | translate}}">
+                        [appRichTooltip]="'common.button.compactView' | translate">
                   <i class="fa fa-th-list text"></i>
                 </button>
 
@@ -642,8 +640,7 @@
                                      class="cursor fa fa-book p-l-xs p-r-xs"></i>
                                 }
                                 <i (click)="notes(workflow.name)"
-                                   [nzTooltipMouseEnterDelay]="0.5"
-                                   [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+                                   [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                                    nz-icon
                                    nzType="paper-clip"
                                    nzTheme="outline"
@@ -651,7 +648,7 @@
                                    [ngClass]="{ 'blink-icon': workflow?.hasNote?.notified }"
                                    [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote?.severity)"></i>
                                 <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
-                                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="workflow.title"></span>
+                                      [appRichTooltip]="workflow.title"></span>
                                 @if (workflow.workflowTags?.length > 0) {
                                   <a [innerHTML]="coreService.getModifiedWorkflowTags(workflow, workflowFilters.searchText)">
                                   </a>
@@ -963,12 +960,12 @@
                           <span class="show-in-single-line">
                             @if (!workflow.show) {
                               <i (click)="workflow.isExpand = true;showPanelFuc(workflow)"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                 [appRichTooltip]="'common.tooltip.expandAll' | translate"
                                  class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel"></i>
                             }
                             @if (workflow.show) {
                               <i (click)="workflow.isExpand = false;hidePanelFuc(workflow)"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                 [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                                  class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel"></i>
                             }
                             @if (!workflow.show) {
@@ -982,18 +979,18 @@
                             @if (permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC') {
                               <i
                                 (click)="addOrder(workflow)"
-                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
+                                [appRichTooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
                             }
                             <i (click)="navToDetailView('list', workflow)"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showTabularView' | translate"
+                               [appRichTooltip]="'workflow.button.showTabularView' | translate"
                                class="cursor fa fa-list p-l-xs"></i>
                             <i (click)="navToDetailView('grid', workflow)"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showGraphicalView' | translate"
+                               [appRichTooltip]="'workflow.button.showGraphicalView' | translate"
                                class="cursor fa fa-th p-l-xs p-r-xs"></i>
                             @if (workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies) {
                               <i
                                 (click)="showDependency(workflow)"
-                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showDependency' | translate"
+                                [appRichTooltip]="'workflow.button.showDependency' | translate"
                                 class="cursor fa fa-codepen p-l-xs p-r-xs"></i>
                             }
                             @if (workflow.documentationName) {
@@ -1001,8 +998,7 @@
                                  class="cursor fa fa-book p-l-xs p-r-xs"></i>
                             }
                             <i (click)="notes(workflow.name)"
-                               [nzTooltipMouseEnterDelay]="0.5"
-                               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+                               [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                                nz-icon
                                nzType="paper-clip"
                                nzTheme="outline"
@@ -1177,10 +1173,10 @@
                                   <a class="text-primary noExl" translate>workflow.label.start</a>
                                   <span class="expand-collapse-btn">
                                       <i (click)="workflow.isExpand = true;"
-                                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                         [appRichTooltip]="'common.tooltip.expandAll' | translate"
                                          class="cursor fa fa-lg fa-angle-double-down"></i>
                                       <i (click)="workflow.isExpand = false;"
-                                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                         [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                                          class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                                     </span>
                                 </div>
@@ -1271,7 +1267,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage('workflows-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('workflows-search')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     }
     @if (isSearchVisible) {
       <div>

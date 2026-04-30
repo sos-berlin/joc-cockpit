@@ -59,8 +59,7 @@
                            class="cursor fa fa-book p-l-xs p-r-xs"></i>
                       }
                       <i (click)="notes(lock.id)"
-                         [nzTooltipMouseEnterDelay]="0.5"
-                         [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+                         [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                          nz-icon
                          nzType="paper-clip"
                          nzTheme="outline"
@@ -151,7 +150,7 @@
                                       <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
                                       <td colspan="3">
                                         @if (item.order.label) {
-                                          <span class="cur-point" [innerHtml]="item.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.order.positionString"></span>
+                                          <span class="cur-point" [innerHtml]="item.order.label" [appRichTooltip]="item.order.positionString"></span>
                                         }
                                         @if (!item.order.label) {
                                           <span [innerHtml]="item.order.positionString"></span>
@@ -181,7 +180,7 @@
                                       <td colspan="3"><span class="p-l">{{item.order.orderId}}</span></td>
                                       <td colspan="3">
                                         @if (item.order.label) {
-                                          <span class="cur-point" [innerHtml]="item.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.order.positionString"></span>
+                                          <span class="cur-point" [innerHtml]="item.order.label" [appRichTooltip]="item.order.positionString"></span>
                                         }
                                         @if (!item.order.label) {
                                           <span [innerHtml]="item.order.positionString"></span>

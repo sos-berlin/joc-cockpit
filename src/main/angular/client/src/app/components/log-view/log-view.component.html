@@ -55,8 +55,7 @@
         @if (preferences.showHelpPages) {
           <a (click)="helpPage()" class="m-r pull-right">
             <i
-              [nzTooltipMouseEnterDelay]="0.5"
-              [nz-tooltip]="'common.tooltip.help' | translate"
+              [appRichTooltip]="'common.tooltip.help' | translate"
               nz-icon nzTheme="fill" nzType="info-circle"
             ></i>
           </a>

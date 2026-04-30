@@ -218,8 +218,8 @@
               }
               <i class="text-muted">{{order.title}}</i>
               @if (order.cyclicOrder) {
-                <i [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
-                   class="fa fa-repeat p-l-xs" nz-tooltip></i>
+                <i [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
+                   class="fa fa-repeat p-l-xs"></i>
               }
             </span>
               <ng-template #tooltipTemplate>
@@ -254,7 +254,7 @@
             }
             <td style="max-width: 160px">
               @if (order.label) {
-                <span class="cur-point" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                <span class="cur-point" [innerHtml]="order.label" [appRichTooltip]="order.positionString"></span>
               }
               @if (!order.label) {
                 <span [innerHtml]="order.positionString"></span>
@@ -264,7 +264,7 @@
               @if (order.state) {
                 <span
                   [innerHtml]="order.state._text | translate" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
+                  [appRichTooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
                   class="label"></span>
               }
               @if (order.marked) {
@@ -274,7 +274,7 @@
               }
               @if (order.state._text === 'PROMPTING' && order.question) {
                 <span class="p-l-xs"><i
-                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+                  [appRichTooltip]="order.question" class="fa fa-info-circle"></i></span>
               }
               <ng-template #tooltipTemplate1>
                 <div class="p-l-sm">

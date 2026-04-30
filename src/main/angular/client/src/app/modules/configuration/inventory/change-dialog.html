@@ -87,7 +87,7 @@
                       'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
                 }
                 @if (node.origin.type && node.origin.syncState) {
-                  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
+                  <span [appRichTooltip]="node.origin.syncState._text | translate"
                         class="p-l-xxs">
                     @if (node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING') {
                       <i class="fa fa-refresh font11 p-l-xxs"></i>

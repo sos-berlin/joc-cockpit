@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline">
             <div class="inline valign">
@@ -125,7 +125,7 @@
             </div>
             @if (permission.joc && permission.joc.administration.customization.view) {
               <div class="btn-group dropdown">
-                <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" class="btn btn-grey btn-sm m-l-12"
+                <button [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" class="btn btn-grey btn-sm m-l-12"
                         nz-dropdown nzPlacement="bottomRight" nzTrigger="click" type="button">
                   {{'customization.label.customizations' | translate}}
                   <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
@@ -149,10 +149,10 @@
                     @for (filter of filterList | orderBy: 'name'; track filter) {
                       <li (click)="changeFilter(filter)" nz-menu-item>
                         <a>
-                          <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                          <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                           @if (savedFilter.selected == filter.id) {
                             <i (click)="changeFilter(null);$event.stopPropagation();"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                               [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                class="fa fa-times-circle-o remove"></i>
                           }
                         </a>
@@ -174,13 +174,13 @@
       <div class="col-md-12">
         @if (data.length>0) {
           <button (click)="expandDetails()"
-                  class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
+                  class="btn btn-sm btn-grey" [appRichTooltip]="'common.button.expandDetails' | translate">
             <i class="fa fa-expand text"></i>
           </button>
         }
         @if (data.length>0) {
           <button (click)="collapseDetails()"
-                  class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.collapseDetails' | translate}}">
+                  class="btn btn-sm btn-grey m-l-12" [appRichTooltip]="'common.button.collapseDetails' | translate">
             <i class="fa fa-compress text"></i>
           </button>
         }
@@ -299,7 +299,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a>
             </th>
-            <th (click)="sort('numOfFiles')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate"
+            <th (click)="sort('numOfFiles')" [appRichTooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate"
                 nzWidth="65px"><a>
               <span class="p-r-xs" translate>fileTransfer.label.total</span>
               @if (yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.reverse) {

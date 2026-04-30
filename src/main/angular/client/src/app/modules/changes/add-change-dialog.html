@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>{{'changes.label.'+ title}}</span>
     @if((title === 'addChange' || title === 'updateChange') && preferences.showHelpPages) {
-      <i (click)="helpPage('changes-properties')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('changes-properties')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -344,10 +344,10 @@
 
     <div class="row m-b-sm">
       <div class="col-md-12">
-        <a (click)="expandAll(nodes);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+        <a (click)="expandAll(nodes);" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
           <i class="fa fa-angle-double-down fa-lg"></i>
         </a>
-        <a (click)="collapseAll(nodes);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+        <a (click)="collapseAll(nodes);" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
           <i class="fa fa-angle-double-up fa-lg"></i>
         </a>
       </div>

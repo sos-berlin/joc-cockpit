@@ -123,8 +123,8 @@
             </a>
           }
           @if (value.cyclicOrder) {
-            <i [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
-               class="fa fa-repeat p-l-xs" nz-tooltip></i>
+            <i [appRichTooltip]="tooltipTemplate" aria-hidden="true"
+               class="fa fa-repeat p-l-xs"></i>
           }
         </span>
       </td>
@@ -136,8 +136,7 @@
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
             <i (click)="notesForSchedule(value?.schedulePath, value)"
-               [nzTooltipMouseEnterDelay]="0.5"
-               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+               [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon
                nzType="paper-clip"
                nzTheme="outline"
@@ -161,8 +160,7 @@
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
             <i (click)="notesForWorkflow(value?.workflowPath, value)"
-               [nzTooltipMouseEnterDelay]="0.5"
-               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+               [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon
                nzType="paper-clip"
                nzTheme="outline"
@@ -213,7 +211,7 @@
       <td>
         @if (value.period.repeat) {
           <div>
-            <span [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" nz-tooltip>
+            <span [appRichTooltip]="tooltipTemplate">
               {{'dailyPlan.label.repeatEvery' | translate}}
               {{value.period.repeat}}s
             </span>
@@ -364,8 +362,8 @@
             </span>
           }
           @if (!plan?.order && plan?.value?.length === 1 && plan.value[0] && plan.value[0].cyclicOrder) {
-            <i [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
-               class="fa fa-repeat p-l-xs" nz-tooltip></i>
+            <i [appRichTooltip]="tooltipTemplate" aria-hidden="true"
+               class="fa fa-repeat p-l-xs"></i>
           }
         </span>
       </td>
@@ -432,7 +430,7 @@
         <td>
           @if (plan.value[0].period.repeat) {
             <div>
-               <span [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" nz-tooltip>
+               <span [appRichTooltip]="tooltipTemplate">
               {{'dailyPlan.label.repeatEvery' | translate}}
                  {{plan.value[0].period.repeat}}s
             </span>
@@ -456,7 +454,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
@@ -588,7 +586,7 @@
             }
             @if (permission.joc && permission.joc.administration.customization.view && dailyPlanFilters.tabIndex == 0) {
               <div class="btn-group dropdown">
-                <button [ngClass]="{'btn-primary': selectedFiltered.name}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
+                <button [ngClass]="{'btn-primary': selectedFiltered.name}" [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                         [nzPlacement]="'bottomRight'"
                         class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" translate type="button">
@@ -616,10 +614,10 @@
                           [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected === filter.id)}"
                           nz-menu-item>
                         <a>
-                          <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                          <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                           @if (savedFilter.selected === filter.id) {
                             <i (click)="changeFilter(null);$event.stopPropagation();"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                               [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                class="fa fa-times-circle-o remove"></i>
                           }
                         </a>
@@ -631,7 +629,7 @@
             }
             @if (dailyPlanFilters.tabIndex !== 2) {
               <button (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
-                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                      [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                       class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-share-square-o"></i>
               </button>
@@ -701,8 +699,7 @@
               @if (object.isLetRun) {
                 @if (permission && permission.currentController && permission.currentController.orders.modify) {
                   <button (click)="continueOrder()"
-                          [nzTooltipPlacement]="'bottom'"
-                          nz-tooltip="{{'dailyPlan.tooltip.letRun' | translate}}"
+                          [appRichTooltip]="'dailyPlan.tooltip.letRun' | translate"
                           class="btn btn-grey btn-sm m-l-12">
                     <i class="fa fa-refresh"></i>&nbsp;
                     <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
@@ -843,7 +840,7 @@
                   }
                 </div>
                 @if (preferences.showHelpPages) {
-                  <i (click)="helpPage(true)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-info-circle text-20"></i>
+                  <i (click)="helpPage(true)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-info-circle text-20"></i>
                 }
                 </div>
             </div>
@@ -869,13 +866,13 @@
                         <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
                         <div class="fade-in">
                             <div class="p-l-xs m-b-sm">
-                              <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <a (click)="selectTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                                 <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                               </a>
-                              <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <a (click)="selectAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                                 <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                               </a>
-                              <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <a (click)="removeAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                                 <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                               </a>
                               <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
@@ -900,8 +897,7 @@
                                     <nz-auto-option (click)="selectTagOnSearch(tag)"
                                                     [nzValue]="tag.name" class="min-ht-opt">
                                       <div class="node-wrapper p-l-xs">
-                                        <div class="node-content-wrapper2"
-                                             nzTooltipPlacement="right">
+                                        <div class="node-content-wrapper2">
                                           <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                                           <span class="p-l-sm">{{tag.name}}</span>
                                         </div>
@@ -941,13 +937,13 @@
                         <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
                         <div class="fade-in">
                             <div class="p-l-xs m-b-sm">
-                              <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <a (click)="selectOrderTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                                 <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                               </a>
-                              <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <a (click)="selectAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                                 <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                               </a>
-                              <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <a (click)="removeAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                                 <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                               </a>
                               <a (click)="objectOrderTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
@@ -972,8 +968,7 @@
                                     <nz-auto-option (click)="selectOrderTagOnSearch(tag)"
                                                     [nzValue]="tag.name" class="min-ht-opt">
                                       <div class="node-wrapper p-l-xs">
-                                        <div class="node-content-wrapper2"
-                                             nzTooltipPlacement="right">
+                                        <div class="node-content-wrapper2">
                                           <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                                           <span class="p-l-sm">{{tag.name}}</span>
                                         </div>
@@ -1016,13 +1011,13 @@
                       <div class="row m-b-12">
                         <div class="col-lg-12">
                           <button (click)="expandCollapseDetails(true)" [disabled]="planOrders.length === 0"
-                                  class="btn btn-sm btn-grey" nz-tooltip="{{'common.button.expandDetails' | translate}}">
+                                  class="btn btn-sm btn-grey" [appRichTooltip]="'common.button.expandDetails' | translate">
                             <i class="fa fa-expand text"></i>
                           </button>
                           <button (click)="expandCollapseDetails(false)"
                                   [disabled]="planOrders.length === 0"
                                   class="btn btn-sm btn-grey m-l-sm m-r-sm"
-                                  nz-tooltip="{{'common.button.collapseDetails' | translate}}">
+                                  [appRichTooltip]="'common.button.collapseDetails' | translate">
                             <i class="fa fa-compress text"></i>
                           </button>
                           <button (click)="groupByWorkflow('')"
@@ -1370,7 +1365,7 @@
               <span translate>dailyPlan.button.recreate</span>
             </button>
             <div class="inline pull-right m-r-12 pos-rel t-xxs">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
+              <label [appRichTooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
               {{'dailyPlan.label.invertProjection' | translate}}
               </label>
             </div>

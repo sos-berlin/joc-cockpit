@@ -1,8 +1,9 @@
 <div id="jobSchedulerStatus1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.JS7Status
+    <h3>
+      <span translate>dashboard.label.JS7Status</span>
       @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
     </h3>
   </div>
@@ -54,7 +55,7 @@
                 </td>
                 <td>
                   @if (controller.compatibility) {
-                    <i [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="controller.compatibility | translate"
+                    <i [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" [appRichTooltip]="controller.compatibility | translate"
                        class="fa fa-check"></i>&nbsp;
                   }
                   <span>{{controller.version}}</span>

@@ -15,17 +15,17 @@
       <div class="col-md-12">
         <div class="inline">
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-            <li class="nav-item" nz-tooltip="Ctrl-F">
+            <li class="nav-item" [appRichTooltip]="'Ctrl-F'">
               <a (click)="execCommand('find')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.find</span>
               </a>
             </li>
-            <li class="nav-item" nz-tooltip="Ctrl-G">
+            <li class="nav-item" [appRichTooltip]="'Ctrl-G'">
               <a (click)="execCommand('findNext')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findNext</span>
               </a>
             </li>
-            <li class="nav-item" nz-tooltip="Shift-Ctrl-G">
+            <li class="nav-item" [appRichTooltip]="'Shift-Ctrl-G'">
               <a (click)="execCommand('findPrev');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.findPrevious</span>
               </a>
@@ -33,12 +33,12 @@
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-            <li class="nav-item" nz-tooltip="Shift-Ctrl-F">
+            <li class="nav-item" [appRichTooltip]="'Shift-Ctrl-F'">
               <a (click)="execCommand('replace')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replace</span>
               </a>
             </li>
-            <li class="nav-item" nz-tooltip="Shift-Ctrl-R">
+            <li class="nav-item" [appRichTooltip]="'Shift-Ctrl-R'">
               <a (click)="execCommand('replaceAll')" class="nav-link">
                 <span class="nav-text" translate>workflow.button.replaceAll</span>
               </a>
@@ -46,7 +46,7 @@
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-            <li class="nav-item" nz-tooltip="Alt-G">
+            <li class="nav-item" [appRichTooltip]="'Alt-G'">
               <a (click)="execCommand('jumpToLine');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.jumpToLine</span>
               </a>
@@ -54,12 +54,12 @@
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-            <li class="nav-item" nz-tooltip="Ctrl-Z">
+            <li class="nav-item" [appRichTooltip]="'Ctrl-Z'">
               <a (click)="execCommand('undo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.undo</span>
               </a>
             </li>
-            <li class="nav-item" nz-tooltip="Ctrl-Y">
+            <li class="nav-item" [appRichTooltip]="'Ctrl-Y'">
               <a (click)="execCommand('redo');" class="nav-link">
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>

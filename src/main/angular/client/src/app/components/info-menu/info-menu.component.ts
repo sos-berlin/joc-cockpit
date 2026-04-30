@@ -47,7 +47,7 @@ template: `
                 @if (licenseType !== 'OPENSOURCE') {
                   <span>
                     @if (licenseType == 'COMMERCIAL_INVALID') {
-                      <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
+                      <i [appRichTooltip]="'info.tooltip.invalidLicense' | translate"
                          class="fa fa-times-circle text-danger" aria-hidden="true"></i>
                     }
                     {{'info.label.commercialLicense' | translate}}

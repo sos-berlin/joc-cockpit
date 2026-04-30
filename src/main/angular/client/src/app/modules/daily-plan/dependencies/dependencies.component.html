@@ -3,24 +3,24 @@
     <div class="col-md-12 m-b">
       <div class="inline" style="height: 26px">
         <div class="pos-rel t-xxs">
-          <button (click)="setNoticeStatus('future')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.future'|translate"
+          <button (click)="setNoticeStatus('future')" [appRichTooltip]="'dailyPlan.tooltip.future'|translate"
                   [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('future') !== -1}"
                   class="btn btn-grey btn-sm hidden-btn-text">
             <i class="icon icon-workflows-icon"></i>
             <span translate>dailyPlan.button.future</span>
           </button>
-          <button (click)="setNoticeStatus('present')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.present'|translate"
+          <button (click)="setNoticeStatus('present')" [appRichTooltip]="'dailyPlan.tooltip.present'|translate"
                   [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('present') !== -1}"
                   class="btn btn-grey btn-sm hidden-btn-text">
             <i class="icon icon-workflows-icon"></i>
             <span translate>dailyPlan.button.present</span>
           </button>
 
-          <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
+          <i [appRichTooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
           {{'dailyPlan.label.normal' | translate}}
-          <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
+          <i  [appRichTooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
           {{'dailyPlan.label.critical' | translate}}
-          <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
+          <i  [appRichTooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
           {{'dailyPlan.label.expecting' | translate}}
         </div>
       </div>
@@ -76,12 +76,12 @@
           <div class="inline toolbar-icons">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
               <li class="nav-item">
-                <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate" class="nav-link">
+                <a (click)="zoomIn()" [appRichTooltip]="'workflow.button.zoomIn' | translate" class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a (click)="zoomOut()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
+                <a (click)="zoomOut()" [appRichTooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
                 </a>
               </li>
@@ -89,12 +89,12 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate" class="nav-link">
+                <a (click)="actual()" [appRichTooltip]="'workflow.button.actual' | translate" class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate" class="nav-link">
+                <a (click)="fit()" [appRichTooltip]="'workflow.button.fit' | translate" class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
                 </a>
               </li>

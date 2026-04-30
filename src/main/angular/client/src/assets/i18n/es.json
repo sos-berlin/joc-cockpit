@@ -2146,7 +2146,7 @@
     "deploy":{
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Target",
-      "section.nodes": "Nodes"
+      "section.notes": "Notes"
     },
     "repository": {
       "label.filter": "Filtro",
@@ -2391,6 +2391,7 @@
         "fileFormat": "Specifies .zip or .tar.gz for the compression type.",
         "exportType": "Is one of a) export of individual objects, b) export of objects from folders or c) export of objects subject to Changes.",
         "objectTypes": "Allows selecting the types of inventory objects that should be included with the export, for example, Workflows, Job Resources, Schedules etc.",
+        "inclusiveAllTags": "Incl. Tags",
         "filterType": "Offers selecting 'Controller' and/or 'Automation' objects located in the related system folders.",
         "filter": "Offers including inventory objects to the export file based on their status. Invalid objects can be exported and imported, though they cannot be deployed or released. Draft objects include changes that have not been deployed or released.",
         "handleRecursively": "Includes inventory objects from sub-folders to the export file.",
@@ -2732,6 +2733,7 @@
   },
   "order": {
     "--------ADD ORDER SECTION------------": "",
+    "section.commonTiming": "Common Start Time",
     "section.identification": "Identification",
     "section.executionTiming": "Execution Timing",
     "section.dependencyContext": "Dependency Context",

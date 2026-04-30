@@ -1,8 +1,9 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.workflows
+    <h3>
+      <span translate>dashboard.label.workflows</span>
       @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
     </h3>
   </div>
@@ -11,7 +12,7 @@
       <div class="m-t-sm">
         @if (synchronized > 0) {
           <div [ngStyle]="{'width': synchronized+'%'}" class="plan-overview bg-finished">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate1" class="w-full">
               <a (click)="navigate(1)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.synchronized</div>
                 - {{ synchronized | noRoundNumber:2 }} %
@@ -25,7 +26,7 @@
         }
         @if (outstanding > 0) {
           <div [ngStyle]="{width: outstanding+'%'}" class="plan-overview bg-mangenta">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate2" class="w-full">
               <a (click)="navigate(2)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.outstanding</div>
                 - {{outstanding | noRoundNumber:2 }} %
@@ -39,7 +40,7 @@
         }
         @if (suspended > 0) {
           <div [ngStyle]="{width: suspended+'%'}" class="plan-overview bg-orange">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate3" class="w-full">
               <a (click)="navigate(3)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.suspended</div>
                 - {{suspended | noRoundNumber:2 }} %
@@ -53,7 +54,7 @@
         }
         @if (notSynchronized > 0) {
           <div [ngStyle]="{width: notSynchronized+'%'}" class="plan-overview bg-light-orange">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate4" class="w-full">
               <a (click)="navigate(4)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.notSynchronized</div>
                 - {{notSynchronized | noRoundNumber:2 }} %

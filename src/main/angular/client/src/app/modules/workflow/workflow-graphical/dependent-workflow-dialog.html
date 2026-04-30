@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     @if (recursiveCals.length > 1) {
       <a (click)="activeModal.destroy()"><i
-        class="fa fa-arrow-circle-left config-back-btn" nz-tooltip="{{'inventory.button.backToObject' | translate}}"></i></a>
+        class="fa fa-arrow-circle-left config-back-btn" [appRichTooltip]="'inventory.button.backToObject' | translate"></i></a>
     }
     <span translate>workflow.label.showDependency</span> {{workflow.path}}
   </h4>
@@ -40,9 +40,9 @@
           <div class="hover">
             <a class="text-primary noExl" translate>workflow.label.start</a>
             <span class="expand-collapse-btn">
-              <i (click)="expandAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+              <i (click)="expandAll()" [appRichTooltip]="'common.tooltip.expandAll' | translate"
                  class="cursor fa fa-lg fa-angle-double-down"></i>
-              <i (click)="collapseAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+              <i (click)="collapseAll()" [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                  class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
             </span>
           </div>

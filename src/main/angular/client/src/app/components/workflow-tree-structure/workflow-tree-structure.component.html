@@ -98,7 +98,7 @@
       </div>
     }
   </ng-template>
-  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
+  <span [appRichTooltip]="contentTemplate">
     <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>
     {{order.orderId}} @if (order.cyclicOrder) {<i aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>}
     @if (order.scheduledFor && !order.scheduledNever) {
@@ -129,7 +129,7 @@
       </div>
     }
   </ng-template>
-  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
+  <span [appRichTooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
 </ng-template>
 
 @for (instruction of configuration.instructions; track trackByInstruction($index, instruction); let i = $index) {
@@ -167,7 +167,7 @@
                 <span>
                   @for (item of instruction.demands; track trackByDemand($index, item)) {
                     <span class="text-muted">
-                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="lockItemTemplate" class="text-muted">
+                      <span [appRichTooltip]="lockItemTemplate" class="text-muted">
                         {{item.lockName}}
                       </span>
                       <ng-template #lockItemTemplate>
@@ -239,7 +239,7 @@
             }
             @if (instruction.TYPE !== 'Job') {
               <span [ngClass]="{'drop-area-text' : instruction.enabled}"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction.question || instruction.message)" class="inst-text"
+                    [appRichTooltip]="(instruction.question || instruction.message)" class="inst-text"
                     id="{{instruction.positionString}}$">
                 {{instruction.TYPE | translate}}
                 @if (instruction.label) {

@@ -110,11 +110,11 @@
                 <span class="show-in-single-line w-full">
                    @if (!history.showAll) {
                      <i (click)="showAllPanelFuc(history);$event.stopPropagation()"
-                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'history.button.expandAll' | translate" class="cursor fa fa-chevron-down p-l-xs p-r-xs"></i>
+                        [appRichTooltip]="'history.button.expandAll' | translate" class="cursor fa fa-chevron-down p-l-xs p-r-xs"></i>
                    }
                   @if (history.showAll) {
                     <i (click)="hideAllPanelFuc(history);$event.stopPropagation()"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'history.button.collapseAll' | translate" class="cursor fa fa-chevron-up p-l-xs p-r-xs"></i>
+                       [appRichTooltip]="'history.button.collapseAll' | translate" class="cursor fa fa-chevron-up p-l-xs p-r-xs"></i>
                   }
                   @if (!history.show) {
                     <i (click)="showPanelFuc(history);$event.stopPropagation()"
@@ -131,7 +131,7 @@
                 </td>
                 <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
                   @if (history.label) {
-                    <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                    <span class="cur-point" [innerHtml]="history.label" [appRichTooltip]="history.position"></span>
                   }
                   @if (!history.label) {
                     <span [innerHtml]="history.position"></span>
@@ -265,7 +265,7 @@
                 </td>
                 <td>
                   @if (history.label) {
-                    <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                    <span class="cur-point" [innerHtml]="history.label" [appRichTooltip]="history.position"></span>
                   }
                   @if (!history.label) {
                     <span [innerHtml]="history.position"></span>
@@ -368,7 +368,7 @@
               <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null,viewContainerRef)" class="cursor">
                 <td>
                   @if (history.label) {
-                    <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                    <span class="cur-point" [innerHtml]="history.label" [appRichTooltip]="history.position"></span>
                   }
                   @if (!history.label) {
                     <span [innerHtml]="history.position"></span>

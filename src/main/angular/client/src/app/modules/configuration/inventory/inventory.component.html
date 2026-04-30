@@ -130,12 +130,12 @@
       <div class="col-md-3">
         <div class="inline pull-right">
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-            <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-item">
+            <li [appRichTooltip]="'workflow.button.undo' | translate" class="nav-item">
               <a (click)="undo()" class="nav-link">
                 <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="undo"></i></span>
               </a>
             </li>
-            <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-item">
+            <li [appRichTooltip]="'workflow.button.redo' | translate" class="nav-item">
               <a (click)="redo()" class="nav-link">
                 <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="redo"></i></span>
               </a>
@@ -143,12 +143,12 @@
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-            <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.download' | translate" class="nav-item">
+            <li [appRichTooltip]="'inventory.button.download' | translate" class="nav-item">
               <a (click)="download()" class="nav-link">
                 <span class="nav-text">  <i nz-icon nzTheme="outline" nzType="download"></i></span>
               </a>
             </li>
-            <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.upload' | translate" class="nav-item">
+            <li [appRichTooltip]="'inventory.button.upload' | translate" class="nav-item">
               <a (click)="upload()" class="nav-link">
                 <span class="nav-text">  <i nz-icon nzTheme="outline" nzType="upload"></i></span>
               </a>
@@ -255,8 +255,8 @@
                     <ng-container>
                       <nz-auto-option (click)="selectObject(option)" [nzValue]="option.path" class="min-ht-opt">
                         <div class="node-wrapper p-l">
-                          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-                               class="node-content-wrapper2" nzTooltipPlacement="right">
+                          <div [appRichTooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                               class="node-content-wrapper2">
                             <i class="fa fa-circle-o text-xs"></i>
                             <span class="p-l-sm">{{ option.name }}</span>
                           </div>
@@ -361,7 +361,7 @@
                               class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"></span>
                       }
                       @if (node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked) {
-                        <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate">
+                        <span [appRichTooltip]="node.origin.syncState._text | translate">
                           @if (node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING') {
                             <i class="fa fa-refresh font11 p-l-xxs"></i>
                           }
@@ -470,7 +470,7 @@
                       <span [ngClass]="{'fa-circle-o': !node.valid, 'fa-circle dark-blue' : node.deployed || node.released, 'opacity7': node.syncState && (node.syncState._text === 'SUSPENDED' || node.syncState._text === 'SUSPENDING')}"
                             class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"></span>
                       @if (node.type && node.syncState && inventoryService.checkDeploymentStatus.isChecked) {
-                        <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.syncState._text | translate">
+                        <span [appRichTooltip]="node.syncState._text | translate">
                           @if (node.syncState._text === 'IN_SYNC' || node.syncState._text === 'SUSPENDED' || node.syncState._text === 'SUSPENDING') {
                             <i class="fa fa-refresh font11 p-l-xxs"></i>
                           }
@@ -490,8 +490,8 @@
                   </div>
                 </ng-template>
                 <div class="sort-icons m-l-xxs">
-                  <i nz-icon nzType="down-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
-                  <i nz-icon nzType="up-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
+                  <i nz-icon nzType="down-square" nzTheme="outline" [appRichTooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
+                  <i nz-icon nzType="up-square" nzTheme="outline" [appRichTooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
                   @if (permission.joc.inventory.manage && !isJobTag) {
                     <a  (click)="addTags(node)" class="text-u-l m-l-sm cursor" translate>inventory.button.manageTags</a>
                   }
@@ -574,7 +574,7 @@
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
         @if (sideView.inventory.width > 315 && !isTrash && preferences.showHelpPages) {
-          <i (click)="helpPage('configuration-inventory-navigation')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          <i (click)="helpPage('configuration-inventory-navigation')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         }
       </div>
       <div [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}" id="rightPanel">
@@ -1069,7 +1069,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage('searching-inventory')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('searching-inventory')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     }
     @if (isSearchVisible) {
       <div>

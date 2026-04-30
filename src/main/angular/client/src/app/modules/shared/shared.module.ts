@@ -20,8 +20,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import {Shared2Module} from './shared2.module';
 import {ChartsModule} from "../charts/charts.module";
 import {NzTooltipComponent, NzTooltipDirective} from "ng-zorro-antd/tooltip";
-import {RichTooltipDirective} from '../../directives/rich-tooltip.directive';
-import {RichTooltipContentComponent} from '../../components/rich-tooltip/rich-tooltip-content.component';
+// RichTooltipDirective and RichTooltipContentComponent are declared in Shared3Module (via Shared2Module)
 import {
   DurationPipe,
   DurationFromCurrentPipe,
@@ -99,15 +98,14 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, Nz
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent,
-  RichTooltipContentComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,
-  FacetValidator, AutofocusDirective, RichTooltipDirective];
+  FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent, RichTooltipContentComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent];
 
 @NgModule({
     imports: [

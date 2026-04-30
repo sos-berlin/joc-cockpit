@@ -19,7 +19,7 @@
               </button>
             }
             @if (preferences.showHelpPages) {
-              <i (click)="helpPage('settings')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
+              <i (click)="helpPage('settings')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
             }
           </div>
         </div>
@@ -38,7 +38,7 @@
                 <div cdkDrag class="p-b-sm p-l-sm">
                   <div cdkDragHandle class="pos-abt drag-handler m-t-n-xxs">
                     @if (preferences.showHelpPages) {
-                      <i (click)="helpPage(setting.name)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-settings cur-point fa fa-info-circle m-l-12 text-20"></i>
+                      <i (click)="helpPage(setting.name)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-settings cur-point fa fa-info-circle m-l-12 text-20"></i>
                     }
                     <i aria-hidden="true" class="fa fa-bars"></i>
                   </div>
@@ -65,7 +65,7 @@
                         <div class="row m-t-sm">
                           @if (val.value) {
                             <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
-                            <label class="_600">{{val.name}}</label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"
+                            <label class="_600">{{val.name}}</label> <i [appRichTooltip]="'settings.' + setting.name +'.' + val.name | translate"
                                                                         class="p-l-sm fa fa-info-circle"></i>
                           </span></div>
                             <div class="col-sm-2 col-lg-2 form-control-label">
@@ -347,7 +347,7 @@
                                   @for (child of val?.value?.children; track child; let i = $index) {
                                     <div class="row m-t-sm" style="margin-left: 10px;">
                                       <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
-                                      <label class="_600">{{child.name}}</label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'settings.' + setting.name +'.' + child.name | translate"
+                                      <label class="_600">{{child.name}}</label> <i [appRichTooltip]="'settings.' + setting.name +'.' + child.name | translate"
                                                                                     class="p-l-sm fa fa-info-circle"></i>
                                       </span></div>
                                       <div class="col-sm-2 col-lg-2 form-control-label">

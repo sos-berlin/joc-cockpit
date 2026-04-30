@@ -162,7 +162,7 @@
           <div class="form-group row">
             <label class="col-sm-4 form-control-label" translate>
               order.label.cycleEndTime
-              <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'order.tooltip.cycleEndTime' | translate" class=" p-l-xs fa fa-info-circle"></i>
+              <i [appRichTooltip]="'order.tooltip.cycleEndTime' | translate" class=" p-l-xs fa fa-info-circle"></i>
             </label>
             <div [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}"
                  class="col-sm-6">
@@ -187,9 +187,9 @@
         <div class="hover">
           <a class="text-primary noExl" translate>workflow.label.start</a>
           <span class="expand-collapse-btn">
-            <i (click)="workflow.isExpand = true;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+            <i (click)="workflow.isExpand = true;" [appRichTooltip]="'common.tooltip.expandAll' | translate"
                class="cursor fa fa-lg fa-angle-double-down"></i>
-            <i (click)="workflow.isExpand = false;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+            <i (click)="workflow.isExpand = false;" [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
           </span>
         </div>
@@ -209,7 +209,7 @@
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
     }
   </div>
 </form>

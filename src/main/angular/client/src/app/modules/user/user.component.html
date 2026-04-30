@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('profile')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('profile')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
 
           <div class="show-inline">
@@ -71,8 +71,7 @@
                 @if (preferences.showHelpPages) {
                   <i
                     (click)="helpPage('profile-preferences')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    [appRichTooltip]="'common.tooltip.help' | translate"
                     class="help-info-dashboard cur-point fa fa-info-circle text-20">
                   </i>
                 }
@@ -327,7 +326,7 @@
                                       [listArray]="themeArray" [object]="preferences"
                                       [optionLabel]="'name'"
                                       [optionValue]="'value'"></app-select-input>
-                    <a (click)="toggleFieldsVisibility()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.tooltip.stateColorChange' | translate" nz-icon class="p-l-sm text-md" nzType="aim" nzTheme="outline"></a>
+                    <a (click)="toggleFieldsVisibility()" [appRichTooltip]="'profile.tooltip.stateColorChange' | translate" nz-icon class="p-l-sm text-md" nzType="aim" nzTheme="outline"></a>
                   </div>
                 </div>
 
@@ -704,8 +703,7 @@
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-permissions')"
-                      [nzTooltipMouseEnterDelay]="0.5"
-                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      [appRichTooltip]="'common.tooltip.help' | translate"
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
@@ -722,8 +720,7 @@
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-signature-key-management')"
-                      [nzTooltipMouseEnterDelay]="0.5"
-                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      [appRichTooltip]="'common.tooltip.help' | translate"
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
@@ -763,7 +760,7 @@
                                     }
                                   </span>
                                   <a (click)="showKey()"
-                                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
+                                     [appRichTooltip]="'profile.keyManagement.label.showKey' | translate"
                                      class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                                 </span>
                               }
@@ -775,14 +772,14 @@
                               <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
                                 @if (permission.joc.administration.certificates.manage) {
                                   <button (click)="pasteKey()"
-                                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                                          [appRichTooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i class="fa fa-paste"></i>
                                   </button>
                                 }
                                 @if (permission.joc.administration.certificates.manage) {
                                   <button (click)="importKey()"
-                                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                                          [appRichTooltip]="'profile.keyManagement.tooltip.import' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i nz-icon nzTheme="outline" nzType="upload"></i>
                                   </button>
@@ -790,14 +787,14 @@
                                 @if (securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage) {
                                   <button
                                     (click)="showGenerateKeyModal()"
-                                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                                    [appRichTooltip]="'profile.keyManagement.tooltip.generate' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                                     <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                                   </button>
                                 }
                                 @if (permission.joc.administration.certificates.manage) {
                                   <button (click)="deleteCertificate('key')" [disabled]="!keys.keyID"
-                                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
+                                          [appRichTooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i class="fa fa-trash"></i>
                                   </button>
@@ -819,8 +816,7 @@
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-ssl-key-management')"
-                      [nzTooltipMouseEnterDelay]="0.5"
-                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      [appRichTooltip]="'common.tooltip.help' | translate"
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
@@ -861,7 +857,7 @@
                                     }
                                   </span>
                                   <a (click)="showKey('ca')"
-                                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
+                                     [appRichTooltip]="'profile.keyManagement.label.showKey' | translate"
                                      class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                                 </span>
                               }
@@ -872,16 +868,16 @@
                               }
                               @if (permission.joc.administration.certificates.manage) {
                                 <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
-                                  <button (click)="pasteKey('ca')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                                  <button (click)="pasteKey('ca')" [appRichTooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i class="fa fa-paste"></i>
                                   </button>
-                                  <button (click)="importKey('ca')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                                  <button (click)="importKey('ca')" [appRichTooltip]="'profile.keyManagement.tooltip.import' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i nz-icon nzTheme="outline" nzType="upload"></i>
                                   </button>
                                   <button (click)="showGenerateKeyModal('ca')"
-                                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                                          [appRichTooltip]="'profile.keyManagement.tooltip.generate' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                                   </button>
@@ -903,8 +899,7 @@
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-git-management')"
-                      [nzTooltipMouseEnterDelay]="0.5"
-                      [nz-tooltip]="'common.tooltip.help' | translate"
+                      [appRichTooltip]="'common.tooltip.help' | translate"
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
@@ -993,8 +988,7 @@
                 @if (preferences.showHelpPages) {
                   <i
                     (click)="helpPage('profile-favorite-management')"
-                    [nzTooltipMouseEnterDelay]="0.5"
-                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    [appRichTooltip]="'common.tooltip.help' | translate"
                     class="help-info-dashboard cur-point fa fa-info-circle text-20">
                   </i>
                 }

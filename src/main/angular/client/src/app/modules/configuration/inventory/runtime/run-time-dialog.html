@@ -15,7 +15,7 @@
               </button>
               <button (click)="planFromRuntime()"
                       [disabled]="!canShowPreview()"
-                      [nz-tooltip]="hasUnreleasedCalendars() ? ('runtime.message.calendarNotReleased' | translate) : (!calendars || calendars.length === 0 ? ('runtime.message.noCalendarsAssigned' | translate) : null)"
+                      [appRichTooltip]="hasUnreleasedCalendars() ? ('runtime.message.calendarNotReleased' | translate) : (!calendars || calendars.length === 0 ? ('runtime.message.noCalendarsAssigned' | translate) : null)"
                       class="btn btn-sm btn-grey m-t-sm"
                       translate type="button">runtime.button.showYearView
               </button>
@@ -48,7 +48,7 @@
                             <td class="cursor">
                               <a (click)="isCalendarReleased(calendar.calendarName) && previewCalendar(calendar, 'WORKINGDAYSCALENDAR')"
                                  [ngClass]="{'text-muted': !isCalendarReleased(calendar.calendarName)}"
-                                 [nz-tooltip]="!isCalendarReleased(calendar.calendarName) ? ('runtime.label.notReleased' | translate) : null">
+                                 [appRichTooltip]="!isCalendarReleased(calendar.calendarName) ? ('runtime.label.notReleased' | translate) : null">
                                 <i class="fa fa-calendar text-success"></i>&nbsp;
                                 {{calendar.calendarName}} @if (calendar.title) {<i>-</i>} {{calendar.title}}
                                 @if (!isCalendarReleased(calendar.calendarName)) {
@@ -97,7 +97,7 @@
                             <td>
                               <a (click)="isCalendarReleased(typeof holiday === 'string' ? holiday : holiday.calendarName) && previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR')"
                                  [ngClass]="{'text-muted': !isCalendarReleased(typeof holiday === 'string' ? holiday : holiday.calendarName)}"
-                                 [nz-tooltip]="!isCalendarReleased(typeof holiday === 'string' ? holiday : holiday.calendarName) ? ('runtime.label.notReleased' | translate) : null">
+                                 [appRichTooltip]="!isCalendarReleased(typeof holiday === 'string' ? holiday : holiday.calendarName) ? ('runtime.label.notReleased' | translate) : null">
                                 <i class="fa fa-calendar text-danger"></i>&nbsp;
                                 {{typeof holiday === 'string' ? holiday : holiday.calendarName}}
                                 @if (!isCalendarReleased(typeof holiday === 'string' ? holiday : holiday.calendarName)) {

@@ -16,9 +16,8 @@
       <nz-auto-option (click)="selectObject(option)"
                       [nzValue]="option.path" class="min-ht-opt">
         <div class="node-wrapper p-l-xs">
-          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-               class="node-content-wrapper2"
-               nzTooltipPlacement="right">
+          <div [appRichTooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+               class="node-content-wrapper2">
             <i class="fa fa-circle-o text-xs"></i>
             <span class="p-l-sm">{{option.name}}</span>
           </div>
@@ -28,10 +27,10 @@
   </nz-autocomplete>
 </div>
 <div class="pl-20">
-  <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+  <a (click)="expandAll();" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
     <i class="fa fa-angle-double-down fa-lg"></i>
   </a>
-  <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+  <a (click)="collapseAll();" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
     <i class="fa fa-angle-double-up fa-lg"></i>
   </a>
   <a class="text resize-cursor a-1 pos-abt r-22">

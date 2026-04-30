@@ -18,7 +18,7 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div>
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
                      class="col-sm-3 form-control-label"
                      translate>workflow.repeat.label.cycleType</label>
               <div class="col-sm-6">
@@ -32,7 +32,7 @@
             </div>
             @if (object.TYPE === 'Periodic') {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
+                <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
                        class="col-sm-3 form-control-label"
                        translate>workflow.repeat.label.period
                   <sup class="text-danger text-sm">*</sup>
@@ -56,7 +56,7 @@
             }
             @if (object.TYPE === 'Periodic') {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
+                <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
                        class="col-sm-3 form-control-label"
                        translate>workflow.repeat.label.offsets
                   <sup class="text-danger text-sm">*</sup>
@@ -81,7 +81,7 @@
             }
             @if (object.TYPE === 'Continuous') {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
+                <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
                        class="col-sm-3 form-control-label"
                        translate>workflow.repeat.label.pause
                   <sup class="text-danger text-sm">*</sup>
@@ -105,7 +105,7 @@
             }
             @if (object.TYPE === 'Continuous') {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
+                <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
                        class="col-sm-3 form-control-label"
                        translate>workflow.repeat.label.limit</label>
                 <div class="col-sm-6">
@@ -116,7 +116,7 @@
             }
             @if (object.TYPE === 'Ticking') {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
+                <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
                        class="col-sm-3 form-control-label"
                        translate>workflow.repeat.label.interval
                   <sup class="text-danger text-sm">*</sup>

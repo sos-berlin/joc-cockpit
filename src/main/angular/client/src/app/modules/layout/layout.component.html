@@ -101,6 +101,6 @@
 }
 @if (coreService.reportStartRunning) {
   <div class="download-bar box-shadow-z1 download-bar-hide animated opacity0">
-    <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
+    <i [appRichTooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
   </div>
 }

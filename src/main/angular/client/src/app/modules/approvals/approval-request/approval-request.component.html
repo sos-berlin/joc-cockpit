@@ -4,11 +4,11 @@
       <div class="notify-tool approval-tool">
         <button (click)="collapseDetails()"
                 class="btn btn-sm btn-grey m-l-12 pull-right"
-                nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+                [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
           <i class="fa fa-compress text"></i>
         </button>
         <button (click)="expandDetails()" class="btn btn-sm btn-grey m-l-12 pull-right"
-                nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+                [appRichTooltip]="'common.tooltip.expandDetails' | translate">
           <i class="fa fa-expand text"></i>
         </button>
         <div class="search-box-field pull-right">

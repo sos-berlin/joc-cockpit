@@ -11,12 +11,12 @@
       </div>
       <div class="text-right col-sm-3 col-xl-3">
         <a class="cursor" (click)="copyIndlArguments(j, x)"
-           nz-tooltip="{{'common.button.copyArguments' | translate}}">
+           [appRichTooltip]="'common.button.copyArguments' | translate">
           <i class="fa fa-copy"></i>
         </a>
         @if (storedIndlArguments?.length > 0) {
           <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)"
-             nz-tooltip="{{'common.button.paste' | translate}}">
+             [appRichTooltip]="'common.button.paste' | translate">
             <i class="fa fa-paste"></i>
           </a>
         }
@@ -112,7 +112,7 @@
                                placeholder="{{'common.placeholder.value' | translate}}"
                                type="text">
                         <i (click)="openEditor(argument, 'value')"
-                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                           [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                            nzTheme="outline" nzType="form"
                            style="right: 13px;top:1px;"></i>
                         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
@@ -161,7 +161,7 @@
       </div>
       <div class="text-right col-sm-3 col-xl-3">
         <a class="cursor" (click)="copyIndlArguments(j, x)"
-           nz-tooltip="{{'common.button.copyArguments' | translate}}">
+           [appRichTooltip]="'common.button.copyArguments' | translate">
           <i class="fa fa-copy"></i>
         </a>
       </div>
@@ -245,7 +245,7 @@
                                placeholder="{{'common.placeholder.value' | translate}}"
                                type="text">
                         <i (click)="openEditor(argument, 'value')"
-                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                           [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                            nzTheme="outline" nzType="form"
                            style="right: 13px;top:1px;"></i>
                         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
@@ -284,7 +284,7 @@
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+                                           [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
           <span class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
           @if (lastModified) {
             <span class="text-dark text-sm _400"> -
@@ -293,11 +293,10 @@
             </span>
           }
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('configuration-inventory-schedules')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+            <i (click)="helpPage('configuration-inventory-schedules')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
           }
           <i (click)="notes(schedule.name)"
-             [nzTooltipMouseEnterDelay]="0.5"
-             [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+             [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
              nz-icon
              nzType="paper-clip"
              nzTheme="outline"
@@ -317,7 +316,7 @@
                     @if (!schedule.valid) {
                       <span>
                         <span translate>inventory.label.notValid</span>
-                        <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                        <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
                       </span>
                     }
                   </span>
@@ -368,7 +367,7 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
+              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
                 <sup class="text-danger text-sm">*</sup>
@@ -390,7 +389,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
+              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -401,7 +400,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
+                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -411,7 +410,7 @@
               </div>
             }
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
+              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
                 <sup class="text-danger text-sm">*</sup>
@@ -427,7 +426,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
+              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                      title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
@@ -438,7 +437,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
+              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                      title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
@@ -457,7 +456,7 @@
                 @for (variableSet of schedule.configuration.orderParameterisations; track $index; let j = $index) {
                   <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
                     <div class="form-group row">
-                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
+                      <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
 
                              class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
                       <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
@@ -547,7 +546,7 @@
 
                     @if (blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
+                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -558,7 +557,7 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
+                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -569,7 +568,7 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
+                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -581,7 +580,7 @@
                       </div>
                     }
                     <div class="form-group row">
-                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                      <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
 
                              class="col-lg-3 col-xl-3 col-xxl-3"
                              translate>order.label.priority</label>
@@ -613,7 +612,7 @@
                     </div>
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
+                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
 
                                class="col-lg-3 col-xl-3 col-xxl-3"
                                translate>order.label.ignoreAdmissionTimes</label>
@@ -634,25 +633,25 @@
                                [ngClass]="!variableSet.isCollapseVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
 
                             @if (isForkListVariable) {
-                              <a (click)="expandAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="p-l-sm pos-rel t-3">
+                              <a (click)="expandAll(variableSet.variables);" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="p-l-sm pos-rel t-3">
                                 <i class="fa fa-angle-double-down text-16"></i>
                               </a>
                             }
                             @if (isForkListVariable) {
-                              <a (click)="collapseAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="m-l-xs pos-rel t-3">
+                              <a (click)="collapseAll(variableSet.variables);" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="m-l-xs pos-rel t-3">
                                 <i class="fa fa-angle-double-up text-16"></i>
                               </a>
                             }
                           </label>
                           <div class="text-right col-sm-3 col-xl-3">
                             <a (click)="copyArguments(j)" class="cursor"
-                               nz-tooltip="{{'common.button.copyArguments' | translate}}">
+                               [appRichTooltip]="'common.button.copyArguments' | translate">
                               <i class="fa fa-copy"></i>
                             </a>
                             @if (storedArguments?.length > 0) {
                               <a (click)="handlePaste(storedArguments[0], j)"
                                  class="cursor p-l-12"
-                                 nz-tooltip="{{'common.button.paste' | translate}}">
+                                 [appRichTooltip]="'common.button.paste' | translate">
                                 <i class="fa fa-paste"></i>
                               </a>
                             }
@@ -767,11 +766,11 @@
                                                  class="form-control" name="value{{i}}{{j}}{{variable.value}}" placeholder="{{'common.placeholder.value' | translate}}"
                                                  type="text">
                                           @if (variable.message) {
-                                            <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="variable.message"
+                                            <i [appRichTooltip]="variable.message"
                                                class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
                                           }
                                           <i (click)="openEditor(variable, 'value')"
-                                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                                             [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                                              nzTheme="outline" nzType="form"
                                              style="right: 13px;top:1px;"></i>
                                           @if (value.invalid && value.errors && (value.dirty || value.touched)) {
@@ -885,7 +884,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="closeCalendarView()" class="close-btn"></div>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage('configuration-inventory-schedules-run-time')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-schedules-run-time')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     }
     @if (isVisible && permission.joc) {
       <div>

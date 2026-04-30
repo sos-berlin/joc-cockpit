@@ -52,7 +52,7 @@
                 <label class="col-sm-4 form-control-label" translate>
                   runtime.label.repeatTime
                   @if (isDisplay) {
-                    <i id="repeatId" [nzTooltipArrowPointAtCenter]="true" nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}"
+                    <i id="repeatId" [appRichTooltip]="'workflow.tooltip.warningMessageForShortIntervalSelection' | translate"
                        [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
                   }
                 </label>

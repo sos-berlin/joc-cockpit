@@ -19,7 +19,7 @@
       <span translate>inventory.label.addTagsToWorkflow</span>
       <span >: {{data.name}}</span>
       @if (preferences.showHelpPages) {
-        <i (click)="helpPage('configuration-inventory-operations-manage-tags')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+        <i (click)="helpPage('configuration-inventory-operations-manage-tags')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
     </h4>
   }
@@ -145,10 +145,10 @@
             <span class="_600 m-r-xs" translate>
               inventory.label.listOfTags
             </span>
-            <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+            <a (click)="expandAll();" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
               <i class="fa fa-angle-double-down fa-lg"></i>
             </a>
-            <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+            <a (click)="collapseAll();" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
               <i class="fa fa-angle-double-up fa-lg"></i>
             </a>
           </div>

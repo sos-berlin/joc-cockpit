@@ -162,7 +162,7 @@
                 {{node.origin.name}}
                 @if (filter.paths && filter.paths.indexOf(node.origin.path) === -1) {
                   <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                     [appRichTooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
                 }
                 @if (filter.paths && filter.paths.indexOf(node.origin.path) > -1) {
                   <i (click)="remove(node.origin.path);$event.stopPropagation()"
@@ -281,6 +281,6 @@
     </div>
   }
   @if (isSearch && preferences.showHelpPages) {
-  <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
+  <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
 </form>

@@ -18,8 +18,8 @@
           <ng-container>
             <nz-auto-option (click)="selectObject(option)" [nzValue]="option.path" class="min-ht-opt">
               <div class="node-wrapper p-l">
-                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-                     class="node-content-wrapper2" nzTooltipPlacement="right">
+                <div [appRichTooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                     class="node-content-wrapper2">
                   <i class="icon-jobs-icon icon-color tree-icon"></i>
                   <span class="p-l-sm">{{ option.name }}</span>
                 </div>
@@ -55,7 +55,7 @@
                   <span (click)="selectObject(cal)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}">
                     <i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}
                     @if (!cal.released) {
-                      <span class="text-warning text-xs" [nz-tooltip]="'runtime.label.notReleased' | translate"> (Draft)</span>
+                      <span class="text-warning text-xs" [appRichTooltip]="'runtime.label.notReleased' | translate"> (Draft)</span>
                     }
                   </span>
                 </div>

@@ -55,7 +55,7 @@
             <div class="destroy-button">
               @if (editLayoutObj) {
                 <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()"
-                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate"
+                   [appRichTooltip]="'common.button.remove' | translate"
                    class="fa fa-times-circle"></i>
               }
             </div>

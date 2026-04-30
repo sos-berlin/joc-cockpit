@@ -1,8 +1,9 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.dailyPlan
+    <h3>
+      <span translate>dashboard.label.dailyPlan</span>
       @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
     </h3>
   </div>
@@ -62,7 +63,7 @@
       <div class="m-t-sm">
         @if (planned > 0) {
           <div [ngStyle]="{'width': arrayWidth[0]+'%'}" class="plan-overview bg-planned">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate1" class="w-full">
               <a (click)="navigate(1)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.planned</div>
                 - {{planned | number : '1.1-1'}} %
@@ -76,7 +77,7 @@
         }
         @if (plannedLate > 0) {
           <div [ngStyle]="{width: arrayWidth[1]+'%'}" class="plan-overview bg-gold">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate2" class="w-full">
               <a (click)="navigate(2)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.plannedLate</div>
                 - {{plannedLate | number : '1.1-1' }} %
@@ -90,7 +91,7 @@
         }
         @if (submitted > 0) {
           <div [ngStyle]="{width: arrayWidth[2]+'%'}" class="plan-overview bg-orange">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate3" class="w-full">
               <a (click)="navigate(4)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.submitted</div>
                 - {{submitted | number : '1.1-1' }} %
@@ -104,7 +105,7 @@
         }
         @if (submittedLate > 0) {
           <div [ngStyle]="{width: arrayWidth[3]+'%'}" class="plan-overview bg-late">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate4" class="w-full">
               <a (click)="navigate(5)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.submittedLate</div>
                 - {{submittedLate | number : '1.1-1' }} %
@@ -118,7 +119,7 @@
         }
         @if (finished > 0) {
           <div [ngStyle]="{width: arrayWidth[4]+'%'}" class="plan-overview bg-dark-blue">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate5" class="w-full">
+            <label [appRichTooltip]="tooltipTemplate5" class="w-full">
               <a (click)="navigate(6)" class="nav-link w-full">
                 <div class="show-inline block-ellipsis-job" translate>dashboard.label.finished</div>
                 - {{finished | number : '1.1-1'}} %

@@ -14,7 +14,7 @@
           class="label m-l"></span>
   }
   @if (item.value.state.message) {
-    <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.value.state.message" class="fa fa-info-circle p-l-sm"></i>
+    <i [appRichTooltip]="item.value.state.message" class="fa fa-info-circle p-l-sm"></i>
   }
   @if (item.show) {
     <div class="m-l m-t-xs">
@@ -170,7 +170,7 @@
                   <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
                         class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
                   @if (item.state) {
-                    <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+                    <span [appRichTooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
                       @if (item.state._text === 'IN_SYNC') {
                         <i class="fa fa-refresh font11"></i>
                       }
@@ -203,7 +203,7 @@
                       <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
                             class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
                       @if (item.state) {
-                        <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+                        <span [appRichTooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
                         @if (item.state._text === 'IN_SYNC') {
                           <i class="fa fa-refresh font11"></i>
                         }

@@ -61,7 +61,7 @@
                 </td>
                 <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">
                   @if (ch.label) {
-                    <span class="cur-point" [innerHtml]="ch.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="ch.position"></span>
+                    <span class="cur-point" [innerHtml]="ch.label" [appRichTooltip]="ch.position"></span>
                   }
                   @if (!ch.label) {
                     <span [innerHtml]="ch.position"></span>

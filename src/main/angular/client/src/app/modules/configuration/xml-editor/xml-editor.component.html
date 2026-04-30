@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if(objectType === 'NOTIFICATION' && preferences.showHelpPages) {
-            <i (click)="helpPage('configuration-notification')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('configuration-notification')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline">
             @if (nodes && nodes.length > 0) {
@@ -269,10 +269,10 @@
             @if (nodes?.length > 0) {
               <div class="row">
                 <div class="col-12 p-l-sm">
-                  <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+                  <a (click)="expandAll();" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
                     <i class="fa fa-angle-double-down fa-lg"></i>
                   </a>
-                  <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+                  <a (click)="collapseAll();" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
                     <i class="fa fa-angle-double-up fa-lg"></i>
                   </a>
                   <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
@@ -353,8 +353,7 @@
                       <span
                         (click)="selectNode(node);addContent(node.origin.values);"
                         [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
-                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
-                        nzTooltipPlacement="right">{{node.origin.ref || node.origin.name }}
+                        [appRichTooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip">{{node.origin.ref || node.origin.name }}
                         </span>
                       <span (click)="selectNode(node)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)" class="text-sm pl-2">
                           {{getFirstNotEmptyAttribute(node.origin.attributes)}}

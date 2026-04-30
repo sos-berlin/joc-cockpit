@@ -191,7 +191,7 @@
       common.button.cancel
     </button>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
     }
   </div>
 </form>

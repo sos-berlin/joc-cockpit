@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('resources-agent-job-executions')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('resources-agent-job-executions')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline">
             <div class="show-block">
@@ -73,7 +73,7 @@
                 </div>
                 @if (permission.joc && permission.joc.administration.customization.view) {
                   <div class="btn-group dropdown">
-                    <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                    <button [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                             class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                             type="button">
                       {{'customization.label.customizations' | translate}}
@@ -100,10 +100,10 @@
                               [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
                               nz-menu-item>
                             <a>
-                              <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                              <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                               @if (savedFilter.selected == filter.id) {
                                 <i (click)="changeFilter(null);$event.stopPropagation();"
-                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                   [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                    class="fa fa-times-circle-o remove"></i>
                               }
                             </a>
@@ -113,7 +113,7 @@
                     </nz-dropdown-menu>
                   </div>
                 }
-                <button (click)="exportToExcel()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                <button (click)="exportToExcel()" [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                         class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
               </div>
             </div>

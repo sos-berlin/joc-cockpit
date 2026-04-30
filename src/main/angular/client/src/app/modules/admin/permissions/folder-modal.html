@@ -68,7 +68,7 @@
                   }
                   @if (folderObj.paths && folderObj.paths.indexOf(node.origin.path) === -1) {
                     <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                       [appRichTooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
                   }
                   @if (folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1) {
                     <i (click)="remove(node.origin.path);$event.stopPropagation()"
@@ -78,7 +78,7 @@
               </div>
             </ng-template>
           </nz-tree-select>
-          <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltip.toAddNonExistFolders' | translate"
+          <i [appRichTooltip]="'user.tooltip.toAddNonExistFolders' | translate"
              aria-hidden="true" class="cursor pos-abt m-l-sm m-t-sm fa fa-info-circle"></i>
         </div>
       </div>

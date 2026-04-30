@@ -4,11 +4,11 @@
       <div class="notify-tool">
         <button (click)="collapseDetails()"
                 class="btn btn-sm btn-grey m-l-12 pull-right"
-                nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+                [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
           <i class="fa fa-compress text"></i>
         </button>
         <button (click)="expandDetails()" class="btn btn-sm btn-grey m-l-12 pull-right"
-                nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+                [appRichTooltip]="'common.tooltip.expandDetails' | translate">
           <i class="fa fa-expand text"></i>
         </button>
         <div class="search-box-field pull-right">
@@ -228,7 +228,7 @@
                     <span [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
                   }
                   @if (notify.message && notify.message.length >= 100) {
-                    <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlMsgContent">{{notify.message.substring(0, 99)}}...</span>
+                    <span [appRichTooltip]="htmlMsgContent">{{notify.message.substring(0, 99)}}...</span>
                   }
                   @if (notify.acknowledgement) {
                     <div>
@@ -238,7 +238,7 @@
                   }
                 </div>
                 <i class="fa fa-copy cursor-pointer m-l-1 cursor"
-                   nz-tooltip="{{'log.button.copyToClipboard' | translate}}"
+                   [appRichTooltip]="'log.button.copyToClipboard' | translate"
                    (click)="copyToClipboard(notify.message)"
                    style="margin-left: 8px;">
                 </i>
@@ -252,7 +252,7 @@
                   <span [innerHtml]="notify.exception | highlight : filters.filter.searchText"></span>
                 }
                 @if (notify.exception && notify.exception.length >= 100) {
-                  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlExpContent">{{notify.exception.substring(0, 99)}}...</span>
+                  <span [appRichTooltip]="htmlExpContent">{{notify.exception.substring(0, 99)}}...</span>
                 }
               </td>
               <td><span [innerHtml]="notify.created | stringToDate | highlight : filters.filter.searchText"></span></td>
@@ -296,7 +296,7 @@
                                 <span>{{monitor.message }}</span>
                               }
                               @if (monitor.message && monitor.message.length >= 100) {
-                                <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
+                                <span [appRichTooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
                               }
                             </td>
                             <td><span [innerHtml]="monitor.configuration"></span></td>

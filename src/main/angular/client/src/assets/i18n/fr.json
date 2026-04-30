@@ -2146,7 +2146,7 @@
     "deploy":{
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Target",
-      "section.nodes": "Nodes"
+      "section.notes": "Notes"
     },
     "repository": {
       "label.filter": "Filtre",
@@ -2391,6 +2391,7 @@
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
         "exportType": "S'agit-il a) de l'exportation d'objets individuels, b) de l'exportation d'objets à partir de dossiers ou c) de l'exportation d'objets soumis à des modifications.",
         "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple les Workflows, les Ressources de Tâches, les Planifications etc.",
+        "inclusiveAllTags": "Incl. Tags",
         "filterType": "Permet de sélectionner les objets 'Contrôleur' et/ou 'Automatisation' situés dans les dossiers système correspondants.",
         "filter": "Propose d'inclure des objets de l'inventaire dans le fichier d'exportation en fonction de leur statut. Les objets non valides peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés. Les objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
         "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers dans le fichier d'exportation.",
@@ -2732,6 +2733,7 @@
   },
   "order": {
     "--------ADD ORDER SECTION------------": "",
+    "section.commonTiming": "Common Start Time",
     "section.identification": "Identification",
     "section.executionTiming": "Démarrage",
     "section.dependencyContext": "Dépendances",

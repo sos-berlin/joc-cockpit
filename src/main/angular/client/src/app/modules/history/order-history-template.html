@@ -63,7 +63,7 @@
                 <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)"
                     class="show-in-single-line w-full">
                   @if (ch.label) {
-                    <span class="cur-point" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="ch.position">{{ch.label}}</span>
+                    <span class="cur-point" [appRichTooltip]="ch.position">{{ch.label}}</span>
                   }
                   @if (!ch.label) {
                     <span>{{ch.position}}</span>
@@ -164,7 +164,7 @@
       <td
         (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)">
         @if (child.order.label) {
-          <span class="show-in-single-line w-full cur-point" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="child.order.position">{{child.order.label}}</span>
+          <span class="show-in-single-line w-full cur-point" [appRichTooltip]="child.order.position">{{child.order.label}}</span>
         }
         @if (!child.order.label) {
           <span class="show-in-single-line w-full">{{child.order.position}}</span>

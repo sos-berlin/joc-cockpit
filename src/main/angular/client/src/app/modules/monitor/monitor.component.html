@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline valign">
             @if (monitorFilters.tabIndex == 0) {
@@ -221,7 +221,7 @@
           }
           @if (monitorFilters.tabIndex == 2 || monitorFilters.tabIndex == 3) {
             <button (click)="exportToExcel()"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                    [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                     class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
           }
         </div>

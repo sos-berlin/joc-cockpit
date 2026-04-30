@@ -2,7 +2,7 @@
   <div>
     <div class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label"
-             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+             [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
 
              translate>workflow.label.label
       </label>
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-4 col-lg-3"
-             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.cycle.onlyOnePeriod' | translate) : ''"
+             [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.cycle.onlyOnePeriod' | translate) : ''"
 
              translate>workflow.label.onlyOnePeriod
       </label>

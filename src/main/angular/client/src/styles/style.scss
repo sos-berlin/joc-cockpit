@@ -61,10 +61,11 @@
   --date-unplanned: rgba(255, 140, 0, 0.87);
   --date-unplanned-hover: rgba(255, 140, 0, 0.7);
   /* Rich tooltip — default (light theme) values; overridden per-theme */
-  --rich-tooltip-bg: #3c4a58;
-  --rich-tooltip-text: #e8edf3;
-  --rich-tooltip-strong: #ffffff;
-  --rich-tooltip-code-bg: rgba(255, 255, 255, 0.14);
+  --rich-tooltip-bg: #ffffff;
+  --rich-tooltip-text: #374151;
+  --rich-tooltip-strong: #111827;
+  --rich-tooltip-code-bg: #f3f4f6;
+  --rich-tooltip-border: rgba(0, 0, 0, 0.1);
 }
 
 /***
@@ -5718,54 +5719,160 @@ tr.disabled-row td:not(.menu):not(.chk) {
 
 /* ── Section box (used in dialog forms) ── */
 .section-box {
-  border-radius: 4px;
-  overflow: hidden;
+  margin-top: 14px;
 }
 
 .section-box-header {
-  padding: 5px 10px;
-  // background: var(--menu-color);
-  border-bottom: 1px solid var(--border-color);
+  padding: 0 0 6px 0;
 }
 
 .section-box-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   color: var(--text-color);
+  opacity: 0.38;
+  white-space: nowrap;
 }
 
-/* ── Rich tooltip panel (CDK overlay, replaces nz-tooltip for formatted content) ── */
+.section-box--standalone {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+/* ── Order label (multi-order loop header) ── */
+.order-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 10px;
+  padding: 6px 10px 6px 10px;
+  border-left: 3px solid var(--primary, #0e8a8b);
+  background: transparent;
+
+  > span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary, #0e8a8b);
+  }
+
+  .order-label-remove {
+    font-size: 12px;
+
+    &:hover {
+      opacity: 1;
+      color: #e74c3c;
+    }
+  }
+}
+
+/* ── Rich tooltip panel (CDK overlay) ── */
 .rich-tooltip-panel {
-  pointer-events: auto !important; /* allows text selection */
+  pointer-events: auto !important;
   z-index: 1070;
 }
 
-.rich-tooltip-box {
+/* ── Tail arrow: tooltip rendered BELOW the trigger (arrow points UP) ── */
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  border: 8px solid transparent;
+  border-top: 0;
+  border-bottom-color: var(--rich-tooltip-border);
+}
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::after,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  border: 7px solid transparent;
+  border-top: 0;
+  border-bottom-color: var(--rich-tooltip-bg);
+}
+/* horizontal placement of arrow along the bubble edge */
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::after { left: 16px; }
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::after { right: 16px; }
+
+/* ── Tail arrow: tooltip rendered ABOVE the trigger (arrow points DOWN) ── */
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--rich-tooltip-border);
+}
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::after,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  border: 7px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--rich-tooltip-bg);
+}
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::after { left: 16px; }
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::after { right: 16px; }
+
+@keyframes rich-tooltip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rich-tooltip-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(4px); }
+}
+
+/* ── Outer bubble shell: visual container + arrows (overflow: visible) ── */
+.rich-tooltip-bubble {
+  position: relative;
   background: var(--rich-tooltip-bg);
-  color: var(--rich-tooltip-text);
-  // border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 12px;
-  line-height: 1.6;
+  border: 1px solid var(--rich-tooltip-border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13), 0 2px 6px rgba(0, 0, 0, 0.08);
   width: max-content;
   max-width: min(320px, 90vw);
   min-width: 120px;
+  overflow: visible; /* arrows must protrude outside — never set overflow:hidden/auto here */
+  animation: rich-tooltip-in 0.15s ease forwards;
+
+  &.rich-tooltip-fade-out {
+    animation: rich-tooltip-out 0.15s ease forwards;
+  }
+}
+
+/* ── Inner scroll area: content + overflow ── */
+.rich-tooltip-box {
+  color: var(--rich-tooltip-text);
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 10px 14px;
   max-height: min(400px, 80vh);
   overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  /* Allow the user to select and copy text */
+  overflow-x: hidden;
+  word-break: break-word;
   user-select: text;
   cursor: text;
-  word-break: break-word;
+  border-radius: inherit; /* match bubble rounding for scroll track */
 
   strong { font-weight: 600; color: var(--rich-tooltip-strong); }
-  em     { font-style: italic; opacity: 0.9; }
+  em     { font-style: italic; opacity: 0.85; }
   code   {
     background: var(--rich-tooltip-code-bg);
     border-radius: 3px;
-    padding: 0 4px;
+    padding: 1px 5px;
     font-family: monospace;
     font-size: 11px;
+    color: var(--rich-tooltip-text);
   }
   a {
     color: var(--primary);
@@ -5773,6 +5880,15 @@ tr.disabled-row td:not(.menu):not(.chk) {
     &:hover { opacity: 0.85; }
   }
   br { display: block; content: ''; margin-top: 4px; }
+  ul {
+    margin: 4px 0 2px;
+    padding-left: 18px;
+    list-style: disc;
+  }
+  li {
+    margin-bottom: 2px;
+    &:last-child { margin-bottom: 0; }
+  }
 }
 
 .tooltip {

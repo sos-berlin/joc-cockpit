@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('resources-resource-locks')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('resources-resource-locks')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline">
             <div class="btn-group dropdown">
@@ -65,12 +65,12 @@
     <div class="col-md-4 text-right">
       <button (click)="collapseDetails()"
               [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+              class="hide btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
         <i class="fa fa-compress text"></i>
       </button>
       <button (click)="expandDetails()"
               [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+              class="hide btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.expandDetails' | translate">
         <i class="fa fa-expand text"></i>
       </button>
       <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
@@ -296,8 +296,7 @@
                                  class="cursor fa fa-book p-l-xs p-r-xs"></i>
                             }
                             <i (click)="notes(lock.id)"
-                               [nzTooltipMouseEnterDelay]="0.5"
-                               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+                               [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                                nz-icon
                                nzType="paper-clip"
                                nzTheme="outline"
@@ -396,7 +395,7 @@
                                             <td colspan="4"><span class="p-l">{{item.order.orderId}}</span></td>
                                             <td colspan="3">
                                               @if (item.order.label) {
-                                                <span class="cur-point" [innerHtml]="item.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.order.positionString"></span>
+                                                <span class="cur-point" [innerHtml]="item.order.label" [appRichTooltip]="item.order.positionString"></span>
                                               }
                                               @if (!item.order.label) {
                                                 <span [innerHtml]="item.order.positionString"></span>
@@ -426,7 +425,7 @@
                                             <td colspan="4"><span class="p-l">{{item.order.orderId}}</span></td>
                                             <td colspan="3">
                                               @if (item.order.label) {
-                                                <span class="cur-point" [innerHtml]="item.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.order.positionString"></span>
+                                                <span class="cur-point" [innerHtml]="item.order.label" [appRichTooltip]="item.order.positionString"></span>
                                               }
                                               @if (!item.order.label) {
                                                 <span [innerHtml]="item.order.positionString"></span>
@@ -482,7 +481,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage('resources-resource-locks-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('resources-resource-locks-search')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     }
     @if (isSearchVisible) {
       <div>

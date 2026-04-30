@@ -22,17 +22,17 @@
       <li nz-submenu nzTitle="{{'info.button.examples' | translate}} ">
         <ul>
           <li nz-menu-item>
-            <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.globalVariablesAndEmailSettings' | translate"
+            <a [appRichTooltip]="'info.tooltip.globalVariablesAndEmailSettings' | translate"
                href="https://download.sos-berlin.com/JobScheduler.{{ versionData?.version?.split('-')[0]?.split('.')[0] + '.' + versionData?.version?.split('-')[0].split('.')[1] }}/Defaults.zip"
                target="_blank">{{'info.button.jobResourceDefaults' | translate}}</a>
           </li>
 
           <li nz-menu-item>
-            <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.workflowExampleForUnix' | translate" href="https://download.sos-berlin.com/JobScheduler.{{ versionData?.version?.split('-')[0].split('.')[0] + '.' + versionData?.version?.split('-')[0]?.split('.')[1] }}/Examples.tar.gz"
+            <a [appRichTooltip]="'info.tooltip.workflowExampleForUnix' | translate" href="https://download.sos-berlin.com/JobScheduler.{{ versionData?.version?.split('-')[0].split('.')[0] + '.' + versionData?.version?.split('-')[0]?.split('.')[1] }}/Examples.tar.gz"
                target="_blank">{{'info.button.examplesForUnix' | translate}}</a>
           </li>
           <li nz-menu-item>
-            <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.workflowExampleForWindows' | translate" href="https://download.sos-berlin.com/JobScheduler.{{ versionData?.version?.split('-')[0].split('.')[0] + '.' + versionData?.version?.split('-')[0]?.split('.')[1] }}/Examples.zip"
+            <a [appRichTooltip]="'info.tooltip.workflowExampleForWindows' | translate" href="https://download.sos-berlin.com/JobScheduler.{{ versionData?.version?.split('-')[0].split('.')[0] + '.' + versionData?.version?.split('-')[0]?.split('.')[1] }}/Examples.zip"
                target="_blank">{{'info.button.examplesForWindows' | translate}}</a>
           </li>
         </ul>

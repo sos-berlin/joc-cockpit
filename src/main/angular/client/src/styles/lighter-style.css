@@ -1,5 +1,10 @@
 :root{
   --background-color: #fafafa;
+  --rich-tooltip-bg: #ffffff;
+  --rich-tooltip-text: #374151;
+  --rich-tooltip-strong: #111827;
+  --rich-tooltip-code-bg: #f3f4f6;
+  --rich-tooltip-border: rgba(0, 0, 0, 0.1);
   --bg-box: #fff;
   --text-color: #333;
   --text-hover: rgba(0, 0, 0, 0.87);

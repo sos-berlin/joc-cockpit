@@ -107,7 +107,7 @@
                                   <input #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
                                          name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                                     style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                                     style="right: 13px;top:1px;" [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
@@ -188,7 +188,7 @@
                                   <input #value="ngModel" [required]="argument.isRequired" autocomplete="off" type="text" class="form-control"
                                          name="_valuee{{i}}{{j}}{{k}}" [(ngModel)]="argument.value" placeholder="{{'common.placeholder.value' | translate}}">
                                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                                     style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                                     style="right: 13px;top:1px;" [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
@@ -276,9 +276,9 @@
                              name="value{{i}}{{item.name}}" (keydown)="onKeyPress($event)"
                              [(ngModel)]="item.value" placeholder="{{'common.placeholder.value' | translate}}">
                       <i (click)="openEditor(item)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                         style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                         style="right: 13px;top:1px;" [appRichTooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                       @if (item.message) {
-                        <i class="pos-abt cursor fa fa-info-circle" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.message" style="right: -10px;top:8px;"></i>
+                        <i class="pos-abt cursor fa fa-info-circle" [appRichTooltip]="item.message" style="right: -10px;top:8px;"></i>
                       }
                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                         <div class="text-danger help-block">

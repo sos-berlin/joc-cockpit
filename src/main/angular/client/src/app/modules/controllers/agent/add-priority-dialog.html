@@ -9,7 +9,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.priority' | translate" class="col-sm-3 form-control-label"
+      <label [appRichTooltip]="'agent.subagent.tooltip.priority' | translate" class="col-sm-3 form-control-label"
              translate>inventory.label.priority
         <sup class="text-danger text-sm">*</sup>
       </label>
@@ -28,8 +28,7 @@
           @for (item of indicatorItems; track item) {
             <li
               nz-menu-item
-              nz-tooltip
-              [nzTooltipTitle]="'agent.tooltip.' + item.value | translate"
+              [appRichTooltip]="'agent.tooltip.' + item.value | translate"
               (click)="onDropdownSelect(item.value)">
               {{ item.value }}
             </li>

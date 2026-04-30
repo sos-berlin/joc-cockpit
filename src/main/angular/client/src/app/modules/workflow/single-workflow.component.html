@@ -74,12 +74,12 @@
                     <span class="show-in-single-line">
                       @if (!workflow.show) {
                         <i (click)="workflow.isExpand = true;showPanelFuc(workflow)"
-                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                           [appRichTooltip]="'common.tooltip.expandAll' | translate"
                            class="cursor fa fa-chevron-down p-l-xs p-r-xs"></i>
                       }
                       @if (workflow.show) {
                         <i (click)="workflow.isExpand = false;hidePanelFuc(workflow)"
-                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                           [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                            class="cursor fa fa-chevron-up p-l-xs p-r-xs"></i>
                       }
                       @if (!workflow.show) {
@@ -93,17 +93,17 @@
                       @if (permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC') {
                         <i
                           (click)="addOrder(workflow)"
-                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
+                          [appRichTooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
                       }
-                      <i (click)="navToDetailView('list', workflow)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showTabularView' | translate"
+                      <i (click)="navToDetailView('list', workflow)" [appRichTooltip]="'workflow.button.showTabularView' | translate"
                          class="cursor fa fa-list p-l-xs"></i>
                       <i (click)="navToDetailView('grid', workflow)"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showGraphicalView' | translate"
+                         [appRichTooltip]="'workflow.button.showGraphicalView' | translate"
                          class="cursor fa fa-th p-l-xs p-r-xs"></i>
                       @if (workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies) {
                         <i
                           (click)="showDependency(workflow)"
-                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showDependency' | translate"
+                          [appRichTooltip]="'workflow.button.showDependency' | translate"
                           class="cursor fa fa-codepen p-l-xs p-r-xs"></i>
                       }
                       @if (workflow.documentationName) {
@@ -251,10 +251,10 @@
                             <a class="text-primary noExl" translate>workflow.label.start</a>
                             <span class="expand-collapse-btn">
                                 <i (click)="workflow.isExpand = true;"
-                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                   [appRichTooltip]="'common.tooltip.expandAll' | translate"
                                    class="cursor fa fa-lg fa-angle-double-down"></i>
                                 <i (click)="workflow.isExpand = false;"
-                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                   [appRichTooltip]="'common.tooltip.collapseAll' | translate"
                                    class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                               </span>
                           </div>

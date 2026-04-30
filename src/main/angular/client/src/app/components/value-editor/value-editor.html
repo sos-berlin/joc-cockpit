@@ -18,7 +18,7 @@
                   placeholder="{{'common.placeholder.value' | translate}}"
         ></textarea>
         @if (object.message) {
-          <i class="pos-abt cursor fa fa-info-circle" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="object.message" style="right: 22px;top:9px;"></i>
+          <i class="pos-abt cursor fa fa-info-circle" [appRichTooltip]="object.message" style="right: 22px;top:9px;"></i>
         }
         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
           <div class="text-danger help-block">

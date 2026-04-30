@@ -1,18 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, TemplateRef } from '@angular/core';
 
-/**
- * Lightweight tooltip content rendered inside a CDK Overlay panel.
- * Receives pre-processed HTML from RichTooltipDirective.
- * Text selection and copy is fully supported.
- */
 @Component({
   standalone: false,
   selector: 'app-rich-tooltip-content',
   template: `
-    <div class="rich-tooltip-box" [innerHTML]="html"></div>
+    <div class="rich-tooltip-bubble">
+      <div class="rich-tooltip-box"
+           role="tooltip"
+           [id]="tooltipId">
+        @if (tpl) {
+          <ng-container *ngTemplateOutlet="tpl"></ng-container>
+        } @else {
+          <span [innerHTML]="html"></span>
+        }
+      </div>
+    </div>
   `,
 })
 export class RichTooltipContentComponent {
   @Input() html = '';
+  @Input() tooltipId = '';
+  @Input() tpl: TemplateRef<any> | null = null;
 }

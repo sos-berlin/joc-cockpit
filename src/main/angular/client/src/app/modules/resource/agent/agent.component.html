@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage('resources-agents')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('resources-agents')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline">
             <div class="show-block">
@@ -92,12 +92,12 @@
     <div class="col-md-4 text-right">
       <button (click)="collapseDetails()"
               [ngClass]="{'show-block':agentClusters.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey pull-right m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+              class="hide btn btn-sm btn-grey pull-right m-l-12" [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
         <i class="fa fa-compress text"></i>
       </button>
       <button (click)="expandDetails()"
               [ngClass]="{'show-block':agentClusters.length>0 && pageView!='grid'}"
-              class="hide btn btn-sm btn-grey pull-right m-l-12" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+              class="hide btn btn-sm btn-grey pull-right m-l-12" [appRichTooltip]="'common.tooltip.expandDetails' | translate">
         <i class="fa fa-expand text"></i>
       </button>
       <div class="search-box-field pull-right">
@@ -121,7 +121,7 @@
               @if (selectedAgentId) {
                 <div class="col-md-12 m-b">
                   <a (click)="backToList()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                               nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+                                               [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
                   {{selectedAgentId}}
                 </div>
               }
@@ -137,11 +137,11 @@
                                 class="fa fa-stop pos-abt m-t-xs text-xs"></span>&nbsp;
                           @if (!cluster.url) {
                             <i class="m-l-12" nz-icon
-                               nz-tooltip="{{'agent.label.cluster' | translate}}" nzTheme="outline" nzType="cluster" style="position: relative;top:1px"></i>&nbsp;
+                               [appRichTooltip]="'agent.label.cluster' | translate" nzTheme="outline" nzType="cluster" style="position: relative;top:1px"></i>&nbsp;
                           }
                           <span (click)="navToController(cluster, null);$event.stopPropagation()"
                                 [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
-                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.path"
+                                [appRichTooltip]="cluster.path"
                                 class="text text-ellipsis1 cursor m-l-xs"></span>
                         </div>
                         @if (permission.currentController && permission.currentController.switchOver) {
@@ -176,7 +176,7 @@
                           <span [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
                         }
                         @if (cluster.state && cluster.state._text == 'INITIALISED') {
-                          <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.state._reason | translate"
+                          <i [appRichTooltip]="cluster.state._reason | translate"
                              class="fa fa-info-circle p-l-sm"></i>
                         }
                       </div>
@@ -322,7 +322,7 @@
                         <td>
                           @if (!cluster.url) {
                             <i class="pos-abt font11" nz-icon
-                               nz-tooltip="{{'agent.label.cluster' | translate}}" nzType="cluster" style="left: -1px;top:-1px"></i>
+                               [appRichTooltip]="'agent.label.cluster' | translate" nzType="cluster" style="left: -1px;top:-1px"></i>
                           }
                           @if (cluster.url && !cluster.show) {
                             <i (click)="showAgents(cluster)"
@@ -346,7 +346,7 @@
                           [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                         <td (click)="navToController(cluster, null)" class="cursor">
                           @if (cluster.state) {
-                            <span [ngClass]="coreService.getColor(cluster.state.severity,'bg')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.errorMessage"
+                            <span [ngClass]="coreService.getColor(cluster.state.severity,'bg')" [appRichTooltip]="cluster.errorMessage"
                                   class="label">
                             <span
                               [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
@@ -354,13 +354,13 @@
                           }
                           @if (!cluster.state && cluster.healthState) {
                             <span [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')"
-                                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.errorMessage" class="label">
+                                  [appRichTooltip]="cluster.errorMessage" class="label">
                             <span
                               [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
                           </span>
                           }
                           @if (cluster.state && cluster.state._text == 'INITIALISED') {
-                            <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.state._reason | translate"
+                            <i [appRichTooltip]="cluster.state._reason | translate"
                                class="fa fa-info-circle p-l-sm"></i>
                           }
                         </td>
@@ -380,7 +380,7 @@
                         <td>
                           @if (cluster.compatibility) {
                             <i [ngClass]="cluster.compatibility === 'COMPATIBLE' ? 'text-success' : cluster.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.compatibility | translate"
+                               [appRichTooltip]="cluster.compatibility | translate"
                                class="fa fa-check"></i>
                           }
                           &nbsp;
@@ -476,7 +476,7 @@
                             <td>
                               @if (subagent.disabled) {
                                 <i class="fa fa-ban pos-abt t-1"
-                                   nz-tooltip="{{'agent.label.disabled' | translate}}" style="left: 0"></i>
+                                   [appRichTooltip]="'agent.label.disabled' | translate" style="left: 0"></i>
                               }
                               @if (!subagent.show) {
                                 <i (click)="showAgents(subagent, true)"
@@ -492,14 +492,14 @@
                                 class="cursor">{{subagent.isDirector | translate}}</td>
                             <td (click)="navToController(subagent, cluster)" class="cursor">
                               @if (subagent.state) {
-                                <span [ngClass]="coreService.getColor(subagent.state.severity,'bg')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.errorMessage"
+                                <span [ngClass]="coreService.getColor(subagent.state.severity,'bg')" [appRichTooltip]="subagent.errorMessage"
                                       class="label">
                                 <span
                                   [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
                               </span>
                               }
                               @if (subagent.state && subagent.state._text == 'INITIALISED') {
-                                <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.state._reason" class="fa fa-info-circle p-l-sm"></i>
+                                <i [appRichTooltip]="subagent.state._reason" class="fa fa-info-circle p-l-sm"></i>
                               }
                             </td>
                             <td (click)="navToController(subagent, cluster)" class="cursor">
@@ -518,7 +518,7 @@
                             <td>
                               @if (subagent.compatibility) {
                                 <i [ngClass]="subagent.compatibility === 'COMPATIBLE' ? 'text-success' : subagent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.compatibility | translate"
+                                   [appRichTooltip]="subagent.compatibility | translate"
                                    class="fa fa-check"></i>
                               }
                               &nbsp;
@@ -558,7 +558,7 @@
                                   </td>
                                   <td colspan="2">
                                     @if (order.label) {
-                                      <span class="cur-point" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                                      <span class="cur-point" [innerHtml]="order.label" [appRichTooltip]="order.positionString"></span>
                                     }
                                     @if (!order.label) {
                                       <span [innerHtml]="order.positionString"></span>
@@ -619,7 +619,7 @@
                               </td>
                               <td colspan="2">
                                 @if (order.label) {
-                                  <span class="cur-point" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                                  <span class="cur-point" [innerHtml]="order.label" [appRichTooltip]="order.positionString"></span>
                                 }
                                 @if (!order.label) {
                                   <span [innerHtml]="order.positionString"></span>

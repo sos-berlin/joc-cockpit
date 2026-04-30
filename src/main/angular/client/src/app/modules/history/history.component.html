@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           <div class="inline valign">
             <label [(ngModel)]="historyFilters.current" nz-checkbox (ngModelChange)="changeController()" >
@@ -91,7 +91,7 @@
               </div>
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered1.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                  <button [appRichTooltip]="selectedFiltered1.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                           class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                           type="button">{{'customization.label.customizations' | translate}}
                     <span [innerHtml]="selectedFiltered1.name" class="text-primary"></span>
@@ -117,10 +117,10 @@
                             [ngClass]="{'ant-select-dropdown-menu-item-active': (savedHistoryFilter.selected == filter.id)}"
                             nz-menu-item>
                           <a>
-                            <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                            <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                             @if (savedHistoryFilter.selected == filter.id) {
                               <i (click)="changeFilter(null);$event.stopPropagation();"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                 [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                  class="fa fa-times-circle-o remove"></i>
                             }
                           </a>
@@ -209,7 +209,7 @@
               </div>
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered2.account" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'"
+                  <button [appRichTooltip]="selectedFiltered2.account" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'"
                           class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered2.name"
@@ -236,10 +236,10 @@
                             [ngClass]="{'ant-select-dropdown-menu-item-active': (savedJobHistoryFilter.selected == filter.id)}"
                             nz-menu-item>
                           <a>
-                            <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                            <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                             @if (savedJobHistoryFilter.selected == filter.id) {
                               <i (click)="changeFilter(null);$event.stopPropagation();"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                 [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                  class="fa fa-times-circle-o remove"></i>
                             }
                           </a>
@@ -326,7 +326,7 @@
             <div class="inline m-b-xs">
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered3.account" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'"
+                  <button [appRichTooltip]="selectedFiltered3.account" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'"
                           class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered3.name"
@@ -353,10 +353,10 @@
                             [ngClass]="{'ant-select-dropdown-menu-item-active': (savedYadeHistoryFilter.selected == filter.id)}"
                             nz-menu-item>
                           <a>
-                            <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                            <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                             @if (savedYadeHistoryFilter.selected == filter.id) {
                               <i (click)="changeFilter(null);$event.stopPropagation();"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                 [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                  class="fa fa-times-circle-o remove"></i>
                             }
                           </a>
@@ -440,7 +440,7 @@
               </div>
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered4.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                  <button [appRichTooltip]="selectedFiltered4.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                           class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered4.name"
@@ -467,10 +467,10 @@
                             [ngClass]="{'ant-select-dropdown-menu-item-active': (savedDeploymentHistoryFilter.selected == filter.id)}"
                             nz-menu-item>
                           <a>
-                            <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                            <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                             @if (savedDeploymentHistoryFilter.selected == filter.id) {
                               <i (click)="changeFilter(null);$event.stopPropagation();"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                 [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                  class="fa fa-times-circle-o remove"></i>
                             }
                           </a>
@@ -555,7 +555,7 @@
               </div>
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered5.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                  <button [appRichTooltip]="selectedFiltered5.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                           class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered5.name"
@@ -582,10 +582,10 @@
                             [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}"
                             nz-menu-item>
                           <a>
-                            <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                            <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                             @if (savedSubmissionHistoryFilter.selected == filter.id) {
                               <i (click)="changeFilter(null);$event.stopPropagation();"
-                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                 [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                                  class="fa fa-times-circle-o remove"></i>
                             }
                           </a>
@@ -637,7 +637,7 @@
             </div>
           }
           <button (click)="exportToExcel()" [disabled]="data.length === 0"
-                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                  [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                   class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -712,13 +712,13 @@
       <div class="col-md-6 col-sm-6">
         @if (historyFilters.type !== 'ORDER') {
           <button (click)="collapseDetails()"
-                  class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+                  class="btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
             <i class="fa fa-compress text"></i>
           </button>
         }
         @if (historyFilters.type !== 'ORDER') {
           <button (click)="expandDetails()"
-                  class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+                  class="btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.expandDetails' | translate">
             <i class="fa fa-expand text"></i>
           </button>
         }
@@ -867,7 +867,7 @@
                         @for (tag of searchTag.tags | orderBy: 'ordering'; track tag) {
                           <nz-auto-option (click)="selectTagOnSearch(tag)" [nzValue]="tag.name" class="min-ht-opt">
                             <div class="node-wrapper p-l-xs">
-                              <div class="node-content-wrapper2" nzTooltipPlacement="right">
+                              <div class="node-content-wrapper2">
                                 <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                                 <span class="p-l-sm">{{tag.name}}</span>
                               </div>
@@ -887,13 +887,13 @@
                       @if (historyFilters.tagType === 'workflowTags') {
                         <div class="fade-in">
                           <div class="p-l-xxs m-b-12">
-                            <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                            <a (click)="selectTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                               <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                             </a>
-                            <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                            <a (click)="selectAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                               <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                             </a>
-                            <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                            <a (click)="removeAllTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                               <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                             </a>
                           </div>
@@ -946,7 +946,7 @@
                         @for (tag of searchOrderTag.tags | orderBy: 'ordering'; track tag) {
                           <nz-auto-option (click)="selectOrderTagOnSearch(tag)" [nzValue]="tag.name" class="min-ht-opt">
                             <div class="node-wrapper p-l-xs">
-                              <div class="node-content-wrapper2" nzTooltipPlacement="right">
+                              <div class="node-content-wrapper2">
                                 <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
                                 <span class="p-l-sm">{{tag.name}}</span>
                               </div>
@@ -966,13 +966,13 @@
                       @if (historyFilters.tagType === 'orderTags') {
                         <div class="fade-in">
                           <div class="p-l-xxs m-b-12">
-                            <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                            <a (click)="selectOrderTags()" [appRichTooltip]="'workflow.label.selectTags' | translate">
                               <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
                             </a>
-                            <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                            <a (click)="selectAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.selectAllTags' | translate">
                               <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
                             </a>
-                            <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                            <a (click)="removeAllOrderTags();" class="p-l-12" [appRichTooltip]="'workflow.label.removeAllTags' | translate">
                               <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
                             </a>
                           </div>
@@ -1244,7 +1244,7 @@
                         </td>
                         <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,null)">
                           @if (history.label) {
-                            <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                            <span class="cur-point" [innerHtml]="history.label" [appRichTooltip]="history.position"></span>
                           }
                           @if (!history.label) {
                             <span [innerHtml]="history.position"></span>
@@ -1485,7 +1485,7 @@
                         </td>
                         <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,null)">
                           @if (jobHistory.label) {
-                            <span class="cur-point" [innerHtml]="jobHistory.label | highlight : task.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="jobHistory.position"></span>
+                            <span class="cur-point" [innerHtml]="jobHistory.label | highlight : task.searchText" [appRichTooltip]="jobHistory.position"></span>
                           }
                           @if (!jobHistory.label) {
                             <span [innerHtml]="jobHistory.position | highlight : task.searchText"></span>
@@ -1613,7 +1613,7 @@
                 }</a>
               </th>
               <th (click)="sort2('numOfFiles')" nzWidth="65px"><a>
-                <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs" translate>fileTransfer.label.total</span>
+                <span [appRichTooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs" translate>fileTransfer.label.total</span>
                 @if (yade.filter.sortBy == 'numOfFiles' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }

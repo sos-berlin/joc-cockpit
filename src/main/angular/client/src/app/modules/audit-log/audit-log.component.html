@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           @if (auditLog.type === 'AUDITLOG') {
             <div class="inline valign">
@@ -100,7 +100,7 @@
           @if (permission.joc && permission.joc.administration.customization.view) {
             <div class="btn-group dropdown">
               @if (auditLog.type === 'AUDITLOG') {
-                <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
+                <button [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                         [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                         type="button">
                   {{'customization.label.customizations' | translate}}
@@ -128,10 +128,10 @@
                     <li (click)="changeFilter(filter)" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
                         nz-menu-item>
                       <a>
-                        <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                        <span [appRichTooltip]="filter.account">{{filter.name}}</span>
                         @if (savedFilter.selected == filter.id) {
                           <i (click)="changeFilter(null);$event.stopPropagation();"
-                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                             [appRichTooltip]="'customization.tooltip.deactivateCustomization' | translate"
                              class="fa fa-times-circle-o remove"></i>
                         }
                       </a>
@@ -142,7 +142,7 @@
             </div>
           }
           <button (click)="exportToExcel()" [disabled]="data.length===0"
-                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
+                  [appRichTooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
             <i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -175,11 +175,11 @@
       </div>
       <div class="col-md-6 col-sm-6">
         <button (click)="collapseDetails()"
-                class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+                class="btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.collapseDetails' | translate">
           <i class="fa fa-compress text"></i>
         </button>
         <button (click)="expandDetails()"
-                class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+                class="btn btn-sm btn-grey m-l-12 pull-right" [appRichTooltip]="'common.tooltip.expandDetails' | translate">
           <i class="fa fa-expand text"></i>
         </button>
         @if (!showSearchPanel && auditLog.type === 'AUDITLOG') {

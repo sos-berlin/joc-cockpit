@@ -3,7 +3,7 @@
     <div class="p-a">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.search' | translate" translate>inventory.search.label.search</label>
+               [appRichTooltip]="'inventory.search.tooltips.search' | translate" translate>inventory.search.label.search</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
             <input type="text" [appAutofocus]="true" autocomplete="off" class="form-control"
@@ -14,7 +14,7 @@
       </div>
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.folders' | translate"
+               [appRichTooltip]="'inventory.search.tooltips.folders' | translate"
                translate>inventory.search.label.folders</label>
         <div class="col-md-8 col-lg-9">
           <nz-tree-select name="folder" [nzNodes]="folders" [nzHideUnMatched]="true"
@@ -28,7 +28,7 @@
                   {{node.origin.name}}
                   @if (searchObj.folders && searchObj.folders.indexOf(node.origin.path) === -1) {
                     <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
+                       [appRichTooltip]="'user.button.addFolder' | translate" nz-icon [nzType]="'plus'" class="p-l-sm"></i>
                   }
                   @if (searchObj.folders && searchObj.folders.indexOf(node.origin.path) > -1) {
                     <i (click)="remove(node.origin.path);$event.stopPropagation()" nz-icon [nzType]="'delete'"
@@ -42,7 +42,7 @@
       </div>
       @if (isWorkflow) {
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis" translate  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis" translate  [appRichTooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
           <div class="col-md-8 col-lg-9">
             <nz-checkbox-group
               [(ngModel)]="selectedSynchronizationStatuses"
@@ -75,7 +75,7 @@
       }
       @if (isWorkflow) {
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis" translate [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate">inventory.search.label.jobAvailabilityStatus</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis" translate [appRichTooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate">inventory.search.label.jobAvailabilityStatus</label>
           <div class="col-md-8 col-lg-9">
             <nz-checkbox-group
               [(ngModel)]="selectedJobAvailabilityStatuses"
@@ -94,7 +94,7 @@
       @if (!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport) {
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
+                 [appRichTooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
                  translate>inventory.search.label.filterBy</label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group name="deployedOrReleased" [(ngModel)]="searchObj.deployedOrReleased" >
@@ -117,7 +117,7 @@
       @if (!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport && searchObj.deployedOrReleased == 'undeployed') {
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.validOrInvalid' | translate"
+                 [appRichTooltip]="'inventory.search.tooltips.validOrInvalid' | translate"
                  translate>inventory.search.label.validOrInvalid</label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group name="validOrInvalid" [(ngModel)]="searchObj.validOrInvalid" >
@@ -131,7 +131,7 @@
       @if (!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport) {
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.return' | translate" translate>inventory.search.label.return</label>
+                 [appRichTooltip]="'inventory.search.tooltips.return' | translate" translate>inventory.search.label.return</label>
           <div class="col-md-8 col-lg-9">
             <app-select-input [name]="'returnType'" [object]="searchObj" [attributeName]="'returnType'"
                               [listArray]="deployTypes"></app-select-input>
@@ -145,7 +145,7 @@
             <div class="p-a b-a m-t">
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.agent' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.agent' | translate"
                        translate>inventory.search.label.agent</label>
                 <div class="col-md-8 col-lg-9">
                   <app-agent-selection [skipSubagents]="true" [required]="false" [preferences]="preferences"
@@ -155,7 +155,7 @@
               @if (searchObj.returnType !== ENUM.WORKFLOW) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.workflow' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.workflow' | translate"
                          translate>inventory.search.label.workflow</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -168,7 +168,7 @@
               @if (searchObj.returnType !== ENUM.FILEORDERSOURCE) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
                          translate>inventory.search.label.fileOrderSource</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -181,7 +181,7 @@
               @if (searchObj.returnType !== ENUM.JOBRESOURCE) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobResources' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.jobResources' | translate"
                          translate>inventory.search.label.jobResources</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -194,7 +194,7 @@
               @if (searchObj.returnType !== ENUM.NOTICEBOARD) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.boards' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.boards' | translate"
                          translate>inventory.search.label.boards</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -207,7 +207,7 @@
               @if (searchObj.returnType !== ENUM.LOCK) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.lock' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.lock' | translate"
                          translate>inventory.search.label.lock</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -220,7 +220,7 @@
               @if (searchObj.returnType !== ENUM.INCLUDESCRIPT) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.includeScript' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.includeScript' | translate"
                          translate>inventory.search.label.includeScript</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="includeScript"
@@ -231,7 +231,7 @@
               @if (searchObj.returnType !== ENUM.SCHEDULE) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.schedule' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.schedule' | translate"
                          translate>inventory.search.label.schedule</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
@@ -244,7 +244,7 @@
               @if (searchObj.returnType !== ENUM.CALENDAR) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.calendar' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.calendar' | translate"
                          translate>inventory.search.label.calendar</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="calendar"
@@ -255,7 +255,7 @@
               @if (searchObj.returnType !== ENUM.JOBTEMPLATE) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobTemplate' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.jobTemplate' | translate"
                          translate>inventory.search.label.jobTemplate</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="jobTemplate"
@@ -266,17 +266,17 @@
 
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.countJobs' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.countJobs' | translate"
                        translate>inventory.search.label.countJobs</label>
                 <label class="col-md-2 col-lg-2 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.from' | translate" translate>inventory.search.label.from
+                       [appRichTooltip]="'inventory.search.tooltips.from' | translate" translate>inventory.search.label.from
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom">
                   </nz-input-number>
                 </div>
                 <label class="col-md-2 col-lg-2 text-center form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.to' | translate" translate>inventory.search.label.to
+                       [appRichTooltip]="'inventory.search.tooltips.to' | translate" translate>inventory.search.label.to
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
@@ -284,7 +284,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobName' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.jobName' | translate"
                        translate>inventory.search.label.jobName</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
@@ -295,7 +295,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 block-ellipsis w-full"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
                        translate>inventory.search.label.jobNameExactMatch</label>
                 <div class="col-md-8 col-lg-9">
                   <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch"
@@ -305,7 +305,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobCriticality' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.jobCriticality' | translate"
                        translate>inventory.search.label.jobCriticality</label>
                 <div class="col-md-8 col-lg-9">
                   <app-select-input [isAllowClear]="true" [placeholder]="'inventory.placeholder.selectCriticality'"
@@ -318,7 +318,7 @@
               @if (searchObj.returnType === ENUM.WORKFLOW) {
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
-                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.jobScript' | translate"
+                         [appRichTooltip]="'inventory.search.tooltips.jobScript' | translate"
                          translate>inventory.search.label.jobScript</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="jobScript"
@@ -328,7 +328,7 @@
               }
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.argumentName' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.argumentName' | translate"
                        translate>inventory.search.label.argumentName</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="name"
@@ -337,7 +337,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.argumentValue' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.argumentValue' | translate"
                        translate>inventory.search.label.argumentValue</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="value"
@@ -347,7 +347,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.environmentName' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.environmentName' | translate"
                        translate>inventory.search.label.environmentName</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envName"
@@ -356,7 +356,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
-                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.search.tooltips.environmentValue' | translate"
+                       [appRichTooltip]="'inventory.search.tooltips.environmentValue' | translate"
                        translate>inventory.search.label.environmentValue</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envValue"

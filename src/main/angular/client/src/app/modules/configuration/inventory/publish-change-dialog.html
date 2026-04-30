@@ -296,8 +296,7 @@
                                        [(ngModel)]="obj.selected"
                                        [name]="'checkbox-related-' + obj.path"
                                        [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}"
-                                       (ngModelChange)="updateParentCheckboxRelated(objectType)" [nz-tooltip]="getRelatedParentTooltip(obj.id)"
-                                       nzTooltipPlacement="right">
+                                       (ngModelChange)="updateParentCheckboxRelated(objectType)" [appRichTooltip]="getRelatedParentTooltip(obj.id)">
                                         <span [ngClass]="{
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released

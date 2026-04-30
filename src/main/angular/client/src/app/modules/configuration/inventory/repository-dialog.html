@@ -78,7 +78,7 @@
             <div class="col-md-3">
               <label>{{'inventory.repository.label.deployed' | translate}}
                 / {{'inventory.repository.label.released'| translate}}</label>
-              <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.repository.tooltip.perDefaultStorageOfDeployedReleased' | translate"
+              <i [appRichTooltip]="'inventory.repository.tooltip.perDefaultStorageOfDeployedReleased' | translate"
                  class="fa fa-info-circle p-l-xs"></i>
             </div>
             <div class="col-md-9">
@@ -151,10 +151,10 @@
         @if (nodes.length > 0 && object.type === 'individual') {
           <div class="row m-b-sm">
             <div class="col-md-12">
-              <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+              <a (click)="expandAll();" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
                 <i class="fa fa-angle-double-down fa-lg"></i>
               </a>
-              <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+              <a (click)="collapseAll();" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
                 <i class="fa fa-angle-double-up fa-lg"></i>
               </a>
             </div>
@@ -434,7 +434,7 @@
                                   {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
                                                                                class="p-l-sm">{{version.deploymentOperation}}</span>
                                   @if (version.deploymentPath) {
-                                    <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i>
+                                    <i [appRichTooltip]="version.deploymentPath" class="text-muted p-l-sm">{{version.deploymentPath}}</i>
                                   }
                                 </div>
                               }
@@ -478,7 +478,7 @@
                                 <span [ngClass]="version.releaseId ? ' dark-blue': ''" class="fa fa-circle-o text-xs p-r-xs"></span>
                                 {{version.versionDate | stringToDate}}
                                 @if (version.releasePath) {
-                                  <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i>
+                                  <i [appRichTooltip]="version.releasePath" class="text-muted p-l-sm">{{version.releasePath}}</i>
                                 }
                               </div>
                             </nz-option>
@@ -670,8 +670,7 @@
                                        [(ngModel)]="obj.selected"
                                        [name]="'checkbox-related-' + obj.path"
                                        [nzDisabled]="obj.disabled"  [ngClass]="{'disabled-enforced': obj.disabled}"
-                                       (ngModelChange)="updateParentCheckboxRelated(objectType)" [nz-tooltip]="getRelatedParentTooltip(obj.id)"
-                                       nzTooltipPlacement="right">
+                                       (ngModelChange)="updateParentCheckboxRelated(objectType)" [appRichTooltip]="getRelatedParentTooltip(obj.id)">
                                         <span [ngClass]="{
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released

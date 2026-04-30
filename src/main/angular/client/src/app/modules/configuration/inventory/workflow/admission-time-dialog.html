@@ -1,7 +1,7 @@
 <form #myForm="ngForm" novalidate>
   <div class="form-group row">
     <div class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeZone' | translate}}"
-      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
+      [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
        translate>workflow.label.timeZone</div>
     <div class="col-md-8 col-lg-9">
       <input readonly class="form-control" name="timeZone"
@@ -12,7 +12,7 @@
     <div>
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.cycleType' | translate}}"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
+               [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
                 translate>workflow.repeat.label.cycleType</label>
         <div class="col-sm-9">
           <nz-select name="_value" [(ngModel)]="repeatObject.TYPE">
@@ -25,7 +25,7 @@
       @if (repeatObject.TYPE === 'Periodic') {
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.period' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
                   translate>workflow.repeat.label.period
            <sup class="text-danger text-sm">*</sup>
           </label>
@@ -49,7 +49,7 @@
       @if (repeatObject.TYPE === 'Periodic') {
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.offsets' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
                   translate>workflow.repeat.label.offsets
            <sup class="text-danger text-sm">*</sup>
           </label>
@@ -73,7 +73,7 @@
       @if (repeatObject.TYPE === 'Continuous') {
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.pause' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
                   translate>workflow.repeat.label.pause
            <sup class="text-danger text-sm">*</sup>
           </label>
@@ -97,7 +97,7 @@
       @if (repeatObject.TYPE === 'Continuous') {
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.limit' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
                   translate>workflow.repeat.label.limit</label>
           <div class="col-sm-9">
             <nz-input-number [nzMin]="1" [nzStep]="1" name="limit"
@@ -108,7 +108,7 @@
       @if (repeatObject.TYPE === 'Ticking') {
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.repeat.label.interval' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
                   translate>workflow.repeat.label.interval
            <sup class="text-danger text-sm">*</sup>
           </label>
@@ -134,7 +134,7 @@
   <div class="m-b">
     <div class="form-group row">
       <label class="col-sm-3 form-control-label" title="{{'workflow.label.admissionType' | translate}}"
-             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.admissionType' | translate) : ''"
+             [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.admissionType' | translate) : ''"
               translate>workflow.label.admissionType</label>
       <div class="col-sm-9">
         <nz-select nzShowSearch name="frequencyTab" [(ngModel)]="frequency.tab" (ngModelChange)="changeFrequency()">
@@ -176,7 +176,7 @@
     <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
       <div class="form-group row">
         <label class="col-sm-3" title="{{'workflow.admissionTime.label.weekDays' | translate}}"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
+               [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
                 translate>workflow.admissionTime.label.weekDays</label>
         <div class="col-sm-9">
           <label class="w m-b-xxs" nz-checkbox [(ngModel)]="frequency.all" name="week"
@@ -201,7 +201,7 @@
     <div class="tab-pane animated fadeIn" id="tab2" [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'runtime.label.dayNumber' | translate}}"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.dayNumber' | translate) : ''"
+               [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.dayNumber' | translate) : ''"
                 translate>runtime.label.dayNumber</label>
         <div class="col-sm-9">
           <nz-select [(ngModel)]="frequency.specificWeek" name="specificWeek" (ngModelChange)="onFrequencyChange()">
@@ -218,7 +218,7 @@
       </div>
       <div class="form-group row">
         <label class="col-sm-3 form-control-label" title="{{'runtime.label.weekDays' | translate}}"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
+               [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.weekDays' | translate) : ''"
                 translate>runtime.label.weekDays</label>
         <div class="col-sm-9">
           <nz-select [(ngModel)]="frequency.specificWeekDay" name="specificWeekDay" (ngModelChange)="onFrequencyChange()">
@@ -236,7 +236,7 @@
     <div class="tab-pane animated fadeIn" id="tab3" [ngClass]="{'active':frequency.tab == 'monthDays'}">
       <div class="form-group row">
         <label class="col-sm-3" title="{{'runtime.label.monthDays' | translate}}"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.monthDays' | translate) : ''"
+               [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.monthDays' | translate) : ''"
                 translate>runtime.label.monthDays</label>
         <div class="col-sm-9">
           <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos">
@@ -336,7 +336,7 @@
       <div class="col-sm-12">
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'workflow.admissionTime.label.startTime' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
                   translate>
             workflow.admissionTime.label.startTime
             <sup class="text-danger text-sm">*</sup>
@@ -358,7 +358,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-3 form-control-label" title="{{'common.label.duration' | translate}}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"
+                 [appRichTooltip]="isTooltipVisible ? ((!repeatObject ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime' : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"
                   translate>common.label.duration
            <sup class="text-danger text-sm">*</sup>
           </label>
@@ -385,9 +385,7 @@
     <div class="col-sm-12 b-b p-t p-b">
       <button  class="btn btn-sm btn-primary"
               [disabled]="!myForm.form.valid || !editor.isEnable || isRestrictedMonthsAllSelected"
-               [nzTooltipTitle]="isRestrictedMonthsAllSelected ? ('workflow.tooltip.restrictedMonthsTooltip' | translate) : null"
-              nz-tooltip
-              [nzTooltipPlacement]="'top'"
+               [appRichTooltip]="isRestrictedMonthsAllSelected ? ('workflow.tooltip.restrictedMonthsTooltip' | translate) : null"
               (click)="addFrequency(myForm)" >
         @if (isEdit) {
           <span translate>workflow.admissionTime.button.update</span>

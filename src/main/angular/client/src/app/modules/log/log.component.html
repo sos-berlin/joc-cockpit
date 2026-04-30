@@ -29,7 +29,7 @@
             </button>
           }
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
           }
         </div>
       </div>
@@ -71,10 +71,10 @@
         <div class="col-sm-12">
           @if (isExpandCollapse) {
             <span class="m-r">
-              <a class="text" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll();">
+              <a class="text" [appRichTooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll();">
                 <i class="fa fa-angle-double-down fa-lg"></i>
               </a>
-              <a class="text m-l-sm" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();">
+              <a class="text m-l-sm" [appRichTooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();">
                 <i class="fa fa-angle-double-up fa-lg"></i>
               </a>
             </span>

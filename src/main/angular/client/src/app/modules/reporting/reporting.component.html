@@ -7,7 +7,7 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
           @if (index == 0) {
             <div class="inline">
@@ -219,11 +219,11 @@
             <i (click)="filter.generateReport.searchText = '';searchInResult(filter.generateReport.searchText)" [hidden]="!filter.generateReport.searchText"
                class="fa fa-times search-close"></i>
           </div>
-          <button class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.expandDetails' | translate}}"
+          <button class="btn btn-sm btn-grey m-l-12" [appRichTooltip]="'common.button.expandDetails' | translate"
                   (click)="expandAll()">
             <i class="fa fa-expand text"></i>
           </button>
-          <button class="btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}"
+          <button class="btn btn-sm btn-grey m-l-sm m-r-sm" [appRichTooltip]="'common.button.collapseDetails' | translate"
                   (click)="collapseAll()">
             <i class="fa fa-compress text"></i>
           </button>

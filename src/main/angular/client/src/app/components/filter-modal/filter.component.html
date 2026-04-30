@@ -25,11 +25,11 @@
               <td nowrap>
                 @if (favorite == filter.id) {
                   <a (click)="removeFavorite()"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+                     [appRichTooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
                 }
                 @if (favorite != filter.id) {
                   <a (click)="makeFavorite(filter)"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
+                     [appRichTooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
                 }
                 {{filter.name}} @if (filter.shared) {
                 <label class="label label-info" translate>customization.label.share</label>

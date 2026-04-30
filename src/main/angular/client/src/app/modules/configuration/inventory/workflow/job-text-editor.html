@@ -1,7 +1,7 @@
 @if (!isModal && !isRuntimeVisible) {
   <div class="pos-abt" style="top: 8px; right: 22px">
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
     }
     @if (shouldShowAPIRequestButton()) {
       <button (click)="openAPIRequest()"
@@ -16,11 +16,11 @@
       {{'workflow.button.wizard' | translate}}
     </button>
     <button (click)="undo()"
-            class="btn btn-default btn-sm m-l-12" nz-tooltip="{{'workflow.button.undo' | translate}}">
+            class="btn btn-default btn-sm m-l-12" [appRichTooltip]="'workflow.button.undo' | translate">
       <i nz-icon nzTheme="outline" nzType="undo"></i>
     </button>
     <button (click)="redo()"
-            class="btn btn-default btn-sm m-l-12" nz-tooltip="{{'workflow.button.redo' | translate}}">
+            class="btn btn-default btn-sm m-l-12" [appRichTooltip]="'workflow.button.redo' | translate">
       <i nz-icon nzTheme="outline" nzType="redo"></i>
     </button>
   </div>
@@ -35,7 +35,7 @@
             <!--          <i class="p-r-xs fa fa-pencil"></i>-->
             @if (state) {
               <span (click)="updateFromJobTemplate()" [ngClass]="coreService.getColor(state.severity, 'text')"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="state._text | translate" class="p-l-sm p-r-sm">
+                    [appRichTooltip]="state._text | translate" class="p-l-sm p-r-sm">
                   @if (state._text === 'IN_SYNC') {
                     <i class="fa fa-refresh font11"></i>
                   }
@@ -54,7 +54,7 @@
                class="text-primary cursor text-hover-primary">{{selectedNode.job.jobTemplate.name}}</a>
             <span class="btn-grey img-circle m-l-sm" style="padding: 3px 6px">
               <i (click)="selectedNode.job.jobTemplate = null"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.removeJobTemplateReference' | translate" class="fa fa-trash text-hover-color cursor"></i>
+                 [appRichTooltip]="'workflow.tooltip.removeJobTemplateReference' | translate" class="fa fa-trash text-hover-color cursor"></i>
             </span>
           </div>
         </div>
@@ -65,7 +65,7 @@
       @if (index === 0) {
         <div class="job-property-editor">
           <div [hidden]="fullScreen || (!exactMatch && isModal)" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    translate>workflow.label.name
               @if (!isModal) {
@@ -99,7 +99,7 @@
           </div>
           @if (!isModal) {
             <div [hidden]="fullScreen" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
                      translate>workflow.label.label
                 @if (!isModal) {
@@ -131,7 +131,7 @@
             </div>
           }
           <div [hidden]="fullScreen" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    translate>workflow.label.title</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -150,7 +150,7 @@
           </div>
           @if ((showMoreAdvanceOptions || isModal)) {
             <div [hidden]="fullScreen" class="form-group row doc-in-workflow">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'inventory.label.documentation' | translate}}"
                      translate>inventory.label.documentation</label>
@@ -168,7 +168,7 @@
           }
           @if (hasLicense && (showMoreAdvanceOptions || isModal)) {
             <div [hidden]="fullScreen" class="form-group row">
-              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
+              <div [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
                    class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
               </div>
               <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -183,7 +183,7 @@
           }
           <div [hidden]="fullScreen" class="form-group row">
             @if (selectedNode.radio == 'agent') {
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agent' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label">
                 <span translate>workflow.label.agent</span>
                 @if (!isModal) {
@@ -192,7 +192,7 @@
               </label>
             }
             @if (selectedNode.radio == 'expression') {
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label">
                 <span translate>workflow.label.agentCluster</span>
                 @if (!isModal) {
@@ -224,7 +224,7 @@
           </div>
           @if (selectedNode.radio == 'expression') {
             <div [hidden]="fullScreen" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
                      translate>workflow.label.subagentClusterIdExpr
                 @if (!isModal) {
@@ -245,7 +245,7 @@
             </div>
           }
           <div [hidden]="fullScreen" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.jobResourceNames' | translate}}"
                    translate>workflow.label.jobResourceNames</label>
@@ -263,7 +263,7 @@
           </div>
           @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable') {
             <div [hidden]="fullScreen" class="form-group row">
-              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
+              <div [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
                    class="col-md-4 col-lg-3"
                    translate>workflow.label.returnCode
               </div>
@@ -311,7 +311,7 @@
             </div>
           }
           <div [hidden]="fullScreen" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.onWarning' | translate}}"
                    translate>
@@ -344,7 +344,7 @@
           </div>
           @if (selectedNode.job.executable) {
             <div [hidden]="fullScreen" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
+              <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
                      translate>workflow.label.jobClass</label>
               <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -479,7 +479,7 @@
                       @if (!isModal) {
                         <div class="text-right m-t-n-6">
                           <a (click)="fitToScreen()"
-                             class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'workflow.button.fitToScreen' | translate" translate>
                             @if (!fullScreen) {
                               <i class="fa fa-arrows-alt"></i>
                             }
@@ -488,23 +488,23 @@
                             }
                           </a>
                           <a (click)="encryptAllDefaultArguments()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate>
                             <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                           </a>
                           <a (click)="cutParam('defaultArguments')" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}"
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.cut' | translate"
                              translate>
                             <i class="fa fa-scissors"></i>
                           </a>
                           <a (click)="copyParam('defaultArguments')" [ngClass]="{'disabled-link':object.setOfCheckedDefaultArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}"
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.copy' | translate"
                              translate>
                             <i class="fa fa-copy"></i>
                           </a>
                           <a (click)="pasteParam(selectedNode.job, 'defaultArguments')"
                              [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedDefaultArgu.size > 0}"
                              class="anchor-with-icon p-r-0"
-                             nz-tooltip="{{'common.button.paste' | translate}}" translate>
+                             [appRichTooltip]="'common.button.paste' | translate" translate>
                             <i class="fa fa-paste"></i>
                           </a>
                         </div>
@@ -595,7 +595,7 @@
                       @if (!isModal) {
                         <div class="text-right m-t-n-6">
                           <a (click)="fitToScreen()"
-                             class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'workflow.button.fitToScreen' | translate" translate>
                             @if (!fullScreen) {
                               <i class="fa fa-arrows-alt"></i>
                             }
@@ -604,21 +604,21 @@
                             }
                           </a>
                           <a (click)="encryptAllEnvVariables()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate>
                             <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                           </a>
                           <a (click)="cutParam('env')" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.cut' | translate" translate>
                             <i class="fa fa-scissors"></i>
                           </a>
                           <a (click)="copyParam('env')" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.copy' | translate" translate>
                             <i class="fa fa-copy"></i>
                           </a>
                           <a (click)="pasteParam(selectedNode.job.executable, 'env')"
                              [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedEnv.size > 0}"
                              class="anchor-with-icon p-r-0"
-                             nz-tooltip="{{'common.button.paste' | translate}}" translate>
+                             [appRichTooltip]="'common.button.paste' | translate" translate>
                             <i class="fa fa-paste"></i>
                           </a>
                         </div>
@@ -721,7 +721,7 @@
                       @if (!isModal) {
                         <div class="text-right m-t-n-6">
                           <a (click)="fitToScreen()"
-                             class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'workflow.button.fitToScreen' | translate" translate>
                             @if (!fullScreen) {
                               <i class="fa fa-arrows-alt"></i>
                             }
@@ -730,21 +730,21 @@
                             }
                           </a>
                           <a (click)="encryptAllArguments()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate>
                             <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                           </a>
                           <a (click)="cutParam('arguments')" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.cut' | translate" translate>
                             <i class="fa fa-scissors"></i>
                           </a>
                           <a (click)="copyParam('arguments')" [ngClass]="{'disabled-link':object.setOfCheckedArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.copy' | translate" translate>
                             <i class="fa fa-copy"></i>
                           </a>
                           <a (click)="pasteParam(selectedNode.job.executable, 'arguments')"
                              [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedArgu.size > 0}"
                              class="anchor-with-icon p-r-0"
-                             nz-tooltip="{{'common.button.paste' | translate}}" translate>
+                             [appRichTooltip]="'common.button.paste' | translate" translate>
                             <i class="fa fa-paste"></i>
                           </a>
                         </div>
@@ -861,7 +861,7 @@
                       @if (!isModal) {
                         <div class="text-right m-t-n-6">
                           <a (click)="fitToScreen()"
-                             class="anchor-with-icon" nz-tooltip="{{'workflow.button.fitToScreen' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'workflow.button.fitToScreen' | translate" translate>
                             @if (!fullScreen) {
                               <i class="fa fa-arrows-alt"></i>
                             }
@@ -870,21 +870,21 @@
                             }
                           </a>
                           <a (click)="encryptAllJobArguments()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate>
                             <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                           </a>
                           <a (click)="cutParam('jobArguments')" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.cut' | translate" translate>
                             <i class="fa fa-scissors"></i>
                           </a>
                           <a (click)="copyParam('jobArguments')" [ngClass]="{'disabled-link':object.setOfCheckedJobArgu.size === 0}"
-                             class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
+                             class="anchor-with-icon" [appRichTooltip]="'common.button.copy' | translate" translate>
                             <i class="fa fa-copy"></i>
                           </a>
                           <a (click)="pasteParam(selectedNode.job.executable, 'jobArguments')"
                              [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0}"
                              class="anchor-with-icon p-r-0"
-                             nz-tooltip="{{'common.button.paste' | translate}}" translate>
+                             [appRichTooltip]="'common.button.paste' | translate" translate>
                             <i class="fa fa-paste"></i>
                           </a>
                         </div>
@@ -982,7 +982,7 @@
       @if (index === 1) {
     <div class="job-property-editor">
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
                title="{{'workflow.label.parallelism' | translate}}"
                translate>workflow.label.parallelism</label>
@@ -1006,7 +1006,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
                title="{{'workflow.label.timeout' | translate}}"
                translate>workflow.label.timeout</label>
@@ -1027,7 +1027,7 @@
       </div>
       @if (showMoreAdvanceOptions || isModal) {
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
+          <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.graceTimeout' | translate}}"
                  translate>workflow.label.graceTimeout</label>
@@ -1048,7 +1048,7 @@
         </div>
       }
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
                title="{{'workflow.label.warnIfShorter' | translate}}"
                translate>workflow.label.warnIfShorter</label>
@@ -1068,7 +1068,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
                title="{{'workflow.label.warnIfLonger' | translate}}"
                translate>workflow.label.warnIfLonger</label>
@@ -1089,7 +1089,7 @@
       </div>
       @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
+          <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
@@ -1107,7 +1107,7 @@
         </div>
       }
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
                title="{{'workflow.label.criticality' | translate}}"
                translate>workflow.label.criticality</label>
@@ -1130,7 +1130,7 @@
       </div>
       @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobNotRestartable' | translate) : ''"
+          <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobNotRestartable' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.jobNotRestartable' | translate}}"
                  translate>workflow.label.jobNotRestartable</label>
@@ -1151,7 +1151,7 @@
       }
       @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
+          <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.credentialKey' | translate}}"
                  translate>workflow.label.credentialKey
@@ -1178,7 +1178,7 @@
       }
       @if (selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions || isModal)) {
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
+          <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.loadUserProfile' | translate}}"
                  translate>workflow.label.loadUserProfile</label>
@@ -1195,7 +1195,7 @@
         </div>
       }
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
                title="{{'workflow.label.failOnOutputErr' | translate}}"
                translate>workflow.label.failOnOutputErr</label>
@@ -1210,7 +1210,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
                title="{{'workflow.label.warnOnOutputErr' | translate}}"
                translate>workflow.label.warnOnOutputErr</label>
@@ -1225,7 +1225,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
                title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
@@ -1241,7 +1241,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
                title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
                translate>workflow.label.killAtEndOfAdmissionPeriod</label>
@@ -1257,7 +1257,7 @@
         }
       </div>
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
+        <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
                title="{{'workflow.label.admissionTime' | translate}}"
                translate>workflow.label.admissionTime</label>
@@ -1317,21 +1317,21 @@
           <div class="job-property-editor">
             <div class="text-right m-t-n-6">
               <a (click)="encryptAllNodeArguments()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
-                 class="anchor-with-icon" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate>
+                 class="anchor-with-icon" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate>
                 <span nz-icon nzType="file-protect" nzTheme="outline"></span>
               </a>
               <a (click)="cutParam('nodeArguments')" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
-                 class="anchor-with-icon" nz-tooltip="{{'common.button.cut' | translate}}" translate>
+                 class="anchor-with-icon" [appRichTooltip]="'common.button.cut' | translate" translate>
                 <i class="fa fa-scissors"></i>
               </a>
               <a (click)="copyParam('nodeArguments')" [ngClass]="{'disabled-link':object.setOfCheckedNodeArgu.size === 0}"
-                 class="anchor-with-icon" nz-tooltip="{{'common.button.copy' | translate}}" translate>
+                 class="anchor-with-icon" [appRichTooltip]="'common.button.copy' | translate" translate>
                 <i class="fa fa-copy"></i>
               </a>
               <a (click)="pasteParam(selectedNode.obj, 'defaultArguments')"
                  [ngClass]="{'disabled-link':!copiedParamObjects.data || object.setOfCheckedNodeArgu.size > 0}"
                  class="anchor-with-icon p-r-0"
-                 nz-tooltip="{{'common.button.paste' | translate}}" translate>
+                 [appRichTooltip]="'common.button.paste' | translate" translate>
                 <i class="fa fa-paste"></i>
               </a>
             </div>
@@ -1450,7 +1450,7 @@
       <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
         <div class="job-property-editor">
           <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.mailOn' | translate}}"
                    translate>workflow.label.mailOn</label>
@@ -1470,7 +1470,7 @@
             }
           </div>
           <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.mailTo' | translate}}"
                    translate>workflow.label.mailTo</label>
@@ -1488,7 +1488,7 @@
             }
           </div>
           <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.mailCC' | translate}}"
                    translate>workflow.label.mailCC</label>
@@ -1506,7 +1506,7 @@
             }
           </div>
           <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
+            <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.mailBcc' | translate}}"
                    translate>workflow.label.mailBcc</label>

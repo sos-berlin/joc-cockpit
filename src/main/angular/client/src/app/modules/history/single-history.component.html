@@ -70,7 +70,7 @@
                   </td>
                   <td (click)="coreService.showLogWindow(history,null, null, controllerId, null,null)">
                     @if (history.label) {
-                      <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                      <span class="cur-point" [innerHtml]="history.label" [appRichTooltip]="history.position"></span>
                     }
                     @if (!history.label) {
                       <span [innerHtml]="history.position"></span>
@@ -171,7 +171,7 @@
                   </td>
                   <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,null)">
                     @if (jobHistory.label) {
-                      <span class="cur-point" [innerHtml]="jobHistory.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="jobHistory.position"></span>
+                      <span class="cur-point" [innerHtml]="jobHistory.label" [appRichTooltip]="jobHistory.position"></span>
                     }
                     @if (!jobHistory.label) {
                       <span [innerHtml]="jobHistory.position"></span>

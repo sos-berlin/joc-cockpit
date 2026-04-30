@@ -7,7 +7,7 @@
       <span translate>inventory.label.import</span>
     }
     @if (type === 'INVENTORY' && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-import')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-import')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (isDeploy) {
       <span translate>inventory.label.importAndDeploy</span>
@@ -123,7 +123,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
+              <label [appRichTooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>

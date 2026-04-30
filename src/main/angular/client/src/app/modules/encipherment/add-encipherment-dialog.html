@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>{{'encipherment.label.'+ title}}</span>
     @if (preferences.showHelpPages) {
-      <i (click)="helpPage('encryption-manage-certificate')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('encryption-manage-certificate')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -152,7 +152,7 @@
             <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
           </div>
           <div class="col-sm-1">
-            <span (click)="copyToClipboard()" class="fa fa-copy cursor" nz-tooltip="{{'encipherment.button.copyEncryptValue' | translate}}"></span>
+            <span (click)="copyToClipboard()" class="fa fa-copy cursor" [appRichTooltip]="'encipherment.button.copyEncryptValue' | translate"></span>
           </div>
         </div>
       }

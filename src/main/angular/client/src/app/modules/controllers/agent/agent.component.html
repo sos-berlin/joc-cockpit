@@ -7,10 +7,10 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if(selectedCluster && selectedCluster.subagentClusterId && preferences.showHelpPages) {
-            <i (click)="helpPage('initial-operation-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <i (click)="helpPage('initial-operation-agent-subagent-cluster')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }@else{
               @if (preferences.showHelpPages) {
-                <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+                <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
               }
             }
           <div class="inline">
@@ -301,7 +301,7 @@
                       <div class="text-muted">{{agent.title}}</div>
                     }
                   </ng-template>
-                  <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" cdkDragHandle class="draggable">
+                  <div [appRichTooltip]="contentTemplate" cdkDragHandle class="draggable">
                     <span>{{agent.subagentId}}</span>
                   </div>
                 </li>
@@ -323,7 +323,7 @@
               <div class="inline m-b">
                 <div style="position: relative; top: 4px">
                   <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                                   nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+                                                   [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
                   <span class="_600">{{selectedCluster.subagentClusterId}}</span>
                   @if (selectedCluster.title) {
                     <span class="text-muted _400"> - {{selectedCluster.title}}</span>
@@ -348,14 +348,14 @@
             <div class="inline" id="toolbar-icons">
               <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
                 <li class="nav-item">
-                  <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate"
+                  <a (click)="zoomIn()" [appRichTooltip]="'workflow.button.zoomIn' | translate"
                      class="nav-link">
                     <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a (click)="zoomOut()"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
+                     [appRichTooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
                     <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
                   </a>
                 </li>
@@ -363,13 +363,13 @@
                   <span class="separator"></span>
                 </li>
                 <li class="nav-item">
-                  <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate"
+                  <a (click)="actual()" [appRichTooltip]="'workflow.button.actual' | translate"
                      class="nav-link">
                     <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate"
+                  <a (click)="fit()" [appRichTooltip]="'workflow.button.fit' | translate"
                      class="nav-link">
                     <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
                   </a>
