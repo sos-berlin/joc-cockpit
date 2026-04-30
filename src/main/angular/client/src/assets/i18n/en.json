@@ -2143,6 +2143,11 @@
       "label.dailyPlan": "Automation",
       "label.useRelativePathOnly": "Use relative path"
     },
+    "deploy":{
+      "--------ADD DEPLOY SECTION------------": "",
+      "section.target": "Target",
+      "section.nodes": "Nodes"
+    },
     "repository": {
       "label.filter": "Filter",
       "label.validOnly": "Valid Only",

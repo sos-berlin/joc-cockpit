@@ -2143,6 +2143,11 @@
       "label.dailyPlan": "Automatización",
       "label.useRelativePathOnly": "Usar ruta relativa"
     },
+    "deploy":{
+      "--------ADD DEPLOY SECTION------------": "",
+      "section.target": "Target",
+      "section.nodes": "Nodes"
+    },
     "repository": {
       "label.filter": "Filtro",
       "label.validOnly": "Solo válido",
