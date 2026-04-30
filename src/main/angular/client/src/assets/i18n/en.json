@@ -2146,7 +2146,7 @@
     "deploy":{
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Target",
-      "section.notes": "Notes"
+      "section.notes": "Dependencies"
     },
     "repository": {
       "label.filter": "Filter",

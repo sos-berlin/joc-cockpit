@@ -2145,8 +2145,8 @@
     },
     "deploy":{
       "--------ADD DEPLOY SECTION------------": "",
-      "section.target": "Target",
-      "section.notes": "Notes"
+      "section.target": "Ziel",
+      "section.notes": "Abhängigkeiten"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2391,7 +2391,7 @@
         "fileFormat": "Gibt .zip oder .tar.gz für den Komprimierungstyp an.",
         "exportType": "Ist eine der Optionen: a) Export von einzelnen Objekten, b) Export von Ordnern, c) Export von Objekten im Zusammenhang mit Änderungen",
         "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. Arbeitsabläufe, Job-Ressourcen, Zeitpläne etc.",
-        "inclusiveAllTags": "Incl. Tags",
+        "inclusiveAllTags": "Fügt der Exportdatei Kennzeichnungen hinzu, die in das Ziel importiert werden.",
         "filterType": "Berücksichtigt Objekte, die in 'Controller' oder 'Automation' Systemordnern gespeichert sind",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status in die Exportdatei aufzunehmen. Ungültige Objekte können exportiert und importiert werden, allerdings können sie nicht ausgerollt oder freigegeben werden. Objekte im Entwurfsstatus enthalten Änderungen, die noch nicht bereitgestellt oder freigegeben wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern der Exportdatei hinzu.",
@@ -2733,7 +2733,7 @@
   },
   "order": {
     "--------ADD ORDER SECTION------------": "",
-    "section.commonTiming": "Common Start Time",
+    "section.commonTiming": "Gemeinsame Startzeit",
     "section.identification": "Identifikation",
     "section.executionTiming": "Zeitpunkt",
     "section.dependencyContext": "Abhängigkeiten",
