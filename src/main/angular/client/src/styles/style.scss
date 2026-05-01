@@ -5720,10 +5720,11 @@ tr.disabled-row td:not(.menu):not(.chk) {
 /* ── Section box (used in dialog forms) ── */
 .section-box {
   margin-top: 14px;
+  border-radius: 4px;
 }
 
 .section-box-header {
-  padding: 0 0 6px 0;
+  padding: 6px;
 }
 
 .section-box-title {

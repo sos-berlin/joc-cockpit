@@ -567,11 +567,14 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.showTooltipInfo
+                    profile.label.tooltipDelay
                   </div>
                   <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo"
-                           (ngModelChange)="changeConfiguration()"></label>
+                    <app-select-input [attributeName]="'tooltipDelay'" [classNames]="'w-xl'"
+                                      [isSearchable]="false"
+                                      [listArray]="tooltipDelayOptions" [object]="preferences"
+                                      [optionLabel]="'name'" [optionValue]="'value'"
+                                      (modelChange)="changeConfiguration()"></app-select-input>
                   </div>
                 </div>
                 <div class="row m-t">

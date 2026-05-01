@@ -856,6 +856,13 @@ export class UserComponent {
     {value: 'grey', name: 'profile.label.grey'},
     {value: 'dark', name: 'profile.label.dark'},];
 
+  tooltipDelayOptions = [
+    {value: -1,   name: 'profile.label.tooltipDelay.never'},
+    {value: 0,    name: 'profile.label.tooltipDelay.immediate'},
+    {value: 0.2,  name: 'profile.label.tooltipDelay.short'},
+    {value: 0.5,  name: 'profile.label.tooltipDelay.long'},
+  ];
+
   entryPerPage = [{value: '10', name: '10'},
     {value: '25', name: '25'},
     {value: '50', name: '50'},

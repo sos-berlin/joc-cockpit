@@ -103,7 +103,7 @@
             }
 
             <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
                         class="col-sm-4 form-control-label"
                         translate>order.label.priority</label>
                 <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"

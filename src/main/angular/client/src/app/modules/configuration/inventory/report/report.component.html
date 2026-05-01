@@ -66,7 +66,7 @@
           <form>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.name' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.name' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
                 <sup class="text-danger text-sm">*</sup>
@@ -88,7 +88,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.title' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.title' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -99,7 +99,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.template' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.template' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.template
                 <sup class="text-danger text-sm">*</sup>
@@ -113,7 +113,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.interval' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.interval.interval' | translate"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
               <div class="col-md-8">
                 <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
@@ -127,7 +127,7 @@
 
             @if (isInterval === 'absolute') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthFrom' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthFrom' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
                   <sup class="text-danger text-sm">*</sup>
@@ -161,7 +161,7 @@
             }
             @if (isInterval === 'absolute') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthTo' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthTo' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
                 </label>
@@ -196,7 +196,7 @@
 
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.unit' | translate"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -209,7 +209,7 @@
             }
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.from' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.from' | translate"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -220,7 +220,7 @@
             }
             @if (isInterval === 'preset') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.preset.fromSample' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.preset.fromSample' | translate"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.fromSample</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
@@ -231,7 +231,7 @@
             }
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.count' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.count' | translate"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -241,7 +241,7 @@
               </div>
             }
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.sort' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.sort' | translate"
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
               <div class="col-md-8">
                 <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
@@ -252,7 +252,7 @@
             </div>
             <div class="form-group row">
               <label
-                [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.frequencies' | translate) : ''"
+                [appRichTooltip]="'inventory.tooltips.report.frequencies' | translate"
 
                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.frequencies
                 <sup class="text-danger text-sm">*</sup>
@@ -267,7 +267,7 @@
             </div>
             <div class="form-group row">
               <label
-                [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.controllerId' | translate) : ''"
+                [appRichTooltip]="'inventory.tooltips.report.controllerId' | translate"
 
                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.controllerId</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -278,7 +278,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.hits' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.report.hits' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.hits
               </label>
@@ -292,7 +292,7 @@
             @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
               <div class="form-group row">
                 <label
-                  [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodLength' | translate) : ''"
+                  [appRichTooltip]="'inventory.tooltips.report.periodLength' | translate"
 
                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodLength
                 </label>
@@ -306,7 +306,7 @@
             }
             @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodStep' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.report.periodStep' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodStep
                 </label>

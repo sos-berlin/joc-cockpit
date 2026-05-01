@@ -282,7 +282,7 @@
             <div class="box-body p-t-0">
               <app-job-content (updateFromJobTemplateFn)="updateFromJobTemplate($event)" [workflowPath]="workflowPath" (jobTagsEvent)="onJobTags($event)" [agents]="inventoryService.agentList"
                                [documentationTree]="documentationTree"
-                               [isTooltipVisible]="!preferences.showTooltipInfo" [jobResourcesTree]="jobResourcesTree"
+                               [isTooltipVisible]="true" [jobResourcesTree]="jobResourcesTree"
                                [jobs]="jobs"
                                [orderPreparation]="orderPreparation" [preferences]="preferences"
                                [schedulerId]="schedulerId" [scriptTree]="scriptTree" [selectedNode]="selectedNode"
@@ -292,7 +292,7 @@
           <div class="box-body">
             @if (selectedNode.type !== 'Job' && selectedNode.type !== 'Cycle') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.workflow.job.label' | translate"
                        class="col-md-4 col-lg-3 form-control-label"
                        translate>workflow.label.label
                 </label>
@@ -315,14 +315,14 @@
 
             @if (selectedNode.type === 'If') {
               <div>
-                <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="!preferences.showTooltipInfo"
+                <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="true"
                                         [selectedNode]="selectedNode"></app-expression-content>
               </div>
             }
 
             @if (selectedNode.type === 'When') {
               <div>
-                <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="!preferences.showTooltipInfo"
+                <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="true"
                                         [selectedNode]="selectedNode"></app-expression-content>
               </div>
             }
@@ -330,7 +330,7 @@
             @if (selectedNode.type === 'Fork') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinIfFailed' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.fork.joinIfFailed' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
                          title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
                   <div class="col-md-8 col-lg-9">
@@ -450,7 +450,7 @@
                     <div class="p-a b-a m-t">
                       <div [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}"
                            class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.children' | translate"
                                class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.children
                           <sup class="text-danger text-sm">*</sup>
                         </label>
@@ -479,7 +479,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.childToId' | translate"
                                class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.childToId' | translate}}"
                                translate>workflow.label.childToId</label>
                         <div class="col-md-8 col-lg-9">
@@ -508,7 +508,7 @@
                       </ng-template>
                       <div class="p-a b-a m-t">
                         <div class="form-group row">
-                          <div [appRichTooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''"
+                          <div [appRichTooltip]="titleTemplate"
                                class="col-md-4 col-lg-3 block-ellipsis-job" translate>
                             workflow.label.agentAssignment
                             <sup class="text-danger text-sm">*</sup>
@@ -525,14 +525,14 @@
                         </div>
                         <div class="form-group row">
                           @if (selectedNode.radio == 'agent') {
-                            <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.subagent' | translate) : ''"
+                            <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.subagent' | translate"
                                    class="col-md-4 col-lg-3 form-control-label">
                               <span translate>workflow.label.subagentCluster</span>
                               <sup class="text-danger text-sm">*</sup>
                             </label>
                           }
                           @if (selectedNode.radio == 'expression') {
-                            <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agentCluster' | translate) : ''"
+                            <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.agentCluster' | translate"
                                    class="col-md-4 col-lg-3 form-control-label">
                               <span translate>workflow.label.agentCluster</span>
                               <sup class="text-danger text-sm">*</sup>
@@ -556,7 +556,7 @@
                         </div>
                         @if (selectedNode.radio == 'expression') {
                           <div class="form-group row">
-                            <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.subagentClusterIdExpr' | translate) : ''"
+                            <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.subagentClusterIdExpr' | translate"
                                    class="col-md-4 col-lg-3 form-control-label"
                                    translate>workflow.label.subagentClusterIdExpr
                               <sup class="text-danger text-sm">*</sup>
@@ -585,7 +585,7 @@
                 }
 
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.joinIfFailed' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.joinIfFailed' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
                          title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
                   <div class="col-md-8 col-lg-9">
@@ -746,7 +746,7 @@
             @if (selectedNode.type === 'PostNotices') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardNames' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.board.boardNames' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
                          title="{{'workflow.label.boardNames' | translate}}" translate>workflow.label.boardNames
                     <sup class="text-danger text-sm">*</sup>
@@ -763,14 +763,14 @@
               <div>
                 <div class="form-group row">
                   @if (selectedNode.type === 'ExpectNotices') {
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.expectBoardExpression' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.board.expectBoardExpression' | translate"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.expectBoardExpression' | translate}}" translate>workflow.label.expectBoardExpression
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                   }
                   @if (selectedNode.type === 'ConsumeNotices') {
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.consumeBoardExpression' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.board.consumeBoardExpression' | translate"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.consumeBoardExpression' | translate}}" translate>workflow.label.consumeBoardExpression
                       <sup class="text-danger text-sm">*</sup>
@@ -807,7 +807,7 @@
             @if (selectedNode.type === 'ConsumeNotices' || selectedNode.type === 'ExpectNotices') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.whenNotAnnounced' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.board.whenNotAnnounced' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
                          title="{{'workflow.label.whenNotAnnounced' | translate}}" translate>workflow.label.whenNotAnnounced
                     <sup class="text-danger text-sm">*</sup>
@@ -833,7 +833,7 @@
             @if (selectedNode.type === 'Prompt') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.prompt.question' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.prompt.question' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.question</label>
                   <div class="col-md-8 col-lg-9">
                 <textarea [(ngModel)]="selectedNode.obj.question" [appAutofocus]="true" class="form-control" name="question"
@@ -853,20 +853,20 @@
                     <nz-radio-group [(ngModel)]="selectedNode.obj.type" (ngModelChange)="changeSettings($event)"
                                     name="type">
                       <label
-                        [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unchanged' | translate) : ''"
+                        [appRichTooltip]="'inventory.tooltips.workflow.finish.unchanged' | translate"
                         nz-radio nzValue="unchanged"><span translate>workflow.label.unchanged</span></label>
                       <label
-                        [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.unsuccessful' | translate) : ''"
+                        [appRichTooltip]="'inventory.tooltips.workflow.finish.unsuccessful' | translate"
                         nz-radio nzValue="unsuccessful"><span translate>workflow.label.unsuccessful</span></label>
                       <label
-                        [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.successful' | translate) : ''"
+                        [appRichTooltip]="'inventory.tooltips.workflow.finish.successful' | translate"
                         nz-radio nzValue="successful"><span translate>workflow.label.successful</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 @if (selectedNode.obj.type == 'unsuccessful') {
                   <div class="form-group row">
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.message' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.finish.message' | translate"
                            class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
                     <div class="col-md-8 col-lg-9">
                   <textarea [(ngModel)]="selectedNode.obj.message" [appAutofocus]="true" class="form-control" name="message"
@@ -880,7 +880,7 @@
             @if (selectedNode.type === 'Options') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.options.stopOnFailure' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.options.stopOnFailure' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.stopOnFailure</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.stopOnFailure" name="stopOnFailure" nz-checkbox></label>
@@ -892,7 +892,7 @@
             @if (selectedNode.type === 'AdmissionTime') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDayForInstruction' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDayForInstruction' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.skipIfNoAdmissionForOrderDayForInstruction</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.skipIfNoAdmissionForOrderDay" name="stopOnFailure" nz-checkbox></label>
@@ -902,7 +902,7 @@
                   [data]="selectedNode.data"
                   [job]="selectedNode.obj"
                   [timeZone]="preferences.zone"
-                  [isTooltipVisible]="!preferences.showTooltipInfo">
+                  [isTooltipVisible]="true">
                 </app-admission-time>
               </div>
             }
@@ -910,7 +910,7 @@
             @if (selectedNode.type === 'Fail') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.message' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.fail.message' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
                   <div class="col-md-8 col-lg-9">
                 <textarea [(ngModel)]="selectedNode.obj.message" [appAutofocus]="true" class="form-control" name="message"
@@ -918,7 +918,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.returnCode' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.fail.returnCode' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.returnCode</label>
                   <div class="col-md-8 col-lg-9">
                     <nz-input-number [(ngModel)]="selectedNode.obj.outcome.returnCode" [nzMin]="0" [nzStep]="1"
@@ -926,7 +926,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.uncatchable' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.fail.uncatchable' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.uncatchable</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.uncatchable" name="uncatchable" nz-checkbox></label>
@@ -938,7 +938,7 @@
             @if (selectedNode.type === 'Sleep') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.duration' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.duration' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.duration
                     <sup class="text-danger text-sm">*</sup>
                   </label>
@@ -974,7 +974,7 @@
                 </div>
                 @if (selectedNode.obj.tries == 'limited') {
                   <div class="form-group row">
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.retry.maxTries' | translate"
                            class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -994,7 +994,7 @@
                 }
                 @if (selectedNode.obj.retryDelays?.length > 0) {
                   <div class="form-group row">
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.retry.delay' | translate"
                            class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
                     <div class="col-md-8 col-lg-9">
                       <div (cdkDropListDropped)="dropDelay($event, selectedNode.obj.retryDelays)" cdkDropList>
@@ -1050,7 +1050,7 @@
               <div>
                 @if (hasLicense) {
                   <div class="form-group row">
-                    <div [appRichTooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''"
+                    <div [appRichTooltip]="titleTemplate"
                          class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
                       <sup class="text-danger text-sm">*</sup>
                     </div>
@@ -1067,14 +1067,14 @@
                 }
                 <div class="form-group row">
                   @if (selectedNode.radio == 'agent') {
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.subagent' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.stickySubagent.subagent' | translate"
                            class="col-md-4 col-lg-3 form-control-label">
                       <span translate>workflow.label.subagentCluster</span>
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                   }
                   @if (selectedNode.radio == 'expression') {
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.agentCluster' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.stickySubagent.agentCluster' | translate"
                            class="col-md-4 col-lg-3 form-control-label">
                       <span translate>workflow.label.agentCluster</span>
                       <sup class="text-danger text-sm">*</sup>
@@ -1098,7 +1098,7 @@
                 </div>
                 @if (selectedNode.radio == 'expression') {
                   <div class="form-group row">
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.subagentClusterIdExpr' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.workflow.stickySubagent.subagentClusterIdExpr' | translate"
                            class="col-md-4 col-lg-3 form-control-label"
                            translate>workflow.label.subagentClusterIdExpr
                     </label>
@@ -1124,7 +1124,7 @@
             @if (selectedNode.type === 'Lock') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.name' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.lock.name' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name
                     <sup class="text-danger text-sm">*</sup>
                   </label>
@@ -1147,7 +1147,7 @@
                   <div>
                     @for (item of selectedNode.obj.lockNames; track $index; let i = $index) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.count' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.workflow.lock.count' | translate"
                                class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.count</label>
                         <div class="col-md-8 col-lg-9">
                           <nz-input-number [(ngModel)]="selectedNode.obj[item]" [nzMin]="1" [nzStep]="1"
@@ -1162,7 +1162,7 @@
 
             @if (selectedNode.type === 'Cycle') {
               <div>
-                <app-cycle-instruction [isTooltipVisible]="!preferences.showTooltipInfo"
+                <app-cycle-instruction [isTooltipVisible]="true"
                                        [selectedNode]="selectedNode" [timeZone]="extraConfiguration.timeZone">
                 </app-cycle-instruction>
               </div>
@@ -1171,7 +1171,7 @@
             @if (selectedNode.type === 'AddOrder') {
               <div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowName' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.workflowName' | translate"
                          class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.workflowName
                     <sup class="text-danger text-sm">*</sup>
                   </label>
@@ -1245,7 +1245,7 @@
                 </div>
 
                 <div class="form-group row" [hidden]="!blockPositions || blockPositions?.size == 0">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.blockPosition' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.blockPosition' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
                          title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
                   @if (positions) {
@@ -1257,7 +1257,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.startPosition' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.startPosition' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
                          title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
                   @if (positions) {
@@ -1269,7 +1269,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.endPositions' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.endPositions' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
                          title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
                   @if (positions) {
@@ -1282,7 +1282,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
                          title="{{'order.label.ignoreAdmissionTimes' | translate}}" translate>order.label.ignoreAdmissionTimes</label>
                   <div class="col-md-8 col-lg-9">
@@ -1291,7 +1291,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
                          title="{{'workflow.label.remainWhenTerminated' | translate}}" translate>workflow.label.remainWhenTerminated</label>
                   <div class="col-md-8 col-lg-9">
@@ -1305,7 +1305,7 @@
                     <div class="col-md-12">
                       <div class="form-group row">
                         <div class="col-md-12">
-                          <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.arguments' | translate) : ''"
+                          <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.arguments' | translate"
                                  class="_600" translate>workflow.label.arguments</label>
                         </div>
                       </div>
@@ -1704,7 +1704,7 @@
             }
             <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'hide': fullScreen}"
                  class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.name' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.workflow.name' | translate"
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -1725,7 +1725,7 @@
               </div>
             </div>
             <div [ngClass]="{'hide': fullScreen}" class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.title' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.workflow.title' | translate"
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
               <div class="col-md-8 col-lg-9">
                 <input (blur)="updateOtherProperties('title')" [(ngModel)]="extraConfiguration.title" [readonly]="isTrash" autocomplete="off"
@@ -1735,7 +1735,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div [ngClass]="{'hide': fullScreen}" class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.workflow.documentation' | translate"
                        class="col-md-4 col-lg-3 form-control-label"
                        title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
                 <div class="col-md-8 col-lg-9">
@@ -1745,7 +1745,7 @@
               </div>
             }
             <div [ngClass]="{'hide': fullScreen}" class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.workflow.jobResourceNames' | translate"
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
               <div class="col-md-8 col-lg-9">
@@ -1755,7 +1755,7 @@
               </div>
             </div>
             <div [ngClass]="{'hide': fullScreen}" class="form-group row">
-              <div [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
+              <div [appRichTooltip]="'inventory.tooltips.workflow.timeZone' | translate"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
               </div>
@@ -1770,7 +1770,7 @@
             </div>
             @if (allowUndeclaredVariables || variableDeclarations.allowUndeclared) {
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''"
+                <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [appRichTooltip]="'inventory.tooltips.workflow.allowUndeclared' | translate"
                        translate>workflow.label.allowUndeclared</label>
                 <div class="col-md-8 col-lg-9">
                   <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('allowUndeclared')"

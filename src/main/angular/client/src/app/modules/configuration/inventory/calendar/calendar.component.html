@@ -84,7 +84,7 @@
               <div class="col-md-12">
                 <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
                      class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.calendar.name' | translate"
 
                          class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
                     <sup class="text-danger text-sm">*</sup>
@@ -108,7 +108,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.calendar.title' | translate"
 
                          class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -119,7 +119,7 @@
                 </div>
                 @if (showMoreAdvanceOptions) {
                   <div class="form-group row">
-                    <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
+                    <label [appRichTooltip]="'inventory.tooltips.calendar.documentation' | translate"
 
                            class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -129,7 +129,7 @@
                   </div>
                 }
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.calendar.type' | translate"
 
                          class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -140,7 +140,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.calendar.validFrom' | translate"
 
                          class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
                   <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
@@ -149,7 +149,7 @@
                                     [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                                     name="from"></nz-date-picker>
                   </div>
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.calendar.validTo' | translate"
 
                          class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
                   <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"

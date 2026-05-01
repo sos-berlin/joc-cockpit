@@ -81,7 +81,7 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.name' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.script.name' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
                 <sup class="text-danger text-sm">*</sup>
@@ -103,7 +103,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.title' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.script.title' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -114,7 +114,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.documentation' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.script.documentation' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -124,7 +124,7 @@
               </div>
             }
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.script.script' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.script
                 <sup class="text-danger text-sm">*</sup>

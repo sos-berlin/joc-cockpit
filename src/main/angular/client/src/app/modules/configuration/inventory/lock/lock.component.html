@@ -79,7 +79,7 @@
               </div>
               <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                    class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.lock.name' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                        translate>common.label.name
@@ -102,7 +102,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.lock.title' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                        translate>common.label.title</label>
@@ -114,7 +114,7 @@
               </div>
               @if (showMoreAdvanceOptions) {
                 <div class="form-group row">
-                  <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''"
+                  <label [appRichTooltip]="'inventory.tooltips.lock.documentation' | translate"
 
                          class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                          translate>inventory.label.documentation</label>
@@ -125,7 +125,7 @@
                 </div>
               }
               <div [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}" class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.lock.limit' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                        translate>inventory.label.limit

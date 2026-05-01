@@ -92,10 +92,26 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   private overlayRef: OverlayRef | null = null;
   private insidePanel = false;
   private isDragging = false;
+  private hoverTimer: ReturnType<typeof setTimeout> | null = null;
   private positionSub: Subscription | null = null;
   private readonly tooltipId = `rt-${++_tooltipIdSeq}`;
   private readonly closeBound = () => this.closeWithAnimation();
   private readonly panelMouseUpHandler = () => { this.isDragging = false; };
+
+  private get hoverDelay(): number {
+    try {
+      const prefs = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      const d = parseFloat(prefs.tooltipDelay);
+      return isNaN(d) ? 200 : d * 1000;
+    } catch { return 200; }
+  }
+
+  private get tooltipDisabled(): boolean {
+    try {
+      const prefs = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      return parseFloat(prefs.tooltipDelay) === -1;
+    } catch { return false; }
+  }
 
   private readonly overlay = inject(Overlay);
   private readonly positionBuilder = inject(OverlayPositionBuilder);
@@ -129,25 +145,33 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   // ── Hover ──────────────────────────────────────────────
   @HostListener('mouseenter')
   onEnter(): void {
-    if (!this.content) return;
-    this.open();
+    if (!this.content || this.tooltipDisabled) return;
+    const delay = this.hoverDelay;
+    if (delay <= 0) {
+      this.open();
+    } else {
+      this.hoverTimer = setTimeout(() => this.open(), delay);
+    }
   }
 
   @HostListener('mouseleave')
   onLeave(): void {
+    if (this.hoverTimer) { clearTimeout(this.hoverTimer); this.hoverTimer = null; }
     setTimeout(() => { if (!this.insidePanel) this.closeWithAnimation(); }, 80);
   }
 
   // ── Click (toggle) ─────────────────────────────────────
   @HostListener('click')
   onClick(): void {
-    if (!this.content) return;
+    if (!this.content || this.tooltipDisabled) return;
+    if (this.hoverTimer) { clearTimeout(this.hoverTimer); this.hoverTimer = null; }
     this.overlayRef ? this.closeWithAnimation() : this.open();
   }
 
   // ── Keyboard: focus opens, blur closes ─────────────────
   @HostListener('focus')
   onFocus(): void {
+    // Keyboard focus: always immediate, never suppressed
     if (!this.content) return;
     this.open();
   }
@@ -262,6 +286,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.hoverTimer) { clearTimeout(this.hoverTimer); this.hoverTimer = null; }
     this.positionSub?.unsubscribe();
     document.removeEventListener('click', this.outsideClickHandler, true);
     document.removeEventListener('mouseup', this.panelMouseUpHandler, true);

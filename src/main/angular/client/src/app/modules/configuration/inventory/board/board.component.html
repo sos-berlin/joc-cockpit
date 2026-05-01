@@ -88,7 +88,7 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.board.name' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
                 <sup class="text-danger text-sm">*</sup>
@@ -111,7 +111,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.board.title' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -122,7 +122,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.board.documentation' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -132,7 +132,7 @@
               </div>
             }
             <div class="form-group row">
-              <div class="col-md-4 col-lg-3" translate [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.boardType' | translate) : ''">workflow.label.boardType</div>
+              <div class="col-md-4 col-lg-3" translate [appRichTooltip]="'inventory.tooltips.board.boardType' | translate">workflow.label.boardType</div>
               <div  class="col-md-6 col-lg-8">
                 <nz-radio-group [(ngModel)]="board.configuration.boardType" (ngModelChange)="onChange()" name="boardType">
                   <label nz-radio nzValue="GLOBAL"><span
@@ -145,7 +145,7 @@
             @if (board.configuration.boardType === 'GLOBAL') {
               <div [ngClass]="{ 'has-error' : (((toNotice.dirty || toNotice.touched) && toNotice.invalid))}"
                    class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
                   <sup class="text-danger text-sm">*</sup>
@@ -177,7 +177,7 @@
             }
             @if (board.configuration.boardType === 'PLANNABLE') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
                 </label>
@@ -204,7 +204,7 @@
             @if (board.configuration.boardType === 'GLOBAL') {
               <div [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}"
                    class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.board.readingOrderToNoticeId' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.readingOrderToNoticeId
                   <sup class="text-danger text-sm">*</sup>
@@ -237,7 +237,7 @@
             }
             @if (board.configuration.boardType === 'GLOBAL') {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.board.endOfLife' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.endOfLife
                   <sup class="text-danger text-sm">*</sup>

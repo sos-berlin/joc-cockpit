@@ -367,7 +367,7 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.schedule.name' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
                 <sup class="text-danger text-sm">*</sup>
@@ -389,7 +389,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.schedule.title' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -400,7 +400,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
+                <label [appRichTooltip]="'inventory.tooltips.schedule.documentation' | translate"
 
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -410,7 +410,7 @@
               </div>
             }
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.schedule.workflowName' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
                 <sup class="text-danger text-sm">*</sup>
@@ -426,7 +426,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.schedule.planOrderAutomatically' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                      title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
@@ -437,7 +437,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
+              <label [appRichTooltip]="'inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                      title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
@@ -456,7 +456,7 @@
                 @for (variableSet of schedule.configuration.orderParameterisations; track $index; let j = $index) {
                   <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
                     <div class="form-group row">
-                      <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
+                      <label [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate"
 
                              class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
                       <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
@@ -546,7 +546,7 @@
 
                     @if (blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.schedule.blockPosition' | translate"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -557,7 +557,7 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.schedule.startNode' | translate"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -568,7 +568,7 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.schedule.endNode' | translate"
 
                                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -580,7 +580,7 @@
                       </div>
                     }
                     <div class="form-group row">
-                      <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                      <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
 
                              class="col-lg-3 col-xl-3 col-xxl-3"
                              translate>order.label.priority</label>
@@ -612,7 +612,7 @@
                     </div>
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
+                        <label [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate"
 
                                class="col-lg-3 col-xl-3 col-xxl-3"
                                translate>order.label.ignoreAdmissionTimes</label>

@@ -68,14 +68,14 @@
         </div>
         <!-- ── Section 1: Destination ── -->
         @if (!releasable && !isRemoved && (showMoreAdvanceOptions || selectedSchedulerIds.length > 1)) {
-          <div class="m-b-sm section-box">
+          <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.export.section.destination</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.controllers' | translate) : null" translate>inventory.label.controllers</span></label>
+                  <label><span [appRichTooltip]="'inventory.tooltips.deploy.controllers' | translate" translate>inventory.label.controllers</span></label>
                 </label>
                 <div class="col-md-8">
                   <nz-select
@@ -96,13 +96,13 @@
         }
         <!-- ── Section 2: Execution ── -->
         @if ((!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
-          <div class="m-b-sm section-box">
+          <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.export.section.execution</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row">
-                <div [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.updateDailyPlan' | translate) : null" class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+                <div [appRichTooltip]="'inventory.tooltips.deploy.updateDailyPlan' | translate" class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
                 <div class="col-md-9">
                   <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
                     <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
@@ -113,7 +113,7 @@
               </div>
               @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
                 <div class="form-group row">
-                  <label  class="col-md-3 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.specificDate' | translate) : null" translate>common.label.specificDate</span> 
+                  <label  class="col-md-3 form-control-label"><span [appRichTooltip]="'inventory.tooltips.deploy.specificDate' | translate" translate>common.label.specificDate</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-8">
@@ -134,7 +134,7 @@
         }
         <!-- ── Section 3: Scope ── -->
         @if (!isRevoke && !isRemoved && operation != 'recall' &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate)) {
-          <div class="m-b-sm section-box">
+          <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
             </div>
@@ -142,7 +142,7 @@
               <div class="form-group row">
                 <div class="col-md-6">
                   <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
-                  <label><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.includeTodaysLateOrders' | translate) : null" translate>inventory.label.includeTodaysLateOrders</span></label>
+                  <label><span [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate" translate>inventory.label.includeTodaysLateOrders</span></label>
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@
 
         <!-- ── Section 4: Advanced Options ── -->
         @if (showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies) {
-          <div class="m-b-sm section-box">
+          <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.export.section.advanced</small>
             </div>
@@ -159,7 +159,7 @@
               @if (showMoreAdvanceOptions || dependencyMode !== 'all') {
                 <div class="form-group row">
                   <div class="col-md-3">
-                    <label><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.includeDependencies' | translate) : null" translate>inventory.label.includeDependencies</span></label>
+                    <label><span [appRichTooltip]="'inventory.tooltips.deploy.includeDependencies' | translate" translate>inventory.label.includeDependencies</span></label>
                   </div>
                   <div class="col-md-9">
                     <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
@@ -172,7 +172,7 @@
               }
               @if (dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
                 <div class="form-group row">
-                  <label class="col-md-3"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.manageDependencies' | translate) : null" translate>inventory.label.manageDependencies</span></label>
+                  <label class="col-md-3"><span [appRichTooltip]="'inventory.tooltips.deploy.manageDependencies' | translate" translate>inventory.label.manageDependencies</span></label>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
                   </div>
@@ -180,7 +180,7 @@
               }
               @if (dependencyMode !== 'none' && showDependencies && (showMoreAdvanceOptions || showRelatedObjects)) {
                 <div class="form-group row">
-                  <label class="col-md-3"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.deploy.showRelatedObjects' | translate) : null" translate>inventory.label.showRelatedObjects</span></label>
+                  <label class="col-md-3"><span [appRichTooltip]="'inventory.tooltips.deploy.showRelatedObjects' | translate" translate>inventory.label.showRelatedObjects</span></label>
                   <div class="col-md-6">
                     <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects" />
                   </div>
@@ -192,7 +192,7 @@
 
         <!-- ── Section 5: Warnings ── -->
         @if ((isRemoved || isRevoke || operation === 'recall') && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)) {
-          <div class="m-b-sm section-box">
+          <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
             </div>

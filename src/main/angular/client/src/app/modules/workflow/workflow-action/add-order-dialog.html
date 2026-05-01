@@ -277,7 +277,7 @@
     <div class="modal-header">
       <h4 class="modal-title">
         @if (preferences.showHelpPages) {
-          <i (click)="helpPage()" [appRichTooltip]="!preferences.showTooltipInfo ? ('common.tooltip.help' | translate) : null" class="help-info-controllers-agent cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20 m-r-sm"></i>
         }
         <span translate>workflow.label.addNewOrderTo</span>
         {{workflow.path}}
@@ -315,7 +315,7 @@
             </div>
             <div class="p-a-sm">
               <div class="form-group row m-b-0">
-                <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.startTime' | translate) : null" translate>common.label.startTime</span></label>
+                <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.startTime' | translate" translate>common.label.startTime</span></label>
                 <div class="col-md-8 m-b-sm">
                   <nz-radio-group [(ngModel)]="commonStartTime" name="commonStartTime" (ngModelChange)="onCommonTimeChange($event)">
                     <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -327,7 +327,7 @@
               </div>
               @if (commonStartTime == 'later') {
                 <div class="form-group row m-b-0">
-                  <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.time' | translate) : null" translate>common.label.time</span>
+                  <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.time' | translate" translate>common.label.time</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6 m-b-sm">
@@ -346,7 +346,7 @@
               }
               @if (commonStartTime == 'date') {
                 <div class="form-group row m-b-0">
-                  <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.enterDateAndTime' | translate) : null" translate>workflow.label.enterDateAndTime</span>
+                  <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-sm-6 m-b-sm">
@@ -358,7 +358,7 @@
                 </div>
               }
               <div [hidden]="!(commonStartTime == 'date')" class="form-group row m-b-0">
-                <div class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.timeZone' | translate) : null" translate>common.label.timeZone</span></div>
+                <div class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.timeZone' | translate" translate>common.label.timeZone</span></div>
                 <div class="col-sm-6 m-b-sm">
                   <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
                                     [listArray]="zones" [name]="'timeZoneCommon'" [ignoreTranslate]="true"
@@ -384,73 +384,77 @@
             }
 
             <!-- ── Section 1: Identification ── -->
-            <div class="m-b-sm section-box">
-              <div class="section-box-header">
-                <small class="_600 section-box-title" translate>order.section.identification</small>
-              </div>
-              <div class="p-a-sm">
-                @if (showMoreAdvanceOptions || order.orderId) {
-                  <div class="form-group row m-b-0">
-                    <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : null" translate>order.label.orderName</span></label>
-                    <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6 m-b-sm">
-                      <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
-                            class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
-                            placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
-                      @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
-                        <div class="text-danger help-block">
-                          @if (orderId.errors['invalidIdentifier']) {
-                            <div translate>common.message.invalid</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-                @if (preferences.enableTagging) {
-                  <div class="form-group row m-b-0 m-t-xs">
-                    <label class="col-md-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.tagName' | translate) : null" translate>inventory.label.tagName</span></label>
-                    <div class="col-sm-6">
-                      <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                        <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
-                            class="d-inline-block">
-                          @for (tag of order.tags; track tag; let i = $index) {
-                            <nz-tag class="cursor" style="transition: none !important;"
-                                    cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
-                              {{ sliceTagName(tag) }}
-                            </nz-tag>
-                          }
-                        </div>
-                        @if (!order.inputVisible) {
-                          <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
-                            <span nz-icon nzType="plus"></span>
-                            {{'inventory.button.newTag' | translate}}
-                          </nz-tag>
-                        }
-                        @if (order.inputVisible) {
-                          <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                            <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
-                                  type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
-                                  style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
-                                  (keydown.enter)="handleInputConfirm(orderIndex)">
-                            <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
+            @if (showMoreAdvanceOptions || order.orderId || order.tags?.length > 0) {
+              <div class="b-a m-b-sm section-box">
+                <div class="section-box-header">
+                  <small class="_600 section-box-title" translate>order.section.identification</small>
+                </div>
+                <div class="p-a-sm">
+                  @if (showMoreAdvanceOptions || order.orderId) {
+                    <div class="form-group row m-b-0">
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span></label>
+                      <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6 m-b-sm">
+                        <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
+                              class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
+                              placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
+                        @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
+                          <div class="text-danger help-block">
+                            @if (orderId.errors['invalidIdentifier']) {
+                              <div translate>common.message.invalid</div>
+                            }
                           </div>
                         }
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                  @if (preferences.enableTagging) {
+                    @if (showMoreAdvanceOptions || order.tags?.length > 0) {
+                      <div class="form-group row m-b-0 m-t-xs">
+                        <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.tagName' | translate" translate>inventory.label.tagName</span></label>
+                        <div class="col-sm-6">
+                          <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                            <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
+                                class="d-inline-block">
+                              @for (tag of order.tags; track tag; let i = $index) {
+                                <nz-tag class="cursor" style="transition: none !important;"
+                                        cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
+                                  {{ sliceTagName(tag) }}
+                                </nz-tag>
+                              }
+                            </div>
+                            @if (!order.inputVisible) {
+                              <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
+                                <span nz-icon nzType="plus"></span>
+                                {{'inventory.button.newTag' | translate}}
+                              </nz-tag>
+                            }
+                            @if (order.inputVisible) {
+                              <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                                <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
+                                      type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
+                                      style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
+                                      (keydown.enter)="handleInputConfirm(orderIndex)">
+                                <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
               </div>
-            </div>
+            }
 
             <!-- ── Section 2: Execution Timing ── -->
-            <div class="m-b-sm section-box">
+            <div class="b-a m-b-sm section-box">
               <div class="section-box-header">
                 <small class="_600 section-box-title" translate>order.section.executionTiming</small>
               </div>
               <div class="p-a-sm">
                 @if (orders.length < 2) {
                   <div class="form-group row m-b-0">
-                    <label class="col-sm-4"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.startTime' | translate) : null" translate>common.label.startTime</span></label>
+                    <label class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.startTime' | translate" translate>common.label.startTime</span></label>
                     <div class="col-md-8 m-b-sm">
                       <nz-radio-group [(ngModel)]="order.at" name="at{{orderIndex}}" (ngModelChange)="onTimeChange($event, orderIndex)">
                         <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -462,7 +466,7 @@
                   </div>
                   @if (order.at == 'later') {
                     <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.time' | translate) : null" translate>common.label.time</span>
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.time' | translate" translate>common.label.time</span>
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6 m-b-sm">
@@ -481,7 +485,7 @@
                   }
                   @if (order.at == 'date') {
                     <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.enterDateAndTime' | translate) : null" translate>workflow.label.enterDateAndTime</span>
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div class="col-sm-6 m-b-sm">
@@ -493,7 +497,7 @@
                     </div>
                   }
                   <div [hidden]="!(order.at == 'date')" class="form-group row m-b-0">
-                    <div class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.timeZone' | translate) : null" translate>common.label.timeZone</span></div>
+                    <div class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.timeZone' | translate" translate>common.label.timeZone</span></div>
                     <div class="col-sm-6 m-b-sm">
                       <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
                                         [listArray]="zones" [name]="'timeZone{{orderIndex}}'" [ignoreTranslate]="true"
@@ -503,7 +507,7 @@
                 }
                 @if (showMoreAdvanceOptions || order.forceJobAdmission) {
                   <div class="form-group row m-b-0">
-                    <label class="col-sm-4"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : null" translate>order.label.ignoreAdmissionTimes</span></label>
+                    <label class="col-sm-4"><span [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span></label>
                     <div class="col-md-8">
                       <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox></label>
                     </div>
@@ -514,13 +518,13 @@
 
             <!-- ── Section 3: Dependency Context (advanced) ── -->
             @if (showMoreAdvanceOptions || order.planId?.noticeSpaceKey) {
-              <div class="m-b-sm section-box">
+              <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
                   <small class="_600 section-box-title" translate>order.section.dependencyContext</small>
                 </div>
                 <div class="p-a-sm">
                   <div class="form-group row m-b-0">
-                    <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.planKey' | translate) : null" translate>resource.board.label.planKey</span></label>
+                    <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.planKey' | translate" translate>resource.board.label.planKey</span></label>
                     <div class="col-sm-6">
                       <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
                                       [ignoreThirdParam]="true" [isAllowClear]="true"
@@ -534,14 +538,14 @@
 
             <!-- ── Section 4: Scope of Execution (advanced + permission) ── -->
             @if ((showMoreAdvanceOptions || order.blockPosition || order.startPosition || order.endPositions?.length > 0) && permission.currentController && permission.currentController.orders.managePositions) {
-              <div class="m-b-sm section-box">
+              <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
                   <small class="_600 section-box-title" translate>order.section.scopeOfExecution</small>
                 </div>
                 <div class="p-a-sm">
                   @if ((showMoreAdvanceOptions || order.blockPosition) && blockPositions?.size > 0) {
                     <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : null" translate>order.label.blockPosition</span></label>
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.blockPosition' | translate" translate>order.label.blockPosition</span></label>
                       <div class="col-sm-6 m-b-sm">
                         <app-node-position [obj]="order" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
                                            [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, orderIndex)"></app-node-position>
@@ -550,7 +554,7 @@
                   }
                   @if (showMoreAdvanceOptions || order.startPosition) {
                     <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : null" translate>order.label.startNode</span></label>
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.startNode' | translate" translate>order.label.startNode</span></label>
                       <div class="col-sm-6 m-b-sm">
                         <app-node-position [obj]="order" [newPositions]="newPositions" [positions]="positions" [reload]="order.reload"
                                            [type]="'START'" [workflow]="workflow"></app-node-position>
@@ -559,7 +563,7 @@
                   }
                   @if (showMoreAdvanceOptions || order.endPositions?.length > 0) {
                     <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : null" translate>order.label.endNode</span></label>
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.endNode' | translate" translate>order.label.endNode</span></label>
                       <div class="col-sm-6 m-b-sm">
                         <app-node-position [obj]="order" [newPositions]="newPositions" [position]="order.startPosition" [positions]="positions"
                                            [reload]="order.reload" [type]="'END'" [workflow]="workflow"></app-node-position>
@@ -572,13 +576,13 @@
 
             <!-- ── Section 5: Execution Behavior (advanced) ── -->
             @if (showMoreAdvanceOptions || order.priority !== 0) {
-              <div class="m-b-sm section-box">
+              <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
                   <small class="_600 section-box-title" translate>order.section.executionBehavior</small>
                 </div>
                 <div class="p-a-sm">
                   <div class="form-group row m-b-0">
-                    <label class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : null" translate>order.label.priority</span></label>
+                    <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate" translate>order.label.priority</span></label>
                     <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}" class="col-sm-6">
                       <nz-space-compact nzBlock>
                         <nz-input-number #priority="ngModel" [(ngModel)]="order.priority"
@@ -608,14 +612,14 @@
 
             <!-- ── Section 6: Variables ── -->
             @if (showMoreAdvanceOptions || order.arguments.length > 0) {
-              <div class="m-b-sm section-box">
+              <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
                   <small class="_600 section-box-title" translate>order.section.variables</small>
                 </div>
                 <div class="p-a-sm">
                   @if (showMoreAdvanceOptions) {
                     <div class="form-group row m-b-0">
-                      <div class="col-sm-4"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.assignParameterizationFromSchedules' | translate) : null" translate>order.button.assignParameterizationFromSchedules</span></div>
+                      <div class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.assignParameterizationFromSchedules' | translate" translate>order.button.assignParameterizationFromSchedules</span></div>
                       <div class="col-sm-6 m-b-sm">
                         <nz-select [(ngModel)]="order.name" name="schedule{{orderIndex}}" nzAllowClear
                                   (ngModelChange)="selectSchedule($event, orderIndex)" nzShowSearch nzPlaceHolder="{{'order.label.selectSchedule' | translate}}">
@@ -629,7 +633,7 @@
                     @if (variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)) {
                       <div class="form-group row m-b-0"
                           [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
-                        <div class="col-sm-4"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.modifyVariable' | translate) : null" translate>order.button.modifyVariable</span></div>
+                        <div class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.modifyVariable' | translate" translate>order.button.modifyVariable</span></div>
                         <div class="col-sm-6 m-b-sm">
                           <a (click)="addArgument(orderIndex)" class="text-u-l" translate>Select Variable</a>
                         </div>
@@ -637,7 +641,7 @@
 
                       <div class="form-group row m-b-0"
                           [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
-                        <div class="col-sm-4"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.modifyVariables' | translate) : null" translate>order.button.modifyVariables</span></div>
+                        <div class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.modifyVariables' | translate" translate>order.button.modifyVariables</span></div>
                         <div class="col-sm-6 m-b-sm">
                           <a (click)="addArguments(orderIndex)" class="text-u-l" translate>Set All Variables</a>
                         </div>
@@ -646,7 +650,7 @@
                   }
                   @if (order.selectedSchedule && order.selectedSchedule.orderParameterisations && order.selectedSchedule.orderParameterisations.length > 1) {
                     <div class="form-group row m-b-0">
-                      <div class="col-sm-4 form-control-label"><span [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.selectOrder' | translate) : null" translate>order.label.selectOrder</span></div>
+                      <div class="col-sm-4 form-control-label"><span [appRichTooltip]="'order.tooltips.addOrder.selectOrder' | translate" translate>order.label.selectOrder</span></div>
                       <div class="col-sm-6">
                         <nz-select [(ngModel)]="order.orderName" name="order{{orderIndex}}" nzAllowClear
                                   nzShowSearch (ngModelChange)="selectOrder($event, null, null, null, orderIndex)">
@@ -828,7 +832,7 @@
                     @if (workflow.orderPreparation?.allowUndeclared) {
                       <div class="form-group row m-b-0">
                         <div class="col-sm-12">
-                          <a [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addVariable' | translate) : null" class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
+                          <a [appRichTooltip]="'order.tooltips.addOrder.addVariable' | translate" class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
                         </div>
                       </div>
                     }
@@ -845,15 +849,15 @@
 
         <!-- ── Section 7: Bulk Actions (advanced) ── -->
         @if (showMoreAdvanceOptions) {
-          <div class="m-b-sm section-box section-box--standalone">
+          <div class="b-a m-b-sm section-box section-box--standalone">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>order.section.bulkActions</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row m-b-0">
                 <div class="col-sm-12">
-                  <a [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addOrderParameterization' | translate) : null" (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
-                  <a [appRichTooltip]="!preferences.showTooltipInfo ? ('order.tooltips.addOrder.addOrdersFromAllSchedules' | translate) : null" (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
+                  <a [appRichTooltip]="'order.tooltips.addOrder.addOrderParameterization' | translate" (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
+                  <a [appRichTooltip]="'order.tooltips.addOrder.addOrdersFromAllSchedules' | translate" (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
                 </div>
               </div>
             </div>

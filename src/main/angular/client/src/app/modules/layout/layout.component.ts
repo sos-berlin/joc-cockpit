@@ -814,6 +814,7 @@ export class LayoutComponent {
       }
     ]
 
+    preferences.tooltipDelay = 0.2;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
       preferences.auditLog = true;
     }
@@ -876,6 +877,13 @@ export class LayoutComponent {
       }
       if (data.enableApprovalRequests === undefined) {
         data.enableApprovalRequests = false;
+      }
+      // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
+      if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {
+        data.tooltipDelay = -1;
+      }
+      if (data.tooltipDelay === undefined || data.tooltipDelay === null) {
+        data.tooltipDelay = 0.2;
       }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
