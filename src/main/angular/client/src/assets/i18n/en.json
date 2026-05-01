@@ -2861,19 +2861,19 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Specifies when the Order will start. Option 'Now' will start immediately, option 'Specific Date' offers selecting the date and time, option 'Relative to Current Time' specifies a delay from a number of seconds or hh:mm:ss, option 'No Start Time' puts the Order in the pending state and allows later assignment of a start time.",
-        "time": "Specifies a relative start time from a number of seconds or hh:mm:ss.",
+        "startTime": "Specifies when the Order will start.\n\n- 'Now' will start immediately\n- 'Specific Date' offers selecting the date and time\n- 'Relative to Current Time' specifies a delay from a number of seconds or `hh:mm:ss`\n- 'No Start Time' puts the Order in the pending state and allows later assignment of a start time.",
+        "time": "Specifies a relative start time from a number of seconds or `hh:mm:ss`.",
         "enterDateAndTime": "Enter date and time when the Order should start",
-        "timeZone": "Specifies the time zone to which the date and time applies.",
-        "planKey" : "If the Workflow holds dependencies based on Notices, then a Daily Plan date can be specified to which dependencies will be resolved. By default the current day is used. Past dates are accepted for which a plan is opened. Future dates are accepted.",
+        "timeZone": "Specifies the time zone to which the date and time applies, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
+        "planKey" : "If the Workflow holds dependencies based on Notices, then a Daily Plan date can be specified to which dependencies will be resolved.\n\nBy default the current day is used. Past dates are accepted for which a plan is opened. Future dates are accepted.",
         "assignParameterizationFromSchedules": "If the Workflow is assigned a Schedule, then the Schedule can be selected to copy its parameterization such as variables and tags to the current Order.",
         "selectSchedule": "Offers selecting a Schedule from which the parameterization and Tags should be copied to the Order.",
         "selectOrder": "Offers selecting one or more Order templates from the selected Schedule.",
-        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values. If the Workflow specifies variables with default values, then the link allows to select a variable for which a new value should be specified.",
-        "modifyVariables": "Behaves similarly to 'Modify Variable' but displays all available variables.",
-        "addVariable": "The link is offered if global Settings allow adding undeclared variables to a Workflow.",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows to select a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but displays all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
         "addOrderParameterization": "Allows adding another Order optionally using different parameterization.",
-        "addOrdersFromAllSchedules": "Allows adding additional Orders corresponding to the Order templates available from all Schedules referencing the Workflow."
+        "addOrdersFromAllSchedules": "Allows adding a number of Orders corresponding to the Order templates available from all Schedules referencing the Workflow."
       }
     }
   },
@@ -2920,8 +2920,8 @@
     "label.useTimezoneForLog": "Use time zone for log timestamps",
     "label.showTooltipInfo": "Suppress tooltips for Inventory objects",
     "label.tooltipDelay": "Tooltip delay",
-    "label.tooltipDelay.never": "Never show tooltips (-1)",
-    "label.tooltipDelay.immediate": "Immediate (0s)",
+    "label.tooltipDelay.never": "Only when clicked (-1)",
+    "label.tooltipDelay.immediate": "Immediate display (0s)",
     "label.tooltipDelay.short": "Short delay (0.2s)",
     "label.tooltipDelay.long": "Long delay (0.5s)",
     "label.selectAll": "Select All",
