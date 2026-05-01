@@ -70,7 +70,7 @@
         @if (!releasable && !isRemoved && (showMoreAdvanceOptions || selectedSchedulerIds.length > 1)) {
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.export.section.destination</small>
+              <small class="_600 section-box-title" translate>inventory.deploy.section.target</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row">
@@ -94,11 +94,12 @@
             </div>
           </div>
         }
-        <!-- ── Section 2: Execution ── -->
-        @if ((!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
+        <!-- ── Section 2: Scheduling ── -->
+        @if (((!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
+             (!isRevoke && !isRemoved && operation != 'recall' && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate))) {
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.export.section.execution</small>
+              <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row">
@@ -129,33 +130,42 @@
                   </div>
                 </div>
               }
-            </div>
-          </div>
-        }
-        <!-- ── Section 3: Scope ── -->
-        @if (!isRevoke && !isRemoved && operation != 'recall' &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate)) {
-          <div class="b-a m-b-sm section-box">
-            <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
-            </div>
-            <div class="p-a-sm">
-              <div class="form-group row">
-                <div class="col-md-6">
-                  <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
-                  <label><span [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate" translate>inventory.label.includeTodaysLateOrders</span></label>
+              @if (!isRevoke && !isRemoved && operation != 'recall' && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate)) {
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
+                    <label><span [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate" translate>inventory.label.includeTodaysLateOrders</span></label>
+                  </div>
                 </div>
-              </div>
+              }
             </div>
           </div>
         }
 
-        <!-- ── Section 4: Advanced Options ── -->
-        @if (showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies) {
+        <!-- ── Section 3: Dependencies ── -->
+        @if ((showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies) || ((isRemoved || isRevoke || operation === 'recall') && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0))) {
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.export.section.advanced</small>
+              <small class="_600 section-box-title" translate>inventory.deploy.section.dependencies</small>
             </div>
             <div class="p-a-sm">
+              @if ((isRemoved || isRevoke || operation === 'recall') && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)) {
+                @if (isRemoved) {
+                  <div class="m-b-sm opacity-0_5">
+                    <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+                  </div>
+                }
+                @if (isRevoke) {
+                  <div class="m-b-sm opacity-0_5">
+                    <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
+                  </div>
+                }
+                @if (operation === 'recall') {
+                  <div class="m-b-sm opacity-0_5">
+                    <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
+                  </div>
+                }
+              }
               @if (showMoreAdvanceOptions || dependencyMode !== 'all') {
                 <div class="form-group row">
                   <div class="col-md-3">
@@ -190,31 +200,6 @@
           </div>
         }
 
-        <!-- ── Section 5: Warnings ── -->
-        @if ((isRemoved || isRevoke || operation === 'recall') && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)) {
-          <div class="b-a m-b-sm section-box">
-            <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
-            </div>
-            <div class="p-a-sm">
-              @if (isRemoved) {
-                <div class="m-b-sm opacity-0_5">
-                  <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
-                </div>
-              }
-              @if (isRevoke) {
-                <div class="m-b-sm opacity-0_5">
-                  <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
-                </div>
-              }
-              @if (operation === 'recall') {
-                <div class="m-b-sm opacity-0_5">
-                  <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
-                </div>
-              }
-            </div>
-          </div>
-        }
         @if (deployablesObject.length > 0) {
           <div class="row">
             <div class="col-md-12">

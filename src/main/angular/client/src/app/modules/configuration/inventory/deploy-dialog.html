@@ -96,16 +96,14 @@
         </div>
       </div>
       }
-      <!-- ── Section 2: Execution ── -->
+      <!-- ── Section 2: Scheduling ── -->
       @if (nodes.length > 0 && (
       (!isRevoke && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
-      ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType
-      !== 'individual')) ||
-      ((!data || !data.object) && !isDeleted && !isRemove && !isSelectedObjects && object.deployType === 'individual' &&
-      (showMoreAdvanceOptions || object.isRecursive)))) {
+      ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) ||
+      (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)))) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.execution</small>
+          <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
         </div>
         <div class="p-a-sm">
           @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object &&
@@ -155,18 +153,13 @@
             </div>
           </div>
           }
-
-          @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects &&
-          object.deployType === 'individual' && (showMoreAdvanceOptions || object.isRecursive)) {
+          @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
           <div class="form-group row">
-            <div class="col-md-3">
-              <label
-                [appRichTooltip]="'inventory.tooltips.deploy.handleRecursively' | translate"
-                translate>inventory.label.handleRecursively</label>
-            </div>
+            <label
+              [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate"
+              class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
             <div class="col-md-6">
-              <label [(ngModel)]="object.isRecursive" name="isRecursive" nz-checkbox
-                (ngModelChange)="handleRecursive()"></label>
+              <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
             </div>
           </div>
           }
@@ -174,8 +167,7 @@
       </div>
       }
       <!-- ── Section 3: Scope ── -->
-      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType ===
-      'individual' && nodes.length > 0 && (showMoreAdvanceOptions || !filter.draft || filter.deploy || includeLate)) {
+      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual' && nodes.length > 0 && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
           <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
@@ -199,27 +191,39 @@
               </label>
             </div>
           </div>
-          @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions
-          || includeLate)) {
-          <div class="form-group row">
-            <label
-              [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate"
-              class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
-            <div class="col-md-6">
-              <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
-            </div>
-          </div>
-          }
           }
         </div>
       </div>
       }
-      @if ((isRemove || isRevoke || operation === 'recall') && hasDependencies()) {
+      <!-- ── Section 4: Execution ── -->
+      @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || object.isRecursive)) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.deploy.section.notes</small>
+          <small class="_600 section-box-title" translate>inventory.export.section.execution</small>
         </div>
         <div class="p-a-sm">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <label
+                [appRichTooltip]="'inventory.tooltips.deploy.handleRecursively' | translate"
+                translate>inventory.label.handleRecursively</label>
+            </div>
+            <div class="col-md-6">
+              <label [(ngModel)]="object.isRecursive" name="isRecursive" nz-checkbox
+                (ngModelChange)="handleRecursive()"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+      <!-- ── Section 5: Dependencies ── -->
+      @if ((nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies)) || ((isRemove || isRevoke || operation === 'recall') && hasDependencies())) {
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>inventory.deploy.section.dependencies</small>
+        </div>
+        <div class="p-a-sm">
+          @if ((isRemove || isRevoke || operation === 'recall') && hasDependencies()) {
           @if (isRemove) {
           <div class="m-b-sm opacity-0_5">
             <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
@@ -238,16 +242,7 @@
                 nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
           </div>
           }
-        </div>
-      </div>
-      }
-      <!-- ── Section 4: Advanced Options ── -->
-      @if (nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies)) {
-      <div class="b-a m-b-sm section-box">
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.advanced</small>
-        </div>
-        <div class="p-a-sm">
+          }
           @if (nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
           <div class="form-group row">
             <div class="col-md-3">

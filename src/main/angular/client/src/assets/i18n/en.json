@@ -2145,8 +2145,9 @@
     },
     "deploy":{
       "--------ADD DEPLOY SECTION------------": "",
-      "section.target": "Target",
-      "section.notes": "Dependencies"
+      "section.target": "Deployment Target",
+      "section.dependencies": "Dependencies",
+      "section.scheduling": "Scheduling"
     },
     "repository": {
       "label.filter": "Filter",
