@@ -59,7 +59,7 @@
   "PLANNED": "geplant",
   "REMOVED": "entfernt",
   "RUNNING": "ausführend",
-  "PROCESSING":"verarbeitend",
+  "PROCESSING": "verarbeitend",
   "SETBACK": "in Wiederholung",
   "SINGLE_AGENT": "standalone_agent",
   "SKIPPED": "übersprungen",
@@ -515,8 +515,8 @@
     "label.sortBy": "Sortiert nach",
     "label.deleteAllDocument": "Alle Dokumentationen löschen",
     "label.deleteAllReport": "Alle Berichte löschen",
-    "label.requestApproval" : "Autorisierung anfragen",
-    "label.approver" : "Autorisierer",
+    "label.requestApproval": "Autorisierung anfragen",
+    "label.approver": "Autorisierer",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",
@@ -841,11 +841,11 @@
     "label.scheduledLate": "Verspätet",
     "label.apiServerStatus": "API Server Status",
     "label.JS7ServerInstanceId": "Instanz ID",
-    "label.notSynchronized":"Nicht synchron",
-    "label.synchronized":"Synchron",
-    "label.outstanding":"Ausstehend",
-    "label.suspended":"Ausgesetzt",
-    "label.productStatus":"Produkt Status",
+    "label.notSynchronized": "Nicht synchron",
+    "label.synchronized": "Synchron",
+    "label.outstanding": "Ausstehend",
+    "label.suspended": "Ausgesetzt",
+    "label.productStatus": "Produkt Status",
     "button.editLayout": "Layout editieren",
     "button.resetLayout": "Layout zurücksetzen",
     "button.widget": "Darstellungskomponente hinzufügen",
@@ -2143,10 +2143,11 @@
       "label.dailyPlan": "Automation",
       "label.useRelativePathOnly": "Relativen Pfad verwenden"
     },
-    "deploy":{
+    "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Ziel",
-      "section.notes": "Abhängigkeiten"
+      "section.dependencies": "Abhängigkeiten",
+      "section.scheduling": "Tagesplan"
     },
     "repository": {
       "label.filter": "Filter",
@@ -2174,7 +2175,7 @@
         "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
         "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein. Für das Verzeichnis wird ein Ausdruck erwartet, eine in Hochkomma gefasste Zeichenfolge, z.B. '/home/sos/files' oder in Kombination mit einer Funktion, z.B. env('HOME') ++ '/files'",
         "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Pfade von Dateien, die überwacht werden. Zum Beispiel bedeutet .* alle Dateien, .*\\.*txt$ bedeutet alle Dateien mit der Endung .txt.",
-        "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält. Hier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird.",
+        "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft, wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält. Hier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern. Wird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
@@ -2211,7 +2212,7 @@
         "blockPosition": "Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join, Cycle kann die entsprechende Anweisung ausgewählt werden. Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
         "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs oder der AdmissionTimes Anweisung eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
         "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
-        "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge. Prioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang. Die Abkürzungen bieten die folgenden Werte: Niedrig: -20000, Niedriger als Normal: -10000, Normal: 0, Höher als Normal: 10000, Hoch: 20000."
+        "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- Niedrig: -20000\n- Niedriger als Normal: -10000\n -Normal: 0\n- Höher als Normal: 10000\n- Hoch: 20000"
       },
       "script": {
         "name": "Ein Skript-Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript-Bausteins ist eindeutig im Inventar. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2252,7 +2253,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen. Die Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Anweisung zu bestimmen. Per Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt.",
+        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Anweisung zu bestimmen. Per Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "duration": "Dauer.",
         "board": {
@@ -2387,7 +2388,7 @@
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
         "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad verwendet. Benutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird. Wenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfades als oberste Objekte der Export Archiv-Datei hinzugefügt.",
-        "fileName":"Gibt den Namen der Exportdatei an",
+        "fileName": "Gibt den Namen der Exportdatei an",
         "fileFormat": "Gibt .zip oder .tar.gz für den Komprimierungstyp an.",
         "exportType": "Ist eine der Optionen: a) Export von einzelnen Objekten, b) Export von Ordnern, c) Export von Objekten im Zusammenhang mit Änderungen",
         "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. Arbeitsabläufe, Job-Ressourcen, Zeitpläne etc.",
@@ -2863,8 +2864,8 @@
         "startTime": "Legt fest, wann der Auftrag startet. Die Option 'Jetzt' startet den Auftrag sofort, die Option 'Bestimmtes Datum' ermöglicht die Auswahl von Datum und Uhrzeit, die Option 'Relativ zur Uhrzeit' legt eine Verzögerung in Sekunden oder im Format hh:mm:ss fest, die Option 'Ohne Startzeit' versetzt den Auftrag in den Zustand 'anstehend' und ermöglicht die spätere Festlegung einer Startzeit.",
         "time": "Gibt eine relative Startzeit in Sekunden oder im Format hh:mm:ss an.",
         "enterDateAndTime": "Gibt das Datum und die Uhrzeit an, zu der der Auftrag starten soll.",
-        "timeZone": "Gibt die Zeitzone an, für die Datum und Uhrzeit gelten.",
-        "planKey" : "Wenn der Arbeitsablauf Abhängigkeiten auf der Basis von Notizen enthält, kann ein Tagesplandatum angegeben werden, für das die Abhängigkeiten aufgelöst werden sollen. Standardmäßig wird der aktuelle Tag verwendet. Es werden zurückliegende Tage akzeptiert, für die ein Plan geöffnet ist. Zukünftige Tage werden akzeptiert.",
+        "timeZone": "Gibt die Zeitzone an, für die Datum und Uhrzeit gelten, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
+        "planKey": "Wenn der Arbeitsablauf Abhängigkeiten auf der Basis von Notizen enthält, kann ein Tagesplandatum angegeben werden, für das die Abhängigkeiten aufgelöst werden sollen. Standardmäßig wird der aktuelle Tag verwendet. Es werden zurückliegende Tage akzeptiert, für die ein Plan geöffnet ist. Zukünftige Tage werden akzeptiert.",
         "assignParameterizationFromSchedules": "Wenn dem Arbeitsablauf ein Zeitplan zugewiesen ist, kann dieser ausgewählt werden, um seine Parametrierung wie Variablen und Kennzeichnungen in den aktuellen Auftrag zu kopieren.",
         "selectSchedule": "Bietet die Möglichkeit, einen Zeitplan auszuwählen, aus dem die Parametrierung und die Kennzeichnungen in den Auftrag kopiert werden.",
         "selectOrder": "Bietet die Möglichkeit, eine oder mehrere Auftragsvorlagen aus dem ausgewählten Zeitplan auszuwählen.",
@@ -3339,7 +3340,7 @@
       "last6Months": "Letzte 6 Monate",
       "lastYear": "Letztes Jahr"
     },
-    "button" : {
+    "button": {
       "runReport": "Berichtslauf starten",
       "run": "Starten",
       "showReport": "Bericht anzeigen",
@@ -4383,11 +4384,61 @@
     "message.jobResourceNotFound": "Job-Ressource nicht mehr vorhanden"
   },
   "calendar": {
-    "days": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
-    "daysShort": ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam"],
-    "daysMin": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
-    "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-    "monthsShort": ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+    "days": [
+      "Sonntag",
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag"
+    ],
+    "daysShort": [
+      "Son",
+      "Mon",
+      "Die",
+      "Mit",
+      "Don",
+      "Fre",
+      "Sam"
+    ],
+    "daysMin": [
+      "So",
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa"
+    ],
+    "months": [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ],
+    "monthsShort": [
+      "Jan",
+      "Feb",
+      "Mär",
+      "Apr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Dez"
+    ],
     "weekShort": "W",
     "weekStart": 1
   },

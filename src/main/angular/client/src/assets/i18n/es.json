@@ -275,8 +275,8 @@
     "placeholder.enterPrimaryDirectorId": "Ingresar ID Agente Director",
     "placeholder.enterPriority": "Ingresar Prioridad",
     "tooltip.agentId": "El ID del Agente es un identificador único de un Agente que no puede modificarse durante la vida útil del Agente. Para los ID de Agente se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
-	"tooltip.agentName": "El Nombre del Agente es una designación única de un Agente que puede modificarse. Los Agentes se asignan a los Jobs por su Nombre de Agente. Para los nombres de Agente se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
-	"tooltip.title": "El Título de un Agente puede definirse libremente.",
+    "tooltip.agentName": "El Nombre del Agente es una designación única de un Agente que puede modificarse. Los Agentes se asignan a los Jobs por su Nombre de Agente. Para los nombres de Agente se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
+    "tooltip.title": "El Título de un Agente puede definirse libremente.",
     "tooltip.agentNameAliases": "A un Agente se le pueden asignar múltiples nombres alias. El Agente puede asignarse a un Job o a una Orden Disparada por Archivo utilizando su nombre alias. Para los alias se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
     "tooltip.url": "La URL de un Agente especifica el protocolo, HTTP o HTTPS, el nombre de host o dirección IP y el puerto del Agente, por ejemplo: http://localhost:4445",
     "tooltip.asStandaloneAgent": "Un Agente Autónomo o un Agente Director de un Clúster de Agentes puede actuar como monitor del Clúster. El Agente especificado se creará como Agente Autónomo si esta casilla está seleccionada.",
@@ -299,7 +299,7 @@
       "tooltip.processLimit": "Por defecto, los Agentes ejecutan un número ilimitado de procesos en paralelo para los Jobs. Se puede asignar un Límite de Procesos para restringir el uso de recursos en todos los Subagentes de un Clúster de Agentes. Un valor de Límite de Procesos igual a 0 impedirá que se inicien los Jobs.",
       "subagent": {
         "tooltip.clusterName": "El Nombre del Clúster de Subagentes es un identificador único del Clúster que no puede modificarse durante su vida útil. Para los nombres de Clúster se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
-	"tooltip.title": "El Título de un Clúster de Subagentes puede definirse libremente."
+        "tooltip.title": "El Título de un Clúster de Subagentes puede definirse libremente."
       }
     },
     "subagent": {
@@ -407,68 +407,68 @@
     "tab.others": "Otros"
   },
   "controller": {
-  "label.caption": "Descripción",
-  "label.standalone": "Autónomo",
-  "label.cluster": "Clúster",
-  "label.registerController": "Registrar Controlador",
-  "label.newController": "Registrar nuevo Controlador",
-  "label.primaryController": "Controlador Primario",
-  "label.backupController": "Controlador Secundario",
-  "label.jocUrlForPrimary": "Conexión de JOC Cockpit al Controlador Primario",
-  "label.jocUrlForBackup": "Conexión de JOC Cockpit al Controlador Secundario",
-  "label.standaloneUrl": "Conexión de JOC Cockpit al Controlador",
-  "label.backupUrl": "Conexión del Controlador Secundario al Controlador Primario",
-  "label.primaryUrl": "Conexión del Controlador Primario al Controlador Secundario",
-  "label.jocAsClusterWatch": "JOC Cockpit como monitor de Clúster",
-  "label.agentAsClusterWatch": "Agente como monitor de Clúster",
-  "button.testConnection": "Prueba de conexión",
-  "button.newController": "Nuevo Controlador",
-  "tooltip.type": "Un Controlador Autónomo puede configurarse con una única instancia. Un Clúster de Controladores puede configurarse con dos instancias si se dispone de una licencia comercial.",
-  "tooltip.standaloneTitle": "Descripción de la instancia del Controlador Autónomo",
-  "tooltip.standaloneUrlForJOC": "Conexión de JOC Cockpit al Controlador Autónomo",
-  "tooltip.primaryUrlForJOC": "Conexión de JOC Cockpit al Controlador Primario",
-  "tooltip.backupUrlForJOC": "Conexión de JOC Cockpit al Controlador Secundario",
-  "tooltip.urlForBackup": "Conexión del Controlador Secundario al Controlador Primario",
-  "tooltip.urlForPrimary": "Conexión del Controlador Primario al Controlador Secundario",
-  "tooltip.primaryTitle": "Descripción de la instancia del Controlador Primario",
-  "tooltip.backupTitle": "Descripción de la instancia del Controlador Secundario"
+    "label.caption": "Descripción",
+    "label.standalone": "Autónomo",
+    "label.cluster": "Clúster",
+    "label.registerController": "Registrar Controlador",
+    "label.newController": "Registrar nuevo Controlador",
+    "label.primaryController": "Controlador Primario",
+    "label.backupController": "Controlador Secundario",
+    "label.jocUrlForPrimary": "Conexión de JOC Cockpit al Controlador Primario",
+    "label.jocUrlForBackup": "Conexión de JOC Cockpit al Controlador Secundario",
+    "label.standaloneUrl": "Conexión de JOC Cockpit al Controlador",
+    "label.backupUrl": "Conexión del Controlador Secundario al Controlador Primario",
+    "label.primaryUrl": "Conexión del Controlador Primario al Controlador Secundario",
+    "label.jocAsClusterWatch": "JOC Cockpit como monitor de Clúster",
+    "label.agentAsClusterWatch": "Agente como monitor de Clúster",
+    "button.testConnection": "Prueba de conexión",
+    "button.newController": "Nuevo Controlador",
+    "tooltip.type": "Un Controlador Autónomo puede configurarse con una única instancia. Un Clúster de Controladores puede configurarse con dos instancias si se dispone de una licencia comercial.",
+    "tooltip.standaloneTitle": "Descripción de la instancia del Controlador Autónomo",
+    "tooltip.standaloneUrlForJOC": "Conexión de JOC Cockpit al Controlador Autónomo",
+    "tooltip.primaryUrlForJOC": "Conexión de JOC Cockpit al Controlador Primario",
+    "tooltip.backupUrlForJOC": "Conexión de JOC Cockpit al Controlador Secundario",
+    "tooltip.urlForBackup": "Conexión del Controlador Secundario al Controlador Primario",
+    "tooltip.urlForPrimary": "Conexión del Controlador Primario al Controlador Secundario",
+    "tooltip.primaryTitle": "Descripción de la instancia del Controlador Primario",
+    "tooltip.backupTitle": "Descripción de la instancia del Controlador Secundario"
   },
   "encipherment": {
-  "label.addCertificate": "Agregar Certificado de Cifrado",
-  "label.updateCertificate": "Actualizar Certificado de Cifrado",
-  "label.agentId": "ID del Agente",
-  "label.certAlias": "Alias del Certificado",
-  "label.certificate": "Certificado",
-  "label.certificates": "Certificados",
-  "label.privateKeyPath": "Ruta al archivo de clave privada",
-  "label.jobResourceFolder": "Carpeta de recursos del Job",
-  "label.importCertificate": "Importar Certificado de Cifrado",
-  "label.encrypt": "Resultado del cifrado",
-  "label.encryptValue": "Cifrar valor",
-  "label.encryptAll": "Cifrar todo",
-  "label.optional": "Opcional",
-  "label.showAssignedAgents": "Uso del certificado por los Agentes",
-  "label.assignedAgents": "Uso por Agentes",
-  "label.selectCertAlias": "Seleccionar certificado",
-  "label.pasteCertificate": "Pegar certificado",
-  "label.showEncryptionSample": "Prueba de cifrado",
-  "label.plainText": "Texto plano",
-  "label.assignAgents": "Asignar certificado a Agentes",
-  "label.enciphermentsFound": "Claves de cifrado",
-  "label.enciphermentFound": "Clave de cifrado",
-  "placeholder.agentId": "ID del Agente",
-  "placeholder.certAlias": "Nombre del alias del certificado",
-  "placeholder.certificate": "Pegar certificado aquí",
-  "placeholder.privateKeyPath": "Ruta al archivo de clave privada",
-  "placeholder.jobResourceFolder": "Seleccionar carpeta de recursos del Job",
-  "placeholder.encrypt": "Resultado del cifrado",
-  "placeholder.plainText": "Ingresar texto plano",
-  "button.encrypt": "Cifrar",
-  "button.addNewCertificate": "Agregar certificado",
-  "button.importCertificate": "Importar certificado",
-  "button.deleteCertificate": "Eliminar certificado",
-  "button.updateCertificate": "Actualizar certificado",
-  "button.copyEncryptValue": "Copiar resultado del cifrado"
+    "label.addCertificate": "Agregar Certificado de Cifrado",
+    "label.updateCertificate": "Actualizar Certificado de Cifrado",
+    "label.agentId": "ID del Agente",
+    "label.certAlias": "Alias del Certificado",
+    "label.certificate": "Certificado",
+    "label.certificates": "Certificados",
+    "label.privateKeyPath": "Ruta al archivo de clave privada",
+    "label.jobResourceFolder": "Carpeta de recursos del Job",
+    "label.importCertificate": "Importar Certificado de Cifrado",
+    "label.encrypt": "Resultado del cifrado",
+    "label.encryptValue": "Cifrar valor",
+    "label.encryptAll": "Cifrar todo",
+    "label.optional": "Opcional",
+    "label.showAssignedAgents": "Uso del certificado por los Agentes",
+    "label.assignedAgents": "Uso por Agentes",
+    "label.selectCertAlias": "Seleccionar certificado",
+    "label.pasteCertificate": "Pegar certificado",
+    "label.showEncryptionSample": "Prueba de cifrado",
+    "label.plainText": "Texto plano",
+    "label.assignAgents": "Asignar certificado a Agentes",
+    "label.enciphermentsFound": "Claves de cifrado",
+    "label.enciphermentFound": "Clave de cifrado",
+    "placeholder.agentId": "ID del Agente",
+    "placeholder.certAlias": "Nombre del alias del certificado",
+    "placeholder.certificate": "Pegar certificado aquí",
+    "placeholder.privateKeyPath": "Ruta al archivo de clave privada",
+    "placeholder.jobResourceFolder": "Seleccionar carpeta de recursos del Job",
+    "placeholder.encrypt": "Resultado del cifrado",
+    "placeholder.plainText": "Ingresar texto plano",
+    "button.encrypt": "Cifrar",
+    "button.addNewCertificate": "Agregar certificado",
+    "button.importCertificate": "Importar certificado",
+    "button.deleteCertificate": "Eliminar certificado",
+    "button.updateCertificate": "Actualizar certificado",
+    "button.copyEncryptValue": "Copiar resultado del cifrado"
   },
   "changes": {
     "label.addChange": "Agregar cambio",
@@ -1028,7 +1028,7 @@
     "tooltip.critical": "Indica la existencia de órdenes en estado SUSPENDIDO, FALLIDO o BLOQUEADO que requieren intervención del usuario para continuar.",
     "tooltip.present": "Indica que hay un aviso disponible. El aviso puede ser esperado o consumido por la Orden de un workflow receptor.",
     "tooltip.future": "Indica que un aviso ha sido anunciado, es decir, existe una Orden para el workflow que lo publica. El aviso estará disponible en el futuro.",
-	"tooltip.letRun": "Las órdenes de ejecución única para ejecuciones simples se iniciarán o continuarán de inmediato.",
+    "tooltip.letRun": "Las órdenes de ejecución única para ejecuciones simples se iniciarán o continuarán de inmediato.",
     "tab": {
       "dailyPlan": "Plan Diario",
       "projection": "Proyección",
@@ -1104,21 +1104,21 @@
       },
       "tooltip": {
         "licenseKeyFile": "Se espera la ruta al Archivo Clave de Licencia. El archivo representa un certificado en formato .pem y habilita el código binario licenciado.",
-	"licenseBinFile": "Se espera la ruta al Archivo Binario de Licencia. El archivo contiene código binario que no está sujeto a la licencia de código abierto, por ejemplo, las funciones de Clúster de JOC Cockpit y del Controlador. El código binario se habilita mediante un Archivo de Clave de Licencia."
+        "licenseBinFile": "Se espera la ruta al Archivo Binario de Licencia. El archivo contiene código binario que no está sujeto a la licencia de código abierto, por ejemplo, las funciones de Clúster de JOC Cockpit y del Controlador. El código binario se habilita mediante un Archivo de Clave de Licencia."
       }
     },
     "certificate": {
       "label": {
-      "primaryControllerCert": "Certificado De Instancia Del Controlador Primario",
-      "secondaryControllerCert": "Certificado De Instancia Del Controlador Secundario",
-      "primaryJocCert": "Certificado De Instancia De JOC Cockpit Primario",
-      "secondaryJocCert": "Certificado De Instancia De JOC Cockpit Secundario"
+        "primaryControllerCert": "Certificado De Instancia Del Controlador Primario",
+        "secondaryControllerCert": "Certificado De Instancia Del Controlador Secundario",
+        "primaryJocCert": "Certificado De Instancia De JOC Cockpit Primario",
+        "secondaryJocCert": "Certificado De Instancia De JOC Cockpit Secundario"
       },
       "button": {
-       "addCertificates": "Agregar Certificados"
+        "addCertificates": "Agregar Certificados"
       },
       "placeholder": {
-       "primaryControllerCert": "Ingresar ruta al certificado de la instancia del Controlador primario",
+        "primaryControllerCert": "Ingresar ruta al certificado de la instancia del Controlador primario",
         "secondaryControllerCert": "Ingresar ruta al certificado de la instancia del Controlador secundario",
         "primaryJocCert": "Ingresar ruta al certificado de la instancia de JOC Cockpit primario",
         "secondaryJocCert": "Ingresar ruta al certificado de la instancia de JOC Cockpit secundario"
@@ -1206,37 +1206,37 @@
       },
       "tooltip": {
         "agentId": "El ID del Agente es único e identifica al Agente. El identificador no puede cambiarse durante la vida útil del Agente.",
-	"host": "El host en el que está instalado el Agente.",
-	"port": "El puerto por el cual se establece la conexión con el host. Habitualmente es el puerto 22 para conexiones SSH.",
+        "host": "El host en el que está instalado el Agente.",
+        "port": "El puerto por el cual se establece la conexión con el host. Habitualmente es el puerto 22 para conexiones SSH.",
         "method": "El método de autenticación para la conexión SSH al host del Agente. Se admite el método de clave pública/privada.",
-	"user": "La cuenta utilizada para autenticar la conexión SSH al host del Agente.",
-	"keyFile": "La ruta al archivo de clave para autenticar la conexión SSH al host del Agente.",
-	"packageLocation": "La ruta a la ubicación del paquete de instalación del software en el host del Agente.",
-	"execPre": "El comando de preprocesamiento se ejecuta en el host del Agente antes de extraer el paquete de instalación del software. Se puede especificar un comando del sistema operativo. Con la opción 'StopService', el servicio del Agente se detiene en Unix y Windows.",
-	"execPost": "El comando de postprocesamiento se ejecuta después de extraer el paquete de instalación del software en el host del Agente. Se puede especificar un comando del sistema operativo. Con la opción 'StartService', el servicio del Agente se inicia en Unix y Windows.",
-	"makeService": "Se configura el servicio del Agente en Unix o Windows.",
-	"release": "La versión del software del Agente.",
-	"tarball": "El archivo tar de la instalación del software del Agente. En Unix es un archivo .tar.gz, en Windows un archivo .zip.",
-	"home": "El directorio de instalación del Agente contiene archivos binarios y ejecutables. En Unix se utiliza habitualmente /opt/sos-berlin.com/js7/agent. En Windows se utiliza habitualmente C:/Program Files/sos-berlin.com/js7/agent.",
-	"data": "El directorio de datos del Agente contiene, entre otros, archivos de configuración y de log en los subdirectorios 'config' y 'logs'. En Unix se utiliza habitualmente /var/sos-berlin.com/js7/agent. En Windows se utiliza habitualmente C:/ProgramData/sos-berlin.com/js7/agent.",
-	"homeOwner": "La cuenta de usuario propietaria del directorio de instalación del Agente.",
-	"dataOwner": "La cuenta de usuario propietaria del directorio de datos del Agente.",
-	"runUser": "La cuenta de usuario utilizada para el servicio del Agente.",
-	"httpPort": "El Agente escucha en este puerto HTTP, utilizado para recibir comandos del script de inicio de instancia y, si corresponde, del Controlador. Para uso con el script de inicio, se puede especificar una interfaz de red local, por ejemplo localhost:4445. Si un Controlador desde otro host se comunica con el Agente mediante este puerto, se puede especificar una interfaz pública, por ejemplo host.example.com:4445.",
-	"httpsPort": "El Agente escucha en este puerto HTTPS, utilizado para recibir comandos del Controlador. El puerto debe ser accesible para el Controlador en la red.",
-	"javaHome": "El directorio de instalación de Java suele especificarse mediante la variable de entorno JAVA_HOME.",
-	"javaOptions": "Se pueden especificar opciones de Java, por ejemplo para aumentar el heap como -Xmx512m.",
-	"controllerId": "El ID del Controlador hace referencia al Controlador al que está asignado el Agente.",
-	"keyStore": "El almacén de claves contiene la clave privada del Agente, utilizada para conexiones HTTPS al Agente.",
-	"keyStorePassword": "El almacén de claves está protegido por una contraseña.",
-	"keyPassword": "La clave privada está protegida por una contraseña. En el formato PKCS12, comúnmente utilizado, la contraseña del almacén de claves y la de la clave deben coincidir.",
-	"keyAlias": "El alias de la clave puede usarse cuando un keystore contiene múltiples claves privadas. El nombre del alias determina la clave privada a usar para conexiones HTTPS al Agente.",
-	"trustStore": "El Almacen de Confianza contiene el certificado público de la Autoridad Certificadora que firmó el certificado del Agente.",
-	"trustStorePassword": "El Almacen de Confianza está protegido con una contraseña",
-	"templates": "Ruta al directorio que contiene archivos de plantilla para configurar el Agente, por ejemplo 'agent.conf'. El directorio puede incluir un subdirectorio 'private' con archivos de configuración adicionales.",
-	"serviceName": "Nombre del servicio systemd.",
-	"serviceDir": "Especifica la ruta al directorio de servicios systemd; predeterminado: /usr/lib/systemd/system, por ejemplo /etc/systemd/system.",
-	"forceSudo": "Forzar el uso de sudo para cualquier operación sobre directorios y archivos."
+        "user": "La cuenta utilizada para autenticar la conexión SSH al host del Agente.",
+        "keyFile": "La ruta al archivo de clave para autenticar la conexión SSH al host del Agente.",
+        "packageLocation": "La ruta a la ubicación del paquete de instalación del software en el host del Agente.",
+        "execPre": "El comando de preprocesamiento se ejecuta en el host del Agente antes de extraer el paquete de instalación del software. Se puede especificar un comando del sistema operativo. Con la opción 'StopService', el servicio del Agente se detiene en Unix y Windows.",
+        "execPost": "El comando de postprocesamiento se ejecuta después de extraer el paquete de instalación del software en el host del Agente. Se puede especificar un comando del sistema operativo. Con la opción 'StartService', el servicio del Agente se inicia en Unix y Windows.",
+        "makeService": "Se configura el servicio del Agente en Unix o Windows.",
+        "release": "La versión del software del Agente.",
+        "tarball": "El archivo tar de la instalación del software del Agente. En Unix es un archivo .tar.gz, en Windows un archivo .zip.",
+        "home": "El directorio de instalación del Agente contiene archivos binarios y ejecutables. En Unix se utiliza habitualmente /opt/sos-berlin.com/js7/agent. En Windows se utiliza habitualmente C:/Program Files/sos-berlin.com/js7/agent.",
+        "data": "El directorio de datos del Agente contiene, entre otros, archivos de configuración y de log en los subdirectorios 'config' y 'logs'. En Unix se utiliza habitualmente /var/sos-berlin.com/js7/agent. En Windows se utiliza habitualmente C:/ProgramData/sos-berlin.com/js7/agent.",
+        "homeOwner": "La cuenta de usuario propietaria del directorio de instalación del Agente.",
+        "dataOwner": "La cuenta de usuario propietaria del directorio de datos del Agente.",
+        "runUser": "La cuenta de usuario utilizada para el servicio del Agente.",
+        "httpPort": "El Agente escucha en este puerto HTTP, utilizado para recibir comandos del script de inicio de instancia y, si corresponde, del Controlador. Para uso con el script de inicio, se puede especificar una interfaz de red local, por ejemplo localhost:4445. Si un Controlador desde otro host se comunica con el Agente mediante este puerto, se puede especificar una interfaz pública, por ejemplo host.example.com:4445.",
+        "httpsPort": "El Agente escucha en este puerto HTTPS, utilizado para recibir comandos del Controlador. El puerto debe ser accesible para el Controlador en la red.",
+        "javaHome": "El directorio de instalación de Java suele especificarse mediante la variable de entorno JAVA_HOME.",
+        "javaOptions": "Se pueden especificar opciones de Java, por ejemplo para aumentar el heap como -Xmx512m.",
+        "controllerId": "El ID del Controlador hace referencia al Controlador al que está asignado el Agente.",
+        "keyStore": "El almacén de claves contiene la clave privada del Agente, utilizada para conexiones HTTPS al Agente.",
+        "keyStorePassword": "El almacén de claves está protegido por una contraseña.",
+        "keyPassword": "La clave privada está protegida por una contraseña. En el formato PKCS12, comúnmente utilizado, la contraseña del almacén de claves y la de la clave deben coincidir.",
+        "keyAlias": "El alias de la clave puede usarse cuando un keystore contiene múltiples claves privadas. El nombre del alias determina la clave privada a usar para conexiones HTTPS al Agente.",
+        "trustStore": "El Almacen de Confianza contiene el certificado público de la Autoridad Certificadora que firmó el certificado del Agente.",
+        "trustStorePassword": "El Almacen de Confianza está protegido con una contraseña",
+        "templates": "Ruta al directorio que contiene archivos de plantilla para configurar el Agente, por ejemplo 'agent.conf'. El directorio puede incluir un subdirectorio 'private' con archivos de configuración adicionales.",
+        "serviceName": "Nombre del servicio systemd.",
+        "serviceDir": "Especifica la ruta al directorio de servicios systemd; predeterminado: /usr/lib/systemd/system, por ejemplo /etc/systemd/system.",
+        "forceSudo": "Forzar el uso de sudo para cualquier operación sobre directorios y archivos."
       }
     },
     "controller": {
@@ -1760,10 +1760,10 @@
     "tooltip.workflowExampleForUnix": "Ejemplos de Workflow para uso con Agentes que se ejecutan en Unix",
     "tooltip.workflowExampleForWindows": "Ejemplos de Workflow para uso con Agentes que se ejecutan en Windows",
     "tooltip.invalidLicense": "La licencia no es válida. Las razones pueden incluir que la fecha de inicio del período de validez no se haya alcanzado o que la fecha de expiración haya sido superada.",
-"tooltip.jocMonitorEvent": "El indicador señala advertencias y errores en el procesamiento de órdenes, por ejemplo cuando fallan los Jobs. El indicador muestra advertencias con color amarillo y errores con color rojo. Al hacer clic en el indicador se muestran las últimas 10 advertencias y errores. Los usuarios pueden encontrar la lista completa desde la vista MONITOR->Notifications.",
-"tooltip.systemMonitorEvent": "El indicador señala advertencias y errores de los componentes de JS7, por ejemplo pérdida de conexión con la base de datos. El indicador muestra advertencias con color amarillo y errores con color rojo. Al hacer clic en el indicador se muestran las últimas 10 advertencias y errores. Los usuarios pueden encontrar la lista completa desde la vista MONITOR->Notifications.",
-"message.line1": "Para facilitar el inicio, sugerimos descargar algunos preajustes que pueden importarse en JOC Cockpit desde la vista Configuration. Después de la importación, el archivo Defaults.zip creará una carpeta con el mismo nombre que incluye Recursos de Job para crear %Job Environment Variables% globales disponibles para sus jobs de shell.",
-"message.line2": "Los archivos Examples.tar.gz y Examples.zip incluyen ejemplos de Workflows y Jobs para operación con Agentes en Unix y Windows respectivamente. Los ejemplos pueden ser útiles para crear sus propios Workflows y dependencias de Jobs. Los ejemplos corresponden a lo que se encuentra en las explicaciones de %JS7 - Online Demo%.",
+    "tooltip.jocMonitorEvent": "El indicador señala advertencias y errores en el procesamiento de órdenes, por ejemplo cuando fallan los Jobs. El indicador muestra advertencias con color amarillo y errores con color rojo. Al hacer clic en el indicador se muestran las últimas 10 advertencias y errores. Los usuarios pueden encontrar la lista completa desde la vista MONITOR->Notifications.",
+    "tooltip.systemMonitorEvent": "El indicador señala advertencias y errores de los componentes de JS7, por ejemplo pérdida de conexión con la base de datos. El indicador muestra advertencias con color amarillo y errores con color rojo. Al hacer clic en el indicador se muestran las últimas 10 advertencias y errores. Los usuarios pueden encontrar la lista completa desde la vista MONITOR->Notifications.",
+    "message.line1": "Para facilitar el inicio, sugerimos descargar algunos preajustes que pueden importarse en JOC Cockpit desde la vista Configuration. Después de la importación, el archivo Defaults.zip creará una carpeta con el mismo nombre que incluye Recursos de Job para crear %Job Environment Variables% globales disponibles para sus jobs de shell.",
+    "message.line2": "Los archivos Examples.tar.gz y Examples.zip incluyen ejemplos de Workflows y Jobs para operación con Agentes en Unix y Windows respectivamente. Los ejemplos pueden ser útiles para crear sus propios Workflows y dependencias de Jobs. Los ejemplos corresponden a lo que se encuentra en las explicaciones de %JS7 - Online Demo%.",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
       "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
@@ -2143,10 +2143,11 @@
       "label.dailyPlan": "Automatización",
       "label.useRelativePathOnly": "Usar ruta relativa"
     },
-    "deploy":{
+    "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Target",
-      "section.notes": "Notes"
+      "section.dependencies": "Dependencies",
+      "section.scheduling": "Scheduling"
     },
     "repository": {
       "label.filter": "Filtro",
@@ -2227,15 +2228,15 @@
         "frequencies": "La frecuencia especifica el ciclo que divide el período de reporte, por ejemplo 5 minutos, 1 día, etc.",
         "controllerId": "El reporte puede limitarse a datos de un Controlador específico",
         "interval": {
-	  "interval": "Especifica el período del reporte. Los valores predefinidos y las configuraciones relativas se asignarán a los valores actuales de mes-desde y mes-hasta.",
+          "interval": "Especifica el período del reporte. Los valores predefinidos y las configuraciones relativas se asignarán a los valores actuales de mes-desde y mes-hasta.",
           "absolute": {
-	  "monthFrom": "Especifica el inicio del período del reporte. Se pueden especificar valores absolutos en formato yyyy-mm o valores relativos, por ejemplo 1y.",
-	  "monthTo": "Especifica el fin del período del reporte. Se pueden especificar valores absolutos en formato yyyy-mm o valores relativos, por ejemplo 2m. Si está vacío, se utilizará el mes anterior a la fecha actual."
+            "monthFrom": "Especifica el inicio del período del reporte. Se pueden especificar valores absolutos en formato yyyy-mm o valores relativos, por ejemplo 1y.",
+            "monthTo": "Especifica el fin del período del reporte. Se pueden especificar valores absolutos en formato yyyy-mm o valores relativos, por ejemplo 2m. Si está vacío, se utilizará el mes anterior a la fecha actual."
           },
           "relative": {
-	    "from": "Especifica el inicio del período del reporte considerando la unidad en uso.\nEjemplo: Unidad=Mes, Desde=12, Cantidad=12 --> últimos 12 meses.",
-	    "unit": "Especifica la unidad mediante la cual se calcula el inicio del período del reporte.\nEjemplo: Unidad=Año, Desde=1, Cantidad=1 --> último año.",
-	    "count": "El fin del período del reporte se calcula como (Desde-Cantidad+1)*Unidad a partir del inicio del período del reporte. El mes correspondiente se calcula según la frecuencia, anual: 12, trimestral: último mes del trimestre, etc."
+            "from": "Especifica el inicio del período del reporte considerando la unidad en uso.\nEjemplo: Unidad=Mes, Desde=12, Cantidad=12 --> últimos 12 meses.",
+            "unit": "Especifica la unidad mediante la cual se calcula el inicio del período del reporte.\nEjemplo: Unidad=Año, Desde=1, Cantidad=1 --> último año.",
+            "count": "El fin del período del reporte se calcula como (Desde-Cantidad+1)*Unidad a partir del inicio del período del reporte. El mes correspondiente se calcula según la frecuencia, anual: 12, trimestral: último mes del trimestre, etc."
           },
           "preset": {
             "preset": "Predefinido",
@@ -2243,18 +2244,18 @@
           }
         },
         "sort": "Un reporte puede indicar los valores más altos o más bajos encontrados.",
-	"hits": "Especifica el número de entradas en el reporte.",
-	"periodLength": "Especifica la duración de los pasos para el reporte 'top ${hits} períodos ...' en minutos",
-	"periodStep": "Especifica la superposición de pasos entre dos pasos en minutos. Ejemplo: Duración del paso=5 minutos, Superposición de pasos=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
+        "hits": "Especifica el número de entradas en el reporte.",
+        "periodLength": "Especifica la duración de los pasos para el reporte 'top ${hits} períodos ...' en minutos",
+        "periodStep": "Especifica la superposición de pasos entre dos pasos en minutos. Ejemplo: Duración del paso=5 minutos, Superposición de pasos=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {
         "name": "El nombre de un Workflow es único en el inventario. Se pueden usar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios, ni puntos o guiones al inicio o al final.",
         "jobResourceNames": "Se pueden agregar referencias a Recursos de Job que contienen variables compartidas para ser usadas por varios trabajos y Workflows. Cualquier variable de los Recursos de Job seleccionados puede ser utilizada por cualquiera de los Jobs en el Workflow.",
         "documentation": "Un workflow o job puede tener asignada una documentación que se muestra en la vista WORKFLOWS. Las documentaciones se administran desde la vista RESOURCES.",
-	"title": "El título del Workflow puede especificarse libremente. El título se muestra en la vista WORKFLOWS.",
-	"timeZone": "La zona horaria se utiliza para el cálculo de tiempos de admisión y para las instrucciones Cycle. Por defecto se utiliza la zona horaria especificada en el perfil del usuario.",
-	"allowUndeclared": "Permitir variables no declaradas desde órdenes. Esto implica que una Orden puede transportar variables que no se verifican en cuanto a su tipo de dato o uso obligatorio. Los Jobs fallarán al referenciar variables no declaradas que no estén disponibles en una Orden.",
-	"duration": "Duración.",
+        "title": "El título del Workflow puede especificarse libremente. El título se muestra en la vista WORKFLOWS.",
+        "timeZone": "La zona horaria se utiliza para el cálculo de tiempos de admisión y para las instrucciones Cycle. Por defecto se utiliza la zona horaria especificada en el perfil del usuario.",
+        "allowUndeclared": "Permitir variables no declaradas desde órdenes. Esto implica que una Orden puede transportar variables que no se verifican en cuanto a su tipo de dato o uso obligatorio. Los Jobs fallarán al referenciar variables no declaradas que no estén disponibles en una Orden.",
+        "duration": "Duración.",
         "board": {
           "expectBoardName": "El nombre de un Tablero de Avisos es único en el inventario. Se pueden usar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten puntos ni guiones al inicio o al final.",
           "boardNames": "Se puede especificar un número de nombres de Tablero de Avisos para los cuales se crean Avisos.",
@@ -2387,7 +2388,7 @@
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
         "useRelativePathOnly": "Al exportar objetos de Planificación, por defecto se usa una ruta absoluta. Los usuarios pueden especificar una ruta relativa a usar, comenzando desde la carpeta seleccionada. Si no se selecciona ninguna carpeta sino solo objetos de Planificación, el uso de una ruta relativa equivale a exportar como objetos de nivel superior al archivo de exportación.",
-        "fileName":"Specifies the name of the export file such as 'export.zip' or 'export.tar.gz'.",
+        "fileName": "Specifies the name of the export file such as 'export.zip' or 'export.tar.gz'.",
         "fileFormat": "Specifies .zip or .tar.gz for the compression type.",
         "exportType": "Is one of a) export of individual objects, b) export of objects from folders or c) export of objects subject to Changes.",
         "objectTypes": "Allows selecting the types of inventory objects that should be included with the export, for example, Workflows, Job Resources, Schedules etc.",
@@ -2714,10 +2715,10 @@
     },
     "approvers": {
       "label": {
-       "addNewApprover": "Agregar perfil de aprobador",
-       "firstName": "Nombre",
-       "lastName": "Apellido",
-       "email": "Correo electrónico",
+        "addNewApprover": "Agregar perfil de aprobador",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
         "approversFound": "Entradas de perfil de aprobador encontradas",
         "approverFound": "Entrada de perfil de aprobador encontrada"
       },
@@ -2777,13 +2778,13 @@
     "label.noticeSpaceKey": "Clave de Plan",
     "label.priority": "Prioridad",
     "label.modifyAllSelectedOrderPriority": "Modificar prioridad de las órdenes seleccionadas",
-	"label.elapsed": "Tiempo transcurrido",
-	"label.remaining": "Tiempo restante",
-	"label.estimated": "Duración estimada",
-	"label.expected": "Duración esperada",
-	"label.overdue": "Atrasado",
-	"label.progress": "Progreso",
-	"label.historicalMax": "Máximo histórico",
+    "label.elapsed": "Tiempo transcurrido",
+    "label.remaining": "Tiempo restante",
+    "label.estimated": "Duración estimada",
+    "label.expected": "Duración esperada",
+    "label.overdue": "Atrasado",
+    "label.progress": "Progreso",
+    "label.historicalMax": "Máximo histórico",
     "button.allOrders": "Todas las órdenes",
     "button.cancel": "Cancelar",
     "button.cancelSoftly": "esperar fin de tarea",
@@ -2864,7 +2865,7 @@
         "time": "Specifies a relative start time from a number of seconds or hh:mm:ss.",
         "enterDateAndTime": "Allows entering the date and time when the Order should start.",
         "timeZone": "Specifies the time zone to which the date and time applies.",
-        "planKey" : "If the Workflow holds dependencies based on Notices, then a Daily Plan date can be specified to which dependencies will be resolved. By default the current day is used. Past dates are accepted for which a plan is opened. Future dates are accepted.",
+        "planKey": "If the Workflow holds dependencies based on Notices, then a Daily Plan date can be specified to which dependencies will be resolved. By default the current day is used. Past dates are accepted for which a plan is opened. Future dates are accepted.",
         "assignParameterizationFromSchedules": "If the Workflow is assigned a Schedule, then the Schedule can be selected to copy its parameterization such as variables and tags to the current Order.",
         "selectSchedule": "Offers selecting a Schedule from which the parameterization and Tags should be copied to the Order.",
         "selectOrder": "Offers selecting one or more Order templates from the selected Schedule.",
@@ -3339,7 +3340,7 @@
       "last6Months": "Últimos 6 meses",
       "lastYear": "Último año"
     },
-    "button" : {
+    "button": {
       "runReport": "Ejecutar Reportes",
       "run": "Ejecutar",
       "showReport": "Mostrar informe",
@@ -3405,7 +3406,7 @@
       "history_pause_duration": "Especifica la duración por la cual el Servicio de historial será pausado cuando se inicie el Servicio de Limpieza.",
       "history_pause_delay": "Especifica el retardo entre ejecuciones repetidas del Servicio de Limpieza.",
       "force_cleanup": "Fuerza el inicio del Servicio de Limpieza, incluso cuando el Servicio de historial está creando activamente entradas de historial. El Servicio de Limpieza pausará el Servicio de historial por un máximo configurable o hasta la terminación del Servicio de Limpieza, lo que ocurra primero.",
-	  "approval_requests_age": "approval_requests_age"
+      "approval_requests_age": "approval_requests_age"
     },
     "dailyplan": {
       "time_zone": "Especifica la zona horaria que se aplica a la hora de inicio del Servicio del Plan Diario y al período del Plan Diario.",
@@ -3413,7 +3414,7 @@
       "period_begin": "Especifica el inicio del período de 24 horas del Plan Diario con la zona horaria indicada.",
       "days_ahead_plan": "Especifica el número de días con anticipación para los cuales se generan órdenes y se ponen disponibles con el estado PLANIFICADO.",
       "days_ahead_submit": "Especifica el número de días con anticipación para los cuales las órdenes con el estado PLANIFICADO se envían a los Controladores y se ponen disponibles con el estado ENVIADO.",
-	  "projections_month_before": "Especifica el número de meses anteriores a la fecha actual para los que se calculan proyecciones que indican la ejecución de Órdenes. Esto permite a los usuarios comparar fechas pasadas del Plan Diario con proyecciones basadas en los cambios actuales de las Planificaciones.",
+      "projections_month_before": "Especifica el número de meses anteriores a la fecha actual para los que se calculan proyecciones que indican la ejecución de Órdenes. Esto permite a los usuarios comparar fechas pasadas del Plan Diario con proyecciones basadas en los cambios actuales de las Planificaciones.",
       "projections_month_ahead": "Especifica el número de meses con anticipación para los cuales se calculan proyecciones que indican la ejecución futura de órdenes.",
       "submit_orders_individually": "El Servicio del Plan Diario por defecto envía órdenes desde una única transacción que se revierte si el envío de una Orden falla. Con esta configuración activa, las órdenes se envían individualmente e independientemente del fallo al enviar otras órdenes. El Servicio del Plan Diario requerirá más tiempo para enviar órdenes individualmente.",
       "age_of_plans_to_be_closed_automatically": "Especifica el número de días después de los cuales el Plan Diario se cerrará y no permitirá agregar órdenes que resuelvan dependencias como Tableros de Avisos para la fecha original."
@@ -4075,8 +4076,8 @@
     "label.plannable": "planificable",
     "label.sleep": "Sleep",
     "label.duration": "Duración",
-	"label.historyDetails": "Detalles del historial",
-	"label.addBulkOrderToWorkflows": "Agregar Órdenes masivas",
+    "label.historyDetails": "Detalles del historial",
+    "label.addBulkOrderToWorkflows": "Agregar Órdenes masivas",
     "button.addScheme": "Agregar ciclo",
     "button.zoomIn": "Acercar",
     "button.zoomOut": "Alejar",
@@ -4383,11 +4384,61 @@
     "message.jobResourceNotFound": "El Recurso de Job ya no existe"
   },
   "calendar": {
-    "days": ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-    "daysShort": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-    "daysMin": ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"],
-    "months": ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    "monthsShort": ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    "days": [
+      "Domingo",
+      "Lunes",
+      "Martes",
+      "Miércoles",
+      "Jueves",
+      "Viernes",
+      "Sábado"
+    ],
+    "daysShort": [
+      "Dom",
+      "Lun",
+      "Mar",
+      "Mié",
+      "Jue",
+      "Vie",
+      "Sáb"
+    ],
+    "daysMin": [
+      "Do",
+      "Lu",
+      "Ma",
+      "Mi",
+      "Ju",
+      "Vi",
+      "Sá"
+    ],
+    "months": [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre"
+    ],
+    "monthsShort": [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic"
+    ],
     "weekShort": "S",
     "weekStart": 1
   },
@@ -4533,8 +4584,8 @@
       "description": "Sin datos"
     }
   },
-    "of": "de",
-    "helpSearch": {
+  "of": "de",
+  "helpSearch": {
     "placeholder": "Buscar en el documento...",
     "button.search": "Buscar",
     "button.previous": "Anterior",

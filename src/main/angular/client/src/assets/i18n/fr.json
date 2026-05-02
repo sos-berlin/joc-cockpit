@@ -59,7 +59,7 @@
   "PLANNED": "planifié",
   "REMOVED": "supprimé",
   "RUNNING": "en exécution",
-  "PROCESSING":"en traitement",
+  "PROCESSING": "en traitement",
   "SETBACK": "retour en arrière",
   "SINGLE_AGENT": "agent_autonome",
   "SKIPPED": "ignoré",
@@ -308,16 +308,16 @@
       "tooltip.url": "L'URL d'un Sous-Agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de du Sous-Agent, par exemple http://localhost:4445.",
       "tooltip.withGenerateSubagentCluster": "Un Sous-Agent peut être configuré comme un cluster de Sous-Agents distinct qui inclut ce seul Sous-Agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-Agent.",
       "tooltip.priority": "La priorité du Cluster de Sous-Agents spécifie une expression qui, pour un cluster active-passive, vaut 0 pour le premier Sous-Agent et 1 pour les Sous-Agents suivants. Dans le cas d'un cluster active-active, tous les Sous-Agents se voient attribuer la valeur de priorité 0. Pour un Cluster de Sous-Agents basée sur des métriques, la priorité contient une expression qui utilise des variables indicatrices telles que le nombre de tâches en exécution."
-},
-      "examples": {
-        "expression1": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en exécution pour tous Cluster de Sous-Agents dont il est membre.",
-        "expression2": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en exécution pour le Cluster de Sous-Agents donné.",
-        "expression3": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche.",
-        "expression4": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche pour le Cluster de Sous-Agents donné.",
-        "expression5": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches.",
-        "expression6": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches pour le Cluster de Sous-Agents donné.",
-        "expression7": "Exemple pour la plus petite consommation de CPU pondérée par 2, la mémoire libre et le plus petit nombre global de tâches exécutées dans le Sous-Agent pondéré par 3."
-      }
+    },
+    "examples": {
+      "expression1": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en exécution pour tous Cluster de Sous-Agents dont il est membre.",
+      "expression2": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en exécution pour le Cluster de Sous-Agents donné.",
+      "expression3": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche.",
+      "expression4": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche pour le Cluster de Sous-Agents donné.",
+      "expression5": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches.",
+      "expression6": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches pour le Cluster de Sous-Agents donné.",
+      "expression7": "Exemple pour la plus petite consommation de CPU pondérée par 2, la mémoire libre et le plus petit nombre global de tâches exécutées dans le Sous-Agent pondéré par 3."
+    }
   },
   "auditLog": {
     "label.auditLog": "Journal d'Audit",
@@ -515,8 +515,8 @@
     "label.sortBy": "Trier par",
     "label.deleteAllDocument": "Supprimer toutes les Documentations",
     "label.deleteAllReport": "Supprimer tous les Rapports",
-    "label.requestApproval" : "Demande d'Autorisation",
-    "label.approver" : "Approbateur",
+    "label.requestApproval": "Demande d'Autorisation",
+    "label.approver": "Approbateur",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Plage de dates",
     "label.to": "au",
@@ -841,11 +841,11 @@
     "label.scheduledLate": "Retardé",
     "label.apiServerStatus": "Status API Server",
     "label.JS7ServerInstanceId": "ID Instance",
-    "label.notSynchronized":"Non Synchronisé",
-    "label.synchronized":"Synchronisé",
-    "label.outstanding":"Pendant",
-    "label.suspended":"Suspendu",
-    "label.productStatus":"État du Produit",
+    "label.notSynchronized": "Non Synchronisé",
+    "label.synchronized": "Synchronisé",
+    "label.outstanding": "Pendant",
+    "label.suspended": "Suspendu",
+    "label.productStatus": "État du Produit",
     "button.editLayout": "Modifier la disposition",
     "button.resetLayout": "Réinitialiser la disposition",
     "button.widget": "Ajouter un widget",
@@ -2143,10 +2143,11 @@
       "label.dailyPlan": "Automatisation",
       "label.useRelativePathOnly": "Utiliser le chemin relatif"
     },
-    "deploy":{
+    "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
       "section.target": "Destination",
-      "section.notes": "Dépendances"
+      "section.dependencies": "Dépendances",
+      "section.scheduling": "Plan Quotidien"
     },
     "repository": {
       "label.filter": "Filtre",
@@ -2174,7 +2175,7 @@
         "agent": "L'Agent doit être spécifié pour effectuer la surveillance des fichiers sur l'hôte respectif sur lequel l'Agent est installé.",
         "directory": "Le répertoire est spécifié pour la surveillance des les fichiers entrants. Le répertoire doit être accessible pour l'hôte et le compte de l'Agent. Le répertoire est spécifié sous forme d'expression, par exemple une chaîne '/home/sos/files' ou en combinaison avec une fonction comme dans env('HOME') ++ '/files'",
         "pattern": "Un pattern d'expression régulière spécifie chemin d'accès aux fichiers pour lesquels le répertoire est surveillé. Par exemple, .* signifie tous les fichiers, .*\\.txt$ signifie tous les fichiers avec une extension .txt.",
-        "timeZone": "Lorsqu'un fichier arrive, l'Agent crée un ordre qui inclut la date du jour avec son ID Ordre. Cet élément spécifie le fuseau horaire utilisé pour la date dans l'ID Ordre.",
+        "timeZone": "Lorsqu'un fichier arrive, l'Agent crée un ordre qui inclut la date du jour avec son ID Ordre. Cet élément spécifie le fuseau horaire utilisé pour la date dans l'ID Ordre, voir [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "delay": "Un délai est appliqué pendant lequel l'Agent attend qu'un fichier entrant reste inchangé. Les modifications sont détectées à partir de la taille du fichier et de l'horodatage du fichier. Si le fichier change, par exemple si le fichier est écrit par un processus, le délai sera à nouveau appliqué et la vérification sera répétée jusqu'à ce qu'aucun autre changement ne se produise."
       },
       "jobResource": {
@@ -2211,7 +2212,7 @@
         "blockPosition": "Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, Cycle, l'instruction correspondante peut être sélectionnée. L'Ordre quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.",
         "ignoreAdmissionTimes": "L'exécution des tâches peut être limitée par les heures d'admission des tâches et par l'instruction AdmissionTimes. Cette option ignore les heures d'admission et force le lancement des tâches.",
         "tagName": "Il est possible d'ajouter un nombre quelconque de Tags qui seront affectées aux ordres crées à partir de la Planification.",
-        "priority": "Si l'Ordre doit répondre à une instruction Lock d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente. Les Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes : Basse : -20000, Inférieur à la normale : -10000, Normal : 0, Au-dessus de la normale : 10000, Haut : 20000."
+        "priority": "Si l'Ordre doit répondre à une instruction Lock d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente.\n\nLes Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire.\n\nLes raccourcis offrent les valeurs suivantes :\n\n- Basse : -20000\n- Inférieur à la normale : -10000\n- Normal : 0\n- Au-dessus de la normale : 10000\n- Haut : 20000"
       },
       "script": {
         "name": "Un Bloc Script est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Bloc Script est unique dans l'inventaire. Pour le nom du Bloc Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2252,7 +2253,7 @@
         "jobResourceNames": "Il est possible d'ajouter des références aux ressources de tâches qui contiennent des variables partagées à utiliser par un certain nombre de tâche et de workflow. Toutes les variables des ressources de tâche sélectionnées peuvent être utilisées par n'importe quel tâche dans le workflow.",
         "documentation": "Un worklow ou une tâche peut se voir attribuer une documentation qui s'affiche avec la vue WORKFLOWS. Les documentations sont gérées avec la vue RESSOURCES.",
         "title": "Le Titre du workflow peut être spécifié à volonté. Le Titre est affiché dans la vue WORKFLOWS.",
-        "timeZone": "Le fuseau horaire sert à calculer les heures d'admission et l'instruction Cycle. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
+        "timeZone": "Le fuseau horaire sert à calculer les heures d'admission et l'instruction Cycle. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé, voir [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
         "duration": "Durée.",
         "board": {
@@ -2387,7 +2388,7 @@
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
         "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut. Les utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné. Si aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
-        "fileName":"Indique le nom du fichier d'exportation, par exemple 'export.zip' ou 'export.tar.gz'.",
+        "fileName": "Indique le nom du fichier d'exportation, par exemple 'export.zip' ou 'export.tar.gz'.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
         "exportType": "S'agit-il a) de l'exportation d'objets individuels, b) de l'exportation d'objets à partir de dossiers ou c) de l'exportation d'objets soumis à des modifications.",
         "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple les Workflows, les Ressources de Tâches, les Planifications etc.",
@@ -2863,8 +2864,8 @@
         "startTime": "Indique quand l'Ordre va démarrer. L'option 'Maintenant' déclenche l'Ordre immédiatement, l'option 'Date spécifique' permet de sélectionner la date et l'heure, l'option 'Relatif à l'heure actuelle' permet de définir un délai en secondes ou au format hh:mm:ss, tandis que l'option 'Sans démarrage' place l'Ordre en état 'à venir' et permet de lui attribuer une heure de démarrage ultérieurement.",
         "time": "Indique une heure de démarrage relative exprimée en nombre de secondes ou au format hh:mm:ss.",
         "enterDateAndTime": "Permet de saisir la date et l'heure auxquelles l'Ordre doit démarrer.",
-        "timeZone": "Indique le fuseau horaire auquel s'appliquent la date et l'heure.",
-        "planKey" : "Si le Workflow contient des dépendances basées sur des Annonces, il est possible de spécifier une date du Plan Quotidien à laquelle les dépendances seront résolues. Par défaut, le jour en cours est utilisé. Les dates passées pour lesquelles un plan est ouvert sont acceptées. Les dates futures sont acceptées.",
+        "timeZone": "Indique le fuseau horaire auquel s'appliquent la date et l'heure, voir [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
+        "planKey": "Si le Workflow contient des dépendances basées sur des Annonces, il est possible de spécifier une date du Plan Quotidien à laquelle les dépendances seront résolues. Par défaut, le jour en cours est utilisé. Les dates passées pour lesquelles un plan est ouvert sont acceptées. Les dates futures sont acceptées.",
         "assignParameterizationFromSchedules": "Si le Workflow est assigné à une Planification, cette option peut être sélectionnée pour copier son paramétrage, tel que les variables et les Tags, dans l'Ordre actuel.",
         "selectSchedule": "Permet de sélectionner une Planification à partir de laquelle les paramètres et les Tags seront copiés dans l'Ordre.",
         "selectOrder": "Permet de sélectionner un ou plusieurs modèles d'Ordre dans la Planfication sélectionnée.",
@@ -3339,7 +3340,7 @@
       "last6Months": "Dernier 6 Mois",
       "lastYear": "Dernier An"
     },
-    "button" : {
+    "button": {
       "runReport": "Exécuter le Rapport",
       "run": "Exécuter",
       "showReport": "Visualiser le Rapport",
@@ -4274,7 +4275,7 @@
       "label.hideLogs": "Cacher le Journal",
       "label.showLogs": "Visualiser le Journal",
       "label.invalidJson": "JSON non valide",
-     "label.ramlDocs": "Documentation RAML",
+      "label.ramlDocs": "Documentation RAML",
       "label.addItem": "Ajouter Èlement",
       "label.addEntry": "Ajouter Objet",
       "label.item": "Élément",
@@ -4383,11 +4384,61 @@
     "message.jobResourceNotFound": "Ressource de Tâche n'existe plus"
   },
   "calendar": {
-    "days": ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-    "daysShort": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
-    "daysMin": ["D", "L", "Ma", "Me", "J", "V", "S", "D"],
-    "months": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-    "monthsShort": ["Jan", "Fév", "Mar", "Avr", "Mai", "Jui", "Jul", "Aou", "Sep", "Oct", "Nov", "Déc"],
+    "days": [
+      "Dimanche",
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi"
+    ],
+    "daysShort": [
+      "Dim",
+      "Lun",
+      "Mar",
+      "Mer",
+      "Jeu",
+      "Ven",
+      "Sam"
+    ],
+    "daysMin": [
+      "D",
+      "L",
+      "Ma",
+      "Me",
+      "J",
+      "V",
+      "S"
+    ],
+    "months": [
+      "Janvier",
+      "Février",
+      "Mars",
+      "Avril",
+      "Mai",
+      "Juin",
+      "Juillet",
+      "Août",
+      "Septembre",
+      "Octobre",
+      "Novembre",
+      "Décembre"
+    ],
+    "monthsShort": [
+      "Jan",
+      "Fév",
+      "Mar",
+      "Avr",
+      "Mai",
+      "Jui",
+      "Jul",
+      "Aou",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Déc"
+    ],
     "weekShort": "S",
     "weekStart": 1
   },
