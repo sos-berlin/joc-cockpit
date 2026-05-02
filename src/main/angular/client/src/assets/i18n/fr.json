@@ -2807,7 +2807,7 @@
     "button.assignFromSchedule": "Assigner à partir d'une Planification",
     "button.cloneOrder": "Cloner l'Ordre",
     "button.continue": "Faire courir",
-    "button.addOrderParameterization": "Ajouter Paramétrage de l'Ordre",
+    "button.addOrderParameterization": "Ajouter Ordre",
     "button.addOrdersFromAllSchedules": "Ajouter Ordres à partir des Planifications",
     "button.normal": "attendre fin de la tâche",
     "button.force": "terminer tâche",
