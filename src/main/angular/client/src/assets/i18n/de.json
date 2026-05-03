@@ -278,7 +278,7 @@
     "tooltip.agentName": "Der Name eines Agenten ist eine eindeutige Bezeichnung, die geändert werden kann. Agenten werden Jobs anhand ihres Namens zugewiesen.\n\nFür die Kennung des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.title": "Der Titel eines Agenten kann nach Belieben angegeben werden.",
     "tooltip.agentNameAliases": "Einem Agenten können Alias Namen zugeordnet werden. Der Agent kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden.\n\nFür Alias Namen des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-    "tooltip.url": "Die URL eines Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+    "tooltip.url": "Die URL eines Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. `http://localhost:4445`",
     "tooltip.hidden": "Agenten können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die ÜBERSICHT sowie für alle Stellen, an denen Agenten zugeordnet werden.",
     "tooltip.asStandaloneAgent": "Ein Autonomer Agent oder ein Director Agent eines Agenten-Cluster können als Cluster Wächter agieren.\n\nDer angegebene Agent wird als Autonomer Agent eingerichtet, wenn dieses Ankreuzfeld ausgewählt ist.",
     "tooltip.primaryDirectorId": "Die Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden.\n\nFür die Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -293,7 +293,7 @@
       "tooltip.agentClusterName": "Der Name des Agenten-Cluster ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nFür den Namen des Agenten-Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.subagentId": "Die Subagenten-Kennung eines Director Agenten ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden.\n\nFür die Subagenten-Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.title": "Der Titel eines Agenten-Cluster kann nach Belieben angegeben werden.",
-      "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+      "tooltip.url": "Die URL eines Director Agenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten-Cluster eingerichtet werden, der diesen einzigen Director Agenten aufführt.\n\nDadurch lassen sich Jobs gezielt auf einem Director Agenten ausführen.",
       "tooltip.agentNameAliases": "Einem Agenten-Cluster können Alias Namen zugeordnet werden.\n\nDer Agenten-Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden.\n\nFür Alias Namen des Agenten-Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.processLimit": "Agenten führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für Aufträge aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung über alle Subagenten im Cluster hinweg einzuschränken. Ein Prozess-Limit von 0 verhindert den Start von Aufträgen.",
@@ -305,7 +305,7 @@
     "subagent": {
       "tooltip.subagentId": "Die Kennung des Subagenten ist eindeutig und kann während der Lebenszeit eines Subagenten nicht geändert werden.\n\nFür die Kennung des Subagenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.title": "Der Titel eines Subagenten kann nach Belieben angegeben werden.",
-      "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
+      "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "Ein Subagent kann als eigener Subagenten-Cluster eingerichtet werden, der diesen einzigen Subagenten aufführt.\n\nDadurch lassen sich Jobs gezielt auf einem Subagenten ausführen.",
       "tooltip.priority": "Die Priorität des Subagenten-Cluster gibt einen Ausdruck an, der bei einem Aktiv-Passiv Cluster für den ersten Subagenten den Wert 0 und für die nachfolgenden Subagenten den Wert 1 hat.\n\nBei einem Aktiv-Aktiv Cluster wird allen Subagenten der Prioritätswert 0 zugewiesen.\n\nBei einem metrikbasierten Subagenten-Cluster enthält die Priorität einen Ausdruck, der Indikatorvariablen wie die Anzahl der laufenden Jobs verwendet."
     },
@@ -1163,7 +1163,7 @@
         "templates": "Vorlagen",
         "serviceName": "Service Name",
         "serviceDir": "Service Verzeichnis",
-        "forceSudo": "sudo forcieren"
+        "forceSudo": "sudo verwenden"
       },
       "button": {
         "addAgent": "Agent hinzufügen",
@@ -1212,19 +1212,19 @@
         "user": "Die Anwenderkennung zur Authentifizierung der SSH Verbindung zum Rechner des Agenten.",
         "keyFile": "Der Pfad zur Schlüsseldatei für die Authentifizierung der SSH Verbindung zum Rechner des Agenten.",
         "packageLocation": "Der Pfad zum Speicherort des Pakets der Software-Installation auf dem Rechner des Agenten.",
-        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner des Agenten ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe 'StopService' wird der Dienst des Agenten unter Unix und Windows beendet.",
-        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner des Agenten ausgeführt. Ein Betriebssystem-Kommando kann angegeben werden. Mit der Angabe 'StartService' wird der Dienst des Agenten unter Unix und Windows gestartet.",
+        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner des Agenten ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe `StopService` wird der Dienst des Agenten unter Unix und Windows beendet.",
+        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner des Agenten ausgeführt. Ein Betriebssystem-Kommando kann angegeben werden. Mit der Angabe `StartService` wird der Dienst des Agenten unter Unix und Windows gestartet.",
         "makeService": "Der Dienst des Agenten unter Unix oder Windows wird eingerichtet.",
         "release": "Die Software-Version des Agenten.",
         "tarball": "Die Archiv-Datei der Software-Installation des Agenten.\n\nFür Unix ist diese ein .tar.gz Archiv, für Windows ein .zip Archiv.",
         "home": "Das Installationsverzeichnis des Agenten.\n\nDieses Verzeichnis enthält Binärdateien und ausführbare Dateien.\n\nUnter Unix wird häufig das Verzeichnis `/opt/sos-berlin.com/js7/agent` verwendet. Unter Windows wird häufig `C:/Program Files/sos-berlin.com/js7/agent` verwendet.",
-        "data": "Das Datenverzeichnis des Agenten. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen 'config' und 'logs'.\n\nUnter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/agent` verwendet. Unter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/agent` verwendet.",
+        "data": "Das Datenverzeichnis des Agenten. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen `config` und `logs`.\n\nUnter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/agent` verwendet.\n\nUnter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/agent` verwendet.",
         "homeOwner": "Das Anwenderkonto des Eigentümers des Installationsverzeichnisses.",
         "dataOwner": "Das Anwenderkonto des Eigentümers des Datenverzeichnisses.",
         "runUser": "Das Anwenderkonto des Dienstes des Agenten zur Laufzeit.",
-        "httpPort": "Der Agent überwacht diesen HTTP Port, über den Kommandos des Instanz Start Skripts und ggf. Kommandos des Controller entegegengenommen werden.\n\nFür die Verwendung mit dem Instanz Start Skript kann eine lokale Netzwerkschnittstelle angegeben werden, z.B. localhost:4445.\n\nWenn ein Controller von einem anderen Rechner mit dem Agenten über diesen Port kommuniziert, kann eine öffentliche Netzwerkschnittstelle angegeben werden, z.B. `host.example.com:4445`.",
+        "httpPort": "Der Agent überwacht diesen HTTP Port, über den Kommandos des Instanz Start Skripts und ggf. Kommandos des Controller entegegengenommen werden.\n\nFür die Verwendung mit dem Instanz Start Skript kann eine lokale Netzwerkschnittstelle angegeben werden, z.B. `localhost:4445`.\n\nWenn ein Controller von einem anderen Rechner mit dem Agenten über diesen Port kommuniziert, kann eine öffentliche Netzwerkschnittstelle angegeben werden, z.B. `host.example.com:4445`.",
         "httpsPort": "Der Agent überwacht diesen HTTPS Port, über den Kommandos des Controller entgegengenommen werden.\n\nDer Port muss im Netzwerk für den Controller erreichbar sein.",
-        "javaHome": "Das Java Installationsverzeichnis ist häufig durch die JAVA_HOME Umgebungsvariable bestimmt.",
+        "javaHome": "Das Java Installationsverzeichnis ist häufig durch die `JAVA_HOME` Umgebungsvariable bestimmt.",
         "javaOptions": "Java Optionen des Agenten können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. `-Xmx512m`.",
         "controllerId": "Die Controller ID identifiziert den Controller, für den der Agent Jobs ausführt.",
         "keyStore": "Der Schlüsselspeicher (keystore) enthält den privaten Schlüssel des Agenten, der für HTTPS Verbindungen zum Agenten verwendet wird.",
@@ -1233,10 +1233,10 @@
         "keyAlias": "Der Schlüssel Alias kann verwendet werden, wenn ein Schlüsselspeicher mehrere private Schlüssel enthält.\n\nDer Alias Name bestimmt den für HTTPS Verbindungen zum Agenten zu verwendenden privaten Schlüssel.",
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat des Agenten signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
-        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Agenten enthält, z.B. 'agent.conf'. Das Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
+        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Agenten enthält, z.B. `agent.conf`.\n\nDas Verzeichnis kann ein Unterverzeichnis `private` mit weiteren Konfigurationsdateien besitzen.",
         "serviceName": "Der Name des systemd Service.",
-        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
-        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
+        "forceSudo": "Die Verwendung von `sudo` für alle Operationen auf Verzeichnisse und Dateien erzwingen."
       }
     },
     "controller": {
@@ -1273,7 +1273,7 @@
         "templates": "Vorlagen",
         "serviceName": "Service Name",
         "serviceDir": "Service Verzeichnis",
-        "forceSudo": "sudo forcieren"
+        "forceSudo": "sudo verwenden"
       },
       "button": {
         "addController": "Controller hinzufügen",
@@ -1322,19 +1322,19 @@
         "user": "Die Anwenderkennung zur Authentifizierung der SSH Verbindung zum Rechner des Controller.",
         "keyFile": "Der Pfad zur Schlüsseldatei für die Authentifizierung der SSH Verbindung zum Rechner des Controller.",
         "packageLocation": "Der Pfad zum Speicherort des Pakets der Software-Installation auf dem Rechner des Controller.",
-        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner des Controller ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe 'StopService' wird der Dienst des Controller unter Unix und Windows beendet.",
-        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner des Controller ausgeführt. Ein Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe 'StartService' wird der Dienst des Controller unter Unix und Windows gestartet.",
+        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner des Controller ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe `StopService` wird der Dienst des Controller unter Unix und Windows beendet.",
+        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner des Controller ausgeführt. Ein Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe `StartService` wird der Dienst des Controller unter Unix und Windows gestartet.",
         "makeService": "Der Dienst des Controller unter Unix oder Windows wird eingerichtet.",
         "release": "Die Software-Version des Controller.",
         "tarball": "Die Archiv-Datei der Software-Installation des Controller.\n\nFür Unix ist diese ein .tar.gz Archiv, für Windows ein .zip Archiv.",
         "home": "Das Installationsverzeichnis des Controller. Dieses Verzeichnis enthält Binärdateien und ausführbare Dateien. Unter Unix wird häufig das Verzeichnis `/opt/sos-berlin.com/js7/controller` verwendet. Unter Windows wird häufig `C:/Program Files/sos-berlin.com/js7/controller` verwendet.",
-        "data": "Das Datenverzeichnis des Controller. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen 'config' und 'logs'. Unter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/controller` verwendet. Unter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/controller` verwendet.",
+        "data": "Das Datenverzeichnis des Controller. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen `config` und `logs`.\n\nUnter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/controller` verwendet.\n\nUnter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/controller` verwendet.",
         "homeOwner": "Das Anwenderkonto des Eigentümers des Installationsverzeichnisses.",
         "dataOwner": "Das Anwenderkonto des Eigentümers des Datenverzeichnisses.",
         "runUser": "Das Anwenderkonto des Dienstes des Controller zur Laufzeit.",
         "httpPort": "Der Controller überwacht diesen HTTP Port, über den Kommandos des Instanz Start Skripts und ggf. Kommandos von JOC Cockpit entegegengenommen werden. Für die Verwendung mit dem Instanz Start Skript kann eine lokale Netzwerkschnittstelle angegeben werden, z.B. `localhost:4444`. Wenn JOC Cockpit von einem anderen Rechner mit dem Controller über diesen Port kommuniziert, kann eine öffentliche Netzwerkschnittstelle angegeben werden, z.B. `host.example.com:4444`.",
         "httpsPort": "Der Controller überwacht diesen HTTPS Port, über den Kommandos von JOC Cockpit entgegengenommen werden.\n\nDer Port muss im Netzwerk für JOC Cockpit erreichbar sein.",
-        "javaHome": "Das Java Installationsverzeichnis ist häufig durch die JAVA_HOME Umgebungsvariable bestimmt.",
+        "javaHome": "Das Java Installationsverzeichnis ist häufig durch die `JAVA_HOME` Umgebungsvariable bestimmt.",
         "javaOptions": "Java Optionen des Controller können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. `-Xmx1g`.",
         "jocRef": "Die JOC Cockpit ID identifiziert JOC Cockpit, das den Controller verwaltet.",
         "controllerId": "Die Controller ID identifiziert den Controller.\n\nSie kann während der Lebenszeit des Controller nicht geändert werden.",
@@ -1345,10 +1345,10 @@
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat des Controller signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
         "controllerCert": "Der Pfad zum Zertifikat (*.pem, *.crt) des Controller.",
-        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Controller enthält, z.B. 'controller.conf'.\n\nDas Verzeichnis kann ein Unterverzeichnis 'private' mit weiteren Konfigurationsdateien besitzen.",
+        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration des Controller enthält, z.B. `controller.conf`.\n\nDas Verzeichnis kann ein Unterverzeichnis `private` mit weiteren Konfigurationsdateien besitzen.",
         "serviceName": "Der Name des systemd Service.",
-        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
-        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
+        "forceSudo": "Die Verwendung von `sudo` für alle Operationen auf Verzeichnisse und Dateien erzwingen."
       }
     },
     "joc": {
@@ -1398,7 +1398,7 @@
         "sslIni": "Jetty SSL Konfiguration (ssl.ini)",
         "serviceName": "Service Name",
         "serviceDir": "Service Verzeichnis",
-        "forceSudo": "sudo forcieren"
+        "forceSudo": "sudo verwenden"
       },
       "button": {
         "addJOC": "JOC Cockpit hinzufügen",
@@ -1460,14 +1460,14 @@
         "user": "Die Anwenderkennung zur Authentifizierung der SSH Verbindung zum Rechner von JOC Cockpit.",
         "keyFile": "Der Pfad zur Schlüsseldatei für die Authentifizierung der SSH Verbindung zum Rechner von JOC Cockpit.",
         "packageLocation": "Der Pfad zum Speicherort des Pakets der Software-Installation auf dem Rechner von JOC Cockpit.",
-        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner von JOC Cockpit ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe 'StopService' wird der Dienst von JOC Cockpit unter Unix und Windows beendet.",
-        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner von JOC Cockpit ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe 'StartService' wird der Dienst von JOC Cockpit unter Unix und Windows gestartet.",
+        "execPre": "Das Kommando für die Vorverarbeitung wird vor der Extraktion des Pakets der Software-Installation auf dem Rechner von JOC Cockpit ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe `StopService` wird der Dienst von JOC Cockpit unter Unix und Windows beendet.",
+        "execPost": "Kommando für Nachverarbeitung wird nach der Extraktion des Pakets der Software-Installation auf dem Rechner von JOC Cockpit ausgeführt.\n\nEin Betriebssystem-Kommando kann angegeben werden.\n\nMit der Angabe `StartService` wird der Dienst von JOC Cockpit unter Unix und Windows gestartet.",
         "makeService": "Der Dienst von JOC Cockpit unter Unix oder Windows wird eingerichtet.",
         "release": "Die Software-Version von JOC Cockpit.",
         "tarball": "Die Archiv-Datei der Software-Installation von JOC Cockpit.\n\nFür Unix ist diese ein .tar.gz Archiv, für Windows ein .zip Archiv.",
         "setupDir": "Das Einrichtungsverzeichnis wird für die Extraktion der Archiv-Datei der Installation verwendet.\n\nEin temporärer Speicherort kann verwendet werden.",
         "home": "Das Installationsverzeichnis von JOC Cockpit.\n\nDieses Verzeichnis enthält Binärdateien und ausführbare Dateien.\n\nUnter Unix wird häufig das Verzeichnis `/opt/sos-berlin.com/js7/joc` verwendet.\n\nUnter Windows wird häufig `C:/Program Files/sos-berlin.com/js7/joc` verwendet.",
-        "data": "Das Datenverzeichnis von JOC Cockpit. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen 'resources/joc' und 'logs'.\n\nUnter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/joc` verwendet. Unter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/joc` verwendet.",
+        "data": "Das Datenverzeichnis von JOC Cockpit. Dieses Verzeichnis enthält u.a. Konfigurationsdateien und Protokolldateien in den Unterverzeichnissen `resources/joc` und `logs`.\n\nUnter Unix wird häufig das Verzeichnis `/var/sos-berlin.com/js7/joc` verwendet.\n\nUnter Windows wird häufig `C:/ProgramData/sos-berlin.com/js7/joc` verwendet.",
         "homeOwner": "Das Anwenderkonto des Eigentümers des Installationsverzeichnisses.",
         "dataOwner": "Das Anwenderkonto des Eigentümers des Datenverzeichnisses.",
         "runUser": "Das Anwenderkonto des Dienstes von JOC Cockpit zur Laufzeit.",
@@ -1475,13 +1475,13 @@
         "securityLevel": "Die Sicherheitsstufe von JOC Cockpit regelt unter anderem die Handhabung von Signierzertifikaten für das Ausrollen von Areitsabläufen.",
         "dbmsConfig": "Die DBMS Hibernate Konfigurationsdatei (hibernate.cfg.xml) spezifiziert die Verbindung zur Datenbank.",
         "dbmsDriver": "Die DBMS JDBC Driver Datei (*.jar) stellt die Verbindung zur Datenbank her.\n\nEine Reihe von JDBC Driver Dateien werden mit JOC Cockpit ausgeliefert, Anwender können eine eigene Version einer DBMS JDBC Driver Datei angeben.",
-        "dbmsInit": "Die DBMS Initialisierung beinhaltet das Einrichten von Objekten in der Datenbank.\n\nDies kann zum Installationszeitpunkt 'byInstaller', zum Startzeitpunkt 'byJoc' oder nicht 'off' erfolgen.\n\nIn letzterem Fall richten Anwender die Datenbankobjekte selbst ein.",
+        "dbmsInit": "Die DBMS Initialisierung beinhaltet das Einrichten von Objekten in der Datenbank.\n\nDies kann zum Installationszeitpunkt `byInstaller`, zum Startzeitpunkt `byJoc` erfolgen oder mit `off`unterdrückt werden.\n\nIn letzterem Fall richten Anwender die Datenbankobjekte selbst ein.",
         "httpPort": "JOC Cockpit überwacht den HTTP Port, über den Anwender auf das GUI zugreifen. Es kann eine öffentliche Netzwerkschnittstelle angegeben werden, z.B. `host.example.com:4446`.",
         "httpsPort": "JOC Cockpit überwacht den HTTPS Port, über den Anwender auf das GUI zugreifen.",
         "isUser": "Die Installation erfolgt im Kontext des Anwenderkontos.",
-        "isPreserveEnv": "Die Installation verwendet 'sudo' und propagiert Umgebungsvariablen, z.B. JAVA_HOME.",
+        "isPreserveEnv": "Die Installation verwendet `sudo` und propagiert Umgebungsvariablen, z.B. `JAVA_HOME`.",
         "javaHome": "Das Java Installationsverzeichnis ist häufig durch die `JAVA_HOME` Umgebungsvariable bestimmt.",
-        "javaOptions": "Java Optionen von JOC Cockpit können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. -Xmx1g.",
+        "javaOptions": "Java Optionen von JOC Cockpit können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. `-Xmx1g`.",
         "responseDir": "Das Antwortverzeichnis kann Dateien enthalten, die in das Einrichtungsverzeichnis kopiert werden, z.B. joc_install.xml, DBMS JDBC Driver Datei oder Schlüsseldatei der Lizenz.",
         "keyStore": "Der Schlüsselspeicher (keystore) enthält den privaten Schlüssel von JOC Cockpit, der für HTTPS Verbindungen zu JOC Cockpit verwendet wird.",
         "keyStorePassword": "Der Schlüsselspeicher (keystore) ist durch ein Kennwort geschützt.",
@@ -1489,14 +1489,14 @@
         "keyAlias": "Der Schlüssel Alias kann verwendet werden, wenn ein Schlüsselspeicher mehrere private Schlüssel enthält.\n\nDer Alias Name bestimmt den für HTTPS Verbindungen zu JOC Cockpit zu verwendenden privaten Schlüssel.",
         "trustStore": "Der Vertrauensspeicher (truststore) enthält das öffentliche Zertifikat der Zertifizierungsstelle, die das Zertifikat von JOC Cockpit signiert hat.",
         "trustStorePassword": "Der Vertrauensspeicher (truststore) ist durch ein Kennwort geschützt.",
-        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration von JOC Cockpit enthält, z.B. 'joc.properties'.\n\nDas Verzeichnis kann Unterverzeichnisse wie z.B. 'license', 'lib' mit weiteren Dateien besitzen.",
+        "templates": "Der Pfad zu einem Verzeichnis, das Vorlagendateien zur Konfiguration von JOC Cockpit enthält, z.B. `joc.properties`.\n\nDas Verzeichnis kann Unterverzeichnisse wie z.B. `license`, `lib` mit weiteren Dateien besitzen.",
         "jocCert": "Der Pfad zum Zertifikat (*.pem, *.crt) von JOC Cockpit.",
-        "httpIni": "Die Jetty HTTP Konfigurationsdatei (http.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTP Verbindungen zu JOC Cockpit benötigt werden.",
-        "httpsIni": "Jetty HTTPS Konfigurationsdatei (https.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
-        "sslIni": "Jetty SSL Konfigurationsdatei (ssl.ini) kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
+        "httpIni": "Die Jetty HTTP Konfigurationsdatei `http.ini` kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTP Verbindungen zu JOC Cockpit benötigt werden.",
+        "httpsIni": "Jetty HTTPS Konfigurationsdatei `https.ini` kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
+        "sslIni": "Jetty SSL Konfigurationsdatei `ssl.ini` kann angegeben werden, wenn spezfische Einstellungenn für den Betrieb von HTTPS Verbindungen zu JOC Cockpit benötigt werden.",
         "serviceName": "Der Name des systemd Service.",
-        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung: /usr/lib/systemd/system, zum Beispiel /etc/systemd/system.",
-        "forceSudo": "Die Verwendung von sudo für alle Operationen auf Verzeichnisse und Dateien forcieren."
+        "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
+        "forceSudo": "Die Verwendung von `sudo` für alle Operationen auf Verzeichnisse und Dateien erzwingen."
       }
     }
   },
@@ -1519,7 +1519,7 @@
     "message.pasteInSubFolderNotAllowed": "Der Zielordner ist ein Unterordner des Quellordners.",
     "message.invalidJSON": "Ungültige JSON Datei",
     "message.fileSizeExceed": "Die zugelassene Dateigröße beträgt weniger als 1 MB",
-    "message.invalidFileName": "File name has invalid characters"
+    "message.invalidFileName": "Der Dateiname enthält ungültige Zeichen"
   },
   "favorite": {
     "button.addFavorite": "Favorit hinzufügen",
@@ -1874,7 +1874,7 @@
     "label.endOfLife": "Lebensdauer der Notiz",
     "label.readingOrderToNoticeId": "Notizkennung des notifizierten Auftrags",
     "label.matchingDailyPlanDate": "Passendes Datum des Tagesplans",
-    "label.matchingDailyPlanDateAndOrderName": "Passendes Datum des Tagesplans und Auftragsname",
+    "label.matchingDailyPlanDateAndOrderName": "Passendes Datum des Tagesplans und Auftragsnamens",
     "label.matchingOrderName": "Passender Auftragsname",
     "label.milliseconds": "Millisekunden",
     "label.seconds": "Sekunden",
@@ -2173,25 +2173,25 @@
         "title": "Der Titel der Dateiauftragsquelle kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden.\n\nBei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
         "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
-        "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.\n\nFür das Verzeichnis wird ein Ausdruck erwartet, eine in Hochkomma gefasste Zeichenfolge, z.B. `/home/sos/files` oder in Kombination mit einer Funktion, z.B. `env('HOME') ++ '/files'`",
+        "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.\n\nFür das Verzeichnis wird ein Ausdruck erwartet, eine in Hochkomma gefasste Zeichenfolge, z.B. `'/home/sos/files'` oder in Kombination mit einer Funktion, z.B. `env('HOME') ++ '/files'`",
         "pattern": "Ein regülärer Ausdruck beschreibt das Muster der Pfade von Dateien, die überwacht werden. Zum Beispiel bedeutet `.*` alle Dateien, `.*\\.*txt$` bedeutet alle Dateien mit der Endung .txt.",
         "timeZone": "Wenn eine Datei im überwachten Verzeichnis eintrifft, wird vom Agenten ein Auftrag erzeugt, dessen Auftragskennung das Tagesdatum enthält.\n\nHier wird die Zeitzone benannt, für die das Tagesdatum verwendet wird, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein Agent wartet bis eine eintreffende Datei stabil ist, d.h.  deren Größe und Zeitstempel sich nicht ändern.\n\nWird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann.\n\nEs gibt zwei Varianten: \n\n- Argumente sind für JITL Jobs und Java Jobs verfügbar,\n- Umgebungsvariablen sind für Shell Jobs verfügbar.\n\nDie Werte von Umgebungsvariablen können Argumente aufführen wie in $argument.\n\nFür den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine Job-Ressource ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen Arbeitsabläufen und Jobs zur Verfügung gestellt werden kann.\n\nEs gibt zwei Varianten: \n\n- Argumente sind für JITL Jobs und Java Jobs verfügbar,\n- Umgebungsvariablen sind für Shell Jobs verfügbar.\n\nDie Werte von Umgebungsvariablen können Argumente aufführen wie in `$argument`.\n\nFür den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Job-Ressource angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Job-Ressource kann nach Belieben angegeben werden."
       },
       "board": {
-        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen.\n\nDie `PostNotices-Anweisung` und `ExpectNotices-Anweisung` von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen.\n\nDie `PostNotices-Anwiesung` und `ExpectNotices-Anweisung` von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen.\n\nDie `PostNotices` Anweisung und `ExpectNotices` Anweisung von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "Ein Notizbrett benennt die Abhängigkeit zwischen Arbeitsabläufen.\n\nDie `PostNotices` Anweisung und `ExpectNotices` Anweisung von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit dem Notizbrett angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des Notizbretts kann nach Belieben angegeben werden.",
         "toNotice": "Die Notizkennung des ausstellenden Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem die zu notifizierenden Aufträge identifiziert wereden.",
         "endOfLife": "Die Lebensdauer der Notiz wird im Format *hh:mm:ss* bestimmt, z.B. *01:30:00* für ein-einhalb Stunden.",
         "readingOrderToNoticeId": "Die Notizkennung des notifizierten Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem ausstellende Aufträge identifiziert werden.",
-        "boardType": "Notizbretter des Typs 'global' erzwingen Abhängigkeiten unabhängig vom Tagesplan.\n\nNotizbretter des Typs 'planbar' berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die Aufträge existieren, deren Arbeitsabläufe Notizen senden."
+        "boardType": "Notizbretter des Typs **global** erzwingen Abhängigkeiten unabhängig vom Tagesplan.\n\nNotizbretter des Typs **planbar** berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die Aufträge existieren, deren Arbeitsabläufe Notizen senden."
       },
       "lock": {
         "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen Arbeitsabläufen.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im Inventar.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2206,12 +2206,12 @@
         "workflowName": "Ein Verweis auf einen oder mehrere Arbeitsabläufe muss angegeben werden, für den Aufträge erzeugt werden.",
         "planOrderAutomatically": "Aufträge werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
         "submitOrderToControllerWhenPlanned": "Geplante Aufträge werden automatisch an den Controller übermittelt.\n\nIn Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
-        "orderName": "Der Auftragsname ist ein nicht-qualifizierender Bestandteil der Auftragskennung.\n\nAnwender können den Auftragsnamen bei der Anlage von Zeitplänen und beim Hinzufügen von Ad hoc Aufträgen frei angeben.",
+        "orderName": "Der Auftragsname ist ein nicht-qualifizierender Bestandteil der Auftragskennung.\n\nAnwender können den Auftragsnamen bei der Anlage von Zeitplänen und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Sicht HISTORIE, verwendet werden.",
         "startNode": "Die Start-Position eines Auftrags kann vor der angegeben Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag startet ab der angegebenen Position.",
         "endNode": "Die End-Position eines Auftrags kann vor der anggegebenen Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag endet vor der angegebenen Position.",
         "blockPosition": "Für Arbeitsabläufe mit Blockanweisungen wie `Try/Catch`, `Lock`, `Fork/Join`, `Cycle` kann die entsprechende Anweisung ausgewählt werden.\n\nDer Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
-        "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs oder der `AdmissionTimes-Anweisung` eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
-        "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
+        "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs oder der `AdmissionTimes` Anweisung eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
+        "tagName": "Es kann eine beliebige Anzahl von Kennzeichnungen hinzugefügt werden, die aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
         "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- **Niedrig**: -20000\n- **Niedriger als Normal**: -10000\n- **Normal**: 0\n- **Höher als Normal**: 10000\n- **Hoch**: 20000"
       },
       "script": {
@@ -2253,7 +2253,7 @@
         "jobResourceNames": "Job-Ressourcen definieren gemeinsame genutzte Variablen.\n\nDie Variablen der ausgewählten Job-Ressourcen stehen allen Jobs des Arbeitsablaufs zur Verfügung.",
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird.\n\nDokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
-        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der `Cycle-Anweisung` zu bestimmen.\n\nPer Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
+        "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der `Cycle` Anweisung zu bestimmen.\n\nPer Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft.\n\nJobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "duration": "Dauer.",
         "board": {
@@ -2261,12 +2261,12 @@
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden.",
           "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "consumeBoardExpression": "Der ConsumeNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
-          "whenNotAnnounced": "Standardmäßig wird auf Notizen gewartet. Mit der Option 'ausführen' wird die Instruktion an Tagen, für die keine Notizen angekündigt sind, sofort ausgeführt. Mit der Option 'überspringen' wird die Instruktion an Tagen, für die keine Notizen angekündigt sind, übersprungen."
+          "whenNotAnnounced": "Standardmäßig wird auf Notizen gewartet.\n\nMit der Option **ausführen** wird die Instruktion an Tagen, für die keine Notizen angekündigt sind, sofort ausgeführt.\n\nMit der Option **überspringen** wird die Instruktion an Tagen, für die keine Notizen angekündigt sind, übersprungen."
         },
         "fail": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
           "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-          "returnCode": "Der `Fail-Anweisung` kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird.\n\nRückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
+          "returnCode": "Der `Fail` Anweisung kann eine positive Zahl als Rückgabewert zugeordnet werden, die in der Auftragshistorie sichtbar wird.\n\nRückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "finish": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -2275,36 +2275,36 @@
           "unchanged": "Übernimmt den unveränderten Auftragszustand in die Auftragshistorie."
         },
         "options": {
-          "stopOnFailure": "Die Einstellung wirkt sich auf Anweisungen wie `Lock`, `ConsumeNotices` und `Cycle` aus.\n\nSie bewirkt, dass Aufträge im Fehlerfall bei der aktuellen Anweisung verbleiben, anstatt zum Beginn der jeweiligen `Lock-Anweisung`, `ConsumeNotices-Anweisung` oder `Cycle-Anweisung` zurückzukehren."
+          "stopOnFailure": "Die Einstellung wirkt sich auf Anweisungen wie `Lock`, `ConsumeNotices` und `Cycle` aus.\n\nSie bewirkt, dass Aufträge im Fehlerfall bei der aktuellen Anweisung verbleiben, anstatt zum Beginn der jeweiligen `Lock` Anweisung, `ConsumeNotices` Anweisung oder `Cycle` Anweisung zurückzukehren."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
           "regex": "Ein regulärer Ausdruck beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden."
         },
         "fork": {
-          "joinVariables": "Auftragsvariablen aus Zweigen einer `Fork-Anweisung` werden in der entsprechenden `Join-Anweisung` dem Elternauftrag übergeben.",
+          "joinVariables": "Auftragsvariablen aus Zweigen einer `Fork` Anweisung werden in der entsprechenden `Join` Anweisung dem Elternauftrag übergeben.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags."
         },
         "forkList": {
-          "children": "Listenvariable für dynamische Verzweigung: Wird eine `ForkList-Anweisung` im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der `ForkList-Anweisung` erzeugt und durchlaufen wird: pro Listenelement werden die Anweisungen und Jobs der `ForkList-Anweisung` in einem jeweils eigenen Zweig parallel durchlaufen.",
+          "children": "Listenvariable für dynamische Verzweigung: Wird eine `ForkList` Anweisung im Arbeitsablauf verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der `ForkList` Anweisung erzeugt und durchlaufen wird: pro Listenelement werden die Anweisungen und Jobs der `ForkList` Anweisung in einem jeweils eigenen Zweig parallel durchlaufen.",
           "childToId": "Listenelement für Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable.\n\nDer Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand FEHLGESCHLAGEN des Kindauftrags.",
-          "agentAssignment": "Der `ForkList-Anweisung` wird ein Subagenten-Cluster zugewiesen, der eine Anzahl von Subagenten enthält, auf denen Aufträge parallel ausgeführt werden.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n\n- Auswahl eines Subagenten-Cluster, was die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der den Subagenten-Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten-Cluster benennt.",
-          "subagent": "Ermöglicht die Auswahl des Subagenten-Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der `ForkList Anweisung` verwendet werden.",
+          "agentAssignment": "Der `ForkList` Anweisung wird ein Subagenten-Cluster zugewiesen, der eine Anzahl von Subagenten enthält, auf denen Aufträge parallel ausgeführt werden.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n\n- Auswahl eines Subagenten-Cluster, was die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der den Subagenten-Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional einer Variablen des Auftrags, die den Subagenten-Cluster benennt.",
+          "subagent": "Ermöglicht die Auswahl des Subagenten-Cluster, aus dem alle verfügbaren Agenten zur parallelen Ausführung von Aufträgen innerhalb der `ForkList` Anweisung verwendet werden.",
           "agentCluster": "Es wird ein Agenten-Cluster ausgewählt, von dem die Subagenten-Cluster Kennung durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die ID des Subagenten-Cluster aus einer Variablen an.\n\nWenn kein Ausdruck angegeben wird, wird die Variable `js7ForkListSubagentClusterId` verwendet.\n\nWenn eine Variable angegeben wird, muss sie die Subagenten-Cluster Kennung enthalten.",
-          "infoOfListVariable": "Für die Verwendung der `ForkList-Anweisung` mit einer Listenvariablen siehe die Dokumentation unter [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)",
-          "infoOfSubagentCluster": "Zur Verwendung der `ForkList-Anweisung` mit einem Subagenten-Cluster siehe die Dokumentation unter [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters)"
+          "infoOfListVariable": "Für die Verwendung der `ForkList` Anweisung mit einer Listenvariablen siehe die Dokumentation unter [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)",
+          "infoOfSubagentCluster": "Zur Verwendung der `ForkList` Anweisung mit einem Subagenten-Cluster siehe die Dokumentation unter [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters)"
         },
         "stickySubagent": {
-          "agentAssignment": "Der `StickySubagent-Anweisung` wird ein Subagenten-Cluster zugewiesen, das eine Anzahl von Subagenten enthält, aus denen ein Subagent ausgewählt wird.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n\n- Auswahl eines Subagenten-Cluster, der die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der die Subagenten-Cluster Kennung angibt. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional aus einem Auftrag, die den Subagenten-Cluster spezifiziert.",
-          "subagent": "Ermöglicht die Auswahl des Subagenten-Cluster, aus dem ein Subagent zur Ausführung von Jobs innerhalb der `StickySubagent-Anweisung` verwendet wird.",
+          "agentAssignment": "Der `StickySubagent` Anweisung wird ein Subagenten-Cluster zugewiesen, das eine Anzahl von Subagenten enthält, aus denen ein Subagent ausgewählt wird.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n\n- Auswahl eines Subagenten-Cluster, der die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der die Subagenten-Cluster Kennung angibt. Dies ermöglicht die Angabe einer Variablen des Arbeitsablaufs, optional aus einem Auftrag, die den Subagenten-Cluster spezifiziert.",
+          "subagent": "Ermöglicht die Auswahl des Subagenten-Cluster, aus dem ein Subagent zur Ausführung von Jobs innerhalb der `StickySubagent` Anweisung  verwendet wird.",
           "agentCluster": "Es wird der Agenten-Cluster ausgewählt, aus dem der Subagenten-Cluster durch einen Ausdruck in einem separaten Eingabefeld spezifiziert wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die Kennung des Subagenten-Cluster aus einer Variablen an.\n\nWenn kein Ausdruck angegeben wird, wird ein beliebiger Subagent des angegebenen Agenten-Cluster verwendet.\n\nWenn eine Variable angegeben wird, muss sie die Subagenten-Cluster Kennung enthalten.",
           "infoMessage": "Verwenden Sie die Dokumentation unter [JS7 - StickySubagent Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters)"
         },
         "if": {
-          "predicate": "Das Prädikat einer `If-Anweisung` stellt einen Ausdruck oder Vergleich dar, der zu *wahr* oder *falsch* evaluiert."
+          "predicate": "Das Prädikat einer `If` Anweisung stellt einen Ausdruck oder Vergleich dar, der zu *wahr* oder *falsch* evaluiert."
         },
         "job": {
           "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf.\n\nDerselbe Job kann mehrfach als Anweisung im Arbeitsablauf vorkommen sofern er durch seine Adresse unterschieden ist.\n\nFür Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
@@ -2336,10 +2336,10 @@
           "mailOn": "E-Mail bei Ereignissen wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn der Job aus der Liste der Job-Vorlagen ausgewählt wird.",
           "onWarning": "Es können eine Reihe von Rückgabewerten angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nIm Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt.\n\nEine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden.",
-          "agentAssignment": "Dem Job wird ein Autonomer Agent oder Subagenten-Cluster zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der `ForkList-Anweisung` und `StickySubagent-Anweisung` wird ein Agenten-Cluster zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die Subagenten-Cluster Kennung über eine Variable liefert.",
+          "agentAssignment": "Dem Job wird ein Autonomer Agent oder Subagenten-Cluster zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der `ForkList` Anweisung und `StickySubagent` Anweisung wird ein Agenten-Cluster zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die Subagenten-Cluster Kennung über eine Variable liefert.",
           "agent": "Dem Job ist ein Agent zugewiesen, der das Job Skript bzw. die Java Klasse ausführt.",
           "agentCluster": "Wählt den Agenten-Cluster aus, für den eine Subagenten-Cluster Kennung aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
-          "subagentClusterIdExpr": "Der Ausdruck gibt die Subagenten-Cluster Kennung über eine Variable an.\n\nWird keine Variable angegeben, so wird ein eingebauter Standardwert aktiv, wenn der Job in einer `ForkList-Anweisung` oder `StickySubagent-Anweisung` enthalten ist.\n\nAnwender können eine individuelle Variable angeben, wenn z.B. Vorgänger-Jobs verwendet werden, um den Subagenten-Cluster zu bestimmen, auf dem Folge-Jobs ausgeführt werden sollen.",
+          "subagentClusterIdExpr": "Der Ausdruck gibt die Subagenten-Cluster Kennung über eine Variable an.\n\nWird keine Variable angegeben, so wird ein eingebauter Standardwert aktiv, wenn der Job in einer `ForkList` Anweisung oder `StickySubagent` Anweisung enthalten ist.\n\nAnwender können eine individuelle Variable angeben, wenn z.B. Vorgänger-Jobs verwendet werden, um den Subagenten-Cluster zu bestimmen, auf dem Folge-Jobs ausgeführt werden sollen.",
           "jobNotRestartable": "Im Fall, dass ein Agent abgebrochen wird, durch Absturz des Server oder des Agenten, werden abgebrochene Jobs beim Neustart des Agenten automatisch ausgeführt.\n\nDie Voreinstellung ist sinnvoll für wiederanlauffähige Jobs.\n\nFür Jobs, die nicht wiederanlauffähig sind, kann die Option gewählt werden, um den Start abgebrochener Jobs beim Neustart des Agenten zu verhindern."
         },
         "admissionTime": {
@@ -2362,42 +2362,42 @@
           "durationOfAdmissionTime": "Gibt die Dauer der Zutrittszeiten eines Jobs an.\n\nDie Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel *1h*, *3600s*, *60m*, oder im Format *hh:mm:ss*, zum Beispiel *01:00:00*."
         },
         "addOrder": {
-          "workflowName": "Die `AddOrder-Anweisung` erlaubt es einem anderen Arbeitsablauf einen Auftrag hinzuzufügen.",
+          "workflowName": "Die `AddOrder` Anweisung erlaubt es einem anderen Arbeitsablauf einen Auftrag hinzuzufügen.",
           "arguments": "Argumente müssen dem Auftrag hinzugefügt werden sofern diese vom Arbeitsablauf verlangt werden. Optionale Argumente können entfallen.",
-          "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben.\n\nDies erfordert die manuelle Ausführung der Funktion 'Arbeitsablauf verlassen', die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
+          "remainWhenTerminated": "Nach Terminierung soll der Auftrag im Arbeitsablauf verbleiben.\n\nDies erfordert die manuelle Ausführung der Funktion *Arbeitsablauf verlassen*, die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
           "startPosition": "Erlaubt die Auwahl der Start-Position des Auftrags im Arbeitsablauf.\n\nOhne Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
           "endPositions": "Erlabut die Auswahl einer oder mehrerer Ende-Positionen des Auftrags im Arbeitsablauf.\n\nOhne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
-          "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
-          "blockPosition": "Ein Auftrag kann an der Position einer bestimmten Blockanweisung hinzugefügt werden, z.B. an einer Verzweigung in einer `Fork-Anweisung`, an einer `Lock-Anweisung` usw. auf jeder beliebigen Verschachtelungsebene von Anweisungen im Arbeitsablauf.\n\nDer Auftrag verlässt den Arbeitsablauf, wenn er das Ende der Blockanweisung erreicht.\n\nBei der Auswahl einer Blockanweisung werden Start- und Endpositionen im Kontext der Blockanweisung angegeben."
+          "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs oder der `AdmissionTimes` Anweisung eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
+          "blockPosition": "Ein Auftrag kann an der Position einer bestimmten Blockanweisung hinzugefügt werden, z.B. an einer Verzweigung in einer `Fork` Anweisung, an einer `Lock` Anweisung usw. auf jeder beliebigen Verschachtelungsebene von Anweisungen im Arbeitsablauf.\n\nDer Auftrag verlässt den Arbeitsablauf, wenn er das Ende der Blockanweisung erreicht.\n\nBei der Auswahl einer Blockanweisung werden Start- und Endpositionen im Kontext der Blockanweisung angegeben."
         },
         "lock": {
           "name": "Der Name einer Ressourcen-Sperre ist eindeutig im System. Abschnitte in Arbeitsabläufen können durch Ressourcen-Sperren für die parallele Ausführung eingeschränkt werden.",
           "count": "Das Gewicht für die Nutzung einer Ressourcen-Sperre wird auf deren Kapazität angerechnet.\n\nWird die Kapazität überschritten, dann wartet der Auftrag bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {
-          "question": "Die `Prompt-Anweisung` hält einen Arbeitsablauf temporär an.\n\nDer Auftrag wird in den Zustand ANFRAGEND versetzt.\n\nAnwender können die Mitteilung der `Prompt-Anweisung` sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
+          "question": "Die `Prompt` Anweisung hält einen Arbeitsablauf temporär an.\n\nDer Auftrag wird in den Zustand ANFRAGEND versetzt.\n\nAnwender können die Mitteilung der `Prompt` Anweisung sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
         },
         "retry": {
-          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die `Retry-Anweisung` beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
+          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die `Retry` Anweisung beendeet und der Auftrag wird in den Zustand FEHLGESCHLAGEN versetzt.",
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird.\n\nWerden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert.\n\nStandardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt.\n\nBei der Einstellung 'Nur eine Periode' wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
+          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert.\n\nStandardmäßig werden bei einem Auftrag, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt.\n\nBei Verwendung der Einstellung wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad innerhalb der Exportdatei verwendet.\n\nBenutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird.\n\nWenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfades als oberste Objekte der Exportdatei hinzugefügt.",
-        "fileName": "Gibt den Namen der Exportdatei an, z.B. 'export.zip' oder 'export.tar.gz'.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
+        "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad innerhalb der Exportdatei verwendet.\n\nBenutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird.\n\nWenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfads als oberste Objekte der Exportdatei hinzugefügt.",
+        "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
         "exportType": "Ist eine der Optionen:\n\n- Export von einzelnen Objekten,\n- Export von Ordnern,\n- Export von Objekten im Zusammenhang mit Änderungen",
         "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. Arbeitsabläufe, Job-Ressourcen, Zeitpläne etc.",
         "inclusiveAllTags": "Fügt der Exportdatei Kennzeichnungen hinzu, die in das Ziel importiert werden können.",
-        "filterType": "Berücksichtigt Objekte, die in 'Controller' oder 'Automation' Systemordnern gespeichert sind",
+        "filterType": "Berücksichtigt Objekte, die in *Controller* oder *Automation* Systemordnern gespeichert sind",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status in die Exportdatei aufzunehmen.\n\nUngültige Objekte können exportiert und importiert werden, allerdings können sie nicht ausgerollt oder freigegeben werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht bereitgestellt oder freigegeben wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern der Exportdatei hinzu.",
         "includeDependencies": "Bezieht abhängige Objekte in die Exportdatei ein, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden der Exportdatei hinzugefügt.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: fügt alle referenzierenden und referenzierten Objekte rekursiv hinzu.\n- **Erzwungene**: fügt Objekte hinzu, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: beschränkt den Export auf die ausgewählten Objekte.",
-        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen 'Alle' und 'Erzwungene' können die Objekte abgewählt werden.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen.",
         "name": "Name"
       },
@@ -2411,7 +2411,7 @@
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status auszurollen.\n\nUngültige Objekte können nicht ausgerollt werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht ausgerollt wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern hinzu.",
         "includeDependencies": "Bezieht abhängige Objekte ein, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: fügt alle referenzierenden und referenzierten Objekte rekursiv hinzu.\n- **Erzwungene**: fügt Objekte hinzu, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** beschränkt das Ausrollen auf die ausgewählten Objekte.",
-        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen 'Alle' und 'Erzwungene' können die Objekte abgewählt werden.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "name": "Name",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       }
@@ -2861,7 +2861,7 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Legt fest, wann der Auftrag startet. Folgende Optionen werden angeboten:\n\n- **Jetzt**: startet den Auftrag sofort.\n- **Bestimmtes Datum**: ermöglicht die Auswahl von Datum und Uhrzeit.\n- **Relativ zur Uhrzeit**: legt eine Verzögerung in Sekunden oder im Format *hh:mm:ss* fest.\n- **Ohne Startzeit**: versetzt den Auftrag in den Zustand 'anstehend' und ermöglicht die spätere Festlegung einer Startzeit.",
+        "startTime": "Legt fest, wann der Auftrag startet. Folgende Optionen werden angeboten:\n\n- **Jetzt**: startet den Auftrag sofort.\n- **Bestimmtes Datum**: ermöglicht die Auswahl von Datum und Uhrzeit.\n- **Relativ zur Uhrzeit**: legt eine Verzögerung in Sekunden oder im Format *hh:mm:ss* fest.\n- **Ohne Startzeit**: versetzt den Auftrag in den Zustand ANSTEHEND und ermöglicht die spätere Festlegung einer Startzeit.",
         "time": "Gibt eine relative Startzeit in Sekunden oder im Format *hh:mm:ss* an.",
         "enterDateAndTime": "Gibt das Datum und die Uhrzeit an, zu der der Auftrag starten soll.",
         "timeZone": "Gibt die Zeitzone an, für die Datum und Uhrzeit gelten, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
@@ -2870,7 +2870,7 @@
         "selectSchedule": "Bietet die Möglichkeit, einen Zeitplan auszuwählen, aus dem die Parametrierung und die Kennzeichnungen in den Auftrag kopiert werden.",
         "selectOrder": "Bietet die Möglichkeit, eine oder mehrere Auftragsvorlagen aus dem ausgewählten Zeitplan auszuwählen.",
         "modifyVariable": "Wenn der Arbeitsablauf Variablen ohne Standardwerte angibt, muss der aktuelle Auftrag die entsprechenden Werte angeben.\n\nWenn der Arbeitsablauf Variablen mit Standardwerten angibt, können Sie über den Link eine Variable auswählen, für die ein neuer Wert angegeben werden soll.",
-        "modifyVariables": "Verhält sich ähnlich wie 'Variable ändern', zeigt aber alle verfügbaren Variablen an.",
+        "modifyVariables": "Verhält sich ähnlich wie **Variable ändern**, zeigt aber alle verfügbaren Variablen an.",
         "addVariable": "Der Link wird angezeigt, sofern die globalen Einstellungen das Hinzufügen nicht deklarierter Variablen zu einem Arbeitsablauf zulassen",
         "addOrderParameterization": "Ermöglicht das Hinzufügen eines weiteren Auftrags, optional mit einer anderen Parametrierung.",
         "addOrdersFromAllSchedules": "Ermöglicht das Hinzufügen weiterer Aufträge, die den Auftragsvorlagen entsprechen, die in allen Zeitplänen verfügbar sind, die den Arbeitsablauf verwenden."
@@ -3423,7 +3423,7 @@
       "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines Auftrags vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Benennt eine Liste vordefinierter Begründungen für Änderungen an Objekten.",
       "default_profile_account": "Benennt ein Konto, das als Muster für Einstellungen neu hinzugefügter Konten verwendet wird.",
-      "enable_remember_me": "Vereinbart, dass das Anmeldungsfenster die Option 'Einstellung merken' anbietet, um die Angaben für Konto und Kennwort im Browser zu speichern.",
+      "enable_remember_me": "Vereinbart, dass das Anmeldungsfenster die Option **Einstellung merken** anbietet, um die Angaben für Konto und Kennwort im Browser zu speichern.",
       "copy_paste_suffix": "Benennt das Sufix für Objektnamen, das verwendet wird, wenn Funktionen der Zwischenablage für Kopieren und Einfügen von Objekten verwendet werden.",
       "copy_paste_prefix": "Benennt das Präsfix für Objektnamen, das verwendet wird, wenn Funktionen der Zwischenablage für Kopieren und Einfügen von Objekten verwendet werden.",
       "restore_suffix": "Benennt das Suffix für Objektnamen, das verwendet wird, wenn Funktionen zum Wiederherstellen von Objekten verwendet werden.",
@@ -3440,8 +3440,8 @@
       "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht KONFIGURATION sichtbar ist (*true*) oder nicht sichtbar ist (*false*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_monitor": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht ÜBERWACHUNG sichtbar ist (*true*) oder nicht sichtbar ist (*false*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_report": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht BERICHTE sichtbar ist (*true*) oder nicht sichtbar ist (*false*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung des JOC Dienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
-      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei private.conf des Controller's \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei private.conf des Controllers geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei private.conf der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei private.conf der passiven Controller Instanz vor.",
+      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung des JOC Dienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller's \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controllers geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der passiven Controller Instanz vor.",
+      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem Controller verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller's \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controllers geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein Controller Cluster verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der passiven Controller Instanz vor.",
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird.\n\nWindows unterstützt kein Unicode, sondern verwendet Code Pages.\n\nFür den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Anwender die Code Page angeben, weitere Details siehe [JS7 - Unicode Support](https://kb.sos-berlin.com/display/JS7/JS7+-+Unicode+Support)",
       "disable_warning_on_license_expiration": "Warnungen für Lizenzablauf abschalten.",
       "log_ext_directory": "Gibt ein Verzeichnis an, auf das JOC Cockpit zugreifen kann und in das Kopien der Auftrags- und Prozessprotokolldateien geschrieben werden.",
@@ -3454,7 +3454,7 @@
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von Aufträgen und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden.\n\nBenutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am Auftrag.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
-      "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an.\n\nWenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt.\n\nIn JS7 sind die Objektnamen eindeutig.",
+      "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an.\n\nWenn diese Einstellung auf *false* gesetzt ist, werden nur die Objektnamen angezeigt.\n\nIn JS7 sind die Objektnamen eindeutig.",
       "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
       "num_of_tags_displayed_as_order_id": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Auftrag angezeigt werden.\n\nEin Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
       "num_of_workflow_tags_displayed": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Arbeitsablauf angezeigt werden.\n\nEin Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
@@ -3487,7 +3487,7 @@
       "minimum_password_length": "Die von den Benutzern angegebene Mindestlänge eines Kennworts."
     },
     "kiosk": {
-      "kiosk_role": "Für den Kiosk-Modus muss eine spezielle Rolle erstellt werden. Die Kiosk-Rolle wird nicht mit JOC Cockpit ausgeliefert.\n\nDie Rolle muss von einem Benutzer mit Leseberechtigung für Controller und JOC Cockpit erstellt werden.\n\nStandardmäßig lautet der Name der Rolle 'kiosk'. Benutzer können den Namen der Rolle ändern.",
+      "kiosk_role": "Für den Kiosk-Modus muss eine spezielle Rolle erstellt werden. Die Kiosk-Rolle wird nicht mit JOC Cockpit ausgeliefert.\n\nDie Rolle muss von einem Benutzer mit Leseberechtigung für Controller und JOC Cockpit erstellt werden.\n\nStandardmäßig lautet der Name der Rolle `kiosk`. Benutzer können den Namen der Rolle ändern.",
       "view_dashboard_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERSICHT angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
       "view_monitor_order_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Auftragsbenachrichtigungen angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
       "view_monitor_system_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Systembenachrichtigungen angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
@@ -3813,7 +3813,7 @@
         "iamLdapSystemPassword": "Ein LDAP System User Password wird meist verlangt, wenn ein LDAP System User Account angegeben ist.",
         "iamLdapReadTimeout": "LDAP Read Timeout ist die max. Zeit in Sekunden, die auf Antworten des LDAP Server gewartet wird, nachdem eine Verbindung hergestellt ist.",
         "iamLdapConnectTimeout": "LDAP Connect Timeout ist die max. Zeit in Sekunden, die auf einen Verbindungsaufbau zum LDAP Server gewartet wird.",
-        "iamLdapSysemUserDnTemplate": "LDAP System User DN Template ist der Ausdruck, der den Distinguished Name des Benutzerkontos liefert.\n\nFür Active Directory Systeme kann {0} angegeben werden, was der Benutzereingabe entspricht, z.B. account@example.com.\n\nEin Wert wie im Beispiel `CN={0},OU=IT,O=SOS,DC=example,DC=com` beschränkt die Benutzereingabe auf den Wert des CN Attributs.",
+        "iamLdapSysemUserDnTemplate": "LDAP System User DN Template ist der Ausdruck, der den Distinguished Name des Benutzerkontos liefert.\n\nFür Active Directory Systeme kann {0} angegeben werden, was der Benutzereingabe entspricht, z.B. `account@example.com`.\n\nEin Wert wie im Beispiel `CN={0},OU=IT,O=SOS,DC=example,DC=com` beschränkt die Benutzereingabe auf den Wert des CN Attributs.",
         "disableNestedGroupSearch": "Suche in rekursiven Gruppen deaktivieren."
       },
       "keycloak": {
@@ -3836,7 +3836,7 @@
         "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist. Im Fall bekannter Zertifizierungsstellen kann der Pfad zum `cacerts` Truststore des eingesetzten JDK/JRE angegeben werden.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
-        "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut 'email' die E-Mail Adresse des Anwenders zur Anmeldung.",
+        "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut *email* die E-Mail Adresse des Anwenders zur Anmeldung.",
         "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt.\n\nBilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden.\n\nBilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt.",
         "iamOidcGroupClaims": "Für OIDC Claims geben Sie die Gruppen an, in denen das betreffende Benutzerkonto Mitglied ist.\n\nJede Gruppe kann einer oder mehreren Rollen in JS7 zugewiesen werden.",
         "iamOidcGroupScopes": "OIDC Scopes definieren eine Reihe von OIDC Claims.",
@@ -3846,8 +3846,8 @@
         "iamTimeout": "Die für die Anwenderverifizierung geltende Zeitüberschreitung. Wird diese Periode überschritten, dann wird der Registrierungs-/Authentifizierungsvorgang abgebrochen.",
         "iamTransports": "Transports begrenzen die Art der Verbindung, die zwischen dem Client (JOC Cockpit GUI im Browser) und dem Authenticator akzeptiert wird.\n\nVerbindungen können zum Beispiel USB für angeschlossene USB Sticks und NFC für die Verbindung mit Smartphones sein.",
         "iamUserVerification": "Bei der Anwenderverifizierung wird der Anwender aufgefordert, eine Geste auszuführen, die seine Anwesenheit und Zustimmung bestätigt.\n\nDies kann die Berührung eines USB Sticks, die Verwendung eines Fingerabdrucksensors, die Durchführung einer Gesichtserkennung usw. sein.",
-        "iamResidentKey": "Die Anforderung 'Residenter Schlüssel' ('discoverable credentials') legt fest, dass der private Schlüssel des Anwenders im Sicherheitsschlüssel gespeichert ist.\n\nFür die Protokolle FIDO2 und Passkey ist ein residenter Schlüssel erforderlich.",
-        "iamAuthenticatorType": "Der Typ des Authenticator kann 'Roaming' oder 'Platform' sein.\n\nRoaming Authenticators werden mit einem Sicherheitsschlüssel ausgeliefert, z.B. einem USB Stick oder einem Smartphone, und beschränken die Verfügbarkeit des privaten Schlüssels des Anwenders auf das jeweilige Gerät.\n\nPlatform Authenticators speichern den privaten Schlüssel des Anwenders auf der Plattform, z.B. auf einem Computer oder Smartphone, und ermöglichen die Replikation des privaten Schlüssels auf andere Gräte wie Tablets. Platform Authenticators speichern Sicherheitsschlüssel häufig in der Cloud, um eine Synchronisierung mit anderen Geräten zu ermöglichen.",
+        "iamResidentKey": "Die Anforderung Residenter Schlüssel (*discoverable credentials*) legt fest, dass der private Schlüssel des Anwenders im Sicherheitsschlüssel gespeichert ist.\n\nFür die Protokolle FIDO2 und Passkey ist ein Residenter Schlüssel erforderlich.",
+        "iamAuthenticatorType": "Der Typ des Authenticator kann **Roaming** oder **Platform** sein.\n\nRoaming Authenticators werden mit einem Sicherheitsschlüssel ausgeliefert, z.B. einem USB Stick oder einem Smartphone, und beschränken die Verfügbarkeit des privaten Schlüssels des Anwenders auf das jeweilige Gerät.\n\nPlatform Authenticators speichern den privaten Schlüssel des Anwenders auf der Plattform, z.B. auf einem Computer oder Smartphone, und ermöglichen die Replikation des privaten Schlüssels auf andere Gräte wie Tablets.\n\nPlatform Authenticators speichern Sicherheitsschlüssel häufig in der Cloud, um eine Synchronisierung mit anderen Geräten zu ermöglichen.",
         "iamRequireAccount": "Die Anforderung, bei der Authentifizierung das Anwenderkonto anzugeben, kann als zusätzlicher Authentifizierungsfaktor betrachtet werden. Bei der Registrierung müssen die Anwender ein Konto angeben, bei der Authentifizierung können die JS7 Administratoren die Angabe des Kontos erzwingen.",
         "emailSettings": "In den E-Mail Einstellungen können Sie die Verbindung zum Mail Server und die Ereignisse angeben, bei denen E-Mails zur Bestätigung oder Benachrichtigung versendet werden sollen.",
         "jobResource": "Die E-Mail Job-Ressource gibt einen Verweis auf Variablen an, die für die Verbindung mit dem Mail Server erforderlich sind. Dazu gehören der SMTP Hostname des Mail Server, der Port, das Protokoll und die Authentifizierung, die beim Versand von E-Mails verwendet werden.",
@@ -4196,7 +4196,7 @@
     "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
     "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
     "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
-    "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung der `Cycle-Anweisung`.",
+    "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung der `Cycle` Anweisung.",
     "tooltip.restrictedMonthsTooltip": "Max. 11 Monate können ausgewählt werden. Um alle Monate zu verwenden, lassen Sie die Monatsbeschränkung leer.",
     "findAndReplace": {
       "label.find": "Suchen",

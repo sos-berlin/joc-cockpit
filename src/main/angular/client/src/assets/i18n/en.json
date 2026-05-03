@@ -278,7 +278,7 @@
     "tooltip.agentName": "The Agent Name is a unique designation of an Agent that can be changed. Agents are assigned to Jobs by their Agent Name.\n\nFor Agent Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.title": "The Title of an Agent can be specified as desired.",
     "tooltip.agentNameAliases": "An Agent can be assigned a number of Alias Names. The Agent can be assigned to a Job or File Order Source using its Alias Name.\n\nFor Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-    "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, e.g. http://localhost:4445",
+    "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, for example `http://localhost:4445`",
     "tooltip.asStandaloneAgent": "A Standalone Agent or a Director Agent of an Agent Cluster can act as a Cluster Watch. The Agent specified will be created as a Standalone Agent if this checkbox is checked.",
     "tooltip.primaryDirectorId": "The Director Agent ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime.\n\nFor Director Agent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.hidden": "Agents can be hidden to prevent them from being displayed in the JOC Cockpit user interface. This applies to the DASHBOARD view as well as to all occurrences where Agents are assigned.",
@@ -293,9 +293,9 @@
       "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime.\n\nFor Agent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime.\n\nFor Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
-      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
-      "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows Jobs running on a specific Director Agent.",
-      "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a Job or File Order Source using its Alias Name.\n\nFor Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, for example `http://localhost:4445`",
+      "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent.\n\nThis allows Jobs running on a specific Director Agent.",
+      "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names.\n\nThe Agent Cluster can be assigned to a Job or File Order Source using its Alias Name.\n\nFor Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for Jobs. A Process Limit can be assigned to restrict resource usage across all Subagents in an Agent Cluster. A Process Limit value 0 will prevent Jobs from starting.",
       "subagent": {
         "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime.\n\nFor Subagent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -305,7 +305,7 @@
     "subagent": {
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime.\n\nFor Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of a Subagent can be specified as desired.",
-      "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, e.g. http://localhost:4445",
+      "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, for example `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes the single Subagent. This allows Jobs running on a specific Subagent.",
       "tooltip.priority": "The Subagent Cluster Priority specifies an expression that for an active-passive cluster evaluates to 0 for the first Subagent and to 1 for subsequent Subagents.\n\nFor an active-active cluster all Subagents are assigned the Priority value 0.\n\nFor a metrics-based Subagent Cluster the Priority holds an expression that makes use of indicator variables such as the number of running tasks."
     },
@@ -1212,20 +1212,20 @@
         "user": "The Account to authenticate the SSH connection to the Agent's host.",
         "keyFile": "The path to the Key File for authenticating the SSH connection to the Agent's host.",
         "packageLocation": "The path to the location of the software installation package on the Agent's host.",
-        "execPre": "The command for pre-processing is executed on the Agent's host before the package of the software installation is extracted. An operating system command can be specified. With the specification 'StopService' the service of the Agent is stopped under Unix and Windows.",
-        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the Agent's host. An operating system command can be specified. With the specification 'StartService', the service of the Agent is started under Unix and Windows.",
+        "execPre": "The command for pre-processing is executed on the Agent's host before the package of the software installation is extracted.\n\nAn operating system command can be specified.\n\nWith the `StopService` specification the service of the Agent will be stopped under Unix and Windows.",
+        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the Agent's host.\n\nAn operating system command can be specified.\n\nWith the `StartService` specification the service of the Agent will be started under Unix and Windows.",
         "makeService": "The Service of the Agent under Unix or Windows is set up.",
         "release": "The software version of the Agent.",
-        "tarball": "The Tarball of the software installation of the Agent. For Unix this is a .tar.gz archive, for Windows a .zip archive.",
-        "home": "The Agent's installation directory contains binary files and executable files. Under Unix, the directory /opt/sos-berlin.com/js7/agent is often used. Under Windows, C:/Program Files/sos-berlin.com/js7/agent is often used.",
-        "data": "The Agent's data directory contains, among other things, configuration files and log files in the sub-directories 'config' and 'logs'. Under Unix, the directory /var/sos-berlin.com/js7/agent is often used. Under Windows, C:/ProgramData/sos-berlin.com/js7/agent is often used.",
+        "tarball": "The Tarball of the software installation of the Agent.\n\nFor Unix this is a .tar.gz archive, for Windows a .zip archive.",
+        "home": "The Agent's installation directory contains binary files and executable files.\n\nUnder Unix, the `/opt/sos-berlin.com/js7/agent` directory is frequently used.\n\nUnder Windows, `C:/Program Files/sos-berlin.com/js7/agent` is frequently used.",
+        "data": "The Agent's data directory contains, among other things, configuration files and log files in the sub-directories `config` and `logs`.\n\nUnder Unix, the `/var/sos-berlin.com/js7/agent` directory is frequently used. Under Windows, `C:/ProgramData/sos-berlin.com/js7/agent` is frequently used.",
         "homeOwner": "The user account that owns the Agent's home directory.",
         "dataOwner": "The user account that owns the Agent's data directory.",
         "runUser": "The user account that is used for the Agent service.",
-        "httpPort": "The Agent listens to this HTTP port, which is used to accept commands from the Instance Start Script and, if applicable, commands from the Controller. For use with the Instance Start Script, a local network interface can be specified, e.g. localhost:4445. If a Controller from another host communicates with the Agent via this port, a public network interface can be specified, e.g. host.example.com:4445.",
+        "httpPort": "The Agent listens to this HTTP port, which is used to accept commands from the Instance Start Script and, if applicable, commands from the Controller.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example `localhost:4445`.\n\nIf a Controller from another host communicates with the Agent via this port, a public network interface can be specified, e.g. `host.example.com:4445`.",
         "httpsPort": "The Agent listens this HTTPS port, which is used to receive commands from the Controller. The port must be accessible for the Controller in the network.",
-        "javaHome": "The Java installation directory frequently is specified by the JAVA_HOME environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with -Xmx512m.",
+        "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
+        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx512m`.",
         "controllerId": "The Controller ID references the Controller to which the Agent is dedicated.",
         "keyStore": "The Keystore contains the Agent's private key, which is used for HTTPS connections to the Agent.",
         "keyStorePassword": "The Keystore is protected by a password",
@@ -1233,10 +1233,10 @@
         "keyAlias": "The Key Alias can be used when a keystore contains multiple private keys. The alias name determines the private key to be used for HTTPS connections to the Agent.",
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Agent's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
-        "templates": "The path to a directory containing template files for configuring the Agent, e.g. 'agent.conf'. The directory may have a sub-directory 'private' with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Agent, e.g. `agent.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
-        "forceSudo": "Force use of sudo for any operation on directories and files."
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     },
     "controller": {
@@ -1322,20 +1322,20 @@
         "user": "The Account to authenticate the SSH connection to the Controller's host.",
         "keyFile": "The path to the Key File for authenticating the SSH connection to the Controller's host.",
         "packageLocation": "The path to the location of the software installation package on the Controller's host.",
-        "execPre": "The command for pre-processing is executed on the Controller's host before the package of the software installation is extracted. An operating system command can be specified.\n\nWith the specification 'StopService' the service of the Controller is stopped under Unix and Windows.",
-        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the Controller's host. An operating system command can be specified.\n\nWith the specification 'StartService', the service of the Controller is started under Unix and Windows.",
+        "execPre": "The command for pre-processing is executed on the Controller's host before the package of the software installation is extracted. An operating system command can be specified.\n\nWith the specification `StopService` the service of the Controller is stopped under Unix and Windows.",
+        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the Controller's host. An operating system command can be specified.\n\nWith the specification `StartService`, the service of the Controller is started under Unix and Windows.",
         "makeService": "The Service of the Controller under Unix or Windows is set up.",
         "release": "The software version of the Controller.",
         "tarball": "The Tarball of the software installation of the Controller. For Unix this is a .tar.gz archive, for Windows a .zip archive.",
-        "home": "The Controller's installation directory contains binary files and executable files.\n\nUnder Unix, the directory /opt/sos-berlin.com/js7/controller is frequently used.\n\nUnder Windows, C:/Program Files/sos-berlin.com/js7/controller is frequently used.",
-        "data": "The Controller's data directory contains, among other things, configuration files and log files in the sub-directories 'config' and 'logs'.\n\nUnder Unix, the directory /var/sos-berlin.com/js7/controller is frequently used.\n\nUnder Windows, C:/ProgramData/sos-berlin.com/js7/controller is frequently used.",
+        "home": "The Controller's installation directory contains binary files and executable files.\n\nUnder Unix, the `/opt/sos-berlin.com/js7/controller` directory is frequently used.\n\nUnder Windows, `C:/Program Files/sos-berlin.com/js7/controller` is frequently used.",
+        "data": "The Controller's data directory contains, among other things, configuration files and log files in the sub-directories `config` and `logs`.\n\nUnder Unix, the `/var/sos-berlin.com/js7/controller` directory is frequently used.\n\nUnder Windows, `C:/ProgramData/sos-berlin.com/js7/controller` is frequently used.",
         "homeOwner": "The user account that owns the Controller's home directory.",
         "dataOwner": "The user account that owns the Controller's data directory.",
         "runUser": "The user account that is used for the Controller service.",
-        "httpPort": "The Controller listens to this HTTP port, which is used to accept commands from the Instance Start Script and commands from JOC Cockpit. For use with the Instance Start Script, a local network interface can be specified, e.g. localhost:4444. If JOC Cockpit communicates from another host with the Controller via this port, a public network interface can be specified, e.g. host.example.com:4444.",
-        "httpsPort": "The Controller listens to the HTTPS port which is used to receive commands from JOC Cockpit. The port must be accessible for JOC Cockpit in the network.",
-        "javaHome": "The Java installation directory frequently is specified by the JAVA_HOME environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with -Xmx512m.",
+        "httpPort": "The Controller listens to this HTTP port, which is used to accept commands from the Instance Start Script and commands from JOC Cockpit.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example `localhost:4444`.\n\nIf JOC Cockpit communicates from another host with the Controller via this port, a public network interface can be specified, for example `host.example.com:4444`.",
+        "httpsPort": "The Controller listens to the HTTPS port which is used to receive commands from JOC Cockpit.\n\nThe port must be accessible for JOC Cockpit in the network.",
+        "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
+        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx512m`.",
         "jocRef": "The reference to a JOC Cockpit instance that is used to manage the Controller.",
         "controllerId": "The Controller ID is a unique identifier of the Controller. This identifier cannot be changed during the lifetime of a Controller.",
         "keyStore": "The Keystore contains the Controller's private key, which is used for HTTPS connections to the Controller.",
@@ -1345,10 +1345,10 @@
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Controller's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
         "controllerCert": "The path to the Controller's Certificate file (*.pem, *.crt).",
-        "templates": "The path to a directory containing template files for configuring the Controller, e.g. 'controller.conf'. The directory may have a sub-directory 'private' with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Controller, e.g. `controller.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
-        "forceSudo": "Force use of sudo for any operation on directories and files."
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     },
     "joc": {
@@ -1460,14 +1460,14 @@
         "user": "The Account to authenticate the SSH connection to the JOC Cockpit's host.",
         "keyFile": "The path to the Key File for authenticating the SSH connection to the JOC Cockpit's host.",
         "packageLocation": "The path to the location of the software installation package on the JOC Cockpit's host.",
-        "execPre": "The command for pre-processing is executed on the JOC Cockpit's host before the package of the software installation is extracted. An operating system command can be specified.\n\nWith the specification 'StopService' the service of the JOC Cockpit is stopped under Unix and Windows.",
-        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the JOC Cockpit's host. An operating system command can be specified.\n\nWith the specification 'StartService', the service of the JOC Cockpit is started under Unix and Windows.",
+        "execPre": "The command for pre-processing is executed on the JOC Cockpit's host before the package of the software installation is extracted. An operating system command can be specified.\n\nWith the specification `StopService` the service of the JOC Cockpit is stopped under Unix and Windows.",
+        "execPost": "Command for post-processing is executed after extraction of the package of the software installation on the JOC Cockpit's host. An operating system command can be specified.\n\nWith the specification `StartService`, the service of the JOC Cockpit is started under Unix and Windows.",
         "makeService": "The Service of the JOC Cockpit under Unix or Windows is set up.",
         "release": "The software version of the JOC Cockpit.",
         "tarball": "The Tarball of the software installation of the JOC Cockpit. For Unix this is a .tar.gz archive, for Windows a .zip archive.",
-        "setupDir": "The Setup Directory is used to extract the installation tarball. A temporary location can be used.",
-        "home": "The JOC Cockpit's installation directory contains binary files and executable files. Under Unix, the directory /opt/sos-berlin.com/js7/joc is often used. Under Windows, C:/Program Files/sos-berlin.com/js7/joc is often used.",
-        "data": "The JOC Cockpit's data directory contains, among other things, configuration files and log files in the sub-directories 'resources/joc' and 'logs'. Under Unix, the directory /var/sos-berlin.com/js7/joc is often used. Under Windows, C:/ProgramData/sos-berlin.com/js7/joc is often used.",
+        "setupDir": "The Setup Directory is used to extract the installation tarball.\n\nA temporary location can be used.",
+        "home": "The JOC Cockpit's installation directory contains binary files and executable files.\n\nUnder Unix, the `/opt/sos-berlin.com/js7/joc` directory is frequently used.\n\nUnder Windows, `C:/Program Files/sos-berlin.com/js7/joc` is frequently used.",
+        "data": "The JOC Cockpit's data directory contains, among other things, configuration files and log files in the sub-directories `resources/joc` and `logs`.\n\nUnder Unix, the `/var/sos-berlin.com/js7/joc` directory is frequently used.\n\nUnder Windows, `C:/ProgramData/sos-berlin.com/js7/joc` is frequently used.",
         "homeOwner": "The user account that owns the JOC Cockpit's home directory.",
         "dataOwner": "The user account that owns the JOC Cockpit's data directory.",
         "runUser": "The user account that is used for the JOC Cockpit service.",
@@ -1475,28 +1475,28 @@
         "securityLevel": "The security level of JOC Cockpit rules, among other things, the handling of signing certificates for rollout of Workflows.",
         "dbmsConfig": "DBMS Hibernate Configuration File (hibernate.cfg.xml) specifies the database connection.",
         "dbmsDriver": "DBMS JDBC Driver File (*.jar) establishes the connection to the database. A number of JDBC Driver files ship with JOC Cockpit. Users can specify their own version of a DBMS JDBC Driver.",
-        "dbmsInit": "DBMS initialisation involves setting up objects in the database. This can be done at the installation time using 'byInstaller', at the start time using 'byJoc' or not using 'off'. In the latter case, users set up the database objects themselves.",
-        "httpPort": "The JOC Cockpit listens to this HTTP port by which users can access the GUI. The port must be accessible for users in the network. A public network interface can be specified, e.g. host.example.com:4446.",
+        "dbmsInit": "DBMS initialisation involves setting up objects in the database.\n\nThis can be done at installation time using `byInstaller`, at start time using `byJoc` or can be suppressed using `off`. In the latter case, users set up the database objects themselves.",
+        "httpPort": "The JOC Cockpit listens to this HTTP port by which users can access the GUI. The port must be accessible for users in the network. A public network interface can be specified, for example `host.example.com:4446`.",
         "httpsPort": "The JOC Cockpit listens to this HTTPS port by which users can access the GUI. The port must be accessible for users in the network.",
         "isUser": "Installation is performed in the context of the User Account.",
-        "isPreserveEnv": "Installation using 'sudo' preserves environment variables, for example JAVA_HOME.",
-        "javaHome": "The Java installation directory frequently is specified by the JAVA_HOME environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with -Xmx1g.",
-        "responseDir": "The Response Directory may contain files that are copied to the Setup Directory, e.g. joc_install.xml, DBMS JDBC Driver file or key file of the license.",
+        "isPreserveEnv": "Installation using `sudo` preserves environment variables, for example `JAVA_HOME`.",
+        "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
+        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx1g`.",
+        "responseDir": "The Response Directory may contain files that are copied to the Setup Directory, for example `joc_install.xml`, DBMS JDBC Driver file or key file of the license.",
         "keyStore": "The Keystore contains the JOC Cockpit's private key, which is used for HTTPS connections to the JOC Cockpit.",
         "keyStorePassword": "The Keystore is protected by a password",
         "keyPassword": "The private key is protected by a password. With the commonly used PKCS12 format for keystores, the password of the keystore and of the key must match.",
         "keyAlias": "The Key Alias can be used when a keystore contains multiple private keys. The alias name determines the private key to be used for HTTPS connections to the JOC Cockpit.",
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the JOC Cockpit's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
-        "templates": "The path to a directory containing template files for configuring the Controller, e.g. 'controller.conf'. The directory may have a sub-directory 'private' with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Controller, e.g. `controller.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
         "jocCert": "The path to the JOC Cockpit Certificate file (*.pem, *.crt).",
-        "httpIni": "The path to the Jetty HTTP Configuration File (http.ini) can be specified if specific settings for HTTP connections to JOC Cockpit are required.",
-        "httpsIni": "Jetty HTTPS Configuration File (https.ini)  can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
-        "sslIni": "Jetty SSL Configuration File (ssl.ini) can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
+        "httpIni": "The path to the Jetty HTTP Configuration File `http.ini` can be specified if specific settings for HTTP connections to JOC Cockpit are required.",
+        "httpsIni": "Jetty HTTPS Configuration File `https.ini` can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
+        "sslIni": "Jetty SSL Configuration File `ssl.ini` can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default: /usr/lib/systemd/system, for example /etc/systemd/system.",
-        "forceSudo": "Force use of sudo for any operation on directories and files."
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     }
   },
@@ -1763,7 +1763,7 @@
     "tooltip.jocMonitorEvent": "The flag signals warnings and errors in the processing of Orders, for example when Jobs fail. The flag indicates warnings with the yellow color and errors with the red color.\n\nClicking the flag displays the last 10 warnings and errors. Users find the full list of warnings and errors from the MONITOR->Notifications view.",
     "tooltip.systemMonitorEvent": "The flag signals warnings and errors of JS7 prooducts, for example connection loss to the database. The flag indicates warnings from yellow color and errors from the red color.\n\nClicking the flag displays the last 10 warnings and errors.\n\nUsers find the full list of warnings and errors from the MONITOR->Notifications view.",
     "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the Configuration View.\n\nAfter import the Defaults.zip archive will create a folder with the same name that includes Job Resources to create global Job Environment Variables available to your shell Jobs.",
-    "message.line2": "The 'Examples.tar.gz' and 'Examples.zip' archives include examples for Workflows and Jobs for operation with Agents on Unix and Windows respectively.\n\nThe examples can be helpful to create your own Workflows and Job Dependencies. The examples correspond to what you find from the %JS7 - Online Demo% explanations.",
+    "message.line2": "The `Examples.tar.gz` and `Examples.zip` archives include examples for Workflows and Jobs for operation with Agents on Unix and Windows respectively.\n\nThe examples can be helpful to create your own Workflows and Job Dependencies. The examples correspond to what you find from the %JS7 - Online Demo% explanations.",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
       "instructions": "https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo"
@@ -2173,7 +2173,7 @@
         "title": "The Title of the File Order Source can be specified as desired.",
         "workflowName": "A reference to a Workflow has to be added. An Order will be created for this Workflow on arrival of a file in the directory that is watched for incoming files.",
         "agent": "The Agent has to be specified that performs file watching on the respective host on which the Agent is installed.",
-        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.\n\nThe directory is specfied as an expression, for example a string '/tmp/files' or in combination with a function as in `env('HOME') ++ '/files'`",
+        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.\n\nThe directory is specfied as an expression, for example a string `'/tmp/files'` or in combination with a function as in `env('HOME') ++ '/files'`",
         "pattern": "A regular expression Pattern specifies the path to files that the Directory is watched for.\n\nFor example `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
         "timeZone": "When a file arrives, the Agent will create an Order that includes the current date with its Order ID.\n\nThis item specifies the time zone that is used for the date in the Order ID, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes occur."
@@ -2184,14 +2184,14 @@
         "title": "The Title of the Job Resource can be specified as desired."
       },
       "board": {
-        "name": "A Notice Board represents the dependencies between Workflows. The respective `PostNotices Instructions` and `ExpectNotices Instructions` in Workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "expectBoardName": "A Notice Board represents the dependencies between Workflows. The respective `PostNotices Instructions` and `ExpectNotices Instructions` in Workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
-        "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows managing documentations.",
+        "name": "A Notice Board represents the dependencies between Workflows.\n\nThe respective `PostNotices` instructions and `ExpectNotices` instructions in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "expectBoardName": "A Notice Board represents the dependencies between Workflows.\n\nThe respective `PostNotices` instructions and `ExpectNotices` instructions in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board.\n\nThe RESOURCES view allows managing documentations.",
         "title": "The Title of the Notice Board can be specified as desired.",
         "toNotice": "The Notice ID for the Posting Order is extracted from its Order ID to look up matching Expecting Orders.",
         "endOfLife": "The lifetime for the Notice determines its duration in the format *hh:mm:ss*, for example *01:30:00* for one and a half hours.",
         "readingOrderToNoticeId": "The Notice ID for the Expecting Order is extracted from its Order ID and is used to look up matching Posting Orders.",
-        "boardType": "Notice Boards of 'global' type enforce dependencies independently from the Daily Plan.\n\nNotice Boards of 'plannable' type consider days only for which Orders exist that will create Notices."
+        "boardType": "Notice Boards of **global* type enforce dependencies independently from the Daily Plan.\n\nNotice Boards of **plannable** type consider days only for which Orders exist that will create Notices."
       },
       "lock": {
         "name": "Resource Locks are used to implement mutual exclusion for a sequence of Jobs. They can be used in the same Workflow and across Workflows to limit parallelism of Jobs. The name of a Resource Lock is unique in the inventory.\n\nFor the name of the Resource Lock most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2206,13 +2206,13 @@
         "workflowName": "A reference to one or more Workflows has to be added for which Orders will be created.",
         "planOrderAutomatically": "Orders will be planned automatically, i.e. based on the Daily Plan Service settings Orders will be created for the next few days in advance.",
         "submitOrderToControllerWhenPlanned": "Orders will be automatically submitted to a Controller when planned.\n\nBased on the settings of the Daily Plan Service, Orders will be submitted a number of days in advance.",
-        "orderName": "The Order Name is a non-qualifying part of the Order identifier.\n\nUsers can freely specify the Order name when creating Schedules and when adding on-demand Orders.",
+        "orderName": "The Order Name is a non-qualifying part of the Order identifier.\n\nUsers can freely specify the Order name when creating Schedules and when adding on-demand Orders.\n\nThe Order Name can be used to search for Orders, for example, in the HISTORY view.",
         "startNode": "The start position of an Order can be before the specified instruction in the Workflow. The Orders starts from the specified position.",
         "endNode": "The end position of an Order can be before the specified instruction in the Workflow. The Order ends before the specified position.",
         "blockPosition": "For Workflows holding block instructions such as `Try/Catch`, `Lock`, `Fork/Join`, `Cycle` the related instruction can be selected.\n\nThe Order will leave the Workflow when reaching the end of the block instruction.",
-        "ignoreAdmissionTimes": "The execution of Jobs can be restricted by Admission Times of Jobs and the related AdmissionTimes Instruction.\n\nThis option ignores Admission Times and forces the start of Jobs.",
+        "ignoreAdmissionTimes": "The execution of Jobs can be restricted by Admission Times of Jobs and the related `AdmissionTimes` instruction.\n\nThis option ignores Admission Times and forces the start of Jobs.",
         "tagName": "Any number of Tags can be added that will be assigned the Order.",
-        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders.\n\nPriorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence.\n\nShortcuts offer the following values:\n\n- **Low**: -20000\n- **Below Normal**: -10000\n- **Normal**: 0\n- **Above Normal**: 10000\n- **High**: 20000."
+        "priority": "If the Order will meet a Resource `Lock` instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders.\n\nPriorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence.\n\nShortcuts offer the following values:\n\n- **Low**: -20000\n- **Below Normal**: -10000\n- **Normal**: 0\n- **Above Normal**: 10000\n- **High**: 20000."
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a Job Script. The name of a Script Include is unique in the inventory.\n\nFor the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2253,8 +2253,8 @@
         "jobResourceNames": "References to Job Resources can be added that hold shared variables for use by a number of Jobs and Workflows.\n\nAny variables from the selected Job Resources can be used by any Jobs in the Workflow.",
         "documentation": "A Workflow or Job can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES view.",
         "title": "The Title of the Workflow can be specified as desired. The Title is displayed with the WORKFLOWS view.",
-        "timeZone": "The time zone is used for calculation of Admission Times and for `Cycle Instructions`. By default the time zone specified from the user profile is used, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
-        "allowUndeclared": "Allow undeclared variables from Orders. This includes that an Order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available from an Order.",
+        "timeZone": "The time zone is used for calculation of Admission Times and for `Cycle` instructions.\n\nBy default the time zone specified from the user profile is used, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
+        "allowUndeclared": "Allows undeclared variables from Orders.\n\nThis includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\nJobs will fail when referencing undeclared variables that are not available from an Order.",
         "duration": "Duration.",
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory.\n\nMost Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
@@ -2265,52 +2265,52 @@
         },
         "fail": {
           "message": "The instruction allows specifying a Message that is attached the Order and that becomes visible with the Order History.",
-          "uncatchable": "An uncatchable error cannot be handled with a `Try/Catch Instruction`.",
-          "returnCode": "The `Fail Instruction` can be assigned a positive, non-zero Return Code that becomes visible with the Order History. Non-zero Return Codes indicate failed execution."
+          "uncatchable": "An uncatchable error cannot be handled with a `Try/Catch` instruction.",
+          "returnCode": "The `Fail` instruction can be assigned a positive, non-zero Return Code that becomes visible with the Order History. Non-zero Return Codes indicate failed execution."
         },
         "finish": {
           "message": "The instruction allows specifying a Message that is attached the Order and that becomes visible with the Order History.",
-          "unsuccessful": "By default the `Finish Instruction` makes Orders leave the Workflow with a successful history outcome. This checkbox can be used to make an Order leave the Workflow with an unsuccessful historic outcome.",
+          "unsuccessful": "By default the `Finish` instruction makes Orders leave the Workflow with a successful history outcome. This checkbox can be used to make an Order leave the Workflow with an unsuccessful historic outcome.",
           "successful": "Specifies a successful outcome of the Order with the Order History.",
           "unchanged": "Specifies that the Order's current execution status being successful or failed will remain unchanged with the Order History"
         },
         "options": {
-          "stopOnFailure": "The setting impacts instructions such as `Lock`, `ConsumeNotices` and `Cycle`. It causes Orders in case of errors to remain with the current instruction instead of returning to the begin of the respective `Lock`, `ConsumeNotices` or `Cycle Instruction`."
+          "stopOnFailure": "The setting impacts instructions such as `Lock`, `ConsumeNotices` and `Cycle`. It causes Orders in case of errors to remain with the current instruction instead of returning to the begin of the respective `Lock`, `ConsumeNotices` or `Cycle` instruction."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
           "regex": "A regular expression specifies the Pattern for the paths of incoming files that a directory is watched for. For example `.*` means any files, `.*\\.txt$` means any files with a .txt extension."
         },
         "fork": {
-          "joinVariables": "Variables of Child Orders in the branches of a `Fork Instruction` are added to the Parent Order when reaching the `Join Instruction`.",
+          "joinVariables": "Variables of Child Orders in the branches of a `Fork` instruction are added to the Parent Order when reaching the `Join` instruction.",
           "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be put to the FAILED state."
         },
         "forkList": {
-          "children": "List Variable for dynamic forking: expects the name of the Order Variable that holds a list of elements.\n\nFor each element of the List Variable a branch will be created dynamically from the assigned `ForkList instruction`.\n\nThe number of List Variable elements determines the number of parallel branches of the `ForkList Instruction` that are executed in parallel by Child Orders.",
+          "children": "List Variable for dynamic forking: expects the name of the Order Variable that holds a list of elements.\n\nFor each element of the List Variable a branch will be created dynamically from the assigned `ForkList` instruction.\n\nThe number of List Variable elements determines the number of parallel branches of the `ForkList` instruction that are executed in parallel by Child Orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected List Variable that holds a unique identifier for the branch that should be created dynamically.",
           "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be put to the FAILED state.",
-          "agentAssignment": "The `ForkList Instruction` is assigned a Subagent Cluster that specifies a number of Subagents on which Jobs are executed in parallel. Two options for assignment are offered:\n\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the Subagent Cluster ID.\n\nThis includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
-          "subagent": "Allows selecting the Subagent Cluster from which all available Agents will be used to execute Jobs in parallel within the `ForkList Instruction`.",
+          "agentAssignment": "The `ForkList` instruction is assigned a Subagent Cluster that specifies a number of Subagents on which Jobs are executed in parallel. Two options for assignment are offered:\n\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the Subagent Cluster ID.\n\nThis includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
+          "subagent": "Allows selecting the Subagent Cluster from which all available Agents will be used to execute Jobs in parallel within the `ForkList` instruction.",
           "agentCluster": "The Agent Cluster is selected from which the Subagent Cluster ID is specified by an expression in a separate input field.",
           "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. If no expression is specified, then the `js7ForkListSubagentClusterId` variable will be used. If a variable is specified, then it should hold the Subagent Cluster ID.",
-          "infoOfListVariable": "For use of the `ForkList Instruction` with a list variable see the documentation at [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)",
-          "infoOfSubagentCluster": "For use of the `ForkList Instruction` with a Subagent Cluster visit the documentation at [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters)"
+          "infoOfListVariable": "For use of the `ForkList` instruction with a list variable see the documentation at [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)",
+          "infoOfSubagentCluster": "For use of the `ForkList` instruction with a Subagent Cluster visit the documentation at [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters)"
         },
         "stickySubagent": {
-          "agentAssignment": "The `StickySubagent Instruction` is assigned a Subagent Cluster that specifies a number of Subagents from which one Subagent will be selected. Two options for assignment are offered:\n\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the Subagent Cluster ID. This includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
-          "subagent": "Allows selecting the Subagent Cluster from which one Subagent will be used to execute Jobs within the `StickySubagent Instruction`.",
+          "agentAssignment": "The `StickySubagent` instruction is assigned a Subagent Cluster that specifies a number of Subagents from which one Subagent will be selected. Two options for assignment are offered:\n\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the Subagent Cluster ID. This includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
+          "subagent": "Allows selecting the Subagent Cluster from which one Subagent will be used to execute Jobs within the `StickySubagent` instruction.",
           "agentCluster": "The Agent Cluster is selected from which the Subagent Cluster is specified by an expression in a separate input field.",
           "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. If no expression is specified, then an arbitrary Subagent of the given Agent Cluster will be used. If a variable is specified, then it should hold the Subagent Cluster ID.",
           "infoMessage": "Visit the documentation at [JS7 - StickySubagent Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters)"
         },
         "if": {
-          "predicate": "A Predicate in an `If Instruction` is an expression or comparison that evaluates to *true* or *false*"
+          "predicate": "A Predicate in an `If` instruction is an expression or comparison that evaluates to *true* or *false*"
         },
         "job": {
-          "name": "A Job Name is unique in a Workflow. A Job with the same name can occur with a number of Job Instructions in the same Workflow if individual Job Labels are used.\n\nFor a Job Name most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+          "name": "A Job Name is unique in a Workflow. A Job with the same name can occur with a number of `Job` instructions in the same Workflow if individual Job Labels are used.\n\nFor a Job Name most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
           "label": "A Label is used to distinguish multiple occurrences of the same Job or instruction in a Workflow.",
           "title": "The Title of a Job can be specified as desired. The Title becomes visible with the WORKFLOWS view.",
-          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for Shell Jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any Order Variables as in JS1.",
+          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
           "credentialKey": "A Credential Key can be specified that is available from the Windows Credential Manager holding the credentials that are used to switch to a target user account for execution of the Job.\n\nOptionally a user profile can be loaded.",
           "loadUserProfile": "Loads the Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.\n\nThis setting can be used only if a Credential Key is specified.",
           "returnCode": "By default Return Code 0 signals successful execution, a non-zero Return Code signals failed execution.\n\nAny number of Return Codes signalling success or failure can be specified by a comma separated list.",
@@ -2327,8 +2327,8 @@
           "failOnOutputErr": "If a Job writes output to the *stderr* channel, then this is considered an error and the Order is put in the FAILED state.",
           "warnOnOutputErr": "If a Job writes output to the *stderr* channel, then this is considered a warning. Job execution is considered successful and the Order continues. A Notification is created for the warning.",
           "admissionTime": "Admission Times rule access to Jobs based for example, on weekdays and hours.\n\nAn Order waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
-          "skipIfNoAdmissionForOrderDay": "The Job is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the Job Instruction until the Admission Time is reached.",
-          "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the AdmissionTimes Instruction until the Admission Time is reached.",
+          "skipIfNoAdmissionForOrderDay": "The Job is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the `Job` instruction until the Admission Time is reached.",
+          "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the `AdmissionTimes` instruction until the Admission Time is reached.",
           "killAtEndOfAdmissionPeriod": "A Job will be forcibly terminated if it exceeds the Admission Time period.",
           "mailTo": "Send e-mail to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
           "mailCC": "Send e-mail copy to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
@@ -2336,10 +2336,10 @@
           "mailOn": "Send e-mail for the indicated events of errors, warnings or success.",
           "description": "The Description is displayed when the Job is selected from the list of Job Templates.",
           "onWarning": "A number of Return Codes can be specified that signal successful execution with warnings. A Notification will be created in case of such return codes.\n\nA number of Return Codes can be specified by a comma separated list.",
-          "agentAssignment": "The Job is assigned an Autonomous Agent or Subagent Cluster for execution. Within a block of `ForkList` or `StickySubagent Instructions` an Agent Cluster is assigned. As an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable.",
+          "agentAssignment": "The Job is assigned an Autonomous Agent or Subagent Cluster for execution. Within a block of `ForkList` or `StickySubagent` instructions an Agent Cluster is assigned.\n\nAs an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable.",
           "agent": "The Job is assigned an Agent that will execute the Job Script or Job Class. Users can select from the list of available Agents.",
           "agentCluster": "Selects the Agent Cluster for which a Subagent Cluster ID is specified from an Expression in a later input field.",
-          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable.\n\nIf no variable is specified, then a built-in default becomes active if the Job is included with a `ForkList Instruction` or `StickySubagent Instruction`.\n\nUsers can specify an individual variable, for example if a predecessor Job is used to determine the Subagent Cluster on which to execute a successor Job.",
+          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable.\n\nIf no variable is specified, then a built-in default becomes active if the Job is included with a `ForkList` instruction or `StickySubagent` instruction.\n\nUsers can specify an individual variable, for example if a predecessor Job is used to determine the Subagent Cluster on which to execute a successor Job.",
           "jobNotRestartable": "Applies to Jobs that have been forcibly terminated by the Agent or by its watchdog when stopping or cancelling the Agent.\n\nBy default Jobs are considered restartable and will be restarted when the Agent is restarted. Users can prevent this behavior by activating the checkbox."
         },
         "admissionTime": {
@@ -2362,42 +2362,42 @@
           "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*."
         },
         "addOrder": {
-          "workflowName": "The `AddOrder Instruction` allows adding Orders to the specified Workflow.",
+          "workflowName": "The `AddOrder` instruction allows adding Orders to the specified Workflow.",
           "arguments": "Arguments have to be added to the Order if required by the target Workflow. Optional arguments can be omitted.",
-          "remainWhenTerminated": "After termination the Order remains with the Workflow. This requires manually performing the 'Leave Workflow' operation that is available from the WORKFLOWS view.",
+          "remainWhenTerminated": "After termination the Order remains with the Workflow. This requires manually performing the *Leave Workflow* operation that is available from the WORKFLOWS view.",
           "startPosition": "Allows selecting the start position of the Order in the Workflow. Without a start position, the Orders starts from the beginning of the Workflow.",
           "endPositions": "Allows selecting one or more end positions of the Order in the Workflow. Without an end position, the Order ends with the end of the Workflow.",
-          "ignoreAdmissionTimes": "The execution of Jobs can be restricted by Admission Times of the Jobs. This option ignores Admission Times and forces the start of Jobs.",
-          "blockPosition": "An Order can be added to the position of a specific block instruction, for example, to a branch in a `Fork Instruction`, to a `Lock Instruction` etc. at any nesting level of Workflow instructions.\n\nThe Order will leave the Workflow when reaching the end of the block instruction.\n\nWhen selecting a block instruction, then Start Position and End Positions are specified within the scope of the block instruction."
+          "ignoreAdmissionTimes": "The execution of Jobs can be restricted by Admission Times of the Jobs or the `AdmissionTimes` instruction.\n\nThis option ignores Admission Times and forces the start of Jobs.",
+          "blockPosition": "An Order can be added to the position of a specific block instruction, for example, to a branch in a `Fork` instruction, to a `Lock` instruction etc. at any nesting level of Workflow instructions.\n\nThe Order will leave the Workflow when reaching the end of the block instruction.\n\nWhen selecting a block instruction, then Start Position and End Positions are specified within the scope of the block instruction."
         },
         "lock": {
           "name": "Names of Resource Locks are unique in the inventory. Sections in Workflows can be limited in parallelism by using Resource Locks.",
           "count": "The Weight for use of a Resource Lock is calculated towards its capacity.\n\nIf the capacity is exceeded, then the Order has to wait until a capacity is available that matches or exceeds the current Weight."
         },
         "prompt": {
-          "question": "A `Prompt Instruction` includes that Workflow execution will be temporarily stopped. The Order is put in the PROMPTING state.\n\nUser can check the Message that is assigned the `Prompt Instruction` and can confirm execution of the Workflow. The Order will be put in the RUNNING state."
+          "question": "A `Prompt` instruction includes that Workflow execution will be temporarily stopped. The Order is put in the PROMPTING state.\n\nUser can check the Message that is assigned the `Prompt` instruction and can confirm execution of the Workflow. The Order will be put in the RUNNING state."
         },
         "retry": {
-          "maxTries": "When reaching the max. number of Retries, then the `Try Instruction` ends and the Order is put in the FAILED state.",
+          "maxTries": "When reaching the max. number of Retries, then the `Try` instruction ends and the Order is put in the FAILED state.",
           "delay": "The Delay specifies the time in seconds before the next retry is performed.\n\nIf a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "A cycle can specify more than one period, for example for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an Order arriving at 1.45pm will run both cycles for 2pm and 3pm.\n\nWhen using the setting 'One period only', then an Order will run the first matching period only and will not consider later periods."
+          "onlyOnePeriod": "A cycle can specify more than one period, for example for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an Order arriving at 1.45pm will run both cycles for 2pm and 3pm.\n\nWhen using the setting *One period only*, then an Order will run the first matching period only and will not consider later periods."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
         "useRelativePathOnly": "When exporting scheduling objects, by default an absolute path is used inside the export file.\n\nUsers can specify a relative path to be used starting from the selected folder.\n\nIf no folder is selected but scheduling objects only, then using a relative path maps to exporting as top-level objects to the export file.",
-        "fileName": "Specifies the name of the export file such as 'export.zip' or 'export.tar.gz'.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
+        "fileName": "Specifies the name of the export file such as `export.zip` or `export.tar.gz`.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
         "fileFormat": "Specifies zip or tar.gz for the compression type.",
         "exportType": "Is one of\n\n- export of individual objects\n- export of objects from folders\n- export of objects subject to Changes",
         "objectTypes": "Allows selecting the types of inventory objects that should be included with the export, for example, Workflows, Job Resources, Schedules etc.",
         "inclusiveAllTags": "Incl. Tags",
-        "filterType": "Offers selecting 'Controller' and/or 'Automation' objects located in the related system folders.",
+        "filterType": "Offers selecting **Controller** and/or **Automation** objects located in the related system folders.",
         "filter": "Offers including inventory objects to the export file based on their status.\n\nInvalid objects can be exported and imported, though they cannot be deployed or released.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Includes inventory objects from sub-folders to the export file.",
         "includeDependencies": "Includes dependent objects to the export file, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the export file.\n\n- **All**: adds all referencing and referenced objects recursively.\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object.\n- **None**: limits export to selected objects.",
-        "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the 'All' or 'Enforced' options, objects can be unselected.",
+        "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time.",
         "name": "Name"
       },
@@ -2411,7 +2411,7 @@
         "filter": "Offers to include inventory objects to the deployment based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Adds inventory objects from sub-folders to the deployment.",
         "includeDependencies": "Adds dependent objects to the deployment, for example a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the deployment:\n\n- **All**: adds all referencing and referenced objects recursively\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object\n- **None**: limits deployment to selected objects",
-        "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the 'All' or 'Enforced' options, objects can be unselected.",
+        "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "name": "Name",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       }
@@ -2468,7 +2468,7 @@
         "propagateJob": "Propagate to Jobs"
       },
       "placeholder": {
-        "search": "Search in Name or Title using for example '%search%'",
+        "search": "Search in Name or Title using for example `%search%`",
         "selectFromTree": "Select from tree"
       },
       "message": {
@@ -2861,7 +2861,7 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Specifies when the Order will start.\n\n- **Now**: will start immediately\n- **Specific Date**: offers selecting the date and time\n- **Relative to Current Time**: specifies a delay from a number of seconds or *hh:mm:ss*\n- **No Start Time**: puts the Order in the pending state and allows later assignment of a start time.",
+        "startTime": "Specifies when the Order will start.\n\n- **Now**: will start immediately\n- **Specific Date**: offers selecting the date and time\n- **Relative to Current Time**: specifies a delay from a number of seconds or *hh:mm:ss*\n- **No Start Time**: puts the Order in the PENDING state and allows later assignment of a start time.",
         "time": "Specifies a relative start time from a number of seconds or *hh:mm:ss*.",
         "enterDateAndTime": "Enter date and time when the Order should start",
         "timeZone": "Specifies the time zone to which the date and time applies, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
@@ -3440,8 +3440,8 @@
       "show_view_configuration": "Specifies that independently from user permissions the CONFIGURATION view is available (*true*) or is hidden (*false*).\n\nAn empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_monitor": "Specifies that independently from user permissions the MONITOR view is available (*true*) or is hidden (*false*).\n\nAn empty value for this setting specifies that user permissions determine if the view is displayed.",
       "show_view_report": "Specifies that independently from user permissions the REPORTS view is available (*true*) or is hidden (*false*).\n\nAn empty value for this setting specifies that user permissions determine if the view is displayed.",
-      "controller_connection_joc_password": "The password is used for authentication of the JOC service account (running in JOC Cockpit) with the Controller.\n\nIf HTTP connections are used, then the password is the only means for authentication.\n\nIf HTTPS connections with mutual authentication are used, then the password is not relevant as certificate based authentication is in place.\n\nAn empty password can be specified with the corresponding password in the Controller's private.conf file being \"plain:\".\n\nIf the password is modified in the JOC Cockpit Settings page, then it has to be modified in the Controller's private.conf file too to make the passwords match.\n\nIt is recommended to first modify the password in the active Controller instance's private.conf file and then in the Settings page. Then restart the Controller instance from the Dashboard view. JOC Cockpit will reconnect to the active Controller instance.\n\nIf a Controller Cluster is used, then apply the same change to the passive Controller instance's private.conf file.",
-      "controller_connection_history_password": "The password is used for authentication of the History service account (running in JOC Cockpit) with the Controller.\n\nIf HTTP connections are used, then the password is the only means for authentication.\n\nIf HTTPS connections with mutual authentication are used, then the password is not relevant as certificate based authentication is in place.\n\nAn empty password can be specified with the corresponding password in the Controller's private.conf file being \"plain:\".\n\nIf the password is modified in the JOC Cockpit Settings page, then it has to be modified in the Controller's private.conf file too to make the passwords match.\n\nIt is recommended to first modify the password in the active Controller instance's private.conf file and then in the Settings page. Then restart the Controller instance from the Dashboard view. JOC Cockpit will reconnect to the active Controller instance. If a Controller Cluster is used, then apply the same change to the passive Controller instance's private.conf file.",
+      "controller_connection_joc_password": "The password is used for authentication of the JOC service account (running in JOC Cockpit) with the Controller.\n\nIf HTTP connections are used, then the password is the only means for authentication.\n\nIf HTTPS connections with mutual authentication are used, then the password is not relevant as certificate based authentication is in place.\n\nAn empty password can be specified with the corresponding password in the Controller's `private.conf` file being \"plain:\".\n\nIf the password is modified in the JOC Cockpit Settings page, then it has to be modified in the Controller's `private.conf` file too to make the passwords match.\n\nIt is recommended to first modify the password in the active Controller instance's `private.conf` file and then in the Settings page. Then restart the Controller instance from the Dashboard view.\n\nJOC Cockpit will reconnect to the active Controller instance.\n\nIf a Controller Cluster is used, then apply the same change to the passive Controller instance's `private.conf` file.",
+      "controller_connection_history_password": "The password is used for authentication of the History service account (running in JOC Cockpit) with the Controller.\n\nIf HTTP connections are used, then the password is the only means for authentication.\n\nIf HTTPS connections with mutual authentication are used, then the password is not relevant as certificate based authentication is in place.\n\nAn empty password can be specified with the corresponding password in the Controller's `private.conf` file being \"plain:\".\n\nIf the password is modified in the JOC Cockpit Settings page, then it has to be modified in the Controller's `private.conf` file too to make the passwords match.\n\nIt is recommended to first modify the password in the active Controller instance's `private.conf` file and then in the Settings page. Then restart the Controller instance from the Dashboard view.\n\nJOC Cockpit will reconnect to the active Controller instance.\n\nIf a Controller Cluster is used, then apply the same change to the passive Controller instance's `private.conf` file.",
       "encoding": "The Encoding is applied if JOC Cockpit is operated for Windows environments. Windows does not support Unicode but makes use of code pages.\n\nIn case that the Windows code page cannot be detected automatically users can specify the code page, for details see [JS7 - Unicode Support](https://kb.sos-berlin.com/display/JS7/JS7+-+Unicode+Support)",
       "disable_warning_on_license_expiration": "By default JOC Cockpit displays warnings on license expiration.\n\nSuch warnings can be suppressed.",
       "log_ext_directory": "Specifies a directory that is accessible for JOC Cockpit and to which copies of Order log files and task log files will be written.",
@@ -3487,7 +3487,7 @@
       "minimum_password_length": "The minimum length of a password specified by users."
     },
     "kiosk": {
-      "kiosk_role": "Kiosk mode requires a specific role being created. The kiosk role does not ship with JOC Cockpit.\n\nThe role must be created by the user with read-only permissions for Controller and JOC Cockpit.\n\nBy default the name of the role is 'kiosk'. Users can modify the name of the role.",
+      "kiosk_role": "Kiosk mode requires a specific role being created. The kiosk role does not ship with JOC Cockpit.\n\nThe role must be created by the user with read-only permissions for Controller and JOC Cockpit.\n\nBy default the name of the role is `kiosk`. Users can modify the name of the role.",
       "view_dashboard_duration": "The duration in seconds for which the DASHBOARD view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
       "view_monitor_order_notification_duration": "The duration in seconds for which the MONITOR -> Order Notifications view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
       "view_monitor_system_notification_duration": "The duration in seconds for which the MONITOR -> System Notifications view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
@@ -3813,7 +3813,7 @@
         "iamLdapSystemPassword": "An LDAP System User Password is usually required when an LDAP System User Account is specified.",
         "iamLdapReadTimeout": "The LDAP Read Timeout is applied for an established connection.\n\nUsers who find their LDAP connection timed out, should consider checking firewall rules.",
         "iamLdapConnectTimeout": "The LDAP Connect Timeout is applied when establishing a connection.\n\nUsers who find their LDAP connection timed out, should consider checking firewall rules.",
-        "iamLdapSysemUserDnTemplate": "The LDAP System User DN Template is applied, for example from a Distinguished Name that identifies the System User Account.",
+        "iamLdapSysemUserDnTemplate": "The LDAP System User DN Template is applied, for example from a Distinguished Name that identifies the System User Account, for example `account@example.com`.",
         "disableNestedGroupSearch": "An account can be a member of a Security Group that itself is a member of some other Security Group.\n\nBy default, nested groups are looked up which can increase look-up time for group memberships."
       },
       "keycloak": {
@@ -3844,10 +3844,10 @@
       },
       "webauthn": {
         "iamTimeout": "The Timeout applied for User Verification.\n\nIf the Timeout is exceeded, then the registration/authentication flow will be cancelled.",
-        "iamTransports": "Transports limit the type of connection that is accepted between the Client (JOC Cockpit GUI in the browser) and the Authenticator. Connections can, for example, include USB for connected USB Sticks and NFC to connect to smartphones.",
+        "iamTransports": "Transports limit the type of connection that is accepted between the Client (JOC Cockpit GUI in the browser) and the Authenticator.\n\nConnections can, for example, include USB for connected USB Sticks and NFC to connect to smartphones.",
         "iamUserVerification": "User Verification is the process of challenging the user to perform a gesture that proves the user's presence and consent.\n\nThis can include touching a USB stick, using a fingerprint sensor, performing face recognition etc.",
-        "iamResidentKey": "The Resident Key ('discoverable credentials') requirement specifies that the user's private key is stored in the security key.\n\nFor FIDO2 and Passkey protocols a Resident Key is required.",
-        "iamAuthenticatorType": "The Authenticator Type can be 'roaming' or 'platform'.\n\nRoaming Authenticators ship on a security key such as a USB Stick or smartphone and limit availability of the user's private key to the respective device.\n\nPlatform Authenticators store the user's private key on the platform, for example on a computer or phone and allow the private key to be replicated to other user devices such as tablets. Platform authenticators frequently store security keys in the cloud to allow synchronization with user devices.",
+        "iamResidentKey": "The Resident Key (*discoverable credentials*) requirement specifies that the user's private key is stored in the security key.\n\nFor FIDO2 and Passkey protocols a Resident Key is required.",
+        "iamAuthenticatorType": "The Authenticator Type can be **roaming** or **platform**.\n\nRoaming Authenticators ship on a security key such as a USB Stick or smartphone and limit availability of the user's private key to the respective device.\n\nPlatform Authenticators store the user's private key on the platform, for example on a computer or phone and allow the private key to be replicated to other user devices such as tablets.\n\nPlatform authenticators frequently store security keys in the cloud to allow synchronization with user devices.",
         "iamRequireAccount": "The requirement to specify the user's Account during authentication can be considered an additional authentication factor. During registration users have to specify an account, when it comes to authentication, then JS7 administrators can force the account to be specified.",
         "emailSettings": "E-Mail Settings include specifying the mail server connection and the events on which e-mail will be sent for confirmation or notification purposes.",
         "jobResource": "The E-mail Job Resource specifies a reference that holds variables required for the connection to the mail server. This includes the mail server's SMTP hostname, port, protocol and authentication used when sending mail.",
@@ -4131,7 +4131,7 @@
     "message.otherInstructionValidationError": "Cannot use more than one outgoing edge",
     "message.ifInstructionValidationError": "Cannot use more than one condition",
     "message.invalidInstructionsSelected": "Selection of instructions is not valid",
-    "message.catchInstructionValidationError": "Only Try Instruction can use Catch instruction",
+    "message.catchInstructionValidationError": "Only Try instruction can use Catch instruction",
     "message.inValidWorkflow": "Not a valid Workflow file",
     "message.dropHereToRemoveInstruction": "Drop here to remove instruction",
     "message.labelIsMissing": "Label is missing, but is required",
@@ -4196,7 +4196,7 @@
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
     "tooltip.singleClickToSelect": "Single-clicking highlights an instruction and makes its properties available for editing.",
     "tooltip.doubleClickToSelect": "Double-clicking highlights an instruction. If a new instruction is dropped onto it, then the new instruction will be added as its parent.",
-    "tooltip.warningMessageForShortIntervalSelection": "Cyclic Orders for short repeat intervals can cause performance penalties. Consider switching to Cyclic Workflows using Cycle Instructions.",
+    "tooltip.warningMessageForShortIntervalSelection": "Cyclic Orders for short repeat intervals can cause performance penalties. Consider switching to Cyclic Workflows using `Cycle` instructions.",
     "tooltip.restrictedMonthsTooltip": "Max. 11 months can be selected. To use all months, leave the month restriction empty.",
     "findAndReplace": {
       "label.find": "Search",
@@ -4586,7 +4586,7 @@
   },
   "of": "of",
   "helpSearch": {
-    "placeholder": "Find in document....",
+    "placeholder": "Find in document...",
     "button.search": "Search",
     "button.previous": "Previous",
     "button.next": "Next",
