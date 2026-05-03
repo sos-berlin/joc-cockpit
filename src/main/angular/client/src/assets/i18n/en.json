@@ -2272,7 +2272,7 @@
           "message": "The instruction allows specifying a Message that is attached the Order and that becomes visible with the Order History.",
           "unsuccessful": "By default the `Finish` instruction makes Orders leave the Workflow with a successful history outcome. This checkbox can be used to make an Order leave the Workflow with an unsuccessful historic outcome.",
           "successful": "Specifies a successful outcome of the Order with the Order History.",
-          "unchanged": "Specifies that the Order's current execution status being successful or failed will remain unchanged with the Order History"
+          "unchanged": "Specifies that the Order's current execution status being successful or failed will remain unchanged with the Order History."
         },
         "options": {
           "stopOnFailure": "The setting impacts instructions such as `Lock`, `ConsumeNotices` and `Cycle`. It causes Orders in case of errors to remain with the current instruction instead of returning to the begin of the respective `Lock`, `ConsumeNotices` or `Cycle` instruction."
@@ -3805,7 +3805,7 @@
         "iamLdapUserSearchFilter": "The LDAP User Search Filter specifies an LDAP query that is used to identify the user account in the hierarchy of LDAP entries.",
         "iamLdapUseStartTls": "The LDAP Start TLS switch makes TLS the protocol for the connection to the LDAP Server",
         "iamLdapHostNameVerification": "The LDAP Host Name Verification switch has to be active to check if hostnames in the LDAP Server URL and in the LDAP Server certificate match.",
-        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, e.g. `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, e.g. *js7_admins*.",
+        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, for example `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, for example *js7_admins*.",
         "iamLdapTrustStorePath": "The path to a Truststore that holds the LDAP Server certificate or Root CA certificate used to sign the LDAP Server certificate.",
         "iamLdapTrustStorePassword": "If the LDAP Truststore is protected by a password, then the password must be specified.",
         "iamLdapTrustStoreType": "The LDAP Truststore Type can be PKCS12 or JKS (deprecated).",
