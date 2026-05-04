@@ -2409,45 +2409,45 @@
         "deployType": "Ausrolltyp",
         "includeTodaysLateOrders": "Aktualisiert Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status auszurollen.\n\nUngültige Objekte können nicht ausgerollt werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht ausgerollt wurden.",
-        "handleRecursively": "Fügt Objekte aus Unterordnern hinzu.",
-        "includeDependencies": "Bezieht abhängige Objekte ein, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: fügt alle referenzierenden und referenzierten Objekte rekursiv hinzu.\n- **Erzwungene**: fügt Objekte hinzu, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** beschränkt das Ausrollen auf die ausgewählten Objekte.",
+        "handleRecursively": "Rollt Objekte aus Unterordnern aus.",
+        "includeDependencies": "Rollt abhängige Objekte aus, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: rollt alle referenzierenden und referenzierten Objekte rekursiv aus.\n- **Erzwungene**: rollt Objekte aus, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** rollt nur die ausgewählten Objekte aus.",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "name": "Name",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
        "revoke": {
-        "controllers": "Controllers",
-        "handleRecursively": "Include Sub-Folders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "controllers": "Hier kann der Controller ausgewählt werden, von dem Objekte zurückgezogen werden.\n\nEs können mehrere Controller mit dem JOC Cockpit verbunden sein.\n\nPer Voreinstellung wird der aktuell ausgewählte Controller verwendet.",
+        "handleRecursively": "Zieht Objekte aus Unterordnern zurück.",
+        "includeDependencies": "Zieht abhängige Objekte zurück, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: zieht alle referenzierenden und referenzierten Objekte rekursiv zurück.\n- **Erzwungene**: zieht Objekte zurück, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** zieht nur die ausgewählten Objekte zurück.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
        "remove": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Legt fest, dass Aufträge aus dem Tagesplan gelöscht werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: löscht Aufträge ab dem aktuellen Zeitpunkt.\n- **Startdatum**: löscht Aufträge ab dem angegebenen Datum.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
+        "specificDate": "Gibt das Datum an, ab dem Aufträge aus dem Tagesplan gelöscht werden.",
+        "includeDependencies": "Entfernt abhängige Objekte, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: entfernt alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: entfernt Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** entfernt nur die ausgewählten Objekte.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden und es kann angegeben werden, ob die Objekte zurückgezogen oder entfernt werden sollen.",
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
        "release": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeTodaysLateOrders": "Include Today's Late Orders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Legt fest, dass Aufträge zum Tagesplan hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: fügt Aufträge ab dem aktuellen Zeitpunkt hinzu oder aktualisiert sie.\n- **Startdatum**: fügt Aufträge ab dem angegebenen Datum hinzu oder aktualisiert sie.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
+        "specificDate": "Gibt das Datum an, ab dem Aufträge in den Tagesplan aufgenommen oder dort aktualisiert werden.",
+        "includeTodaysLateOrders": "Aktualisiert Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
+        "includeDependencies": "Gibt abhängige Objekte frei, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: gibt alle referenzierenden und referenzierten Objekte rekursiv frei.\n- **Erzwungene**: gibt Objekte frei, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** gibt nur die ausgewählten Objekte frei.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
        "recall": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeTodaysLateOrders": "Include Today's Late Orders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Legt fest, dass Aufträge aus dem Tagesplan gelöscht werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: löscht Aufträge ab dem aktuellen Zeitpunkt.\n- **Startdatum**: löscht Aufträge ab dem angegebenen Datum.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
+        "specificDate": "Gibt das Datum an, ab dem Aufträge aus dem Tagesplan gelöscht werden.",
+        "includeTodaysLateOrders": "Löscht Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
+        "includeDependencies": "Nimmt abhängige Objekte zurück, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: nimmt alle referenzierenden und referenzierten Objekte rekursiv zurück.\n- **Erzwungene**: nimmt Objekte zurück, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** nimmt nur die ausgewählten Objekte zurück.",
+        "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       }
     },
     "search": {
@@ -2847,8 +2847,8 @@
     "button.force": "Prozess beenden",
     "button.reset": "rücksetzen",
     "button.forceReset": "rücksetzen/Prozess beenden",
-    "button.selectVariable": "Select Variable",
-    "button.setAllVariables": "Set All Variables",
+    "button.selectVariable": "Variable auswählen",
+    "button.setAllVariables": "Alle Variablen setzen",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",

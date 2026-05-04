@@ -2410,44 +2410,44 @@
         "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "filter": "Propose d'inclure des objets de l'inventaire au déploiement en fonction de leur statut.\n\nLes objets non valides ne peuvent pas être déployés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
         "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers au déploiement.",
-        "includeDependencies": "Inclut les objets dépendants au déploiement, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au déploiement.\n\nLes options suivantes sont proposées :\n\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: limite l'exportation aux objets sélectionnés.",
+        "includeDependencies": "Inclut les objets dépendants au déploiement, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au déploiement.\n\nLes options suivantes sont proposées :\n\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: limite le déploiement aux objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
         "name": "Name",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
        "revoke": {
-        "controllers": "Controllers",
-        "handleRecursively": "Include Sub-Folders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "controllers": "Permet de sélectionner le Contrôleur duquel les objets seront révoqués.\n\nPlusieurs Contrôleurs peuvent être connectés à JOC Cockpit.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
+        "handleRecursively": "Révoque les objets d'inventaire des sous-dossiers.",
+        "includeDependencies": "Révoque les objets dépendants, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n\n- **Tout**: révoque de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: révoque les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: révoque seulement les objets sélectionnés.",
+        "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
        "remove": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle\n- **À partir de**: supprime les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
+        "includeDependencies": "Supprime les objets dépendants, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n\n- **Tout**: supprime de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: supprime les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: supprime seulement les objets sélectionnés.",
+        "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
        "release": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeTodaysLateOrders": "Include Today's Late Orders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: ajoute ou met à jour les Ordres à partir de l'heure actuelle\n- **À partir de**: ajoute ou met à jour les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "specificDate": "Indique la date à partir de laquelle les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.",
+        "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
+        "includeDependencies": "Publie les objets dépendants, par exemple une Planification faisant référence à un Calendrier.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront publiés.\n\nLes options suivantes sont proposées :\n\n- **Tout**: publie de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: publie les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: publie seulement les objets sélectionnés.",
+        "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
        "recall": {
-        "updateDailyPlan": "Update Daily Plan",
-        "specificDate": "Specific Date",
-        "includeTodaysLateOrders": "Include Today's Late Orders",
-        "includeDependencies": "Include Dependencies",
-        "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle\n- **À partir de**: supprime les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
+        "includeTodaysLateOrders": "Supprime les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
+        "includeDependencies": "Retire les objets dépendants, par exemple une Planification faisant référence à un Calendrier.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront retirés.\n\nLes options suivantes sont proposées :\n\n- **Tout**: retire de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: retire les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: retire seulement les objets sélectionnés.",
+        "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       }
     },
     "search": {
@@ -2847,8 +2847,8 @@
     "button.force": "terminer tâche",
     "button.reset": "réinitialiser",
     "button.forceReset": "réinitialiser/terminer tâche",
-    "button.selectVariable": "Select Variable",
-    "button.setAllVariables": "Set All Variables",
+    "button.selectVariable": "Sélectionner Variable",
+    "button.setAllVariables": "Mettre à jour toutes les Variables",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position de bloc",
