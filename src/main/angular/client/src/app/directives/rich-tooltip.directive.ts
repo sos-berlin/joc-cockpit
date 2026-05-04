@@ -92,6 +92,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   private overlayRef: OverlayRef | null = null;
   private insidePanel = false;
   private isDragging = false;
+  private contextMenuOpen = false;
   private hoverTimer: ReturnType<typeof setTimeout> | null = null;
   private positionSub: Subscription | null = null;
   private readonly tooltipId = `rt-${++_tooltipIdSeq}`;
@@ -255,9 +256,20 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     document.addEventListener('mouseup', this.panelMouseUpHandler, true);
     panelEl.addEventListener('mouseleave', () => {
       this.insidePanel = false;
-      if (!this.isDragging) this.closeWithAnimation();
+      if (!this.isDragging && !this.contextMenuOpen) this.closeWithAnimation();
     });
-
+ 
+    // Keep tooltip open while the native browser context menu is visible so
+    // the user can click "Copy" without the tooltip disappearing on mouseleave.
+    panelEl.addEventListener('contextmenu', () => {
+      this.contextMenuOpen = true;
+      const reset = () => {
+        this.contextMenuOpen = false;
+        document.removeEventListener('mousedown', reset, true);
+      };
+      document.addEventListener('mousedown', reset, true);
+    });
+ 
     // Click-outside: defer so the opening click doesn't immediately close
     setTimeout(() => document.addEventListener('click', this.outsideClickHandler, true), 0);
   }
@@ -271,7 +283,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     document.removeEventListener('click', this.outsideClickHandler, true);
     document.removeEventListener('mouseup', this.panelMouseUpHandler, true);
     this.isDragging = false;
-
+    this.contextMenuOpen = false;
     const bubbleEl = this.overlayRef.overlayElement.querySelector('.rich-tooltip-bubble') as HTMLElement | null;
     const ref = this.overlayRef;
     this.overlayRef = null;

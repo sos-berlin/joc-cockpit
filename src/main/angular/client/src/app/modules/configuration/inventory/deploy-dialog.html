@@ -80,7 +80,7 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label><span
-                  [appRichTooltip]="'inventory.tooltips.deploy.controllers' | translate"
+                  [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.controllers') | translate"
                   translate>inventory.label.controllers</span></label>
             </label>
             <div class="col-md-6">
@@ -100,7 +100,8 @@
       @if (nodes.length > 0 && (
       (!isRevoke && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
       ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) ||
-      (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)))) {
+      (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) ||
+      (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke))) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
           <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
@@ -113,7 +114,7 @@
           (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
           <div class="form-group row">
             <div
-              [appRichTooltip]="'inventory.tooltips.deploy.updateDailyPlan' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.updateDailyPlan') | translate"
               class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
@@ -128,7 +129,7 @@
           @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
           <div class="form-group row">
             <label class="col-md-3 form-control-label"
-              [appRichTooltip]="'inventory.tooltips.deploy.specificDate' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.specificDate') | translate"
               translate>common.label.specificDate
               <sup class="text-danger text-sm">*</sup>
             </label>
@@ -143,7 +144,7 @@
           object.deployType !== 'individual')) {
           <div class="row m-b-12">
             <div class="col-md-3"
-              [appRichTooltip]="'inventory.tooltips.deploy.deployType' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.deployType') | translate"
               translate>inventory.label.deployType</div>
             <div class="col-md-6">
               <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
@@ -156,10 +157,34 @@
           @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
           <div class="form-group row">
             <label
-              [appRichTooltip]="'inventory.tooltips.deploy.includeTodaysLateOrders' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
               class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+            </div>
+          </div>
+          }
+          @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
+          <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}"
+            class="form-group row">
+            <label [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.name') | translate"
+              class="col-sm-3 form-control-label" translate>common.label.name
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6">
+              <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
+                name="changeName" nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+                @for (option of changeObj; track option.name) {
+                <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                }
+              </nz-select>
+              @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
+              <div class="text-danger help-block">
+                @if (changeName.errors['required']) {
+                <div translate>common.message.requiredError</div>
+                }
+              </div>
+              }
             </div>
           </div>
           }
@@ -178,7 +203,7 @@
           <div class="form-group row">
             <div class="col-md-3">
               <label
-                [appRichTooltip]="'inventory.tooltips.deploy.filter' | translate"
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.filter') | translate"
                 translate>inventory.export.label.filter</label>
             </div>
             <div class="col-md-9">
@@ -205,7 +230,7 @@
           <div class="form-group row">
             <div class="col-md-3">
               <label
-                [appRichTooltip]="'inventory.tooltips.deploy.handleRecursively' | translate"
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.handleRecursively') | translate"
                 translate>inventory.label.handleRecursively</label>
             </div>
             <div class="col-md-6">
@@ -247,7 +272,7 @@
           <div class="form-group row">
             <div class="col-md-3">
               <label
-                [appRichTooltip]="'inventory.tooltips.deploy.includeDependencies' | translate"
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeDependencies') | translate"
                 translate>inventory.label.includeDependencies</label>
             </div>
             <div class="col-md-9">
@@ -264,7 +289,7 @@
           @if (nodes.length > 0 && dependencyMode !== 'none' && (showMoreAdvanceOptions || showDependencies)) {
           <div class="form-group row">
             <label
-              [appRichTooltip]="'inventory.tooltips.deploy.manageDependencies' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.manageDependencies') | translate"
               class="col-md-3" translate>inventory.label.manageDependencies</label>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
@@ -276,7 +301,7 @@
           showRelatedObjects)) {
           <div class="form-group row">
             <label
-              [appRichTooltip]="'inventory.tooltips.deploy.showRelatedObjects' | translate"
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.showRelatedObjects') | translate"
               class="col-md-3" translate>inventory.label.showRelatedObjects</label>
             <div class="col-md-6">
               <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects" />
@@ -295,30 +320,6 @@
           <a (click)="collapseAll();" [appRichTooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
-        </div>
-      </div>
-      }
-      @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
-      <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}"
-        class="form-group row">
-        <label [appRichTooltip]="'inventory.tooltips.deploy.name' | translate"
-          class="col-sm-3 form-control-label" translate>common.label.name
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
-            name="changeName" nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-            @for (option of changeObj; track option.name) {
-            <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-            }
-          </nz-select>
-          @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
-          <div class="text-danger help-block">
-            @if (changeName.errors['required']) {
-            <div translate>common.message.requiredError</div>
-            }
-          </div>
-          }
         </div>
       </div>
       }
