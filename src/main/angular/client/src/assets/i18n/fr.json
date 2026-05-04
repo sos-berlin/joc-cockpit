@@ -1104,7 +1104,7 @@
       },
       "tooltip": {
         "licenseKeyFile": "Le chemin d'accès au fichier de clé de licence est attendu.\n\nLe fichier représente un certificat au format .pem et déverrouille le code binaire sous licence.",
-        "licenseBinFile": "Le chemin d'accès au fichier binaire de la licence est attendu.\n\nCe fichier contient du code binaire qui n'est pas soumis à la licence Open Source, par exemple les fonctions de cluster du JOC Cockpit et du Contrôleur.\n\nLe code binaire est déverrouillé par un fichier de clé de licence."
+        "licenseBinFile": "Le chemin d'accès au fichier binaire de la licence est attendu.\n\nCe fichier contient du code binaire qui n'est pas soumis à la licence Open Source, c'est-à-dire les fonctions de cluster du JOC Cockpit et du Contrôleur.\n\nLe code binaire est déverrouillé par un fichier de clé de licence."
       }
     },
     "certificate": {
@@ -2390,7 +2390,7 @@
         "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut.\n\nLes utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné.\n\nSi aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
         "fileName": "Indique le nom du fichier d'exportation, par exemple `export.zip` ou `export.tar.gz`.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
-        "exportType": "S'agit-il\n\n- de l'exportation d'objets individuels\n- de l'exportation d'objets à partir de dossiers\n- de l'exportation d'objets soumis à des modifications.",
+        "exportType": "S'agit-il\n\n- de l'exportation d'objets individuels\n- de l'exportation d'objets à partir de dossiers\n- de l'exportation d'objets soumis à des modifications",
         "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple les Workflows, les Ressources de Tâches, les Planifications etc.",
         "inclusiveAllTags": "Ajoute des Tags au fichier d'exportation qui seront importé vers la destination.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",

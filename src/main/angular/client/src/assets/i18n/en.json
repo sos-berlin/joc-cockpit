@@ -278,7 +278,7 @@
     "tooltip.agentName": "The Agent Name is a unique designation of an Agent that can be changed. Agents are assigned to Jobs by their Agent Name.\n\nFor Agent Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.title": "The Title of an Agent can be specified as desired.",
     "tooltip.agentNameAliases": "An Agent can be assigned a number of Alias Names. The Agent can be assigned to a Job or File Order Source using its Alias Name.\n\nFor Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-    "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, for example `http://localhost:4445`",
+    "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, for example, `http://localhost:4445`",
     "tooltip.asStandaloneAgent": "A Standalone Agent or a Director Agent of an Agent Cluster can act as a Cluster Watch. The Agent specified will be created as a Standalone Agent if this checkbox is checked.",
     "tooltip.primaryDirectorId": "The Director Agent ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime.\n\nFor Director Agent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.hidden": "Agents can be hidden to prevent them from being displayed in the JOC Cockpit user interface. This applies to the DASHBOARD view as well as to all occurrences where Agents are assigned.",
@@ -293,7 +293,7 @@
       "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime.\n\nFor Agent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime.\n\nFor Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
-      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, for example `http://localhost:4445`",
+      "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, for example, `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent.\n\nThis allows Jobs running on a specific Director Agent.",
       "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names.\n\nThe Agent Cluster can be assigned to a Job or File Order Source using its Alias Name.\n\nFor Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for Jobs. A Process Limit can be assigned to restrict resource usage across all Subagents in an Agent Cluster. A Process Limit value 0 will prevent Jobs from starting.",
@@ -305,7 +305,7 @@
     "subagent": {
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime.\n\nFor Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of a Subagent can be specified as desired.",
-      "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, for example `http://localhost:4445`",
+      "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, for example, `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes the single Subagent. This allows Jobs running on a specific Subagent.",
       "tooltip.priority": "The Subagent Cluster Priority specifies an expression that for an active-passive cluster evaluates to 0 for the first Subagent and to 1 for subsequent Subagents.\n\nFor an active-active cluster all Subagents are assigned the Priority value 0.\n\nFor a metrics-based Subagent Cluster the Priority holds an expression that makes use of indicator variables such as the number of running tasks."
     },
@@ -1104,7 +1104,7 @@
       },
       "tooltip": {
         "licenseKeyFile": "The path to the License Key File is expected. The file represents a certificate in .pem format and unlocks the licensed binary code.",
-        "licenseBinFile": "The path to the License Binary File is expected. The file contains binary code that is not subject to the Open Source License, e.g. the cluster functions of JOC Cockpit and Controller. The binary code is unlocked by a License Key File."
+        "licenseBinFile": "The path to the License Binary File is expected.\n\nThe file contains binary code that is not subject to the Open Source License, i.e. the cluster functions of JOC Cockpit and Controller.\n\nThe binary code is unlocked by a License Key File."
       }
     },
     "certificate": {
@@ -1222,10 +1222,10 @@
         "homeOwner": "The user account that owns the Agent's home directory.",
         "dataOwner": "The user account that owns the Agent's data directory.",
         "runUser": "The user account that is used for the Agent service.",
-        "httpPort": "The Agent listens to this HTTP port, which is used to accept commands from the Instance Start Script and, if applicable, commands from the Controller.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example `localhost:4445`.\n\nIf a Controller from another host communicates with the Agent via this port, a public network interface can be specified, e.g. `host.example.com:4445`.",
-        "httpsPort": "The Agent listens this HTTPS port, which is used to receive commands from the Controller. The port must be accessible for the Controller in the network.",
+        "httpPort": "The Agent listens to the HTTP port, which is used to accept commands from the Instance Start Script and, if applicable, commands from the Controller.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example, `localhost:4445`.\n\nIf a Controller from another host communicates with the Agent via this port, a public network interface can be specified, for example, `host.example.com:4445`.",
+        "httpsPort": "The Agent listens to the HTTPS port, which is used to receive commands from the Controller. The port must be accessible for the Controller in the network.",
         "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx512m`.",
+        "javaOptions": "Java Options can be specified, for example, to increase the Heap Site as with `-Xmx512m`.",
         "controllerId": "The Controller ID references the Controller to which the Agent is dedicated.",
         "keyStore": "The Keystore contains the Agent's private key, which is used for HTTPS connections to the Agent.",
         "keyStorePassword": "The Keystore is protected by a password",
@@ -1233,9 +1233,9 @@
         "keyAlias": "The Key Alias can be used when a keystore contains multiple private keys. The alias name determines the private key to be used for HTTPS connections to the Agent.",
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Agent's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
-        "templates": "The path to a directory containing template files for configuring the Agent, e.g. `agent.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Agent, for example, `agent.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example, `/etc/systemd/system`.",
         "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     },
@@ -1332,10 +1332,10 @@
         "homeOwner": "The user account that owns the Controller's home directory.",
         "dataOwner": "The user account that owns the Controller's data directory.",
         "runUser": "The user account that is used for the Controller service.",
-        "httpPort": "The Controller listens to this HTTP port, which is used to accept commands from the Instance Start Script and commands from JOC Cockpit.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example `localhost:4444`.\n\nIf JOC Cockpit communicates from another host with the Controller via this port, a public network interface can be specified, for example `host.example.com:4444`.",
+        "httpPort": "The Controller listens to this HTTP port, which is used to accept commands from the Instance Start Script and commands from JOC Cockpit.\n\nFor use with the Instance Start Script, a local network interface can be specified, for example, `localhost:4444`.\n\nIf JOC Cockpit communicates from another host with the Controller via this port, a public network interface can be specified, for example, `host.example.com:4444`.",
         "httpsPort": "The Controller listens to the HTTPS port which is used to receive commands from JOC Cockpit.\n\nThe port must be accessible for JOC Cockpit in the network.",
         "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx512m`.",
+        "javaOptions": "Java Options can be specified, for example, to increase the Heap Site as with `-Xmx512m`.",
         "jocRef": "The reference to a JOC Cockpit instance that is used to manage the Controller.",
         "controllerId": "The Controller ID is a unique identifier of the Controller. This identifier cannot be changed during the lifetime of a Controller.",
         "keyStore": "The Keystore contains the Controller's private key, which is used for HTTPS connections to the Controller.",
@@ -1345,9 +1345,9 @@
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the Controller's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
         "controllerCert": "The path to the Controller's Certificate file (*.pem, *.crt).",
-        "templates": "The path to a directory containing template files for configuring the Controller, e.g. `controller.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Controller, for example, `controller.conf`.\n\nThe directory may have a sub-directory `private` holding further configuration files.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example, `/etc/systemd/system`.",
         "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     },
@@ -1476,26 +1476,26 @@
         "dbmsConfig": "DBMS Hibernate Configuration File (hibernate.cfg.xml) specifies the database connection.",
         "dbmsDriver": "DBMS JDBC Driver File (*.jar) establishes the connection to the database. A number of JDBC Driver files ship with JOC Cockpit. Users can specify their own version of a DBMS JDBC Driver.",
         "dbmsInit": "DBMS initialisation involves setting up objects in the database.\n\nThis can be done at installation time using `byInstaller`, at start time using `byJoc` or can be suppressed using `off`. In the latter case, users set up the database objects themselves.",
-        "httpPort": "The JOC Cockpit listens to this HTTP port by which users can access the GUI. The port must be accessible for users in the network. A public network interface can be specified, for example `host.example.com:4446`.",
+        "httpPort": "The JOC Cockpit listens to this HTTP port by which users can access the GUI. The port must be accessible for users in the network. A public network interface can be specified, for example, `host.example.com:4446`.",
         "httpsPort": "The JOC Cockpit listens to this HTTPS port by which users can access the GUI. The port must be accessible for users in the network.",
         "isUser": "Installation is performed in the context of the User Account.",
-        "isPreserveEnv": "Installation using `sudo` preserves environment variables, for example `JAVA_HOME`.",
+        "isPreserveEnv": "Installation using `sudo` preserves environment variables, for example, `JAVA_HOME`.",
         "javaHome": "The Java installation directory frequently is specified by the `JAVA_HOME` environment variable.",
-        "javaOptions": "Java Options can be specified for example to increase the Heap Site as with `-Xmx1g`.",
-        "responseDir": "The Response Directory may contain files that are copied to the Setup Directory, for example `joc_install.xml`, DBMS JDBC Driver file or key file of the license.",
+        "javaOptions": "Java Options can be specified, for example, to increase the Heap Site as with `-Xmx1g`.",
+        "responseDir": "The Response Directory may contain files that are copied to the Setup Directory, for example, `joc_install.xml`, DBMS JDBC Driver file or key file of the license.",
         "keyStore": "The Keystore contains the JOC Cockpit's private key, which is used for HTTPS connections to the JOC Cockpit.",
         "keyStorePassword": "The Keystore is protected by a password",
         "keyPassword": "The private key is protected by a password. With the commonly used PKCS12 format for keystores, the password of the keystore and of the key must match.",
         "keyAlias": "The Key Alias can be used when a keystore contains multiple private keys. The alias name determines the private key to be used for HTTPS connections to the JOC Cockpit.",
         "trustStore": "The Truststore contains the public certificate of the Certificate Authority that signed the JOC Cockpit's certificate.",
         "trustStorePassword": "The Truststore is protected by a password",
-        "templates": "The path to a directory containing template files for configuring the Controller, e.g. `controller.conf`.\n\nThe directory may have a sub-directory `private` with further configuration files.",
+        "templates": "The path to a directory containing template files for configuring the Controller, for example, `controller.conf`.\n\nThe directory may have a sub-directory `private` holding further configuration files.",
         "jocCert": "The path to the JOC Cockpit Certificate file (*.pem, *.crt).",
         "httpIni": "The path to the Jetty HTTP Configuration File `http.ini` can be specified if specific settings for HTTP connections to JOC Cockpit are required.",
         "httpsIni": "Jetty HTTPS Configuration File `https.ini` can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
         "sslIni": "Jetty SSL Configuration File `ssl.ini` can be specified if specific settings for HTTPS connections to JOC Cockpit are required.",
         "serviceName": "The name of the systemd Service.",
-        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example `/etc/systemd/system`.",
+        "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example, `/etc/systemd/system`.",
         "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
     }
@@ -1760,8 +1760,8 @@
     "tooltip.workflowExampleForUnix": "Workflow examples for use with Agents running for Unix",
     "tooltip.workflowExampleForWindows": " Workflow examples for use with Agents running for Windows",
     "tooltip.invalidLicense": "License is not valid. Reasons can include that the start date of the validity period has hot been reached or that the expiration date has been exceeded.",
-    "tooltip.jocMonitorEvent": "The flag signals warnings and errors in the processing of Orders, for example when Jobs fail. The flag indicates warnings with the yellow color and errors with the red color.\n\nClicking the flag displays the last 10 warnings and errors. Users find the full list of warnings and errors from the MONITOR->Notifications view.",
-    "tooltip.systemMonitorEvent": "The flag signals warnings and errors of JS7 prooducts, for example connection loss to the database. The flag indicates warnings from yellow color and errors from the red color.\n\nClicking the flag displays the last 10 warnings and errors.\n\nUsers find the full list of warnings and errors from the MONITOR->Notifications view.",
+    "tooltip.jocMonitorEvent": "The flag signals warnings and errors in the processing of Orders, for example, when Jobs fail. The flag indicates warnings with the yellow color and errors with the red color.\n\nClicking the flag displays the last 10 warnings and errors. Users find the full list of warnings and errors from the MONITOR->Notifications view.",
+    "tooltip.systemMonitorEvent": "The flag signals warnings and errors of JS7 products, for example, connection loss to the database.\n\nThe flag indicates warnings from yellow color and errors from the red color.\n\nClicking the flag displays the last 10 warnings and errors.\n\nUsers find the full list of warnings and errors from the MONITOR->Notifications view.",
     "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the Configuration View.\n\nAfter import the Defaults.zip archive will create a folder with the same name that includes Job Resources to create global Job Environment Variables available to your shell Jobs.",
     "message.line2": "The `Examples.tar.gz` and `Examples.zip` archives include examples for Workflows and Jobs for operation with Agents on Unix and Windows respectively.\n\nThe examples can be helpful to create your own Workflows and Job Dependencies. The examples correspond to what you find from the %JS7 - Online Demo% explanations.",
     "link": {
@@ -2173,10 +2173,10 @@
         "title": "The Title of the File Order Source can be specified as desired.",
         "workflowName": "A reference to a Workflow has to be added. An Order will be created for this Workflow on arrival of a file in the directory that is watched for incoming files.",
         "agent": "The Agent has to be specified that performs file watching on the respective host on which the Agent is installed.",
-        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.\n\nThe directory is specfied as an expression, for example a string `'/tmp/files'` or in combination with a function as in `env('HOME') ++ '/files'`",
-        "pattern": "A regular expression Pattern specifies the path to files that the Directory is watched for.\n\nFor example `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
+        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.\n\nThe directory is specfied as an expression, for example, a string `'/tmp/files'` or in combination with a function as in `env('HOME') ++ '/files'`",
+        "pattern": "A regular expression Pattern specifies the path to files that the Directory is watched for.\n\nFor example, `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
         "timeZone": "When a file arrives, the Agent will create an Order that includes the current date with its Order ID.\n\nThis item specifies the time zone that is used for the date in the Order ID, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
-        "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes occur."
+        "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example, if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes occur."
       },
       "jobResource": {
         "name": "A Job Resource is a set of variables that can be used by a number of Workflows or Jobs.\n\nThere are two flavors:\n\n- **Arguments** are assigned to JITL Jobs and Java Jobs,\n- **Environment Variables** automatically become available with Shell Jobs. Values of Environment Variables can use Arguments as in `$argument`.\n\nFor the name of the Job Resource most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2189,7 +2189,7 @@
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board.\n\nThe RESOURCES view allows managing documentations.",
         "title": "The Title of the Notice Board can be specified as desired.",
         "toNotice": "The Notice ID for the Posting Order is extracted from its Order ID to look up matching Expecting Orders.",
-        "endOfLife": "The lifetime for the Notice determines its duration in the format *hh:mm:ss*, for example *01:30:00* for one and a half hours.",
+        "endOfLife": "The lifetime for the Notice determines its duration in the format *hh:mm:ss*, for example, *01:30:00* for one and a half hours.",
         "readingOrderToNoticeId": "The Notice ID for the Expecting Order is extracted from its Order ID and is used to look up matching Posting Orders.",
         "boardType": "Notice Boards of **global* type enforce dependencies independently from the Daily Plan.\n\nNotice Boards of **plannable** type consider days only for which Orders exist that will create Notices."
       },
@@ -2225,13 +2225,13 @@
         "name": "The name of a Report Template is unique in the inventory.\n\nFor the name of the Report Template most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "title": "The Title of the Report Template can be specified.",
         "template": "Specifies the Report Model to be applied.",
-        "frequencies": "The frequency specifies the cycle that divides the reporting period, for example 5 minutes, 1 day etc.",
+        "frequencies": "The frequency specifies the cycle that divides the reporting period, for example, 5 minutes, 1 day etc.",
         "controllerId": "The report can be limited to history data of a specific Controller",
         "interval": {
           "interval": "Specifies the reporting period. The presets and relative settings will be mapped to current values for *month from* and *month to*.",
           "absolute": {
-            "monthFrom": "Specifies the start of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example *1y*, can be specified.",
-            "monthTo": "Specifies the end of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example *2m*, can be specified.\n\nIf empty, then the previous month of the current date will be used."
+            "monthFrom": "Specifies the start of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, *1y*, can be specified.",
+            "monthTo": "Specifies the end of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, *2m*, can be specified.\n\nIf empty, then the previous month of the current date will be used."
           },
           "relative": {
             "from": "Specifies the start of the reporting period that considers the unit in use.\n\nExample: Unit=Month, From=12, Count=12 --> last 12 months.",
@@ -2240,7 +2240,7 @@
           },
           "preset": {
             "preset": "Preset",
-            "fromSample": "Samples are available for frequently used Report Periods, for example for use with the last month, last year etc."
+            "fromSample": "Samples are available for frequently used Report Periods, for example, for use with the last month, last year etc."
           }
         },
         "sort": "A report can indicate the highest or lowest values found.",
@@ -2279,7 +2279,7 @@
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
-          "regex": "A regular expression specifies the Pattern for the paths of incoming files that a directory is watched for. For example `.*` means any files, `.*\\.txt$` means any files with a .txt extension."
+          "regex": "A regular expression specifies the Pattern for the paths of incoming files that a directory is watched for. For example, `.*` means any files, `.*\\.txt$` means any files with a .txt extension."
         },
         "fork": {
           "joinVariables": "Variables of Child Orders in the branches of a `Fork` instruction are added to the Parent Order when reaching the `Join` instruction.",
@@ -2310,23 +2310,23 @@
           "name": "A Job Name is unique in a Workflow. A Job with the same name can occur with a number of `Job` instructions in the same Workflow if individual Job Labels are used.\n\nFor a Job Name most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
           "label": "A Label is used to distinguish multiple occurrences of the same Job or instruction in a Workflow.",
           "title": "The Title of a Job can be specified as desired. The Title becomes visible with the WORKFLOWS view.",
-          "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
+          "compatibleMode": "Compatibility with previous JobScheduler versions includes, for example, for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
           "credentialKey": "A Credential Key can be specified that is available from the Windows Credential Manager holding the credentials that are used to switch to a target user account for execution of the Job.\n\nOptionally a user profile can be loaded.",
-          "loadUserProfile": "Loads the Windows User Profile. A profile includes e.g. environment variables and Windows registry settings.\n\nThis setting can be used only if a Credential Key is specified.",
+          "loadUserProfile": "Loads the Windows User Profile. A profile includes, for example, environment variables and Windows registry settings.\n\nThis setting can be used only if a Credential Key is specified.",
           "returnCode": "By default Return Code 0 signals successful execution, a non-zero Return Code signals failed execution.\n\nAny number of Return Codes signalling success or failure can be specified by a comma separated list.",
           "checkSteadyState": "When a file arrives in a directory that is watched for incoming files, then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
           "jobClass": "The Job Class determines if a Job is executed with the OS Shell (Windows, Unix, MacOS) etc.) or is executed as a JVM JITL Java Job or is executed as a JVM Script Job for one of the scripting languages supported by the JVM.",
           "timeout": "When exceeding the Timeout, then with Windows a Job is cancelled.\n\nWith Unix the Job is sent a SIGTERM signal and after the Grace Timeout a SIGKILL signal will terminate the Job.",
           "graceTimeout": "A Grace Timeout is applied to Jobs with Unix that receive a SIGTERM signal when exceeding their Timeout.\n\nIf the Job will not terminate, then after the Grace Timeout a SIGKILL signal will forcibly terminate the Job.",
-          "warnIfShorter": "If the execution period of a Job is shorter than specified, then a notification, e.g. by e-mail, will be sent.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example *30%*.",
-          "warnIfLonger": "If the execution period of a Job is longer than specified, then a notification, e.g. by e-mail, will be sent.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example *30%*.",
+          "warnIfShorter": "If the execution period of a Job is shorter than specified, then a notification, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, *30%*.",
+          "warnIfLonger": "If the execution period of a Job is longer than specified, then a notification, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, *30%*.",
           "fileWatcher": "File Order Sources are used to watch a directory for incoming files and to create an Order with the respective Workflow for each file.",
-          "className": "The name of a Java class implementing a Job. JS7 ships with a number of predefined JITL Java classes, e.g. for database access, to send e-mail etc.",
+          "className": "The name of a Java class implementing a Job.\n\nJS7 ships with a number of predefined JITL Java classes, for example, for database access, to send e-mail etc.",
           "parallelism": "The max. Parallelism specifies the number of Orders in a Workflow that can execute the Job in parallel.\n\nIf the max. Parallelism is exceeded, then Orders have to wait until the value has fallen below the Job's max. Parallelism.",
           "criticality": "The Criticality of Jobs can be used in Notifications to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a Job writes output to the *stderr* channel, then this is considered an error and the Order is put in the FAILED state.",
           "warnOnOutputErr": "If a Job writes output to the *stderr* channel, then this is considered a warning. Job execution is considered successful and the Order continues. A Notification is created for the warning.",
-          "admissionTime": "Admission Times rule access to Jobs based for example, on weekdays and hours.\n\nAn Order waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
+          "admissionTime": "Admission Times rule access to Jobs, for example, based on weekdays and hours.\n\nAn Order waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
           "skipIfNoAdmissionForOrderDay": "The Job is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the `Job` instruction until the Admission Time is reached.",
           "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if Admission Periods have been configured that do not match the Order's date.\n\nFor example, if Admission Periods are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the `AdmissionTimes` instruction until the Admission Time is reached.",
           "killAtEndOfAdmissionPeriod": "A Job will be forcibly terminated if it exceeds the Admission Time period.",
@@ -2339,27 +2339,27 @@
           "agentAssignment": "The Job is assigned an Autonomous Agent or Subagent Cluster for execution. Within a block of `ForkList` or `StickySubagent` instructions an Agent Cluster is assigned.\n\nAs an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable.",
           "agent": "The Job is assigned an Agent that will execute the Job Script or Job Class. Users can select from the list of available Agents.",
           "agentCluster": "Selects the Agent Cluster for which a Subagent Cluster ID is specified from an Expression in a later input field.",
-          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable.\n\nIf no variable is specified, then a built-in default becomes active if the Job is included with a `ForkList` instruction or `StickySubagent` instruction.\n\nUsers can specify an individual variable, for example if a predecessor Job is used to determine the Subagent Cluster on which to execute a successor Job.",
+          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable.\n\nIf no variable is specified, then a built-in default becomes active if the Job is included with a `ForkList` instruction or `StickySubagent` instruction.\n\nUsers can specify an individual variable, for example, if a predecessor Job is used to determine the Subagent Cluster on which to execute a successor Job.",
           "jobNotRestartable": "Applies to Jobs that have been forcibly terminated by the Agent or by its watchdog when stopping or cancelling the Agent.\n\nBy default Jobs are considered restartable and will be restarted when the Agent is restarted. Users can prevent this behavior by activating the checkbox."
         },
         "admissionTime": {
           "admissionType": "The type of Admission Times includes specifying Weekdays, Specific Weekdays and Month Days.",
           "weekDays": "Weekdays specify days of week that can be individually selected.",
           "monthDays": "Month Days are counted from the first to the last day of month or vice versa.",
-          "dayNumber": "Specific Weekdays allow determining the recurrence of the weekday in a month, for example the first, second, last etc. occurrence.",
-          "startTime": "The period begin specifies when a cycle will initially become active. Values are specified from the *hh:mm:ss* format, for example *00:00:00* indicates midnight.",
-          "duration": "Specifies the duration for which the cycle is active.\n\nValues are specified in hours, minutes or seconds, for example *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*.",
+          "dayNumber": "Specific Weekdays allow determining the recurrence of the weekday in a month, for example, the first, second, last etc. occurrence.",
+          "startTime": "The period begin specifies when a cycle will initially become active. Values are specified from the *hh:mm:ss* format, for example, *00:00:00* indicates midnight.",
+          "duration": "Specifies the duration for which the cycle is active.\n\nValues are specified in hours, minutes or seconds, for example, *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*.",
           "cycleType": "The type of cycle is one of\n\n- **periodical**: using individual start times per period\n- **continuous**: applying a fixed pause between start times\n- **ticking**: using a fixed start time interval",
           "periodical": "The *periodical* Cycle Type allows specifying individual start times per period in seconds or minutes, for example, *0*, *15m*, *25m*, *47m*.\n\nIn this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "continuous": "The *continuous* Cycle Type specifies a fixed interval, i.e. a pause, between the last cycle run and the next cycle start independently from the execution time that might be different per cycle run.",
           "ticking": "The *ticking* Cycle Type specifies a fixed interval between cycle starts, for example, every 5 minutes, independently of the time used to execute the cycle.\n\nIf a cycle runs longer than its start time interval, then it will be restarted immediately after its last run.",
-          "interval": "The interval for the *ticking* Cycle Type specifies the frequency of cycle runs, for example, every 5 minutes.\n\nValues can be specified in hours, minutes, seconds, for example *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for an hourly cycle run.",
-          "pause": "The pause for the *continuous* Cycle Type specifies the interval between completion of the last cycle and start of the next cycle.\n\nValues can be specified in hours, minutes, seconds, for example *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for a one hour's pause between cycle runs.",
+          "interval": "The interval for the *ticking* Cycle Type specifies the frequency of cycle runs, for example, every 5 minutes.\n\nValues can be specified in hours, minutes, seconds, for example, *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for an hourly cycle run.",
+          "pause": "The pause for the *continuous* Cycle Type specifies the interval between completion of the last cycle and start of the next cycle.\n\nValues can be specified in hours, minutes, seconds, for example, *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for a one hour's pause between cycle runs.",
           "limit": "For the *continuous* Cycle Type a limit for the max. number of cycle runs can be specified.",
           "offsets": "The offsets for a *periodical* Cycle Type specify the points in time within the given period when the cycle starts.\n\nValues can be specified in seconds or minutes, for example, *0*, *15m*, *25m*, *47m*. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "period": "The period specifies the duration for which a cycle is active.\n\nThe cycle will start from the period begin and will be repeated according to its Cycle Type for the specified duration.",
           "periodBeginOfAdmissionTime": "Specifies the begin of the Job's Admission Times.\n\nValues are specified from the *hh:mm:ss* format, for example, *00:00:00* indicating midnight.",
-          "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*."
+          "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example, *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*."
         },
         "addOrder": {
           "workflowName": "The `AddOrder` instruction allows adding Orders to the specified Workflow.",
@@ -2382,7 +2382,7 @@
           "delay": "The Delay specifies the time in seconds before the next retry is performed.\n\nIf a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "A cycle can specify more than one period, for example for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an Order arriving at 1.45pm will run both cycles for 2pm and 3pm.\n\nWhen using the setting *One period only*, then an Order will run the first matching period only and will not consider later periods."
+          "onlyOnePeriod": "A cycle can specify more than one period, for example, for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an Order arriving at 1.45pm will run both cycles for 2pm and 3pm.\n\nWhen using the setting *One period only*, then an Order will run the first matching period only and will not consider later periods."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
@@ -2410,7 +2410,7 @@
         "includeTodaysLateOrders": "Updates Orders in today's Daily Plan that are late as they have been prevented from starting at the scheduled time.",
         "filter": "Offers to include inventory objects to the deployment based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Adds inventory objects from sub-folders to the deployment.",
-        "includeDependencies": "Adds dependent objects to the deployment, for example a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the deployment:\n\n- **All**: adds all referencing and referenced objects recursively\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object\n- **None**: limits deployment to selected objects",
+        "includeDependencies": "Adds dependent objects to the deployment, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the deployment:\n\n- **All**: adds all referencing and referenced objects recursively\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object\n- **None**: limits deployment to selected objects",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "name": "Name",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
@@ -2468,7 +2468,7 @@
         "propagateJob": "Propagate to Jobs"
       },
       "placeholder": {
-        "search": "Search in Name or Title using for example `%search%`",
+        "search": "Search in Name or Title using, for example, `%search%`",
         "selectFromTree": "Select from tree"
       },
       "message": {
@@ -2476,7 +2476,7 @@
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
       },
       "tooltips": {
-        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example if alternative checkboxes are offered, then they are combined by 'or'.",
+        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.",
         "folders": "Select one or more Folders to filter results.",
         "currentController": "Limit results to objects available with the Current Controller.",
         "deployedOrReleased": "Limit results to objects that are Deployed/Released.",
@@ -3388,7 +3388,7 @@
     "cleanup": {
       "time_zone": "Specifies the time zone that is applied to the start time and to the period of Cleanup Service execution, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
       "period": "Specifies weekdays on which the Cleanup Service is performed.\n\nThe first day of week is considered being Monday. When initially installing JS7, the default specifies the full week.\n\nWithout this setting the Cleanup Service will not start.",
-      "period_begin": "Specifies the start time of the Cleanup Service for the given period, e.g. on a daily basis.",
+      "period_begin": "Specifies the start time of the Cleanup Service for the given period, for example, on a daily basis.",
       "period_end": "Specifies the end of the period for which the Cleanup Service is allowed to run.\n\nIf the Cleanup Service is earlier to complete its task, then it will stop before the indicated time. However, it will not continue running beyond the indicated time.",
       "batch_size": "Specifies the number of records that are purged within a single transaction.\n\nIncreasing this value can improve performance, at the same time it will increase the risk of conflicts with concurrent transactions should parallel Services operate on the database.",
       "order_history_age": "Specifies the retention period for the execution history of Orders and tasks. Any history entries older than the value specified will be purged.",
@@ -3399,7 +3399,7 @@
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History.\n\nAny history entries older than the value specified will be purged.",
       "monitoring_history_age": "Specifies the retention period of the Monitoring History.\n\nAny history entries older than the value specified will be purged.",
       "notification_history_age": "Specifies the retention period of the Notification History.\n\nAny history entries older than the value specified will be purged.",
-      "max_pool_size": "The max. connection pool size specifies the number of database connection used.\n\nFor environments with larger numbers of daily task history entries it can be beneficial to increase this value for example to 10.\n\nUsers should check that their DBMS allows an increased number of connections being used.",
+      "max_pool_size": "The max. connection pool size specifies the number of database connection used.\n\nFor environments with larger numbers of daily task history entries it can be beneficial to increase this value for example, to *10*.\n\nUsers should check that their DBMS allows an increased number of connections being used.",
       "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it will be purged.",
       "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they will be purged.",
       "reporting_age": "Specifies the retention period of the Reports and Report Run History.\n\nAny report entries older than the value specified will be purged.",
@@ -3410,7 +3410,7 @@
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
-      "start_time": "Specifies the start time to run the Daily Plan on a daily basis with the indicated time zone.\n\nWithout this setting the Daily Plan will run 30 minutes before the point in time specified by the *period_begin* setting.\n\nThis setting accepts a time value, e.g. *23:00:00*.",
+      "start_time": "Specifies the start time to run the Daily Plan on a daily basis with the indicated time zone.\n\nWithout this setting the Daily Plan will run 30 minutes before the point in time specified by the *period_begin* setting.\n\nThis setting accepts a time value, for example, *23:00:00*.",
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which Orders will be generated and will be made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED Orders will be submitted to Controllers and will be made available with the SUBMITTED state.",
@@ -3451,7 +3451,7 @@
       "log_maximum_display_size": "JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value.\n\nOtherwise the log is offered for download only.\n\nThe size is assumed in MB.",
       "log_applicable_size": "If the value for the size of a Job's log output is exceeded, then the History Service will truncate log output and will use the first and last 100 KB for the task log.\n\nThe original log file will be removed.\n\nThe size is assumed in MB.",
       "log_maximum_size": "If the value for the size of a Job's log output is exceeded, then the History Service will truncate log output and will use the first 100 KB for the task log.\n\nThe original log file will be removed.\n\nThe size is assumed in MB.",
-      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example with e-mail notifications.",
+      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example, with e-mail notifications.",
       "allow_empty_arguments": "By default empty arguments are not allowed from Jobs and Job Templates as this forces Jobs to distinguish between empty and unset variables.\n\nUsers can enable the behavior allowing empty arguments.",
       "allow_undeclared_variables": "Allow undeclared variables from Orders. This includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\nJobs will fail when referencing undeclared variables that are not available with the Order.",
       "display_folders_in_views": "Displays folders of scheduling objects in views.\n\nIf this setting is set to *false*, then object names only will be displayed.\n\nIn JS7 object names are unique.",
@@ -3483,7 +3483,7 @@
     },
     "identityService": {
       "idle_session_timeout": "The Idle Session Timeout specifies the duration in minutes for which a session remains active without user activity.\n\nIf the Idle Session Timeout is exceeded, the user will be disconnected.",
-      "initial_password": "The Initial Password that is applied for example to new user accounts. Users have to change the password on next login.",
+      "initial_password": "The Initial Password that is applied, for example, to new user accounts. Users have to change the password on next login.",
       "minimum_password_length": "The minimum length of a password specified by users."
     },
     "kiosk": {
@@ -3795,17 +3795,17 @@
         "iamLdapAD": "The checkbox simplifies the configuration if the LDAP Server is implemented by Active Directory.\n\nA number of attributes for user search and group search are automatically assumed if Active Directory is used.",
         "iamLdapADWithSamAccount": "The *sAMAccountName* attribute is the unique identifier of a user account.\n\nThe attribute frequently is available with LDAP Servers of type Active Directory.",
         "iamLdapWithMemberOf": "The *memberOf* attribute simplifies the search for Security Groups for which the user account has membership.\n\nThe attribute frequently is available with LDAP Servers of type Active Directory, however, other LDAP products similarly can implement this attribute.",
-        "iamLdapSearchBase": "The Search Base for looking up user accounts in the hierarchy of LDAP Server entries, for example `OU=Operations,O=IT,O=Users,DC=example,DC=com`.",
+        "iamLdapSearchBase": "The Search Base for looking up user accounts in the hierarchy of LDAP Server entries, for example, `OU=Operations,O=IT,O=Users,DC=example,DC=com`.",
         "iamLdapGroupSearchBase": "Similarly to the LDAP Search Base the Group Search Base is used to find Security Groups that a user account has membership for.",
-        "iamLdapUserDnTemplate": "The Distinguished Name (DN) identifies a user account.\n\nIn case of Active Directory LDAP Servers the value `{0}` can be used that is replaced by the user account specified during login.\n\nAlternatively an LDAP query can be specified, for example `uid={0},OU=Operations,O=IT,O=Users,DC=example,DC=com`",
-        "iamLdapServerUrl": "The LDAP Server URL specifies the protocol, e.g. `ldap://` for Plain Text and TLS connections, `ldaps://` for SSL connections.\n\nThe protocol is added the hostname (FQDN) and port of the LDAP Server.",
-        "iamLdapGroupNameAttribute": "The LDAP Group Name attribute provides the name of the Security Group that a user account is a member of, for example the CN (Common Name) attribute.",
+        "iamLdapUserDnTemplate": "The Distinguished Name (DN) identifies a user account.\n\nIn case of Active Directory LDAP Servers the value `{0}` can be used that is replaced by the user account specified during login.\n\nAlternatively an LDAP query can be specified, for example, `uid={0},OU=Operations,O=IT,O=Users,DC=example,DC=com`",
+        "iamLdapServerUrl": "The LDAP Server URL specifies the protocol, for example, `ldap://` for Plain Text and TLS connections, `ldaps://` for SSL connections.\n\nThe protocol is added the hostname (FQDN) and port of the LDAP Server.",
+        "iamLdapGroupNameAttribute": "The LDAP Group Name attribute provides the name of the Security Group that a user account is a member of, for example, the CN (Common Name) attribute.",
         "iamLdapUserNameAttribute": "The LDAP User Name attribute provides the name of the user account, frequently the CN (Common Name) attribute is used.",
         "iamLdapGroupSearchFilter": "The LDAP Group Search Filter specifies an LDAP query that is used to identify Security Groups the user account is a member of.",
         "iamLdapUserSearchFilter": "The LDAP User Search Filter specifies an LDAP query that is used to identify the user account in the hierarchy of LDAP entries.",
         "iamLdapUseStartTls": "The LDAP Start TLS switch makes TLS the protocol for the connection to the LDAP Server",
         "iamLdapHostNameVerification": "The LDAP Host Name Verification switch has to be active to check if hostnames in the LDAP Server URL and in the LDAP Server certificate match.",
-        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, for example `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, for example *js7_admins*.",
+        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, for example, `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, for example, *js7_admins*.",
         "iamLdapTrustStorePath": "The path to a Truststore that holds the LDAP Server certificate or Root CA certificate used to sign the LDAP Server certificate.",
         "iamLdapTrustStorePassword": "If the LDAP Truststore is protected by a password, then the password must be specified.",
         "iamLdapTrustStoreType": "The LDAP Truststore Type can be PKCS12 or JKS (deprecated).",
@@ -3813,7 +3813,7 @@
         "iamLdapSystemPassword": "An LDAP System User Password is usually required when an LDAP System User Account is specified.",
         "iamLdapReadTimeout": "The LDAP Read Timeout is applied for an established connection.\n\nUsers who find their LDAP connection timed out, should consider checking firewall rules.",
         "iamLdapConnectTimeout": "The LDAP Connect Timeout is applied when establishing a connection.\n\nUsers who find their LDAP connection timed out, should consider checking firewall rules.",
-        "iamLdapSysemUserDnTemplate": "The LDAP System User DN Template is applied, for example from a Distinguished Name that identifies the System User Account, for example `account@example.com`.",
+        "iamLdapSysemUserDnTemplate": "The LDAP System User DN Template is applied, for example, from a Distinguished Name that identifies the System User Account, for example, `account@example.com`.",
         "disableNestedGroupSearch": "An account can be a member of a Security Group that itself is a member of some other Security Group.\n\nBy default, nested groups are looked up which can increase look-up time for group memberships."
       },
       "keycloak": {
@@ -3847,7 +3847,7 @@
         "iamTransports": "Transports limit the type of connection that is accepted between the Client (JOC Cockpit GUI in the browser) and the Authenticator.\n\nConnections can, for example, include USB for connected USB Sticks and NFC to connect to smartphones.",
         "iamUserVerification": "User Verification is the process of challenging the user to perform a gesture that proves the user's presence and consent.\n\nThis can include touching a USB stick, using a fingerprint sensor, performing face recognition etc.",
         "iamResidentKey": "The Resident Key (*discoverable credentials*) requirement specifies that the user's private key is stored in the security key.\n\nFor FIDO2 and Passkey protocols a Resident Key is required.",
-        "iamAuthenticatorType": "The Authenticator Type can be **roaming** or **platform**.\n\nRoaming Authenticators ship on a security key such as a USB Stick or smartphone and limit availability of the user's private key to the respective device.\n\nPlatform Authenticators store the user's private key on the platform, for example on a computer or phone and allow the private key to be replicated to other user devices such as tablets.\n\nPlatform authenticators frequently store security keys in the cloud to allow synchronization with user devices.",
+        "iamAuthenticatorType": "The Authenticator Type can be **roaming** or **platform**.\n\nRoaming Authenticators ship on a security key such as a USB Stick or smartphone and limit availability of the user's private key to the respective device.\n\nPlatform Authenticators store the user's private key on the platform, for example, on a computer or phone and allow the private key to be replicated to other user devices such as tablets.\n\nPlatform authenticators frequently store security keys in the cloud to allow synchronization with user devices.",
         "iamRequireAccount": "The requirement to specify the user's Account during authentication can be considered an additional authentication factor. During registration users have to specify an account, when it comes to authentication, then JS7 administrators can force the account to be specified.",
         "emailSettings": "E-Mail Settings include specifying the mail server connection and the events on which e-mail will be sent for confirmation or notification purposes.",
         "jobResource": "The E-mail Job Resource specifies a reference that holds variables required for the connection to the mail server. This includes the mail server's SMTP hostname, port, protocol and authentication used when sending mail.",
@@ -4301,7 +4301,7 @@
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// add script here",
-      "placeholder.endPoint": "Enter an endpoint, for example /orders/add",
+      "placeholder.endPoint": "Enter an endpoint, for example, /orders/add",
       "message.invalidBody": "Invalid JSON in Request Body",
       "message.invalidAuth": "Username and password required for login with Basic Authentication."
     }

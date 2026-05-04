@@ -1104,7 +1104,7 @@
       },
       "tooltip": {
         "licenseKeyFile": "Der Pfad zur Lizenzschlüsseldatei wird erwartet. Die Datei stellt ein Zertifikat im .pem Format dar und schaltet den lizenzierten Binärcode frei.",
-        "licenseBinFile": "Der Pfad zur Lizenzbinärdatei wird erwartet. Die Datei enthält Binärcode, der nicht der Open Source Lizenz unterliegt, z.B. die Cluster Funktionen von JOC Cockpit und Controller. Der Binärcode wird durch eine Lizenzschlüsseldatei freigeschaltet."
+        "licenseBinFile": "Der Pfad zur Lizenzbinärdatei wird erwartet.\n\nDie Datei enthält Binärcode, der nicht der Open Source Lizenz unterliegt, d.i. die Cluster Funktionen von JOC Cockpit und Controller.\n\nDer Binärcode wird durch eine Lizenzschlüsseldatei freigeschaltet."
       }
     },
     "certificate": {
@@ -2390,7 +2390,7 @@
         "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad innerhalb der Exportdatei verwendet.\n\nBenutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird.\n\nWenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfads als oberste Objekte der Exportdatei hinzugefügt.",
         "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
-        "exportType": "Ist eine der Optionen:\n\n- Export von einzelnen Objekten,\n- Export von Ordnern,\n- Export von Objekten im Zusammenhang mit Änderungen",
+        "exportType": "Ist eine der Optionen:\n\n- Export von einzelnen Objekten\n- Export von Ordnern\n- Export von Objekten im Zusammenhang mit Änderungen",
         "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. Arbeitsabläufe, Job-Ressourcen, Zeitpläne etc.",
         "inclusiveAllTags": "Fügt der Exportdatei Kennzeichnungen hinzu, die in das Ziel importiert werden können.",
         "filterType": "Berücksichtigt Objekte, die in *Controller* oder *Automation* Systemordnern gespeichert sind",
