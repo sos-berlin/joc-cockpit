@@ -2414,6 +2414,40 @@
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
         "name": "Name",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+      },
+      "--------ADD REVOKE MISSING TOOLTIPS------------": "",
+       "revoke": {
+        "controllers": "Controllers",
+        "handleRecursively": "Include Sub-Folders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD REMOVE MISSING TOOLTIPS------------": "",
+       "remove": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD RELEASE MISSING TOOLTIPS------------": "",
+       "release": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeTodaysLateOrders": "Include Today's Late Orders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD RECALL MISSING TOOLTIPS------------": "",
+       "recall": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeTodaysLateOrders": "Include Today's Late Orders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
       }
     },
     "search": {
@@ -2813,6 +2847,8 @@
     "button.force": "terminer tâche",
     "button.reset": "réinitialiser",
     "button.forceReset": "réinitialiser/terminer tâche",
+    "button.selectVariable": "Select Variable",
+    "button.setAllVariables": "Set All Variables",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position de bloc",

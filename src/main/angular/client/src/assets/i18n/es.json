@@ -2414,6 +2414,40 @@
         "manageDependencies": "Displays referencing objects and referenced objects per selected object. When used with the 'All' or 'Enforced' options, objects can be unselected.",
         "name": "Name",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource. If the inventory is large, display may take some time."
+      },
+      "--------ADD REVOKE MISSING TOOLTIPS------------": "",
+       "revoke": {
+        "controllers": "Controllers",
+        "handleRecursively": "Include Sub-Folders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD REMOVE MISSING TOOLTIPS------------": "",
+       "remove": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD RELEASE MISSING TOOLTIPS------------": "",
+       "release": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeTodaysLateOrders": "Include Today's Late Orders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
+      },
+      "--------ADD RECALL MISSING TOOLTIPS------------": "",
+       "recall": {
+        "updateDailyPlan": "Update Daily Plan",
+        "specificDate": "Specific Date",
+        "includeTodaysLateOrders": "Include Today's Late Orders",
+        "includeDependencies": "Include Dependencies",
+        "manageDependencies": "Manage Dependencies",
+        "showRelatedObjects": "Show Related Objects"
       }
     },
     "search": {
@@ -2813,6 +2847,8 @@
     "button.force": "terminar tarea",
     "button.reset": "restablecer",
     "button.forceReset": "restablecer/terminar tarea",
+    "button.selectVariable": "Select Variable",
+    "button.setAllVariables": "Set All Variables",
     "placeholder.selectStartNode": "Seleccionar posición de inicio",
     "placeholder.selectEndNode": "Seleccionar posición final",
     "placeholder.selectBlockPosition": "Seleccionar posición de bloque",

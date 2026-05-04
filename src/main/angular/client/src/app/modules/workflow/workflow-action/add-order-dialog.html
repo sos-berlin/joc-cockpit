@@ -383,70 +383,7 @@
               </div>
             }
 
-            <!-- ── Section 1: Identification ── -->
-            @if (showMoreAdvanceOptions || order.orderId || order.tags?.length > 0) {
-              <div class="b-a m-b-sm section-box">
-                <div class="section-box-header">
-                  <small class="_600 section-box-title" translate>order.section.identification</small>
-                </div>
-                <div class="p-a-sm">
-                  @if (showMoreAdvanceOptions || order.orderId) {
-                    <div class="form-group row m-b-0">
-                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span></label>
-                      <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6 m-b-sm">
-                        <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
-                              class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
-                              placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
-                        @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
-                          <div class="text-danger help-block">
-                            @if (orderId.errors['invalidIdentifier']) {
-                              <div translate>common.message.invalid</div>
-                            }
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                  @if (preferences.enableTagging) {
-                    @if (showMoreAdvanceOptions || order.tags?.length > 0) {
-                      <div class="form-group row m-b-0 m-t-xs">
-                        <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.tagName' | translate" translate>inventory.label.tagName</span></label>
-                        <div class="col-sm-6">
-                          <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                            <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
-                                class="d-inline-block">
-                              @for (tag of order.tags; track tag; let i = $index) {
-                                <nz-tag class="cursor" style="transition: none !important;"
-                                        cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
-                                  {{ sliceTagName(tag) }}
-                                </nz-tag>
-                              }
-                            </div>
-                            @if (!order.inputVisible) {
-                              <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
-                                <span nz-icon nzType="plus"></span>
-                                {{'inventory.button.newTag' | translate}}
-                              </nz-tag>
-                            }
-                            @if (order.inputVisible) {
-                              <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                                <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
-                                      type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
-                                      style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
-                                      (keydown.enter)="handleInputConfirm(orderIndex)">
-                                <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
-                              </div>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    }
-                  }
-                </div>
-              </div>
-            }
-
-            <!-- ── Section 2: Execution Timing ── -->
+            <!-- ── Section 1: Execution Timing ── -->
             <div class="b-a m-b-sm section-box">
               <div class="section-box-header">
                 <small class="_600 section-box-title" translate>order.section.executionTiming</small>
@@ -515,6 +452,69 @@
                 }
               </div>
             </div>
+            
+            <!-- ── Section 2: Identification ── -->
+            @if (showMoreAdvanceOptions || order.orderId || order.tags?.length > 0) {
+              <div class="b-a m-b-sm section-box">
+                <div class="section-box-header">
+                  <small class="_600 section-box-title" translate>order.section.identification</small>
+                </div>
+                <div class="p-a-sm">
+                  @if (showMoreAdvanceOptions || order.orderId) {
+                    <div class="form-group row m-b-0">
+                      <label class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span></label>
+                      <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6 m-b-sm">
+                        <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
+                              class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
+                              placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
+                        @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
+                          <div class="text-danger help-block">
+                            @if (orderId.errors['invalidIdentifier']) {
+                              <div translate>common.message.invalid</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                  @if (preferences.enableTagging) {
+                    @if (showMoreAdvanceOptions || order.tags?.length > 0) {
+                      <div class="form-group row m-b-0 m-t-xs">
+                        <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.schedule.tagName' | translate" translate>inventory.label.tagName</span></label>
+                        <div class="col-sm-6">
+                          <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                            <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
+                                class="d-inline-block">
+                              @for (tag of order.tags; track tag; let i = $index) {
+                                <nz-tag class="cursor" style="transition: none !important;"
+                                        cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
+                                  {{ sliceTagName(tag) }}
+                                </nz-tag>
+                              }
+                            </div>
+                            @if (!order.inputVisible) {
+                              <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
+                                <span nz-icon nzType="plus"></span>
+                                {{'inventory.button.newTag' | translate}}
+                              </nz-tag>
+                            }
+                            @if (order.inputVisible) {
+                              <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                                <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
+                                      type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
+                                      style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
+                                      (keydown.enter)="handleInputConfirm(orderIndex)">
+                                <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
 
             <!-- ── Section 3: Dependency Context (advanced) ── -->
             @if (showMoreAdvanceOptions || order.planId?.noticeSpaceKey) {
@@ -635,7 +635,7 @@
                           [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
                         <div class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.modifyVariable' | translate" translate>order.button.modifyVariable</span></div>
                         <div class="col-sm-6 m-b-sm">
-                          <a (click)="addArgument(orderIndex)" class="text-u-l" translate>Select Variable</a>
+                          <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.selectVariable</a>
                         </div>
                       </div>
 
@@ -643,7 +643,7 @@
                           [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
                         <div class="col-sm-4"><span [appRichTooltip]="'order.tooltips.addOrder.modifyVariables' | translate" translate>order.button.modifyVariables</span></div>
                         <div class="col-sm-6 m-b-sm">
-                          <a (click)="addArguments(orderIndex)" class="text-u-l" translate>Set All Variables</a>
+                          <a (click)="addArguments(orderIndex)" class="text-u-l" translate>order.button.setAllVariables</a>
                         </div>
                       </div>
                     }
