@@ -2390,23 +2390,23 @@
         "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad innerhalb der Exportdatei verwendet.\n\nBenutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird.\n\nWenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfads als oberste Objekte der Exportdatei hinzugefügt.",
         "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
-        "exportType": "Ist eine der Optionen:\n\n- Export von einzelnen Objekten\n- Export von Ordnern\n- Export von Objekten im Zusammenhang mit Änderungen",
+        "exportType": "Ist eine der Optionen:\n\n- **Individuelle Objekte**: Anwender wählen Objekte aus dem Inventar aus.\n- **Ordner**: Anwender wählen Ordner aus, die Objekte enthalten.\n- **Änderungen**: Anwender wählen Änderungen aus, die Objekte beinhalten, die direkt der Änderung zugeordnet sind bzw. Objekte, die zugeordnete Objekte referenzieren oder von ihnen referenziert werden.",
         "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. Arbeitsabläufe, Job-Ressourcen, Zeitpläne etc.",
-        "inclusiveAllTags": "Fügt der Exportdatei Kennzeichnungen hinzu, die in das Ziel importiert werden können.",
+        "inclusiveAllTags": "Fügt der Exportdatei Kennzeichnungen hinzu, die in das Ziel importiert werden können.\n\nDies beinhaltet Tags der Arbeitsläufe, Aufträge und Jobs.\n\nBeim Import entscheidet der Anwender, ob Kennzeichnungen importiert werden sollen.",
         "filterType": "Berücksichtigt Objekte, die in *Controller* oder *Automation* Systemordnern gespeichert sind",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status in die Exportdatei aufzunehmen.\n\nUngültige Objekte können exportiert und importiert werden, allerdings können sie nicht ausgerollt oder freigegeben werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht bereitgestellt oder freigegeben wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern der Exportdatei hinzu.",
         "includeDependencies": "Bezieht abhängige Objekte in die Exportdatei ein, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden der Exportdatei hinzugefügt.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: fügt alle referenzierenden und referenzierten Objekte rekursiv hinzu.\n- **Erzwungene**: fügt Objekte hinzu, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: beschränkt den Export auf die ausgewählten Objekte.",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen.",
-        "name": "Name"
+        "name": "Bietet die Auswahl einer Änderung, die die zu exportierenden Objekte festlegt.\n\nDie Änderung umfasst Objekte, die vom Anwender direkt zugewiesen wurden, sowie Objekte, die auf Objekte verweisen oder von Objekten referenziert werden, denen die Änderung zugewiesen ist."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
-        "controllers": "Hier kann der Controller ausgewählt werden, auf den Objekte ausgerollt werden.\n\nEs können mehrere Controller mit dem JOC Cockpit verbunden sein.\n\nPer Voreinstellung wird der aktuell ausgewählte Controller verwendet.",
+        "controllers": "Hier kann der Controller ausgewählt werden, auf den Objekte ausgerollt werden.\n\nEs können mehrere Controller mit JOC Cockpit verbunden sein.\n\nPer Voreinstellung wird der aktuell ausgewählte Controller verwendet.",
         "updateDailyPlan": "Legt fest, dass Aufträge zum Tagesplan hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: fügt Aufträge ab dem aktuellen Zeitpunkt hinzu oder aktualisiert sie.\n- **Startdatum**: fügt Aufträge ab dem angegebenen Datum hinzu oder aktualisiert sie.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
         "specificDate": "Gibt das Datum an, ab dem Aufträge in den Tagesplan aufgenommen oder dort aktualisiert werden.",
-        "deployType": "Ausrolltyp",
+        "deployType": "Bietet folgende Optionen für das Ausrollen:\n\n- **Einzelne Objekte**: Anwender wählen einzelne Objekte aus dem Inventar aus.\n- **Änderungen**: Anwender wählen Änderungen aus, die Objekte beinhalten, die direkt der Änderung zugeordnet sind bzw. Objekte, die zugeordnete Objekte referenzieren oder von ihnen referenziert werden.",
         "includeTodaysLateOrders": "Aktualisiert Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status auszurollen.\n\nUngültige Objekte können nicht ausgerollt werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht ausgerollt wurden.",
         "handleRecursively": "Rollt Objekte aus Unterordnern aus.",
@@ -2416,7 +2416,7 @@
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
-       "revoke": {
+      "revoke": {
         "controllers": "Hier kann der Controller ausgewählt werden, von dem Objekte zurückgezogen werden.\n\nEs können mehrere Controller mit dem JOC Cockpit verbunden sein.\n\nPer Voreinstellung wird der aktuell ausgewählte Controller verwendet.",
         "handleRecursively": "Zieht Objekte aus Unterordnern zurück.",
         "includeDependencies": "Zieht abhängige Objekte zurück, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: zieht alle referenzierenden und referenzierten Objekte rekursiv zurück.\n- **Erzwungene**: zieht Objekte zurück, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** zieht nur die ausgewählten Objekte zurück.",
@@ -2424,7 +2424,7 @@
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
-       "remove": {
+      "remove": {
         "updateDailyPlan": "Legt fest, dass Aufträge aus dem Tagesplan gelöscht werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: löscht Aufträge ab dem aktuellen Zeitpunkt.\n- **Startdatum**: löscht Aufträge ab dem angegebenen Datum.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
         "specificDate": "Gibt das Datum an, ab dem Aufträge aus dem Tagesplan gelöscht werden.",
         "includeDependencies": "Entfernt abhängige Objekte, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n\n- **Alle**: entfernt alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: entfernt Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine** entfernt nur die ausgewählten Objekte.",
@@ -2432,7 +2432,7 @@
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
-       "release": {
+      "release": {
         "updateDailyPlan": "Legt fest, dass Aufträge zum Tagesplan hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: fügt Aufträge ab dem aktuellen Zeitpunkt hinzu oder aktualisiert sie.\n- **Startdatum**: fügt Aufträge ab dem angegebenen Datum hinzu oder aktualisiert sie.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
         "specificDate": "Gibt das Datum an, ab dem Aufträge in den Tagesplan aufgenommen oder dort aktualisiert werden.",
         "includeTodaysLateOrders": "Aktualisiert Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
@@ -2441,7 +2441,7 @@
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
-       "recall": {
+      "recall": {
         "updateDailyPlan": "Legt fest, dass Aufträge aus dem Tagesplan gelöscht werden.\n\nFolgende Optionen werden angeboten:\n\n- **Jetzt**: löscht Aufträge ab dem aktuellen Zeitpunkt.\n- **Startdatum**: löscht Aufträge ab dem angegebenen Datum.\n- **Nein**: legt fest, dass der Tagesplan unverändert bleibt.",
         "specificDate": "Gibt das Datum an, ab dem Aufträge aus dem Tagesplan gelöscht werden.",
         "includeTodaysLateOrders": "Löscht Aufträge im heutigen Tagesplan, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",

@@ -2390,33 +2390,33 @@
         "useRelativePathOnly": "When exporting scheduling objects, by default an absolute path is used inside the export file.\n\nUsers can specify a relative path to be used starting from the selected folder.\n\nIf no folder is selected but scheduling objects only, then using a relative path maps to exporting as top-level objects to the export file.",
         "fileName": "Specifies the name of the export file such as `export.zip` or `export.tar.gz`.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
         "fileFormat": "Specifies zip or tar.gz for the compression type.",
-        "exportType": "Is one of\n\n- export of individual objects\n- export of objects from folders\n- export of objects subject to Changes",
-        "objectTypes": "Allows selecting the types of inventory objects that should be included with the export, for example, Workflows, Job Resources, Schedules etc.",
-        "inclusiveAllTags": "Incl. Tags",
+        "exportType": "Is one of\n\n- **Individual Objects**: users select objects from the inventory tree.\n- **Folders**: users select folders holding objects.\n- **Changes**: users select a Change that includes all objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
+        "objectTypes": "Allows selecting types of inventory objects that should be included with the export file, for example, Workflows, Job Resources, Schedules etc.",
+        "inclusiveAllTags": "Offers adding Tags to the export file.\n\nThis includes all of Workflow Tags, Order Tags and Job Tags.\n\nOn import users can decide to import Tags from an export file.",
         "filterType": "Offers selecting **Controller** and/or **Automation** objects located in the related system folders.",
-        "filter": "Offers including inventory objects to the export file based on their status.\n\nInvalid objects can be exported and imported, though they cannot be deployed or released.\n\nDraft objects include changes that have not been deployed or released.",
-        "handleRecursively": "Includes inventory objects from sub-folders to the export file.",
-        "includeDependencies": "Includes dependent objects to the export file, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the export file.\n\n- **All**: adds all referencing and referenced objects recursively.\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object.\n- **None**: limits export to selected objects.",
+        "filter": "Offers filtering inventory objects for addition to the export file based on their status.\n\nInvalid objects can be exported and can be imported, though they cannot be deployed or released.\n\nDraft objects include changes that have not been deployed or released.",
+        "handleRecursively": "Adds inventory objects from sub-folders to the export file.",
+        "includeDependencies": "Adds dependent objects to the export file, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the export file.\n\n- **All**: adds all referencing and referenced objects recursively.\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object.\n- **None**: limits export to selected objects.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time.",
-        "name": "Name"
+        "name": "Offers selecting a Change that specifies objects for export.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
         "controllers": "Offers selecting the Controller to which objects will be deployed.\n\nMore than one Controller can be connected to JOC Cockpit.\n\nBy default the currently selected Controller will be used.",
         "updateDailyPlan": "Specifies that Orders will be added to or will be updated in the Daily Plan:\n\n- **Now**: adds or updates Orders starting from the current time\n- **Start Date**: adds or updates Orders starting from the date specified\n- **No**: specifies that the Daily Plan remains unchanged",
         "specificDate": "Specifies the date starting from which Orders will be added to or will be updated in the Daily Plan.",
-        "deployType": "Deploy Type",
+        "deployType": "Offers deployment from the following options:\n\n- **Individual Objects**: users select objects individually from the tree of inventory objects. This includes selecting folders.\n- **Changes**: users select a Change that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
         "includeTodaysLateOrders": "Updates Orders in today's Daily Plan that are late as they have been prevented from starting at the scheduled time.",
-        "filter": "Offers to include inventory objects to the deployment based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
-        "handleRecursively": "Adds inventory objects from sub-folders to the deployment.",
-        "includeDependencies": "Adds dependent objects to the deployment, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the deployment:\n\n- **All**: adds all referencing and referenced objects recursively\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object\n- **None**: limits deployment to selected objects",
+        "filter": "Offers including inventory objects to the deployment based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
+        "handleRecursively": "Deploys inventory objects from sub-folders too.",
+        "includeDependencies": "Deploys dependent objects, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n\n- **All**: deploys all referencing and referenced objects recursively\n- **Enforced**: deploys objects that are directly referencing or are referenced by a selected object\n- **None**: deploys selected objects only",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "name": "Name",
+        "name": "Offers selecting a Change that specifies objects for deployment.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
-       "revoke": {
+      "revoke": {
         "controllers": "Offers selecting the Controller from which objects will be revoked.\n\nMore than one Controller can be connected to JOC Cockpit.\n\nBy default the currently selected Controller will be used.",
         "handleRecursively": "Revokes inventory objects from sub-folders.",
         "includeDependencies": "Revokes dependent objects, for example, when revoking a Workflow, then the referencing Schedule will be recalled.\n\nDependent objects can be located in other folders:\n\n- **All**: revokes all referencing and referenced objects recursively\n- **Enforced**: revokes objects that are directly referencing or are referenced by a selected object\n- **None**: limits revocation to selected objects",
@@ -2424,7 +2424,7 @@
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
-       "remove": {
+      "remove": {
         "updateDailyPlan": "Specifies that Orders will be cancelled from the Daily Plan:\n\n- **Now**: cancels Orders starting from the current time\n- **Start Date**: cancels Orders starting from the date specified\n- **No**: specifies that the Daily Plan remains unchanged",
         "specificDate": "Specifies the date starting from which Orders will be cancelled from the Daily Plan.",
         "includeDependencies": "Removes dependent objects, for example, when removing a Workflow, then the referencing Schedule will be recalled or removed.\n\nDependent objects can be located in other folders:\n\n- **All**: removes all referencing and referenced objects recursively\n- **Enforced**: removes objects that are directly referencing or are referenced by a selected object\n- **None**: limits removal to selected objects",
@@ -2432,7 +2432,7 @@
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
-       "release": {
+      "release": {
         "updateDailyPlan": "Specifies that Orders will be added to or will be updated in the Daily Plan:\n\n- **Now**: adds or updates Orders starting from the current time\n- **Start Date**: adds or updates Orders starting from the date specified\n- **No**: specifies that the Daily Plan remains unchanged",
         "specificDate": "Specifies the date starting from which Orders will be added to or will be updated in the Daily Plan.",
         "includeTodaysLateOrders": "Updates Orders in today's Daily Plan that are late as they have been prevented from starting at the scheduled time.",
@@ -2441,7 +2441,7 @@
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
-       "recall": {
+      "recall": {
         "updateDailyPlan": "Specifies that Orders will be cancelled from the Daily Plan:\n\n- **Now**: cancels Orders starting from the current time\n- **Start Date**: cancels Orders starting from the date specified\n- **No**: specifies that the Daily Plan remains unchanged",
         "specificDate": "Specifies the date starting from which Orders will be cancelled in the Daily Plan.",
         "includeTodaysLateOrders": "Cancels Orders in today's Daily Plan that are late as they have been prevented from starting at the scheduled time.",

@@ -605,8 +605,8 @@
     "label.updateDependencies": "Actualiser les dépendances",
     "label.closedPlanType": "Le plan est fermé.",
     "label.none": "Aucun",
-    "label.showMoreOptions": "Montrer plus d'options",
-    "label.showFewerOptions": "Montrer moins d'options",
+    "label.showMoreOptions": "Afficher plus d'options",
+    "label.showFewerOptions": "Afficher moins d'options",
     "button.all": "Tous",
     "button.save": "Enregistrer",
     "button.apply": "Appliquer",
@@ -1947,7 +1947,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Inférieure à la normale",
     "label.Low": "Inférieure",
-    "label.all": "All",
+    "label.all": "Tous",
     "label.none": "Aucun",
     "label.enforcedOnly": "Appliqué",
     "label.unenforcedOnly": "Non appliqué",
@@ -2390,33 +2390,33 @@
         "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut.\n\nLes utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné.\n\nSi aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
         "fileName": "Indique le nom du fichier d'exportation, par exemple `export.zip` ou `export.tar.gz`.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
-        "exportType": "S'agit-il\n\n- de l'exportation d'objets individuels\n- de l'exportation d'objets à partir de dossiers\n- de l'exportation d'objets soumis à des modifications",
+        "exportType": "S'agit-il\n\n- **Objets individuels**: les utilisateurs sélectionnent des objets dans l'arborescence de l'inventaire.\n- **Dossiers**: les utilisateurs sélectionnent les dossiers contenant des objets.\n- **Changements**: les utilisateurs sélectionnent un Changement qui inclut tous les objets directement affectés à ce Changement, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci",
         "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple les Workflows, les Ressources de Tâches, les Planifications etc.",
-        "inclusiveAllTags": "Ajoute des Tags au fichier d'exportation qui seront importé vers la destination.",
+        "inclusiveAllTags": "Ajoute des Tags au fichier d'exportation qui seront importé vers la destination.\n\nCela inclut tout les Tags de Workflow, les Tags d'Ordre et les Tags de tâche.\n\nLors de l'importation, les utilisateurs peuvent choisir d'importer des Tags à partir d'un fichier d'exportation.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",
         "filter": "Propose d'inclure des objets de l'inventaire dans le fichier d'exportation en fonction de leur statut.\n\nLes objets non valides peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
         "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers dans le fichier d'exportation.",
         "includeDependencies": "Inclut les objets dépendants dans le fichier d'exportation, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au fichier d'exportation.\n\nLes options suivantes sont proposées:\n\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: limite l'exportation aux objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps.",
-        "name": "Name"
+        "name": "Permet de sélectionner un Changement qui définit les objets à exporter.\n\nLe Changement contient les objets qui ont été directement affectés par l'utilisateur, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
         "controllers": "Permet de sélectionner le Contrôleur sur lequel les objets seront déployés.\n\nPlusieurs Contrôleurs peuvent être connectés à JOC Cockpit.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
         "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: ajoute ou met à jour les Ordres à partir de l'heure actuelle\n- **À partir de**: ajoute ou met à jour les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.",
-        "deployType": "Type de Déploiment",
+        "deployType": "Permet le déploiement à partir des options suivantes :\n\n- **Objets individuels** : les utilisateurs sélectionnent les objets un par un dans l'arborescence des objets d'inventaire. Cela inclut la sélection de dossiers.\n- **Changements** : les utilisateurs sélectionnent un Changement qui contient les objets directement affectés à ce Changement, ainsi que les objets qui font référence à ces derniers ou qui sont référencés par eux.",
         "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "filter": "Propose d'inclure des objets de l'inventaire au déploiement en fonction de leur statut.\n\nLes objets non valides ne peuvent pas être déployés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
         "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers au déploiement.",
         "includeDependencies": "Inclut les objets dépendants au déploiement, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au déploiement.\n\nLes options suivantes sont proposées :\n\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: limite le déploiement aux objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
-        "name": "Name",
+        "name": "Permet de sélectionner un Changement qui définit les objets à déployer.\n\nLe Changement contient les objets qui ont été directement attribués par l'utilisateur, ainsi que les objets qui font référence à des objets attribués à ce Changement ou qui sont référencés par ceux-ci.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
-       "revoke": {
+      "revoke": {
         "controllers": "Permet de sélectionner le Contrôleur duquel les objets seront révoqués.\n\nPlusieurs Contrôleurs peuvent être connectés à JOC Cockpit.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
         "handleRecursively": "Révoque les objets d'inventaire des sous-dossiers.",
         "includeDependencies": "Révoque les objets dépendants, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n\n- **Tout**: révoque de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: révoque les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: révoque seulement les objets sélectionnés.",
@@ -2424,7 +2424,7 @@
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
-       "remove": {
+      "remove": {
         "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle\n- **À partir de**: supprime les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
         "includeDependencies": "Supprime les objets dépendants, par exemple une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n\n- **Tout**: supprime de manière récursive tous les objets référençants et référencés\n\n- **Forcé**: supprime les objets qui référencent directement ou sont référencés par un objet sélectionné\n- **Aucun**: supprime seulement les objets sélectionnés.",
@@ -2432,7 +2432,7 @@
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
-       "release": {
+      "release": {
         "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: ajoute ou met à jour les Ordres à partir de l'heure actuelle\n- **À partir de**: ajoute ou met à jour les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.",
         "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
@@ -2441,7 +2441,7 @@
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
-       "recall": {
+      "recall": {
         "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle\n- **À partir de**: supprime les Ordres à partir de la date indiquée\n- **Non**: indique que le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
         "includeTodaysLateOrders": "Supprime les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
@@ -2897,7 +2897,7 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Indique quand l'Ordre va démarrer.\n\nLes options suivantes sont disponibles:\n- **Maintenant**: déclenche l'Ordre immédiatement\n- **Date spécifique**: permet de sélectionner la date et l'heure\n- **Relatif à l'heure actuelle**: permet de définir un délai en secondes ou au format *hh:mm:ss*\n- **Sans démarrage**: place l'Ordre en état 'à venir' et permet de lui attribuer une heure de démarrage ultérieurement.",
+        "startTime": "Indique quand l'Ordre va démarrer.\n\nLes options suivantes sont disponibles pour l'heure de démarrage:\n- **Maintenant**: déclenche l'Ordre immédiatement\n- **Date spécifique**: permet de sélectionner la date et l'heure\n- **Relatif à l'heure actuelle**: permet de définir un délai en secondes ou au format *hh:mm:ss*\n- **Sans démarrage**: place l'Ordre en état 'à venir' et permet de lui attribuer une heure de démarrage ultérieurement.",
         "time": "Indique une heure de démarrage relative exprimée en nombre de secondes ou au format *hh:mm:ss*.",
         "enterDateAndTime": "Permet de saisir la date et l'heure auxquelles l'Ordre doit démarrer.",
         "timeZone": "Indique le fuseau horaire auquel s'appliquent la date et l'heure, voir [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
@@ -2960,7 +2960,7 @@
     "label.tooltipDelay.immediate": "Afficher immédiatement (0s)",
     "label.tooltipDelay.short": "Court délai (0.2s)",
     "label.tooltipDelay.long": "Long délai (0.5s)",
-    "label.selectAll": "Tout Sélectionner",
+    "label.selectAll": "Tout sélectionner",
     "label.all": "Tous",
     "label.current": "Actuel",
     "label.asCard": "Vue Carte",
@@ -2982,7 +2982,7 @@
     "label.gitManagement": "Gestion Git",
     "label.favoriteManagement": "Gestion des Favoris",
     "label.licenseWarningGotIt": "Avertissement reconnu",
-    "label.showMoreOptions": "Montrer plus d'options",
+    "label.showMoreOptions": "Afficher plus d'options",
     "label.tabSize": "Largeur de la tabulation",
     "label.listVariableCollapse": "Déplier la Variable de Tableau",
     "label.customizeWorkflowLayout": "Présentation du Workflow",
@@ -3134,7 +3134,7 @@
     }
   },
   "runtime": {
-    "label.selectAll": "Tout Sélectionner",
+    "label.selectAll": "Tout sélectionner",
     "label.runTime": "temps d'exécution",
     "label.calendarViewFor": "Vue du Plan Quotidien pour",
     "label.weekDays": "Jours de la semaine",
@@ -3702,8 +3702,8 @@
     "button.deleteBlockedAccounts": "Supprimer de la Liste de Blocage",
     "button.collapseUnselected": "Déplier inactive",
     "button.expandSelected": "Développer active",
-    "button.collapseAll": "Déplier Tout",
-    "button.expandAll": "Développer Tout",
+    "button.collapseAll": "Déplier tout",
+    "button.expandAll": "Développer tout",
     "button.enable": "Activer",
     "button.disable": "Désactiver",
     "button.manageSetting": "Gerer les Réglages",
@@ -4097,8 +4097,8 @@
     "label.references": "Références",
     "label.onlyOnePeriod": "Une seule période",
     "label.selectTags": "Sélectionner les Tags",
-    "label.selectAllTags": "Sélectionner toutes les Tags",
-    "label.removeAllTags": "Supprimer toutes les Tags",
+    "label.selectAllTags": "Sélectionner tout les Tags",
+    "label.removeAllTags": "Supprimer tout les Tags",
     "label.filtersOrdersAsWell": "Filtrer l'affichage des Ordres",
     "label.ascending": "Ascendant",
     "label.descending": "Descendant",
@@ -4126,7 +4126,7 @@
     "button.findNext": "Trouver le Suivant",
     "button.findPrevious": "Trouver le Précédent",
     "button.replace": "Remplacer",
-    "button.replaceAll": "Remplacer Tous",
+    "button.replaceAll": "Remplacer tous",
     "button.jumpToLine": "Sauter à la ligne",
     "button.remove": "Supprimer",
     "button.submitWorkFlow": "Prêt pour le Déploiement",
