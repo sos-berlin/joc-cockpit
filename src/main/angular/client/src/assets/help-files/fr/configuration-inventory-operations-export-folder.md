@@ -19,7 +19,7 @@ Lorsque vous exportez des objets à partir de dossiers à l'aide de l'opération
   - **Déployé** inclut les objets tels que les Workflows et les Resources de Tâche en état *déployé*.
   - **Publié** inclut les objets tels que les Planifications et les Calendriers en état *publié*. 
   - **Utiliser le chemin relatif** spécifie si le fichier d'exportation inclura la hiérarchie des dossiers à partir d'un chemin absolu ou d'un chemin relatif indiqué par le dernier dossier de la hiérarchie pour lequel l'exportation est effectuée.
-- **Gérer Récursivement** permet d'ajouter des objets de sous-dossiers de manière récursive à l'archive d'exportation.
+- **Inclure les Sous-dossiers** permet d'ajouter des objets de sous-dossiers de manière récursive à l'archive d'exportation.
 
 ## Types d'exportation
 

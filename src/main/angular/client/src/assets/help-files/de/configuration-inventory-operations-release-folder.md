@@ -20,7 +20,7 @@ Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf den [Tag
 
 ## Unterordner einbeziehen
 
-Die Option **Rekursiv behandeln** ermöglicht es, Objekte aus Unterordnern rekursiv freizugeben.
+Die Option **Unterordner einbeziehen** ermöglicht es, Objekte aus Unterordnern rekursiv freizugeben.
 
 ## Abhängigkeiten einbeziehen
 

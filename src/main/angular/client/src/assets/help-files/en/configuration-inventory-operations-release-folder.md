@@ -20,7 +20,7 @@ Releasing objects such as Schedules and Calendars impacts the [Daily Plan](/dail
 
 ## Including Sub-folders
 
-The **Handle recursively** option allows releasing objects from sub-folders recursively.
+The **Include Sub-folders** option allows releasing objects from sub-folders recursively.
 
 ## Including Dependencies
 

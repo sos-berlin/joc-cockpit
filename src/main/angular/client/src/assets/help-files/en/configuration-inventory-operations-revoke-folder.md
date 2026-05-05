@@ -22,7 +22,7 @@ Existing Orders for related Workflows will be recalled from the Controller and w
 
 ## Including Sub-folders
 
-The **Handle recursively** option allows revoking objects from sub-folders recursively.
+The **Include Sub-folders** option allows revoking objects from sub-folders recursively.
 
 ## Including Dependencies
 

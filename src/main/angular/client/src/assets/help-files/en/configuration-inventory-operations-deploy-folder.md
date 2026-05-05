@@ -40,7 +40,7 @@ Objects can be filtered from the following options:
 
 ## Including Sub-folders
 
-The **Handle recursively** option allows adding objects from sub-folders recursively to the deployment.
+The **Include Sub-folders** option allows adding objects from sub-folders recursively to the deployment.
 
 ## Including Dependencies
 

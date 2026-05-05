@@ -12,16 +12,16 @@
   "fr": {
     "lang": "fr",
     "country": "FR",
-    "name": "French"
+    "name": "Français"
   },
   "de": {
     "lang": "de",
     "country": "DE",
-    "name": "German"
+    "name": "Deutsch"
   },
   "ja": {
     "lang": "ja",
     "country": "JP",
-    "name": "Japanese"
+    "name": "日本語"
   }
 }

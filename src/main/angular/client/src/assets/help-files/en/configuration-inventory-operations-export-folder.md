@@ -19,7 +19,7 @@ When exporting objects from folders using the related *Export* operation from th
   - **Deployed** includes objects such as Workflows and Job Resources in deployed status.
   - **Released** includes objects such as Schedules and Calendars in released status. 
   - **Use relative Path** specifies whether the export file will include the folder hierarchy from an absolute path or from a relative path indicated by the latest folder in the hierarchy for which export is performed.
-- **Handle recursively** allows adding objects from sub-folders recursively to the export archive.
+- **Include Sub-folders** allows adding objects from sub-folders recursively to the export archive.
 
 ## Export Types
 

@@ -22,7 +22,7 @@ Bestehende Aufträge für entsprechende Arbeitsabläufe werden vom Controller zu
 
 ## Unterordner einbeziehen
 
-Mit der Option **Rekursiv behandeln** können Sie Objekte aus Unterordnern rekursiv zurückziehen.
+Mit der Option **Unterordner einbeziehen** können Sie Objekte aus Unterordnern rekursiv zurückziehen.
 
 ## Abhängigkeiten einbeziehen
 

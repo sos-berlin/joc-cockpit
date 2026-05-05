@@ -40,7 +40,7 @@ Les objets peuvent être filtrés à partir des options suivantes :
 
 ## Inclure les sous-dossiers
 
-L'option **Gérer Récursivement** permet d'ajouter des objets de sous-dossiers de manière récursive au déploiement.
+L'option **Inclure les Sous-dossiers** permet d'ajouter des objets de sous-dossiers de manière récursive au déploiement.
 
 ## Inclut les Dépendances
 
