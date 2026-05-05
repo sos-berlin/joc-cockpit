@@ -2141,7 +2141,8 @@
       "label.released": "リリース済",
       "label.controller": "コントローラー",
       "label.dailyPlan": "実行計画",
-      "label.useRelativePathOnly": "相対パスを使用してください"
+      "label.useRelativePathOnly": "相対パスを使用してください",
+      "label.change": "Change"
     },
     "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
@@ -2399,7 +2400,7 @@
         "includeDependencies": "Includes dependent objects to the export file, for example a Job Resource referenced by a Workflow or a Schedule referencing a Workflow. Dependent objects can be located in other folders and will be added to the export file. The 'All' option adds all referencing and referenced objects recursively. The 'Enforced' option adds objects that are directly referencing or are referenced by a selected object. The 'None' option limits export to selected objects.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object. When used with the 'All' or 'Enforced' options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource. If the inventory is large, display may take some time.",
-        "name": "Name"
+        "change": "Change"
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
@@ -2412,7 +2413,7 @@
         "handleRecursively": "Includes inventory objects from sub-folders to the deployment.",
         "includeDependencies": "Includes dependent objects to the deployment, for example a Job Resource referenced by a Workflow or a Schedule referencing a Workflow. Dependent objects can be located in other folders and will be added to the deployment. The 'All' option adds all referencing and referenced objects recursively. The 'Enforced' option adds objects that are directly referencing or are referenced by a selected object. The 'None' option limits deployment to selected objects.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object. When used with the 'All' or 'Enforced' options, objects can be unselected.",
-        "name": "Name",
+        "change": "Change",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource. If the inventory is large, display may take some time."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",

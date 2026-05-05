@@ -99,9 +99,7 @@
       <!-- ── Section 2: Scheduling ── -->
       @if (nodes.length > 0 && (
       (!isRevoke && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
-      ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) ||
-      (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) ||
-      (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke))) {
+      (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)))) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
           <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
@@ -140,8 +138,29 @@
             </div>
           </div>
           }
-          @if (!data || !data.object && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions ||
-          object.deployType !== 'individual')) {
+          @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
+          <div class="form-group row">
+            <label
+              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
+              class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+            <div class="col-md-6">
+              <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+      <!-- ── Section 3: Scope ── -->
+      @if ((!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) ||
+           (!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual') ||
+           (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke)) {
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
+        </div>
+        <div class="p-a-sm">
+          @if ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) {
           <div class="row m-b-12">
             <div class="col-md-3"
               [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.deployType') | translate"
@@ -154,21 +173,11 @@
             </div>
           </div>
           }
-          @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
-          <div class="form-group row">
-            <label
-              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
-              class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
-            <div class="col-md-6">
-              <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
-            </div>
-          </div>
-          }
           @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
           <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}"
             class="form-group row">
-            <label [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.name') | translate"
-              class="col-sm-3 form-control-label" translate>common.label.name
+            <label [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.change') | translate"
+              class="col-sm-3 form-control-label" translate>inventory.export.label.change
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -188,18 +197,7 @@
             </div>
           </div>
           }
-        </div>
-      </div>
-      }
-      <!-- ── Section 3: Scope ── -->
-      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual' && nodes.length > 0 && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
-      <div class="b-a m-b-sm section-box">
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
-        </div>
-        <div class="p-a-sm">
-          @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType ===
-          'individual' && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
+          @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || !filter.draft || filter.deploy)) {
           <div class="form-group row">
             <div class="col-md-3">
               <label

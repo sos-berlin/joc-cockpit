@@ -2141,7 +2141,8 @@
       "label.released": "Released",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Use relative path"
+      "label.useRelativePathOnly": "Use relative path",
+      "label.change": "Change"
     },
     "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
@@ -2399,7 +2400,7 @@
         "includeDependencies": "Adds dependent objects to the export file, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the export file.\n- **All**: adds all referencing and referenced objects recursively.\n- **Enforced**: adds objects that are directly referencing or are referenced by a selected object.\n- **None**: limits export to selected objects.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time.",
-        "name": "Offers selecting a Change that specifies objects for export.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change."
+        "change": "Offers selecting a Change that specifies objects for export.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
@@ -2412,7 +2413,7 @@
         "handleRecursively": "Deploys inventory objects from sub-folders too.",
         "includeDependencies": "Deploys dependent objects, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: deploys all referencing and referenced objects recursively.\n- **Enforced**: deploys objects that are directly referencing or are referenced by a selected object.\n- **None**: deploys selected objects only.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "name": "Offers selecting a Change that specifies objects for deployment.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
+        "change": "Offers selecting a Change that specifies objects for deployment.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",

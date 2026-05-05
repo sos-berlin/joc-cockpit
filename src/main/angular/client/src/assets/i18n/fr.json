@@ -2141,7 +2141,8 @@
       "label.released": "Publié",
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Automatisation",
-      "label.useRelativePathOnly": "Utiliser le chemin relatif"
+      "label.useRelativePathOnly": "Utiliser le chemin relatif",
+      "label.change": "Change"
     },
     "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
@@ -2399,7 +2400,7 @@
         "includeDependencies": "Inclut les objets dépendants dans le fichier d'exportation, par exemple, une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au fichier d'exportation.\n\nLes options suivantes sont proposées:\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés.\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'exportation aux objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps.",
-        "name": "Permet de sélectionner un Changement qui définit les objets à exporter.\n\nLe Changement contient les objets qui ont été directement affectés par l'utilisateur, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci."
+        "change": "Permet de sélectionner un Changement qui définit les objets à exporter.\n\nLe Changement contient les objets qui ont été directement affectés par l'utilisateur, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
@@ -2412,7 +2413,7 @@
         "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers au déploiement.",
         "includeDependencies": "Inclut les objets dépendants au déploiement, par exemple, une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au déploiement.\n\nLes options suivantes sont proposées :\n- **Tout**: ajoute de manière récursive tous les objets référençants et référencés.\n- **Forcé**: ajoute les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite le déploiement aux objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
-        "name": "Permet de sélectionner un Changement qui définit les objets à déployer.\n\nLe Changement contient les objets qui ont été directement attribués par l'utilisateur, ainsi que les objets qui font référence à des objets attribués à ce Changement ou qui sont référencés par ceux-ci.",
+        "change": "Permet de sélectionner un Changement qui définit les objets à déployer.\n\nLe Changement contient les objets qui ont été directement attribués par l'utilisateur, ainsi que les objets qui font référence à des objets attribués à ce Changement ou qui sont référencés par ceux-ci.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les Workflows utilisant la même Ressource de Tâche.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",

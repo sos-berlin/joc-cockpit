@@ -2141,7 +2141,8 @@
       "label.released": "Freigegeben",
       "label.controller": "Controller",
       "label.dailyPlan": "Automation",
-      "label.useRelativePathOnly": "Relativen Pfad verwenden"
+      "label.useRelativePathOnly": "Relativen Pfad verwenden",
+      "label.change": "Change"
     },
     "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
@@ -2399,7 +2400,7 @@
         "includeDependencies": "Bezieht abhängige Objekte in die Exportdatei ein, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden der Exportdatei hinzugefügt.\n\nFolgende Optionen werden angeboten:\n- **Alle**: fügt alle referenzierenden und referenzierten Objekte rekursiv hinzu.\n- **Erzwungene**: fügt Objekte hinzu, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: beschränkt den Export auf die ausgewählten Objekte.",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen.",
-        "name": "Bietet die Auswahl einer Änderung, die die zu exportierenden Objekte festlegt.\n\nDie Änderung umfasst Objekte, die vom Anwender direkt zugewiesen wurden, sowie Objekte, die auf Objekte verweisen oder von Objekten referenziert werden, denen die Änderung zugewiesen ist."
+        "change": "Bietet die Auswahl einer Änderung, die die zu exportierenden Objekte festlegt.\n\nDie Änderung umfasst Objekte, die vom Anwender direkt zugewiesen wurden, sowie Objekte, die auf Objekte verweisen oder von Objekten referenziert werden, denen die Änderung zugewiesen ist."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
@@ -2412,7 +2413,7 @@
         "handleRecursively": "Rollt Objekte aus Unterordnern aus.",
         "includeDependencies": "Rollt abhängige Objekte aus, bspw. eine Job-Ressource, auf die ein Arbeitsablauf verweist, oder einen Zeitplan, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: rollt alle referenzierenden und referenzierten Objekte rekursiv aus.\n- **Erzwungene**: rollt Objekte aus, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: rollt nur die ausgewählten Objekte aus.",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
-        "name": "Name",
+        "change": "Change",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. Arbeitsbläufe, die dieselbe Job-Ressource verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",

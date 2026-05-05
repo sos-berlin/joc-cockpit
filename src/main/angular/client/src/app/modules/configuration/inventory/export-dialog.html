@@ -83,9 +83,23 @@
               </div>
             </div>
           }
+        </div>
+      </div>
+
+      <!-- ── Section 2: Destination ── -->
+      @if (showMoreAdvanceOptions ||
+           ((!origin || !origin.object) && exportObj.exportType !== 'folders') ||
+           (securityLevel === 'HIGH' && exportObj.forSigning) ||
+           (!exportObj.forSigning && exportObj.exportType != 'changes' && exportObj.inclAllTags && preferences.enableTagging) ||
+           (exportObj.exportType === 'changes' && selectedChange)) {
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
+        </div>
+        <div class="p-a-sm">
           <!-- Export Type -->
           @if ((!origin || !origin.object) && (showMoreAdvanceOptions || exportObj.exportType !== 'folders')) {
-            <div class="form-group row m-b-0 m-t-xs">
+            <div class="form-group row m-b-0">
               <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.export.exportType' | translate" translate>inventory.label.exportType</span></label>
               <div class="col-md-7">
                 <nz-radio-group [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
@@ -96,19 +110,6 @@
               </div>
             </div>
           }
-        </div>
-      </div>
-
-      <!-- ── Section 2: Scope ── -->
-      @if (showMoreAdvanceOptions ||
-           (securityLevel === 'HIGH' && exportObj.forSigning) ||
-           (!exportObj.forSigning && exportObj.exportType != 'changes' && exportObj.inclAllTags && preferences.enableTagging) ||
-           (exportObj.exportType === 'changes' && selectedChange)) {
-      <div class="b-a m-b-sm section-box">
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
-        </div>
-        <div class="p-a-sm">
           <!-- Object Types (folders mode) -->
           @if (((!origin || !origin.object) && exportObj.exportType === 'folders') && (showMoreAdvanceOptions)) {
             <div class="form-group row m-b-0">
@@ -182,7 +183,7 @@
           <!-- Changes name selector -->
           @if (exportObj.exportType === 'changes' && (showMoreAdvanceOptions || selectedChange)) {
             <div [ngClass]="{'has-error' : ((change.dirty || change.touched) && change.invalid)}" class="form-group row m-b-0 m-t-xs">
-              <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.export.name' | translate" translate>common.label.name</span>
+              <label class="col-md-4 form-control-label"><span [appRichTooltip]="'inventory.tooltips.export.change' | translate" translate>inventory.export.label.change</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-md-7">
