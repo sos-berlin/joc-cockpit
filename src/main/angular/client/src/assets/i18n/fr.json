@@ -1762,8 +1762,8 @@
     "tooltip.invalidLicense": "La licence n'est pas valide.\n\nLes raisons peuvent être que la date de début de la période de validité n'a pas été atteinte ou que la date d'expiration a été dépassée.",
     "tooltip.jocMonitorEvent": "Ce drapeau signale les avertissements et les erreurs dans le traitement des Ordres, par exemple, lorsque les tâches échouent.\n\nLe drapeau indique les avertissements par la couleur jaune et les erreurs par la couleur rouge. Un clic sur le drapeau affiche les 10 derniers avertissements et erreurs.\n\nLes utilisateurs trouvent la liste complète des avertissements et des erreurs dans la vue MONITEUR->Notifications.",
     "tooltip.systemMonitorEvent": "Ce drapeau signale les avertissements et les erreurs des composants JS7, par exemple, la perte de connexion à la base de données.\n\nLe drapeau indique les avertissements par la couleur jaune et les erreurs par la couleur rouge.\n\nUn clic sur le drapeau affiche les 10 derniers avertissements et erreurs.\n\nLes utilisateurs trouvent la liste complète des avertissements et des erreurs dans la vue MONITEUR->Notifications.",
-    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration.\n\nAprès l'importation, l'archive Defaults.zip créera un dossier du même nom qui comprendra des ressources de jobs pour créer des %variables d'environnement globales% disponibles pour vos jobs shell.",
-    "message.line2": "Les archives Examples.tar.gz et Examples.zip contiennent des exemples de Workflows et de tâches pour des exécutions avec des Agents sous Unix et Windows . Ces exemples peuvent être utiles pour créer vos propres Workflows et dépendances de tâches, pour plus de détails voir %instructions%.",
+    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration.\n\nAprès l'importation, l'archive `Defaults.zip` créera un dossier du même nom qui comprendra des ressources de jobs pour créer des [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) disponibles pour vos jobs shell.",
+    "message.line2": "Les archives `Examples.tar.gz` et `Examples.zip` contiennent des exemples de Workflows et de tâches pour des exécutions avec des Agents sous Unix et Windows. Ces exemples peuvent être utiles pour créer vos propres Workflows et dépendances de tâches, pour plus de détails voir [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
       "instructions": "https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo"
@@ -2142,7 +2142,7 @@
       "label.controller": "Contrôleur",
       "label.dailyPlan": "Automatisation",
       "label.useRelativePathOnly": "Utiliser le chemin relatif",
-      "label.change": "Change"
+      "label.change": "Changement"
     },
     "deploy": {
       "--------ADD DEPLOY SECTION------------": "",
@@ -2405,7 +2405,7 @@
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
         "controllers": "Permet de sélectionner le Contrôleur sur lequel les objets seront déployés.\n\nPlusieurs Contrôleurs peuvent être connectés à JOC Cockpit.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
-        "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: ajoute ou met à jour les Ordres à partir de l'heure actuelle.\n- **À partir de**: ajoute ou met à jour les Ordres à partir de la date indiquée.\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: à partir de l'heure actuelle.\n- **À partir de**: à partir de la date indiquée.\n- **Non**: le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.",
         "deployType": "Permet le déploiement à partir des options suivantes :\n- **Objets individuels** : les utilisateurs sélectionnent les objets un par un dans l'arborescence des objets d'inventaire. Cela inclut la sélection de dossiers.\n- **Changements** : les utilisateurs sélectionnent un Changement qui contient les objets directement affectés à ce Changement, ainsi que les objets qui font référence à ces derniers ou qui sont référencés par eux.",
         "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
@@ -2426,7 +2426,7 @@
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
       "remove": {
-        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle.\n- **À partir de**: supprime les Ordres à partir de la date indiquée.\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: à partir de l'heure actuelle.\n- **À partir de**: à partir de la date indiquée.\n- **Non**: le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
         "includeDependencies": "Supprime les objets dépendants, par exemple, une Ressource de Tâche référencée par un Workflow ou une Planification faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n- **Tout**: supprime de manière récursive tous les objets référençants et référencés.\n- **Forcé**: supprime les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: supprime seulement les objets sélectionnés.",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tout** ou **Forcé**, il est possible de désélectionner des objets.",
@@ -2434,7 +2434,7 @@
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
       "release": {
-        "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: ajoute ou met à jour les Ordres à partir de l'heure actuelle.\n- **À partir de**: ajoute ou met à jour les Ordres à partir de la date indiquée.\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "updateDailyPlan": "Indique que les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: à partir de l'heure actuelle.\n- **À partir de**: à partir de la date indiquée.\n- **Non**: le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront ajoutées ou mises à jour dans le Plan Quotidien.",
         "includeTodaysLateOrders": "Met à jour les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "includeDependencies": "Publie les objets dépendants, par exemple, une Planification faisant référence à un Calendrier.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront publiés.\n\nLes options suivantes sont proposées :\n- **Tout**: publie de manière récursive tous les objets référençants et référencés.\n- **Forcé**: publie les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: publie seulement les objets sélectionnés.",
@@ -2443,7 +2443,7 @@
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
       "recall": {
-        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: supprime les Ordres à partir de l'heure actuelle.\n- **À partir de**: supprime les Ordres à partir de la date indiquée.\n- **Non**: indique que le Plan Quotidien reste inchangé.",
+        "updateDailyPlan": "Indique que les Ordres seront supprimés du Plan Quotidien.\n\nLes options suivantes sont proposées:\n- **Maintenant**: à partir de l'heure actuelle.\n- **À partir de**: à partir de la date indiquée.\n- **Non**: le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les Ordres seront supprimés du Plan Quotidien.",
         "includeTodaysLateOrders": "Supprime les Ordres du Plan Quotidien d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "includeDependencies": "Retire les objets dépendants, par exemple, une Planification faisant référence à un Calendrier.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront retirés.\n\nLes options suivantes sont proposées :\n- **Tout**: retire de manière récursive tous les objets référençants et référencés.\n- **Forcé**: retire les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: retire seulement les objets sélectionnés.",
@@ -2599,7 +2599,7 @@
     }
   },
   "license": {
-    "firstWarning": "La licence JS7 expire le {{date}}. Pour le renouvellement de la licence contacter %Sales Team%",
+    "firstWarning": "La licence JS7 expire le {{date}}. Pour le renouvellement de la licence contacter [Sales Team](mailto:sales@sos-berlin.com)",
     "secondWarning": "La licence JS7 a expiré le {{date}}. Les instances de cluster de JOC Cockpit, Contrôleur et Agents sont hors service."
   },
   "log": {
