@@ -3,6 +3,7 @@ import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from "../../services/data.service";
+import {mdToHtml} from '../../directives/rich-tooltip.directive';
 
 @Component({
   standalone: false,
@@ -211,15 +212,11 @@ export class StepGuideComponent {
   }
 
   ngOnInit(): void {
-    this.translate.get('info.link.jobEnvironmentVariables').subscribe(link => {
-      this.translate.get('info.message.line1').subscribe(translatedValue => {
-        this.line1 = this.coreService.convertTextToLink(translatedValue, link);
-      });
+    this.translate.get('info.message.line1').subscribe(translatedValue => {
+      this.line1 = mdToHtml(translatedValue);
     });
-    this.translate.get('info.link.instructions').subscribe(link => {
-      this.translate.get('info.message.line2').subscribe(translatedValue => {
-        this.line2 = this.coreService.convertTextToLink(translatedValue, link);
-      });
+    this.translate.get('info.message.line2').subscribe(translatedValue => {
+      this.line2 = mdToHtml(translatedValue);
     });
   }
 

@@ -5338,11 +5338,6 @@ export class WorkflowComponent {
   newPositions: any;
   blockPositionList: any;
   blockPositions: any;
-  info1 = '';
-  info2 = '';
-  info3 = '';
-  forkListAgentAssignment = '';
-  stickySubagentAgentAssignment = '';
   selectedCellId = '';
   sortingDirections: { [key: string]: 'asc' | 'desc' } = {};
   impactShown = false;
@@ -5403,28 +5398,6 @@ export class WorkflowComponent {
     coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
     });
-    this.translate.get('inventory.tooltips.workflow.forkList.infoOfListVariable').subscribe(translatedValue => {
-      translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
-      this.info1 = this.coreService.convertTextToLink(translatedValue, '');
-    });
-    if (this.hasLicense) {
-      this.translate.get('inventory.tooltips.workflow.forkList.infoOfSubagentCluster').subscribe(translatedValue => {
-        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
-        this.info2 = this.coreService.convertTextToLink(translatedValue, '');
-      });
-      this.translate.get('inventory.tooltips.workflow.stickySubagent.infoMessage').subscribe(translatedValue => {
-        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
-        this.info3 = this.coreService.convertTextToLink(translatedValue, '');
-      });
-      this.translate.get('inventory.tooltips.workflow.forkList.agentAssignment').subscribe(translatedValue => {
-        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
-        this.forkListAgentAssignment = translatedValue;
-      });
-      this.translate.get('inventory.tooltips.workflow.stickySubagent.agentAssignment').subscribe(translatedValue => {
-        translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
-        this.stickySubagentAgentAssignment = translatedValue;
-      });
-    }
   }
 
   private static parseWorkflowJSON(result): void {

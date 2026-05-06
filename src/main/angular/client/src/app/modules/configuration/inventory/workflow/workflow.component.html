@@ -252,13 +252,10 @@
             <span class="font14 text-primary p-l-xs">({{'WORKFLOW' | translate}})</span>
           }
           @if (selectedNode && selectedNode.type === 'StickySubagent') {
-            <a [appRichTooltip]="titleTemplate" class="p-l-sm">
+            <a [appRichTooltip]="'inventory.tooltips.workflow.stickySubagent.infoMessage' | translate" class="p-l-sm">
               <i class="fa fa-info-circle"></i>
             </a>
           }
-          <ng-template #titleTemplate>
-            <span [innerHTML]="info3"></span>
-          </ng-template>
         </h5>
       </div>
       <div class="m-l-sm m-r-sm m-b-sm p-r text-right">
@@ -441,11 +438,8 @@
                                      class="m-b">
                     <ng-template #headerTemplate>
                       <span translate>workflow.label.byListVariable</span>
-                      <a [appRichTooltip]="titleTemplate" class="p-l-sm">
+                      <a [appRichTooltip]="'inventory.tooltips.workflow.forkList.infoOfListVariable' | translate" class="p-l-sm">
                         <i class="fa fa-info-circle"></i></a>
-                      <ng-template #titleTemplate>
-                        <span [innerHTML]="info1"></span>
-                      </ng-template>
                     </ng-template>
                     <div class="p-a b-a m-t">
                       <div [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}"
@@ -500,22 +494,16 @@
                                        class="m-b">
                       <ng-template #headerTemplate2>
                         <span translate>workflow.label.bySubagentCluster</span>
-                        <a [appRichTooltip]="titleTemplate" class="p-l-sm">
+                        <a [appRichTooltip]="'inventory.tooltips.workflow.forkList.infoOfSubagentCluster' | translate" class="p-l-sm">
                           <i class="fa fa-info-circle"></i></a>
-                        <ng-template #titleTemplate>
-                          <span [innerHTML]="info2"></span>
-                        </ng-template>
                       </ng-template>
                       <div class="p-a b-a m-t">
                         <div class="form-group row">
-                          <div [appRichTooltip]="titleTemplate"
+                          <div [appRichTooltip]="'inventory.tooltips.workflow.forkList.agentAssignment' | translate"
                                class="col-md-4 col-lg-3 block-ellipsis-job" translate>
                             workflow.label.agentAssignment
                             <sup class="text-danger text-sm">*</sup>
                           </div>
-                          <ng-template #titleTemplate>
-                            <span [innerHTML]="forkListAgentAssignment"></span>
-                          </ng-template>
                           <div class="col-md-8 col-lg-9">
                             <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)" >
                               <label nz-radio nzValue="agent"><span translate>workflow.label.agentSelectFromList</span></label>
@@ -1050,13 +1038,10 @@
               <div>
                 @if (hasLicense) {
                   <div class="form-group row">
-                    <div [appRichTooltip]="titleTemplate"
+                    <div [appRichTooltip]="'inventory.tooltips.workflow.stickySubagent.agentAssignment' | translate"
                          class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
                       <sup class="text-danger text-sm">*</sup>
                     </div>
-                    <ng-template #titleTemplate>
-                      <span [innerHTML]="stickySubagentAgentAssignment"></span>
-                    </ng-template>
                     <div class="col-md-8 col-lg-9">
                       <nz-radio-group [(ngModel)]="selectedNode.radio" (ngModelChange)="changeAgentSelection($event)">
                         <label nz-radio nzValue="agent"><span translate>workflow.label.subagentCluster</span></label>

@@ -1,4 +1,5 @@
 import { Component, Input, TemplateRef } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   standalone: false,
@@ -18,7 +19,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
   `,
 })
 export class RichTooltipContentComponent {
-  @Input() html = '';
+  @Input() html: SafeHtml = '';
   @Input() tooltipId = '';
   @Input() tpl: TemplateRef<any> | null = null;
 }

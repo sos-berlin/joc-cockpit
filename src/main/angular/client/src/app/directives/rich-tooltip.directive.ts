@@ -9,6 +9,8 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
+import {CoreService} from '../services/core.service';
+import {DomSanitizer} from '@angular/platform-browser';
 import { FlexibleConnectedPositionStrategy, Overlay, OverlayRef, OverlayPositionBuilder } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
@@ -49,6 +51,8 @@ export function mdToHtml(src: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>')
     .replace(/`([^`\n]+?)`/g, '<code>$1</code>')
+    .replace(/\[([^\]]+)]\(context:([^:)]+):([^)]*)\)/g,
+      '<a data-rt-action-type="$2" data-rt-action-param="$3" class="rt-action-link" tabindex="0" role="button">$1</a>')
     .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 
   // Bullet list: group consecutive lines starting with '- '
@@ -118,6 +122,8 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   private readonly positionBuilder = inject(OverlayPositionBuilder);
   private readonly elementRef = inject(ElementRef);
   private readonly registry = inject(RichTooltipRegistry);
+  private readonly coreService = inject(CoreService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   /** Click-outside handler — attached only while tooltip is open. */
   private readonly outsideClickHandler = (e: MouseEvent) => {
@@ -244,7 +250,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     } else {
       const portal = new ComponentPortal(RichTooltipContentComponent);
       const compRef = this.overlayRef.attach(portal);
-      compRef.instance.html       = mdToHtml(this.content!);
+      compRef.instance.html       = this.sanitizer.bypassSecurityTrustHtml(mdToHtml(this.content!));
       compRef.instance.tooltipId  = this.tooltipId;
     }
 
@@ -269,7 +275,21 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
       };
       document.addEventListener('mousedown', reset, true);
     });
- 
+
+    // Handle action links: [text](action:type:param) — handled entirely inside the directive
+    panelEl.addEventListener('click', (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest('[data-rt-action-type]') as HTMLElement | null;
+      if (anchor) {
+        const type = anchor.getAttribute('data-rt-action-type');
+        const param = anchor.getAttribute('data-rt-action-param') || '';
+        if (type === 'help' || type === 'context') {
+          e.stopPropagation();
+          this.closeWithAnimation();
+          this.coreService.openHelpPage(param);
+        }
+      }
+    });
+
     // Click-outside: defer so the opening click doesn't immediately close
     setTimeout(() => document.addEventListener('click', this.outsideClickHandler, true), 0);
   }

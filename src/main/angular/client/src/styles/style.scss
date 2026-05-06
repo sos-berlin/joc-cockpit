@@ -5880,6 +5880,10 @@ tr.disabled-row td:not(.menu):not(.chk) {
     text-decoration: underline;
     &:hover { opacity: 0.85; }
   }
+  .rt-action-link {
+    cursor: pointer;
+    &:focus { outline: 2px solid var(--primary); outline-offset: 1px; border-radius: 2px; }
+  }
   br { display: block; content: ''; margin-top: 4px; }
   ul {
     margin: 4px 0 2px;
