@@ -1,4 +1,9 @@
 {
+  "de": {
+    "lang": "de",
+    "country": "DE",
+    "name": "Deutsch"
+  },
   "en": {
     "lang": "en",
     "country": "US",
@@ -13,11 +18,6 @@
     "lang": "fr",
     "country": "FR",
     "name": "Français"
-  },
-  "de": {
-    "lang": "de",
-    "country": "DE",
-    "name": "Deutsch"
   },
   "ja": {
     "lang": "ja",
