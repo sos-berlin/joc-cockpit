@@ -2409,17 +2409,17 @@
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
-        "controllers": "Offers selecting the Controller to which objects will be deployed.\n\nMore than one Controller can be connected to JOC Cockpit that will receive deployed objects.\n\nBy default the currently selected Controller will be used.",
-        "updateDailyPlan": "Specifies that Orders will be added to or will be updated in the Daily Plan:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the Daily Plan remains unchanged.",
-        "specificDate": "Specifies the date starting from which Orders will be added to or will be updated in the Daily Plan.",
+        "controllers": "Offers selecting the ^Controller^ to which objects will be deployed.\n\nMore than one ^Controller^ can be connected to JOC Cockpit that will receive deployed objects.\n\nBy default the currently selected ^Controller^ will be used.",
+        "updateDailyPlan": "Specifies that ^orders^ will be added to or will be updated in the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the ^Daily Plan^ remains unchanged.",
+        "specificDate": "Specifies the date starting from which ^order^s will be added to or will be updated in the ^Daily Plan^.",
         "deployType": "Offers deployment from the following options:\n- **Individual Objects**: users select objects individually from the tree of inventory objects. This includes selecting folders.\n- **Changes**: users select a Change that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
         "includeTodaysLateOrders": "Updates Orders in today's Daily Plan that are late as they have been prevented from starting at the scheduled time.",
         "filter": "Offers including inventory objects to the deployment based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Deploys inventory objects from sub-folders too.",
-        "includeDependencies": "Deploys dependent objects, for example, a Job Resource referenced by a Workflow or a Schedule referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: selected objects only.",
+        "includeDependencies": "Deploys dependent objects, for example, a Job Resource referenced by a ^workflow^ or a ^schedule^ referencing a ^workflow^.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: selected objects only.",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "change": "Offers selecting a Change that specifies objects for deployment.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as Workflows that use the same Job Resource.\n\nIf the inventory is large, display may take some time."
+        "change": "Offers selecting a ^change^ that specifies objects for deployment.\n\nThe ^change^ holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the ^change^.",
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^workflows^ that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
       "revoke": {

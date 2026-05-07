@@ -1,6 +1,7 @@
 {
   "_note": "Glossary file for JOC Cockpit — English. Each key is lowercase with hyphens (e.g. 'daily-plan'). Values support markdown including nested ^glossary terms^.",
   "glossary": {
+    "job-resource": "bla bla",
     "daily-plan": "The **Daily Plan** is responsible for scheduling and executing workflows on specific calendar dates. It combines ^workflow^ definitions with ^schedule^ entries to determine when and how jobs run throughout the day.",
     "schedule": "A **Schedule** defines the temporal rules for when a ^workflow^ should be executed. It references one or more ^calendar^ objects and specifies start times, time zones, and repeat intervals.",
     "workflow": "A **Workflow** is an ordered graph of ^job^ nodes connected by instructions. It defines the execution logic, branching, error handling, and order of operations for automated tasks.",
