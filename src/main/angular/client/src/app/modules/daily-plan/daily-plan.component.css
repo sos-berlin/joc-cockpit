@@ -25,3 +25,19 @@
   left: 8px;
   top: 6px
 }
+
+.cal-help-icon {
+  opacity: 0.7;
+  top: 7px !important;
+}
+
+.cal-date-icon {
+  position: absolute !important;
+  cursor: pointer;
+  left: 30px;
+  top: 8px;
+}
+
+.icon-hover {
+  padding-top: 14px;
+}

@@ -4,6 +4,9 @@
       <div class="box p-a p-r-md m-t-n-xs">
         <div class="b-b p-b m-b">
           <span class="text-left">
+            @if (preferences.showHelpPages) {
+              <i (click)="helpPage('configuration-inventory-reports')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+            }
             <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
                                              [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
             <span class="_600">{{ data.path }}@if (data.path !=='/') {<span>/</span>}{{ data.name }}</span>
@@ -13,15 +16,12 @@
                 <i class="text-muted p-l-xs">{{ lastModified | stringToDate }}</i>
               </span>
             }
-            @if (preferences.showHelpPages) {
-              <i (click)="helpPage('configuration-inventory-reports')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-            }
           <i (click)="notes(report.name)"
              [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
              nz-icon
              nzType="paper-clip"
              nzTheme="outline"
-             class="cur-point text-16 m-r-sm"
+             class="cur-point text-16 m-r-sm ml-2"
              [ngClass]="{ 'blink-icon': report?.hasNote?.notified }"
              [style.color]="coreService.getColorByNoteSeverity(report?.hasNote?.severity)"></i>
           </span>

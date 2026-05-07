@@ -23,6 +23,9 @@
               @if (workflow.path) {
                 <div class="inline m-b-sm m-l-sm">
                   <div style="position: relative; top: 3px">
+                    @if (preferences.showHelpPages) {
+                      <i (click)="helpPage('configuration-inventory-workflows')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+                    }
                     <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
                                                      [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
                     <span (click)="navToWorkflowTab()" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}"
@@ -48,15 +51,12 @@
                       <a (click)="showHistoryLog()"><i class="text-muted text-hover-primary p-l-xs">{{lastModified | stringToDate}}</i></a>
                     </span>
                     }
-                    @if (preferences.showHelpPages) {
-                      <i (click)="helpPage('configuration-inventory-workflows')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-                    }
                     <i (click)="notes()"
                        [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                        nz-icon
                        nzType="paper-clip"
                        nzTheme="outline"
-                       class="cur-point text-16 m-r-sm"
+                       class="cur-point text-16 m-r-sm ml-2"
                        [ngClass]="{ 'blink-icon': workflow?.hasNote?.notified }"
                        [style.color]="coreService.getColorByNoteSeverity(workflow?.hasNote?.severity)"></i>
                   </div>

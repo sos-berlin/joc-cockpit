@@ -772,8 +772,11 @@
                       <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
                     </div>
                   </ng-template>
+                  @if (preferences.showHelpPages) {
+                    <i (click)="helpPage(true)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal fa fa-info-circle cal-help-icon"></i>
+                  }
                   <i (click)="selectDateRange(true)" [ngClass]="{'text-primary' :isCalendarClick }"
-                     class="fa fa-calendar-plus-o pos-abt cursor l-t-8"></i>
+                     class="fa fa-calendar-plus-o cal-date-icon"></i>
                   <div [ngClass]="{'grab' :isCalendarClick }" class="calendar-sm m-t-0" id="full-calendar"></div>
                 </div>
                 <div class="text-center m-t">
@@ -839,9 +842,6 @@
                     </div>
                   }
                 </div>
-                @if (preferences.showHelpPages) {
-                  <i (click)="helpPage(true)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-info-circle text-20"></i>
-                }
                 </div>
             </div>
             <div id="rightPanel">
