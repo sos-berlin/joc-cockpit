@@ -23,5 +23,10 @@
     "lang": "ja",
     "country": "JP",
     "name": "日本語"
+  },
+  "ru": {
+    "lang": "ru",
+    "country": "RU",
+    "name": "Русский"
   }
 }
