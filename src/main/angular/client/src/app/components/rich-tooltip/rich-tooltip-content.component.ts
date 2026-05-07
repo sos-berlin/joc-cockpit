@@ -8,6 +8,7 @@ import { SafeHtml } from '@angular/platform-browser';
     <div class="rich-tooltip-bubble">
       <div class="rich-tooltip-box"
            role="tooltip"
+           appGlossaryHost
            [id]="tooltipId">
         @if (tpl) {
           <ng-container *ngTemplateOutlet="tpl"></ng-container>

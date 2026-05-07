@@ -14,6 +14,8 @@ import {
 } from '../../components/info-menu/info-menu.component';
 import {RichTooltipDirective} from '../../directives/rich-tooltip.directive';
 import {RichTooltipContentComponent} from '../../components/rich-tooltip/rich-tooltip-content.component';
+import {GlossaryHostDirective} from '../../directives/glossary-host.directive';
+import {GlossaryPopoverComponent} from '../../components/glossary-popover/glossary-popover.component';
 
 const MODULES = [CommonModule, FormsModule, TranslateModule, NzToolTipModule, NzPopoverModule,
   NzModalModule, NzDropDownModule, OverlayModule];
@@ -30,8 +32,10 @@ const EXPORTS = [InfoMenuComponent];
     StepGuideComponent,
     RichTooltipDirective,
     RichTooltipContentComponent,
+    GlossaryHostDirective,
+    GlossaryPopoverComponent,
   ],
-  exports: [...MODULES, ...EXPORTS, RichTooltipDirective, RichTooltipContentComponent]
+  exports: [...MODULES, ...EXPORTS, RichTooltipDirective, RichTooltipContentComponent, GlossaryHostDirective]
 })
 export class Shared3Module {
 }

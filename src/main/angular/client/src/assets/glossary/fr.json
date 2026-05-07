@@ -1,0 +1,21 @@
+{
+  "_note": "Glossary file for JOC Cockpit — French. Each key is lowercase with hyphens. Values support markdown including nested ^glossary terms^. Add translated entries here; missing keys fall back to en.json.",
+  "glossary": {
+    "daily-plan": "The **Daily Plan** is responsible for scheduling and executing workflows on specific calendar dates. It combines ^workflow^ definitions with ^schedule^ entries to determine when and how jobs run throughout the day.",
+    "schedule": "A **Schedule** defines the temporal rules for when a ^workflow^ should be executed. It references one or more ^calendar^ objects and specifies start times, time zones, and repeat intervals.",
+    "workflow": "A **Workflow** is an ordered graph of ^job^ nodes connected by instructions. It defines the execution logic, branching, error handling, and order of operations for automated tasks.",
+    "job": "A **Job** is an atomic unit of work within a ^workflow^. It executes a script or agent-based task and reports its outcome (success, failure, or warning) back to the workflow engine.",
+    "order": "An **Order** is a runtime instance of a ^workflow^. It carries input parameters and tracks the current execution position through the workflow graph.",
+    "calendar": "A **Calendar** defines a set of dates — working days, holidays, or custom periods — that ^schedule^ objects reference to control when orders are created.",
+    "agent": "An **Agent** is a remote execution host registered with JS7 JobScheduler. It runs ^job^ scripts on behalf of the Controller and reports results back.",
+    "controller": "The **Controller** is the central component of JS7 JobScheduler. It manages ^workflow^ execution, distributes ^order^ processing to ^agent^ nodes, and maintains overall cluster state.",
+    "lock": "A **Lock** is a mutual-exclusion resource that limits the number of concurrent ^job^ executions or ^order^ instances accessing a shared resource.",
+    "notice-board": "A **Notice Board** is a named communication channel. Orders can post and expect notices to synchronize execution across different ^workflow^ instances.",
+    "file-order-source": "A **File Order Source** monitors a directory on an ^agent^ for incoming files and automatically creates ^order^ instances in a target ^workflow^ when matching files arrive.",
+    "cycle-instruction": "A **Cycle Instruction** causes a ^workflow^ segment to repeat periodically within a defined time window, creating recurring ^job^ executions without separate ^schedule^ entries.",
+    "fork-instruction": "A **Fork Instruction** splits a ^workflow^ into parallel branches. Each branch executes independently; a corresponding join instruction waits for all branches to complete before proceeding.",
+    "try-catch-instruction": "A **Try-Catch Instruction** wraps a ^workflow^ block to intercept failures. If any ^job^ in the try block fails, execution transfers to the catch block for error handling.",
+    "deployment": "**Deployment** is the process of publishing ^workflow^, ^schedule^, ^calendar^, and related objects from the Inventory to one or more JS7 Controllers, making them available for execution.",
+    "inventory": "The **Inventory** is the JOC Cockpit configuration store where ^workflow^, ^schedule^, ^calendar^, and other objects are created, edited, versioned, and managed before ^deployment^."
+  }
+}

@@ -100,7 +100,7 @@
     @if (!hasError) {
       <ng-container>
         @if (!isLoading) {
-          <div [innerHTML]="html" class="help-md"></div>
+          <div [innerHTML]="html" class="help-md" appGlossaryHost></div>
 
           @if (showValidationResults) {
             <div class="link-validation-results" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">

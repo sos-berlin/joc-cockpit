@@ -16,6 +16,7 @@ import {KioskService} from "./kiosk.service";
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {HelpViewerComponent} from '../components/help-viewer/help-viewer.component';
+import {VideoViewerComponent} from '../components/video-viewer/video-viewer.component';
 
 declare const $: any;
 
@@ -4293,6 +4294,21 @@ private checkParentNode(lastPos, data, item, nodes): any {
       nzData: {
         preferences: preferences,
         helpKey: helpKey,
+        title: title
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  openVideoPage(videoKey: string, title?: string): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: VideoViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        videoKey: videoKey,
         title: title
       },
       nzFooter: null,

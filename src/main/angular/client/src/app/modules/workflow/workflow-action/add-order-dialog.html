@@ -297,6 +297,9 @@
                 <span translate>common.label.showMoreOptions</span>
               </a>
             } @else {
+              @if (preferences.showHelpPages) {
+                <i (click)="videoPage()" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+              }
               <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                 <i class="fa fa-caret-down m-r-xs"></i>
                 <span translate>common.label.showFewerOptions</span>

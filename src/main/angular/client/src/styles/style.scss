@@ -5896,6 +5896,166 @@ tr.disabled-row td:not(.menu):not(.chk) {
   }
 }
 
+/* ── Context Videos modal ─────────────────────────────── */
+.video-responsive-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
+.video-description {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+/* ── Glossary terms ──────────────────────────────────────
+   Inline spans produced by ^Term^ syntax in markdown.
+   Works inside help viewer, rich tooltips, and any other
+   container that uses appGlossaryHost.
+────────────────────────────────────────────────────────── */
+.glossary-term {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  color: var(--primary, #0e8a8b);
+  cursor: help;
+  border-bottom: 1px dotted currentColor;
+  white-space: nowrap;
+  outline: none;
+  border-radius: 2px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover,
+  &:focus {
+    color: var(--hover-primary, #0e7a90);
+    background: rgba(14, 138, 139, 0.07);
+    border-bottom-style: solid;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary, #0e8a8b);
+    outline-offset: 2px;
+  }
+
+  .glossary-icon {
+    font-size: 0.72em;
+    opacity: 0.65;
+    vertical-align: super;
+    margin-left: 1px;
+    pointer-events: none;
+  }
+}
+
+/* ── Glossary popover panel (CDK overlay host) ─────────── */
+.glossary-popover-panel {
+  z-index: 1100;
+}
+
+/* ── Glossary popover bubble ──────────────────────────── */
+.glossary-popover-bubble {
+  background: var(--rich-tooltip-bg, #fff);
+  color: var(--rich-tooltip-text, #374151);
+  border: 1px solid var(--rich-tooltip-border, rgba(0,0,0,.12));
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.14);
+  width: 320px;
+  max-width: min(320px, calc(100vw - 24px));
+  font-size: 13px;
+  line-height: 1.5;
+  animation: glossary-pop-in 0.12s ease-out;
+
+  &.glossary-pop-fade-out {
+    animation: glossary-pop-out 0.12s ease-in forwards;
+  }
+}
+
+@keyframes glossary-pop-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glossary-pop-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-4px); }
+}
+
+.glossary-pop-above .glossary-popover-bubble {
+  animation-name: glossary-pop-in-above;
+  &.glossary-pop-fade-out { animation-name: glossary-pop-out-above; }
+}
+
+@keyframes glossary-pop-in-above {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes glossary-pop-out-above {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(4px); }
+}
+
+.glossary-popover-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid var(--rich-tooltip-border, rgba(0,0,0,.09));
+}
+
+.glossary-popover-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--rich-tooltip-strong, #111827);
+  line-height: 1.3;
+}
+
+.glossary-popover-body {
+  padding: 10px 12px 12px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.glossary-pop-loading {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  color: var(--primary, #0e8a8b);
+}
+
+.glossary-pop-not-found {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Rendered markdown inside the popover */
+.glossary-pop-content {
+  p { margin: 0 0 0.5em; &:last-child { margin-bottom: 0; } }
+  strong { color: var(--rich-tooltip-strong, #111827); }
+  code {
+    background: var(--rich-tooltip-code-bg, #f3f4f6);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  ul { padding-left: 1.2em; margin: 0.3em 0; }
+  li { margin-bottom: 0.2em; }
+  /* Nested glossary terms inside popover body */
+  .glossary-term {
+    font-size: inherit;
+  }
+}
+
+
 .tooltip {
   font-size: 12px !important;
 }

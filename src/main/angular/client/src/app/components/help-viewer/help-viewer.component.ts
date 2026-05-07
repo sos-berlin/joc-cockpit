@@ -378,6 +378,14 @@ onClick(e: MouseEvent): void {
   const href = a.getAttribute('href')?.trim();
   if (!href) return;
 
+  if (href.startsWith('context:video:')) {
+    e.preventDefault();
+    e.stopPropagation();
+    const videoKey = href.replace('context:video:', '');
+    this.coreService.openVideoPage(videoKey);
+    return;
+  }
+
   if (href.startsWith('#')) {
     e.preventDefault();
     e.stopPropagation();

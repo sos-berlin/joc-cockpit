@@ -484,6 +484,8 @@ export class MarkdownParserService {
 
             if (safeHref.startsWith('#')) {
               return `<a href="${safeHref}"${titleAttr}>${processedLabel}</a>`;
+            } else if (/^context:/i.test(safeHref)) {
+              return `<a href="${safeHref}" class="md-context-link"${titleAttr}>${processedLabel}</a>`;
             } else if (/^https?:/i.test(safeHref)) {
               return `<a href="${safeHref}" rel="nofollow ugc" target="_blank"${titleAttr}>${processedLabel}</a>`;
             } else {
@@ -500,6 +502,14 @@ export class MarkdownParserService {
         chunk = chunk.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
         chunk = chunk.replace(/~~(.*?)~~/g, '<del>$1</del>');
+
+        // Glossary terms: ^Term Name^ → interactive span
+        chunk = chunk.replace(/\^([^^\n]+?)\^/g, (_m, term: string) => {
+          const key = term.trim().toLowerCase().replace(/\s+/g, '-');
+          const safeKey = escapeHtml(key);
+          const safeTerm = escapeHtml(term.trim());
+          return `<span class="glossary-term" data-glossary-key="${safeKey}" data-glossary-label="${safeTerm}" tabindex="0" role="button" aria-label="${safeTerm} — glossary term">${safeTerm}<i class="fa fa-question-circle glossary-icon" aria-hidden="true"></i></span>`;
+        });
 
 
         chunk = chunk.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_m, url: string) => {
@@ -659,11 +669,12 @@ export class MarkdownParserService {
     const allowedTags = new Set([
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'em', 'strong', 'del', 'code', 'pre',
       'a', 'img', 'ul', 'ol', 'li', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-      'input', 'details', 'summary', 'figure', 'figcaption', 'span', 'div', 'kbd', 'mark'
+      'input', 'details', 'summary', 'figure', 'figcaption', 'span', 'div', 'kbd', 'mark', 'i'
     ]);
 
     const allowedAttrs: Record<string, Set<string>> = {
       'a': new Set(['href', 'title', 'rel', 'target', 'class', 'id']),
+      'i': new Set(['class', 'aria-hidden']),
       'img': new Set(['src', 'alt', 'title', 'class', 'id', 'width', 'height']),
       'th': new Set(['align', 'colspan', 'rowspan', 'class', 'id']),
       'td': new Set(['align', 'colspan', 'rowspan', 'class', 'id']),
@@ -672,7 +683,7 @@ export class MarkdownParserService {
       'code': new Set(['class', 'id']),
       'details': new Set(['open', 'class', 'id']),
       'summary': new Set(['class', 'id']),
-      'span': new Set(['class', 'id']),
+      'span': new Set(['class', 'id', 'data-glossary-key', 'data-glossary-label', 'tabindex', 'role', 'aria-label']),
       'div': new Set(['class', 'id']),
       'input': new Set(['type', 'checked', 'disabled', 'class', 'id']),
     };
@@ -799,6 +810,10 @@ export class MarkdownParserService {
 
 
     if (trimmed.startsWith('assets/') || trimmed.startsWith('./assets/')) {
+      return trimmed;
+    }
+
+    if (/^context:/i.test(trimmed)) {
       return trimmed;
     }
 

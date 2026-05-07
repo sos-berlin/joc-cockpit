@@ -1,0 +1,18 @@
+{
+  "_template": {
+    "id":          "REQUIRED — YouTube video ID from the URL: youtube.com/watch?v=<ID>",
+    "title":       "OPTIONAL — shown in the modal header (falls back to key name if omitted)",
+    "description": "OPTIONAL — short text shown below the modal header",
+    "start":       30,
+    "_start_note": "OPTIONAL — number of seconds to skip at the start. e.g. 30 means the video begins playing from the 0:30 mark instead of from the beginning. Useful when the relevant content starts mid-video.",
+    "playlist":    "OPTIONAL — YouTube playlist ID; maps to ?list= in the embed URL"
+  },
+
+  "workflows-orders-add": {
+    "id": "5J6R9ycBWB0",
+    "title": "Add Order",
+    "description": "How to add an order to a workflow in JS7 JobScheduler",
+    "start": 30,
+    "playlist": "PLye7bjY2p1cciVkWJQj6c3p_3GqZ28GYx"
+  }
+}

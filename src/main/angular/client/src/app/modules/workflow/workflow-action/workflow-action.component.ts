@@ -1959,6 +1959,10 @@ addArguments(orderIndex): void {
     this.coreService.openHelpPage('workflows-orders-add');
   }
 
+  videoPage(): void {
+    this.coreService.openVideoPage('workflows-orders-add');
+  }
+
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['popupShowMoreOptions'] = 'true';

@@ -755,13 +755,18 @@
     "message.closedPlanType": "Der Plan {{planId}} ist geschlossen. Möchten Sie den Plan wieder öffnen?",
     "message.fallbackNotice": "Die ausgewählte Sprachdatei ist nicht vorhanden, daher wird auf die Standardsprache zurückgegriffen",
     "message.noHelpData": "Diese Kontext-Hilfe, wird mit einem späteren JS7 Release verfügbar werden.",
+    "--------ADD GLOSSARY AND VIDEO MESSAGES------------": "Show if no data available for glossary and video",
+    "message.noVideoData": "No tutorial video is available for this page yet.",
+    "message.noGlossaryData": "No definition available for this term yet.",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exportieren im .xlsx Format",
     "tooltip.expandDetails": "Details aufklappen",
     "tooltip.collapseDetails": "Details einklappen",
     "tooltip.collapseAll": "Ansicht einklappen",
     "tooltip.expandAll": "Ansicht ausklappen",
-    "tooltip.help": "Kontexthilfe"
+    "tooltip.help": "Kontexthilfe",
+    "--------ADD TOOLTIP VIDEO ICON------------": "Used for tooltip of video icon in add order pop up",
+    "tooltip.video": "Watch Tutorial Video"
   },
   "customization": {
     "label.createCustomization": "Personalisierung anlegen",

@@ -755,13 +755,18 @@
     "message.closedPlanType": "実行計画{{planId}}はクローズ済です。再オープンしますか?",
     "message.fallbackNotice": "選択した言語ファイルが存在しません。デフォルト言語で表示されます。",
     "message.noHelpData": "コンテキストヘルプは次のJS7リリースに含まれる予定です。",
+    "--------ADD GLOSSARY AND VIDEO MESSAGES------------": "Show if no data available for glossary and video",
+    "message.noVideoData": "No tutorial video is available for this page yet.",
+    "message.noGlossaryData": "No definition available for this term yet.",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
     "tooltip.collapseDetails": "詳細非表示",
     "tooltip.collapseAll": "全て閉じる",
     "tooltip.expandAll": "全て開く",
-    "tooltip.help": "ヘルプページ"
+    "tooltip.help": "ヘルプページ",
+    "--------ADD TOOLTIP VIDEO ICON------------": "Used for tooltip of video icon in add order pop up",
+    "tooltip.video": "Watch Tutorial Video"
   },
   "customization": {
     "label.createCustomization": "カスタマイズ作成",

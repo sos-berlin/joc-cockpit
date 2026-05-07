@@ -88,6 +88,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 import {NzResultComponent} from "ng-zorro-antd/result";
 import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
 import {NoteComponent} from "../../components/notes/note.component";
+import {VideoViewerComponent} from '../../components/video-viewer/video-viewer.component';
 import {NzSpaceCompactComponent, NzSpaceComponent} from "ng-zorro-antd/space";
 import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
 import {NzResizableDirective} from "ng-zorro-antd/resizable";
@@ -98,7 +99,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, Nz
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent, VideoViewerComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,

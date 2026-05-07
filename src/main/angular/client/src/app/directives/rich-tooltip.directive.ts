@@ -42,9 +42,10 @@ export class RichTooltipRegistry {
 export function mdToHtml(src: string): string {
   if (!src) return '';
 
-  // HTML escape
+  // HTML escape — must include " to prevent attribute injection when
+  // content is later interpolated into HTML attribute strings.
   let out = src
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
   // Inline formatting
   out = out
@@ -53,7 +54,11 @@ export function mdToHtml(src: string): string {
     .replace(/`([^`\n]+?)`/g, '<code>$1</code>')
     .replace(/\[([^\]]+)]\(context:([^:)]+):([^)]*)\)/g,
       '<a data-rt-action-type="$2" data-rt-action-param="$3" class="rt-action-link" tabindex="0" role="button">$1</a>')
-    .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\^([^^]+?)\^/g, (_match: string, term: string) => {
+      const key = term.trim().toLowerCase().replace(/\s+/g, '-');
+      return `<span class="glossary-term" data-glossary-key="${key}" data-glossary-label="${term.trim()}" tabindex="0" role="button" aria-label="${term.trim()} \u2014 glossary term">${term.trim()}<i class="fa fa-question-circle glossary-icon" aria-hidden="true"></i></span>`;
+    });
 
   // Bullet list: group consecutive lines starting with '- '
   const lines = out.split('\n');
@@ -94,6 +99,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   @Input('appRichTooltip') content: string | TemplateRef<any> | null = null;
 
   private overlayRef: OverlayRef | null = null;
+  private activePanelEl: HTMLElement | null = null;
   private insidePanel = false;
   private isDragging = false;
   private contextMenuOpen = false;
@@ -128,10 +134,11 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   /** Click-outside handler — attached only while tooltip is open. */
   private readonly outsideClickHandler = (e: MouseEvent) => {
     if (!this.overlayRef) return;
-    const target = e.target as Node;
+    const target = e.target as HTMLElement;
     if (
       !this.elementRef.nativeElement.contains(target) &&
-      !this.overlayRef.overlayElement.contains(target)
+      !this.overlayRef.overlayElement.contains(target) &&
+      !target.closest?.('.glossary-popover-panel')
     ) {
       this.closeWithAnimation();
     }
@@ -256,13 +263,21 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
 
     // Keep open while pointer is inside the tooltip panel
     const panelEl: HTMLElement = this.overlayRef.overlayElement;
+    this.activePanelEl = panelEl;
     panelEl.addEventListener('mouseenter', () => { this.insidePanel = true; });
     // Track drag-to-select so tooltip doesn't close while user selects text across the boundary
     panelEl.addEventListener('mousedown', () => { this.isDragging = true; });
     document.addEventListener('mouseup', this.panelMouseUpHandler, true);
-    panelEl.addEventListener('mouseleave', () => {
+    panelEl.addEventListener('mouseleave', (e: MouseEvent) => {
       this.insidePanel = false;
-      if (!this.isDragging && !this.contextMenuOpen) this.closeWithAnimation();
+      if (this.isDragging || this.contextMenuOpen) return;
+      // If mouse moved into an open glossary popover, track the chain instead of closing.
+      const gpPanel = (e.relatedTarget as HTMLElement | null)?.closest?.('.glossary-popover-panel') as HTMLElement | null;
+      if (gpPanel) {
+        this.watchGlossaryPanelLeave(gpPanel, panelEl);
+        return;
+      }
+      this.closeWithAnimation();
     });
  
     // Keep tooltip open while the native browser context menu is visible so
@@ -286,6 +301,10 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
           e.stopPropagation();
           this.closeWithAnimation();
           this.coreService.openHelpPage(param);
+        } else if (type === 'video') {
+          e.stopPropagation();
+          this.closeWithAnimation();
+          this.coreService.openVideoPage(param);
         }
       }
     });
@@ -307,6 +326,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     const bubbleEl = this.overlayRef.overlayElement.querySelector('.rich-tooltip-bubble') as HTMLElement | null;
     const ref = this.overlayRef;
     this.overlayRef = null;
+    this.activePanelEl = null;
     this.insidePanel = false;
 
     if (bubbleEl) {
@@ -315,6 +335,34 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     } else {
       ref.dispose();
     }
+  }
+
+  /**
+   * Recursively tracks mouse through an arbitrarily deep chain of nested glossary
+   * popover panels so the rich tooltip doesn't close while the user browses nested terms.
+   * – if mouse returns to richPanel → insidePanel stays true → tooltip lives
+   * – if mouse moves to another panel (deeper/sideways) → keep tracking
+   * – if mouse leaves all panels → close the rich tooltip
+   */
+  private watchGlossaryPanelLeave(currentPanel: HTMLElement, richPanel: HTMLElement): void {
+    currentPanel.addEventListener('mouseleave', (e: MouseEvent) => {
+      const gr = e.relatedTarget as HTMLElement | null;
+
+      // Returned to the rich tooltip panel.
+      if (gr && richPanel.contains(gr)) return; // richPanel.mouseenter sets insidePanel = true
+
+      // Moved to another glossary panel — keep tracking.
+      const nextPanel = gr?.closest?.('.glossary-popover-panel') as HTMLElement | null;
+      if (nextPanel && nextPanel !== currentPanel) {
+        this.watchGlossaryPanelLeave(nextPanel, richPanel);
+        return;
+      }
+
+      // Left all panels — close if not back inside the rich tooltip.
+      if (!this.insidePanel && !this.isDragging && !this.contextMenuOpen) {
+        this.closeWithAnimation();
+      }
+    }, { once: true });
   }
 
   ngOnDestroy(): void {
