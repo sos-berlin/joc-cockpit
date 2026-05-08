@@ -463,7 +463,7 @@ export class ScheduleComponent {
       value: ''
     };
     if (variableSet.variables) {
-      if (!this.coreService.isLastEntryEmpty(variableSet.variables, 'name', '')) {
+      if (isNew || !this.coreService.isLastEntryEmpty(variableSet.variables, 'name', '')) {
         if (isNew) {
           param.isTextField = true;
         }

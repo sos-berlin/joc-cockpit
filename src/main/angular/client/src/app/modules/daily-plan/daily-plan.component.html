@@ -451,11 +451,8 @@
       <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
           </div>
-          @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          }
           @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
               <div class="btn-group m-l-12 hidden-btn-group">

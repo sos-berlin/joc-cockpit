@@ -84,10 +84,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.name' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                   translate>common.label.name
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.name' | translate" translate>common.label.name</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
@@ -109,10 +107,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.title' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                   translate>common.label.title</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.title' | translate" translate>common.label.title</span>
+            </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                      autocomplete="off" class="form-control"
@@ -164,10 +161,9 @@
          }
           @if (showMoreAdvanceOptions) {
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.documentation' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                     translate>inventory.label.documentation</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.documentation' | translate" translate>inventory.label.documentation</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-document (funcCall)="saveJSON($event)" [data]="fileOrder.configuration"
                                      [documentationTree]="documentationTree"></app-select-document>
@@ -176,9 +172,8 @@
           }
           <div [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}"
                class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.workflowName' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowName
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.workflowName' | translate" translate>inventory.label.workflowName</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6 ">
@@ -206,9 +201,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.agent' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.agent
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.agent' | translate" translate>workflow.label.agent</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -217,9 +211,8 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.directory' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.directory
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.directory' | translate" translate>inventory.label.directory</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : (directory.dirty || directory.touched) && directory.invalid}"
@@ -230,9 +223,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.pattern' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.pattern</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.pattern' | translate" translate>inventory.label.pattern</span>
+            </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.pattern" [readonly]="isTrash" autocomplete="off"
                      class="form-control"
@@ -243,9 +236,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.timeZone' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.timeZone' | translate" translate>common.label.timeZone</span>
+            </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <app-select-input (modelChange)="changeValue($event, 'timeZone')" [attributeName]="'timeZone'"
                                 [isAllowClear]="true" [isSearchable]="true"
@@ -254,9 +247,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.fileOrderSource.delay' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.delay</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltips.fileOrderSource.delay' | translate" translate>workflow.label.delay</span>
+            </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.delay" [nzMin]="1" [nzStep]="1"
                                name="delay"></nz-input-number>
@@ -264,10 +257,9 @@
           </div>
 
           <div class="form-group row">
-            <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3"
-                   translate>order.label.priority</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3">
+              <span [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate" translate>order.label.priority</span>
+            </label>
             <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
                  class="col-lg-9 col-xl-8 col-xxl-6">
               <nz-space-compact nzBlock>

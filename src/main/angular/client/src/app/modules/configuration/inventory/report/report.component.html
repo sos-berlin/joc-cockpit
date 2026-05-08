@@ -63,12 +63,26 @@
           }
         </div>
         @if (report.configuration && permission.joc) {
+          <div class="m-l-sm m-r-sm m-b-sm text-right">
+            <div>
+              @if (!showMoreAdvanceOptions) {
+                <a class="text-primary cursor" (click)="showMoreOptions()">
+                  <i class="fa fa-caret-right m-r-xs"></i>
+                  <span translate>common.label.showMoreOptions</span>
+                </a>
+              } @else {
+                <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+                  <i class="fa fa-caret-down m-r-xs"></i>
+                  <span translate>common.label.showFewerOptions</span>
+                </a>
+              }
+            </div>
+          </div>
           <form>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.name' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.name' | translate" translate>common.label.name</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -88,9 +102,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.title' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.title' | translate" translate>common.label.title</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="report.configuration.title"
                        [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -99,9 +113,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.template' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.template
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.template' | translate" translate>reporting.label.template</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -113,8 +126,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.interval.interval' | translate"
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"><span [appRichTooltip]="'inventory.tooltips.report.interval.interval' | translate" translate>reporting.label.interval</span></label>
               <div class="col-md-8">
                 <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
                   <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
@@ -127,9 +139,8 @@
 
             @if (isInterval === 'absolute') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthFrom' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthFrom' | translate" translate>reporting.label.monthFrom</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
@@ -161,9 +172,8 @@
             }
             @if (isInterval === 'absolute') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthTo' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.absolute.monthTo' | translate" translate>reporting.label.monthTo</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
                      [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
@@ -196,8 +206,8 @@
 
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.unit' | translate"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.relative.unit' | translate" translate>reporting.label.unit</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -209,8 +219,8 @@
             }
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.from' | translate"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.relative.from' | translate" translate>common.label.from</span><sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [(ngModel)]="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -220,8 +230,9 @@
             }
             @if (isInterval === 'preset') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.preset.fromSample' | translate"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.fromSample</label>
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.preset.fromSample' | translate" translate>reporting.label.fromSample</span>
+                </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
                                     [object]="preset" [attributeName]="'name'" [listArray]="preset"
@@ -231,8 +242,8 @@
             }
             @if (isInterval === 'relative') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.interval.relative.count' | translate"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.interval.relative.count' | translate" translate>reporting.label.count</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [(ngModel)]="count" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -241,8 +252,9 @@
               </div>
             }
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.sort' | translate"
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.sort' | translate" translate>reporting.label.sort</span>
+              </label>
               <div class="col-md-8">
                 <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
                   <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.highest</span></label>
@@ -251,10 +263,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label
-                [appRichTooltip]="'inventory.tooltips.report.frequencies' | translate"
-
-                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.frequencies
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.frequencies' | translate" translate>reporting.label.frequencies</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -266,10 +276,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label
-                [appRichTooltip]="'inventory.tooltips.report.controllerId' | translate"
-
-                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.controllerId</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.controllerId' | translate" translate>common.label.controllerId</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-input (modelChange)="saveJSON()" [attributeName]="'controllerId'" [name]="'id'"
                                   [placeholder]="'common.label.selectController'" [isAllowClear]="true"
@@ -278,9 +287,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.report.hits' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.hits
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.report.hits' | translate" translate>reporting.label.hits</span>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
@@ -291,10 +299,7 @@
             </div>
             @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
               <div class="form-group row">
-                <label
-                  [appRichTooltip]="'inventory.tooltips.report.periodLength' | translate"
-
-                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodLength
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"><span [appRichTooltip]="'inventory.tooltips.report.periodLength' | translate" translate>reporting.label.periodLength</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
@@ -306,9 +311,8 @@
             }
             @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.report.periodStep' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodStep
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.report.periodStep' | translate" translate>reporting.label.periodStep</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"

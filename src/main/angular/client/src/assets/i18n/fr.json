@@ -2177,6 +2177,8 @@
         "name": "Une Source d'Ordres de Fichiers est utilisée pour surveiller un répertoire pour les fichiers entrants afin de créer un Ordre pour chaque fichier individuellement.\n\nCela permet de démarrer automatiquement les Workflows à l'arrivée des fichiers.\n\nPour le nom de la Source d'Ordres de Fichiers, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "documentation": "Une référence à une documentation peut être ajoutée qui sera affichée avec la Source d'Ordres de Fichiers.\n\nLa vue RESSOURCES permet de gérer la documentation.",
         "title": "Titre de la Source d'Ordres de Fichiers.",
+        "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
+        "tagName": "Tag name",
         "workflowName": "Une référence à un Workflow doit être ajoutée.\n\nUn Ordre pour ce Workflow sera créée à l'arrivée d'un fichier entrant dans le Répertoire qui est surveillé.",
         "agent": "L'Agent doit être spécifié pour effectuer la surveillance des fichiers sur l'hôte respectif sur lequel l'Agent est installé.",
         "directory": "Le répertoire est spécifié pour la surveillance des les fichiers entrants.\n\nLe répertoire doit être accessible pour l'hôte et le compte de l'Agent.\n\nLe répertoire est spécifié sous forme d'expression, par exemple, un chemin d'accèss `'/home/sos/files'` ou en combinaison avec une fonction comme dans `env('HOME') ++ '/files'`",
@@ -2218,7 +2220,12 @@
         "blockPosition": "Pour les Workflows contenant des instructions de bloc telles que `Try/Catch`, `Lock`, `Fork/Join`, `Cycle`, l'instruction correspondante peut être sélectionnée.\n\nL'Ordre quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.",
         "ignoreAdmissionTimes": "L'exécution des tâches peut être limitée par les Heures d'Admission des tâches et par l'instruction `AdmissionTimes`.\n\nCette option ignore les Heures d'Admission et force le lancement des tâches.",
         "tagName": "Il est possible d'ajouter un nombre quelconque de Tags qui seront affectées aux Ordres crées à partir de la Planification.",
-        "priority": "Si l'Ordre doit répondre à une instruction `Lock` d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente.\n\nLes Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire.\n\nLes raccourcis offrent les valeurs suivantes :\n- **Basse** : -20000\n- **Inférieur à la normale** : -10000\n- **Normal** : 0\n- **Au-dessus de la normale** : 10000\n- **Haut** : 20000"
+        "priority": "Si l'Ordre doit répondre à une instruction `Lock` d'un Verrou de Ressource dans le Workflow qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des Ordres en attente.\n\nLes Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire.\n\nLes raccourcis offrent les valeurs suivantes :\n- **Basse** : -20000\n- **Inférieur à la normale** : -10000\n- **Normal** : 0\n- **Au-dessus de la normale** : 10000\n- **Haut** : 20000",
+        "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
+        "addOrderParameter": "Allows adding another Order optionally using different parameterization."
       },
       "script": {
         "name": "Un Bloc Script est utilisé pour inclure des extraits de code récurrents dans un Script Job.\n\nLe nom d'un Bloc Script est unique dans l'inventaire.\n\nPour le nom du Bloc Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2350,6 +2357,8 @@
         },
         "admissionTime": {
           "admissionType": "Le type d'Heures d'Admission permet de spécifier les jours de la semaine, les jours de la semaine spécifiques et les jours du mois.",
+          "--------ADD ADMISSION TIME DIALOG TOOLTIPS------------": "monthRange",
+          "monthRange": "Month Range",
           "weekDays": "Les jours de la semaine indiquent les jours qui peuvent être sélectionnés individuellement.",
           "monthDays": "Les jours du mois sont comptés du premier au dernier jour du mois ou vice versa.",
           "dayNumber": "Les jours de la semaine spécifiques permettent de déterminer la récurrence du jour de la semaine dans un mois, par exemple, la première, la deuxième, la dernière etc. occurrence.",

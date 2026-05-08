@@ -367,9 +367,8 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.schedule.name' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.schedule.name' | translate" translate>inventory.label.orderTemplateName</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -389,9 +388,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.schedule.title' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.schedule.title' | translate" translate>common.label.title</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="schedule.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
                        autocomplete="off" class="form-control"
@@ -400,9 +399,9 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.schedule.documentation' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.schedule.documentation' | translate" translate>inventory.label.documentation</span>
+                </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-document (funcCall)="saveJSON($event)" [data]="schedule.configuration"
                                        [documentationTree]="documentationTree"></app-select-document>
@@ -410,9 +409,8 @@
               </div>
             }
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.schedule.workflowName' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.schedule.workflowName' | translate" translate>inventory.label.workflowNames</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -426,10 +424,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.schedule.planOrderAutomatically' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
-                     title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job" title="{{'inventory.label.planOrderAutomatically' | translate}}">
+                <span [appRichTooltip]="'inventory.tooltips.schedule.planOrderAutomatically' | translate" translate>inventory.label.planOrderAutomatically</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <label nz-checkbox [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
                        [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="planOrderAutomatically"
@@ -437,10 +434,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
-                     title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job" title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}">
+                <span [appRichTooltip]="'inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate" translate>inventory.label.submitOrderToControllerWhenPlanned</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <label nz-checkbox [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
                        [nzDisabled]="isTrash || !permission.joc.inventory.manage || !schedule.configuration.planOrderAutomatically" name="submitOrderToControllerWhenPlanned"
@@ -456,9 +452,9 @@
                 @for (variableSet of schedule.configuration.orderParameterisations; track $index; let j = $index) {
                   <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
                     <div class="form-group row">
-                      <label [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate"
-
-                             class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
+                      <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" title="{{'inventory.label.orderName' | translate}}">
+                        <span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span>
+                      </label>
                       <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
                            class="col-lg-9 col-xl-8 col-xxl-6">
                         <input #orderName="ngModel" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)" (keydown)="onKeyPress($event, null)"
@@ -485,8 +481,8 @@
 
                     @if (preferences.enableTagging) {
                     <div class="form-group row">
-                      <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>
-                        inventory.label.tagName
+                      <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                        <span [appRichTooltip]="'inventory.tooltips.schedule.tagName' | translate" translate>inventory.label.tagName</span>
                       </label>
                       <div class="col-lg-9 col-xl-8 col-xxl-6">
                         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
@@ -546,9 +542,9 @@
 
                     @if (blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="'inventory.tooltips.schedule.blockPosition' | translate"
-
-                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
+                        <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                          <span [appRichTooltip]="'inventory.tooltips.schedule.blockPosition' | translate" translate>order.label.blockPosition</span>
+                        </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
                                              [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
@@ -557,9 +553,9 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="'inventory.tooltips.schedule.startNode' | translate"
-
-                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
+                        <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                          <span [appRichTooltip]="'inventory.tooltips.schedule.startNode' | translate" translate>order.label.startNode</span>
+                        </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
                                              [type]="'START'" [workflow]="workflow"></app-node-position>
@@ -568,9 +564,9 @@
                     }
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="'inventory.tooltips.schedule.endNode' | translate"
-
-                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
+                        <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                          <span [appRichTooltip]="'inventory.tooltips.schedule.endNode' | translate" translate>order.label.endNode</span>
+                        </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
                                              [position]="variableSet.positions.startPosition"
@@ -580,10 +576,9 @@
                       </div>
                     }
                     <div class="form-group row">
-                      <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
-
-                             class="col-lg-3 col-xl-3 col-xxl-3"
-                             translate>order.label.priority</label>
+                      <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                        <span [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate" translate>order.label.priority</span>
+                      </label>
                       <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
                            class="col-lg-9 col-xl-8 col-xxl-6">
                         <nz-space-compact nzBlock>
@@ -612,10 +607,9 @@
                     </div>
                     @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <div class="form-group row">
-                        <label [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate"
-
-                               class="col-lg-3 col-xl-3 col-xxl-3"
-                               translate>order.label.ignoreAdmissionTimes</label>
+                        <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                          <span [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                        </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}"
                                  (ngModelChange)="saveJSON()" >
@@ -658,6 +652,21 @@
                           </div>
                         </div>
                       </ng-container>
+                    }
+                    @if (variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)) {
+                      <div class="form-group row m-b-0" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
+                        <div class="col-sm-4"><span [appRichTooltip]="'inventory.tooltips.schedule.modifyVariable' | translate" translate>order.button.modifyVariable</span></div>
+                        <div class="col-sm-6 m-b-sm">
+                          <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.selectVariable</a>
+                        </div>
+                      </div>
+
+                      <div class="form-group row m-b-0" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}">
+                        <div class="col-sm-4"><span [appRichTooltip]="'inventory.tooltips.schedule.modifyVariables' | translate" translate>order.button.modifyVariables</span></div>
+                        <div class="col-sm-6 m-b-sm">
+                          <a (click)="addVariables(false, variableSet)" class="text-u-l" translate>order.button.setAllVariables</a>
+                        </div>
+                      </div>
                     }
                     @if (!variableSet.isCollapseVariable && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
                       <ng-container>
@@ -809,8 +818,7 @@
                                             <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
                                               <div>
                                                 {{option.name}} @if (option.default) {<i>- </i>} @if (option.default) {
-                                                  <span class="label label-default"
-                                                                                                       translate>default</span>
+                                                  <span class="label label-default" translate>default</span>
                                                 }
                                               </div>
                                             </nz-option>
@@ -839,15 +847,9 @@
                       </ng-container>
                     }
                     <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
-                      @if (variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)) {
-                        <div class="col-sm-12">
-                          <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.modifyVariable</a>
-                          <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
-                        </div>
-                      }
                       @if (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared) {
                         <div class="col-sm-12" [ngClass]="{'m-t-sm': variableList.length > variableSet.variables.length}">
-                          <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
+                          <a [appRichTooltip]="'inventory.tooltips.schedule.addVariable' | translate" class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
                         </div>
                       }
                     </div>
@@ -856,7 +858,7 @@
                 <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
                   @if (variableList.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length >=1)) {
                     <div class="col-sm-12">
-                      <a (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
+                      <a [appRichTooltip]="'inventory.tooltips.schedule.addOrderParameter' | translate" (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
                     </div>
                   }
                 </div>

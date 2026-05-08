@@ -2177,6 +2177,8 @@
         "name": "Una Fuente de Órdenes por Archivo se usa para vigilar un Directorio de archivos entrantes y crear una Orden por cada archivo individualmente. Esto permite iniciar Workflows automáticamente cuando llegan archivos. Para el nombre de la Fuente de Órdenes por Archivo se pueden usar la mayoría de caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios, ni puntos o guiones al inicio o al final.",
         "documentation": "Puede agregarse una referencia a una Documentación que se mostrará con la Fuente de Órdenes por Archivo. La vista RECURSOS permite gestionar la documentación.",
         "title": "El Título de la Fuente de Órdenes por Archivo puede especificarse según se desee.",
+        "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
+        "tagName": "Tag name",
         "workflowName": "Debe agregarse una referencia a un Workflow. Se creará una Orden para este Workflow al llegar un archivo al Directorio vigilado para archivos entrantes.",
         "agent": "Debe especificarse el Agente que realiza la vigilancia de archivos en el host respectivo donde está instalado.",
         "directory": "Se especifica el Directorio que será vigilado para archivos entrantes. Considere que el Directorio debe ser accesible para el host y la cuenta del Agente. El directorio se especifica como una expresión, por ejemplo la cadena '/tmp/files' o en combinación con una función como env('HOME') ++ '/files'.",
@@ -2218,7 +2220,12 @@
         "blockPosition": "Posición de bloque",
         "ignoreAdmissionTimes": "La ejecución de Jobs puede restringirse por los Tiempos de admisión de los Jobs. Esta opción ignora los Tiempos de admisión y fuerza el inicio de los Jobs.",
         "tagName": "Puede agregarse cualquier cantidad de Etiquetas que se asignarán a las órdenes creadas desde la Planificación.",
-        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000."
+        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000.",
+        "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
+        "addOrderParameter": "Allows adding another Order optionally using different parameterization."
       },
       "script": {
         "name": "Un Script Incluído se usa para incluir fragmentos de código recurrentes en un Job de script. El nombre de un Script Incluído es único en el inventario. Para el nombre de un Script Incluído se pueden usar la mayoría de caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios, ni puntos o guiones al inicio o al final.",
@@ -2350,6 +2357,8 @@
         },
         "admissionTime": {
           "admissionType": "El tipo de horarios de admisión incluye la especificación de Días de semana, Días de semana específicos y Días del mes.",
+          "--------ADD ADMISSION TIME DIALOG TOOLTIPS------------": "monthRange",
+          "monthRange": "Month Range",
           "weekDays": "Los Días de semana especifican días de la semana que pueden seleccionarse individualmente.",
           "monthDays": "Los días del mes se cuentan desde el primero hasta el último día del mes o viceversa.",
           "dayNumber": "Los días de semana específicos permiten determinar la recurrencia del día de la semana en un mes, por ejemplo la primera, segunda, última, etc. ocurrencia.",

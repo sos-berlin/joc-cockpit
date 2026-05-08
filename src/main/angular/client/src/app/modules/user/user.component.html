@@ -4,11 +4,8 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage('profile')"></app-breadcrumbs>
           </div>
-          @if (preferences.showHelpPages) {
-            <i (click)="helpPage('profile')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          }
 
           <div class="show-inline">
             <button (click)="resetProfile();" class="btn btn-sm btn-grey" type="button">
@@ -67,14 +64,14 @@
           <nz-tabset (nzSelectChange)="tabChange($event)">
             <nz-tab [nzTitle]="tabTitle1">
               <ng-template #tabTitle1>
-                {{ 'profile.label.preferences' | translate }}
-                @if (preferences.showHelpPages) {
+                 @if (preferences.showHelpPages) {
                   <i
                     (click)="helpPage('profile-preferences')"
                     [appRichTooltip]="'common.tooltip.help' | translate"
                     class="help-info-dashboard cur-point fa fa-info-circle text-20">
                   </i>
                 }
+                {{ 'profile.label.preferences' | translate }}
               </ng-template>
               <div class="m-l-12 p-b-xs">
                 <div class="row">
@@ -702,7 +699,6 @@
             @if (permission.joc) {
               <nz-tab [nzTitle]="tabTitle2">
                 <ng-template #tabTitle2>
-                  {{ 'profile.label.permissions' | translate }}
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-permissions')"
@@ -710,6 +706,7 @@
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
+                  {{ 'profile.label.permissions' | translate }}
                 </ng-template>
                 <div class="m-l-12">
                   <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
@@ -719,7 +716,6 @@
             @if (securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates.view) {
               <nz-tab [nzTitle]="tabTitle3">
                 <ng-template #tabTitle3>
-                  {{ 'profile.label.keyManagement' | translate }}
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-signature-key-management')"
@@ -727,6 +723,7 @@
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
+                  {{ 'profile.label.keyManagement' | translate }}
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
@@ -815,7 +812,6 @@
             @if (permission.joc && permission.joc.administration.certificates.view) {
               <nz-tab [nzTitle]="tabTitle4">
                 <ng-template #tabTitle4>
-                  {{ 'profile.label.caManagement' | translate }}
                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-ssl-key-management')"
@@ -823,6 +819,7 @@
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
+                  {{ 'profile.label.caManagement' | translate }}
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
@@ -898,14 +895,14 @@
             @if (securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view) {
               <nz-tab [nzTitle]="tabTitle5">
                 <ng-template #tabTitle5>
-                  {{ 'profile.label.gitManagement' | translate }}
-                  @if (preferences.showHelpPages) {
+                   @if (preferences.showHelpPages) {
                     <i
                       (click)="helpPage('profile-git-management')"
                       [appRichTooltip]="'common.tooltip.help' | translate"
                       class="help-info-dashboard cur-point fa fa-info-circle text-20">
                     </i>
                   }
+                  {{ 'profile.label.gitManagement' | translate }}
                 </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-xs p-b-xs">
@@ -987,7 +984,6 @@
             }
             <nz-tab [nzTitle]="tabTitle5">
               <ng-template #tabTitle5>
-                {{ 'profile.label.favoriteManagement' | translate }}
                 @if (preferences.showHelpPages) {
                   <i
                     (click)="helpPage('profile-favorite-management')"
@@ -995,6 +991,7 @@
                     class="help-info-dashboard cur-point fa fa-info-circle text-20">
                   </i>
                 }
+                {{ 'profile.label.favoriteManagement' | translate }}
               </ng-template>
               <div class="p-l-sm p-r-rm m-t-n-sm">
                 <nz-tabset (nzSelectChange)="innnerTabChange($event)">

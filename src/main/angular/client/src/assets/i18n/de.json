@@ -2177,6 +2177,8 @@
         "name": "Eine Dateiauftragsquelle wird zur Verzeichnisüberwachung genutzt.\n\nFür jede eintreffende Datei wird ein Dateiauftrag eingerichtet.\n\nArbeitsabläufe werden automatisch bei Eintreffen von Dateien gestartet.\n\nFür den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine Dokumentation kann hinzugefügt werden, die mit der Dateiauftragsquelle angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der Dateiauftragsquelle kann nach Belieben angegeben werden.",
+        "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
+        "tagName": "Tag name",
         "workflowName": "Ein Verweis auf einen Arbeitsablauf muss hinzugefügt werden.\n\nBei Eintreffen einer Datei im überwachten Verzeichnis wird automatisch ein Dateiauftrag für den Arbeitsablauf erzeugt.",
         "agent": "Ein Agent muss angegeben werden, der die Verzeichnisüberwachung auf dem Server durchführt, auf dem er installiert ist.",
         "directory": "Das Verzeichnis muss angegeben werden, das vom Agenten überwacht wird. Das Verzeichnis muss für den Server und für das Konto des Agenten zugreifbar sein.\n\nFür das Verzeichnis wird ein Ausdruck erwartet, eine in Hochkomma gefasste Zeichenfolge, z.B. `'/home/sos/files'` oder in Kombination mit einer Funktion, z.B. `env('HOME') ++ '/files'`",
@@ -2218,7 +2220,12 @@
         "blockPosition": "Für Arbeitsabläufe mit Blockanweisungen wie `Try/Catch`, `Lock`, `Fork/Join`, `Cycle` kann die entsprechende Anweisung ausgewählt werden.\n\nDer Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
         "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs oder der `AdmissionTimes` Anweisung eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
         "tagName": "Es kann eine beliebige Anzahl von Kennzeichnungen hinzugefügt werden, die aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
-        "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- **Niedrig**: -20000\n- **Niedriger als Normal**: -10000\n- **Normal**: 0\n- **Höher als Normal**: 10000\n- **Hoch**: 20000"
+        "priority": "Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- **Niedrig**: -20000\n- **Niedriger als Normal**: -10000\n- **Normal**: 0\n- **Höher als Normal**: 10000\n- **Hoch**: 20000",
+        "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
+        "addOrderParameter": "Allows adding another Order optionally using different parameterization."
       },
       "script": {
         "name": "Ein Skript-Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen.\n\nDer Name eines Skript-Bausteins ist eindeutig im Inventar. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2350,6 +2357,8 @@
         },
         "admissionTime": {
           "admissionType": "Bei der Art der Zutrittszeiten können Sie Wochentage, bestimmte Wochentage und Monatstage angeben.",
+          "--------ADD ADMISSION TIME DIALOG TOOLTIPS------------": "monthRange",
+          "monthRange": "Month Range",
           "weekDays": "Wochentage geben Tage an, die individuell ausgewählt werden können.",
           "monthDays": "Monatstage werden vom ersten bis zum letzten Tag des Monats gezählt und umgekehrt.",
           "dayNumber": "Spezifische Wochentage ermöglichen es, die Wiederholung des Wochentages in einem Monat zu bestimmen, z.B. das erste, zweite, letzte usw. Auftreten.",

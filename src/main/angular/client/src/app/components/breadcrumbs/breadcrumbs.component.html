@@ -19,9 +19,10 @@
             </span>
           }
           @if (last) {
-            <span class="active">
-              {{ item.label | translate }}
-            </span>
+            @if (showHelp) {
+              <i (click)="onHelpClick()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common breadcrumb-help-icon cur-point fa fa-info-circle text-20"></i>
+            }
+            <span class="active">{{ item.label | translate }}</span>
           }
         </ng-container>
       </li>

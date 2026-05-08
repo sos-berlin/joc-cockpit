@@ -2174,15 +2174,17 @@
         "validTo": "Optionally the end of the ^Calendar^'s validity period can be specified.\n\nNo ^Order^s will be created by a ^Schedule^ beyond this date."
       },
       "fileOrderSource": {
-        "name": "A ^File Order Source^ is used to watch a directory for incoming files and to create ^Order^s for each file individually. This allows starting ^Workflow^s automatically on arrival of files.\n\nFor the name of the File Order Source most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the File Order Source.\n\nThe RESOURCES view allows managing Documentations.",
-        "title": "The Title of the ^File Order Source^ can be specified as desired.",
-        "workflowName": "A reference to a ^Workflow^ has to be added. An ^Order^ will be created for this Workflow on arrival of a file in the directory that is watched for incoming files.",
-        "agent": "The ^Agent^ has to be specified that performs file watching on the respective host on which the Agent is installed.",
-        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the ^Agent^'s host and account.\n\nThe Directory is specified from an expression, for example, a string `'/tmp/files'` or in combination with a ^function^ as in `env('HOME') ++ '/files'`",
-        "pattern": "A ^regular expression^ Pattern specifies the path to files that a directory is watched for.\n\nFor example, `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
-        "timeZone": "When a file arrives, the ^Agent^ will create an ^Order^ that includes the current date with its ^Order ID^.\n\nThis item specifies the time zone that is used for the date in the Order ID, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
-        "delay": "A Delay is applied for which the ^Agent^ waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example, if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes occur."
+        "name": "A File Order Source is used to watch a Directory for incoming files and to create Orders for each file individually. This allows starting Workflows automatically on arrival of files.\n\nFor the name of the File Order Source most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the File Order Source.\n\nThe RESOURCES view allows managing documentations.",
+        "title": "The Title of the File Order Source can be specified as desired.",
+        "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
+        "tagName": "Tag name",
+        "workflowName": "A reference to a Workflow has to be added. An Order will be created for this Workflow on arrival of a file in the directory that is watched for incoming files.",
+        "agent": "The Agent has to be specified that performs file watching on the respective host on which the Agent is installed.",
+        "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the Agent's host and account.\n\nThe directory is specfied as an expression, for example, a string `'/tmp/files'` or in combination with a function as in `env('HOME') ++ '/files'`",
+        "pattern": "A regular expression Pattern specifies the path to files that the Directory is watched for.\n\nFor example, `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
+        "timeZone": "When a file arrives, the Agent will create an Order that includes the current date with its Order ID.\n\nThis item specifies the time zone that is used for the date in the Order ID, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
+        "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example, if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes occur."
       },
       "jobResource": {
         "name": "A ^Job Resource^ is a set of variables that can be used by a number of ^Workflow^s or ^Job^s.\n\nThere are two flavors:\n- **Arguments** are assigned to JITL Jobs and Java Jobs.\n- **Environment Variables** automatically become available with Shell Jobs. Values of Environment Variables can use Argument references as in `$argument`.\n\nFor the name of the Job Resource most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2206,19 +2208,24 @@
         "limit": "If a ^Resource Lock^ is acquired in shared mode, then each Resource Lock consumer can specify a weight that is calculated towards the capacity of the Resource Lock.\n\nIf the capacity is exceeded, then ^Job^s have to wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "A ^Schedule^ is used to automatically create ^Order^s for a given ^Workflow^ based on the ^Calendar^ assigned. The name of a Schedule is unique in the inventory.\n\nFor the name of the Schedule most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the Schedule.\n\nThe RESOURCES view allows managing Documentations.",
-        "title": "The Title of the ^Schedule^ can be specified as desired.",
-        "workflowName": "A reference to one or more ^Workflow^s has to be added for which ^Order^s will be created.",
-        "planOrderAutomatically": "^Order^s will be planned automatically, i.e. based on the ^Daily Plan Service^ settings Orders will be created for the next few days in advance.",
-        "submitOrderToControllerWhenPlanned": "^Order^s will be automatically submitted to a ^Controller^ when planned.\n\nBased on the settings of the ^Daily Plan Service^, Orders will be submitted a number of days in advance.",
-        "orderName": "The ^Order Name^ is a non-qualifying part of the ^Order^ identifier.\n\nUsers can freely specify the Order name when creating ^Schedule^s and when adding on-demand Orders.\n\nThe Order Name can be used to search for Orders, for example, in the HISTORY view.",
-        "startNode": "The start position of an ^Order^ can be before the specified instruction in the ^Workflow^. The Order starts from the specified position.",
-        "endNode": "The end position of an ^Order^ can be before the specified instruction in the ^Workflow^. The Order ends before the specified position.",
-        "blockPosition": "For ^Workflow^s holding block instructions such as the ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork-Join Instruction^, ^Cycle Instruction^ the related instruction can be selected.\n\nThe ^Order^ will leave the Workflow when reaching the end of the block instruction.",
-        "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
-        "tagName": "Any number of ^Tag^s can be added that will be assigned the ^Order^.",
-        "priority": "If the ^Order^ will meet a Resource ^Lock Instruction^ in the Workflow that limits parallelism, then its ^Priority^ determines the position in the queue of waiting Orders.\n\nPriorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence.\n\nShortcuts offer the following values:\n- **Low**: -20000\n- **Below Normal**: -10000\n- **Normal**: 0\n- **Above Normal**: 10000\n- **High**: 20000."
+        "name": "A Schedule is used to automatically create Orders for a given Workflow based on the Calendar assigned. The name of a Schedule is unique in the inventory.\n\nFor the name of the Schedule most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "documentation": "A reference to a Documentation can be added that will be displayed with the Schedule. The RESOURCES view allows managing documentations.",
+        "title": "The Title of the Schedule can be specified as desired.",
+        "workflowName": "A reference to one or more Workflows has to be added for which Orders will be created.",
+        "planOrderAutomatically": "Orders will be planned automatically, i.e. based on the Daily Plan Service settings Orders will be created for the next few days in advance.",
+        "submitOrderToControllerWhenPlanned": "Orders will be automatically submitted to a Controller when planned.\n\nBased on the settings of the Daily Plan Service, Orders will be submitted a number of days in advance.",
+        "orderName": "The Order Name is a non-qualifying part of the Order identifier.\n\nUsers can freely specify the Order name when creating Schedules and when adding on-demand Orders.\n\nThe Order Name can be used to search for Orders, for example, in the HISTORY view.",
+        "startNode": "The start position of an Order can be before the specified instruction in the Workflow. The Orders starts from the specified position.",
+        "endNode": "The end position of an Order can be before the specified instruction in the Workflow. The Order ends before the specified position.",
+        "blockPosition": "For Workflows holding block instructions such as `Try/Catch`, `Lock`, `Fork/Join`, `Cycle` the related instruction can be selected.\n\nThe Order will leave the Workflow when reaching the end of the block instruction.",
+        "ignoreAdmissionTimes": "The execution of Jobs can be restricted by Admission Times of Jobs and the related `AdmissionTimes` instruction.\n\nThis option ignores Admission Times and forces the start of Jobs.",
+        "tagName": "Any number of Tags can be added that will be assigned the Order.",
+        "priority": "If the Order will meet a Resource `Lock` instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders.\n\nPriorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence.\n\nShortcuts offer the following values:\n- **Low**: -20000\n- **Below Normal**: -10000\n- **Normal**: 0\n- **Above Normal**: 10000\n- **High**: 20000.",
+        "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
+        "addOrderParameter": "Allows adding another Order optionally using different parameterization."
       },
       "script": {
         "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^. The name of a Script Include is unique in the inventory.\n\nFor the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2350,6 +2357,8 @@
         },
         "admissionTime": {
           "admissionType": "The type of Admission Times includes specifying Weekdays, Specific Weekdays and Month Days.",
+          "--------ADD ADMISSION TIME DIALOG TOOLTIPS------------": "monthRange",
+          "monthRange": "Month Range",
           "weekDays": "Weekdays specify days of week that can be individually selected.",
           "monthDays": "Month Days are counted from the first to the last day of month or vice versa.",
           "dayNumber": "Specific Weekdays allow determining the recurrence of the weekday in a month, for example, the first, second, last etc. occurrence.",
