@@ -70,7 +70,7 @@ For use with PowerShell on Unix platforms the following shebang is suggested for
 For use with PowerShell on Windows platforms the following shebang is suggested for a Script Include:
 
 <pre>
-@@setlocal enabledelayedexpansion & set NO_COLOR=1 & set f=%RANDOM%.ps1 & @@findstr/v "^@@[fs].*&" "%~f0" > !f! & powershell.exe -NonInteractive -File !f! & set e=!errorlevel! & del /q !f! & exit !e!/b&
+@@setlocal enabledelayedexpansion & for /f %%a in ('bitsadmin /rawreturn /create guid') do set g=%%a& set g=!g:~0,-1!& set f=%~n0.!g!.ps1 & @@findstr/v "^@@[fs].*&" "%~f0" > !f! & powershell.exe -NonInteractive -File !f! & set e=!errorlevel! & del /q !f! & exit !e!/b&
 </pre>
 
 The Script Include will write the contents of the *Job Script* to a temporary file that will be executed with the *powershell.exe* binary. Users should switch to using the *pwsh.exe* binary if later PowerShell versions are in use. Script errors will be considered by the JS7 Agent and log output will be stripped from escape characters for colouring. 
