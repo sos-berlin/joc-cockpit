@@ -2177,6 +2177,8 @@
         "name": "ファイルオーダーソースは、ディレクトリの受信ファイルを監視し、各ファイルのオーダーを個別に作成するために使用されます。これにより、ファイルの到着時に自動的にワークフローを開始することができます。ファイルオーダーソースの名前には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドットやハイフンは使用できません。",
         "documentation": "ファイルオーダーソースと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
         "title": "ファイルオーダーソースのタイトルは自由に指定できます。",
+        "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
+        "tagName": "Tag name",
         "workflowName": "実行するワークフローの指定が必要です。受信ファイルを監視するディレクトリにファイルが到着すると、このワークフローに対してオーダーが作成されます。",
         "agent": "インストールされているホスト上でファイル監視を行うエージェントを指定します。",
         "directory": "受信ファイルを監視するディレクトリを指定します。ディレクトリは、エージェントのホストとインストールアカウントでアクセス可能であることが必要です。ディレクトリは、文字列 '/tmp/files' のような式で指定するか、env('HOME') ++ '/files' のように関数と組み合わせて指定します",
@@ -2218,7 +2220,12 @@
         "blockPosition": "ブロック位置",
         "ignoreAdmissionTimes": "ジョブの実行は、許可時間によって制限することができますが、このオプションは、許可時間を無視し、ジョブの開始を強制します。",
         "tagName": "スケジュールから作成されたオーダーに割り当てられるタグはいくつでも追加できます。",
-        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000."
+        "priority": "If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its Priority determines the position in the queue of waiting Orders. Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher Priority has precedence. Shortcuts offer the following values: Low: -20000, Below Normal: -10000, Normal: 0, Above Normal: 10000, High: 20000.",
+        "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
+        "modifyVariable": "If the Workflow specifies variables without default values, then the current Order must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
+        "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
+        "addVariable": "The link is offered if global *Settings* allow adding undeclared variables to a Workflow.",
+        "addOrderParameter": "Allows adding another Order optionally using different parameterization."
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
@@ -2350,6 +2357,8 @@
         },
         "admissionTime": {
           "admissionType": "許可時間タイプ",
+          "--------ADD ADMISSION TIME DIALOG TOOLTIPS------------": "monthRange",
+          "monthRange": "Month Range",
           "weekDays": "平日",
           "monthDays": "月日",
           "dayNumber": "日数",

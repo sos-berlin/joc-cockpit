@@ -84,9 +84,8 @@
               <div class="col-md-12">
                 <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
                      class="form-group row">
-                  <label [appRichTooltip]="'inventory.tooltips.calendar.name' | translate"
-
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                  <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.name' | translate" translate>common.label.name</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -108,9 +107,9 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="'inventory.tooltips.calendar.title' | translate"
-
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+                  <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.title' | translate" translate>common.label.title</span>
+                  </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                            autocomplete="off" class="form-control"
@@ -119,9 +118,9 @@
                 </div>
                 @if (showMoreAdvanceOptions) {
                   <div class="form-group row">
-                    <label [appRichTooltip]="'inventory.tooltips.calendar.documentation' | translate"
-
-                           class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                    <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                      <span [appRichTooltip]="'inventory.tooltips.calendar.documentation' | translate" translate>inventory.label.documentation</span>
+                    </label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
                       <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
                                            [documentationTree]="documentationTree"></app-select-document>
@@ -129,9 +128,9 @@
                   </div>
                 }
                 <div class="form-group row">
-                  <label [appRichTooltip]="'inventory.tooltips.calendar.type' | translate"
-
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
+                  <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.type' | translate" translate>common.label.type</span>
+                  </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
                                       [isSelectDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -140,18 +139,18 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [appRichTooltip]="'inventory.tooltips.calendar.validFrom' | translate"
-
-                         class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
+                  <label class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  </label>
                   <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
                     <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
                                     [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzFormat]="dateFormat"
                                     [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                                     name="from"></nz-date-picker>
                   </div>
-                  <label [appRichTooltip]="'inventory.tooltips.calendar.validTo' | translate"
-
-                         class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
+                  <label class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center">
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.validTo' | translate" translate>runtime.label.validTo</span>
+                  </label>
                   <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
                        class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
                     <nz-date-picker #to="ngModel" [(ngModel)]="calendar.configuration.to" (ngModelChange)="saveJSON()"

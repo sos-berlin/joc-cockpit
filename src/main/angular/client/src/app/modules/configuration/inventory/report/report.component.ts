@@ -151,6 +151,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
   invalidMsg: string;
   isLocalChange = '';
   indexOfNextAdd = 0;
+  showMoreAdvanceOptions = false;
   history = [];
   templates = [
     {templateName: "WORKFLOWS_FREQUENTLY_FAILED", title: "reporting.templates.WORKFLOWS_FREQUENTLY_FAILED"},
@@ -465,6 +466,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.lastModified = res.configurationDate;
       this.history = [];
       this.indexOfNextAdd = 0;
+      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       if (res.configuration) {
         delete res.configuration.TYPE;
         delete res.configuration.path;
@@ -754,6 +756,16 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
   helpPage(key): void{
     this.coreService.openHelpPage(key);
+  }
+
+  showMoreOptions(): void {
+    this.showMoreAdvanceOptions = true;
+    sessionStorage['inventoryShowMoreOptions'] = 'true';
+  }
+
+  hideMoreAdvanceOptions(): void {
+    this.showMoreAdvanceOptions = false;
+    sessionStorage['inventoryShowMoreOptions'] = 'false';
   }
 
   notes(name): void {

@@ -89,9 +89,8 @@
             </div>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.board.name' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.board.name' | translate" translate>common.label.name</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -112,9 +111,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [appRichTooltip]="'inventory.tooltips.board.title' | translate"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.board.title' | translate" translate>common.label.title</span>
+              </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="board.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                        autocomplete="off" class="form-control"
@@ -123,9 +122,9 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.board.documentation' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.board.documentation' | translate" translate>inventory.label.documentation</span>
+                </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-document (funcCall)="saveJSON($event)" [data]="board.configuration"
                                        [documentationTree]="documentationTree"></app-select-document>
@@ -133,7 +132,9 @@
               </div>
             }
             <div class="form-group row">
-              <div class="col-md-4 col-lg-3" translate [appRichTooltip]="'inventory.tooltips.board.boardType' | translate">workflow.label.boardType</div>
+              <div class="col-md-4 col-lg-3">
+                <span [appRichTooltip]="'inventory.tooltips.board.boardType' | translate" translate>workflow.label.boardType</span>
+              </div>
               <div  class="col-md-6 col-lg-8">
                 <nz-radio-group [(ngModel)]="board.configuration.boardType" (ngModelChange)="onChange()" name="boardType">
                   <label nz-radio nzValue="GLOBAL"><span
@@ -146,9 +147,8 @@
             @if (board.configuration.boardType === 'GLOBAL') {
               <div [ngClass]="{ 'has-error' : (((toNotice.dirty || toNotice.touched) && toNotice.invalid))}"
                    class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate" translate>inventory.label.toNotice</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -178,9 +178,8 @@
             }
             @if (board.configuration.boardType === 'PLANNABLE') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.board.toNotice' | translate" translate>inventory.label.toNotice</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-space-compact nzBlock>
@@ -205,9 +204,8 @@
             @if (board.configuration.boardType === 'GLOBAL') {
               <div [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}"
                    class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.board.readingOrderToNoticeId' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.readingOrderToNoticeId
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.board.readingOrderToNoticeId' | translate" translate>inventory.label.readingOrderToNoticeId</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -238,9 +236,8 @@
             }
             @if (board.configuration.boardType === 'GLOBAL') {
               <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.board.endOfLife' | translate"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.endOfLife
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltips.board.endOfLife' | translate" translate>inventory.label.endOfLife</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}"
