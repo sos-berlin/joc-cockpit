@@ -4,11 +4,8 @@
       <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
           </div>
-          @if (preferences.showHelpPages) {
-            <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          }
           <div class="inline valign">
             <label [(ngModel)]="historyFilters.current" nz-checkbox (ngModelChange)="changeController()" >
               {{'common.label.currentController' | translate}}

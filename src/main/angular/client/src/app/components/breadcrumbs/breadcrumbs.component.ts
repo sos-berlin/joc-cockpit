@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
@@ -11,6 +11,8 @@ import {Subscription} from 'rxjs';
 })
 export class BreadcrumbsComponent {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
+  @Input() showHelp: boolean = false;
+  @Output() helpClick = new EventEmitter<void>();
   breadcrumbs: any;
   identityServiceName: string | undefined;
   subscription: Subscription;
@@ -62,6 +64,10 @@ export class BreadcrumbsComponent {
         return this.createBreadcrumbs(child, url, breadcrumbs);
       }
     }
+  }
+
+  onHelpClick(): void {
+    this.helpClick.emit();
   }
 
   backClicked(): void {
