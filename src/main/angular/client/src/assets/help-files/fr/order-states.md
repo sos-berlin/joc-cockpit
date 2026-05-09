@@ -10,7 +10,7 @@ Les Ordres peuvent être ajoutés à partir des sources suivantes :
 
 Les *États d'Ordre* suivants sont disponibles :
 
-- **À venir**: Les Ordres ont été ajoutés aux Workflows sans spécifier d'heure de début, une heure de début peut leur être attribuée ultérieurement.
+- **À venir**: Les Ordres ont été ajoutés aux Workflows sans spécifier d'heure de démarrage, une heure de démarrage peut leur être attribuée ultérieurement.
 - **Prévu**: Les Ordres ont été ajoutés aux Workflows et sont planifiés pour être exécutés à une date et une heure ultérieures.
 - **En progression**: Les Ordres sont traités par des instructions de Workflow mais ne sont pas en cours d'exécution. 
 - **En exécution**: Les Ordres sont en cours d'exécution d'une tâche. 

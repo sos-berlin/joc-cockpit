@@ -1028,7 +1028,7 @@
     "tooltip.invertProjection": "By default the Projection indicates the days for which ^Order^s will be executed and the number of Orders. When inverting the Projection, then days are highlighted for which ^Schedule^s exist that will not create Orders. When clicking the related day, then Schedules without Orders will be displayed. This includes limiting Projection to certain folders holding ^Workflow^s or Schedules.",
     "tooltip.viewOrders": "Click to display Orders.",
     "tooltip.normal": "Normal State.",
-    "tooltip.pending": "Indicates existence of ^Order^s in the ^PENDING^ and ^SCHEDULED^ state. Such Orders can resolve dependencies once they are started.",
+    "tooltip.pending": "Indicates existence of ^Order^s in the ^PENDING^ and ^SCHEDULED^ states. Such Orders can resolve dependencies once they are started.",
     "tooltip.expecting": "Indicates existence of ^Order^s in the ^WAITING^ state that expect dependencies to be resolved in Order to continue.",
     "tooltip.critical": "Indicates existence of ^Order^s in the ^SUSPENDED^, ^FAILED^, ^BLOCKED^ state that expect user intervention in order to continue.",
     "tooltip.present": "Indicates that a ^Notice^ is available. The Notice can be expected or consumed by an ^Expecting Order^ in a Workflow.",
@@ -2220,7 +2220,7 @@
         "blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^ the related instruction can be selected.\n\nThe ^Order^ will leave the Workflow when reaching the end of the block instruction.",
         "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
         "tagName": "Any number of ^Tag^s can be added that will be assigned the ^Order^.",
-        "priority": "If an ^Order^ meets a ^Lock Instruction^ in the ^Workflow^ that limits parallelism, then its ^Order Priority^ determines the position in the queue of waiting Orders.",
+        "priority": "If an ^Order^ meets a ^Lock Instruction^ in the ^Workflow^ that limits parallelism, then its ^Order Priority^ determines the position in the queue of ^WAITING^ Orders.",
         "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
         "modifyVariable": "If the ^Workflow^ specifies variables without default values, then the ^Order^ must specify related values.\n\nIf the Workflow specifies variables that are assigned default values, then the link allows selecting a variable for which a new value should be specified.",
         "modifyVariables": "Behaves similarly to *Modify Variable* but offers all available variables.",
@@ -2296,12 +2296,12 @@
         },
         "fork": {
           "joinVariables": "Variables of Child Orders in the branches of a ^Fork Instruction^ are added to the Parent Order when reaching the end of the instruction block.",
-          "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be put to the ^FAILED^ state."
+          "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be set to the ^FAILED^ state."
         },
         "forkList": {
           "children": "List Variable for dynamic forking: expects the name of a Workflow Variable that holds a list of elements.\n\nFor each element of the List Variable a branch will be created dynamically from the assigned ^ForkList Instruction^.\n\nThe number of List Variable elements determines the number of parallel branches of the ^ForkList Instruction^ that are executed in parallel by Child Orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected List Variable that holds a unique identifier for the branch that should be created dynamically.",
-          "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be put to the ^FAILED^ state.",
+          "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be set to the ^FAILED^ state.",
           "agentAssignment": "The ^ForkList Instruction^ is assigned a ^Subagent Cluster^ that specifies a number of ^Subagent^s on which ^Job^s are executed in parallel. Two options for assignment are offered:\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the ^Subagent Cluster ID^.\n\nThis includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
           "subagent": "Allows selecting the ^Subagent Cluster^ from which all available ^Agent^s will be used to execute ^Job^s in parallel within the ^ForkList Instruction^.",
           "agentCluster": "The ^Agent Cluster^ is selected from which the ^Subagent Cluster ID^ is specified by an expression in a separate input field.",
@@ -2425,7 +2425,7 @@
         "includeTodaysLateOrders": "Updates Orders in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
         "filter": "Offers adding inventory objects to the ^Deployment^ based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Deploys inventory objects from sub-folders too.",
-        "includeDependencies": "Deploys dependent objects, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: selected objects only.",
+        "includeDependencies": "Deploys dependent objects, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: selected objects only.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "change": "Offers selecting a ^Change^ that specifies objects for ^Deployment^.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
@@ -2434,7 +2434,7 @@
       "revoke": {
         "controllers": "Offers selecting the ^Controller^ from which objects will be revoked.\n\nMore than one Controller can be connected to JOC Cockpit.\n\nBy default the currently selected Controller will be used.",
         "handleRecursively": "Revokes inventory objects from sub-folders.",
-        "includeDependencies": "Revokes dependent objects, for example, when revoking a ^Workflow^, then the referencing ^Schedule^ will be recalled.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits revocation to selected objects.",
+        "includeDependencies": "Revokes dependent objects, for example, when revoking a ^Workflow^, then the referencing ^Schedule^ will be recalled.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits revocation to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
       },
@@ -2442,7 +2442,7 @@
       "remove": {
         "updateDailyPlan": "Specifies that ^Order^s will be cancelled from the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the Daily Plan remains unchanged.",
         "specificDate": "Specifies the date starting from which ^Order^s will be cancelled from the ^Daily Plan^.",
-        "includeDependencies": "Removes dependent objects, for example, when removing a ^Workflow^, then the referencing ^Schedule^ will be recalled or removed.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits removal to selected objects.",
+        "includeDependencies": "Removes dependent objects, for example, when removing a ^Workflow^, then the referencing ^Schedule^ will be recalled or removed.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits removal to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected and users can decide to revoke dependent objects instead of removing objects.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
       },
@@ -2451,7 +2451,7 @@
         "updateDailyPlan": "Specifies that ^Order^s will be added to or will be updated in the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the Daily Plan remains unchanged.",
         "specificDate": "Specifies the date starting from which ^Order^s will be added to or will be updated in the ^Daily Plan^.",
         "includeTodaysLateOrders": "Updates ^Order^s in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
-        "includeDependencies": "Releases dependent objects, for example, when releasing a ^Schedule^, then the referenced ^Calendar^ will be released too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits releasing to selected objects.",
+        "includeDependencies": "Releases dependent objects, for example, when releasing a ^Schedule^, then the referenced ^Calendar^ will be released too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits releasing to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
       },
@@ -2460,7 +2460,7 @@
         "updateDailyPlan": "Specifies that ^Order^s will be cancelled in the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the Daily Plan remains unchanged.",
         "specificDate": "Specifies the date starting from which ^Order^s will be cancelled in the ^Daily Plan^.",
         "includeTodaysLateOrders": "Cancels ^Order^s in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
-        "includeDependencies": "Recalls dependent objects, for example, when recalling a ^Calendar^, then the referencing ^Schedule^ will be recalled too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits recalling to selected objects.",
+        "includeDependencies": "Recalls dependent objects, for example, when recalling a ^Calendar^, then the referencing ^Schedule^ will be recalled too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits recalling to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
       }
@@ -2912,7 +2912,7 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Specifies when the ^Order^ will start.\n- **Now**: will start immediately.\n- **Specific Date**: offers selecting the date and time.\n- **Relative to Current Time**: specifies a delay from a number of seconds or *hh:mm:ss*.\n- **No Start Time**: puts the Order in the ^PENDING^ state and allows later assignment of a start time.",
+        "startTime": "Specifies when the ^Order^ will start.\n- **Now**: will start immediately.\n- **Specific Date**: offers selecting the date and time.\n- **Relative to Current Time**: specifies a delay from a number of seconds or *hh:mm:ss*.\n- **No Start Time**: sets the Order to the ^PENDING^ state and allows later assignment of a start time.",
         "time": "Specifies a relative start time from a number of seconds or *hh:mm:ss*.",
         "enterDateAndTime": "Enter date and time when the ^Order^ should start",
         "timeZone": "Specifies the time zone to which the date and time applies, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
@@ -4078,7 +4078,7 @@
     "label.startPosition": "Start Position before Instruction",
     "label.endPositions": "End Positions before Instructions",
     "label.blockPosition": "Block Position",
-    "label.joinIfFailed": "Join If Failed",
+    "label.joinIfFailed": "Join if failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order's date",
     "label.skipIfNoAdmissionForOrderDayForInstruction": "Skip instruction if no admission for Order's date",
     "label.killAtEndOfAdmissionPeriod": "Terminate Job at end of period",
