@@ -164,7 +164,7 @@
   "Daily Plan": "Automation",
   "ImplicitEnd": "Ende",
   "--------COMMENT BOX END------------": "Configuration > Inventory view",
-  "NO_DIRECTOR": "Kein Director Agent",
+  "NO_DIRECTOR": "Subagent",
   "PRIMARY_DIRECTOR": "Primärer Director Agent",
   "SECONDARY_DIRECTOR": "Sekundärer Director Agent",
   "FIXED_PRIORITY": "Fixed-priority",
