@@ -2218,7 +2218,7 @@
         "startNode": "Die Start-Position eines ^Auftrag^s kann vor der angegeben Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag startet ab der angegebenen Position.",
         "endNode": "Die End-Position eines ^Auftrag^s kann vor der anggegebenen Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag endet vor der angegebenen Position.",
         "blockPosition": "Für ^Arbeitsabläufe^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork-Join Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n\nDer ^Auftrag^ verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
-        "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitslauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
+        "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
         "tagName": "Es kann eine beliebige Anzahl von ^Kennzeichnung^en hinzugefügt werden, die aus dem ^Zeitplan^ erstellten ^Aufträge^n zugewiesen werden",
         "priority": "Wenn der ^Auftrag^ auf eine ^Ressourcen-Sperre^ im ^Arbeitsablauf^ trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- **Niedrig**: -20000\n- **Niedriger als Normal**: -10000\n- **Normal**: 0\n- **Höher als Normal**: 10000\n- **Hoch**: 20000",
         "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
@@ -2274,7 +2274,7 @@
           "boardNames": "Mehrere ^Notizbrett^er können ausgewählt werden, für die ^Notiz^en erzeugt werden.",
           "expectBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbrett^s und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "consumeBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbrett^s und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
-          "whenNotAnnounced": "Standardmäßig wird auf ^Notiz^en gewartet. Falls keine Notiz angekündigt ist, können folgende Optionen verwendet werden:\n- **wait**: auf Notiz warten.\n- **process**: den ^Auftrag^ fortsetzen an Tagen, für die keine Notiz angekündigt ist.\n- **skip**: Instruktion überspringen an Tagen, für die keine Notiz angekündigt ist."
+          "whenNotAnnounced": "Standardmäßig wird auf ^Notiz^en gewartet. Falls keine Notiz angekündigt ist, können folgende Optionen verwendet werden:\n- **Warten** auf Notiz.\n- **Ausführen** der Anweisung an Tagen, für die keine Notiz angekündigt ist.\n- **Überspringen** der Instruktion an Tagen, für die keine Notiz angekündigt ist."
         },
         "fail": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -2382,7 +2382,7 @@
           "remainWhenTerminated": "Nach Terminierung soll der ^Auftrag^ im ^Arbeitsablauf^ verbleiben.\n\nDies erfordert die manuelle Ausführung der Funktion *Arbeitsablauf verlassen*, die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
           "startPosition": "Erlaubt die Auwahl der Start-Position des ^Auftrag^s im ^Arbeitsablauf^.\n\nOhne Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
           "endPositions": "Erlaubt die Auswahl einer oder mehrerer Ende-Positionen des ^Auftrag^s im ^Arbeitsablauf^.\n\nOhne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
-          "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitslauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
+          "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
           "blockPosition": "Ein ^Auftrag^ kann an der Position einer bestimmten Blockanweisung hinzugefügt werden, z.B. an einer Verzweigung in einer ^Fork Anweisung^, an einer ^Lock Anweisung^ usw. auf jeder beliebigen Verschachtelungsebene von Anweisungen im ^Arbeitsablauf^.\n\nDer Auftrag verlässt den Arbeitsablauf, wenn er das Ende der Blockanweisung erreicht.\n\nBei der Auswahl einer Blockanweisung werden Start- und Endpositionen im Kontext der Blockanweisung angegeben."
         },
         "lock": {

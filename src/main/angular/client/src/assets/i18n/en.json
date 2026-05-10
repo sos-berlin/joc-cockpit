@@ -2274,7 +2274,7 @@
           "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s are created.",
           "expectBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used, optionally including bracketing",
           "consumeBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used optionally including bracketing",
-          "whenNotAnnounced": "By default ^Notice^s are waited for. In case that no ^Order^ is announced, the following options are offered:\n- **wait** for Notice.\n- **process** the Order and continue immediately on days for which no Notice is announced.\n- **skip** the current instruction on days for which no Notice is announced."
+          "whenNotAnnounced": "By default ^Notice^s are waited for. In case that no ^Notice^ is announced, the following options are offered:\n- **wait** for Notice.\n- **process** the ^Order^ and continue immediately on days for which no Notice is announced.\n- **skip** the current instruction on days for which no Notice is announced."
         },
         "fail": {
           "message": "The instruction allows specifying a message that is attached the ^Order^ and that becomes visible with the Order History.",
@@ -2348,7 +2348,7 @@
           "mailBcc": "Send e-mail blind copy to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
           "mailOn": "Send e-mail for the indicated events of ^Job^ errors, warnings or success.",
           "description": "The Description is displayed when the ^Job^ is selected from the list of ^Job Template^s.",
-          "onWarning": "A number of ^Return Code^s can be specified that signal successful execution with warnings. A Notification will be created in case of such Return Codes.\n\nA number of Return Codes can be specified by a comma separated list, for example, *0,1,2*. A range can be specified from two dots, for example, *0..42*",
+          "onWarning": "A number of ^Return Code^s can be specified that signal successful execution with warnings. A ^Notification^ will be created in case of such Return Codes.\n\nA number of Return Codes can be specified by a comma separated list, for example, *0,1,2*. A range can be specified from two dots, for example, *0..42*",
           "agentAssignment": "The ^Job^ is assigned a ^Standalone Agent^ or ^Subagent Cluster^ for execution. Within the block of a ^ForkList Instruction^ or ^StickySubagent Instruction^ an ^Agent Cluster^ is assigned.\n\nAs an alternative, an Expression can be specified that provides the unique ^Subagent Cluster ID^ from a variable.",
           "agent": "The ^Job^ is assigned an ^Agent^ that will execute the ^Job Script^ or ^Job Class^. Users can select from the list of available Agents.",
           "agentCluster": "Selects the ^Agent Cluster^ for which a ^Subagent Cluster ID^ is specified from an Expression in a later input field.",
