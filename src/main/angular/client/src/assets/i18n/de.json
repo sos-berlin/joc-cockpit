@@ -280,9 +280,9 @@
     "tooltip.agentNameAliases": "Einem ^Agent^en können Alias Namen zugeordnet werden. Der Agent kann unter Verwendung des Alias Namens einem ^Job^ oder einer ^Dateiauftragsquelle^ zugeordnet werden.\n\nFür Alias Namen des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.url": "Die URL eines ^Agent^en benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. `http://localhost:4445`",
     "tooltip.hidden": "^Agent^en können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die Seite ÜBERSICHT sowie für alle Stellen, an denen Agenten zugeordnet werden.",
-    "tooltip.asStandaloneAgent": "Ein ^Autonomer Agent^ oder ein ^Director Agent^ eines ^Agenten-Cluster^ können als Cluster Wächter agieren.\n\nDer angegebene ^Agent^ wird als Autonomer Agent eingerichtet, wenn dieses Ankreuzfeld ausgewählt ist.",
+    "tooltip.asStandaloneAgent": "Ein ^Autonomer Agent|standalone-agent^ oder ein ^Director Agent^ eines ^Agenten-Cluster^ können als Cluster Wächter agieren.\n\nDer angegebene ^Agent^ wird als Autonomer Agent eingerichtet, wenn dieses Ankreuzfeld ausgewählt ist.",
     "tooltip.primaryDirectorId": "Die Kennung eines ^Director Agent^en ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden.\n\nFür die Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-    "tooltip.processLimit": "^Agent^en führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für ^Aufträge^ aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung einzuschränken.\n\nEin Prozess-Limit von 0 verhindert den Start von Aufträgen.",
+    "tooltip.processLimit": "^Agent^en führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für ^Aufträge|auftrag^ aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung einzuschränken.\n\nEin Prozess-Limit von 0 verhindert den Start von Aufträgen.",
     "tooltip.$js7SubagentProcessCount": "Anzahl Prozesse, die auf einem ^Subagenten^ ablaufen.",
     "tooltip.$js7ClusterSubagentProcessCount": "Anzahl Prozesse, die auf einem ^Subagenten^ für denselben ^Subagenten-Cluster^ ablaufen.",
     "tooltip.$js7CpuLoad": "Java Dokumentation [Interface OperatingSystemMXBean](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html): Returns the \"recent cpu usage\" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value.\n\nA negative value is reported as missing. CPU Load is not available for MacOS and is reported as missing.",
@@ -472,22 +472,22 @@
     "tooltips" : {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
-        "certAlias": "Certificate Alias",
-        "certificate": "Certificate",
-        "privateKeyPath": "Private Key Path",
-        "jobResourceFolder": "Job Resource Folder",
-        "showAssignedAgents": "Show Assigned Agents",
-        "assignAgents": "Assign Agents",
-        "showEncryptionSample": "Show Encryption Sample",
-        "plainText": "Plain Text",
-        "encryptText" : "Encrypt Text",
-        "encrypt": "Encrypt"
+        "certAlias": "Der Alias ist die eindeutige Kennung eines Zertifikats. Der Alias kann frei gewählt werden.",
+        "certificate": "Das Zertifikat wird im PEM Format angegeben. Die erste Zeile muss lauten `-----BEGIN CERTIFICATE-----`. Die letzte Zeile muss lauten `-----END CERTIFICATE-----`",
+        "privateKeyPath": "Der Pfad zum Privaten Schlüssel ist der Speicherort des privaten Schlüssels auf dem Host des ^Agent^en. Es kann ein absoluter Pfad angegeben werden. Wird ein relativer Pfad angegeben, beginnt dieser im Arbeitsverzeichnis des Agenten.",
+        "jobResourceFolder": "Der Order der Job-Ressource gibt den Inventarordner an, in dem eine ^Job-Ressource^ erstellt wird, die das Zertifikat enthält.",
+        "showAssignedAgents": "Zeigt die Liste der ^Agent^en an, denen der angegebene Private Schlüssel zugewiesen ist. Anwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren. Auf der Seite 'Controller/Agenten verwalten' kann festgelegt werden, welche Agenten Zugriff auf die Datei mit dem Privaten Schlüssel haben.",
+        "assignAgents": "Ähnlich der Seite 'Controller/Agenten verwalten' erlaubt die Funktion festzulegen, welche Agenten Zugriff auf die Datei mit dem Privaten Schlüssel haben. Anwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren",
+        "showEncryptionSample": "Der Verschlüsselungstest ermöglicht die Durchführung einer Verschlüsselung mit dem angegebenen Zertifikat anhand einer Beispiel-Eingabe.",
+        "plainText": "Der Klartexst der Beispiel-Eingabe.",
+        "encryptText" : "Anklicken des Symbols führt die Verschlüsselung durch.",
+        "encrypt": "Der verschlüsselte Text der Beispiel-Eingabe."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "importEncipherment": {
-        "certAlias": "Certificate Alias",
-        "privateKeyPath": "Private Key Path",
-        "jobResourceFolder": "Job Resource Folder"
+        "certAlias": "Der Alias ist die eindeutige Kennung eines Zertifikats. Der Alias kann frei gewählt werden.",
+        "privateKeyPath": "Der Pfad zum Privaten Schlüssel ist der Speicherort des privaten Schlüssels auf dem Host des ^Agent^en. Es kann ein absoluter Pfad angegeben werden. Wird ein relativer Pfad angegeben, beginnt dieser im Arbeitsverzeichnis des Agenten.",
+        "jobResourceFolder": "Der Order der Job-Ressource gibt den Inventarordner an, in dem eine ^Job-Ressource^ erstellt wird, die das Zertifikat enthält."
       }
     }
   },
@@ -822,8 +822,8 @@
     "tooltip.deactivateCustomization": "Personalisierung deaktivieren",
     "tooltip.useDefault": "Personalisierung als Voreinstellung verwenden",
     "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
-    "tooltip.customizationName": "Customization Name",
-    "tooltip.sharedCustomization": "Shared Customization"
+    "tooltip.customizationName": "Der Name der Personalisierung muss eindeutig sein und kann frei gewählt werden.",
+    "tooltip.sharedCustomization": "Durch das Teilen einer Personalisierung wird diese für alle Benutzer desselben JOC Cockpit verfügbar."
   },
   "dashboard": {
     "label.agentStatus": "Agenten Status",
@@ -1053,15 +1053,15 @@
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
-    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen Aufträge ausgeführt werden, und die Anzahl der Aufträge.\n\nWenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die Zeitpläne existieren, die keine Aufträge erzeugen.\n\nWird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit Arbeitsabläufen oder Zeitplänen.",
-    "tooltip.viewOrders": "Anklicken um Aufträge anzuzeigen.",
+    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen ^Aufträge|auftrag^ ausgeführt werden, und die Anzahl der Aufträge.\n\nWenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die ^Zeitpläne|zeitplan^ existieren, die keine Aufträge erzeugen.\n\nWird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit ^Arbeitsabläufen|arbeitsablauf^ oder Zeitplänen.",
+    "tooltip.viewOrders": "Anklicken, um Aufträge anzuzeigen.",
     "tooltip.normal": "Normaler Zustand.",
-    "tooltip.pending": "Zeigt das Vorhandensein anstehender Aufträge an, d.h. Aufträge im Zustand ANSTEHEND und EINGEPLANT.\n\nSolche Aufträge können Abhängigkeiten auflösen, sobald sie gestartet sind.",
-    "tooltip.expecting": "Zeigt das Vorhandensein von Aufträgen im Zustand WARTEND an, die auf die Auflösung von Abhängigkeiten warten, um fortfahren zu können.",
-    "tooltip.critical": "Zeigt das Vorhandensein von Aufträgen im Zustand AUSGESETZT, FEHLGESCHLAGEN, BLOCKIERT an, die ein Eingreifen des Benutzers erfordern, um fortgesetzt werden zu können.",
-    "tooltip.present": "Zeigt an, dass eine Notiz vorliegt. Die Notiz kann vom Auftrag eines empfangenden Arbeitsablaufs erwartet oder verbraucht werden.",
-    "tooltip.future": "Zeigt an, dass eine Notiz angekündigt ist, d.h. ein Auftrag für den sendenden Arbeitsablauf vorhanden ist. Die Notiz wird in Zukunft verfügbar sein.",
-    "tooltip.letRun": "Aufträge zur einmaligen Ausführung werden sofort gestartet oder fortgesetzt",
+    "tooltip.pending": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^ANSTEHEND^ und ^EINGEPLANT^ an.\n\nSolche Aufträge können Abhängigkeiten auflösen, sobald sie gestartet sind.",
+    "tooltip.expecting": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^WARTEND^ an, die auf die Auflösung von Abhängigkeiten warten, um fortfahren zu können.",
+    "tooltip.critical": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^AUSGESETZT^, ^FEHLGESCHLAGEN^ oder ^BLOCKIERT^ an, die ein Eingreifen des Benutzers erfordern, um fortgesetzt werden zu können.",
+    "tooltip.present": "Zeigt an, dass eine ^Notiz^ vorliegt. Die Notiz kann vom ^Auftrag^ eines empfangenden ^Arbeitsablauf^s erwartet oder verbraucht werden.",
+    "tooltip.future": "Zeigt an, dass eine ^Notiz^ angekündigt ist, d.h. ein ^Auftrag^ für den notifizierenden ^Arbeitsablauf^ vorhanden ist. Die Notiz wird in Zukunft verfügbar werden.",
+    "tooltip.letRun": "^Aufträge|auftrag^ zur einmaligen Ausführung werden sofort gestartet oder fortgesetzt",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Tooltips for labels in create-plan-dialog.html (chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically)",
     "tooltip.chooseTemplates": "Choose Schedules",
     "tooltip.schedules": "Schedules",
@@ -2208,15 +2208,15 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "^Kalender^ werden von ^Zeitpläne^n genutzt, um ^Aufträge^ für jeden Tag des Kalenders zu erzeugen.\n\nFür den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "^Kalender^ werden von ^Zeitplänen|zeitplan^ genutzt, um ^Aufträge|auftrag^ für jeden Tag des Kalenders zu erzeugen.\n\nFür den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Kalender^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Kalender^s kann nach Belieben angegeben werden.",
-        "type": "^Kalender^ können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden.\n\nBeim Zuweisen eines Kalenders zu einem ^Zeitplan^ können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von ^Arbeitsabläufe^n beschränken.",
-        "validFrom": "Optional kann die Gültigkeitsperiode des ^Kalender^s angegeben werden.\n\nVor dem angegebenen Datum werden von ^Zeitpläne^n keine ^Aufträge^ erzeugt.",
-        "validTo": "Optional kann die Gültigkeitsperiode des ^Kalender^s angegeben werden.\n\nNach dem angegebenen Datum werden von ^Zeitpläne^n keine ^Aufträge^ erzeugt."
+        "type": "^Kalender^ können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden.\n\nBeim Zuweisen eines Kalenders zu einem ^Zeitplan^ können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von ^Arbeitsabläufen|arbeitsablauf^ beschränken.",
+        "validFrom": "Optional kann die Gültigkeitsperiode des ^Kalender^s angegeben werden.\n\nVor dem angegebenen Datum werden von ^Zeitplänen|zeitplan^ keine ^Aufträge|auftrag^ erzeugt.",
+        "validTo": "Optional kann die Gültigkeitsperiode des ^Kalender^s angegeben werden.\n\nNach dem angegebenen Datum werden von ^Zeitplänen|zeitplan^ keine ^Aufträge|auftrag^ erzeugt."
       },
       "fileOrderSource": {
-        "name": "Eine ^Dateiauftragsquelle^ wird zur Verzeichnisüberwachung genutzt.\n\nFür jede eintreffende Datei wird ein ^Auftrag^ eingerichtet.\n\n^Arbeitsabläufe^ werden automatisch bei Eintreffen von Dateien gestartet.\n\nFür den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine ^Dateiauftragsquelle^ wird zur Verzeichnisüberwachung genutzt.\n\nFür jede eintreffende Datei wird ein ^Auftrag^ eingerichtet.\n\n^Arbeitsabläufe|arbeitsablauf^ werden automatisch bei Eintreffen von Dateien gestartet.\n\nFür den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Dateiauftragsquelle^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Dateiauftragsquelle^ kann nach Belieben angegeben werden.",
         "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
@@ -2229,39 +2229,39 @@
         "delay": "Die Verzögerung stellt die Dauer dar, für die ein ^Agent^ wartet bis eine eintreffende Datei stabil ist, d.h. deren Größe und Zeitstempel sich nicht ändern.\n\nWird eine Änderung bemerkt, dann wird erneut für die Dauer der Verzögerung gewartet und die Prüfung wiederholt."
       },
       "jobResource": {
-        "name": "Eine ^Job-Ressource^ ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen ^Arbeitsabläufe^n und ^Job^s zur Verfügung gestellt werden kann.\n\nEs gibt zwei Varianten: \n- Argumente sind für JITL Jobs und Java Jobs verfügbar.\n- Umgebungsvariablen sind für Shell Jobs verfügbar.\n\nDie Werte von Umgebungsvariablen können Argumente aufführen wie in `$argument`.\n\nFür den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Eine ^Job-Ressource^ ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen ^Arbeitsabläufen|arbeitsablauf^ und ^Job^s zur Verfügung gestellt werden kann.\n\nEs gibt zwei Varianten: \n- Argumente sind für JITL Jobs und Java Jobs verfügbar.\n- Umgebungsvariablen sind für Shell Jobs verfügbar.\n\nDie Werte von Umgebungsvariablen können Argumente aufführen wie in `$argument`.\n\nFür den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Job-Ressource^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Job-Ressource^ kann nach Belieben angegeben werden."
       },
       "board": {
-        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufe^n.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufe^n.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Notizbretts^ kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
         "endOfLife": "Die Lebensdauer der ^Notiz^ wird im Format *hh:mm:ss* bestimmt, z.B. *01:30:00* für ein-einhalb Stunden.",
         "readingOrderToNoticeId": "Die ^Notizkennung^ für ^Notifizierte Aufträge^ wird aus deren Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem für ^Notifizierende Aufträge^.",
-        "boardType": "^Notizbrett^er des Typs **global** erzwingen Abhängigkeiten unabhängig vom ^Tagesplan^.\n\nNotizbretter des Typs **planbar** berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die ^Aufträge^ existieren, deren ^Arbeitsabläufe^ ^Notiz^en senden."
+        "boardType": "^Notizbrett^er des Typs **global** erzwingen Abhängigkeiten unabhängig vom ^Tagesplan^.\n\nNotizbretter des Typs **planbar** berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die ^Aufträge|auftrag^ existieren, deren ^Arbeitsabläufe|arbeitsablauf^ ^Notiz^en senden."
       },
       "lock": {
-        "name": "^Ressourcen-Sperre^n werden zur Limitierung der Parallelität von ^Job^s verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen ^Arbeitsabläufe^n.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im Inventar.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "^Ressourcen-Sperre^n werden zur Limitierung der Parallelität von ^Job^s verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen ^Arbeitsabläufen|arbeitsablauf^.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im Inventar.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Ressourcen-Sperre^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Ressourcen-Sperre^ kann nach Belieben angegeben werden.",
         "limit": "Wird eine ^Ressourcen-Sperre^ von mehreren ^Job^s geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, das verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und ^Job^s ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Ein ^Zeitplan^ wird verwendet, um automatisch ^Aufträge^ für Arbeitsabläufe basierend auf einem Kalender zu erzeugen.\n\nDer Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein ^Zeitplan^ wird verwendet, um automatisch ^Aufträge|auftrag^ für Arbeitsabläufe basierend auf einem Kalender zu erzeugen.\n\nDer Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Zeitplan^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Zeitplan^s kann nach Belieben angegeben werden.",
-        "workflowName": "Ein Verweis auf einen oder mehrere ^Arbeitsabläufe^ muss angegeben werden, für die ^Aufträge^ erzeugt werden.",
-        "planOrderAutomatically": "^Aufträge^ werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
-        "submitOrderToControllerWhenPlanned": "Geplante ^Aufträge^ werden automatisch an den ^Controller^ übermittelt.\n\nIn Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
-        "orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nAnwender können den Auftragsnamen bei der Anlage von ^Zeitpläne^n und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Sicht HISTORIE, verwendet werden.",
+        "workflowName": "Ein Verweis auf einen oder mehrere ^Arbeitsabläufe|arbeitsablauf^ muss angegeben werden, für die ^Aufträge|auftrag^ erzeugt werden.",
+        "planOrderAutomatically": "^Aufträge|auftrag^ werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
+        "submitOrderToControllerWhenPlanned": "Geplante ^Aufträge|auftrag^ werden automatisch an den ^Controller^ übermittelt.\n\nIn Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
+        "orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nAnwender können den Auftragsnamen bei der Anlage von ^Zeitplänen|zeitplan^ und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Sicht HISTORIE, verwendet werden.",
         "startNode": "Die Start-Position eines ^Auftrag^s kann vor der angegeben Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag startet ab der angegebenen Position.",
         "endNode": "Die End-Position eines ^Auftrag^s kann vor der anggegebenen Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag endet vor der angegebenen Position.",
-        "blockPosition": "Für ^Arbeitsabläufe^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork-Join Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n\nDer ^Auftrag^ verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
+        "blockPosition": "Für ^Arbeitsabläufe|arbeitsablauf^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork-Join Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n\nDer ^Auftrag^ verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
         "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
-        "tagName": "Es kann eine beliebige Anzahl von ^Kennzeichnung^en hinzugefügt werden, die aus dem ^Zeitplan^ erstellten ^Aufträge^n zugewiesen werden",
+        "tagName": "Es kann eine beliebige Anzahl von ^Kennzeichnung^en hinzugefügt werden, die aus dem ^Zeitplan^ erstellten ^Aufträge|auftrag^n zugewiesen werden",
         "priority": "Wenn der ^Auftrag^ auf eine ^Ressourcen-Sperre^ im ^Arbeitsablauf^ trifft, die die Parallelität einschränkt, dann bestimmt seine Priorität die Position in der Warteschlange der wartenden Aufträge.\n\nPrioritäten werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere Priorität hat Vorrang.\n\nDie Abkürzungen bieten die folgenden Werte:\n- **Niedrig**: -20000\n- **Niedriger als Normal**: -10000\n- **Normal**: 0\n- **Höher als Normal**: 10000\n- **Hoch**: 20000",
         "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
         "modifyVariable": "Wenn im ^Arbeitsablauf^ Variablen ohne Standardwerte angegeben sind, müssen im ^Auftrag^ entsprechende Werte angegeben werden.\n\nWenn im Arbeitsablauf Variablen angegeben sind, denen Standardwerte zugewiesen sind, ermöglicht der Link die Auswahl einer Variablen, für die ein neuer Wert angegeben werden soll.",
@@ -2325,12 +2325,12 @@
         },
         "finish": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
-          "unsuccessful": "Standardmäßig führt die Anweisung dazu, dass ^Aufträge^ den ^Arbeitsablauf^ mit einem erfolgreichen Ergebnis verlassen.\n\nMit diesem Kontrollkästchen können Sie festlegen, dass ein Auftrag den Arbeitsablauf mit einem fehlerhaften Ergebnis verlässt.",
+          "unsuccessful": "Standardmäßig führt die Anweisung dazu, dass ^Aufträge|auftrag^ den ^Arbeitsablauf^ mit einem erfolgreichen Ergebnis verlassen.\n\nMit diesem Kontrollkästchen können Sie festlegen, dass ein Auftrag den Arbeitsablauf mit einem fehlerhaften Ergebnis verlässt.",
           "successful": "Vereinbart, dass der ^Auftrag^ in der Auftragshistorie als erfolgreich markiert wird.",
           "unchanged": "Übernimmt den unveränderten Auftragszustand in die Auftragshistorie."
         },
         "options": {
-          "stopOnFailure": "Die Einstellung wirkt sich auf Anweisungen wie ^Lock Anweisung^, ^ConsumeNotices Anweisung^ und ^Cycle Anweisung^ aus.\n\nSie bewirkt, dass ^Aufträge^ im Fehlerfall bei der aktuellen Anweisung verbleiben, anstatt zum Beginn der jeweiligen ^Lock Anweisung^, ^ConsumeNotices Anweisung^ oder ^Cycle Anweisung^ zurückzukehren."
+          "stopOnFailure": "Die Einstellung wirkt sich auf Anweisungen wie ^Lock Anweisung^, ^ConsumeNotices Anweisung^ und ^Cycle Anweisung^ aus.\n\nSie bewirkt, dass ^Aufträge|auftrag^ im Fehlerfall bei der aktuellen Anweisung verbleiben, anstatt zum Beginn der jeweiligen ^Lock Anweisung^, ^ConsumeNotices Anweisung^ oder ^Cycle Anweisung^ zurückzukehren."
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
@@ -2344,8 +2344,8 @@
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ^ForkList Anweisung^ im ^Arbeitsablauf^ verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ^*ForkList Anweisung* erzeugt und durchlaufen wird: pro Listenelement werden die Anweisungen und ^Job^s der *ForkList Anweisung* in einem jeweils eigenen Zweig parallel durchlaufen.",
           "childToId": "Listenelement für die Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable.\n\nDer Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
           "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand ^FEHLGESCHLAGEN^ des Kindauftrags.",
-          "agentAssignment": "Der ^ForkList Anweisung^ wird ein ^Subagenten-Cluster^ zugewiesen, der eine Anzahl von ^Subagent^en enthält, auf denen ^Aufträge^ parallel ausgeführt werden.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n- Auswahl eines ^Subagenten-Cluster^, was die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der den Subagenten-Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des ^Arbeitsablauf^s, optional einer Variablen des ^Auftrag^s, die den Subagenten-Cluster benennt.",
-          "subagent": "Ermöglicht die Auswahl des ^Subagenten-Cluster^, aus dem alle verfügbaren Agenten zur parallelen Ausführung von ^Aufträge^n innerhalb der ^ForkList Anweisung^ verwendet werden.",
+          "agentAssignment": "Der ^ForkList Anweisung^ wird ein ^Subagenten-Cluster^ zugewiesen, der eine Anzahl von ^Subagent^en enthält, auf denen ^Aufträge|auftrag^ parallel ausgeführt werden.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n- Auswahl eines ^Subagenten-Cluster^, was die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der den Subagenten-Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des ^Arbeitsablauf^s, optional einer Variablen des ^Auftrag^s, die den Subagenten-Cluster benennt.",
+          "subagent": "Ermöglicht die Auswahl des ^Subagenten-Cluster^, aus dem alle verfügbaren Agenten zur parallelen Ausführung von ^Aufträge|auftrag^n innerhalb der ^ForkList Anweisung^ verwendet werden.",
           "agentCluster": "Es wird ein ^Agenten-Cluster^ ausgewählt, von dem die ^Subagenten-Cluster Kennung^ durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die ^Subagenten-Cluster Kennung^ aus einer Variablen an.\n\nWenn kein Ausdruck angegeben wird, wird die Variable `js7ForkListSubagentClusterId` verwendet.\n\nWenn eine Variable angegeben wird, muss sie die Subagenten-Cluster Kennung enthalten.",
           "infoOfListVariable": "Für die Verwendung der ^ForkList Anweisung^ mit einer Listenvariablen siehe die Dokumentation unter [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)",
@@ -2377,7 +2377,7 @@
           "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine ^Benachrichtigung^, z.B. per E-Mail, gesendet.\n\nDie Anzahl Sekunden kann im Format *1s* angegeben werden. Alternativ kann das Format *hh:mm:ss* verwendet werden, z.B. *01:30:00* für ein-einhalb Stunden.\n\nEs kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. *30%*.",
           "fileWatcher": "Eine ^Dateiauftragsquelle^ überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen ^Auftrag^ für einen ^Arbeitsablauf^.",
           "className": "Der Name einer Java Klasse, die einen ^Job^ implementiert.\n\nJS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
-          "parallelism": "Die max. Parallelität eines ^Job^s bestimmt wie viele ^Aufträge^ gleichzeitig in einem ^Arbeitsablauf^ diesen Job ausführen können.\n\nWird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
+          "parallelism": "Die max. Parallelität eines ^Job^s bestimmt wie viele ^Aufträge|auftrag^ gleichzeitig in einem ^Arbeitsablauf^ diesen Job ausführen können.\n\nWird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines ^Job^s kann zur Unterscheidung in ^Benachrichtigung^en verwendet werden.",
           "failOnOutputErr": "Sofern ein Job Ausgaben in den *stderr* Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand ^FEHLGESCHLAGEN^ versetzt.",
           "warnOnOutputErr": "Sofern ein ^Job^ Ausgaben in den *stderr* Kanal schreibt, wird dies als Warnung gewertet.\n\nDie Job-Ausführung wird als erfolgreich betrachtet und der ^Auftrag^ setzt fort. Für die Warnung wird eine ^Benachrichtigung^ erzeugt.",
@@ -2391,7 +2391,7 @@
           "mailOn": "E-Mail bei Ereignissen wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der Job-Vorlagen ausgewählt wird.",
           "onWarning": "Es können eine Reihe von ^Rückgabewert^en angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nIm Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt.\n\nEine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden, z.B. *0,1,2*. Ein Bereich wird durch zwei Punkte angegeben, z.B. *0..42*",
-          "agentAssignment": "Dem Job wird ein ^Autonomer Agent^ oder ^Subagenten-Cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung^ und ^StickySubagent Anweisung^ wird ein ^Agenten-Cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung^ über eine Variable liefert.",
+          "agentAssignment": "Dem Job wird ein ^Autonomer Agent|standalone-agent^ oder ^Subagenten-Cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung^ und ^StickySubagent Anweisung^ wird ein ^Agenten-Cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung^ über eine Variable liefert.",
           "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job Skript^ bzw. die Java Klasse ausführt.",
           "agentCluster": "Wählt den ^Agenten-Cluster^ aus, für den eine ^Subagenten-Cluster Kennung^ aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die ^Subagenten-Cluster Kennung^ über eine Variable an.\n\nWird keine Variable angegeben, so wird ein eingebauter Standardwert aktiv, wenn der Job in einer ^ForkList Anweisung^ oder ^StickySubagent Anweisung^ enthalten ist.\n\nAnwender können eine individuelle Variable angeben, wenn z.B. Vorgänger-Jobs verwendet werden, um den Subagenten-Cluster zu bestimmen, auf dem Folge-Jobs ausgeführt werden sollen.",
@@ -2428,7 +2428,7 @@
           "blockPosition": "Ein ^Auftrag^ kann an der Position einer bestimmten Blockanweisung hinzugefügt werden, z.B. an einer Verzweigung in einer ^Fork Anweisung^, an einer ^Lock Anweisung^ usw. auf jeder beliebigen Verschachtelungsebene von Anweisungen im ^Arbeitsablauf^.\n\nDer Auftrag verlässt den Arbeitsablauf, wenn er das Ende der Blockanweisung erreicht.\n\nBei der Auswahl einer Blockanweisung werden Start- und Endpositionen im Kontext der Blockanweisung angegeben."
         },
         "lock": {
-          "name": "Der Name einer ^Ressourcen-Sperre ^ist eindeutig im System. Abschnitte in ^Arbeitsabläufe^n können durch Ressourcen-Sperren für die parallele Ausführung eingeschränkt werden.",
+          "name": "Der Name einer ^Ressourcen-Sperre ^ist eindeutig im System. Abschnitte in ^Arbeitsabläufen|arbeitsablauf^ können durch Ressourcen-Sperren für die parallele Ausführung eingeschränkt werden.",
           "count": "Das Gewicht für die Nutzung einer ^Ressourcen-Sperre^ wird auf deren Kapazität angerechnet.\n\nWird die Kapazität überschritten, dann wartet der ^Auftrag^ bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {
@@ -2449,9 +2449,9 @@
         "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
         "exportType": "Ist eine der Optionen:\n- **Individuelle Objekte**: Anwender wählen Objekte aus dem Inventar aus.\n- **Ordner**: Anwender wählen Ordner aus, die Objekte enthalten.\n- **Änderungen**: Anwender wählen eine ^Änderung^ aus, die Objekte beinhaltet, die direkt der Änderung zugeordnet sind bzw. Objekte, die zugeordnete Objekte referenzieren oder von ihnen referenziert werden.",
-        "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. ^Arbeitsabläuf^e, ^Job-Ressource^n, ^Zeitpläne^ etc.",
+        "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. ^Arbeitsabläuf^e, ^Job-Ressource^n, ^Zeitpläne|zeitplan^ etc.",
         "forSigning": "For Signing",
-        "inclusiveAllTags": "Fügt der Exportdatei ^Kennzeichnung^en hinzu, die in das Ziel importiert werden können.\n\nDies beinhaltet Kennzeichnungen der ^Arbeitsläufe^, ^Aufträge^ und ^Job^s.\n\nBeim Import entscheidet der Anwender, ob Kennzeichnungen importiert werden sollen.",
+        "inclusiveAllTags": "Fügt der Exportdatei ^Kennzeichnung^en hinzu, die in das Ziel importiert werden können.\n\nDies beinhaltet Kennzeichnungen der ^Arbeitsläufe^, ^Aufträge|auftrag^ und ^Job^s.\n\nBeim Import entscheidet der Anwender, ob Kennzeichnungen importiert werden sollen.",
         "filterType": "Berücksichtigt Objekte, die in *Controller* oder *Automation* Systemordnern gespeichert sind",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status in die Exportdatei aufzunehmen.\n\nUngültige Objekte können exportiert und importiert werden, allerdings können sie nicht ausgerollt oder freigegeben werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht bereitgestellt oder freigegeben wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern der Exportdatei hinzu.",
@@ -2463,10 +2463,10 @@
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
         "controllers": "Der ^Controller^ kann ausgewählt werden, auf den Objekte ausgerollt werden.\n\nEs können mehrere Controller mit JOC Cockpit verbunden sein, an die Objekte ausgerollt werden.\n\nPer Voreinstellung wird der aktuell ausgewählte Controller verwendet.",
-        "updateDailyPlan": "Legt fest, dass ^Aufträge^ zum ^Tagesplan^ hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
-        "specificDate": "Gibt das Datum an, ab dem ^Aufträge^ in den ^Tagesplan^ aufgenommen oder dort aktualisiert werden.",
+        "updateDailyPlan": "Legt fest, dass ^Aufträge|auftrag^ zum ^Tagesplan^ hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
+        "specificDate": "Gibt das Datum an, ab dem ^Aufträge|auftrag^ in den ^Tagesplan^ aufgenommen oder dort aktualisiert werden.",
         "deployType": "Bietet folgende Optionen für das ^Ausrollen^:\n- **Einzelne Objekte**: Anwender wählen einzelne Objekte aus dem Inventar aus.\n- **Änderungen**: Anwender wählen eine ^Änderung^ aus, die Objekte beinhaltet, die direkt der Änderung zugeordnet sind bzw. Objekte, die zugeordnete Objekte referenzieren oder von ihnen referenziert werden.",
-        "includeTodaysLateOrders": "Aktualisiert ^Aufträge^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
+        "includeTodaysLateOrders": "Aktualisiert ^Aufträge|auftrag^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status auszurollen.\n\nUngültige Objekte können nicht ausgerollt werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht ausgerollt wurden.",
         "handleRecursively": "Rollt Objekte aus Unterordnern aus.",
         "includeDependencies": "Rollt abhängige Objekte aus, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
@@ -2484,26 +2484,26 @@
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
       "remove": {
-        "updateDailyPlan": "Legt fest, dass ^Aufträge^ aus dem ^Tagesplan^ gelöscht werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
-        "specificDate": "Gibt das Datum an, ab dem ^Aufträge^ aus dem ^Tagesplan^ gelöscht werden.",
+        "updateDailyPlan": "Legt fest, dass ^Aufträge|auftrag^ aus dem ^Tagesplan^ gelöscht werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
+        "specificDate": "Gibt das Datum an, ab dem ^Aufträge|auftrag^ aus dem ^Tagesplan^ gelöscht werden.",
         "includeDependencies": "Entfernt abhängige Objekte, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden und es kann angegeben werden, ob die Objekte zurückgezogen oder entfernt werden sollen.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
       "release": {
-        "updateDailyPlan": "Legt fest, dass ^Aufträge^ zum ^Tagesplan^ hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
-        "specificDate": "Gibt das Datum an, ab dem ^Aufträge^ in den ^Tagesplan^ aufgenommen oder dort aktualisiert werden.",
-        "includeTodaysLateOrders": "Aktualisiert ^Aufträge^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
+        "updateDailyPlan": "Legt fest, dass ^Aufträge|auftrag^ zum ^Tagesplan^ hinzugefügt oder darin aktualisiert werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
+        "specificDate": "Gibt das Datum an, ab dem ^Aufträge|auftrag^ in den ^Tagesplan^ aufgenommen oder dort aktualisiert werden.",
+        "includeTodaysLateOrders": "Aktualisiert ^Aufträge|auftrag^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "includeDependencies": "Gibt abhängige Objekte frei, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
       "recall": {
-        "updateDailyPlan": "Legt fest, dass ^Aufträge^ aus dem ^Tagesplan^ gelöscht werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
-        "specificDate": "Gibt das Datum an, ab dem ^Aufträge^ aus dem ^Tagesplan^ gelöscht werden.",
-        "includeTodaysLateOrders": "Löscht ^Aufträge^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
+        "updateDailyPlan": "Legt fest, dass ^Aufträge|auftrag^ aus dem ^Tagesplan^ gelöscht werden.\n\nFolgende Optionen werden angeboten:\n- **Jetzt**: ab dem aktuellen Zeitpunkt.\n- **Startdatum**: ab dem angegebenen Datum.\n- **Nein**: der Tagesplan bleibt unverändert.",
+        "specificDate": "Gibt das Datum an, ab dem ^Aufträge|auftrag^ aus dem ^Tagesplan^ gelöscht werden.",
+        "includeTodaysLateOrders": "Löscht ^Aufträge|auftrag^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "includeDependencies": "Nimmt abhängige Objekte zurück, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
@@ -2978,7 +2978,7 @@
         "modifyVariables": "Verhält sich ähnlich wie **Variable ändern**, zeigt aber alle verfügbaren Variablen an.",
         "addVariable": "Der Link wird angezeigt, sofern die globalen Einstellungen das Hinzufügen nicht deklarierter Variablen zu einem ^Arbeitsablauf^ zulassen",
         "addOrderParameterization": "Ermöglicht das Hinzufügen eines weiteren ^Auftrag^s, optional mit einer anderen Parametrierung.",
-        "addOrdersFromAllSchedules": "Ermöglicht das Hinzufügen weiterer ^Aufträge^, die den Auftragsvorlagen entsprechen, die in allen ^Zeitpläne^n verfügbar sind, die den ^Arbeitsablauf^ verwenden."
+        "addOrdersFromAllSchedules": "Ermöglicht das Hinzufügen weiterer ^Aufträge|auftrag^, die den Auftragsvorlagen entsprechen, die in allen ^Zeitplänen|zeitplan^ verfügbar sind, die den ^Arbeitsablauf^ verwenden."
       },
       "allOrderResume": {
         "--------ADD RESUME ORDER DIALOG TOOLTIPS------------": "Tooltips for labels in all-order-resume-dialog.html (resumeOrder, position, force)",
@@ -3557,11 +3557,11 @@
       "time_zone": "Benennt die Zeitzone der Startzeit des ^Tagesplandienst^es und der Periode des ^Tagesplan^s, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
       "start_time": "Benennt die Startzeit der Erzeugung des ^Tagesplan^s auf Basis der angegebenen Zeitzone.\n\nOhne diese Einstellung startet die Erzeugung des Tagesplans 30 Minuten vor Beginn der Periode des Tagesplans, siehe Einstellung period_begin.\n\nDiese Einstellung erwartet eine Uhrzeit, z.B. *23:00:00*.",
       "period_begin": "Benennt den Beginn der 24 Stunden Periode des ^Tagesplan^s auf Basis der angegebenen Zeitzone.",
-      "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge^ erzeugt werden und den Zustand GEPLANT erhalten.",
-      "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge^, die sich im Zustand GEPLANT befinden, an die ^Controller^ übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
-      "projections_month_before": "Gibt die Anzahl der zurückliegenden Monate an, für die die Projektionen berechnet werden, die auf zurückliegende Ausführung von Aufträgen hinweisen.\n\nDie Projektion auf zurückliegende Monate erlaubt es, den ^Tagesplan^ mit späteren Änderungen der ^Zeitpläne^ zu vergleichen.",
+      "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^ erzeugt werden und den Zustand GEPLANT erhalten.",
+      "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^, die sich im Zustand GEPLANT befinden, an die ^Controller^ übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
+      "projections_month_before": "Gibt die Anzahl der zurückliegenden Monate an, für die die Projektionen berechnet werden, die auf zurückliegende Ausführung von Aufträgen hinweisen.\n\nDie Projektion auf zurückliegende Monate erlaubt es, den ^Tagesplan^ mit späteren Änderungen der ^Zeitpläne|zeitplan^ zu vergleichen.",
       "projections_month_ahead": "Gibt die Anzahl der Monate an, für die Projektionen berechnet werden, die die zukünftige Auftragsausführung anzeigen.",
-      "submit_orders_individually": "Der ^Tagesplandienst^ übermittelt standardmäßig ^Aufträge^ in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt.\n\nMit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt.\n\nDer Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
+      "submit_orders_individually": "Der ^Tagesplandienst^ übermittelt standardmäßig ^Aufträge|auftrag^ in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt.\n\nMit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt.\n\nDer Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
       "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der ^Tagesplan^ geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."
     },
     "joc": {
@@ -3590,14 +3590,14 @@
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird.\n\nWindows unterstützt kein Unicode, sondern verwendet Code Pages.\n\nFür den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Anwender die Code Page angeben, weitere Details siehe [JS7 - Unicode Support](https://kb.sos-berlin.com/display/JS7/JS7+-+Unicode+Support)",
       "disable_warning_on_license_expiration": "Warnungen für Lizenzablauf abschalten.",
       "log_ext_directory": "Gibt ein Verzeichnis an, auf das JOC Cockpit zugreifen kann und in das Kopien der Auftrags- und Prozessprotokolldateien geschrieben werden.",
-      "log_ext_order_history": "Legt fest, dass eine JSON-Datei mit Informationen über die Auftragshistorie im Fall von erfolgreichen oder fehlgeschlagenen ^Aufträge^n oder beidem erstellt wird.",
-      "log_ext_order": "Legt fest, dass eine Auftragsprotokolldatei im Fall von erfolgreichen oder fehlgeschlagenen ^Aufträge^n oder beidem erstellt wird.",
+      "log_ext_order_history": "Legt fest, dass eine JSON-Datei mit Informationen über die Auftragshistorie im Fall von erfolgreichen oder fehlgeschlagenen ^Aufträge|auftrag^n oder beidem erstellt wird.",
+      "log_ext_order": "Legt fest, dass eine Auftragsprotokolldatei im Fall von erfolgreichen oder fehlgeschlagenen ^Aufträge|auftrag^n oder beidem erstellt wird.",
       "log_ext_task": "Legt fest, dass eine Job-Protokolldatei im Fall von erfolgreichen Prozessen, fehlgeschlagenen Prozessen oder beidem erstellt wird",
       "log_maximum_display_size": "JOC Cockpit bietet zur Anzeige von Protokollausgaben ein Log View Fenster sofern die Größe der unkomprimierten Ausgaben diesen Wert nicht überschreitet.\n\nAndernfalls werden die Protokollausgaben nur zum Herunterlalden angeboten. Die Größe wird in MB angenommen.",
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der Historiendienst die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden.\n\nDie originale Protokolldatei des ^Job^s wird entfernt. Die Größe wird in MB angenommen.",
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines Jobs diesen Wert überschreitet, wird der Historiendienst die Ausgaben trunkieren und die ersten 100 KB verwenden.\n\nDie originale Protokolldatei des ^Job^s wird entfernt. Die Größe wird in MB angenommen.",
       "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail Benachrichtigungen.",
-      "allow_empty_arguments": "Standardmäßig werden leere Argumente von ^Aufträge^n und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden.\n\nBenutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
+      "allow_empty_arguments": "Standardmäßig werden leere Argumente von ^Aufträge|auftrag^n und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden.\n\nBenutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am ^Auftrag^.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. ^Job^s, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an.\n\nWenn diese Einstellung auf *falsch* gesetzt ist, werden nur die Objektnamen angezeigt.\n\nIn JS7 sind die Objektnamen eindeutig.",
       "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
@@ -3612,9 +3612,9 @@
     },
     "git": {
       "git_hold_job_resources": "Vereinbart, dass ^Job-Ressource^n als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
-      "git_hold_workflows": "Vereinbart, dass ^Arbeitsabläufe^ als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_workflows": "Vereinbart, dass ^Arbeitsabläufe|arbeitsablauf^ als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_calendars": "Vereinbart, dass ^Kalender^ als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
-      "git_hold_schedules": "Vereinbart, dass ^Zeitpläne^ als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
+      "git_hold_schedules": "Vereinbart, dass ^Zeitpläne|zeitplan^ als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_notice_boards": "Vereinbart, dass ^Notizbrett^er als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_resource_locks": "Vereinbart, dass ^Ressourcen-Sperre^n als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_script_includes": "Vereinbart, dass ^Skript-Baustein^e als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",

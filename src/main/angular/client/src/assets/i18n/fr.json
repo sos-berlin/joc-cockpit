@@ -472,16 +472,16 @@
     "tooltips" : {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
-        "certAlias": "Certificate Alias",
-        "certificate": "Certificate",
-        "privateKeyPath": "Private Key Path",
-        "jobResourceFolder": "Job Resource Folder",
-        "showAssignedAgents": "Show Assigned Agents",
-        "assignAgents": "Assign Agents",
-        "showEncryptionSample": "Show Encryption Sample",
-        "plainText": "Plain Text",
-        "encryptText" : "Encrypt Text",
-        "encrypt": "Encrypt"
+        "certAlias": "L'Alias est l'identifiant unique d'un certificat. L'alias peut être choisi librement.",
+        "certificate": "Le certificat doit être fourni au format PEM. La première ligne doit être `-----BEGIN CERTIFICATE-----`. La dernière ligne doit être `-----END CERTIFICATE-----`",
+        "privateKeyPath": "Le Chemin d'accès de la Clé Privée indique l'emplacement de la clé privée au niveau de l'^Agent^. Il est possible de spécifier un chemin d'accès absolu. Si un chemin d'accès relatif est indiqué, celui-ci part du répertoire de travail de l'Agent.",
+        "jobResourceFolder": "Le Dossier de la Ressource de Tâche indique le dossier d'inventaire dans lequel sera créée une ^Ressource de Tâche^ contenant le Certificat.",
+        "showAssignedAgents": "Affiche la liste des ^Agent^s auxquels la Clé Privée indiqué a été attribué. Les utilisateurs doivent copier le fichier de Clé Privée sur les Agents concernés. La page 'Gérer Contrôleurs/Agents' permet de définir quels Agents ont accès au fichier de Clé Privée.",
+        "assignAgents": "Tout comme la page 'Gérer Contrôleurs/Agents', cette page permet de spécifier quels ^Agent^s ont accès au fichier de Clé Privée. Les utilisateurs doivent copier le fichier de Clé Privée sur les hôtes des Agents concernés.",
+        "showEncryptionSample": "Le Test de Cryptage permet d'effectuer un chiffrement à l'aide du Certificat fourni à partir d'un exemple d'entrée.",
+        "plainText": "Le texte brut contenant l'exemple d'entrée.",
+        "encryptText" : "En cliquant sur l'icône, vous crypterez l'exemple saisi.",
+        "encrypt": "Le texte chiffré à partir de l'exemple d'entrée."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "importEncipherment": {
@@ -822,8 +822,8 @@
     "tooltip.deactivateCustomization": "Désactiver la Personnalisation",
     "tooltip.useDefault": "Utiliser comme Personnalisation par défaut",
     "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
-    "tooltip.customizationName": "Customization Name",
-    "tooltip.sharedCustomization": "Shared Customization"
+    "tooltip.customizationName": "Le nom de la Personnalisation doit être unique et peut être choisi librement.",
+    "tooltip.sharedCustomization": "Le partage d'une Personnalisation permet de la mettre à la disposition des utilisateurs du même JOC Cockpit."
   },
   "dashboard": {
     "label.agentStatus": "Agent Status",
@@ -2244,7 +2244,7 @@
         "boardType": "Les ^Tableaux de Conditions^ de type **global** forcent les dépendances indépendamment du ^Plan Quotidien^.\n\nLes Tableaux de Conditions de type **planifiable** prennent en compte les dépendances uniquement pour les jours pour lesquels il existe des ^Ordre^s qui créeront des Annonces."
       },
       "lock": {
-        "name": "Les ^Verrous de Ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'inventaire.\n\nPour le nom du Verrou de Ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Les ^Verrous de Ressource|verrou-de-ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'inventaire.\n\nPour le nom du Verrou de Ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Verrou de Ressource^.\n\nLa vue RESSOURCES permet de gérer la Documentation.",
         "title": "Le Titre d'un ^Verrou de Ressource^ peut être spécifié à volonté.",
         "limit": "Si un ^Verrou de Ressource^ est acquis en mode partagé, chaque consommateur de Verrou de Ressource spécifie un nombre en fonction de la capacité du Verrou de Ressource. Si la capacité est dépassée, les ^Tâche^s doivent attendre que leur nombre corresponde à la capacité disponible du Verrou de Ressource."
@@ -2274,7 +2274,7 @@
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Block Script^.\n\nLa vue RESSOURCES permet de gérer la Documentation.",
         "title": "Le Titre d'un ^Bloc Script^ peut être spécifié à volonté.",
         "script": "En fonction de son utilisation avec un ^Script Job^, le contenu d'un ^Bloc Script^ peut inclure des commandes Shell ou du code pour des langages de script tels que Python, PowerShell etc.",
-        "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des ^Blocs Scripts^ disponibles."
+        "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des ^Blocs Scripts|bloc script^ disponibles."
       },
       "report": {
         "name": "Le nom d'un Modèle de Rapport est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
@@ -2375,7 +2375,7 @@
           "graceTimeout": "Un Délai de Grâce est appliqué aux ^Tâche^s sous Unix qui reçoivent un signal SIGTERM lorsqu'elles dépassent leur délai.\n\nSi la Tâche ne se termine pas après le Délai de Grâce, un signal SIGKILL interrompra la Tâche.",
           "warnIfShorter": "Si la période d'exécution d'une ^Tâche^ est plus courte que celle spécifiée, une ^Notification^, par exemple, par e-mail, sera envoyée.\n\nLe nombre de secondes peut être spécifié comme en *1s*.\n\nOn peut aussi utiliser le format *hh:mm:ss*, par exemple, *01:30:00* pour une heure et demie.\n\nIl est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple, *30%*.",
           "warnIfLonger": "Si la période d'exécution d'uen ^Tâche^ est plus longue que celle spécifiée, une notification, par exemple, par e-mail, sera envoyée.\n\nLe nombre de secondes peut être spécifié comme en *1s*.\n\nOn peut aussi utiliser le format *hh:mm:ss*, par exemple, *01:30:00* pour une heure et demie.\n\nIl est possible de spécifier un pourcentage calculé à partir de la moyenne des exécutions réussies de Tâches antérieurs, par exemple, *30%*.",
-          "fileWatcher": "Les ^Sources d'Ordres de Fichiers^ sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un Ordre avec le Workflow respectif pour chaque fichier.",
+          "fileWatcher": "Les ^Sources d'Ordres de Fichiers|source-d'ordres-de-fichiers^ sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un Ordre avec le Workflow respectif pour chaque fichier.",
           "className": "Le nom d'une Classe Java implémentant une ^Tâche^.\n\nJS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple, pour l'accès aux bases de données, pour l'envoi d'e-mails etc.",
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'^Ordre^s dans un ^Workflow^ qui peuvent exécuter de ^Tâche^ en parallèle.\n\nSi le maximum est dépassé, les Ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
           "criticality": "La Criticité des ^Tâche^s peut être utilisée dans les ^Notifications^ pour mieux distinguer l'urgence d'un incident.",
@@ -2428,7 +2428,7 @@
           "blockPosition": "Un ^Ordre^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork^, à une ^Instruction Lock^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n\nL'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc.\n\nLors de la sélection d'une instruction de bloc, les positions de début et de fin sont spécifiées dans le champ d'application de l'instruction de bloc."
         },
         "lock": {
-          "name": "Les noms des ^Verrous de Ressources^ sont uniques dans l'inventaire.\n\nLes sections des Workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressource.",
+          "name": "Les noms des ^Verrous de Ressource|verrou-de-ressource^ sont uniques dans l'inventaire.\n\nLes sections des Workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressource.",
           "count": "Le nombre pour l'utilisation d'un ^Verrou de Ressource^ est calculé en fonction de sa capacité.\n\nSi la capacité est dépassée, l'^Ordre^ doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le nombre actuel."
         },
         "prompt": {
@@ -3597,8 +3597,8 @@
       "log_applicable_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers et derniers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "log_maximum_size": "Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le History Service tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal original sera supprimé. La taille est spécifiée en MO.",
       "joc_reverse_proxy_url": "Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple, pour les notifications par e-mail.",
-      "allow_empty_arguments": "Par défaut, les arguments vides ne sont pas autorisés dans les Tâches et les Modèles de Tâches, car cela oblige les Tâches à faire la distinction entre les variables vides et les variables non définies. Les utilisateurs peuvent activer le comportement pour autoriser les arguments vides.",
-      "allow_undeclared_variables": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un Ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.",
+      "allow_empty_arguments": "Par défaut, les arguments vides ne sont pas autorisés dans les ^Tâche^s et les ^Modèles de Tâche|modèle-de-tâche^, car cela oblige les Tâches à faire la distinction entre les variables vides et les variables non définies. Les utilisateurs peuvent activer le comportement pour autoriser les arguments vides.",
+      "allow_undeclared_variables": "Autoriser les variables non déclarées des ^Ordre^s. Cela signifie qu'un Ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les ^Tâche^s échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.",
       "display_folders_in_views": "Affiche les dossiers des objets dans les vues. Si ce paramètre est défini sur *faux*, seuls les noms des objets seront affichés. Dans JS7, les noms d'objets sont uniques.",
       "node_command_line_options": "Des options de ligne de commande Node.js peuvent être spécifiées. Notez que l'applicabilité des options dépend de la version de Node.js utilisée.",
       "num_of_tags_displayed_as_order_id": "Spécifie le nombre de Tags affichées lors de chaque Ordre. La valeur 0 supprime l'affichage des Tags.",
@@ -3611,15 +3611,15 @@
       "welcome_do_not_remind_me": "Spécifie que pour la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger, aucun rappel ne doit être actif."
     },
     "git": {
-      "git_hold_job_resources": "Indique si les Ressources de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
-      "git_hold_workflows": "Indique si les Workflows doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
-      "git_hold_calendars": "Indique si les Calendriers doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
-      "git_hold_schedules": "Indique si les Planifications doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
-      "git_hold_notice_boards": "Indique si les Tableaux de Conditions doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
-      "git_hold_resource_locks": "Indique si les Verroux de Ressource doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
-      "git_hold_script_includes": "Indique si les Blocs Scripts doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
-      "git_hold_file_order_sources": "Indique si les Sources d'Ordres de Fichiers doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
-      "git_hold_job_templates": "Indique si les Modèles de Tâche doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
+      "git_hold_job_resources": "Indique si les ^Ressources de Tâche|ressource-de-tâche^ doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_workflows": "Indique si les ^Workflow^s doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_calendars": "Indique si les ^Calendrier^s doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_schedules": "Indique si les ^Planification^s doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_notice_boards": "Indique si les ^Tableaux de Condition|tableau-de-condition^ doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_resource_locks": "Indique si les ^Verrous de Ressource|verrou-de-ressource^ doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_script_includes": "Indique si les ^Blocs Scripts|bloc script^ doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
+      "git_hold_file_order_sources": "Indique si les ^Sources d'Ordres de Fichiers|source-d'ordres-de-fichiers^ doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git.",
+      "git_hold_job_templates": "Indique si les ^Modèles de Tâche|modèle-de-tâche^ doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
     },
     "lognotification": {
       "log_server_active": "Active le Service de Notification des Journaux disponible sur un serveur syslog. Le service recevra les avertissements et les erreurs des instances du Contrôleur et des Agents. Pour plus de détails, voir [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)",
