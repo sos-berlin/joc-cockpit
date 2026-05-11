@@ -473,15 +473,15 @@
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
         "certAlias": "The Certificate Alias is the unique identifier of a Certificate. The alias name can be freely chosen.",
-        "certificate": "The Certificate is expected in PEM format. The first line should be `-----BEGIN CERTIFICATE-----`. The last line should be `-----END CERTIFICATE-----`",
-        "privateKeyPath": "The Path to Private Key File specifies the location of the Private Key with the Agent. An absolute path can be specified. If a relative path is specified, then it starts from the Agent's working directory.",
+        "certificate": "The Certificate is expected in PEM format.\n\nThe first line should be `-----BEGIN CERTIFICATE-----`.\n\nThe last line should be `-----END CERTIFICATE-----`",
+        "privateKeyPath": "The Path to Private Key File specifies the location of the Private Key with the Agent.\n\nAn absolute path can be specified.\n\nIf a relative path is specified, then it starts from the Agent's working directory.",
         "jobResourceFolder": "The Job Resource Folder specifies the inventory folder in which a ^Job Resource^ will be created that holds the Certificate.",
-        "showAssignedAgents": "Displays the list of ^Agent^s that are assigned the related Private Key. Users must copy the Private Key file to the hosts of related Agents. The 'Manage Controllers/Agents' page allows specifying which Agents have access to the Private Key file.",
-        "assignAgents": "Similar to the 'Manage Controller/Agents' page offers specifying which ^Agent^s have access to the Private Key file. Users must copy the Private Key file to the hosts of related Agents.",
+        "showAssignedAgents": "Displays the list of ^Agent^s that are assigned the related Private Key.\n\nUsers must copy the Private Key file to the hosts of related Agents.\n\nThe 'Manage Controllers/Agents' page allows specifying which Agents have access to the Private Key file.",
+        "assignAgents": "Similar to the 'Manage Controller/Agents' page specifies which ^Agent^s have access to the Private Key file.\n\nUsers must copy the Private Key file to the hosts of related Agents.",
         "showEncryptionSample": "The Encryption Test offers performing encryption with the given Certificate from sample input.",
         "plainText": "The plain text holding sample input.",
         "encryptText" : "Clicking the icon will encrypt sample input.",
-        "encrypt": "The text encrypted from sample input."
+        "encrypt": "The output encrypted from sample input."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "importEncipherment": {
@@ -1802,8 +1802,8 @@
     "tooltip.workflowExampleForUnix": "Workflow examples for use with Agents running for Unix",
     "tooltip.workflowExampleForWindows": " Workflow examples for use with Agents running for Windows",
     "tooltip.invalidLicense": "License is not valid. Reasons can include that the start date of the validity period has hot been reached or that the expiration date has been exceeded.",
-    "tooltip.jocMonitorEvent": "The flag signals warnings and errors in the processing of ^Order^s, for example, when ^Job^s fail.\n\nThe flag indicates warnings with the yellow color and errors with the red color.\n\nClicking the flag displays the last 10 warnings and errors. Users find the full list of warnings and errors from the MONITOR->Notifications view.",
-    "tooltip.systemMonitorEvent": "The flag signals warnings and errors of JS7 products, for example, connection loss to the database.\n\nThe flag indicates warnings from yellow color and errors from red color.\n\nClicking the flag displays the last 10 warnings and errors.\n\nUsers find the full list of warnings and errors from the MONITOR->Notifications view.",
+    "tooltip.jocMonitorEvent": "The flag signals warnings and errors in the processing of ^Order^s, for example, when ^Job^s fail.\n\nThe flag indicates warnings with the yellow color and errors with the red color.\n\nClicking the flag displays the last 10 warnings and errors. Users find the full list of warnings and errors from the *MONITOR -> Order Notifications* view.",
+    "tooltip.systemMonitorEvent": "The flag signals warnings and errors of JS7 products, for example, connection loss to the database.\n\nThe flag indicates warnings from yellow color and errors from red color.\n\nClicking the flag displays the last 10 warnings and errors.\n\nUsers find the full list of warnings and errors from the *MONITOR -> System Notifications* view.",
     "message.line1": "To give you an easy start, we suggest that you download some presets that you can import into JOC Cockpit from the CONFIGURATION view.\n\nAfter import the `Defaults.zip` archive will create a folder with the same name that includes ^Job Resource^s to create global [Job Environment Variables]( https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) available to your shell Jobs.",
     "message.line2": "The `Examples.tar.gz` and `Examples.zip` archives include examples for ^Workflow^s and Jobs for operation with Agents on Unix and Windows respectively.\n\nThe examples can be helpful to create your own Workflows and Job Dependencies. The examples correspond to what you find from the [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo) explanations.",
     "link": {
@@ -2380,7 +2380,7 @@
           "parallelism": "The max. Parallelism specifies the number of ^Order^s in a ^Workflow^ that can execute the ^Job^ in parallel.\n\nIf the max. Parallelism is exceeded, then Orders have to wait until the value has fallen below the Job's max. Parallelism.",
           "criticality": "The Criticality of ^Job^s can be used in ^Notification^s to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a ^Job^ writes output to the *stderr* channel, then this is considered an error and the ^Order^ is set to the ^FAILED^ state.",
-          "warnOnOutputErr": "If a ^Job^ writes output to the *stderr* channel, then this is considered a warning. Job execution is considered successful and the ^Order^ continues. A Notification is created for the warning.",
+          "warnOnOutputErr": "If a ^Job^ writes output to the *stderr* channel, then this is considered a warning. Job execution is considered successful and the ^Order^ continues. A ^Notification^ is created for the warning.",
           "admissionTime": "^Admission Times^ rule access to ^Job^s, for example, based on weekdays and hours.\n\nAn ^Order^ waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
           "skipIfNoAdmissionForOrderDay": "The ^Job^ is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the ^Job Instruction^ until the Admission Time is reached.",
           "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the ^AdmissionTimes Instruction^ until the Admission Time is reached.",
@@ -2444,7 +2444,7 @@
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "controllerId": "Controller Id",
+        "controllerId": "La Controller ID",
         "useRelativePathOnly": "When exporting scheduling objects, by default an absolute path is used inside the export file.\n\nUsers can specify a relative path to be used starting from the selected folder.\n\nIf no folder is selected but scheduling objects only, then using a relative path maps to exporting as top-level objects to the export file.",
         "fileName": "Specifies the name of the export file such as `export.zip` or `export.tar.gz`.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
         "fileFormat": "Specifies zip or tar.gz for the compression type.",
@@ -3534,7 +3534,7 @@
       "time_zone": "Specifies the time zone that is applied to the start time and to the period of Cleanup Service execution, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
       "period": "Specifies weekdays on which the Cleanup Service is performed.\n\nThe first day of week is considered being Monday. When initially installing JS7, the default specifies the full week.\n\nWithout this setting the Cleanup Service will not start.",
       "period_begin": "Specifies the start time of the Cleanup Service for the given period, for example, on a daily basis.",
-      "period_end": "Specifies the end of the period for which the Cleanup Service is allowed to run.\n\nIf the Cleanup Service is earlier to complete its task, then it will stop before the indicated time. However, it will not continue running beyond the indicated time.",
+      "period_end": "Specifies the end of the period for which the Cleanup Service is allowed to run.\n\nIf the Cleanup Service completes earlier, then it will stop before the indicated time.\n\nThe Cleanup Service will not continue running beyond the indicated time.",
       "batch_size": "Specifies the number of records that are purged within a single transaction.\n\nIncreasing this value can improve performance, at the same time it will increase the risk of conflicts with concurrent transactions should parallel Services operate on the database.",
       "order_history_age": "Specifies the retention period for the execution history of ^Order^s and tasks. Any history entries older than the value specified will be purged.",
       "order_history_logs_age": "Specifies the retention period for ^Order^ logs and task logs.\n\nAny logs older than the value specified will be purged.\n\nConsider that this value should not exceed the value of the *cleanup_order_history_age* setting as otherwise no navigation to logs can be offered by the JOC Cockpit GUI.",
@@ -3596,7 +3596,7 @@
       "log_maximum_display_size": "JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value.\n\nOtherwise the log is offered for download only.\n\nThe size is assumed in MB.",
       "log_applicable_size": "If the value for the size of a ^Job^'s log output is exceeded, then the History Service will truncate log output and will use the first and last 100 KB for the task log.\n\nThe original log file will be removed.\n\nThe size is assumed in MB.",
       "log_maximum_size": "If the value for the size of a ^Job^'s log output is exceeded, then the History Service will truncate log output and will use the first 100 KB for the task log.\n\nThe original log file will be removed.\n\nThe size is assumed in MB.",
-      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example, with e-mail Notifications.",
+      "joc_reverse_proxy_url": "If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example, with e-mail ^Notification^s.",
       "allow_empty_arguments": "By default empty arguments are not allowed from ^Job^s and ^Job Template^s as this forces Jobs to distinguish between empty and unset variables.\n\nUsers can enable the behavior allowing empty arguments.",
       "allow_undeclared_variables": "Allow undeclared variables from ^Order^s. This includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\n^Job^s will fail when referencing undeclared variables that are not available with the Order.",
       "display_folders_in_views": "Displays folders of scheduling objects in views.\n\nIf this setting is set to *false*, then object names only will be displayed.\n\nIn JS7 object names are unique.",
@@ -3633,11 +3633,11 @@
     },
     "kiosk": {
       "kiosk_role": "Kiosk mode requires a specific role being created. The kiosk role does not ship with JOC Cockpit.\n\nThe role must be created by the user with read-only permissions for ^Controller^ and JOC Cockpit.\n\nBy default the name of the role is `kiosk`. Users can modify the name of the role.",
-      "view_dashboard_duration": "The duration in seconds for which the DASHBOARD view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
-      "view_monitor_order_notification_duration": "The duration in seconds for which the MONITOR -> Order Notifications view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
-      "view_monitor_system_notification_duration": "The duration in seconds for which the MONITOR -> System Notifications view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
-      "view_history_tasks_duration": "The duration in seconds for which the HISTORY -> Tasks view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
-      "view_history_orders_duration": "The duration in seconds for which the HISTORY -> Orders view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode."
+      "view_dashboard_duration": "The duration in seconds for which the *DASHBOARD* view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
+      "view_monitor_order_notification_duration": "The duration in seconds for which the *MONITOR -> Order Notifications* view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
+      "view_monitor_system_notification_duration": "The duration in seconds for which the *MONITOR -> System Notifications* view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
+      "view_history_tasks_duration": "The duration in seconds for which the *HISTORY -> Tasks* view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode.",
+      "view_history_orders_duration": "The duration in seconds for which the *HISTORY -> Orders* view will be displayed.\n\nA value 0 excludes the view from kiosk mode.\n\nA value >10 displays the view in kiosk mode."
     }
   },
   "user": {

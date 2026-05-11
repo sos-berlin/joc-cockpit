@@ -424,14 +424,14 @@
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden.\n\nUnter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
-    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controller in der ÜBERSICHT Ansicht",
+    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controller in der Ansicht ÜBERSICHT",
     "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum Autonomen Controller",
     "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum Primären Controller",
     "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum Sekundären Controller",
     "tooltip.urlForBackup": "Verbindung des Sekundären Controllers zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
-    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller Instanz in der ÜBERSICHT Ansicht",
-    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht"
+    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller-Instanz in der Ansicht ÜBERSICHT",
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller-Instanz in der Ansicht ÜBERSICHT"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -473,15 +473,15 @@
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
         "certAlias": "Der Alias ist die eindeutige Kennung eines Zertifikats. Der Alias kann frei gewählt werden.",
-        "certificate": "Das Zertifikat wird im PEM Format angegeben. Die erste Zeile muss lauten `-----BEGIN CERTIFICATE-----`. Die letzte Zeile muss lauten `-----END CERTIFICATE-----`",
-        "privateKeyPath": "Der Pfad zum Privaten Schlüssel ist der Speicherort des privaten Schlüssels auf dem Host des ^Agent^en. Es kann ein absoluter Pfad angegeben werden. Wird ein relativer Pfad angegeben, beginnt dieser im Arbeitsverzeichnis des Agenten.",
+        "certificate": "Das Zertifikat wird im PEM Format angegeben.\n\nDie erste Zeile muss lauten `-----BEGIN CERTIFICATE-----`.\n\nDie letzte Zeile muss lauten `-----END CERTIFICATE-----`",
+        "privateKeyPath": "Der Pfad zum Privaten Schlüssel ist der Speicherort des privaten Schlüssels auf dem Host des ^Agent^en.\n\nEs kann ein absoluter Pfad angegeben werden.\n\nWird ein relativer Pfad angegeben, beginnt dieser im Arbeitsverzeichnis des Agenten.",
         "jobResourceFolder": "Der Order der Job-Ressource gibt den Inventarordner an, in dem eine ^Job-Ressource^ erstellt wird, die das Zertifikat enthält.",
-        "showAssignedAgents": "Zeigt die Liste der ^Agent^en an, denen der angegebene Private Schlüssel zugewiesen ist. Anwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren. Auf der Seite 'Controller/Agenten verwalten' kann festgelegt werden, welche Agenten Zugriff auf die Datei mit dem Privaten Schlüssel haben.",
-        "assignAgents": "Ähnlich der Seite 'Controller/Agenten verwalten' erlaubt die Funktion festzulegen, welche Agenten Zugriff auf die Datei mit dem Privaten Schlüssel haben. Anwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren",
+        "showAssignedAgents": "Zeigt die Liste der ^Agent^en an, denen der angegebene Private Schlüssel zugewiesen ist.\n\nAnwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren.\n\nAuf der Seite 'Controller/Agenten verwalten' kann festgelegt werden, welche Agenten Zugriff auf die Datei mit dem Privaten Schlüssel haben.",
+        "assignAgents": "Ähnlich der Seite 'Controller/Agenten verwalten' erlaubt die Operation festzulegen, welche ^Agent^en Zugriff auf die Datei mit dem Privaten Schlüssel haben.\n\nAnwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren",
         "showEncryptionSample": "Der Verschlüsselungstest ermöglicht die Durchführung einer Verschlüsselung mit dem angegebenen Zertifikat anhand einer Beispiel-Eingabe.",
         "plainText": "Der Klartexst der Beispiel-Eingabe.",
         "encryptText" : "Anklicken des Symbols führt die Verschlüsselung durch.",
-        "encrypt": "Der verschlüsselte Text der Beispiel-Eingabe."
+        "encrypt": "Die aus der Beispiel-Eingabe verschlüsselte Ausgabe."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "importEncipherment": {
@@ -529,7 +529,7 @@
     "label.resetForced": "Zurücksetzen erzwingen",
     "label.remainingSessionTime": "Verbleibende Sitzungsdauer",
     "label.currentController": "Aktueller Controller",
-    "label.controllerId": "Controller ID",
+    "label.controllerId": "Controller-Kennung",
     "label.action": "Aktion",
     "label.account": "Konto",
     "label.duration": "Dauer",
@@ -844,12 +844,12 @@
     "label.clusterState": "Cluster Status",
     "label.componentState": "Status",
     "label.clusterNodeState": "Zustand",
-    "label.JS7ControllerId": "Controller ID",
+    "label.JS7ControllerId": "Controller-Kennung",
     "label.architecture": "Architektur",
     "label.version": "Version",
     "label.title": "Titel",
     "label.url": "URL",
-    "label.controllerId": "Controller ID",
+    "label.controllerId": "Controller-Kennung",
     "label.securityLevel": "Sicherheitsstufe",
     "label.distribution": "Distribution",
     "label.startedAt": "Gestartet um",
@@ -904,7 +904,7 @@
     "button.proxyService": "Proxy-Dienst",
     "button.removeFromInventory": "Aus dem Inventar entfernen",
     "button.viewAllAgentsDetails": "Details aller Agenten",
-    "button.confirmNodeLoss": "Verlust einer Controller Instanz bestätigen",
+    "button.confirmNodeLoss": "Verlust einer Controller-Instanz bestätigen",
     "button.removeRepository": "Aus Inventar entfernen",
     "button.updateURL": "URL aktualisieren",
     "button.lognotification": "Protokoll-Benachrichtigungsdienst",
@@ -923,7 +923,7 @@
     "message.dailyPlanOverview": "Das Steuerelement zeigt die Übersicht des Tagesplans",
     "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.apiServerStatus": "Das Steuerelement zeigt den Status des API Server",
-    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz '{{lossNode}}' nicht gestartet ist?",
+    "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller-Instanz '{{lossNode}}' nicht gestartet ist?",
     "message.confirmAgentNodeLoss": "Bestätigen Sie, dass die Agent Instanz '{{lossNode}}' nicht gestartet ist?"
   },
   "dailyPlan": {
@@ -1151,8 +1151,8 @@
     },
     "certificate": {
       "label": {
-        "primaryControllerCert": "Zertifikat der Primären Controller Instanz",
-        "secondaryControllerCert": "Zertifikat der Sekundären Controller Instanz",
+        "primaryControllerCert": "Zertifikat der Primären Controller-Instanz",
+        "secondaryControllerCert": "Zertifikat der Sekundären Controller-Instanz",
         "primaryJocCert": "Zertifikat der Primären JOC Cockpit Instanz",
         "secondaryJocCert": "Zertifikat der Sekundären JOC Cockpit Instanz"
       },
@@ -1160,16 +1160,16 @@
         "addCertificates": "Zertifikate hinzufügen"
       },
       "placeholder": {
-        "primaryControllerCert": "Pfad zum Zertifikat der Primären Controller Instanz hinzufügen",
-        "secondaryControllerCert": "Pfad zum Zertifikat der Sekundären Controller Instanz hinzufügen",
+        "primaryControllerCert": "Pfad zum Zertifikat der Primären Controller-Instanz hinzufügen",
+        "secondaryControllerCert": "Pfad zum Zertifikat der Sekundären Controller-Instanz hinzufügen",
         "primaryJocCert": "Pfad zum Zertifikat der Primären JOC Cockpit Instanz hinzufügen",
         "secondaryJocCert": "Pfad zum Zertifikat der Sekundären JOC Cockpit Instanz hinzufügen"
       },
       "tooltip": {
-        "primaryControllerCert": "Das Zertifikat der Primären Controller Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
-        "secondaryControllerCert": "Das Zertifikat der Sekundären Controller Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
-        "primaryJocCert": "Das Zertifikat der Primären JOC Cockpit Instanz wird von Controller Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
-        "secondaryJocCert": "Das Zertifikat der Sekundären JOC Cockpit Instanz wird von Controller Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung)."
+        "primaryControllerCert": "Das Zertifikat der Primären Controller-Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "secondaryControllerCert": "Das Zertifikat der Sekundären Controller-Instanz wird von Agenten benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "primaryJocCert": "Das Zertifikat der Primären JOC Cockpit Instanz wird von Controller-Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung).",
+        "secondaryJocCert": "Das Zertifikat der Sekundären JOC Cockpit Instanz wird von Controller-Instanzen benötigt, die für HTTPS Mutual Authentication konfiguriert sind (Voreinstellung)."
       }
     },
     "agent": {
@@ -1195,7 +1195,7 @@
         "httpsPort": "HTTPS Port",
         "javaHome": "Java Installationsverzeichnis",
         "javaOptions": "Java Optionen",
-        "controllerId": "Controller ID",
+        "controllerId": "Controller-Kennung",
         "keyStore": "Schlüsselspeicher",
         "keyStorePassword": "Schlüsselspeicher Kennwort",
         "keyPassword": "Schlüssel Kennwort",
@@ -1235,7 +1235,7 @@
         "httpsPort": "HTTPS Port angeben",
         "javaHome": "Java Installationsverzeichnis angeben",
         "javaOptions": "Java Optionen angeben",
-        "controllerId": "Controller ID angeben",
+        "controllerId": "Controller-Kennung angeben",
         "keyStore": "Schlüsselspeicher angeben",
         "keyStorePassword": "Schlüsselspeicher Kennwort angeben",
         "keyPassword": "Schlüssel Kennwort angeben",
@@ -1268,7 +1268,7 @@
         "httpsPort": "Der Agent überwacht diesen HTTPS Port, über den Kommandos des Controller entgegengenommen werden.\n\nDer Port muss im Netzwerk für den Controller erreichbar sein.",
         "javaHome": "Das Java Installationsverzeichnis ist häufig durch die `JAVA_HOME` Umgebungsvariable bestimmt.",
         "javaOptions": "Java Optionen des Agenten können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. `-Xmx512m`.",
-        "controllerId": "Die Controller ID identifiziert den Controller, für den der Agent Jobs ausführt.",
+        "controllerId": "Die Controller-Kennung identifiziert den Controller, für den der Agent Jobs ausführt.",
         "keyStore": "Der Schlüsselspeicher (keystore) enthält den privaten Schlüssel des Agenten, der für HTTPS Verbindungen zum Agenten verwendet wird.",
         "keyStorePassword": "Der Schlüsselspeicher (keystore) ist durch ein Kennwort geschützt.",
         "keyPassword": "Der private Schlüssel ist durch ein Kennwort geschützt.\n\nMit dem häufig eingesetzten PKCS12 Format für Schlüsselspeicher müssen das Kennwort des Schlüsselspeichers und des Schlüssels übereinstimmen.",
@@ -1304,7 +1304,7 @@
         "javaHome": "Java Installationsverzeichnis",
         "javaOptions": "Java Optionen",
         "jocRef": "Referenz JOC Cockpit",
-        "controllerId": "Controller ID",
+        "controllerId": "Controller-Kennung",
         "keyStore": "Schlüsselspeicher",
         "keyStorePassword": "Schlüsselspeicher Kennwort",
         "keyPassword": "Schlüssel Kennwort",
@@ -1319,10 +1319,10 @@
       },
       "button": {
         "addController": "Controller hinzufügen",
-        "addSecondaryController": "Sekundäre Controller Instanz hinzufügen",
+        "addSecondaryController": "Sekundäre Controller-Instanz hinzufügen",
         "addAnotherController": "Controller hinzufügen",
         "removeController": "Controller entfernen",
-        "removeSecondaryController": "Sekundäre Controller Instanz entfernen"
+        "removeSecondaryController": "Sekundäre Controller-Instanz entfernen"
       },
       "placeholder": {
         "host": "Rechner angeben",
@@ -1345,7 +1345,7 @@
         "javaHome": "Java Installationsverzeichnis angeben",
         "javaOptions": "Java Optionen angeben",
         "jocRef": "JOC Cockpit Referenz angeben",
-        "controllerId": "Controller ID angeben",
+        "controllerId": "Controller-Kennung angeben",
         "keyStore": "Schlüsselspeicher angeben",
         "keyStorePassword": "Schlüsselspeicher Kennwort angeben",
         "keyPassword": "Schlüssel Kennwort angeben",
@@ -1378,8 +1378,8 @@
         "httpsPort": "Der Controller überwacht diesen HTTPS Port, über den Kommandos von JOC Cockpit entgegengenommen werden.\n\nDer Port muss im Netzwerk für JOC Cockpit erreichbar sein.",
         "javaHome": "Das Java Installationsverzeichnis ist häufig durch die `JAVA_HOME` Umgebungsvariable bestimmt.",
         "javaOptions": "Java Optionen des Controller können u.a. zur Vergrößerung des Heap Space eingesetzt werden, z.B. `-Xmx1g`.",
-        "jocRef": "Die JOC Cockpit ID identifiziert JOC Cockpit, das den Controller verwaltet.",
-        "controllerId": "Die Controller ID identifiziert den Controller.\n\nSie kann während der Lebenszeit des Controller nicht geändert werden.",
+        "jocRef": "Die JOC Cockpit Kennung identifiziert JOC Cockpit, das den Controller verwaltet.",
+        "controllerId": "Die Controller-Kennung identifiziert den Controller.\n\nSie kann während der Lebenszeit des Controller nicht geändert werden.",
         "keyStore": "Der Schlüsselspeicher (keystore) enthält den privaten Schlüssel des Controller, der für HTTPS Verbindungen zum Controller verwendet wird.",
         "keyStorePassword": "Der Schlüsselspeicher (keystore) ist durch ein Kennwort geschützt.",
         "keyPassword": "Der private Schlüssel ist durch ein Kennwort geschützt.\n\nMit dem häufig eingesetzten PKCS12 Format für Schlüsselspeicher müssen das Kennwort des Schlüsselspeichers und des Schlüssels übereinstimmen.",
@@ -1513,7 +1513,7 @@
         "homeOwner": "Das Anwenderkonto des Eigentümers des Installationsverzeichnisses.",
         "dataOwner": "Das Anwenderkonto des Eigentümers des Datenverzeichnisses.",
         "runUser": "Das Anwenderkonto des Dienstes von JOC Cockpit zur Laufzeit.",
-        "title": "Der Titel der JOC Cockpit Instanz erscheint in der Sicht ÜBERSICHT.",
+        "title": "Der Titel der JOC Cockpit Instanz erscheint in der Ansicht *ÜBERSICHT*.",
         "securityLevel": "Die Sicherheitsstufe von JOC Cockpit regelt unter anderem die Handhabung von Signierzertifikaten für das Ausrollen von Areitsabläufen.",
         "dbmsConfig": "Die DBMS Hibernate Konfigurationsdatei (hibernate.cfg.xml) spezifiziert die Verbindung zur Datenbank.",
         "dbmsDriver": "Die DBMS JDBC Driver Datei (*.jar) stellt die Verbindung zur Datenbank her.\n\nEine Reihe von JDBC Driver Dateien werden mit JOC Cockpit ausgeliefert, Anwender können eine eigene Version einer DBMS JDBC Driver Datei angeben.",
@@ -1802,8 +1802,8 @@
     "tooltip.workflowExampleForUnix": "Beispiele für Arbeitsabläufe mit Agenten unter Unix",
     "tooltip.workflowExampleForWindows": "Beispiele für Arbeitsabläufe mit Agenten unter Windows",
     "tooltip.invalidLicense": "Lizenz ungültig. Dies kann darauf zurückgehen, dass das Startdatum der Gültigkeitsperiode nicht erreicht ist oder das Ablaufdatum überschritten ist.",
-    "tooltip.jocMonitorEvent": "Die Flagge signalisiert Warnungen und Fehler bei der Verarbeitung von Aufträgen, z.B. wenn Jobs fehlschlagen.\n\nDie Flagge kennzeichnet Warnungen mit gelber Farbe und Fehler mit roter Farbe.\n\nNach Anklicken der Flagge werden die letzten 10 Warnungen und Fehler angezeigt.\n\nDie vollständige Liste der Warnungen und Fehler finden Sie in der Ansicht ÜBERWACHUNG->Benachrichtigungen.",
-    "tooltip.systemMonitorEvent": "Die Flagge signalisiert Warnungen und Fehler von JS7 Komponenten, z.B. Verbindungsverluste zur Datenbank.\n\nDie Flagge kennzeichnet Warnungen mit gelber Farbe und Fehler mit roter Farbe.\n\nNach Anklicken der Flagge werden die letzten 10 Warnungen und Fehler angezeigt.\n\nDie vollständige Liste der Warnungen und Fehler finden Sie in der Ansicht ÜBERWACHUNG->Benachrichtigungen.",
+    "tooltip.jocMonitorEvent": "Die Flagge signalisiert Warnungen und Fehler bei der Verarbeitung von Aufträgen, z.B. wenn ^Aufträge|auftrag^ ^fehlschlagen|fehlgeschlagen^.\n\nDie Flagge kennzeichnet Warnungen mit gelber Farbe und Fehler mit roter Farbe.\n\nNach Anklicken der Flagge werden die letzten 10 Warnungen und Fehler angezeigt.\n\nDie vollständige Liste der Warnungen und Fehler finden Sie in der Ansicht *ÜBERWACHUNG -> Auftragsbenachrichtigungen*.",
+    "tooltip.systemMonitorEvent": "Die Flagge signalisiert Warnungen und Fehler von JS7 Komponenten, z.B. Verbindungsverlust zur Datenbank.\n\nDie Flagge kennzeichnet Warnungen mit gelber Farbe und Fehler mit roter Farbe.\n\nNach Anklicken der Flagge werden die letzten 10 Warnungen und Fehler angezeigt.\n\nDie vollständige Liste der Warnungen und Fehler finden Sie in der Ansicht *ÜBERWACHUNG -> Systembenachrichtigungen*.",
     "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von JOC Cockpit zu importieren.\n\nDer Import des `Defaults.zip` Archivs erzeugt einen Ordner mit demselben Namen, der Job-Ressourcen für globale [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) in Shell Jobs enthält.",
     "message.line2": "Die Archive `Examples.tar.gz` und `Examples.zip` enthalten Beispiele für Arbeitsabläufe und Jobs zum Betrieb mit Agenten unter Unix und Windows.\n\nDie Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen der Erläuterungen der [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
     "link": {
@@ -2209,7 +2209,7 @@
     "tooltips": {
       "calendar": {
         "name": "^Kalender^ werden von ^Zeitplänen|zeitplan^ genutzt, um ^Aufträge|auftrag^ für jeden Tag des Kalenders zu erzeugen.\n\nFür den Namen des Kalenders können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Kalender^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Kalender^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Kalender^s kann nach Belieben angegeben werden.",
         "type": "^Kalender^ können für Arbeitstage und für Nicht-Arbeitstage eingerichtet werden.\n\nBeim Zuweisen eines Kalenders zu einem ^Zeitplan^ können zusätzlich Kalender der Nicht-Arbeitstage verwendet werden, die die Tage zur Ausführung von ^Arbeitsabläufen|arbeitsablauf^ beschränken.",
         "validFrom": "Optional kann die Gültigkeitsperiode des ^Kalender^s angegeben werden.\n\nVor dem angegebenen Datum werden von ^Zeitplänen|zeitplan^ keine ^Aufträge|auftrag^ erzeugt.",
@@ -2217,7 +2217,7 @@
       },
       "fileOrderSource": {
         "name": "Eine ^Dateiauftragsquelle^ wird zur Verzeichnisüberwachung genutzt.\n\nFür jede eintreffende Datei wird ein ^Auftrag^ eingerichtet.\n\n^Arbeitsabläufe|arbeitsablauf^ werden automatisch bei Eintreffen von Dateien gestartet.\n\nFür den Namen der Dateiauftragsquelle können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Dateiauftragsquelle^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Dateiauftragsquelle^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Dateiauftragsquelle^ kann nach Belieben angegeben werden.",
         "--------ADD FILE ORDER SOURCE TOOLTIP------------": "Tag name",
         "tagName": "Tag name",
@@ -2230,13 +2230,13 @@
       },
       "jobResource": {
         "name": "Eine ^Job-Ressource^ ist eine Menge von Variablen, d.h. Paaren von Namen und Werten, die allen ^Arbeitsabläufen|arbeitsablauf^ und ^Job^s zur Verfügung gestellt werden kann.\n\nEs gibt zwei Varianten: \n- Argumente sind für JITL Jobs und Java Jobs verfügbar.\n- Umgebungsvariablen sind für Shell Jobs verfügbar.\n\nDie Werte von Umgebungsvariablen können Argumente aufführen wie in `$argument`.\n\nFür den Namen der Job-Ressource können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Job-Ressource^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Job-Ressource^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Job-Ressource^ kann nach Belieben angegeben werden."
       },
       "board": {
         "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Anicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Notizbretts^ kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
         "endOfLife": "Die Lebensdauer der ^Notiz^ wird im Format *hh:mm:ss* bestimmt, z.B. *01:30:00* für ein-einhalb Stunden.",
@@ -2245,18 +2245,18 @@
       },
       "lock": {
         "name": "^Ressourcen-Sperre^n werden zur Limitierung der Parallelität von ^Job^s verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen ^Arbeitsabläufen|arbeitsablauf^.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im Inventar.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Ressourcen-Sperre^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Ressourcen-Sperre^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Ressourcen-Sperre^ kann nach Belieben angegeben werden.",
         "limit": "Wird eine ^Ressourcen-Sperre^ von mehreren ^Job^s geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, das verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und ^Job^s ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
         "name": "Ein ^Zeitplan^ wird verwendet, um automatisch ^Aufträge|auftrag^ für Arbeitsabläufe basierend auf einem Kalender zu erzeugen.\n\nDer Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Zeitplan^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Zeitplan^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Zeitplan^s kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen oder mehrere ^Arbeitsabläufe|arbeitsablauf^ muss angegeben werden, für die ^Aufträge|auftrag^ erzeugt werden.",
         "planOrderAutomatically": "^Aufträge|auftrag^ werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
         "submitOrderToControllerWhenPlanned": "Geplante ^Aufträge|auftrag^ werden automatisch an den ^Controller^ übermittelt.\n\nIn Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
-        "orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nAnwender können den Auftragsnamen bei der Anlage von ^Zeitplänen|zeitplan^ und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Sicht HISTORIE, verwendet werden.",
+        "orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nAnwender können den Auftragsnamen bei der Anlage von ^Zeitplänen|zeitplan^ und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Ansicht *HISTORIE*, verwendet werden.",
         "startNode": "Die Start-Position eines ^Auftrag^s kann vor der angegeben Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag startet ab der angegebenen Position.",
         "endNode": "Die End-Position eines ^Auftrag^s kann vor der anggegebenen Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag endet vor der angegebenen Position.",
         "blockPosition": "Für ^Arbeitsabläufe|arbeitsablauf^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork-Join Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n\nDer ^Auftrag^ verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
@@ -2271,7 +2271,7 @@
       },
       "script": {
         "name": "Ein ^Skript-Baustein^ wird verwendet, um wiederkehrend verwendeten Code in ^Job-Skript^e einzufügen.\n\nDer Name eines Skript-Bausteins ist eindeutig im Inventar. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Skript-Baustein^ angezeigt wird.\n\nDie Sicht RESSOURCEN erlaubt die Verwaltung von Dokumentationen.",
+        "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Skript-Baustein^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Skript-Baustein^s kann nach Belieben angegeben werden.",
         "script": "Der Inhalt des ^Skript-Baustein^s kann je nach Verwendung in ^Job-Skript^en aus Shell Kommandos oder Code für Skriptsprachen wie Python, PowerShell etc. bestehen.",
         "autocompleteShortCut": "Verwenden Sie die Tasten Strg+Leertaste, um die Liste der Skript-Bausteine anzuzeigen."
@@ -2306,8 +2306,8 @@
       "workflow": {
         "name": "Der Name eines ^Arbeitsablauf^s ist eindeutig im Inventar.\n\nDie meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "jobResourceNames": "^Job-Ressourcen^ definieren gemeinsame genutzte Variablen.\n\nDie Variablen der ausgewählten Job-Ressourcen stehen allen ^Job^s des ^Arbeitsablauf^s zur Verfügung.",
-        "documentation": "Einem ^Arbeitsablauf^ oder ^Job^ kann eine ^Dokumetation^ zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird.\n\nDokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
-        "title": "Der Titel des ^Arbeitsablauf^s kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
+        "documentation": "Einem ^Arbeitsablauf^ oder ^Job^ kann eine ^Dokumetation^ zugewiesen werden, die in der Ansicht *ARBEITSABLÄUFE* angezeigt wird.\n\nDokumentationen werden in der Ansicht *RESSOURCEN -> Dokumentationen* verwaltet.",
+        "title": "Der Titel des ^Arbeitsablauf^s kann nach Belieben angegeben werden. Der Titel wird in der Ansicht *ARBEITSABLÄUFE* angezeigt.",
         "timeZone": "Die Zeitzone wird verwendet, um ^Zutrittszeiten^ und Zeiten der ^Cycle Anweisung^ zu bestimmen.\n\nPer Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am ^Auftrag^.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft.\n\n^Job^s, die undeklarierte Variablen referenzieren, die nicht zu einem ^Auftrag^ erfasst wurden, werden fehlschlagen.",
         "duration": "Dauer.",
@@ -2364,7 +2364,7 @@
         "job": {
           "name": "Der Name eines ^Job^s ist eindeutig im ^Arbeitsablauf^.\n\nDerselbe Job kann mehrfach als Anweisung im Arbeitsablauf vorkommen sofern er durch seine Adresse unterschieden ist.\n\nFür Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
           "label": "Eindeutige Adresse des ^Job^s oder der Anweisung im ^Arbeitsablauf^.\n\nEin Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Adresse unterschieden.",
-          "title": "Der Titel eines ^Job^s kann nach Belieben angegeben werden.\n\nDer Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
+          "title": "Der Titel eines ^Job^s kann nach Belieben angegeben werden.\n\nDer Titel wird in der Ansicht *ARBEITSABLÄUFE* angezeigt.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit `SCHEDULER_PARAM_` präfiziert sind - analog zu JS1",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den ^Job^ mit diesen Zugangsdaten für einen anderen Anwender zu starten.\n\nOptional kann das Anwenderprofil geladen werden.",
           "loadUserProfile": "Windows Anwenderprofil laden. Das Profil enthält bspw. Umgebungsvariablen und Schlüssel der Windows Registry.\n\nDiese Einstellung kann nur verwendet werden, wenn ein Berechtigungsschlüssel angegeben wurde.",
@@ -2389,7 +2389,7 @@
           "mailCC": "Kopie der E-Mail an den angegeben Empfänger senden.\n\nMehrere E-Mail Adressen können durch Komma getrennt angegeben werden.",
           "mailBcc": "Blindkopie der E-Mail an den angegeben Empfänger senden.\n\nMehrere E-Mail Adressen können durch Komma getrennt angegeben werden.",
           "mailOn": "E-Mail bei Ereignissen wie Fehler, Warnung oder Erfolg versenden.",
-          "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der Job-Vorlagen ausgewählt wird.",
+          "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der ^Job-Vorlage^n ausgewählt wird.",
           "onWarning": "Es können eine Reihe von ^Rückgabewert^en angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nIm Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt.\n\nEine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden, z.B. *0,1,2*. Ein Bereich wird durch zwei Punkte angegeben, z.B. *0..42*",
           "agentAssignment": "Dem Job wird ein ^Autonomer Agent|standalone-agent^ oder ^Subagenten-Cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung^ und ^StickySubagent Anweisung^ wird ein ^Agenten-Cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung^ über eine Variable liefert.",
           "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job Skript^ bzw. die Java Klasse ausführt.",
@@ -2421,7 +2421,7 @@
         "addOrder": {
           "workflowName": "Die ^AddOrder Anweisung^ erlaubt es einem anderen ^Arbeitsablauf^ einen ^Auftrag^ hinzuzufügen.",
           "arguments": "Argumente müssen dem ^Auftrag^ hinzugefügt werden sofern diese vom ^Arbeitsablauf^ verlangt werden. Optionale Argumente können entfallen.",
-          "remainWhenTerminated": "Nach Terminierung soll der ^Auftrag^ im ^Arbeitsablauf^ verbleiben.\n\nDies erfordert die manuelle Ausführung der Funktion *Arbeitsablauf verlassen*, die z.B. in der Sicht ARBEITSABLAUF verfügbar ist.",
+          "remainWhenTerminated": "Nach Terminierung soll der ^Auftrag^ im ^Arbeitsablauf^ verbleiben.\n\nDies erfordert die manuelle Ausführung der Funktion *Arbeitsablauf verlassen*, die z.B. in der Ansicht *ARBEITSABLÄUFE* verfügbar ist.",
           "startPosition": "Erlaubt die Auwahl der Start-Position des ^Auftrag^s im ^Arbeitsablauf^.\n\nOhne Start-Position startet der Aufrag ab Beginn des Arbeitsablaufs.",
           "endPositions": "Erlaubt die Auswahl einer oder mehrerer Ende-Positionen des ^Auftrag^s im ^Arbeitsablauf^.\n\nOhne Ende-Position endet der Auftrag mit dem Ende des Arbeitsablaufs.",
           "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
@@ -2444,7 +2444,7 @@
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "controllerId": "Controller Id",
+        "controllerId": "Controller-Kennung",
         "useRelativePathOnly": "Beim Export von Objekten wird standardmäßig ein absoluter Pfad innerhalb der Exportdatei verwendet.\n\nBenutzer können einen relativen Pfad angeben, der ab dem ausgewählten Ordner verwendet wird.\n\nWenn kein Ordner ausgewählt ist, sondern nur Objekte, werden diese bei Verwendung eines relativen Pfads als oberste Objekte der Exportdatei hinzugefügt.",
         "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
@@ -3575,18 +3575,18 @@
       "restore_prefix": "Benennt das Präfix für Objektnamen, das verwendet wird, wenn Funktionen zum Wiederherstellen von Objekten verwendet werden.",
       "import_suffix": "Benennt das Suffix für Objektnamen, das verwendet wird, wenn Objekte aus einer Archiv-Datei importiert werden.",
       "import_prefix": "Benennt das Präfix für Objektnamen, das verwendet wird, wenn Objekte aus einer Archiv-Datei importiert werden.",
-      "show_view_filetransfer": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht DATEIÜBERTRAGUNGEN sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_dashboard": "Vereinbart, dass unabhängig von Anwenderberechtigungen die die Sicht ÜBERSICHT sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_dailyplan": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht TAGESPLAN sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_workflows": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht ARBEITSABLÄUFE sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_resources": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht RESSOURCEN sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_history": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht HISTORIE sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_auditlog": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht PRÜFPROTOKOLL sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht KONFIGURATION sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_monitor": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht ÜBERWACHUNG sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "show_view_report": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Sicht BERICHTE sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung des JOC Dienstes (der in JOC Cockpit abläuft) gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller Instanz vor.",
-      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller Instanz vor.",
+      "show_view_filetransfer": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *DATEIÜBERTRAGUNGEN* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_dashboard": "Vereinbart, dass unabhängig von Anwenderberechtigungen die die Ansicht *ÜBERSICHT* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_dailyplan": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *TAGESPLAN* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_workflows": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *ARBEITSABLÄUFE* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_resources": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *RESSOURCEN* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_history": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *HISTORIE* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_auditlog": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *PRÜFPROTOKOLL* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *KONFIGURATION* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_monitor": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *ÜBERWACHUNG* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "show_view_report": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *BERICHTE* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
+      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung von JOC Cockpit gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
+      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird.\n\nWindows unterstützt kein Unicode, sondern verwendet Code Pages.\n\nFür den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Anwender die Code Page angeben, weitere Details siehe [JS7 - Unicode Support](https://kb.sos-berlin.com/display/JS7/JS7+-+Unicode+Support)",
       "disable_warning_on_license_expiration": "Warnungen für Lizenzablauf abschalten.",
       "log_ext_directory": "Gibt ein Verzeichnis an, auf das JOC Cockpit zugreifen kann und in das Kopien der Auftrags- und Prozessprotokolldateien geschrieben werden.",
@@ -3633,11 +3633,11 @@
     },
     "kiosk": {
       "kiosk_role": "Für den Kiosk-Modus muss eine spezielle Rolle erstellt werden. Die Kiosk-Rolle wird nicht mit JOC Cockpit ausgeliefert.\n\nDie Rolle muss von einem Benutzer mit Leseberechtigung für Controller und JOC Cockpit erstellt werden.\n\nStandardmäßig lautet der Name der Rolle `kiosk`. Benutzer können den Namen der Rolle ändern.",
-      "view_dashboard_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERSICHT angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
-      "view_monitor_order_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Auftragsbenachrichtigungen angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
-      "view_monitor_system_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Systembenachrichtigungen angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
-      "view_history_tasks_duration": "Die Dauer in Sekunden, für die die  Ansicht HISTORIE -> Prozesse angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
-      "view_history_orders_duration": "Die Dauer in Sekunden, für die die  Ansicht HISTORIE -> Aufträge angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt."
+      "view_dashboard_duration": "Die Dauer in Sekunden, für die die Ansicht *ÜBERSICHT* angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_monitor_order_notification_duration": "Die Dauer in Sekunden, für die die Ansicht *ÜBERWACHUNG -> Auftragsbenachrichtigungen* angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_monitor_system_notification_duration": "Die Dauer in Sekunden, für die die Ansicht *ÜBERWACHUNG -> Systembenachrichtigungen* angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_history_tasks_duration": "Die Dauer in Sekunden, für die die  Ansicht *HISTORIE -> Prozesse* angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_history_orders_duration": "Die Dauer in Sekunden, für die die  Ansicht *HISTORIE -> Aufträge* angezeigt wird.\n\nEin Wert von 0 schließt die Ansicht vom Kioskmodus aus.\n\nBei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt."
     }
   },
   "user": {
@@ -4357,7 +4357,7 @@
     "tooltip.listEntryMode": "Eingabemodus für Listen",
     "tooltip.facetEntryMode": "Eingabemodus für Prüfungen",
     "tooltip.editorEntryMode": "Direkter Eingabemodus",
-    "tooltip.removeJobTemplateReference": "Verweis auf Job-Vorlage entfernen",
+    "tooltip.removeJobTemplateReference": "Verweis auf ^Job-Vorlage^ entfernen",
     "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
     "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
     "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung der `Cycle` Anweisung.",
