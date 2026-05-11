@@ -17,8 +17,9 @@
   <div class="modal-body p-a">
     @if (!isList) {
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label"
-               translate>workflow.label.facet</label>
+        <label class="col-md-4 col-lg-3 form-control-label">
+          <span [appRichTooltip]="'workflow.tooltip.facet' | translate" translate>workflow.label.facet</span>
+        </label>
         <div class="col-md-8 col-lg-9" [ngClass]="{'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || variable.value.invalid}">
           <textarea class="z-index" #facet="ngModel" name="facet" autofocus (keydown)="checkRegularExp(variable.value)" (blur)="checkRegularExp(variable.value)"
                     [(ngModel)]="variable.value.facet" nz-input placeholder="{{'common.placeholder.regex' | translate}}" nzAutosize></textarea>
@@ -35,7 +36,9 @@
     }
     @if (!isList) {
       <div class="form-group row">
-        <label class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
+        <label class="col-md-4 col-lg-3 form-control-label">
+          <span [appRichTooltip]="'workflow.tooltip.message' | translate" translate>workflow.label.message</span>
+        </label>
         <div class="col-md-8 col-lg-9">
           <textarea rows="3" class="form-control" name="message"
                     [(ngModel)]="variable.value.message" placeholder="{{'workflow.placeholder.enterMessage' | translate}}">

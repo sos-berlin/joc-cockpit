@@ -23,7 +23,8 @@
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
     <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceName
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.identityServiceName' | translate" translate>user.label.identityServiceName</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -44,7 +45,8 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceType
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.identityServiceType' | translate" translate>user.label.identityServiceType</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -56,7 +58,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.identityServiceOrdering</label>
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.identityServiceOrdering' | translate" translate>user.label.identityServiceOrdering</span>
+      </label>
       <div class="col-sm-6">
         <nz-input-number [(ngModel)]="currentObj.ordering" [nzMin]="0" [nzStep]="1"
                          name="ordering"></nz-input-number>
@@ -64,7 +68,9 @@
     </div>
     @if (currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.identityServiceRequired</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'user.tooltip.identityServiceRequired' | translate" translate>user.label.identityServiceRequired</span>
+        </label>
         <div class="col-sm-6">
           <label [(ngModel)]="currentObj.required" name="serviceRequired"
                  nz-checkbox></label>
@@ -73,7 +79,9 @@
     }
     @if ((currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'user.tooltip.usedAsSecondFactor' | translate" translate>user.label.usedAsSecondFactor</span>
+        </label>
         <div class="col-sm-6">
           <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
                  nz-checkbox></label>
@@ -82,7 +90,9 @@
     }
     @if (identityService) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.disable</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'user.tooltip.disable' | translate" translate>user.label.disable</span>
+        </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentObj.disabled"
                  name="disabled"></label>
@@ -91,7 +101,8 @@
     }
     @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
       <div class="form-group row b-t p-t">
-        <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate" translate>user.label.serviceAuthenticationScheme</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -103,7 +114,9 @@
     }
     @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.listOfFido</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.listOfFido' | translate" translate>user.label.listOfFido</span>
+        </label>
         <div class="col-sm-6">
           <app-select-input [name]="'fidoName'"
                             [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
@@ -114,7 +127,9 @@
     }
     @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.listOfCert' | translate" translate>user.label.listOfCert</span>
+        </label>
         <div class="col-sm-6">
           <app-select-input [name]="'certName'"
                             [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"

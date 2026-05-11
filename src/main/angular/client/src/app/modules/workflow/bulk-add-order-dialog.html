@@ -15,7 +15,9 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
+                <label class="col-sm-4 form-control-label">
+                    <span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span>
+                </label>
                 <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
                     <input #orderId="ngModel" [(ngModel)]="orders[0].orderId" [appAutofocus]="true" autocomplete="off"
                         class="form-control" identifierValidation maxlength="30" name="orderId0"
@@ -32,7 +34,9 @@
 
             <!-- Force Job Admission -->
             <div class="form-group row">
-                <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
+                <label class="col-sm-4 ">
+                    <span [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                </label>
                 <div class="col-md-8">
                     <label [(ngModel)]="orders[0].forceJobAdmission" name="ignoreAdmissionTimes0" nz-checkbox>
                     </label>
@@ -42,7 +46,9 @@
             <!-- Start Time -->
             <!-- @if (orders.length < 2) { -->
               <div class="form-group row">
-                    <label class="col-sm-4 " translate>common.label.startTime</label>
+                    <label class="col-sm-4 ">
+                        <span [appRichTooltip]="'order.tooltips.addOrder.startTime' | translate" translate>common.label.startTime</span>
+                    </label>
                     <div class="col-md-8">
                         <nz-radio-group [(ngModel)]="orders[0].at" name="at" (ngModelChange)="onTimeChange($event, 0)">
                             <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -57,7 +63,8 @@
             <!-- Time for 'later' option -->
             @if (orders[0].at == 'later') {
               <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>common.label.time
+                    <label class="col-sm-4 form-control-label">
+                        <span [appRichTooltip]="'order.tooltips.addOrder.time' | translate" translate>common.label.time</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -78,7 +85,8 @@
             <!-- Date for 'date' option -->
             @if (orders[0].at == 'date') {
               <div class="form-group row">
-                    <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+                    <label class="col-sm-4 form-control-label">
+                        <span [appRichTooltip]="'order.tooltips.addOrder.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div class="col-sm-6">

@@ -71,10 +71,10 @@
         @if (isScript) {
           <div class="col-md-12">
             @if (!predicate) {
-              <label class="_600 m-b-xs" translate>workflow.label.script</label>
+              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.script' | translate" translate>workflow.label.script</span></label>
             }
             @if (predicate) {
-              <label class="_600 m-b-xs" translate>workflow.label.predicate</label>
+              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.predicate' | translate" translate>workflow.label.predicate</span></label>
             }
             @if (permission && permission.joc.inventory.view) {
               <a class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
@@ -109,7 +109,7 @@
         }
         @if (schedule) {
           <div class="col-md-12 m-t-sm">
-            <label class="_600 m-b-xs" translate>workflow.label.listOfSchemes</label>
+            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.listOfSchemes' | translate" translate>workflow.label.listOfSchemes</span></label>
             @if (permission && permission.joc.inventory.view) {
               <a class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
             }
@@ -160,7 +160,7 @@
         }
         @if (periodList.length > 0) {
           <div class="col-md-12 m-t-sm">
-            <label class="_600 m-b-xs" translate>workflow.label.admissionTime</label>
+            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.admissionTime' | translate" translate>workflow.label.admissionTime</span></label>
             <div class="table-responsive">
               <table class="table table-hover table-bordered">
                 <thead>

@@ -30,7 +30,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.user
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.user' | translate" translate>user.label.user</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -54,7 +55,9 @@
     </div>
     @if (isPasswordVisible) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.password</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.password' | translate" translate>user.label.password</span>
+        </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
           <input type="password"
                  class="form-control"
@@ -75,7 +78,9 @@
     }
     @if (isPasswordVisible && !copy) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'profile.tooltip.confirmPassword' | translate" translate>profile.label.confirmPassword</span>
+        </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
           <input type="password"
                  [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false"
@@ -96,7 +101,9 @@
 
     @if (!copy && !secondFactor) {
       <div class="form-group row" [ngClass]="{'has-error': !isApprovalRoleValid}">
-        <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.roles' | translate" translate>user.label.roles</span>
+        </label>
         <div class="col-sm-6">
           <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [name]="'roles'"
                 [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" (modelChange)="onRolesChange()"></app-select-input>
@@ -114,7 +121,9 @@
 
     @if ((identityServiceType === 'JOC')) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'user.tooltip.forcePasswordChange' | translate" translate>user.label.forcePasswordChange</span>
+        </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
                  name="forcePasswordChange"></label>
@@ -123,7 +132,9 @@
     }
     @if (!newUser && !copy && identityServiceType) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.blocked</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'common.tooltip.blocked' | translate" translate>common.label.blocked</span>
+        </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.blocked"
                  name="blocked"></label>
@@ -132,7 +143,9 @@
     }
     @if (!newUser && !copy) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.disabled</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'user.tooltip.disabled' | translate" translate>user.label.disabled</span>
+        </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.disabled"
                  name="disabled"></label>

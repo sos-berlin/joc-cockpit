@@ -14,7 +14,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.label.userName
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'profile.tooltip.userName' | translate" translate>profile.label.userName</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -35,7 +36,8 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.firstName
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'monitor.approvers.tooltip.firstName' | translate" translate>monitor.approvers.label.firstName</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -56,7 +58,8 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.lastName
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'monitor.approvers.tooltip.lastName' | translate" translate>monitor.approvers.label.lastName</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -77,7 +80,8 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.email
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'monitor.approvers.tooltip.email' | translate" translate>monitor.approvers.label.email</span>
       </label>
       <div class="col-sm-8">
         <div class="row">

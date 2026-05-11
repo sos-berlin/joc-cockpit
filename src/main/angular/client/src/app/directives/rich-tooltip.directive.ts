@@ -55,9 +55,13 @@ export function mdToHtml(src: string): string {
     .replace(/\[([^\]]+)]\(context:([^:)]+):([^)]*)\)/g,
       '<a data-rt-action-type="$2" data-rt-action-param="$3" class="rt-action-link" tabindex="0" role="button">$1</a>')
     .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-    .replace(/\^([^^]+?)\^/g, (_match: string, term: string) => {
-      const key = term.trim().toLowerCase().replace(/\s+/g, '-');
-      return `<span class="glossary-term" data-glossary-key="${key}" data-glossary-label="${term.trim()}" tabindex="0" role="button" aria-label="${term.trim()} \u2014 glossary term">${term.trim()}<i class="fa fa-question-circle glossary-icon" aria-hidden="true"></i></span>`;
+    .replace(/~~(.+?)~~/g, '<del>$1</del>')
+    .replace(/\^([^^]+?)\^([a-zA-Z]*)/g, (_match: string, inner: string, suffix: string) => {
+      const pipeIdx = inner.indexOf('|');
+      const label   = (pipeIdx !== -1 ? inner.slice(0, pipeIdx) : inner).trim();
+      const key     = pipeIdx !== -1 ? inner.slice(pipeIdx + 1).trim() : label.toLowerCase().replace(/\s+/g, '-');
+      const display = suffix ? label + suffix : label;
+      return `<span class="glossary-term" data-glossary-key="${key}" data-glossary-label="${label}" tabindex="0" role="button" aria-label="${label} \u2014 glossary term">${display}</span>`;
     });
 
   // Bullet list: group consecutive lines starting with '- '

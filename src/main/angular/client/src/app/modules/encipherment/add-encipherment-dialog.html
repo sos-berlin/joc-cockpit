@@ -18,7 +18,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certAlias' | translate" translate>encipherment.label.certAlias</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -38,7 +39,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.certificate
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certificate' | translate" translate>encipherment.label.certificate</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -56,7 +58,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.privateKeyPath
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.privateKeyPath' | translate" translate>encipherment.label.privateKeyPath</span>
       </label>
       <div class="col-sm-9">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
@@ -71,7 +74,8 @@
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}" class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.jobResourceFolder
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.jobResourceFolder' | translate" translate>encipherment.label.jobResourceFolder</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -113,7 +117,7 @@
     <div class="form-group row">
       <div class="col-sm-12">
         @if (certificateObj.certAlias && title === 'updateCertificate') {
-          <a (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+          <a [appRichTooltip]="'encipherment.tooltips.addEncipherment.showAssignedAgents' | translate" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
         }
       </div>
     </div>
@@ -121,7 +125,7 @@
     @if (title === 'updateCertificate') {
       <div class="form-group row">
         <div class="col-sm-12">
-          <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
+          <a [appRichTooltip]="'encipherment.tooltips.addEncipherment.assignAgents' | translate" (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
         </div>
       </div>
     }
@@ -129,25 +133,29 @@
     @if (!showEncryptionSample && title === 'updateCertificate') {
       <div class="form-group row">
         <div class="col-sm-12">
-          <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
+          <a [appRichTooltip]="'encipherment.tooltips.addEncipherment.showEncryptionSample' | translate"(click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
         </div>
       </div>
     }
     @if (showEncryptionSample) {
       <div class="form-group row">
-        <label class="col-sm-3" translate>encipherment.label.plainText</label>
+        <label class="col-sm-3">
+          <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.plainText' | translate" translate>encipherment.label.plainText</span>
+        </label>
         <div class="col-sm-8">
           <input [(ngModel)]="plainText" name="plainText" class="form-control" placeholder="{{'encipherment.placeholder.plainText' | translate}}" />
         </div>
         <div class="col-sm-1">
-          <i (click)="encryptText(certificateObj.certAlias)" class="m-t-sm text-hover-color cursor"
+          <i [appRichTooltip]="'encipherment.tooltips.addEncipherment.encryptText' | translate" (click)="encryptText(certificateObj.certAlias)" class="m-t-sm text-hover-color cursor"
              nz-icon nzType="property-safety" nzTheme="outline"></i>
-          <a><i (click)="toggleEncryptionSample()" class="fa fa-times m-t-sm text-hover-color m-l-12"></i></a>
+          <a><i [appRichTooltip]="'encipherment.tooltips.addEncipherment.showEncryptionSample' | translate" (click)="toggleEncryptionSample()" class="fa fa-times m-t-sm text-hover-color m-l-12"></i></a>
         </div>
       </div>
       @if (encryptedText) {
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>encipherment.label.encrypt</label>
+          <label class="col-sm-3 form-control-label">
+            <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.encrypt' | translate" translate>encipherment.label.encrypt</span>
+          </label>
           <div class="col-sm-8">
             <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
           </div>

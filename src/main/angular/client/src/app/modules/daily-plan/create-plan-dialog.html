@@ -22,7 +22,9 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.chooseTemplates</label>
+      <label class="col-md-3">
+        <span [appRichTooltip]="'dailyPlan.tooltip.chooseTemplates' | translate" translate>dailyPlan.label.chooseTemplates</span>
+      </label>
       <div class="col-md-6">
         <nz-radio-group [(ngModel)]="object.at" name="at">
           <label nz-radio nzValue="all"><span translate>dailyPlan.label.all</span></label>
@@ -32,7 +34,9 @@
     </div>
     @if (object.at === 'template') {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+        </label>
         <div class="col-md-6">
           <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="selectedTemplates" [isPath]="true"
                             [list]="selectedTemplates"
@@ -42,7 +46,9 @@
     }
     @if (object.at === 'template' && selectedTemplates.paths.length > 0) {
       <div class="form-group row">
-        <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
+        <label class="col-md-3">
+          <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+        </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of selectedTemplates.paths; track path) {
             <div>
@@ -55,7 +61,9 @@
     }
     @if (object.at === 'template') {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+        </label>
         <div class="col-md-6">
           <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="object" [isPath]="true"
                             [list]="object"
@@ -66,7 +74,9 @@
     }
     @if (object.at === 'template' && object.paths.length > 0) {
       <div class="form-group row">
-        <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
+        <label class="col-md-3">
+          <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+        </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of object.paths; track path) {
             <div>
@@ -78,19 +88,25 @@
       </div>
     }
     <div class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.overwrite</label>
+      <label class="col-md-3">
+        <span [appRichTooltip]="'dailyPlan.tooltip.overwrite' | translate" translate>dailyPlan.label.overwrite</span>
+      </label>
       <div class="col-md-6">
         <label [(ngModel)]="object.overwrite" name="overwrite" nz-checkbox></label>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.submitWith</label>
+      <label class="col-md-3">
+        <span [appRichTooltip]="'dailyPlan.tooltip.submitWith' | translate" translate>dailyPlan.label.submitWith</span>
+      </label>
       <div class="col-md-6">
         <label [(ngModel)]="object.submitWith" name="submitWith" nz-checkbox></label>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.plannedAllAutomatically</label>
+      <label class="col-md-3">
+        <span [appRichTooltip]="'dailyPlan.tooltip.plannedAllAutomatically' | translate" translate>dailyPlan.label.plannedAllAutomatically</span>
+      </label>
       <div class="col-md-6">
         <label [(ngModel)]="object.includeNonAutoPlannedOrders" name="includeNonAutoPlannedOrders" nz-checkbox></label>
       </div>

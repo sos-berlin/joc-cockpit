@@ -15,7 +15,9 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>common.label.name</label>
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'profile.favoriteManagement.tooltip.name' | translate" translate>common.label.name</span>
+      </label>
       @if (type == 'AGENT') {
         <div [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}" class="col-sm-8">
           <nz-tree-select
@@ -69,7 +71,9 @@
     </div>
     @if (type == 'FACET') {
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'profile.favoriteManagement.tooltip.facet' | translate" translate>workflow.label.facet</span>
+        </label>
         <div [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}"
              class="col-sm-8">
           <textarea #facet="ngModel" (blur)="checkRegularExp(object)" (keydown)="checkRegularExp(object)" [(ngModel)]="object.content"

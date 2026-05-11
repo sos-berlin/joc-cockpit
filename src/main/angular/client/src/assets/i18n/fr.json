@@ -468,7 +468,28 @@
     "button.importCertificate": "Importer Certificat",
     "button.deleteCertificate": "Supprimer Certificat",
     "button.updateCertificate": "Actualiser Certificat",
-    "button.copyEncryptValue": "Copier le résultat du cryptage"
+    "button.copyEncryptValue": "Copier le résultat du cryptage",
+    "tooltips" : {
+      "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
+      "addEncipherment": {
+        "certAlias": "Certificate Alias",
+        "certificate": "Certificate",
+        "privateKeyPath": "Private Key Path",
+        "jobResourceFolder": "Job Resource Folder",
+        "showAssignedAgents": "Show Assigned Agents",
+        "assignAgents": "Assign Agents",
+        "showEncryptionSample": "Show Encryption Sample",
+        "plainText": "Plain Text",
+        "encryptText" : "Encrypt Text",
+        "encrypt": "Encrypt"
+      },
+      "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
+      "importEncipherment": {
+        "certAlias": "Certificate Alias",
+        "privateKeyPath": "Private Key Path",
+        "jobResourceFolder": "Job Resource Folder"
+      }
+    }
   },
   "changes": {
     "label.addChange": "Ajouter au Changement",
@@ -766,7 +787,11 @@
     "tooltip.expandAll": "Tout afficher",
     "tooltip.help": "Aide contextuelle",
     "--------ADD TOOLTIP VIDEO ICON------------": "Used for tooltip of video icon in add order pop up",
-    "tooltip.video": "Watch Tutorial Video"
+    "tooltip.video": "Watch Tutorial Video",
+    "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Tooltip for blocked label in user-dialog.html (common.label.blocked)",
+    "tooltip.blocked": "Blocked",
+    "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Tooltips for common labels in workflow form-template.html (folders)",
+    "tooltip.folders": "Folders"
   },
   "customization": {
     "label.createCustomization": "Créer une Personnalisation",
@@ -795,7 +820,10 @@
     "placeholder.enterName": "Entrer le nom",
     "message.filterDeleteSuccessfully": " La Personnalisation a été supprimée avec succès",
     "tooltip.deactivateCustomization": "Désactiver la Personnalisation",
-    "tooltip.useDefault": "Utiliser comme Personnalisation par défaut"
+    "tooltip.useDefault": "Utiliser comme Personnalisation par défaut",
+    "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
+    "tooltip.customizationName": "Customization Name",
+    "tooltip.sharedCustomization": "Shared Customization"
   },
   "dashboard": {
     "label.agentStatus": "Agent Status",
@@ -1034,6 +1062,15 @@
     "tooltip.present": "Indique qu'une Annonce est disponible.\n\nL'Annonce peut être attendu ou consommé par l'Ordre d'un Workflow récepteur.",
     "tooltip.future": "Indique qu'une Annonce est prévu, c'est-à-dire qu'un Ordre existe pour le Workflow de publication.\n\nL'Annonce sera disponible ultérieurement.",
     "tooltip.letRun": "Les Ordres pour exécution unique démarreront ou se poursuivront immédiatement.",
+    "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Tooltips for labels in create-plan-dialog.html (chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically)",
+    "tooltip.chooseTemplates": "Choose Schedules",
+    "tooltip.schedules": "Schedules",
+    "tooltip.scheduleFolders": "Schedule Folders",
+    "tooltip.workflows": "Workflows",
+    "tooltip.workflowFolders": "Workflow Folders",
+    "tooltip.overwrite": "Overwrite",
+    "tooltip.submitWith": "Submit With",
+    "tooltip.plannedAllAutomatically": "Planned All Automatically",
     "tab": {
       "dailyPlan": "Plan Quotidien",
       "projection": "Projection",
@@ -2046,6 +2083,11 @@
     "button.syncToController": "Synchroniser avec le Contrôleur",
     "button.syncToInventory": "Synchroniser avec l'inventaire",
     "tooltip.setVersion": "Définir la version",
+    "--------ADD INVENTORY TAB TOOLTIPS------------": "Tooltips for inventory tab labels in workflow form-template.html (workflowTagging, orderTagging)",
+    "tooltip.workflowTagging": "Workflow Tags.",
+    "tooltip.orderTagging": "Order Tags.",
+    "--------ADD INVENTORY RECURSIVE TOOLTIP------------": "Tooltip for handleRecursively label in workflow form-template.html",
+    "tooltip.handleRecursively": "Handle Recursively",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
     "placeholder.enterNewPath": "Entrer le nouveau chemin",
@@ -2402,11 +2444,13 @@
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
+        "controllerId": "Controller Id",
         "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut.\n\nLes utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné.\n\nSi aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
         "fileName": "Indique le nom du fichier d'exportation, par exemple, `export.zip` ou `export.tar.gz`.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
         "exportType": "S'agit-il des\n- **Objets individuels**: les utilisateurs sélectionnent des objets dans l'arborescence de l'inventaire.\n- **Dossiers**: les utilisateurs sélectionnent les dossiers contenant des objets.\n- **Changements**: les utilisateurs sélectionnent un Changement qui inclut tous les objets directement affectés à ce Changement, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci",
         "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple, les ^Workflow^s, les ^Ressources de Tâches^, les ^Planification^s etc.",
+        "forSigning": "For Signing",
         "inclusiveAllTags": "Ajoute des ^Tag^s au fichier d'exportation qui seront importé vers la destination.\n\nCela inclut tout les Tags de ^Workflow^, les Tags d'^Ordre^ et les Tags de ^Tâche^.\n\nLors de l'importation, les utilisateurs peuvent choisir d'importer des Tags à partir d'un fichier d'exportation.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",
         "filter": "Propose d'inclure des objets de l'inventaire dans le fichier d'exportation en fonction de leur statut.\n\nLes objets non valides peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
@@ -2724,6 +2768,10 @@
       "menu": {
         "acknowledge": "Acquitter",
         "bulkAcknowledge": "Acquitter"
+      },
+      "--------MONITOR - ACKNOWLEDGE MODAL------------": "",
+      "tooltip": {
+        "comment": "Comment"
       }
     },
     "approvalRequest": {
@@ -2778,6 +2826,12 @@
         "firstName": "Entrer Prénom",
         "lastName": "Entrer Nom",
         "email": "Entrer l'adresse E-Mail"
+      },
+      "--------ADD APPROVER TOOLTIPS------------": "Tooltips for labels in add-approver-dialog.html (firstName, lastName, email)",
+      "tooltip": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "E-mail address"
       }
     }
   },
@@ -2925,6 +2979,12 @@
         "addVariable": "Ce lien s'affiche si les paramètres généraux autorisent l'ajout de variables non déclarées à un Workflow.",
         "addOrderParameterization": "Permet d'ajouter un autre ^Ordre^ en utilisant des paramètres différents.",
         "addOrdersFromAllSchedules": "Permet d'ajouter des ^Ordres^ supplémentaires correspondant aux modèles d'Ordre disponibles dans toutes les ^Planification^s faisant référence au ^Workflow^."
+      },
+      "allOrderResume": {
+        "--------ADD RESUME ORDER DIALOG TOOLTIPS------------": "Tooltips for labels in all-order-resume-dialog.html (resumeOrder, position, force)",
+        "resumeOrder": "Resume Order",
+        "position": "Position",
+        "force": "Force"
       }
     }
   },
@@ -3019,6 +3079,9 @@
     "message.minimumPasswordLength": "Mot de passe trop court",
     "message.passwordShouldNotSame": "L'ancien mot de passe et le nouveau mot de passe ne doivent pas être les mêmes.",
     "tooltip.stateColorChange": "Changer la couleur des états de l'Ordre",
+    "--------ADD PROFILE TOOLTIPS------------": "Tooltips for confirmPassword label in user-dialog.html, userName label in add-approver-dialog.html",
+    "tooltip.confirmPassword": "Confirm password",
+    "tooltip.userName": "User name",
     "favoriteManagement": {
       "label.manageFavorite": "Gérer Favorite",
       "label.addFavorite": "Ajouter Favorite",
@@ -3030,7 +3093,10 @@
       "tab.agents": "Agents",
       "tab.facets": "Contrôle des Entrées",
       "tooltip.sharedByMe": "Partagé par moi",
-      "tooltip.sharedWithMe": "Partagé avec moi"
+      "tooltip.sharedWithMe": "Partagé avec moi",
+      "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
+      "tooltip.name": "Name",
+      "tooltip.facet": "Facet"
     },
     "permission": {
       "label.order": "Ordre",
@@ -3128,6 +3194,18 @@
       "tooltip.importCertificate": "Importer un Certificat",
       "tooltip.updateCertificate": "mettre à jour le Certificat",
       "tooltip.deleteCertificate": "Supprimer le Certificat",
+      "--------ADD KEY MANAGEMENT FORM TOOLTIPS------------": "Tooltips for form labels in generate-key-dialog.html and update-dialog.html (date, distinguishedName, privateKey, publicKey, x509Certificate, keyExpiredOn, certificateExpiredOn)",
+      "tooltip.keyID": "Key Id",
+      "tooltip.setExpiryDate": "Set Expiry Date",
+      "tooltip.date": "Date",
+      "tooltip.keyAlgorithm": "Key Algorithm",
+      "tooltip.useSigningKeys": "Use Signing Keys",
+      "tooltip.distinguishedName": "Distinguished Name",
+      "tooltip.privateKey": "Private key",
+      "tooltip.publicKey": "Public key",
+      "tooltip.x509Certificate": "Certificate",
+      "tooltip.keyExpiredOn": "Key Expire Date",
+      "tooltip.certificateExpiredOn": "Certificate Expire Date",
       "popup.deleteSubmissions": "Êtes-vous sûr de vouloir supprimer le Certificat ?"
     },
     "gitManagement": {
@@ -3145,7 +3223,16 @@
       "label.accessToken": "Jeton d'accès",
       "label.credentials": "Identifiants",
       "message.deleteGitCredentials": "La suppression des identifiants Git entraîne leur suppression définitive de la liste des identifiants.",
-      "message.noCredentialFound": "Pas d'identifiants présents"
+      "message.noCredentialFound": "Pas d'identifiants présents",
+      "--------ADD GIT MANAGEMENT TOOLTIPS------------": "Tooltips for form labels in git-dialog.html (gitServer, gitAccount, userName, emailAddress, gitPassword, keyfilePath, gitAccessToken)",
+      "tooltip.gitServer": "Git server",
+      "tooltip.gitAccount": "Git Account",
+      "tooltip.userName": "Git username",
+      "tooltip.emailAddress": "E-mail address",
+      "tooltip.gitPassword": "Password",
+      "tooltip.keyfilePath": "Key File Path",
+      "tooltip.gitAccessToken": "Git Access Token",
+      "tooltip.authenticationType": "Authentication Type"
     }
   },
   "runtime": {
@@ -3314,7 +3401,13 @@
       "button.deleteAllSelected": "Supprimer les Annonces sélectionnées",
       "placeholder.enterNoticeId": "Entrer l'ID Annonce",
       "placeholder.enterNoticeKey": "Entrer l'ID Annonce",
-      "placeholder.enterPlanKey": "Entrer la Clé d'Espace Annonces"
+      "placeholder.enterPlanKey": "Entrer la Clé d'Espace Annonces",
+      "--------ADD POST NOTICE DIALOG TOOLTIPS------------": "Tooltips for labels in post-notice-dialog.html (noticeKey, endOfLife, planKey)",
+      "tooltip.noticeKey": "Notice Key",
+      "tooltip.endOfLife": "End of Life",
+      "tooltip.planKey": "Notice Space Key",
+      "tooltip.enterDateAndTime": "Enter Date and Time",
+      "tooltip.time": "Time"
     },
     "calendar": {
       "label.validity": "Validité",
@@ -3350,7 +3443,8 @@
       "button.previewDocument": "Aperçu du Document",
       "button.editDocument": "Modifier la Documentation",
       "placeholder.assignReference": "Attribuer une référence à une documentation",
-      "message.documentNotUsed": "Ce Document n'est pas encore utilisé"
+      "message.documentNotUsed": "Ce Document n'est pas encore utilisé",
+      "tooltip.documentName": "Document Name"
     }
   },
   "reporting": {
@@ -3824,6 +3918,25 @@
     "tab.simpleMode": "Moins d'Options",
     "tab.expertMode": "Plus d'Options",
     "tooltip.toAddNonExistFolders": "Les dossiers peuvent être sélectionnés.\n\nPour saisir manuellement le chemin d'accès à un dossier, utilisez le clavier et appuyez sur la touche d'espacement ou la touche Entrée.",
+    "--------ADD USER ACCOUNT TOOLTIPS------------": "Tooltips for labels in user-dialog.html (user, password, roles, forcePasswordChange, disabled)",
+    "tooltip.user": "User",
+    "tooltip.password": "Password",
+    "tooltip.roles": "Roles",
+    "tooltip.forcePasswordChange": "Force Password Change",
+    "tooltip.disabled": "Disabled",
+    "--------ADD IDENTITY SERVICE TOOLTIPS------------": "Tooltips for labels in identity-service-dialog.html (identityServiceName, identityServiceType, identityServiceOrdering, identityServiceRequired, usedAsSecondFactor, disable, serviceAuthenticationScheme, listOfFido, listOfCert)",
+    "tooltip.identityServiceName": "Identity Service Name",
+    "tooltip.identityServiceType": "Identity Service Type",
+    "tooltip.identityServiceOrdering": "Identity Service Ordering",
+    "tooltip.identityServiceRequired": "Identity Service Required",
+    "tooltip.usedAsSecondFactor": "Used As Second Factor",
+    "tooltip.disable": "Disable",
+    "tooltip.serviceAuthenticationScheme": "Service Authentication Scheme",
+    "tooltip.listOfFido": "List of Fido",
+    "tooltip.listOfCert": "List of Cert",
+    "--------ADD CONTROLLER ROLE TOOLTIPS------------": "Tooltips for labels in controller-dialog.html (js7Controller, role)",
+    "tooltip.js7Controller": "JS 7 Controller",
+    "tooltip.role": "Role",
     "usermode": {
       "label.iamLdapHost": "LDAP Server Host",
       "label.iamLdapProtocol": "LDAP Protocol",
@@ -4249,6 +4362,16 @@
     "tooltip.doubleClickToSelect": "Un double-clic met une instruction en évidence. Si une nouvelle instruction est déposée dessus, elle sera ajoutée en tant que parent.",
     "tooltip.warningMessageForShortIntervalSelection": "Les commandes cycliques pour de courts intervalles de répétition peuvent entraîner des pénalités de performance.\n\nEnvisagez de passer à des flux de travail cycliques à l'aide de l'instruction de cycle.",
     "tooltip.restrictedMonthsTooltip": "Seuls 11 mois peuvent être sélectionnés. Pour restreindre tous les mois, laissez le champ de restriction de mois vide.",
+    "--------WORKFLOW/ FACET EDITOR MODAL------------": "Configuration > Inventory view > Workflow",
+    "tooltip.facet": "Facet",
+    "tooltip.message": "Message",
+    "--------ADD SCRIPT MODAL TOOLTIPS------------": "Tooltips for labels in script-modal.component.html (script, predicate, listOfSchemes, admissionTime)",
+    "tooltip.script": "The script or executable code that this Job will run.",
+    "tooltip.predicate": "A boolean expression evaluated to determine whether this branch or condition is met.",
+    "tooltip.listOfSchemes": "The list of admission time cycles defined for this Workflow.",
+    "tooltip.admissionTime": "The admission time periods during which Orders are permitted to start.",
+    "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Tooltips for filter form labels in workflow form-template.html (regex)",
+    "tooltip.regex": "Regex",
     "findAndReplace": {
       "label.find": "Rechercher",
       "label.replace": "Remplacer",
@@ -4256,7 +4379,12 @@
       "button.findAndReplace": "Rechercher et remplacer",
       "placeholder.selectFind": "Sélectionnez un ou plusieurs Agents",
       "placeholder.selectReplace": "Sélectionner un Agent pour remplacer l'affectation",
-      "tooltip": "Sélectionner un Agent non existant en appuyant sur <entrée>."
+      "tooltip": "Sélectionner un Agent non existant en appuyant sur <entrée>.",
+      "--------FIND AND REPLACE MODAL------------": "Configuration > Inventory view > Workflow",
+      "tooltips": {
+        "find": "Find",
+        "replace": "Replace"
+      }
     },
     "wizard": {
       "label.new": "Nouvelle",

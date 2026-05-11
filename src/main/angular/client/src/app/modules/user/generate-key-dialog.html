@@ -14,7 +14,9 @@
     @if (type === 'key') {
       <div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" translate>profile.keyManagement.label.setExpiryDate</label>
+          <label class="col-md-4 col-lg-3">
+            <span [appRichTooltip]="'profile.keyManagement.tooltip.setExpiryDate' | translate" translate>profile.keyManagement.label.setExpiryDate</span>
+          </label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="expiry.dateValue" name="expireDate">
               <label nz-radio nzValue="date"><span translate>profile.keyManagement.label.expire</span></label>
@@ -25,7 +27,9 @@
         </div>
         @if (expiry.dateValue === 'date') {
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.date</label>
+            <label class="col-md-4 col-lg-3 form-control-label">
+              <span [appRichTooltip]="'profile.keyManagement.tooltip.date' | translate" translate>profile.keyManagement.label.date</span>
+            </label>
             <div class="col-md-8 col-lg-6">
               <nz-date-picker (ngModelChange)="onChange($event)" [(ngModel)]="key.validUntil"
                               name="date"></nz-date-picker>
@@ -33,7 +37,9 @@
           </div>
         }
         <div class="form-group row">
-          <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
+          <div class="col-md-4 col-lg-3">
+            <span [appRichTooltip]="'profile.keyManagement.tooltip.keyAlgorithm' | translate" translate>profile.keyManagement.label.keyAlgorithm</span>
+          </div>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="key.keyAlg" name="alg">
               <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
@@ -43,8 +49,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <div class="col-md-4 col-lg-3 text-dark" translate>
-            profile.keyManagement.label.useSigningKeys
+          <div class="col-md-4 col-lg-3 text-dark">
+            <span [appRichTooltip]="'profile.keyManagement.tooltip.useSigningKeys' | translate" translate>profile.keyManagement.label.useSigningKeys</span>
           </div>
           <div class="col-md-8 col-lg-9">
             <label name="useSSLca" nz-checkbox [(ngModel)]="useSSLcA"></label>
@@ -55,7 +61,8 @@
     @if (type === 'ca'|| 'key') {
       <div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName
+          <label class="col-md-4 col-lg-3 form-control-label">
+            <span [appRichTooltip]="'profile.keyManagement.tooltip.distinguishedName' | translate" translate>profile.keyManagement.label.distinguishedName</span>
             @if (type === 'ca') {
               <sup class="text-danger text-sm">*</sup>
             }

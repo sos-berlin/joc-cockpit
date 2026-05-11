@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { finalize, takeUntil, catchError, timeout, retryWhen, delay, take } from 'rxjs/operators';
 import { Subject, lastValueFrom, of } from 'rxjs';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { TranslateService } from '@ngx-translate/core';
 import { HelpService, HelpRenderResult } from '../../services/help.service';
@@ -25,7 +26,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   isLoading = false;
   title!: string;
   helpKey!: string;
-  html: any;
+  html: SafeHtml = '';
   history: string[] = [];
   hasError = false;
   preferences: any;
@@ -58,6 +59,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     private readonly http: HttpClient,
     private toasterService: ToastrService,
     private translate: TranslateService,
+    private readonly domSanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
@@ -439,7 +441,7 @@ onClick(e: MouseEvent): void {
         next: (res: HelpRenderResult | null) => {
           this.helpKey = key;
           this.hasError = res === null;
-          this.html = res?.html ?? '';
+          this.html = this.domSanitizer.bypassSecurityTrustHtml(res?.html ?? '');
 
           if (res?.fellBack) {
             this.fallbackNotice = `Showing ${res.usedLang.toUpperCase()} (no ${res.requestedLang.toUpperCase()} file).`;

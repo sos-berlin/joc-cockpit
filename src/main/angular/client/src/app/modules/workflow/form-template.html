@@ -2,7 +2,8 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'customization.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -27,16 +28,16 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>workflow.label.regex</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+             <span [appRichTooltip]="'workflow.tooltip.regex' | translate" translate>workflow.label.regex</span></label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.regex" class="form-control" name="regex"
                placeholder="{{'common.placeholder.regex' | translate}}" type="text">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>common.label.folders</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'common.tooltip.folders' | translate" translate>common.label.folders</span></label>
       <div class=" col-sm-6">
         <nz-tree-select
           [(ngModel)]="filter.paths"
@@ -73,15 +74,15 @@
     </div>
     @if (filter.paths?.length > 0) {
       <div class="m-b-xs row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-               translate>inventory.label.handleRecursively</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+               <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span></label>
         <div class="col-sm-2">
           <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
         </div>
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>deploymentService.label.agents</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'deploymentService.agent.tooltip.agentId' | translate" translate>deploymentService.label.agents</span></label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
@@ -122,7 +123,7 @@
     </div>
     @if (preferences.enableTagging) {
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span></label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -134,7 +135,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.orderTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'inventory.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span></label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -147,7 +148,7 @@
     </div>
    }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.workflowAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"><span [appRichTooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate" translate>inventory.search.label.workflowAvailabilityStatus</span></label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="synchronizationStatus"
@@ -179,7 +180,7 @@
     </div>
 
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.jobAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"><span [appRichTooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate" translate>inventory.search.label.jobAvailabilityStatus</span></label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="jobAvailabilityStatus"
@@ -196,7 +197,7 @@
 
     @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4"><span [appRichTooltip]="'customization.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span></label>
         <div class="col-sm-8">
           <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
         </div>

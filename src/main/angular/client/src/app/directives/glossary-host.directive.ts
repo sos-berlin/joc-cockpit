@@ -3,6 +3,7 @@ import {
   ElementRef,
   inject,
   OnDestroy,
+  ViewContainerRef,
 } from '@angular/core';
 import { Overlay, OverlayRef, OverlayPositionBuilder, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -11,6 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GlossaryService } from '../services/glossary.service';
 import { GlossaryPopoverComponent } from '../components/glossary-popover/glossary-popover.component';
 import { MarkdownParserService } from '../services/markdown-parser.service';
+import { CoreService } from '../services/core.service';
 
 /**
  * [appGlossaryHost]
@@ -54,6 +56,8 @@ export class GlossaryHostDirective implements OnDestroy {
   private readonly glossary = inject(GlossaryService);
   private readonly md = inject(MarkdownParserService);
   private readonly domSanitizer = inject(DomSanitizer);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly coreService = inject(CoreService);
 
   constructor() {
     const host: HTMLElement = this.el.nativeElement;
@@ -160,7 +164,7 @@ export class GlossaryHostDirective implements OnDestroy {
       panelEl.classList.add(overlayY === 'top' ? 'glossary-pop-below' : 'glossary-pop-above');
     });
 
-    const portal = new ComponentPortal<GlossaryPopoverComponent>(GlossaryPopoverComponent);
+    const portal = new ComponentPortal<GlossaryPopoverComponent>(GlossaryPopoverComponent, this.vcr);
     const compRef = this.overlayRef.attach(portal);
     const popoverInstance = compRef.instance as GlossaryPopoverComponent;
 
@@ -205,6 +209,22 @@ export class GlossaryHostDirective implements OnDestroy {
       ? (parseInt(hostAncestorPanel.getAttribute('data-glossary-depth') || '0') || 0) + 1
       : 1;
     panelEl.setAttribute('data-glossary-depth', String(myDepth));
+
+    // Handle rt-action-link clicks (context help / video links) inside the popover body.
+    panelEl.addEventListener('click', (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest('[data-rt-action-type]') as HTMLElement | null;
+      if (!anchor) return;
+      const type = anchor.getAttribute('data-rt-action-type');
+      const param = anchor.getAttribute('data-rt-action-param') || '';
+      e.stopPropagation();
+      this.close();
+      if (type === 'help' || type === 'context') {
+        this.coreService.openHelpPage(param);
+      } else if (type === 'video') {
+        this.coreService.openVideoPage(param);
+      }
+    });
+
     panelEl.addEventListener('mouseenter', () => {
       this.insidePopover = true;
       if (this.closeTimer) { clearTimeout(this.closeTimer); this.closeTimer = null; }

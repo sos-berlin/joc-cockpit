@@ -19,7 +19,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((server.dirty || server.touched) && server.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitServer
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitServer' | translate" translate>profile.gitManagement.label.gitServer</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -36,7 +37,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((accountName.dirty || accountName.touched) && accountName.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.gitAccount
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccount' | translate" translate>profile.gitManagement.label.gitAccount</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -53,7 +55,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((username.dirty || username.touched) && username.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.userName
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.userName' | translate" translate>profile.gitManagement.label.userName</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -70,7 +73,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.emailAddress
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.emailAddress' | translate" translate>profile.gitManagement.label.emailAddress</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -86,7 +90,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 " translate>profile.gitManagement.label.authenticationType</label>
+      <label class="col-sm-4 ">
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.authenticationType' | translate" translate>profile.gitManagement.label.authenticationType</span>
+      </label>
       <div class="col-md-8">
         <nz-radio-group [(ngModel)]="object.type" name="at">
           <label nz-radio nzValue="password"><span translate>profile.gitManagement.label.password</span></label>
@@ -97,8 +103,8 @@
     </div>
     @if (object.type === 'password') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          profile.gitManagement.label.gitPassword
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitPassword' | translate" translate>profile.gitManagement.label.gitPassword</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((gitPswd.dirty || gitPswd.touched) && gitPswd.invalid)}" class="col-sm-6">
@@ -118,7 +124,9 @@
     }
     @if (object.type === 'key') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.keyfilePath</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.keyfilePath' | translate" translate>profile.gitManagement.label.keyfilePath</span>
+        </label>
         <div class="col-sm-6">
           <input [(ngModel)]="gitObject.keyfilePath" autocomplete="off" class="form-control" name="keyfilePath"
                  type="text"/>
@@ -127,8 +135,8 @@
     }
     @if (object.type === 'accessToken') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          profile.gitManagement.label.gitAccessToken
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccessToken' | translate" translate>profile.gitManagement.label.gitAccessToken</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((accessToken.dirty || accessToken.touched) && accessToken.invalid)}"

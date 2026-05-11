@@ -19,8 +19,8 @@
     </div>
     @if ((singular && showNoticeId) || (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')) {
       <div [ngClass]="{'has-error' : ((noticeKey.dirty || noticeKey.touched) && noticeKey.invalid)}" class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          resource.board.label.noticeKey
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.board.tooltip.noticeKey' | translate" translate>resource.board.label.noticeKey</span>
           @if (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL') {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -39,7 +39,9 @@
 
     @if (!showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.board.tooltip.endOfLife' | translate" translate>resource.board.label.endOfLife</span>
+        </label>
         <div class="col-md-8">
           <nz-radio-group [(ngModel)]="postObj.at" name="at">
             <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
@@ -50,8 +52,8 @@
     }
     @if (postObj.at == 'later' && !showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          common.label.time
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.board.tooltip.time' | translate" translate>common.label.time</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -75,8 +77,8 @@
     }
     @if (singular && showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          resource.board.label.planKey
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.board.tooltip.planKey' | translate" translate>resource.board.label.planKey</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -88,8 +90,8 @@
     }
     @if (postObj.at == 'date') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          workflow.label.enterDateAndTime
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.board.tooltip.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">

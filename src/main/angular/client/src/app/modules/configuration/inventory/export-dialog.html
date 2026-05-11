@@ -75,7 +75,9 @@
           <!-- Controller ID (HIGH security) -->
           @if (securityLevel === 'HIGH' && (showMoreAdvanceOptions || exportObj.controllerId)) {
             <div class="form-group row m-b-0 m-t-xs">
-              <label class="col-md-4 form-control-label" translate>common.label.controllerId</label>
+              <label class="col-md-4 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.export.controllerId' | translate" translate>common.label.controllerId</span>
+              </label>
               <div class="col-md-7">
                 <app-select-input [attributeName]="'controllerId'" [isSearchable]="true" [ignoreTranslate]="true"
                                   [listArray]="schedulerIds.controllerIds" [name]="'schedulerIds'"
@@ -124,7 +126,9 @@
           <!-- For Signing (HIGH security) -->
           @if (securityLevel === 'HIGH' && (showMoreAdvanceOptions || exportObj.forSigning)) {
             <div class="form-group row m-b-0 m-t-xs">
-              <label class="col-md-4 form-control-label" translate>inventory.label.forSigning</label>
+              <label class="col-md-4 form-control-label">
+                <span [appRichTooltip]="'inventory.tooltips.export.forSigning' | translate" translate>inventory.label.forSigning</span>
+              </label>
               <div class="col-md-7">
                 <label [(ngModel)]="exportObj.forSigning" name="forSigning" nz-checkbox (ngModelChange)="onchangeSigning()"></label>
               </div>

@@ -485,7 +485,8 @@ export class MarkdownParserService {
             if (safeHref.startsWith('#')) {
               return `<a href="${safeHref}"${titleAttr}>${processedLabel}</a>`;
             } else if (/^context:/i.test(safeHref)) {
-              return `<a href="${safeHref}" class="md-context-link"${titleAttr}>${processedLabel}</a>`;
+              const [, actionType, actionParam] = safeHref.match(/^context:([^:]+):?(.*)$/) || [];
+              return `<a data-rt-action-type="${actionType || 'context'}" data-rt-action-param="${escapeHtml(actionParam || '')}" class="rt-action-link" tabindex="0" role="button"${titleAttr}>${processedLabel}</a>`;
             } else if (/^https?:/i.test(safeHref)) {
               return `<a href="${safeHref}" rel="nofollow ugc" target="_blank"${titleAttr}>${processedLabel}</a>`;
             } else {
@@ -503,12 +504,17 @@ export class MarkdownParserService {
 
         chunk = chunk.replace(/~~(.*?)~~/g, '<del>$1</del>');
 
-        // Glossary terms: ^Term Name^ → interactive span
-        chunk = chunk.replace(/\^([^^\n]+?)\^/g, (_m, term: string) => {
-          const key = term.trim().toLowerCase().replace(/\s+/g, '-');
-          const safeKey = escapeHtml(key);
-          const safeTerm = escapeHtml(term.trim());
-          return `<span class="glossary-term" data-glossary-key="${safeKey}" data-glossary-label="${safeTerm}" tabindex="0" role="button" aria-label="${safeTerm} — glossary term">${safeTerm}<i class="fa fa-question-circle glossary-icon" aria-hidden="true"></i></span>`;
+        // Glossary terms: ^Term Name^suffix → interactive span
+        // New:            ^Display Text|glossary-key^suffix → explicit key, no auto-normalize
+        // suffix is display-only; only the base term inside ^ ^ is used for lookup.
+        chunk = chunk.replace(/\^([^^\n]+?)\^([a-zA-Z]*)/g, (_m, inner: string, suffix: string) => {
+          const pipeIdx   = inner.indexOf('|');
+          const label     = (pipeIdx !== -1 ? inner.slice(0, pipeIdx) : inner).trim();
+          const key       = pipeIdx !== -1 ? inner.slice(pipeIdx + 1).trim() : label.toLowerCase().replace(/\s+/g, '-');
+          const safeKey     = escapeHtml(key);
+          const safeLabel   = escapeHtml(label);
+          const safeDisplay = suffix ? safeLabel + escapeHtml(suffix) : safeLabel;
+          return `<span class="glossary-term" data-glossary-key="${safeKey}" data-glossary-label="${safeLabel}" tabindex="0" role="button" aria-label="${safeLabel} — glossary term">${safeDisplay}</span>`;
         });
 
 

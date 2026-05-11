@@ -12,7 +12,9 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3" translate>resource.documentation.label.documentName</label>
+      <label class="col-sm-3">
+        <span [appRichTooltip]="'resource.documentation.tooltip.documentName' | translate" translate>resource.documentation.label.documentName</span>
+      </label>
       <div class="col-sm-6">
         {{document.path}}
       </div>

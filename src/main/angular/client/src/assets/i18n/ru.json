@@ -468,7 +468,28 @@
     "button.importCertificate": "Импортировать сертификат",
     "button.deleteCertificate": "Удалить сертификат",
     "button.updateCertificate": "Обновить сертификат",
-    "button.copyEncryptValue": "Копировать результат шифрования"
+    "button.copyEncryptValue": "Копировать результат шифрования",
+    "tooltips" : {
+      "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
+      "addEncipherment": {
+        "certAlias": "Certificate Alias",
+        "certificate": "Certificate",
+        "privateKeyPath": "Private Key Path",
+        "jobResourceFolder": "Job Resource Folder",
+        "showAssignedAgents": "Show Assigned Agents",
+        "assignAgents": "Assign Agents",
+        "showEncryptionSample": "Show Encryption Sample",
+        "plainText": "Plain Text",
+        "encryptText" : "Encrypt Text",
+        "encrypt": "Encrypt"
+      },
+      "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
+      "importEncipherment": {
+        "certAlias": "Certificate Alias",
+        "privateKeyPath": "Private Key Path",
+        "jobResourceFolder": "Job Resource Folder"
+      }
+    }
   },
   "changes": {
     "label.addChange": "Добавить изменение",
@@ -766,7 +787,11 @@
     "tooltip.expandAll": "Развернуть вид",
     "tooltip.help": "Справка",
     "--------ADD TOOLTIP VIDEO ICON------------": "Used for tooltip of video icon in add order pop up",
-    "tooltip.video": "Посмотреть обучающее видео"
+    "tooltip.video": "Посмотреть обучающее видео",
+    "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Tooltip for blocked label in user-dialog.html (common.label.blocked)",
+    "tooltip.blocked": "Blocked",
+    "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Tooltips for common labels in workflow form-template.html (folders)",
+    "tooltip.folders": "Folders"
   },
   "customization": {
     "label.createCustomization": "Создать персонализацию",
@@ -795,7 +820,10 @@
     "placeholder.enterName": "Введите название",
     "message.filterDeleteSuccessfully": "Персонализация удалена",
     "tooltip.deactivateCustomization": "Отключить персонализацию",
-    "tooltip.useDefault": "Использовать персонализацию как значение по умолчанию"
+    "tooltip.useDefault": "Использовать персонализацию как значение по умолчанию",
+    "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
+    "tooltip.customizationName": "Customization Name",
+    "tooltip.sharedCustomization": "Shared Customization"
   },
   "dashboard": {
     "label.agentStatus": "Агенты",
@@ -1034,6 +1062,15 @@
     "tooltip.present": "Показывает наличие текущих извещений. Они могут находиться в ожидании или быть использованы заданием принимающего рабочего процесса.",
     "tooltip.future": "Показывает наличие объявленных извещений, т.е. существуют задания отправляющего рабочего процесса.\n\nЭти извещения будут доступны в будущем.",
     "tooltip.letRun": "Одноразовые задания запускаются или возобновляются немедленно",
+    "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Tooltips for labels in create-plan-dialog.html (chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically)",
+    "tooltip.chooseTemplates": "Choose Schedules",
+    "tooltip.schedules": "Schedules",
+    "tooltip.scheduleFolders": "Schedule Folders",
+    "tooltip.workflows": "Workflows",
+    "tooltip.workflowFolders": "Workflow Folders",
+    "tooltip.overwrite": "Overwrite",
+    "tooltip.submitWith": "Submit With",
+    "tooltip.plannedAllAutomatically": "Planned All Automatically",
     "tab": {
       "dailyPlan": "Дневной план",
       "projection": "Прогноз",
@@ -2046,6 +2083,11 @@
     "button.syncToController": "Синхронизировать контроллер",
     "button.syncToInventory": "Синхронизировать инвентарь",
     "tooltip.setVersion": "Установить версию",
+    "--------ADD INVENTORY TAB TOOLTIPS------------": "Tooltips for inventory tab labels in workflow form-template.html (workflowTagging, orderTagging)",
+    "tooltip.workflowTagging": "Workflow Tags.",
+    "tooltip.orderTagging": "Order Tags.",
+    "--------ADD INVENTORY RECURSIVE TOOLTIP------------": "Tooltip for handleRecursively label in workflow form-template.html",
+    "tooltip.handleRecursively": "Handle Recursively",
     "placeholder.enterUniqueName": "Введите уникальное название объекта",
     "placeholder.enterFileName": "Введите имя файла",
     "placeholder.enterNewPath": "Введите новый путь",
@@ -2402,11 +2444,13 @@
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
+        "controllerId": "Controller Id",
         "useRelativePathOnly": "При экспорте объектов по умолчанию используется абсолютный путь.\n\nПользователь может указать относительный путь, который применяется начиная с выбранной папки.\n\nЕсли папка не выбрана и выбраны только объекты, они добавляются в архив экспорта как объекты верхнего уровня при использовании относительного пути.",
         "fileName": "Задаёт имя файла экспорта.",
         "fileFormat": "Указывает формат архива: .zip или .tar.gz.",
         "exportType": "Это один из вариантов:\n- **Отдельные объекты**: пользователь выбирает объекты из инвентаря.\n- **Папки**: пользователь выбирает папки, содержащие объекты.\n- **Изменения**: пользователь выбирает изменения, включающие объекты, напрямую связанные с изменением, а также объекты, на которые они ссылаются или которые ссылаются на них.",
         "objectTypes": "Позволяет выбрать типы объектов, включаемых в экспорт (например: рабочие процессы, ресурсы задач, расписания и т.д.).",
+        "forSigning": "For Signing",
         "inclusiveAllTags": "Добавляет в экспортируемый файл метки, которые могут быть импортированы в целевую систему.\n\nЭто включает метки рабочих процессов, заданий и задач.\n\nПри импорте пользователь решает, следует ли импортировать метки.",
         "filterType": "Учитывает объекты, хранящиеся в системных папках 'Контроллер' или 'Автоматизация'.",
         "filter": "Позволяет включать объекты в экспорт в зависимости от их статуса.\n\nНедействительные объекты могут экспортироваться и импортироваться, но не могут быть развёрнуты или опубликованы.\n\nОбъекты в статусе черновика содержат изменения, которые ещё не развёрнуты или не опубликованы.",
@@ -2724,6 +2768,10 @@
       "menu": {
         "acknowledge": "Принять к сведению",
         "bulkAcknowledge": "Принять к сведению"
+      },
+      "--------MONITOR - ACKNOWLEDGE MODAL------------": "",
+      "tooltip": {
+        "comment": "Comment"
       }
     },
     "approvalRequest": {
@@ -2778,6 +2826,12 @@
         "firstName": "Введите имя",
         "lastName": "Введите фамилию",
         "email": "Введите адрес электронной почты"
+      },
+      "--------ADD APPROVER TOOLTIPS------------": "Tooltips for labels in add-approver-dialog.html (firstName, lastName, email)",
+      "tooltip": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "E-mail address"
       }
     }
   },
@@ -2925,6 +2979,12 @@
         "addVariable": "Ссылка отображается, если глобальные настройки разрешают добавление недекларированных переменных в рабочий процесс.",
         "addOrderParameterization": "Позволяет добавить дополнительное задание с возможной отдельной параметризацией.",
         "addOrdersFromAllSchedules": "Позволяет добавить дополнительные задания, соответствующие шаблонам из всех расписаний, использующих данный рабочий процесс."
+      },
+      "allOrderResume": {
+        "--------ADD RESUME ORDER DIALOG TOOLTIPS------------": "Tooltips for labels in all-order-resume-dialog.html (resumeOrder, position, force)",
+        "resumeOrder": "Resume Order",
+        "position": "Position",
+        "force": "Force"
       }
     }
   },
@@ -3019,6 +3079,9 @@
     "message.minimumPasswordLength": "Пароль слишком короткий",
     "message.passwordShouldNotSame": "Старый и новый пароли не должны совпадать.",
     "tooltip.stateColorChange": "Изменить цвета состояний заданий",
+    "--------ADD PROFILE TOOLTIPS------------": "Tooltips for confirmPassword label in user-dialog.html, userName label in add-approver-dialog.html",
+    "tooltip.confirmPassword": "Confirm password",
+    "tooltip.userName": "User name",
     "favoriteManagement": {
       "label.manageFavorite": "Управление избранным",
       "label.addFavorite": "Добавить в избранное",
@@ -3030,7 +3093,10 @@
       "tab.agents": "Агенты",
       "tab.facets": "Проверки ввода",
       "tooltip.sharedByMe": "Поделился я",
-      "tooltip.sharedWithMe": "Поделились со мной"
+      "tooltip.sharedWithMe": "Поделились со мной",
+      "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
+      "tooltip.name": "Name",
+      "tooltip.facet": "Facet"
     },
     "permission": {
       "label.order": "Задание",
@@ -3128,6 +3194,18 @@
       "tooltip.importCertificate": "Импортировать сертификат",
       "tooltip.updateCertificate": "Обновить сертификат",
       "tooltip.deleteCertificate": "Удалить сертификат",
+      "--------ADD KEY MANAGEMENT FORM TOOLTIPS------------": "Tooltips for form labels in generate-key-dialog.html and update-dialog.html (date, distinguishedName, privateKey, publicKey, x509Certificate, keyExpiredOn, certificateExpiredOn)",
+      "tooltip.keyID": "Key Id",
+      "tooltip.setExpiryDate": "Set Expiry Date",
+      "tooltip.date": "Date",
+      "tooltip.keyAlgorithm": "Key Algorithm",
+      "tooltip.useSigningKeys": "Use Signing Keys",
+      "tooltip.distinguishedName": "Distinguished Name",
+      "tooltip.privateKey": "Private key",
+      "tooltip.publicKey": "Public key",
+      "tooltip.x509Certificate": "Certificate",
+      "tooltip.keyExpiredOn": "Key Expire Date",
+      "tooltip.certificateExpiredOn": "Certificate Expire Date",
       "popup.deleteSubmissions": "Вы уверены, что хотите удалить сертификат?"
     },
     "gitManagement": {
@@ -3145,7 +3223,16 @@
       "label.accessToken": "Токен доступа",
       "label.credentials": "Учётные данные",
       "message.deleteGitCredentials": "Если учётные данные Git будут удалены, они будут навсегда удалены из списка учётных данных.",
-      "message.noCredentialFound": "Учётные данные недоступны"
+      "message.noCredentialFound": "Учётные данные недоступны",
+      "--------ADD GIT MANAGEMENT TOOLTIPS------------": "Tooltips for form labels in git-dialog.html (gitServer, gitAccount, userName, emailAddress, gitPassword, keyfilePath, gitAccessToken)",
+      "tooltip.gitServer": "Git server",
+      "tooltip.gitAccount": "Git Account",
+      "tooltip.userName": "Git username",
+      "tooltip.emailAddress": "E-mail address",
+      "tooltip.gitPassword": "Password",
+      "tooltip.keyfilePath": "Key File Path",
+      "tooltip.gitAccessToken": "Git Access Token",
+      "tooltip.authenticationType": "Authentication Type"
     }
   },
   "runtime": {
@@ -3314,7 +3401,13 @@
       "button.deleteAllSelected": "Удалить выбранные извещения",
       "placeholder.enterNoticeId": "Введите ID извещения",
       "placeholder.enterNoticeKey": "Введите ключ извещения",
-      "placeholder.enterPlanKey": "Введите ключ пространства извещений"
+      "placeholder.enterPlanKey": "Введите ключ пространства извещений",
+      "--------ADD POST NOTICE DIALOG TOOLTIPS------------": "Tooltips for labels in post-notice-dialog.html (noticeKey, endOfLife, planKey)",
+      "tooltip.noticeKey": "Notice Key",
+      "tooltip.endOfLife": "End of Life",
+      "tooltip.planKey": "Notice Space Key",
+      "tooltip.enterDateAndTime": "Enter Date and Time",
+      "tooltip.time": "Time"
     },
     "calendar": {
       "label.validity": "Действительность",
@@ -3350,7 +3443,8 @@
       "button.previewDocument": "Предпросмотр документации",
       "button.editDocument": "Изменить документацию",
       "placeholder.assignReference": "Добавить ссылку на документацию",
-      "message.documentNotUsed": "Эта документация ещё не используется"
+      "message.documentNotUsed": "Эта документация ещё не используется",
+      "tooltip.documentName": "Document Name"
     }
   },
   "reporting": {
@@ -3824,6 +3918,25 @@
     "tab.simpleMode": "Меньше настроек",
     "tab.expertMode": "Больше настроек",
     "tooltip.toAddNonExistFolders": "Можно выбрать папки. Для ввода пути к папке с клавиатуры укажите путь и нажмите пробел или Enter.",
+    "--------ADD USER ACCOUNT TOOLTIPS------------": "Tooltips for labels in user-dialog.html (user, password, roles, forcePasswordChange, disabled)",
+    "tooltip.user": "User",
+    "tooltip.password": "Password",
+    "tooltip.roles": "Roles",
+    "tooltip.forcePasswordChange": "Force Password Change",
+    "tooltip.disabled": "Disabled",
+    "--------ADD IDENTITY SERVICE TOOLTIPS------------": "Tooltips for labels in identity-service-dialog.html (identityServiceName, identityServiceType, identityServiceOrdering, identityServiceRequired, usedAsSecondFactor, disable, serviceAuthenticationScheme, listOfFido, listOfCert)",
+    "tooltip.identityServiceName": "Identity Service Name",
+    "tooltip.identityServiceType": "Identity Service Type",
+    "tooltip.identityServiceOrdering": "Identity Service Ordering",
+    "tooltip.identityServiceRequired": "Identity Service Required",
+    "tooltip.usedAsSecondFactor": "Used As Second Factor",
+    "tooltip.disable": "Disable",
+    "tooltip.serviceAuthenticationScheme": "Service Authentication Scheme",
+    "tooltip.listOfFido": "List of Fido",
+    "tooltip.listOfCert": "List of Cert",
+    "--------ADD CONTROLLER ROLE TOOLTIPS------------": "Tooltips for labels in controller-dialog.html (js7Controller, role)",
+    "tooltip.js7Controller": "JS 7 Controller",
+    "tooltip.role": "Role",
     "usermode": {
       "label.iamLdapHost": "Хост LDAP сервера",
       "label.iamLdapProtocol": "Протокол LDAP",
@@ -4249,6 +4362,16 @@
     "tooltip.doubleClickToSelect": "Двойной щелчок выделяет инструкцию. Если новая инструкция помещена на эту инструкцию, новая инструкция включает существующую.",
     "tooltip.warningMessageForShortIntervalSelection": "Цикличные задания с короткими интервалами повторения могут привести к ухудшению производительности. Рассмотрите возможность перехода на цикличные рабочие процессы с использованием инструкций Cycle.",
     "tooltip.restrictedMonthsTooltip": "Можно выбрать не более 11 месяцев. Чтобы использовать все месяцы, оставьте ограничение по месяцам пустым.",
+    "--------WORKFLOW/ FACET EDITOR MODAL------------": "Configuration > Inventory view > Workflow",
+    "tooltip.facet": "Facet",
+    "tooltip.message": "Message",
+    "--------ADD SCRIPT MODAL TOOLTIPS------------": "Tooltips for labels in script-modal.component.html (script, predicate, listOfSchemes, admissionTime)",
+    "tooltip.script": "The script or executable code that this Job will run.",
+    "tooltip.predicate": "A boolean expression evaluated to determine whether this branch or condition is met.",
+    "tooltip.listOfSchemes": "The list of admission time cycles defined for this Workflow.",
+    "tooltip.admissionTime": "The admission time periods during which Orders are permitted to start.",
+    "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Tooltips for filter form labels in workflow form-template.html (regex)",
+    "tooltip.regex": "Regex",
     "findAndReplace": {
       "label.find": "Найти",
       "label.replace": "Заменить",
@@ -4256,7 +4379,12 @@
       "button.findAndReplace": "Найти и заменить",
       "placeholder.selectFind": "Выбрать одного или нескольких агентов",
       "placeholder.selectReplace": "Выбрать агентов для замены назначения",
-      "tooltip": "Указать отсутствующего агента после ввода <enter>"
+      "tooltip": "Указать отсутствующего агента после ввода <enter>",
+      "--------FIND AND REPLACE MODAL------------": "Configuration > Inventory view > Workflow",
+      "tooltips": {
+        "find": "Find",
+        "replace": "Replace"
+      }
     },
     "wizard": {
       "label.new": "Новая",

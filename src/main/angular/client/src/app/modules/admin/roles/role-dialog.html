@@ -26,7 +26,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((roleName.dirty || roleName.touched) && roleName.invalid) || !isUnique}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.role
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.role' | translate" translate>user.label.role</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">

@@ -18,14 +18,17 @@
     </div>
     @if (copy) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.js7Controller' | translate" translate>user.label.js7Controller</span>
+        </label>
         <div class="col-sm-6">
           <input [(ngModel)]="currentController.name" class="form-control" name="controllerId" readonly type="text">
         </div>
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.role
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'user.tooltip.role' | translate" translate>user.label.role</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -39,7 +42,8 @@
     </div>
     @if (!copy) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.js7Controller' | translate" translate>user.label.js7Controller</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}"
