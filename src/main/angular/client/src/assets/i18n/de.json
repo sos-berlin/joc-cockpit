@@ -4380,7 +4380,7 @@
     "label.deployed": "ausgerollt",
     "label.notDeployed": "nicht ausgerollt",
     "label.importXSD": "XSD importieren",
-    "label.configurationDate": "Freigabedatum der Konfiguration",
+    "label.configurationDate": "Freigabedatum",
     "label.modified": "Letzte Änderung am",
     "label.xmlEditor": "XML Editor",
     "label.sync": "synchron",
