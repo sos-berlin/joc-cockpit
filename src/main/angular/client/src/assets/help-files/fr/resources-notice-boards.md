@@ -1,16 +1,16 @@
-# Ressources - Tableaux de Condition
+# Ressources - Tableaux de Conditions
 
-La vue *Tableaux de Condition* affiche des informations en temps réel sur l'utilisation des conditions.
+La vue *Tableaux de Conditions* affiche des informations en temps réel sur l'utilisation des conditions.
 
-Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows par l'utilisation d'Annonce. Une Annonce est un drapeau qui est attaché à un Tableau de Condition ou qui n'existe pas. Les Tableaux de Condition sont disponibles dans les versions suivantes :
+Les Tableaux de Conditions mettent en œuvre des dépendances entre les Workflows par l'utilisation d'Annonce. Une Annonce est un drapeau qui est attaché à un Tableau de Condition ou qui n'existe pas. Les Tableaux de Conditions sont disponibles dans les versions suivantes :
 
 - **Tableau de Condition Global** implément les *Annonces* à l'échelle globale, ce qui rend le même Annonce disponible pour n'importe quel Workflow à n'importe quel moment. 
 - **Tableau de Condition Planifiable** met en œuvre des *Annonces* dans le cadre du [Plan Quotidien](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
   - Le Workflow 1 fonctionne du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
-  - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Condition Planifiables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.
+  - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Conditions Planifiables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.
 
-*Les Tableaux de Condition* sont référencés dans les Workflows à partir des instructions suivantes :
+*Les Tableaux de Conditions* sont référencés dans les Workflows à partir des instructions suivantes :
 
 - l'instruction **PostNotices** affiche un ou plusieurs *Annonces*.
 - l'instruction **ExpectNotices** attend qu'un ou plusieurs *Annonces* soient présents.
@@ -32,11 +32,11 @@ L'icône de recherche rapide permet de rechercher des tableaux d'affichage en fo
 
 ## Tableau de Condition
 
-L'affichage se concentre sur les *Tableaux de Condition* et les Ordres qui y sont liés.
+L'affichage se concentre sur les *Tableaux de Conditions* et les Ordres qui y sont liés.
 
-La vue [Dépendances du Plan Quotidien](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Condition*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
+La vue [Dépendances du Plan Quotidien](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Conditions*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
 
-### Affichage des Tableaux de Condition
+### Affichage des Tableaux de Conditions
 
 Les informations suivantes sont affichées :
 
@@ -52,7 +52,7 @@ Les informations suivantes sont affichées :
 
 En cliquant sur l'icône de la flèche vers le bas, le tableau d'affichage s'agrandit et affiche des informations détaillées sur les *Annonces* qui ont été publiés et les Ordres qui attendent la publication d'une *Annonce*.
 
-### Opérations sur les Tableaux de Condition
+### Opérations sur les Tableaux de Conditions
 
 Les opérations suivantes sont disponibles :
 
@@ -61,16 +61,16 @@ Les opérations suivantes sont disponibles :
 
 ## Recherche
 
-Le site [Ressources - Tableaux de Condition - Recherche](/resources-notice-boards-search) propose des critères de recherche des tableaux d'affichage à partir des dépendances. Par exemple, si vous recherchez les Workflows comprenant un nom de tâche spécifique, vous obtiendrez les tableaux d'affichage utilisés par le Workflow.
+Le site [Ressources - Tableaux de Conditions - Recherche](/resources-notice-boards-search) propose des critères de recherche des tableaux d'affichage à partir des dépendances. Par exemple, si vous recherchez les Workflows comprenant un nom de tâche spécifique, vous obtiendrez les tableaux d'affichage utilisés par le Workflow.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Configuration - Inventaire - Tableaux de Condition](/configuration-inventory-notice-boards)
+- [Configuration - Inventaire - Tableaux de Conditions](/configuration-inventory-notice-boards)
 - [Dépendances du Plan Quotidien](/daily-plan-dependencies)
 - [Plan Quotidien](/daily-plan)
-- [Ressources - Tableaux de Condition - Recherche](/resources-notice-boards-search)
+- [Ressources - Tableaux de Conditions - Recherche](/resources-notice-boards-search)
 
 ### Product Knowledge Base
 
