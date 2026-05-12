@@ -27,7 +27,9 @@
     </div>
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable && blockPositions?.size > 0) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'order.tooltip.blockPosition' | translate" translate>order.label.blockPosition</span>
+        </label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [blockPositionList]="blockPositionList" [type]="'BLOCK_POSITION'" [workflow]="workflow"
                              [blockPositions]="blockPositions" (onBlur)="getNewPositions($event)"></app-node-position>
@@ -36,7 +38,9 @@
     }
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'order.tooltip.startNode' | translate" translate>order.label.startNode</span>
+        </label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [newPositions]="newPositions" [type]="'START'" [workflow]="workflow" [positions]="positions"></app-node-position>
         </div>
@@ -44,7 +48,9 @@
     }
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'order.tooltip.endNode' | translate" translate>order.label.endNode</span>
+        </label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [newPositions]="newPositions" [position]="positionObj.startPosition" [type]="'END'" [workflow]="workflow" [positions]="positions"></app-node-position>
         </div>

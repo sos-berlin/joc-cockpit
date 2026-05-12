@@ -13,7 +13,8 @@
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 form-control-label" translate>inventory.label.fileName
+        <label class="col-md-4 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.fileName' | translate" translate>inventory.label.fileName</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || inValid}" class="col-md-8">
@@ -33,7 +34,9 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-4 form-control-label" translate>inventory.label.fileFormat</label>
+        <label class="col-md-4 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+        </label>
         <div class="col-md-8">
           <app-select-input [optionLabel]="'name'" [optionValue]="'value'" [ignoreTranslate]="true"
                             [name]="'format'" [object]="exportObj" [attributeName]="'fileFormat'"

@@ -13,7 +13,9 @@
         @if (!listOfObjects || listOfObjects.size == 0) {
           <div class="row">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.label.operationType</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate" translate>deploymentService.label.operationType</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <nz-select [(ngModel)]="selectObject.operationType" name="operationType">
@@ -28,7 +30,9 @@
         @if (listOfObjects && listOfObjects.size > 0) {
           <div class="row">
             <div class="col-md-4">
-              <label translate>deploymentService.label.operationType</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate" translate>deploymentService.label.operationType</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               @for (item of list; track item.name) {
@@ -48,7 +52,9 @@
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.host</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.host' | translate" translate>deploymentService.joc.label.host</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.connection.host" class="form-control"
@@ -62,7 +68,9 @@
 
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.port</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.port' | translate" translate>deploymentService.joc.label.port</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <nz-input-number [(ngModel)]="data.target.connection.port"
@@ -78,7 +86,9 @@
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.method</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.method' | translate" translate>deploymentService.joc.label.method</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.method" class="form-control"
@@ -91,7 +101,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.user</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.user' | translate" translate>deploymentService.joc.label.user</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.user" class="form-control"
@@ -104,7 +116,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyFile</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyFile' | translate" translate>deploymentService.joc.label.keyFile</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.keyFile" class="form-control" name="keyFile"
@@ -118,7 +132,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.packageLocation</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.packageLocation' | translate" translate>deploymentService.joc.label.packageLocation</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.packageLocation" class="form-control"
@@ -132,7 +148,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.execPre</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPre' | translate" translate>deploymentService.joc.label.execPre</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.execPre" class="form-control" name="execPre"
@@ -145,7 +163,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.execPost</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPost' | translate" translate>deploymentService.joc.label.execPost</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.execPost" class="form-control" name="execPost"
@@ -159,7 +179,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.makeService</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.makeService' | translate" translate>deploymentService.joc.label.makeService</span>
+              </label>
             </div>
             <div class="col-md-6">
               <label [(ngModel)]="data.target.makeService" name="makeService" nz-checkbox></label>
@@ -170,7 +192,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.forceSudo</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.forceSudo' | translate" translate>deploymentService.joc.label.forceSudo</span>
+              </label>
             </div>
             <div class="col-md-6">
               <label [(ngModel)]="data.target.forceSudo" name="forceSudo" nz-checkbox></label>
@@ -181,7 +205,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.serviceName</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceName' | translate" translate>deploymentService.joc.label.serviceName</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.serviceName" class="form-control" name="serviceName"
@@ -195,7 +221,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.serviceDir</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceDir' | translate" translate>deploymentService.joc.label.serviceDir</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.serviceDir" class="form-control" name="serviceDir"
@@ -215,7 +243,9 @@
         <div [ngClass]="{'fade-in show': data.isMediaExpanded}" class="p-a b-a hide">
           <div class="row">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.release</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.release' | translate" translate>deploymentService.joc.label.release</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.media.release" class="form-control" name="release"
@@ -229,7 +259,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.tarball</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.tarball' | translate" translate>deploymentService.joc.label.tarball</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.media.tarball" class="form-control" name="tarball"
@@ -252,7 +284,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.setupDir</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.setupDir' | translate" translate>deploymentService.joc.label.setupDir</span>
+                </label>
               </div>
               <div class="col-md-6">
                 <input [(ngModel)]="data.installation.setupDir" class="form-control" name="setupDir"
@@ -266,7 +300,9 @@
           }
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.home</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.home' | translate" translate>deploymentService.joc.label.home</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.home" class="form-control" name="home"
@@ -279,7 +315,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.data</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.data' | translate" translate>deploymentService.joc.label.data</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.data" class="form-control" name="data"
@@ -292,7 +330,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.homeOwner</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.homeOwner' | translate" translate>deploymentService.joc.label.homeOwner</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.homeOwner" class="form-control" name="homeOwner"
@@ -306,7 +346,9 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.dataOwner</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.dataOwner' | translate" translate>deploymentService.joc.label.dataOwner</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.dataOwner" class="form-control" name="dataOwner"
@@ -320,7 +362,9 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.runUser</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.runUser' | translate" translate>deploymentService.joc.label.runUser</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.runUser" class="form-control" name="runUser"
@@ -334,7 +378,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.title</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.title' | translate" translate>deploymentService.joc.label.title</span>
+                </label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.title" [maxlength]="30" class="form-control" name="title"
@@ -349,7 +395,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.securityLevel</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.securityLevel' | translate" translate>deploymentService.joc.label.securityLevel</span>
+                </label>
               </div>
               <div class="col-md-6 ">
                 <nz-select [(ngModel)]="data.installation.securityLevel" name="securityLevel">
@@ -366,7 +414,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsConfig</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate" translate>deploymentService.joc.label.dbmsConfig</span>
+                </label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.dbmsConfig" class="form-control" name="dbmsConfig"
@@ -381,7 +431,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsDriver</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate" translate>deploymentService.joc.label.dbmsDriver</span>
+                </label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.dbmsDriver" class="form-control" name="dbmsDriver"
@@ -396,7 +448,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsInit</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate" translate>deploymentService.joc.label.dbmsInit</span>
+                </label>
               </div>
               <div class="col-md-6 ">
                 <nz-select [(ngModel)]="data.installation.dbmsInit" name="dbmsInit">
@@ -413,7 +467,9 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.httpPort</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpPort' | translate" translate>deploymentService.joc.label.httpPort</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.httpPort" class="form-control" name="httpPort"
@@ -427,7 +483,9 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.httpsPort</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsPort' | translate" translate>deploymentService.joc.label.httpsPort</span>
+              </label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.httpsPort" class="form-control" name="httpsPort"
@@ -441,7 +499,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.javaHome</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaHome' | translate" translate>deploymentService.joc.label.javaHome</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.installation.javaHome" class="form-control"
@@ -455,7 +515,9 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.javaOptions</label>
+              <label>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaOptions' | translate" translate>deploymentService.joc.label.javaOptions</span>
+              </label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.installation.javaOptions" class="form-control"
@@ -470,7 +532,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4">
-                <label translate>deploymentService.joc.label.isUser</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isUser' | translate" translate>deploymentService.joc.label.isUser</span>
+                </label>
               </div>
               <div class="col-md-6">
                 <label [(ngModel)]="data.installation.isUser" name="isUser" nz-checkbox></label>
@@ -483,7 +547,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4">
-                <label translate>deploymentService.joc.label.isPreserveEnv</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate" translate>deploymentService.joc.label.isPreserveEnv</span>
+                </label>
               </div>
               <div class="col-md-6">
                 <label [(ngModel)]="data.installation.isPreserveEnv" name="isPreserveEnv"
@@ -504,7 +570,9 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.responseDir</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.responseDir' | translate" translate>deploymentService.joc.label.responseDir</span>
+                </label>
               </div>
               <div class="col-md-6">
                 <input [(ngModel)]="data.configuration.responseDir" class="form-control" name="responseDir"
@@ -520,7 +588,9 @@
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyStore</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStore' | translate" translate>deploymentService.joc.label.keyStore</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyStore" class="form-control" name="keyStore"
@@ -533,7 +603,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyStorePassword</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate" translate>deploymentService.joc.label.keyStorePassword</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyStorePassword" class="form-control" name="keyStorePassword"
@@ -548,7 +620,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyPassword</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyPassword' | translate" translate>deploymentService.joc.label.keyPassword</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyPassword" class="form-control" name="keyPassword"
@@ -561,7 +635,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyAlias</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyAlias' | translate" translate>deploymentService.joc.label.keyAlias</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyAlias" class="form-control" name="keyAlias"
@@ -574,7 +650,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.trustStore</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStore' | translate" translate>deploymentService.joc.label.trustStore</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.trustStore" class="form-control"
@@ -588,7 +666,9 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.trustStorePassword</label>
+                <label>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate" translate>deploymentService.joc.label.trustStorePassword</span>
+                </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.trustStorePassword" class="form-control" name="trustStorePassword"
@@ -608,7 +688,9 @@
             <div class="p-a b-a">
               <div class="row">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.httpIni</label>
+                  <label>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpIni' | translate" translate>deploymentService.joc.label.httpIni</span>
+                  </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.httpIni" class="form-control"
@@ -622,7 +704,9 @@
               </div>
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.httpsIni</label>
+                  <label>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsIni' | translate" translate>deploymentService.joc.label.httpsIni</span>
+                  </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.httpsIni" class="form-control"
@@ -636,7 +720,9 @@
               </div>
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.sslIni</label>
+                  <label>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.sslIni' | translate" translate>deploymentService.joc.label.sslIni</span>
+                  </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.sslIni" class="form-control"
@@ -654,7 +740,9 @@
             <div class="row m-t-12">
               <div class="col-md-4 form-control-label">
                 @if ($index == 0) {
-                  <label translate>deploymentService.joc.label.templates</label>
+                  <label>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.templates' | translate" translate>deploymentService.joc.label.templates</span>
+                  </label>
                 }
               </div>
               <div class="col-md-6 ">

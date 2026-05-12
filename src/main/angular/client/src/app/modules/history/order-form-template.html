@@ -2,7 +2,8 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -28,7 +29,9 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.startDateRange</label>
+        <label class="col-md-2 col-sm-4">
+          <span [appRichTooltip]="'history.tooltip.startDateRange' | translate" translate>common.label.startDateRange</span>
+        </label>
         <div class="col-md-6 col-sm-8">
           <nz-radio-group [(ngModel)]="filter.radio" name="date">
             <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -39,7 +42,9 @@
     }
     @if (filter.radio == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startFrom</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.startFrom' | translate" translate>common.label.startFrom</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
@@ -50,7 +55,9 @@
     }
     @if (filter.radio == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startTo</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.startTo' | translate" translate>common.label.startTo</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
@@ -62,7 +69,9 @@
     @if (filter.radio == 'planned') {
       <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
            class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processStarted</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.processStarted' | translate" translate>common.label.processStarted</span>
+        </label>
         <div class=" col-sm-6">
           <input #processExc1="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
                  type="text" validateReqex>
@@ -79,7 +88,9 @@
 
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.endDateRange</label>
+        <label class="col-md-2 col-sm-4">
+          <span [appRichTooltip]="'history.tooltip.endDateRange' | translate" translate>common.label.endDateRange</span>
+        </label>
         <div class="col-md-6 col-sm-8">
           <nz-radio-group [(ngModel)]="filter.radio1" name="date1">
             <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -90,7 +101,9 @@
     }
     @if (filter.radio1 == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endFrom</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.endFrom' | translate" translate>common.label.endFrom</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'endFromDate'" [attributeTime]="'endFromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'endFrom'" [dateFormat]="dateFormat"
@@ -101,7 +114,9 @@
     }
     @if (filter.radio1 == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.endTo' | translate" translate>common.label.endTo</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'endToDate'" [attributeTime]="'endToTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'endTo'" [dateFormat]="dateFormat"
@@ -113,7 +128,9 @@
     @if (filter.radio1 == 'planned') {
       <div [ngClass]="{ 'has-error' : (processCompleted.dirty || processCompleted.touched) && processCompleted.invalid}"
            class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processCompleted</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.processCompleted' | translate" translate>common.label.processCompleted</span>
+        </label>
         <div class=" col-sm-6">
           <input #processCompleted="ngModel" [(ngModel)]="filter.processCompleted" autocomplete="off" class="form-control" name="processCompleted"
                  placeholder="{{'common.placeholder.processExecuted' | translate}}"
@@ -130,7 +147,9 @@
     }
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+        </label>
         <div class=" col-sm-6">
           <app-select-input [attributeName]="'controllerId'" [name]="'id'" [placeholder]="'common.label.selectController'" [isAllowClear]="true"
                             [ignoreTranslate]="true" [listArray]="schedulerIds.controllerIds" [object]="filter"></app-select-input>
@@ -138,8 +157,9 @@
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>common.label.folders</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.folders' | translate" translate>common.label.folders</span>
+      </label>
       <div class=" col-sm-6">
         <nz-tree-select
           [(ngModel)]="filter.paths"
@@ -176,16 +196,18 @@
     </div>
     @if (filter.paths?.length > 0) {
       <div class="m-b-xs row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-               translate>inventory.label.handleRecursively</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'history.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+        </label>
         <div class="col-md-2">
           <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
         </div>
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>dailyPlan.label.workflow</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.workflow' | translate" translate>dailyPlan.label.workflow</span>
+      </label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.workflowPath" autocomplete="off" class="form-control" name="workflowPath"
                placeholder="{{'history.placeholder.workflowPath' | translate}}" type="text">
@@ -193,7 +215,9 @@
     </div>
     @if(preferences.enableTagging) {
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span>
+      </label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -205,7 +229,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.orderTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span>
+      </label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -218,15 +244,18 @@
     </div>
    }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>history.label.orderId</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'history.tooltip.orderId' | translate" translate>history.label.orderId</span>
+      </label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.orderId" autocomplete="off" class="form-control" name="orderId"
                placeholder="{{'history.placeholder.orderId' | translate}}" type="text">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>common.label.status</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
+        <span [appRichTooltip]="'history.tooltip.status' | translate" translate>common.label.status</span>
+      </label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="historyStates"
@@ -243,7 +272,9 @@
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'history.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+        </label>
         <div class="col-sm-6">
           <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
         </div>

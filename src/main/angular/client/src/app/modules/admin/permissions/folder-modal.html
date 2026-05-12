@@ -21,7 +21,8 @@
     </div>
     @if (!newFolder) {
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>user.label.folders
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.folders' | translate" translate>user.label.folders</span>
           @if (folderObj.paths.length===0) {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -42,7 +43,9 @@
     }
     @if (newFolder) {
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>user.label.folders</label>
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'user.tooltip.folders' | translate" translate>user.label.folders</span>
+        </label>
         <div class="col-sm-8">
           <nz-tree-select
             #treeSelectCtrl
@@ -84,7 +87,9 @@
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-3" translate>user.label.recursive</label>
+      <label class="col-sm-3">
+        <span [appRichTooltip]="'user.tooltip.recursive' | translate" translate>user.label.recursive</span>
+      </label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentFolder.recursive" name="recursive"></label>
       </div>

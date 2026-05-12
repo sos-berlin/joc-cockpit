@@ -16,7 +16,9 @@
           <div class="m-b">
             @if (isVisible) {
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.frequencyType' | translate" translate>runtime.label.frequencyType</span>
+                </label>
                 <div class="col-sm-6">
                   <app-select-input [attributeName]="'tab'" [isSearchable]="true"
                                     [listArray]="filteredFrequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
@@ -30,7 +32,9 @@
             <div class="tab-pane animated fadeIn" id="tab1"
                  [ngClass]="{'active':frequency.tab == 'weekDays'}">
               <div class="form-group row">
-                <label class="col-sm-3" translate>runtime.label.weekDays</label>
+                <label class="col-sm-3">
+                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate" translate>runtime.label.weekDays</span>
+                </label>
                 <div class="col-sm-9">
                   <label nz-checkbox class="w" [(ngModel)]="frequency.all" name="week"
                          (ngModelChange)="selectAllWeek()">
@@ -48,7 +52,9 @@
                   </nz-checkbox-group>                </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
                                   [name]="'startingWithW'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -57,7 +63,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                </label>
 
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnW'"
@@ -70,7 +78,9 @@
             <div class="tab-pane animated fadeIn" id="tab2"
                  [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
               <div class="form-group row">
-                <label class="col-sm-3" translate>runtime.label.dayNumber</label>
+                <label class="col-sm-3">
+                  <span [appRichTooltip]="'runtime.tooltip.dayNumber' | translate" translate>runtime.label.dayNumber</span>
+                </label>
                 <div class="col-sm-5">
                   <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'which'" [isSearchable]="true"
                                     [listArray]="calendarService.dayNumbers" [name]="'which'" [optionLabel]="'label'" [optionValue]="'value'"
@@ -78,7 +88,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.weekDays</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate" translate>runtime.label.weekDays</span>
+                </label>
                 <div class="col-sm-5">
                   <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'specificWeekDay'"  [isSearchable]="true"
                                     [listArray]="calendarService.specificWeekDay" [name]="'specificWeekDay'" [optionLabel]="'label'" [optionValue]="'value'"
@@ -86,7 +98,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                </label>
 
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithS'" [isPreviousDateDisabled]="calendar.configuration.from"
@@ -97,7 +111,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
                                   [isPreviousDateDisabled]="frequency.startingWithS" [isNextDateDisabled]="calendar.configuration.to"
@@ -111,7 +127,9 @@
                  [ngClass]="{'active':frequency.tab == 'specificDays'}">
               <div>
                 <div class="form-group row b-b p-b">
-                  <label class="col-sm-3 form-control-label" translate>history.label.date</label>
+                  <label class="col-sm-3 form-control-label">
+                    <span [appRichTooltip]="'history.tooltip.date' | translate" translate>history.label.date</span>
+                  </label>
                   <div class="col-sm-2">
                     <app-date-input [object]="frequency" [attributeDate]="'specificDate'"
                                     [name]="'specificDate'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -130,7 +148,9 @@
             <div class="tab-pane animated fadeIn" id="tab4"
                  [ngClass]="{'active':frequency.tab == 'monthDays'}">
               <div class="form-group row">
-                <label class="col-sm-3" translate>runtime.label.monthDays</label>
+                <label class="col-sm-3">
+                  <span [appRichTooltip]="'runtime.tooltip.monthDays' | translate" translate>runtime.label.monthDays</span>
+                </label>
                 <div class="col-sm-9">
                   <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos" (ngModelChange)="onFrequencyChange()">
                     <label nz-radio nzValue="months"><span translate>runtime.label.countFromFirstDay</span></label>
@@ -228,7 +248,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
                                   [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
@@ -238,7 +260,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
                                   [isPreviousDateDisabled]="frequency.startingWithM" [isNextDateDisabled]="calendar.configuration.to"
@@ -251,7 +275,9 @@
             <div class="tab-pane animated fadeIn" id="tab5"
                  [ngClass]="{'active':frequency.tab == 'every'}">
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.every</label>
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.every' | translate" translate>runtime.label.every</span>
+                </label>
                 <div class="col-sm-2">
                   <nz-input-number [nzMin]="1" [nzMax]="31" [nzStep]="1" name="interval"
                                    [(ngModel)]="frequency.interval"
@@ -265,7 +291,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-5">
@@ -277,8 +304,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>
-                  runtime.label.validTo
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
                   <!-- <sup class="text-danger text-sm">*</sup> -->
                 </label>
                 <div class="col-sm-5">
@@ -301,7 +328,9 @@
               }
               @if (!countryField) {
                 <div class="form-group row">
-                  <label class="col-sm-3" translate>runtime.label.country</label>
+                  <label class="col-sm-3">
+                    <span [appRichTooltip]="'runtime.tooltip.country' | translate" translate>runtime.label.country</span>
+                  </label>
                   <div class="col-sm-6">
                     <app-select-input [attributeName]="'country'"  [isSearchable]="true"
                                       [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'"
@@ -311,7 +340,9 @@
               }
               @if (!countryField) {
                 <div class="form-group row">
-                  <label class="col-sm-3 form-control-label" translate>runtime.label.year</label>
+                  <label class="col-sm-3 form-control-label">
+                    <span [appRichTooltip]="'runtime.tooltip.year' | translate" translate>runtime.label.year</span>
+                  </label>
                   <div class="col-sm-6">
                     <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
                                      [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
@@ -320,7 +351,9 @@
               }
               @if (holidayList.length) {
                 <div class="row m-b-sm">
-                  <label class="col-sm-3" translate>runtime.label.selectAll</label>
+                  <label class="col-sm-3">
+                    <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate" translate>runtime.label.selectAll</span>
+                  </label>
                   <div class="col-sm-6">
                     <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
                            (ngModelChange)="selectAllHolidays()"></label>
@@ -358,7 +391,9 @@
                  [ngClass]="{'active':frequency.tab == 'nonWorkingDayCalendars'}">
               @if (frequencyType === 'EXCLUDE' && calendarData.type === 'WORKINGDAYSCALENDAR') {
                 <div class="form-group row">
-                  <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
+                  <label class="col-sm-3">
+                    <span [appRichTooltip]="'runtime.tooltip.nonWorkingDayCalendars' | translate" translate>runtime.label.nonWorkingDayCalendars</span>
+                  </label>
                   <div class="col-sm-9">
                     <app-multi-select
                       [isDisabled]="false"
@@ -375,7 +410,8 @@
             </div>
           </div>
           <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars'  || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
-            <label class="col-sm-3" translate>runtime.label.monthRange
+            <label class="col-sm-3">
+              <span [appRichTooltip]="'runtime.tooltip.monthRange' | translate" translate>runtime.label.monthRange</span>
               <a class="cursor">
                 <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
                    (click)="showMonthRange=true"></i>

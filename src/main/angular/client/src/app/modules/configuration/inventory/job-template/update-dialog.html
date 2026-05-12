@@ -95,7 +95,9 @@
           @if (data || folder) {
             <div class="form-group row">
               <div class="col-md-3">
-                <label translate>inventory.export.label.filter</label>
+                <label>
+                  <span [appRichTooltip]="'inventory.tooltip.filter' | translate" translate>inventory.export.label.filter</span>
+                </label>
               </div>
               <div class="col-md-9">
                 <label [(ngModel)]="object.draft" name="draft" nz-checkbox (ngModelChange)="filterList()" >
@@ -110,7 +112,9 @@
           @if (treeObj && !treeObj.object && !treeObj.controller && !treeObj.type) {
             <div class="form-group row">
               <div class="col-md-3">
-                <label translate>inventory.label.handleRecursively</label>
+                <label>
+                  <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+                </label>
               </div>
               <div class="col-md-9">
                 <label [(ngModel)]="object.recursive" name="recursive" nz-checkbox></label>
@@ -119,7 +123,9 @@
           }
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteNotification</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.overwriteNotification' | translate" translate>inventory.label.overwriteNotification</span>
+              </label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteNotification" name="overwriteNotification" nz-checkbox></label>
@@ -127,7 +133,9 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteAdmissionTime</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.overwriteAdmissionTime' | translate" translate>inventory.label.overwriteAdmissionTime</span>
+              </label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteAdmissionTime" name="overwriteAdmissionTime" nz-checkbox></label>
@@ -135,7 +143,9 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteRequiredArguments</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.overwriteRequiredArguments' | translate" translate>inventory.label.overwriteRequiredArguments</span>
+              </label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteValues" name="overwriteValues" nz-checkbox></label>
@@ -143,7 +153,9 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteOptionalArguments</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.overwriteOptionalArguments' | translate" translate>inventory.label.overwriteOptionalArguments</span>
+              </label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.propagateOptionalArguments" name="propagateOptionalArguments" nz-checkbox></label>
@@ -155,7 +167,9 @@
               <div class="col-md-12">
                 <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                        (nzCheckedChange)="selectAll($event)"></label>
-                <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
+                <label class="p-l-sm _600">
+                  <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate" translate>runtime.label.selectAll</span>
+                </label>
               </div>
             </div>
           }

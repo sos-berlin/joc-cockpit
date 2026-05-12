@@ -1,5 +1,7 @@
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}}" translate>common.label.selectComments</label>
+  <label class="col-sm-{{sizeX}}">
+    <span [appRichTooltip]="'common.tooltip.selectComments' | translate" translate>common.label.selectComments</span>
+  </label>
   <div class="col-sm-8">
     <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
       <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
@@ -9,7 +11,8 @@
 </div>
 @if (comments.radio=='predefined') {
   <div class="form-group row">
-    <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
+    <label class="col-sm-{{sizeX}} form-control-label">
+      <span [appRichTooltip]="'common.tooltip.selectComment' | translate" translate>common.label.selectComment</span>
       @if (required) {
         <sup class="text-danger text-sm">*</sup>
       }
@@ -24,7 +27,8 @@
 @if (comments.radio=='new') {
   <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
        class="form-group row">
-    <label class="col-sm-{{sizeX}} " translate>common.label.comment
+    <label class="col-sm-{{sizeX}} ">
+      <span [appRichTooltip]="'common.tooltip.comment' | translate" translate>common.label.comment</span>
       @if (required) {
         <sup class="text-danger text-sm">*</sup>
       }
@@ -47,14 +51,18 @@
   </div>
 }
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.timeSpend</label>
+  <label class="col-sm-{{sizeX}} form-control-label">
+    <span [appRichTooltip]="'common.tooltip.timeSpend' | translate" translate>common.label.timeSpend</span>
+  </label>
   <div class="col-sm-{{sizeY}}">
     <nz-input-number name="timeSpend" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
                      [nzMin]="0" [nzStep]="1" [(ngModel)]="comments.timeSpent"></nz-input-number>
   </div>
 </div>
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.ticketLink</label>
+  <label class="col-sm-{{sizeX}} form-control-label">
+    <span [appRichTooltip]="'common.tooltip.ticketLink' | translate" translate>common.label.ticketLink</span>
+  </label>
   <div class="col-sm-{{sizeY}}">
     <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
            [(ngModel)]="comments.ticketLink">
@@ -62,7 +70,9 @@
 </div>
 @if (router.url.match('/users/') || router.url.match('/settings')) {
   <div class="form-group row">
-    <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
+    <label class="col-sm-{{sizeX}}">
+      <span [appRichTooltip]="'user.tooltip.reuseReason' | translate" translate>user.label.reuseReason</span>
+    </label>
     <div class="col-sm-{{sizeY}}">
       <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
     </div>

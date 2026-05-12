@@ -13,13 +13,17 @@
   <div class="modal-body container">
     @if (comments.name) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.controllerId</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'dashboard.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+        </label>
         <label class="col-sm-8">{{comments.name}}</label>
       </div>
     }
     @if (comments.operation) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.operation</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'dashboard.tooltip.operation' | translate" translate>common.label.operation</span>
+        </label>
         <label class="col-sm-8">{{comments.operation}}</label>
       </div>
     }

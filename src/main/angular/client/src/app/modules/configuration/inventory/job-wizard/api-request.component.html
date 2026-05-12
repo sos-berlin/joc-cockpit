@@ -105,7 +105,9 @@
                 <nz-tab nzTitle="{{'workflow.apiRequest.label.authorization' | translate}}">
                   <div class="form-group row">
                     <div class="col-sm-2">
-                      <label nzFor="authType" translate>common.label.type</label>
+                      <label nzFor="authType">
+                        <span [appRichTooltip]="'common.tooltip.type' | translate" translate>common.label.type</span>
+                      </label>
                     </div>
                     <div class="col-sm-5">
                       <nz-select
@@ -129,8 +131,9 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="apiKeyName"
-                                 translate>workflow.apiRequest.label.keyName</label>
+                          <label nzFor="apiKeyName">
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.keyName' | translate" translate>workflow.apiRequest.label.keyName</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="apiKeyName" name="apiKeyName"
@@ -140,8 +143,9 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="apiKeyValue"
-                                 translate>workflow.apiRequest.label.value</label>
+                          <label nzFor="apiKeyValue">
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.value' | translate" translate>workflow.apiRequest.label.value</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="apiKeyValue" name="apiKeyValue"
@@ -152,7 +156,9 @@
                       <div class="form-group row">
 
                         <div class="col-sm-2">
-                          <label translate>workflow.apiRequest.label.in</label>
+                          <label>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.in' | translate" translate>workflow.apiRequest.label.in</span>
+                          </label>
                         </div>
 
                         <div class="col-sm-5">
@@ -172,7 +178,9 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="bearerToken" translate>agent.label.token</label>
+                          <label nzFor="bearerToken">
+                            <span [appRichTooltip]="'agent.tooltip.token' | translate" translate>agent.label.token</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="bearerToken" name="bearerToken"
@@ -187,7 +195,9 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="basicUser" translate>profile.label.userName</label>
+                          <label nzFor="basicUser">
+                            <span [appRichTooltip]="'profile.tooltip.userName' | translate" translate>profile.label.userName</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input
@@ -201,7 +211,9 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="basicPass" translate>login.label.password</label>
+                          <label nzFor="basicPass">
+                            <span [appRichTooltip]="'login.tooltip.password' | translate" translate>login.label.password</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input
@@ -223,8 +235,9 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="clientId"
-                                 translate>workflow.apiRequest.label.clientId</label>
+                          <label nzFor="clientId">
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientId' | translate" translate>workflow.apiRequest.label.clientId</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="clientId" name="clientId"
@@ -233,7 +246,9 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="clientSecret" translate>workflow.apiRequest.label.clientSecret</label>
+                          <label nzFor="clientSecret">
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientSecret' | translate" translate>workflow.apiRequest.label.clientSecret</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="clientSecret" name="clientSecret" type="password"
@@ -242,8 +257,9 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="tokenUrl"
-                                 translate>workflow.apiRequest.label.tokenUrl</label>
+                          <label nzFor="tokenUrl">
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.tokenUrl' | translate" translate>workflow.apiRequest.label.tokenUrl</span>
+                          </label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="tokenUrl" name="tokenUrl"

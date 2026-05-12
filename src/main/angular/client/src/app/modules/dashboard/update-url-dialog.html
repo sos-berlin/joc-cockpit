@@ -7,15 +7,17 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-md-4 form-control-label"
-             translate>deploymentService.joc.label.jocInstanceId</label>
+      <label class="col-md-4 form-control-label">
+        <span [appRichTooltip]="'dashboard.tooltip.jocInstanceId' | translate" translate>deploymentService.joc.label.jocInstanceId</span>
+      </label>
       <div class="col-md-8">
         <input type="text" class="form-control" readonly name="instanceId" [(ngModel)]="joc.instanceId"/>
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-md-4 form-control-label"
-             translate>dashboard.label.url</label>
+      <label class="col-md-4 form-control-label">
+        <span [appRichTooltip]="'dashboard.tooltip.url' | translate" translate>dashboard.label.url</span>
+      </label>
       <div class="col-md-8">
         <input type="url" class="form-control" name="url" [(ngModel)]="obj.url"
                [appAutofocus]="true" autocomplete="off"/>

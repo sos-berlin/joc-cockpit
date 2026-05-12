@@ -2,7 +2,8 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -30,7 +31,9 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+        <label class="col-md-2 col-sm-4">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+        </label>
         <div class="col-md-6">
           <nz-radio-group [(ngModel)]="filter.radio" name="radio">
             <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -41,7 +44,9 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row ">
-        <label class="col-sm-2 form-control-label" translate>common.label.from</label>
+        <label class="col-sm-2 form-control-label">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.from' | translate" translate>common.label.from</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
@@ -52,7 +57,9 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row">
-        <label class="col-sm-2 form-control-label" translate>common.label.to</label>
+        <label class="col-sm-2 form-control-label">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.to' | translate" translate>common.label.to</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
@@ -64,7 +71,9 @@
     @if (filter.radio === 'planned') {
       <div [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}"
            class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processExecuted</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+        </label>
         <div class=" col-sm-6">
           <input #processExc="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
                  type="text"
@@ -81,7 +90,9 @@
     }
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+        </label>
         <div class=" col-sm-6">
           <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [placeholder]="'common.label.selectController'"
                             [listArray]="schedulerIds.controllerIds" [name]="'id'" [ignoreTranslate]="true"
@@ -90,7 +101,9 @@
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentIds</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentIds' | translate" translate>resource.agentJobExecution.label.agentIds</span>
+      </label>
       <div class="col-sm-6">
         <app-select-input [attributeName]="'agentIds' "
                           [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="true" [isSearchable]="true"
@@ -99,7 +112,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentUrls</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentUrls' | translate" translate>resource.agentJobExecution.label.agentUrls</span>
+      </label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.urls" autocomplete="off" class="form-control"
                name="urls"
@@ -108,7 +123,9 @@
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+        </label>
         <div class="col-sm-8">
           <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
         </div>

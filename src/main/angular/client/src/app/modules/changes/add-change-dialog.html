@@ -19,7 +19,8 @@
       </div>
       <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
            class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -35,7 +36,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.title
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'changes.tooltip.title' | translate" translate>common.label.title</span>
         </label>
         <div class="col-sm-9">
           <input [(ngModel)]="changesObj.title" autocomplete="off" class="form-control"
@@ -44,7 +46,8 @@
       </div>
 
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.state
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'changes.tooltip.state' | translate" translate>common.label.state</span>
         </label>
         <div class="col-sm-9">
           <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
@@ -76,7 +79,9 @@
       @if (nodes.length > 0) {
         <div class="form-group row m-b-sm">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label>
+              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+            </label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
@@ -306,7 +311,8 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>common.label.name
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -329,7 +335,9 @@
       @if (nodes.length > 0) {
         <div class="form-group row m-b-sm">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label>
+              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+            </label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">

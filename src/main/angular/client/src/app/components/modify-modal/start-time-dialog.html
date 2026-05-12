@@ -70,14 +70,18 @@
         }
         @if (order && !order.cyclicOrder) {
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <label class="col-md-3 ">
+              <span [appRichTooltip]="'order.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+            </label>
             <div class="col-md-8">
               <label [(ngModel)]="dateType.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3" translate>common.label.startTime</label>
+            <label class="col-md-3">
+              <span [appRichTooltip]="'common.tooltip.startTime' | translate" translate>common.label.startTime</span>
+            </label>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="dateType.at" name="at" (ngModelChange)="onTimeChange($event)">
                 <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -91,7 +95,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.stickToDailyPlanDate</label>
+            <label class="col-md-3 ">
+              <span [appRichTooltip]="'order.tooltip.stickToDailyPlanDate' | translate" translate>order.label.stickToDailyPlanDate</span>
+            </label>
             <div class="col-md-8">
               <label [(ngModel)]="stickToDailyPlanDate" name="stickToDailyPlanDate" nz-checkbox>
               </label>
@@ -99,7 +105,8 @@
           </div>
           @if (dateType.at == 'later') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.time
+              <label class="col-md-3 form-control-label">
+                <span [appRichTooltip]="'common.tooltip.time' | translate" translate>common.label.time</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
@@ -117,7 +124,8 @@
           }
           @if (dateType.at == 'cur') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.time
+              <label class="col-md-3 form-control-label">
+                <span [appRichTooltip]="'common.tooltip.time' | translate" translate>common.label.time</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
@@ -135,7 +143,8 @@
           }
           @if (dateType.at == 'date') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
+              <label class="col-md-3 form-control-label">
+                <span [appRichTooltip]="'workflow.tooltip.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6">
@@ -149,14 +158,17 @@
         }
         @if (order && order.cyclicOrder) {
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <label class="col-md-3 ">
+              <span [appRichTooltip]="'order.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+            </label>
             <div class="col-md-8">
               <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'runtime.tooltip.repeatTime' | translate" translate>runtime.label.repeatTime</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
@@ -167,7 +179,9 @@
           </div>
           @if (dateType.at == 'date') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.specificDate</label>
+              <label class="col-md-3 form-control-label">
+                <span [appRichTooltip]="'common.tooltip.specificDate' | translate" translate>common.label.specificDate</span>
+              </label>
               <div class="col-md-2">
                 <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'scheduleDate'" [isRequired]="false"
                                 [isTime]="false" [isAllowClear]="true" [name]="'scheduleDate'" [dateFormat]="dateFormat"
@@ -177,7 +191,8 @@
             </div>
           }
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>runtime.label.begin
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'runtime.tooltip.begin' | translate" translate>runtime.label.begin</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
@@ -185,7 +200,8 @@
                      [(ngModel)]="period.begin"
                      placeholder="HH:MM:SS" type="text">
             </div>
-            <label class="col-md-2 form-control-label text-right" translate>runtime.label.end
+            <label class="col-md-2 form-control-label text-right">
+              <span [appRichTooltip]="'runtime.tooltip.end' | translate" translate>runtime.label.end</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">

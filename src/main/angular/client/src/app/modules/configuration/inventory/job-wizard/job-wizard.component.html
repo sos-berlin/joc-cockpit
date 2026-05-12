@@ -21,7 +21,9 @@
       @if (wizard.step === 1) {
         <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
+            <label class="col-sm-3 form-control-label">
+              <span [appRichTooltip]="'workflow.wizard.tooltip.title' | translate" translate>workflow.wizard.label.title</span>
+            </label>
             <div class="col-sm-9">
               <input [(ngModel)]="job.title" class="form-control" name="title"
                      placeholder="{{'common.placeholder.title' | translate}}" type="text">

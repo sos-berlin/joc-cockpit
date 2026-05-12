@@ -121,8 +121,10 @@
     @if (resetProfiles && resetProfiles.length>0) {
       <div class="col-sm-12 text-left m-t-sm">
         <div class="row">
-          <label class="col-md-3 col-md-offset-3" translate>
+          <label class="col-md-3 col-md-offset-3">
+            <span [appRichTooltip]="'user.tooltip.account' | translate" translate>
             user.label.account
+          </span>
           </label>
           <div class="col-md-6  text-left">
             @for (profile of resetProfiles; track profile; let i = $index) {
@@ -145,7 +147,9 @@
       <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
            (click)="toggleAllAffectedCollapse()"></i>
-        <label class="m-l-sm" translate>inventory.label.affectedObjects</label>
+        <label class="m-l-sm">
+          <span [appRichTooltip]="'inventory.tooltip.affectedObjects' | translate" translate>inventory.label.affectedObjects</span>
+        </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllAffected()"></i>
         <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
@@ -197,7 +201,9 @@
       <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
            (click)="toggleAllReferencedCollapse()"></i>
-        <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
+        <label class="m-l-sm">
+          <span [appRichTooltip]="'inventory.tooltip.referencedObjects' | translate" translate>inventory.label.referencedObjects</span>
+        </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllReferenced()"></i>
         <i class="cursor text-16 fa fa-angle-double-up m-l-xs"

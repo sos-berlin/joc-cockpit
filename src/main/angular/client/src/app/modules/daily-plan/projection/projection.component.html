@@ -23,8 +23,9 @@
           @if (!isHide) {
             <div class="modal-body p-a p-t p-b-xs">
               <div class="form-group row">
-                <label class="col-md-2 form-control-label"
-                       translate>dailyPlan.label.workflows</label>
+                <label class="col-md-2 form-control-label">
+                  <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+                </label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
                                     [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
@@ -33,7 +34,9 @@
               </div>
               @if (filter.workflowFolders?.length > 0) {
                 <div class="form-group row">
-                  <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
+                  <label class="col-md-2">
+                    <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+                  </label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.workflowFolders; track path) {
                       <div>
@@ -45,8 +48,9 @@
                 </div>
               }
               <div class="form-group row">
-                <label class="col-md-2 form-control-label"
-                       translate>dailyPlan.label.schedules</label>
+                <label class="col-md-2 form-control-label">
+                  <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+                </label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
                                     [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
@@ -55,7 +59,9 @@
               </div>
               @if (filter.scheduleFolders?.length > 0) {
                 <div class="form-group row">
-                  <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
+                  <label class="col-md-2">
+                    <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+                  </label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.scheduleFolders; track path) {
                       <div>

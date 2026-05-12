@@ -10,7 +10,9 @@
   <div class="modal-body p-a">
     @if (comments.node) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.node</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'common.tooltip.node' | translate" translate>common.label.node</span>
+        </label>
         <label class="col-sm-8">{{comments.node}}</label>
       </div>
     }
@@ -22,7 +24,9 @@
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-4" translate>common.label.operation</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'common.tooltip.operation' | translate" translate>common.label.operation</span>
+        </label>
       <label class="col-sm-8">{{comments.operation | translate}}</label>
     </div>
     <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>

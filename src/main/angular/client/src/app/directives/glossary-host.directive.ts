@@ -60,6 +60,11 @@ export class GlossaryHostDirective implements OnDestroy {
   private readonly coreService = inject(CoreService);
 
   constructor() {
+    // Eagerly load the glossary for the current language so it is already
+    // cached by the time the user hovers on a term. This eliminates the
+    // network-wait delay that would otherwise appear as a spinner on first hover.
+    this.glossary.loadGlossary(this.lang).subscribe();
+
     const host: HTMLElement = this.el.nativeElement;
 
     host.addEventListener('mouseover', (e: MouseEvent) => {
