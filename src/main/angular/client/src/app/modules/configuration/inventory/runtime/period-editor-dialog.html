@@ -18,8 +18,10 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div>
             <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>
-                runtime.label.repeatInterval
+              <label class="col-sm-4 form-control-label">
+                <span [appRichTooltip]="'runtime.tooltip.repeatInterval' | translate" translate>
+                  runtime.label.repeatInterval
+                </span>
               </label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.frequency" name="frequency">
@@ -30,7 +32,9 @@
             </div>
             @if (period.frequency=='singleStart') {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
+                <label class="col-sm-4 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.startTime' | translate" translate>runtime.label.startTime</span>
+                </label>
                 <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                      class="col-sm-3">
                   <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" (blur)="onBlur(startTime,'singleStart')" [appAutofocus]="true" autocomplete="off" class="form-control"
@@ -49,8 +53,8 @@
 
             @if (period.frequency=='repeat') {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>
-                  runtime.label.repeatTime
+                <label class="col-sm-4 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.repeatTime' | translate" translate>runtime.label.repeatTime</span>
                   @if (isDisplay) {
                     <i id="repeatId" [appRichTooltip]="'workflow.tooltip.warningMessageForShortIntervalSelection' | translate"
                        [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
@@ -70,7 +74,9 @@
               </div>
             }
             <div [hidden]="period.frequency=='singleStart'" class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
+              <label class="col-sm-4 form-control-label">
+                <span [appRichTooltip]="'runtime.tooltip.begin' | translate" translate>runtime.label.begin</span>
+              </label>
               <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                 <input #begin="ngModel" [(ngModel)]="period.period.begin" (blur)="onBlur(begin, 'begin')" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
                        type="text" timeRelativeValidatorReqex>
@@ -82,7 +88,9 @@
                   </div>
                 }
               </div>
-              <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
+              <label class="col-sm-2 form-control-label text-right">
+                <span [appRichTooltip]="'runtime.tooltip.end' | translate" translate>runtime.label.end</span>
+              </label>
               <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                 <input #end="ngModel" [(ngModel)]="period.period.end" (blur)="onBlur(end, 'end')" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
                        type="text" timeRelativeValidatorReqex>
@@ -96,7 +104,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.onHoliday</label>
+              <label class="col-sm-4 form-control-label">
+                <span [appRichTooltip]="'runtime.tooltip.onHoliday' | translate" translate>runtime.label.onHoliday</span>
+              </label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.period.whenHoliday" name="holidayOption">
                   @for (option of when_holiday_options; track option) {

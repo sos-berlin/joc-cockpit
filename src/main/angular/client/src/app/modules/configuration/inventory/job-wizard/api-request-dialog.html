@@ -28,7 +28,9 @@
     <form #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
       <div class="form-group row">
         <div class="col-md-3 form-control-label">
-          <label translate>workflow.apiRequest.label.value</label>
+          <label>
+            <span [appRichTooltip]="'workflow.apiRequest.tooltip.value' | translate" translate>workflow.apiRequest.label.value</span>
+          </label>
         </div>
         <div class="col-md-6">
           <label>{{ variableValue }}</label>
@@ -37,7 +39,8 @@
 
       <div class="form-group row">
         <div class="col-md-3 form-control-label">
-          <label translate>workflow.apiRequest.label.name
+          <label>
+            <span [appRichTooltip]="'workflow.apiRequest.tooltip.name' | translate" translate>workflow.apiRequest.label.name</span>
             <sup class="text-danger text-sm">*</sup>
           </label>
         </div>
@@ -180,7 +183,8 @@
   @if (isAdding) {
     <div class="form-group row">
       <div class="col-md-3 form-control-label">
-        <label translate>workflow.apiRequest.label.name
+        <label>
+          <span [appRichTooltip]="'workflow.apiRequest.tooltip.name' | translate" translate>workflow.apiRequest.label.name</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
       </div>
@@ -210,8 +214,10 @@
   @if (isAdding) {
     <div class="form-group row">
       <div class="col-md-3 form-control-label">
-        <label translate>workflow.apiRequest.label.value
-          <sup class="text-danger text-sm">*</sup></label>
+        <label>
+          <span [appRichTooltip]="'workflow.apiRequest.tooltip.value' | translate" translate>workflow.apiRequest.label.value</span>
+          <sup class="text-danger text-sm">*</sup>
+        </label>
       </div>
       <div class="col-md-6">
         <div [ngClass]="{'has-error' : ((addvalue.dirty || addvalue.touched) && addvalue.invalid)}"

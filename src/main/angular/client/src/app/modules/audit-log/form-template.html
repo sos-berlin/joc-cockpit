@@ -1,7 +1,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit(filter)">
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>customization.label.customizationName
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -26,7 +27,9 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+        <label class="col-md-2 col-sm-4">
+          <span [appRichTooltip]="'auditLog.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+        </label>
         <div class="col-md-6">
           <nz-radio-group name="radio" [(ngModel)]="filter.radio">
             <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -37,7 +40,9 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row ">
-        <label class="col-sm-2 form-control-label" translate>common.label.from</label>
+        <label class="col-sm-2 form-control-label">
+          <span [appRichTooltip]="'auditLog.tooltip.from' | translate" translate>common.label.from</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
@@ -48,7 +53,9 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row">
-        <label class="col-sm-2 form-control-label" translate>common.label.to</label>
+        <label class="col-sm-2 form-control-label">
+          <span [appRichTooltip]="'auditLog.tooltip.to' | translate" translate>common.label.to</span>
+        </label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
@@ -59,7 +66,9 @@
     }
     @if (filter.radio === 'planned') {
       <div class="form-group row" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
-        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>common.label.processExecuted</label>
+        <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+          <span [appRichTooltip]="'auditLog.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+        </label>
         <div class="col-sm-6">
           <input autocomplete="off" validateReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
                  [(ngModel)]="filter.planned">
@@ -74,14 +83,18 @@
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.reason</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.reason' | translate" translate>auditLog.search.label.reason</span>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterReason' | translate}}"
                [(ngModel)]="filter.comment" name="regex">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.ticketLink</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.ticketLink' | translate" translate>auditLog.search.label.ticketLink</span>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.ticketLink' | translate}}"
                [(ngModel)]="filter.ticketLink" name="ticketLink">
@@ -89,7 +102,9 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <label class="col-md-2 col-sm-4 form-control-label">
+          <span [appRichTooltip]="'auditLog.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+        </label>
         <div class=" col-sm-6">
           <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
             @for (controller of schedulerIds.controllerIds; track controller) {
@@ -100,7 +115,9 @@
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectTypes</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.objectTypes' | translate" translate>auditLog.search.label.objectTypes</span>
+      </label>
       <div class="col-sm-6" >
         <nz-select
           nzMode="multiple"
@@ -115,14 +132,18 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.objectName</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.objectName' | translate" translate>auditLog.search.label.objectName</span>
+      </label>
       <div class="col-sm-6" >
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectName' | translate}}"
                [(ngModel)]="filter.objectName" name="objectName">
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}" translate>auditLog.search.label.categories</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.categories' | translate" translate>auditLog.search.label.categories</span>
+      </label>
       <div class="col-sm-6" >
         <nz-select
           nzMode="multiple"
@@ -137,7 +158,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}"  translate>auditLog.label.account</label>
+      <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
+        <span [appRichTooltip]="'auditLog.tooltip.account' | translate" translate>auditLog.label.account</span>
+      </label>
       <div class="col-sm-6">
         <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterAccount' | translate}}"
                [(ngModel)]="filter.account" name="account">
@@ -145,7 +168,9 @@
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'auditLog.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+        </label>
         <div class="col-sm-8">
           <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
         </div>

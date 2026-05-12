@@ -15,7 +15,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.agentId
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'agent.tooltip.agentId' | translate" translate>encipherment.label.agentId</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -32,7 +33,8 @@
     </div>
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certAlias' | translate" translate>encipherment.label.certAlias</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">

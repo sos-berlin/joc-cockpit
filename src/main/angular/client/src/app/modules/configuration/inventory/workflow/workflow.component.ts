@@ -24,6 +24,11 @@ import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
 import {AbstractControl, NG_VALIDATORS, NgForm, NgModel, Validator} from '@angular/forms';
 import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {Overlay, OverlayPositionBuilder, OverlayRef} from '@angular/cdk/overlay';
+import {ComponentPortal} from '@angular/cdk/portal';
+import {DomSanitizer} from '@angular/platform-browser';
+import {RichTooltipRegistry, mdToHtml} from '../../../../directives/rich-tooltip.directive';
+import {RichTooltipContentComponent} from '../../../../components/rich-tooltip/rich-tooltip-content.component';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
@@ -5361,6 +5366,12 @@ export class WorkflowComponent {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
+  private overlay = inject(Overlay);
+  private positionBuilder = inject(OverlayPositionBuilder);
+  private sanitizer = inject(DomSanitizer);
+  private richTooltipRegistry = inject(RichTooltipRegistry);
+  private _tooltipIdSeq = 0;
+
   constructor(public coreService: CoreService, private translate: TranslateService, private modal: NzModalService, public inventoryService: InventoryService,
               private toasterService: ToastrService, public workflowService: WorkflowService, private dataService: DataService, private message: NzMessageService,
               private nzContextMenuService: NzContextMenuService, private router: Router, private ref: ChangeDetectorRef) {
@@ -6453,6 +6464,7 @@ export class WorkflowComponent {
 
 
   private updateToolbar(operation, cell, name = ''): void {
+    const self = this;
     $('#toolbar').find('img').each(function (index) {
       if (index === 24) {
         if (!cell && !name) {
@@ -6473,7 +6485,22 @@ export class WorkflowComponent {
         "Option", "Paste"
       ];
 
+      var tooltipKeys = [
+        '', 'workflow.toolbar.job', 'workflow.toolbar.try', 'workflow.toolbar.retry',
+        'workflow.toolbar.finish', 'workflow.toolbar.fail', 'workflow.toolbar.fork',
+        'workflow.toolbar.forkList', 'workflow.toolbar.cycle', 'workflow.toolbar.break',
+        'workflow.toolbar.lock', 'workflow.toolbar.sleep', 'workflow.toolbar.prompt',
+        'workflow.toolbar.admissionTimes', 'workflow.toolbar.addOrder', 'workflow.toolbar.postNotices',
+        'workflow.toolbar.expectNotices', 'workflow.toolbar.consumeNotices', 'workflow.toolbar.if',
+        'workflow.toolbar.case', 'workflow.toolbar.caseWhen', 'workflow.toolbar.caseElse',
+        'workflow.toolbar.stickySubagent', 'workflow.toolbar.option', 'workflow.toolbar.paste'
+      ];
+
       var $img = $(this);
+      if (index !== 24 && tooltipKeys[index]) {
+        self.attachRichTooltip($img[0] as HTMLElement, self.translate.instant(tooltipKeys[index]));
+      }
+
       if ($img.parent('div.img-container').length === 0) {
         $img.wrap('<div class="img-container" style="position: relative; text-align: center;"></div>');
       }
@@ -6522,6 +6549,134 @@ export class WorkflowComponent {
           $dashedHr.after($simpleHr);
         }
       }
+    });
+  }
+
+  private attachRichTooltip(el: HTMLElement, content: string): void {
+    if (!content || (el as any).__rtAttached) return;
+    (el as any).__rtAttached = true;
+
+    let overlayRef: OverlayRef | null = null;
+    let openTimer: any = null;
+    let closeTimer: any = null;
+    let docOverListener: ((e: MouseEvent) => void) | null = null;
+
+    const cancelClose = () => {
+      if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+    };
+
+    const removeDocListener = () => {
+      if (docOverListener) {
+        document.removeEventListener('mouseover', docOverListener);
+        docOverListener = null;
+      }
+    };
+
+    const doClose = () => {
+      removeDocListener();
+      if (!overlayRef) return;
+      overlayRef.dispose();
+      overlayRef = null;
+      this.richTooltipRegistry.unregister(scheduleClose);
+    };
+
+    const scheduleClose = () => {
+      cancelClose();
+      closeTimer = setTimeout(doClose, 150);
+    };
+
+    /** Called when cursor enters another CDK overlay pane (e.g. glossary popover).
+     *  Watches via document mouseover until cursor lands outside all overlay panes
+     *  and outside the trigger element, then schedules close. */
+    const watchExternalOverlay = () => {
+      removeDocListener();
+      docOverListener = (e: MouseEvent) => {
+        const target = e.target as Element | null;
+        if (!target) return;
+        // Cursor is on trigger or inside any overlay pane — keep open
+        if (el.contains(target) || target.closest('.cdk-overlay-pane')) {
+          cancelClose();
+          return;
+        }
+        // Cursor truly left — close and stop watching
+        scheduleClose();
+        removeDocListener();
+      };
+      document.addEventListener('mouseover', docOverListener);
+    };
+
+    const open = () => {
+      if (overlayRef) return;
+      this.richTooltipRegistry.register(scheduleClose);
+
+      const positionStrategy = this.positionBuilder
+        .flexibleConnectedTo(el)
+        .withFlexibleDimensions(true)
+        .withGrowAfterOpen(true)
+        .withPush(true)
+        .withViewportMargin(8)
+        .withPositions([
+          {originX: 'center', originY: 'top',    overlayX: 'center', overlayY: 'bottom', offsetY: -8},
+          {originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top',    offsetY: 8},
+          {originX: 'start',  originY: 'bottom', overlayX: 'start',  overlayY: 'top',    offsetY: 8},
+          {originX: 'end',    originY: 'bottom', overlayX: 'end',    overlayY: 'top',    offsetY: 8},
+        ]);
+
+      overlayRef = this.overlay.create({
+        positionStrategy,
+        scrollStrategy: this.overlay.scrollStrategies.reposition(),
+        hasBackdrop: false,
+        panelClass: 'rich-tooltip-panel',
+      });
+
+      const portal = new ComponentPortal(RichTooltipContentComponent);
+      const compRef = overlayRef.attach(portal);
+      compRef.instance.html = this.sanitizer.bypassSecurityTrustHtml(mdToHtml(content));
+      compRef.instance.tooltipId = `rt-toolbar-${++this._tooltipIdSeq}`;
+
+      overlayRef.overlayElement.addEventListener('mouseenter', () => {
+        cancelClose();
+        removeDocListener();
+      });
+      overlayRef.overlayElement.addEventListener('mouseleave', (event: MouseEvent) => {
+        const related = event.relatedTarget as Element | null;
+        // Cursor moved into another overlay pane (e.g. glossary popover) — don't close yet
+        if (related && related.closest('.cdk-overlay-pane')) {
+          cancelClose();
+          watchExternalOverlay();
+          return;
+        }
+        scheduleClose();
+      });
+    };
+
+    const getDelay = (): number => {
+      try {
+        const prefs = sessionStorage.getItem('preferences');
+        const d = parseFloat(prefs ? JSON.parse(prefs).tooltipDelay : '');
+        return isNaN(d) ? 200 : d * 1000;
+      } catch { return 200; }
+    };
+
+    el.addEventListener('mouseenter', () => {
+      cancelClose();
+      removeDocListener();
+      if (openTimer) clearTimeout(openTimer);
+      const delay = getDelay();
+      if (delay < 0) return;
+      openTimer = setTimeout(open, delay > 0 ? delay : 0);
+    });
+
+    el.addEventListener('mouseleave', (event: MouseEvent) => {
+      if (openTimer) { clearTimeout(openTimer); openTimer = null; }
+      const related = event.relatedTarget as Element | null;
+      // Cursor moved directly from icon into an overlay pane — don't close yet
+      if (related && related.closest('.cdk-overlay-pane')) {
+        cancelClose();
+        watchExternalOverlay();
+        return;
+      }
+      scheduleClose();
     });
   }
 

@@ -3,7 +3,8 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'dailyPlan.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -29,7 +30,9 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+        <label class="col-md-2 col-sm-4">
+          <span [appRichTooltip]="'dailyPlan.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+        </label>
         <div class="col-md-6">
           <nz-radio-group [(ngModel)]="filter.radio" name="radio">
             <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
@@ -40,7 +43,8 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.from
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.from' | translate" translate>common.label.from</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -51,7 +55,8 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.to
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.to' | translate" translate>common.label.to</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -62,7 +67,8 @@
     }
     @if (filter.radio === 'planned') {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.from
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.from' | translate" translate>common.label.from</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((from.dirty || from.touched) && from.invalid)}" class=" col-sm-6">
@@ -81,7 +87,8 @@
     }
     @if (filter.radio === 'planned') {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.to
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'dailyPlan.tooltip.to' | translate" translate>common.label.to</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}" class=" col-sm-6">
@@ -99,8 +106,9 @@
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>dailyPlan.label.workflows</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+      </label>
       <div class="col-sm-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
                           [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
@@ -109,7 +117,9 @@
     </div>
     @if (filter.workflowFolders.length > 0) {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>dailyPlan.label.workflowFolders</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+          <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+        </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.workflowFolders; track path) {
             <div>
@@ -121,8 +131,9 @@
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>dailyPlan.label.schedules</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+      </label>
       <div class="col-sm-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="filter" [list]="filter"
                           [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
@@ -131,7 +142,9 @@
     </div>
     @if (filter.scheduleFolders.length > 0) {
       <div class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>dailyPlan.label.scheduleFolders</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+          <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+        </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.scheduleFolders; track path) {
             <div>
@@ -144,7 +157,9 @@
     }
     @if(preferences.tagsEnabled) {
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'dailyPlan.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span>
+      </label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -156,7 +171,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.orderTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'dailyPlan.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span>
+      </label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -169,7 +186,9 @@
     </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>common.label.state</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+        <span [appRichTooltip]="'dailyPlan.tooltip.state' | translate" translate>common.label.state</span>
+      </label>
       <div [ngClass]="{'col-md-6': isSearch}" class="col-sm-8">
         <nz-radio-group name="state" [(ngModel)]="filter.state">
           @for (option of checkOptions; track option.status) {
@@ -179,14 +198,18 @@
       </div>
     </div>
     <div class="form-group row ">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>dailyPlan.label.late</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+        <span [appRichTooltip]="'dailyPlan.tooltip.late' | translate" translate>dailyPlan.label.late</span>
+      </label>
       <div class="col-sm-8">
         <label [(ngModel)]="filter.late" name="late" nz-checkbox></label>
       </div>
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4">
+          <span [appRichTooltip]="'dailyPlan.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+        </label>
         <div class="col-sm-6">
           <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
         </div>

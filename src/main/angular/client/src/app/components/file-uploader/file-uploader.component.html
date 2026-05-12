@@ -58,7 +58,9 @@
         <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.folder</label>
+              <label>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.folder' | translate" translate>inventory.cronTab.label.folder</span>
+              </label>
             </label>
             <div class="col-md-9">
               <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select"
@@ -86,7 +88,8 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.calendarName
+              <label>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.calendarName' | translate" translate>inventory.cronTab.label.calendarName</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -111,7 +114,8 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.agentName
+              <label>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.agentName' | translate" translate>inventory.cronTab.label.agentName</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -134,7 +138,9 @@
       @if (type === 'DOCUMENTATION') {
         <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>common.label.path</label>
+            <label class="col-sm-3 form-control-label">
+              <span [appRichTooltip]="'common.tooltip.path' | translate" translate>common.label.path</span>
+            </label>
             <div class="col-sm-9">
               <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
                      name="path"
@@ -166,7 +172,8 @@
             <div class="col-md-12">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.signatureAlgorithm
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.signatureAlgorithm' | translate" translate>inventory.label.signatureAlgorithm</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                 </label>
@@ -177,7 +184,9 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.fileFormat</label>
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+                  </label>
                 </label>
                 <div class="col-md-9">
                   <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -190,7 +199,9 @@
             <div class="col-md-12">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.folder</label>
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.folder' | translate" translate>inventory.label.folder</span>
+                  </label>
                 </label>
                 <div class="col-md-9">
                   <input [(ngModel)]="requestObj.targetFolder" [appAutofocus]="true" autocomplete="off" class="form-control pos-abt input-path-with-select"
@@ -218,7 +229,9 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.fileFormat</label>
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+                  </label>
                 </label>
                 <div class="col-md-9">
                   <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -227,7 +240,9 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3">
-                  <label translate>inventory.label.overwrite</label>
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate" translate>inventory.label.overwrite</span>
+                  </label>
                 </label>
                 <div class="col-md-9">
                   <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
@@ -236,7 +251,9 @@
               @if (preferences.enableTagging) {
               <div class="form-group row">
                 <label class="col-md-3">
-                  <label translate>inventory.label.overwriteTags</label>
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteTags' | translate" translate>inventory.label.overwriteTags</span>
+                  </label>
                 </label>
                 <div class="col-md-9">
                   <label [(ngModel)]="requestObj.overwriteTags" name="overwriteTags" nz-checkbox></label>
@@ -245,7 +262,9 @@
             }
               @if (!requestObj.overwrite) {
                 <div class="form-group row">
-                  <label class="col-md-3" translate>inventory.label.objectName</label>
+                  <label class="col-md-3">
+                    <span [appRichTooltip]="'inventory.tooltip.objectName' | translate" translate>inventory.label.objectName</span>
+                  </label>
                   <div class="col-md-9">
                     <nz-radio-group [(ngModel)]="requestObj.type" name="type">
                       <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
@@ -305,7 +324,9 @@
         <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.label.fileFormat</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+              </label>
             </label>
             <div class="col-md-9">
               <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -314,7 +335,9 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3">
-              <label translate>inventory.label.overwrite</label>
+              <label>
+                <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate" translate>inventory.label.overwrite</span>
+              </label>
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>

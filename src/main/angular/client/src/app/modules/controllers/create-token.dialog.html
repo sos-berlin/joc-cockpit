@@ -21,7 +21,9 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3" translate>common.label.startTime</label>
+      <label class="col-sm-3">
+        <span [appRichTooltip]="'agent.tooltip.startTime' | translate" translate>common.label.startTime</span>
+      </label>
       <div class="col-md-8">
         <nz-radio-group [(ngModel)]="token.at" name="at">
           <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
@@ -30,7 +32,8 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>agent.label.validUntil
+      <label class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'agent.tooltip.validUntil' | translate" translate>agent.label.validUntil</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       @if (token.at === 'date') {
@@ -59,7 +62,8 @@
       }
     </div>
     <div class="form-group row">
-      <div class="col-sm-3 form-control-label" translate>common.label.timeZone
+      <div class="col-sm-3 form-control-label">
+        <span [appRichTooltip]="'agent.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
         <sup class="text-danger text-sm">*</sup>
       </div>
       <div class="col-sm-8">
