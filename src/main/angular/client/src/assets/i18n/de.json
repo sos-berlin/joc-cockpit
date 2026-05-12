@@ -279,7 +279,7 @@
     "tooltip.title": "Der Titel eines ^Agent^en kann nach Belieben angegeben werden.",
     "tooltip.agentNameAliases": "Einem ^Agent^en können Alias Namen zugeordnet werden. Der Agent kann unter Verwendung des Alias Namens einem ^Job^ oder einer ^Dateiauftragsquelle^ zugeordnet werden.\n\nFür Alias Namen des Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.url": "Die URL eines ^Agent^en benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. `http://localhost:4445`",
-    "tooltip.hidden": "^Agent^en können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die Seite ÜBERSICHT sowie für alle Stellen, an denen Agenten zugeordnet werden.",
+    "tooltip.hidden": "^Agent^en können verborgen werden, um sie in der JOC Cockpit Oberfläche nicht anzuzeigen. Dies gilt für die Ansicht *ÜBERSICHT* sowie für alle Stellen, an denen Agenten zugeordnet werden.",
     "tooltip.asStandaloneAgent": "Ein ^Autonomer Agent|standalone-agent^ oder ein ^Director Agent^ eines ^Agenten-Cluster^ können als Cluster Wächter agieren.\n\nDer angegebene ^Agent^ wird als Autonomer Agent eingerichtet, wenn dieses Ankreuzfeld ausgewählt ist.",
     "tooltip.primaryDirectorId": "Die Kennung eines ^Director Agent^en ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden.\n\nFür die Kennung des Director Agenten können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
     "tooltip.processLimit": "^Agent^en führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für ^Aufträge|auftrag^ aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung einzuschränken.\n\nEin Prozess-Limit von 0 verhindert den Start von Aufträgen.",
@@ -423,15 +423,15 @@
     "label.agentAsClusterWatch": "Agent als Cluster Wächter",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
-    "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden.\n\nUnter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
-    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controller in der Ansicht ÜBERSICHT",
-    "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum Autonomen Controller",
-    "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum Primären Controller",
-    "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum Sekundären Controller",
+    "tooltip.type": "Ein ^Autonomer Controller|standalone-controller^ mit einer Instanz kann konfiguriert werden.\n\nUnter Verwendung der kommerziellen Lizenz kann ein ^Controller Cluster^ mit zwei Instanzen konfiguriert werden.",
+    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des ^Autonomen Controller|standalone-controller^ in der Ansicht *ÜBERSICHT*",
+    "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum ^Autonomen Controller|standalone-controller^",
+    "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum ^Primären Controller|controller-cluster^",
+    "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum ^Sekundären Controller|controller-cluster^",
     "tooltip.urlForBackup": "Verbindung des Sekundären Controllers zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
-    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller-Instanz in der Ansicht ÜBERSICHT",
-    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller-Instanz in der Ansicht ÜBERSICHT"
+    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller-Instanz in der Ansicht *ÜBERSICHT*",
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller-Instanz in der Ansicht *ÜBERSICHT*"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -1056,9 +1056,9 @@
     "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen ^Aufträge|auftrag^ ausgeführt werden, und die Anzahl der Aufträge.\n\nWenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die ^Zeitpläne|zeitplan^ existieren, die keine Aufträge erzeugen.\n\nWird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit ^Arbeitsabläufen|arbeitsablauf^ oder Zeitplänen.",
     "tooltip.viewOrders": "Anklicken, um Aufträge anzuzeigen.",
     "tooltip.normal": "Normaler Zustand.",
-    "tooltip.pending": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^ANSTEHEND^ und ^EINGEPLANT^ an.\n\nSolche Aufträge können Abhängigkeiten auflösen, sobald sie gestartet sind.",
-    "tooltip.expecting": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^WARTEND^ an, die auf die Auflösung von Abhängigkeiten warten, um fortfahren zu können.",
-    "tooltip.critical": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^AUSGESETZT^, ^FEHLGESCHLAGEN^ oder ^BLOCKIERT^ an, die ein Eingreifen des Benutzers erfordern, um fortgesetzt werden zu können.",
+    "tooltip.pending": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^anstehend^ und ^eingeplant^ an.\n\nSolche Aufträge können Abhängigkeiten auflösen, sobald sie gestartet sind.",
+    "tooltip.expecting": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^wartend^ an, die auf die Auflösung von Abhängigkeiten warten, um fortfahren zu können.",
+    "tooltip.critical": "Zeigt das Vorhandensein von ^Aufträgen|auftrag^ im Zustand ^ausgesetzt^, ^fehlgeschlagen^ oder ^blockiert^ an, die ein Eingreifen des Benutzers erfordern, um fortgesetzt werden zu können.",
     "tooltip.present": "Zeigt an, dass eine ^Notiz^ vorliegt. Die Notiz kann vom ^Auftrag^ eines empfangenden ^Arbeitsablauf^s erwartet oder verbraucht werden.",
     "tooltip.future": "Zeigt an, dass eine ^Notiz^ angekündigt ist, d.h. ein ^Auftrag^ für den notifizierenden ^Arbeitsablauf^ vorhanden ist. Die Notiz wird in Zukunft verfügbar werden.",
     "tooltip.letRun": "^Aufträge|auftrag^ zur einmaligen Ausführung werden sofort gestartet oder fortgesetzt",
@@ -1495,7 +1495,7 @@
       "tooltip": {
         "jocInstanceId": "JOC Cockpit Instanz-Kennung",
         "jocClusterId": "JOC Cockpit Cluster-Kennung",
-        "ordering": "Aufsteigende Reihenfolge der JOC Cockpit Instanz in der ÜBERSICHT.",
+        "ordering": "Aufsteigende Reihenfolge der JOC Cockpit Instanz in der Ansicht *ÜBERSICHT*.",
         "host": "Der Rechner, auf dem JOC Cockpit installiert wird.",
         "port": "Der Port, über den eine Verbindung zum Rechner aufgenommen wird.\n\nHäufig ist dies Port 22 für SSH Verbindungen.",
         "method": "Die Authentifizierungsmethode für die SSH Verbindung zum Rechner von JOC Cockpit.\n\nDie Methode private/public key wird unterstützt.",
@@ -2254,8 +2254,8 @@
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Zeitplan^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Zeitplan^s kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen oder mehrere ^Arbeitsabläufe|arbeitsablauf^ muss angegeben werden, für die ^Aufträge|auftrag^ erzeugt werden.",
-        "planOrderAutomatically": "^Aufträge|auftrag^ werden automatisch geplant, d.h. in Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus geplant.",
-        "submitOrderToControllerWhenPlanned": "Geplante ^Aufträge|auftrag^ werden automatisch an den ^Controller^ übermittelt.\n\nIn Abhängigkeit von Einstellungen des Tagesplandienstes werden Aufträge einige Tage im voraus übermittelt.",
+        "planOrderAutomatically": "^Aufträge|auftrag^ werden automatisch ^geplant^, d.h. in Abhängigkeit von Einstellungen des ^Tagesplandienst^es werden Aufträge einige Tage im voraus geplant.",
+        "submitOrderToControllerWhenPlanned": "^Geplant^e ^Aufträge|auftrag^ werden automatisch an den ^Controller^ ^übermittelt^.\n\nIn Abhängigkeit von Einstellungen des ^Tagesplandienst^es werden Aufträge einige Tage im voraus übermittelt.",
         "orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nAnwender können den Auftragsnamen bei der Anlage von ^Zeitplänen|zeitplan^ und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Ansicht *HISTORIE*, verwendet werden.",
         "startNode": "Die Start-Position eines ^Auftrag^s kann vor der angegeben Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag startet ab der angegebenen Position.",
         "endNode": "Die End-Position eines ^Auftrag^s kann vor der anggegebenen Anweisung im Arbeitsablauf liegen.\n\nDer Auftrag endet vor der angegebenen Position.",
@@ -2338,12 +2338,12 @@
         },
         "fork": {
           "joinVariables": "Auftragsvariablen aus Zweigen einer ^Fork Anweisung^ werden in der entsprechenden *Join Anweisung* dem Elternauftrag übergeben.",
-          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand ^FEHLGESCHLAGEN^ des Kindauftrags."
+          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand ^fehlgeschlagen^ des Kindauftrags."
         },
         "forkList": {
           "children": "Listenvariable für dynamische Verzweigung: Wird eine ^ForkList Anweisung^ im ^Arbeitsablauf^ verwendet, dann enthält diese Variable eine Liste von Elementen, für die jeweils paralleler Zweig der ^*ForkList Anweisung* erzeugt und durchlaufen wird: pro Listenelement werden die Anweisungen und ^Job^s der *ForkList Anweisung* in einem jeweils eigenen Zweig parallel durchlaufen.",
           "childToId": "Listenelement für die Kennung des Zweigs: erwartet wird der Name eines Elements der ausgewählten Listenvariable.\n\nDer Elementname muss eindeutig den Zweig bezeichnen, der dynamisch für jedes Listenelement erzeugt wird.",
-          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand ^FEHLGESCHLAGEN^ des Kindauftrags.",
+          "joinIfFailed": "Ein Kindauftrag wird im Fehlerfall beendet. Der Elternauftrag übernimmt stattdessen den Zustand ^fehlgeschlagen^ des Kindauftrags.",
           "agentAssignment": "Der ^ForkList Anweisung^ wird ein ^Subagenten-Cluster^ zugewiesen, der eine Anzahl von ^Subagent^en enthält, auf denen ^Aufträge|auftrag^ parallel ausgeführt werden.\n\nFür die Zuweisung werden zwei Optionen angeboten:\n- Auswahl eines ^Subagenten-Cluster^, was die Auswahl aus einer Liste ermöglicht.\n- Eingabe eines Ausdrucks, der den Subagenten-Cluster spezifiziert. Dies ermöglicht die Angabe einer Variablen des ^Arbeitsablauf^s, optional einer Variablen des ^Auftrag^s, die den Subagenten-Cluster benennt.",
           "subagent": "Ermöglicht die Auswahl des ^Subagenten-Cluster^, aus dem alle verfügbaren Agenten zur parallelen Ausführung von ^Aufträge|auftrag^n innerhalb der ^ForkList Anweisung^ verwendet werden.",
           "agentCluster": "Es wird ein ^Agenten-Cluster^ ausgewählt, von dem die ^Subagenten-Cluster Kennung^ durch einen Ausdruck in einem separaten Eingabefeld angegeben wird.",
@@ -2379,7 +2379,7 @@
           "className": "Der Name einer Java Klasse, die einen ^Job^ implementiert.\n\nJS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
           "parallelism": "Die max. Parallelität eines ^Job^s bestimmt wie viele ^Aufträge|auftrag^ gleichzeitig in einem ^Arbeitsablauf^ diesen Job ausführen können.\n\nWird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
           "criticality": "Die Kritikalität eines ^Job^s kann zur Unterscheidung in ^Benachrichtigung^en verwendet werden.",
-          "failOnOutputErr": "Sofern ein Job Ausgaben in den *stderr* Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand ^FEHLGESCHLAGEN^ versetzt.",
+          "failOnOutputErr": "Sofern ein Job Ausgaben in den *stderr* Kanal schreibt, wird dies als Fehler gewertet und der Auftrag wird in den Zustand ^fehlgeschlagen^ versetzt.",
           "warnOnOutputErr": "Sofern ein ^Job^ Ausgaben in den *stderr* Kanal schreibt, wird dies als Warnung gewertet.\n\nDie Job-Ausführung wird als erfolgreich betrachtet und der ^Auftrag^ setzt fort. Für die Warnung wird eine ^Benachrichtigung^ erzeugt.",
           "admissionTime": "Die ^Zutrittszeiten^ regeln die Zeitfenster für Job-Starts basierend auf Wochentagen und Stunden.\n\nEin ^Auftrag^ wartet am Job-Knoten bis die Zutrittszeit erreicht ist oder kann konfiguriert werden den Job zu überspringen, falls für das Startdatum des Auftrag keine übereinstimmende Zutrittszeit vorhanden ist.",
           "skipIfNoAdmissionForOrderDay": "Der ^Job^ wird übersprungen, falls keine ^Zutrittszeiten^ für das Auftragsdatum konfiguriert sind.\n\nZum Beispiel, sind Zutrittszeiten für Montag und Dienstag konfiguiert und der ^Auftrag^ wird für Mittwoch übermittelt, dann wird der Job übersprungen.\n\nWird ein Auftrag für Montag übermittelt, dann wartet der Auftrag am Job bis die nächste Zutrittszeit erreicht ist.",
@@ -2432,10 +2432,10 @@
           "count": "Das Gewicht für die Nutzung einer ^Ressourcen-Sperre^ wird auf deren Kapazität angerechnet.\n\nWird die Kapazität überschritten, dann wartet der ^Auftrag^ bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {
-          "question": "Die ^Prompt Anweisung^ hält einen ^Arbeitsablauf^ temporär an.\n\nDer ^Auftrag^ wird in den Zustand ^ANFRAGEND^ versetzt.\n\nAnwender können die Mitteilung der ^Prompt Anweisung^ sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
+          "question": "Die ^Prompt Anweisung^ hält einen ^Arbeitsablauf^ temporär an.\n\nDer ^Auftrag^ wird in den Zustand ^anfragend^ versetzt.\n\nAnwender können die Mitteilung der ^Prompt Anweisung^ sehen und die Fortsetzung des Arbeitsablaufs bestätigen."
         },
         "retry": {
-          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die ^Retry Anweisung^ beendeet und der ^Auftrag^ wird in den Zustand ^FEHLGESCHLAGEN^ versetzt.",
+          "maxTries": "Nach Erreichenn der max. Anzahl von Wiederholungsversuchen wird die ^Retry Anweisung^ beendeet und der ^Auftrag^ wird in den Zustand ^fehlgeschlagen^ versetzt.",
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird.\n\nWerden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
@@ -2966,7 +2966,7 @@
     "--------ADD ORDER MISSING TOOLTIPS------------": "",
     "tooltips": {
       "addOrder": {
-        "startTime": "Legt fest, wann der ^Auftrag^ startet. Folgende Optionen werden angeboten:\n- **Jetzt**: startet den Auftrag sofort.\n- **Bestimmtes Datum**: ermöglicht die Auswahl von Datum und Uhrzeit.\n- **Relativ zur Uhrzeit**: legt eine Verzögerung in Sekunden oder im Format *hh:mm:ss* fest.\n- **Ohne Startzeit**: versetzt den Auftrag in den Zustand ^ANSTEHEND^ und ermöglicht die spätere Festlegung einer Startzeit.",
+        "startTime": "Legt fest, wann der ^Auftrag^ startet. Folgende Optionen werden angeboten:\n- **Jetzt**: startet den Auftrag sofort.\n- **Bestimmtes Datum**: ermöglicht die Auswahl von Datum und Uhrzeit.\n- **Relativ zur Uhrzeit**: legt eine Verzögerung in Sekunden oder im Format *hh:mm:ss* fest.\n- **Ohne Startzeit**: versetzt den Auftrag in den Zustand ^anstehend^ und ermöglicht die spätere Festlegung einer Startzeit.",
         "time": "Gibt eine relative Startzeit in Sekunden oder im Format *hh:mm:ss* an.",
         "enterDateAndTime": "Gibt das Datum und die Uhrzeit an, zu der der Auftrag starten soll.",
         "timeZone": "Gibt die Zeitzone an, für die Datum und Uhrzeit gelten, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
@@ -3557,8 +3557,8 @@
       "time_zone": "Benennt die Zeitzone der Startzeit des ^Tagesplandienst^es und der Periode des ^Tagesplan^s, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
       "start_time": "Benennt die Startzeit der Erzeugung des ^Tagesplan^s auf Basis der angegebenen Zeitzone.\n\nOhne diese Einstellung startet die Erzeugung des Tagesplans 30 Minuten vor Beginn der Periode des Tagesplans, siehe Einstellung period_begin.\n\nDiese Einstellung erwartet eine Uhrzeit, z.B. *23:00:00*.",
       "period_begin": "Benennt den Beginn der 24 Stunden Periode des ^Tagesplan^s auf Basis der angegebenen Zeitzone.",
-      "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^ erzeugt werden und den Zustand GEPLANT erhalten.",
-      "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^, die sich im Zustand GEPLANT befinden, an die ^Controller^ übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
+      "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^ erzeugt werden und den Zustand ^geplant^ erhalten.",
+      "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^, die sich im Zustand ^geplant^ befinden, an die ^Controller^ übermittelt werden und den Zustand ^übermittelt^ erhalten.",
       "projections_month_before": "Gibt die Anzahl der zurückliegenden Monate an, für die die Projektionen berechnet werden, die auf zurückliegende Ausführung von Aufträgen hinweisen.\n\nDie Projektion auf zurückliegende Monate erlaubt es, den ^Tagesplan^ mit späteren Änderungen der ^Zeitpläne|zeitplan^ zu vergleichen.",
       "projections_month_ahead": "Gibt die Anzahl der Monate an, für die Projektionen berechnet werden, die die zukünftige Auftragsausführung anzeigen.",
       "submit_orders_individually": "Der ^Tagesplandienst^ übermittelt standardmäßig ^Aufträge|auftrag^ in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt.\n\nMit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt.\n\nDer Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
@@ -3585,8 +3585,8 @@
       "show_view_configuration": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *KONFIGURATION* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_monitor": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *ÜBERWACHUNG* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
       "show_view_report": "Vereinbart, dass unabhängig von Anwenderberechtigungen die Ansicht *BERICHTE* sichtbar ist (*wahr*) oder nicht sichtbar ist (*falsch*).\n\nEin leerer Wert vereinbart, dass die Anwenderberechtigungen über die Sichtbarkeit der Ansicht entscheiden.",
-      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung von JOC Cockpit gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
-      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der ÜBERSICHT neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
+      "controller_connection_joc_password": "Das Kennwort wird für die Authentifizierung von JOC Cockpit gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der Ansicht *ÜBERSICHT* neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
+      "controller_connection_history_password": "Das Kennwort wird für die Authentifizierung des Historiendienstes (der in JOC Cockpit abläuft) gegenüber dem ^Controller^ verwendet.\n\nWenn HTTP-Verbindungen verwendet werden, ist das Kennwort das einzige Mittel zur Authentifizierung.\n\nWenn HTTPS-Verbindungen mit gegenseitiger Authentifizierung verwendet werden, ist das Kennwort nicht relevant, da eine zertifikatsbasierte Authentifizierung vorhanden ist.\n\nEs kann ein leeres Kennwort angegeben werden, wobei das entsprechende Kennwort in der Datei `private.conf` des Controller \"plain:\" lautet.\n\nWenn das Kennwort in den JOC Cockpit Einstellungen geändert wird, muss es auch in der Datei `private.conf` des Controller geändert werden, damit die Kennwörter übereinstimmen.\n\nEs wird empfohlen, das Kennwort zunächst in der Datei `private.conf` der aktiven Controller-Instanz und dann in den JOC Cockpit Einstellungen zu ändern. Starten Sie dann die Controller-Instanz in der *ÜBERSICHT* neu.\n\nJOC Cockpit verbindet sich dann erneut mit der aktiven Controller-Instanz.\n\nWenn ein ^Controller Cluster^ verwendet wird, nehmen Sie die gleiche Änderung in der Datei `private.conf` der standby Controller-Instanz vor.",
       "encoding": "Die Kodierung wird verwendet, wenn JOC Cockpit für Windows Umgebungen betrieben wird.\n\nWindows unterstützt kein Unicode, sondern verwendet Code Pages.\n\nFür den Fall, dass die Windows Code Page nicht automatisch erkannt werden kann, kann der Anwender die Code Page angeben, weitere Details siehe [JS7 - Unicode Support](https://kb.sos-berlin.com/display/JS7/JS7+-+Unicode+Support)",
       "disable_warning_on_license_expiration": "Warnungen für Lizenzablauf abschalten.",
       "log_ext_directory": "Gibt ein Verzeichnis an, auf das JOC Cockpit zugreifen kann und in das Kopien der Auftrags- und Prozessprotokolldateien geschrieben werden.",
