@@ -489,7 +489,7 @@
     "button.deleteCertificate": "Zertifikat löschen",
     "button.updateCertificate": "Zertifikat aktualisieren",
     "button.copyEncryptValue": "Verschlüssellungsergebnis kopieren",
-    "tooltips" : {
+    "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
         "certAlias": "Der Alias ist die eindeutige Kennung eines Zertifikats. Der Alias kann frei gewählt werden.",
@@ -500,7 +500,7 @@
         "assignAgents": "Ähnlich der Seite 'Controller/Agenten verwalten' erlaubt die Operation festzulegen, welche ^Agent^en Zugriff auf die Datei mit dem Privaten Schlüssel haben.\n\nAnwender müssen die Datei mit dem Privaten Schlüssel auf die Server der entsprechenden Agenten kopieren",
         "showEncryptionSample": "Der Verschlüsselungstest ermöglicht die Durchführung einer Verschlüsselung mit dem angegebenen Zertifikat anhand einer Beispiel-Eingabe.",
         "plainText": "Der Klartexst der Beispiel-Eingabe.",
-        "encryptText" : "Anklicken des Symbols führt die Verschlüsselung durch.",
+        "encryptText": "Anklicken des Symbols führt die Verschlüsselung durch.",
         "encrypt": "Die aus der Beispiel-Eingabe verschlüsselte Ausgabe."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
