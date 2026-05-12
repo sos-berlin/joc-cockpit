@@ -2378,7 +2378,7 @@
         "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Anicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
-        "title": "Der Titel des ^Notizbretts^ kann nach Belieben angegeben werden.",
+        "title": "Der Titel des ^Notizbrett^s kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
         "endOfLife": "Die Lebensdauer der ^Notiz^ wird im Format *hh:mm:ss* bestimmt, z.B. *01:30:00* für ein-einhalb Stunden.",
         "readingOrderToNoticeId": "Die ^Notizkennung^ für ^Notifizierte Aufträge^ wird aus deren Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem für ^Notifizierende Aufträge^.",
@@ -3748,7 +3748,7 @@
       "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der ^Tagesplan^ geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."
     },
     "joc": {
-      "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines ^Auftrags^ vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
+      "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines ^Auftrag^s vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Benennt eine Liste vordefinierter Begründungen für Änderungen an Objekten.",
       "default_profile_account": "Benennt ein Konto, das als Muster für Einstellungen neu hinzugefügter Konten verwendet wird.",
       "enable_remember_me": "Vereinbart, dass das Anmeldungsfenster die Option **Einstellung merken** anbietet, um die Angaben für Konto und Kennwort im Browser zu speichern.",
@@ -4715,7 +4715,7 @@
       "caseElse": "^CaseElse Anweisung^ ziehen und ablegen zur Verarbeitung, falls alle anderen Bedingungen aus ^CaseWhen Anweisungen^ fehlschlagen.",
       "stickySubagent": "^StickySubagent Anweisung^ ziehen und ablegen, um die Verwendung desselben ^Subagent^en in einem ^Subagenten-Cluster^ zur ^Job^-Ausführung im Anweisungsblock zu vereinbaren.",
       "option": "^Options Anweisung^ ziehen und ablegen, um Fehlerbehandlung für die ^Lock Anweisung^ and ^ConsumeNotices Anweisung^ einzuführen.",
-      "paste": "^Paste Anweisung^ ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden."
+      "paste": "**Einfügen** ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden."
     }
   },
   "xml": {

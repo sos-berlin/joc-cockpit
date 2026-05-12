@@ -4701,7 +4701,7 @@
       "forkList": "Drag & drop ^ForkList Instruction^ to fork processing dynamically to all ^Subagent^s in a ^Subagent Cluster^.\n\nAlternatively, fork processing for elements of a *List Variable*.",
       "cycle": "Drag & drop ^Cycle Instruction^ for cyclic execution of a number of instructions.",
       "break": "Drag & drop ^Break Instruction^ to make ^Order^s prematurely leave a ^Cycle Instruction^.",
-      "lock": "Drag & drop ^Lock Instruction^ to check mutual-exclusive access to ^Resource Locks^ by ^Order^s.",
+      "lock": "Drag & drop ^Lock Instruction^ to check mutual-exclusive access to ^Resource Lock^s by ^Order^s.",
       "sleep": "Drag & drop ^Sleep Instruction^ to keep ^Order^s idle for some time.",
       "prompt": "Drag & drop ^Prompt Instruction^ to set ^Order^s to the ^prompting^ state waiting for user confirmation to continue processing.",
       "admissionTimes": "Drag & drop ^AdmissionTimes Instruction^ to consider ^Admission Times^ before ^Order^s can proceed.",
@@ -4715,7 +4715,7 @@
       "caseElse": "Drag & drop ^CaseElse Instruction^ for processing if all checks from ^CaseWhen Instruction^s fail.",
       "stickySubagent": "Drag & drop ^StickySubagent Instruction^ to force use of the same ^Subagent^ in a ^Subagent Cluster^ for ^Job^ execution in the instruction block.",
       "option": "Drag & drop ^Options Instruction^ to rule error handling for the ^Lock Instruction^ and ^ConsumeNotices Instruction^.",
-      "paste": "Drag & drop ^Paste Instruction^ to insert one or more instructions that have previously been copied using the instruction's 3-dots action menu."
+      "paste": "Drag & drop **Paste** to insert one or more instructions that have previously been copied using the instruction's 3-dots action menu."
     }
   },
   "xml": {

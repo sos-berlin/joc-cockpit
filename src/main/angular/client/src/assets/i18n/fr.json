@@ -302,7 +302,7 @@
       "tooltip.url": "L'URL d'un ^Agent Directeur^ spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de l'Agent Directeur, par exemple, `http://localhost:4445`.",
       "tooltip.withGenerateSubagentCluster": "Un ^Agent Directeur^ peut être configuré comme un ^Cluster de Sous-Agents^ distinct qui inclut ce seul Agent Directeur.\n\nCela permet d'exécuter des ^Tâche^s spécifiquement sur l'Agent Directeur.",
       "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un ^Cluster d'Agents^.\n\nLe Cluster d'Agents peut être affecté à une ^Tâche^ ou à une ^Source d'Ordres de Fichiers^ en utilisant le Nom d'Alias.\n\nPour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
-      "tooltip.processLimit": "Les ^Agent^s exécutent par défaut un nombre illimité de processus parallèles pour les ^Tâche^s.\n\nUne Limite de Processus peut être attribuée pour restreindre l'utilisation des ressources pour tous les ^Sous-Agents^ dans un ^Cluster d'Agents^.\n\nUne valeur de 0 pour la limite de processus empêchera les Tâches de démarrer.",
+      "tooltip.processLimit": "Les ^Agent^s exécutent par défaut un nombre illimité de processus parallèles pour les ^Tâche^s.\n\nUne Limite de Processus peut être attribuée pour restreindre l'utilisation des ressources pour tous les ^Sous-Agent^s dans un ^Cluster d'Agents^.\n\nUne valeur de 0 pour la limite de processus empêchera les Tâches de démarrer.",
       "subagent": {
         "tooltip.clusterName": "Le nom du ^Cluster de Sous-Agents^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster de Sous-Agents.\n\nPour le Nom du Cluster de Sous-Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "tooltip.title": "Le Titre d'un ^Cluster de Sous-Agents^ peut être spécifié à volonté."
@@ -1924,7 +1924,7 @@
     "tooltip.invalidLicense": "La licence n'est pas valide.\n\nLes raisons peuvent être que la date de début de la période de validité n'a pas été atteinte ou que la date d'expiration a été dépassée.",
     "tooltip.jocMonitorEvent": "Ce drapeau signale les avertissements et les erreurs dans le traitement des ^Ordre^s, par exemple, lorsque les Tâches ^échouent|échoué^.\n\nLe drapeau indique les avertissements par la couleur jaune et les erreurs par la couleur rouge. Un clic sur le drapeau affiche les 10 derniers avertissements et erreurs.\n\nLes utilisateurs trouvent la liste complète des avertissements et des erreurs dans la vue *MONITEUR -> Notifications Ordres*.",
     "tooltip.systemMonitorEvent": "Ce drapeau signale les avertissements et les erreurs des composants JS7, par exemple, la perte de connexion à la base de données.\n\nLe drapeau indique les avertissements par la couleur jaune et les erreurs par la couleur rouge.\n\nUn clic sur le drapeau affiche les 10 derniers avertissements et erreurs.\n\nLes utilisateurs trouvent la liste complète des avertissements et des erreurs dans la vue *MONITEUR -> Notifications Système*.",
-    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration.\n\nAprès l'importation, l'archive `Defaults.zip` créera un dossier du même nom qui comprendra des ressources de jobs pour créer des [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) disponibles pour vos jobs shell.",
+    "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration.\n\nAprès l'importation, l'archive `Defaults.zip` créera un dossier du même nom qui comprendra des Ressources de Tâche pour créer des [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) disponibles pour vos Jobs Shell.",
     "message.line2": "Les archives `Examples.tar.gz` et `Examples.zip` contiennent des exemples de Workflows et de Tâches pour des exécutions avec des Agents sous Unix et Windows. Ces exemples peuvent être utiles pour créer vos propres Workflows et dépendances de Tâches, pour plus de détails voir [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
@@ -2375,14 +2375,14 @@
         "title": "Le Titre de la ^Ressource de Tâche^ peut être spécifié à volonté."
       },
       "board": {
-        "name": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nLa ^Instruction PostNotices^ et la ^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
-        "expectBoardName": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nLa ^Instruction PostNotices^ et la ^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "expectBoardName": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Tableau de Condition^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre du ^Tableau de Condition^ peut être spécifié à volonté.",
         "toNotice": "Entrer l'^Annonce^",
         "endOfLife": "Le délai d'expiration de l'^Annonce^ détermine sa durée de vie au format *hh:mm:ss*, par exemple, *01:30:00* pour une heure et demie.",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'^ID Annonce^ pour l'^Ordre^ ^en attente^.",
-        "boardType": "Les ^Tableaux de Conditions^ de type **global** forcent les dépendances indépendamment du ^Plan Quotidien^.\n\nLes Tableaux de Conditions de type **planifiable** prennent en compte les dépendances uniquement pour les jours pour lesquels il existe des ^Ordre^s qui créeront des Annonces."
+        "boardType": "Les ^Tableaux de Condition|tableau-de-condition^ de type **global** forcent les dépendances indépendamment du ^Plan Quotidien^.\n\nLes Tableaux de Conditions de type **planifiable** prennent en compte les dépendances uniquement pour les jours pour lesquels il existe des ^Ordre^s qui créeront des Annonces."
       },
       "lock": {
         "name": "Les ^Verrous de Ressource|verrou-de-ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'inventaire.\n\nPour le nom du Verrou de Ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2400,8 +2400,8 @@
         "orderName": "Le ^Nom de l'Ordre^ est un élément non qualifiant de l'identifiant de la ^ID Ordre^.\n\nLes utilisateurs peuvent indiquer librement le Nom de l'Ordre lors de la création des ^Planifiatino^s et de l'ajout des ^Ordre^s ad hoc.",
         "startNode": "La position de départ d'une ^Tâche^ peut être antérieure à l'instruction indiquée dans le ^Workflow^. L'^Ordre^ commence à partir de la position indiquée.",
         "endNode": "La position finale d'un ^Ordre^ peut être antérieure à l'instruction indiquée dans le ^Workflow^. L'Ordre va se terminer avant la position indiquée.",
-        "blockPosition": "Pour les ^Workflow^s contenant des instructions de bloc telles que la ^Instruction Try-Catch^, ^Instruction Lock^, ^Instruction Fork^, ^Instruction Cycle^, l'instruction correspondante peut être sélectionnée.\n\nL'^Ordre^ quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.",
-        "ignoreAdmissionTimes": "L'exécution des ^Tâche^s peut être limitée par les ^Heures d'Admission^ des ^Tâche^s et par la ^Instruction AdmissionTimes^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
+        "blockPosition": "Pour les ^Workflow^s contenant des instructions de bloc telles que l'^Instruction Try-Catch^, ^Instruction Lock^, ^Instruction Fork^, ^Instruction Cycle^, l'instruction correspondante peut être sélectionnée.\n\nL'^Ordre^ quittera le Workflow lorsqu'il aura atteint la fin de l'instruction de bloc.",
+        "ignoreAdmissionTimes": "L'exécution des ^Tâche^s peut être limitée par les ^Heures d'Admission^ des ^Tâche^s et par l'^Instruction AdmissionTimes^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
         "tagName": "Il est possible d'ajouter un nombre quelconque de ^Tag^s qui seront affectées aux ^Ordre^s crées à partir de la ^Planification^.",
         "priority": "Si l'^Ordre^ doit répondre à une ^Instruction Lock^ d'un ^Verrou de Ressource^ dans le ^Workflow^ qui limite le parallélisme, sa Priorité détermine la position dans la file d'attente des ^Ordre^s ^en attente^.\n\nLes Priorités sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une Priorité plus élevée est prioritaire.\n\nLes raccourcis offrent les valeurs suivantes :\n- **Basse** : -20000\n- **Inférieur à la normale** : -10000\n- **Normal** : 0\n- **Au-dessus de la normale** : 10000\n- **Haut** : 20000",
         "--------ADD SCHEDULE TOOLTIP------------": "Modify Variable, Modify Variables, Add Variable, Add Order Parameter",
@@ -2446,7 +2446,7 @@
       },
       "workflow": {
         "name": "Le nom d'un ^Workflow^ est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
-        "jobResourceNames": "Il est possible d'ajouter des références aux ^Ressources de Tâches^ qui contiennent des variables partagées à utiliser par un certain nombre de ^Tâche^s et de Workflows.\n\nToutes les variables des Ressources de Tâche sélectionnées peuvent être utilisées par n'importe quel Tâche dans le Workflow.",
+        "jobResourceNames": "Il est possible d'ajouter des références aux ^Ressources de Tâche|ressource-de-tâche^ qui contiennent des variables partagées à utiliser par un certain nombre de ^Tâche^s et de Workflows.\n\nToutes les variables des Ressources de Tâche sélectionnées peuvent être utilisées par n'importe quel Tâche dans le Workflow.",
         "documentation": "Un ^Worklow^ ou une ^Tâche^ peut se voir attribuer une ^Documentation^ qui s'affiche avec la vue *WORKFLOWS*.\n\nLes Documentations sont gérées avec la vue *RESSOURCES*.",
         "title": "Le Titre du ^Workflow^ peut être spécifié à volonté. Le Titre est affiché dans la vue *WORKFLOWS*.",
         "timeZone": "Le fuseau horaire sert à calculer les ^Heures d'Admission^ et l'^Instruction Cycle^.\n\nPar défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé, voir [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
@@ -2454,7 +2454,7 @@
         "duration": "Durée.",
         "board": {
           "expectBoardName": "Le nom d'un ^Tableau de Condition^ est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
-          "boardNames": "Il est possible de spécifier un certain nombre de ^Tableaux de Conditions^ pour lesquels des ^Annonce^s sont créés.",
+          "boardNames": "Il est possible de spécifier un certain nombre de ^Tableaux de Condition|tableau-de-condition^ pour lesquels des ^Annonce^s sont créés.",
           "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul ^Tableau de Condition^ et pour spécifier une logique Booléenne : `('A-BOARD' || 'B-BOARD') && 'C-BOARD'`.\n\nLes noms des Tableaux de Condition sont cités et les opérateurs `&&` (et) et `||` (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
           "consumeBoardExpression": "L'expression ConsumeNotice` peut être utilisée pour spécifier un seul ^Tableau de Condition^ et pour spécifier une logique Booléenne : `('A-BOARD' || 'B-BOARD') && 'C-BOARD'`. Les noms des Tableaux de Condition sont cités et les opérateurs `&&` (et) et `||` (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
           "whenNotAnnounced": "Par défaut, les ^Annonce^s sont attendues. Si aucune ^Annonce^ est annoncéé les options suivantes sont offert:\n- **Attendre** l'Annonce.\n- **Exécuter** immédiatement les instructions les jours où aucune Annonce n'est annoncéé.\n- **Ignorer** l'instruction les jours pour lesquels aucune Annonce n'est annoncé."
@@ -2471,7 +2471,7 @@
           "unchanged": "Indique que le statut d'exécution actuel de l'^Ordre^ (réussi ou échoué) restera inchangé dans l'Historique des Ordres."
         },
         "options": {
-          "stopOnFailure": "Ce paramètre a une incidence sur les instructions telles que ^Instruction Lock^, ^Instruction ConsumeNotices^ et ^Instruction Cycle^.\n\nEn cas d'erreur, les ^Ordre^s restent dans l'instruction en cours au lieu de revenir au début de l'^Instruction Lock^, ^Instruction ConsumeNotices^ ou ^Instruction Cycle^."
+          "stopOnFailure": "Ce paramètre a une incidence sur les instructions telles que l'^Instruction Lock^, l'^Instruction ConsumeNotices^ et l'^Instruction Cycle^.\n\nEn cas d'erreur, les ^Ordre^s restent avec l'instruction en cours au lieu de revenir au début de l'^Instruction Lock^, de l'^Instruction ConsumeNotices^ ou de l'^Instruction Cycle^."
         },
         "fileWatch": {
           "directory": "Le répertoire qui est surveillé pour les fichiers entrants.",
@@ -2487,7 +2487,7 @@
           "joinIfFailed": "Un Ordre Enfant est terminé en cas d'échec.\n\nL'Ordre Parent sera mis à l'état ^échoué^.",
           "agentAssignment": "L'^Instruction ForkList^ se voit attribuer un ^Cluster de Sous-Agents^ qui spécifie un certain nombre de ^Sous-Agent^s sur lesquels les ^Tâche^s sont exécutées en parallèle.\n\nDeux options d'affectation sont proposées :\n- sélection d'un Cluster de Sous-Agents qui permet de choisir dans une liste.\n- entrée d'une expression qui spécifie le Cluster de Sous-Agents. Il s'agit notamment de spécifier une variable, éventuellement portée par un Ordre qui spécifie le Cluster de Sous-Agents.",
           "subagent": "Permet de sélectionner le ^Cluster de Sous-Agents^ à partir duquel tous les ^Agent^s disponibles sont utilisés pour exécuter en parallèle des ^Tâche^s dans l'^Instruction ForkList^.",
-          "agentCluster": "On sélectionne le ^Cluster d'Agents^ à partir duquel l'identifiant du ^Cluster de Sous-agents^ est défini par une expression saisie dans un champ de saisie distinct.",
+          "agentCluster": "On sélectionne le ^Cluster d'Agents^ à partir duquel l'identifiant du ^Cluster de Sous-Agents^ est défini par une expression saisie dans un champ de saisie distinct.",
           "subagentClusterIdExpr": "L'expression spécifie l'^ID Cluster de Sous-Agents^ à partir d'une variable.\n\nSi aucune expression n'est spécifiée, la variable `js7ForkListSubagentClusterId` sera utilisée.\n\nSi une variable est spécifiée, elle doit contenir l'ID Cluster de Sous-Agents.",
           "infoOfListVariable": "Pour l'utilisation de l'^Instruction ForkList^ avec une variable de type liste, voir la documentation à l'adresse [ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction).",
           "infoOfSubagentCluster": "Pour l'utilisation de l'^Instruction ForkList^ avec un ^Cluster de Sous-Agents^ consultez la documentation à l'adresse [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters)"
@@ -2519,7 +2519,7 @@
           "fileWatcher": "Les ^Sources d'Ordres de Fichiers|source-d'ordres-de-fichiers^ sont utilisées pour surveiller un répertoire pour les fichiers entrants et pour créer un Ordre avec le Workflow respectif pour chaque fichier.",
           "className": "Le nom d'une Classe Java implémentant une ^Tâche^.\n\nJS7 est livré avec un certain nombre de classes Java JITL prédéfinies, par exemple, pour l'accès aux bases de données, pour l'envoi d'e-mails etc.",
           "parallelism": "La valeur max. Parallélisme spécifie le nombre d'^Ordre^s dans un ^Workflow^ qui peuvent exécuter de ^Tâche^ en parallèle.\n\nSi le maximum est dépassé, les Ordres doivent attendre que la valeur soit redescendue en dessous du max. Parallelisme",
-          "criticality": "La Criticité des ^Tâche^s peut être utilisée dans les ^Notifications^ pour mieux distinguer l'urgence d'un incident.",
+          "criticality": "La Criticité des ^Tâche^s peut être utilisée dans les ^Notifications|notification^ pour mieux distinguer l'urgence d'un incident.",
           "failOnOutputErr": "Si une ^Tâche^ écrit une sortie sur le canal *stderr*, cela est considéré comme une erreur et l'^Ordre^ passe à l'état ^échoué^.",
           "warnOnOutputErr": "Si une ^Tâche^ écrit une sortie sur le canal *stderr*, cela est considéré comme un avertissement.\n\nL'exécution de la Tâche est considérée comme réussie et l'^Ordre^ se poursuit. Une ^Notification^ est créée pour l'avertissement.",
           "admissionTime": "Les ^Heures d'Admission^ règlent l'accès aux ^Tâche^s en fonction des jours et des heures de la semaine.\n\nUn ^Ordre^ attend devant un nœud de Tâche jusqu'à ce que l'Heure d'Admission soit atteinte ou peut être configurée pour ignorer la Tâche si les Heures d'Admission ne correspondent pas à la date de l'Ordre.",
@@ -2530,10 +2530,10 @@
           "mailCC": "Envoyer une copie de l'e-mail au destinataire indiqué.\n\nIl est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
           "mailBcc": "Envoyer la copie cachée d'un e-mail au destinataire indiqué.\n\nIl est possible de spécifier un certain nombre d'adresses e-mail séparées par une virgule.",
           "mailOn": "Envoyer un e-mail en cas d'événements indiqués d'erreurs, d'avertissements ou de succès.",
-          "description": "La description s'affiche lorsque ce job est sélectionné dans la liste des ^Modèles des Tâches^.",
+          "description": "La description s'affiche lorsque cette ^Tâche^ est sélectionné dans la liste des ^Modèles de Tâche|modèle-de-tâche^.",
           "onWarning": "Il est possible de spécifier un ^Code de Retour^ qui signale une exécution réussie avec des avertissements.\n\nUne ^Notification^ est créée dans le cas de tels Codes de Retour.\n\nUn certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules. On peut définir une plage à l'aide de deux points, par exemple *0..42*",
-          "agentAssignment": "La ^Tâche^ se voit attribuer un ^Agent Autonome^ ou un ^Cluster de Sous-Agents^ pour son exécution.\n\nDans un bloc des instructions comme ^Instruction ForkList^ ou ^Instruction StickySubagent^ un ^Cluster d'Agents^ est attribué.\n\nIl est également possible de spécifier une Expression qui fournit l'^ID Cluster de Sous-Agents^ à partir d'une variable.",
-          "agent": "Un ^Agent^ est assigné à la ^Tâche^ qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des ^Agent^s disponibles.",
+          "agentAssignment": "La ^Tâche^ se voit attribuer un ^Agent Autonome^ ou un ^Cluster de Sous-Agents^ pour son exécution.\n\nDans un bloc des instructions comme l'^Instruction ForkList^ ou l'^Instruction StickySubagent^ un ^Cluster d'Agents^ est attribué.\n\nIl est également possible de spécifier une Expression qui fournit l'^ID Cluster de Sous-Agents^ à partir d'une variable.",
+          "agent": "Un ^Agent^ est assigné à une ^Tâche^ qui exécutera le ^Script Job^ ou la ^Catégorie de Tâche^. Faites votre choix dans la liste des ^Agent^s disponibles.",
           "agentCluster": "Sélectionne le ^Cluster d'Agents^ pour lequel la ^ID Cluster de Sous-Agents^ est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
           "subagentClusterIdExpr": "L'Expression spécifie l'^ID Cluster de Sous-Agents^ à partir d'une variable.\n\nSi aucune variable n'est spécifiée, un défaut intégré devient actif si la ^Tâche^ est inclus dans une ^Instruction ForkList^ ou une ^Instruction StickySubagent^.\n\nLes utilisateurs peuvent spécifier une variable individuelle, par exemple, si les Tâches prédécesseurs sont utilisés pour déterminer le Cluster de Sous-Agents sur lequel exécuter une Tâche successeur.",
           "jobNotRestartable": "S'applique aux ^Tâche^s qui ont été interrompus de force par l'^Agent^ ou lors de l'arrêt ou de l'annulation de l'Agent.\n\nPar défaut, les ^Tâche^s sont considérés comme redémarrables et seront redémarrés lorsque l'Agent sera redémarré.\n\nLes utilisateurs peuvent empêcher ce comportement en activant la case à cocher."
@@ -2590,7 +2590,7 @@
         "fileName": "Indique le nom du fichier d'exportation, par exemple, `export.zip` ou `export.tar.gz`.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
         "exportType": "S'agit-il des\n- **Objets individuels**: les utilisateurs sélectionnent des objets dans l'arborescence de l'inventaire.\n- **Dossiers**: les utilisateurs sélectionnent les dossiers contenant des objets.\n- **Changements**: les utilisateurs sélectionnent un Changement qui inclut tous les objets directement affectés à ce Changement, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci",
-        "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple, les ^Workflow^s, les ^Ressources de Tâches^, les ^Planification^s etc.",
+        "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple, les ^Workflow^s, les ^Ressources de Tâche|ressource-de-tâche^, les ^Planification^s etc.",
         "forSigning": "For Signing",
         "inclusiveAllTags": "Ajoute des ^Tag^s au fichier d'exportation qui seront importé vers la destination.\n\nCela inclut tout les Tags de ^Workflow^, les Tags d'^Ordre^ et les Tags de ^Tâche^.\n\nLors de l'importation, les utilisateurs peuvent choisir d'importer des Tags à partir d'un fichier d'exportation.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",
@@ -2683,7 +2683,7 @@
         "jobName": "Nom de la Tâche",
         "jobNameExactMatch": "Correspondance exacte du nom de la Tâche",
         "jobCriticality": "Criticité de la Tâche",
-        "jobScript": "Script de la Tâche",
+        "jobScript": "Script Job",
         "includeScript": "Bloc Script",
         "calendar": "Calendrier",
         "report": "Modèle de Rapport",
@@ -4715,7 +4715,7 @@
       "caseElse": "Glisser-déposer l'^Instruction CaseElse^ pour traiter si toutes les vérifications des ^Instructions CaseWhen|instruction-casewhen^ échouent.",
       "stickySubagent": "Glisser-déposer l'^Instruction StickySubagent^ pour imposer l'utilisation du même ^Sous-Agent^ au sein d'un ^Cluster de Sous-Agents^ pour l'exécution des ^Tâche^s dans le bloc d'instruction.",
       "option": "Glisser-déposer l'^Instruction Options^ pour définir la gestion des erreurs pour l'^Instruction Lock^ et l'^Instruction ConsumeNotices^.",
-      "paste": "Glisser-déposer l'^Instruction Paste^ pour insérer une ou plusieurs instructions préalablement copiées à l'aide du menu contextuel (représenté par trois points) de l'instruction."
+      "paste": "Glisser-déposer **Paste** pour insérer une ou plusieurs instructions préalablement copiées à l'aide du menu contextuel (représenté par trois points) de l'instruction."
     }
   },
   "xml": {
