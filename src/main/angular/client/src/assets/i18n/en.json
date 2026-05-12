@@ -489,7 +489,7 @@
     "button.deleteCertificate": "Delete Certificate",
     "button.updateCertificate": "Update Certificate",
     "button.copyEncryptValue": "Copy encryption result",
-    "tooltips" : {
+    "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
         "certAlias": "The Certificate Alias is the unique identifier of a Certificate. The alias name can be freely chosen.",
@@ -500,7 +500,7 @@
         "assignAgents": "Similar to the 'Manage Controller/Agents' page specifies which ^Agent^s have access to the Private Key file.\n\nUsers must copy the Private Key file to the hosts of related Agents.",
         "showEncryptionSample": "The Encryption Test offers performing encryption with the given Certificate from sample input.",
         "plainText": "The plain text holding sample input.",
-        "encryptText" : "Clicking the icon will encrypt sample input.",
+        "encryptText": "Clicking the icon will encrypt sample input.",
         "encrypt": "The output encrypted from sample input."
       },
       "--------IMPORT ENCIPHERMENT MODAL TOOLTIPS------------": "",
@@ -4705,7 +4705,7 @@
       "sleep": "Drag & drop ^Sleep Instruction^ to keep ^Order^s idle for some time.",
       "prompt": "Drag & drop ^Prompt Instruction^ to set ^Order^s to the ^prompting^ state waiting for user confirmation to continue processing.",
       "admissionTimes": "Drag & drop ^AdmissionTimes Instruction^ to consider ^Admission Times^ before ^Order^s can proceed.",
-      "addOrder": "Drag & drop ^AddOrder Instruction^ to add an ^Order^ to some other ^Workflow^.\n\The Order will be processed asynchronously.\n\nTo make an Order in the current Workflow wait for an Order added to a second Workflow, use the ^ExpectNotices Instruction^ or ^ConsumeNotices Instruction^.",
+      "addOrder": "Drag & drop ^AddOrder Instruction^ to add an ^Order^ to some other ^Workflow^.\n\nThe Order will be processed asynchronously.\n\nTo make an Order in the current Workflow wait for an Order added to a second Workflow, use the ^ExpectNotices Instruction^ or ^ConsumeNotices Instruction^.",
       "postNotices": "Drag & drop ^PostNotices Instruction^ to create ^Notice^s for ^Notice Board^s that ^Order^s in other ^Workflow^s are waiting for from use of the ^ExpectNotices Instruction^ and ^ConsumeNotices Instruction^.",
       "expectNotices": "Drag & drop ^ExpectNotices Instruction^ to make ^Order^s wait for ^Notice^s of ^Notice Board^s that are posted by Orders in other ^Workflow^s using the ^PostNotices Instruction^.",
       "consumeNotices": "Drag & drop ^ConsumeNotices Instruction^ to make ^Order^s wait for ^Notice^s of ^Notice Board^s that are posted by Orders in other ^Workflow^s using the ^PostNotices Instruction^.\n\nNotices will be deleted when the *ConsumeNotices Instruction* is completed.",
