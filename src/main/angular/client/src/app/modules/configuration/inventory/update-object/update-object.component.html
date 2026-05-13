@@ -13,8 +13,9 @@
       @if (step === 1) {
         <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-md-4 form-control-label"
-                   translate>workflow.label.title</label>
+            <label class="col-md-4 form-control-label">
+              <span [appRichTooltip]="'workflow.tooltip.title' | translate" translate>workflow.label.title</span>
+            </label>
             <div class="col-md-6">
               <input [(ngModel)]="object.title" (ngModelChange)="toggleCheckbox('title', $event)" autocomplete="off" class="form-control"
                      name="title"
@@ -25,8 +26,9 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-4 form-control-label" title="{{'inventory.label.documentation' | translate}}"
-                   translate>inventory.label.documentation</label>
+            <label class="col-md-4 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltip.documentation' | translate" translate>inventory.label.documentation</span>
+            </label>
             <div class="col-md-6">
               <app-select-document [data]="object" [documentationTree]="documentationTree" (onSelectDocument)="toggleCheckbox('documentation', $event)"></app-select-document>
             </div>
@@ -150,8 +152,9 @@
           @if (type === 'WORKFLOW') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label"
-                       translate>workflow.label.jobResourceNames</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'workflow.tooltip.jobResourceNames' | translate" translate>workflow.label.jobResourceNames</span>
+                </label>
                 <div class="col-md-6">
                   <app-multi-select [attribute]="'jobResourceNames'" [list]="object" (onChange)="toggleCheckbox('jobResourceNames', $event)"[nodes]="jobResourcesTree"
                                     [type]="'JOBRESOURCE'"></app-multi-select>
@@ -179,7 +182,9 @@
           @if (type === 'FILEORDERSOURCE') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.workflowName' | translate" translate>inventory.label.workflowName</span>
+                </label>
                 <div class="col-md-6">
                   <input (click)="isTreeShow = true;" [(ngModel)]="object.workflowName" (ngModelChange)="toggleCheckbox('workflowName', $event)" autocomplete="off" class="form-control"
                          name="workflowName" type="text">
@@ -199,7 +204,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>workflow.label.agent</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'workflow.tooltip.agent' | translate" translate>workflow.label.agent</span>
+                </label>
                 <div class="col-md-6">
                   <app-agent-selection [agents]="agentList" [data]="object" name="agent" (agentChanged)="toggleCheckbox('agent', $event)" [preferences]="preferences"
                                        [skipSubagents]="true"></app-agent-selection>
@@ -209,7 +216,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.directory</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.directory' | translate" translate>inventory.label.directory</span>
+                </label>
                 <div class="col-md-6">
                   <input [(ngModel)]="object.directoryExpr" (ngModelChange)="toggleCheckbox('directoryExpr', $event)" autocomplete="off" class="form-control"
                          name="directory"
@@ -221,7 +230,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.pattern</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.pattern' | translate" translate>inventory.label.pattern</span>
+                </label>
                 <div class="col-md-6">
                   <input [(ngModel)]="object.pattern" (ngModelChange)="toggleCheckbox('pattern', $event)" autocomplete="off" class="form-control"
                          name="pattern"
@@ -232,7 +243,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>common.label.timeZone</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'common.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
+                </label>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
                     @for (zone of zones; track zone) {
@@ -245,7 +258,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>workflow.label.delay</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'workflow.tooltip.delay' | translate" translate>workflow.label.delay</span>
+                </label>
                 <div class="col-md-6">
                   <nz-input-number [(ngModel)]="object.delay"
                                    (ngModelChange)="toggleCheckbox('delay',$event)" [nzMin]="1" [nzStep]="1" name="delay"></nz-input-number>
@@ -259,7 +274,9 @@
           @if (type === 'NOTICEBOARD') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.toNotice</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.toNotice' | translate" translate>inventory.label.toNotice</span>
+                </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
                   <input [(ngModel)]="object.postOrderToNoticeId"
@@ -288,7 +305,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.readingOrderToNoticeId</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.readingOrderToNoticeId' | translate" translate>inventory.label.readingOrderToNoticeId</span>
+                </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
                     <input [(ngModel)]="object.expectOrderToNoticeId"
@@ -317,7 +336,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.endOfLife</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.endOfLife' | translate" translate>inventory.label.endOfLife</span>
+                </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
                     <input [(ngModel)]="object.endOfLife" (ngModelChange)="toggleCheckbox('endOfLife', $event)"
@@ -353,8 +374,9 @@
           @if (type === 'LOCK') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label"
-                       translate>inventory.label.limit</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.limit' | translate" translate>inventory.label.limit</span>
+                </label>
                 <div class="col-md-6">
                   <nz-input-number [(ngModel)]="object.limit" (ngModelChange)="toggleCheckbox('limit', $event)" [nzMin]="0" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                                    [nzStep]="1" name="limit"></nz-input-number>
@@ -479,7 +501,9 @@
                 </div>
               </ng-template>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.workflowNames</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.workflowNames' | translate" translate>inventory.label.workflowNames</span>
+                </label>
                 <div class="col-md-6">
                   <app-multi-select (onSelectCall)="changeWorkflow($event)" (onChange)="toggleCheckbox('workflowNames', $event)" [attribute]="'workflowNames'" [list]="object"
                                     [nodes]="workflowTree" [type]="'WORKFLOW'"></app-multi-select>
@@ -490,7 +514,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 block-ellipsis-job" translate>inventory.label.planOrderAutomatically</label>
+                <label class="col-md-4 block-ellipsis-job">
+                  <span [appRichTooltip]="'inventory.tooltip.planOrderAutomatically' | translate" translate>inventory.label.planOrderAutomatically</span>
+                </label>
                 <div class="col-md-6">
                   <label [(ngModel)]="object.planOrderAutomatically" (ngModelChange)="toggleCheckbox('planOrderAutomatically', $event)" name="planOrderAutomatically" nz-checkbox></label>
                 </div>
@@ -500,8 +526,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-4 block-ellipsis-job"
-                       translate>inventory.label.submitOrderToControllerWhenPlanned</label>
+                <label class="col-md-4 block-ellipsis-job">
+                  <span [appRichTooltip]="'inventory.tooltip.submitOrderToControllerWhenPlanned' | translate" translate>inventory.label.submitOrderToControllerWhenPlanned</span>
+                </label>
                 <div class="col-md-6">
                   <label [(ngModel)]="object.submitOrderToControllerWhenPlanned" (ngModelChange)="toggleCheckbox('submitOrderToControllerWhenPlanned', $event)" name="submitOrderToControllerWhenPlanned"
                          nz-checkbox></label>
@@ -521,7 +548,9 @@
                   @for (variableSet of object.orderParameterisations; track $index; let j = $index) {
                     <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
                       <div class="form-group row">
-                        <label class="col-md-4 form-control-label" translate>order.label.orderName</label>
+                        <label class="col-md-4 form-control-label">
+                          <span [appRichTooltip]="'order.tooltip.orderName' | translate" translate>order.label.orderName</span>
+                        </label>
                         <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
                              class="col-md-6">
                           <input #orderName="ngModel" (blur)="isOrderNameValid(variableSet, orderName, object.orderParameterisations)" (keydown)="onKeyPress($event, null)"
@@ -546,7 +575,9 @@
 
                       @if (blockPositions?.size > 0) {
                         <div class="form-group row">
-                          <label class="col-md-4 form-control-label" translate>order.label.blockPosition</label>
+                          <label class="col-md-4 form-control-label">
+                            <span [appRichTooltip]="'order.tooltip.blockPosition' | translate" translate>order.label.blockPosition</span>
+                          </label>
                           <div class="col-md-6">
                             <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
                                                [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
@@ -554,14 +585,18 @@
                         </div>
                       }
                       <div class="form-group row">
-                        <label class="col-md-4 form-control-label" translate>order.label.startNode</label>
+                        <label class="col-md-4 form-control-label">
+                          <span [appRichTooltip]="'order.tooltip.startNode' | translate" translate>order.label.startNode</span>
+                        </label>
                         <div class="col-md-6">
                           <app-node-position [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
                                              [type]="'START'" [workflow]="workflow"></app-node-position>
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 form-control-label" translate>order.label.endNode</label>
+                        <label class="col-md-4 form-control-label">
+                          <span [appRichTooltip]="'order.tooltip.endNode' | translate" translate>order.label.endNode</span>
+                        </label>
                         <div class="col-md-6">
                           <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
                                              [position]="variableSet.positions.startPosition"
@@ -571,8 +606,9 @@
                       </div>
 
                       <div class="form-group row">
-                        <label class="col-md-4"
-                               translate>order.label.ignoreAdmissionTimes</label>
+                        <label class="col-md-4">
+                          <span [appRichTooltip]="'order.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                        </label>
                         <div class="col-md-6">
                           <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}">
                           </label>
@@ -776,7 +812,9 @@
           @if (type === 'CALENDAR') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>common.label.type</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'common.tooltip.type' | translate" translate>common.label.type</span>
+                </label>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.type" name="cType" (ngModelChange)="toggleCheckbox('type', $event)">
                     <nz-option [nzLabel]="'runtime.label.workingDay' | translate" nzValue="WORKINGDAYSCALENDAR"></nz-option>
@@ -789,14 +827,17 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 col-md-4 form-control-label" translate>runtime.label.validFrom</label>
+                <label class="col-md-3 col-md-4 form-control-label">
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                </label>
                 <div class="col-md-3 col-xl-3 col-xxl-2">
                   <nz-date-picker [(ngModel)]="object.from" (ngModelChange)="toggleCheckbox('validFrom', $event)"
                                   [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                                   name="from"></nz-date-picker>
                 </div>
-                <label class="col-md-3 col-xl-2 col-xxl-2 form-control-label date-center"
-                       translate>runtime.label.validTo</label>
+                <label class="col-md-3 col-xl-2 col-xxl-2 form-control-label date-center">
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                </label>
                 <div class="col-md-3 col-xl-3 col-xxl-2 date-right">
                   <nz-date-picker [(ngModel)]="object.validTo" (ngModelChange)="toggleCheckbox('validTo', $event)" [nzFormat]="dateFormat"
                                   [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" id="to"
@@ -811,7 +852,9 @@
           @if (type === 'INCLUDESCRIPT') {
             <ng-container>
               <div class="form-group row">
-                <label class="col-md-4 form-control-label" translate>inventory.label.script</label>
+                <label class="col-md-4 form-control-label">
+                  <span [appRichTooltip]="'inventory.tooltip.script' | translate" translate>inventory.label.script</span>
+                </label>
                 <div class="col-md-6">
                   @if (isDisplay) {
                     <div class="b-a">
@@ -855,7 +898,7 @@
           @if ((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')) {
             <div class="form-group row">
               <label class="col-md-3 form-control-label">
-                <label translate>inventory.label.controllers</label>
+                <span [appRichTooltip]="'inventory.tooltip.controllers' | translate" translate>inventory.label.controllers</span>
               </label>
               <div class="col-md-6">
                 <nz-select

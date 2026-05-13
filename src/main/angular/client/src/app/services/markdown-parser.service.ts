@@ -679,7 +679,7 @@ export class MarkdownParserService {
     ]);
 
     const allowedAttrs: Record<string, Set<string>> = {
-      'a': new Set(['href', 'title', 'rel', 'target', 'class', 'id']),
+      'a': new Set(['href', 'title', 'rel', 'target', 'class', 'id', 'data-rt-action-type', 'data-rt-action-param', 'tabindex', 'role']),
       'i': new Set(['class', 'aria-hidden']),
       'img': new Set(['src', 'alt', 'title', 'class', 'id', 'width', 'height']),
       'th': new Set(['align', 'colspan', 'rowspan', 'class', 'id']),

@@ -860,7 +860,8 @@ export class UserComponent {
     {value: -1,   name: 'profile.label.tooltipDelay.never'},
     {value: 0,    name: 'profile.label.tooltipDelay.immediate'},
     {value: 0.2,  name: 'profile.label.tooltipDelay.short'},
-    {value: 0.5,  name: 'profile.label.tooltipDelay.long'},
+    {value: 0.5,  name: 'profile.label.tooltipDelay.medium'},
+    {value: 1,  name: 'profile.label.tooltipDelay.long'},
   ];
 
   entryPerPage = [{value: '10', name: '10'},

@@ -28,7 +28,8 @@
     </div>
     @if (!rename) {
       <div class="row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.folderName
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.folderName' | translate" translate>inventory.label.folderName</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -56,8 +57,8 @@
       <div>
         @if (!origin.type && !origin.object && !origin.controller && !origin.dailyPlan && origin.path !== '/' && type != 'DEPLOYMENTDESCRIPTOR') {
           <div class="form-group row">
-            <label class="col-md-3" translate>
-              inventory.label.rename
+            <label class="col-md-3">
+              <span [appRichTooltip]="'inventory.tooltip.rename' | translate" translate>inventory.label.rename</span>
             </label>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="folder.deepRename" name="deepRename">
@@ -69,7 +70,8 @@
         }
         @if (folder.deepRename === 'rename' && origin.type) {
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>inventory.label.newName
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltip.newName' | translate" translate>inventory.label.newName</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -94,7 +96,8 @@
         }
         @if (folder.deepRename === 'rename' && !origin.type) {
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>inventory.label.newPath
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltip.newPath' | translate" translate>inventory.label.newPath</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -113,7 +116,8 @@
         }
         @if (folder.deepRename === 'replace') {
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>inventory.label.search
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltip.search' | translate" translate>inventory.label.search</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}" class="col-md-6">
@@ -132,7 +136,9 @@
         }
         @if (folder.deepRename === 'replace') {
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>inventory.label.replace</label>
+            <label class="col-md-3 form-control-label">
+              <span [appRichTooltip]="'inventory.tooltip.replace' | translate" translate>inventory.label.replace</span>
+            </label>
             <div class="col-md-6">
               <input [(ngModel)]="folder.replace" autocomplete="off" class="form-control"
                      name="replace"

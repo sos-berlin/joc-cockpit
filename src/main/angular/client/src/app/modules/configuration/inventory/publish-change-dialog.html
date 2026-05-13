@@ -13,7 +13,8 @@
       </div>
 
       <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -36,7 +37,9 @@
       @if (nodes.length > 0) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label>
+              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+            </label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
@@ -49,7 +52,9 @@
 
         @if (dependencyMode !== 'none') {
           <div class="form-group row">
-            <label class="col-md-3" translate>inventory.label.manageDependencies</label>
+            <label class="col-md-3">
+              <span [appRichTooltip]="'changes.tooltip.manageDependencies' | translate" translate>inventory.label.manageDependencies</span>
+            </label>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
             </div>
@@ -58,7 +63,9 @@
 
         @if (showDependencies && dependencyMode !== 'none') {
           <div class="form-group row">
-            <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+            <label class="col-md-3">
+              <span [appRichTooltip]="'changes.tooltip.showRelatedObjects' | translate" translate>inventory.label.showRelatedObjects</span>
+            </label>
             <div class="col-md-6">
               <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
             </div>

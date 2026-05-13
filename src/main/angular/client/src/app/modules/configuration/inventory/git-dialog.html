@@ -32,7 +32,8 @@
     </div>
     @if (operation === 'clone') {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.gitUri' | translate" translate>inventory.label.gitUri</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}" class="col-md-8">
@@ -51,7 +52,8 @@
     }
     @if (operation === 'clone' && data.path === '/') {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.folderName
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.folderName' | translate" translate>inventory.label.folderName</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}"
@@ -73,7 +75,9 @@
     }
     @if (operation === 'push') {
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
+        <label class="col-sm-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.gitMessage' | translate" translate>inventory.label.gitMessage</span>
+        </label>
         <div class="col-sm-8">
           <textarea [(ngModel)]="message" class="form-control" maxlength="255" name="message"
                     placeholder="{{'inventory.placeholder.enterGitMessage' | translate}}"

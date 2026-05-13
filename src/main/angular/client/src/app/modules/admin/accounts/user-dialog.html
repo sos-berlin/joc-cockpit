@@ -133,7 +133,7 @@
     @if (!newUser && !copy && identityServiceType) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'common.tooltip.blocked' | translate" translate>common.label.blocked</span>
+          <span [appRichTooltip]="'user.tooltip.banned' | translate" translate>user.label.banned</span>
         </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.blocked"

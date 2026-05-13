@@ -6497,7 +6497,7 @@ export class WorkflowComponent {
       ];
 
       var $img = $(this);
-      if (index !== 24 && tooltipKeys[index]) {
+      if (tooltipKeys[index]) {
         self.attachRichTooltip($img[0] as HTMLElement, self.translate.instant(tooltipKeys[index]));
       }
 
@@ -6559,7 +6559,12 @@ export class WorkflowComponent {
     let overlayRef: OverlayRef | null = null;
     let openTimer: any = null;
     let closeTimer: any = null;
+    let isDragging = false;
+    let contextMenuOpen = false;
     let docOverListener: ((e: MouseEvent) => void) | null = null;
+    let keyCaptureHandler: ((e: KeyboardEvent) => void) | null = null;
+
+    const panelMouseUpHandler = () => { isDragging = false; };
 
     const cancelClose = () => {
       if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
@@ -6574,6 +6579,13 @@ export class WorkflowComponent {
 
     const doClose = () => {
       removeDocListener();
+      document.removeEventListener('mouseup', panelMouseUpHandler, true);
+      if (keyCaptureHandler) {
+        document.removeEventListener('keydown', keyCaptureHandler, true);
+        keyCaptureHandler = null;
+      }
+      isDragging = false;
+      contextMenuOpen = false;
       if (!overlayRef) return;
       overlayRef.dispose();
       overlayRef = null;
@@ -6638,7 +6650,11 @@ export class WorkflowComponent {
         cancelClose();
         removeDocListener();
       });
+      // Track drag-to-select so tooltip doesn't close while user selects text
+      overlayRef.overlayElement.addEventListener('mousedown', () => { isDragging = true; });
+      document.addEventListener('mouseup', panelMouseUpHandler, true);
       overlayRef.overlayElement.addEventListener('mouseleave', (event: MouseEvent) => {
+        if (isDragging || contextMenuOpen) return;
         const related = event.relatedTarget as Element | null;
         // Cursor moved into another overlay pane (e.g. glossary popover) — don't close yet
         if (related && related.closest('.cdk-overlay-pane')) {
@@ -6647,6 +6663,49 @@ export class WorkflowComponent {
           return;
         }
         scheduleClose();
+      });
+      // Keep tooltip open while the native context menu is visible so user can click Copy
+      overlayRef.overlayElement.addEventListener('contextmenu', () => {
+        contextMenuOpen = true;
+        const reset = () => {
+          contextMenuOpen = false;
+          document.removeEventListener('mousedown', reset, true);
+        };
+        document.addEventListener('mousedown', reset, true);
+      });
+
+      // Intercept Ctrl+C/A/X at capture phase so mxGraph doesn't see them when text
+      // is selected inside our tooltip. stopPropagation (no preventDefault) lets the
+      // browser copy normally while preventing the mxGraph ghost-tooltip at (0,0).
+      keyCaptureHandler = (e: KeyboardEvent) => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        if (k !== 'c' && k !== 'a' && k !== 'x') return;
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0 || !overlayRef) return;
+        try {
+          const range = sel.getRangeAt(0);
+          if (overlayRef.overlayElement.contains(range.commonAncestorContainer)) {
+            e.stopPropagation(); // keep mxGraph from handling Ctrl+C as "copy cells"
+            // No preventDefault — browser clipboard operation proceeds normally
+          }
+        } catch { /* ignore */ }
+      };
+      document.addEventListener('keydown', keyCaptureHandler, true);
+
+      // Handle action links: [text](context:type:param) — context help / video
+      overlayRef.overlayElement.addEventListener('click', (e: MouseEvent) => {
+        const anchor = (e.target as HTMLElement).closest('[data-rt-action-type]') as HTMLElement | null;
+        if (!anchor) return;
+        const type = anchor.getAttribute('data-rt-action-type');
+        const param = anchor.getAttribute('data-rt-action-param') || '';
+        e.stopPropagation();
+        doClose();
+        if (type === 'help' || type === 'context') {
+          this.coreService.openHelpPage(param);
+        } else if (type === 'video') {
+          this.coreService.openVideoPage(param);
+        }
       });
     };
 
@@ -6677,6 +6736,14 @@ export class WorkflowComponent {
         return;
       }
       scheduleClose();
+    });
+
+    // Click toggles the tooltip open/closed
+    el.addEventListener('click', (e: MouseEvent) => {
+      e.stopPropagation();  // prevent bubbling to ancestor [appRichTooltip] directives
+      cancelClose();        // cancel any pending close (e.g. from mouseleave during click)
+      if (openTimer) { clearTimeout(openTimer); openTimer = null; }
+      if (overlayRef) { doClose(); } else { open(); }
     });
   }
 

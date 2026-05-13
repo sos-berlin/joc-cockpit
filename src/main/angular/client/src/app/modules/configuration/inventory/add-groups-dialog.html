@@ -20,7 +20,8 @@
     </div>
     @if (!isRename) {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.groups
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.groups' | translate" translate>inventory.label.groups</span>
           <!-- <sup class="text-danger text-sm">*</sup> -->
         </label>
         <div class="col-md-8">
@@ -64,7 +65,8 @@
     }
     @if (isRename) {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.groupName
+        <label class="col-md-3 form-control-label">
+          <span [appRichTooltip]="'inventory.tooltip.groupName' | translate" translate>inventory.label.groupName</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
