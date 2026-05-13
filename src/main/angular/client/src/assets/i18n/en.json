@@ -2380,9 +2380,9 @@
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Notice Board^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Notice Board^ can be specified as desired.",
         "toNotice": "The ^Notice ID^ for the ^Posting Order^ is extracted from its ^Order ID^ to look up matching ^Expecting Order^s.",
-        "endOfLife": "The lifetime for the ^Notice^ determines its duration in the format *hh:mm:ss*, for example, *01:30:00* for one and a half hours.",
+        "endOfLife": "The lifetime for the ^Notice^ determines its duration in the format *hh:mm:ss*, for example, `01:30:00` for one and a half hours.",
         "readingOrderToNoticeId": "The ^Notice ID^ for the ^Expecting Order^ is extracted from its ^Order ID^ and is used to look up matching ^Posting Order^s.",
-        "boardType": "^Notice Board^s of **global* type enforce dependencies independently from the ^Daily Plan^.\n\nNotice Boards of **plannable** type consider days only for which ^Order^s exist that will create ^Notice^s."
+        "boardType": "^Notice Board^s of **global** type enforce dependencies independently from the ^Daily Plan^.\n\nNotice Boards of **plannable** type consider days only for which ^Order^s exist that will create ^Notice^s."
       },
       "lock": {
         "name": "^Resource Lock^s are used to implement mutual exclusion for a sequence of ^Job^s. They can be used in the same ^Workflow^ and across Workflows to limit parallelism of Jobs. The name of a Resource Lock is unique in the inventory.\n\nFor the name of the Resource Lock most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2426,8 +2426,8 @@
         "interval": {
           "interval": "Specifies the reporting period. The presets and relative settings will be mapped to current values for *month from* and *month to*.",
           "absolute": {
-            "monthFrom": "Specifies the start of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, *1y*, can be specified.",
-            "monthTo": "Specifies the end of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, *2m*, can be specified.\n\nIf empty, then the previous month of the current date will be used."
+            "monthFrom": "Specifies the start of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, `1y`, can be specified.",
+            "monthTo": "Specifies the end of the reporting period.\n\nAbsolute values in the form *yyyy-mm* or relative values, for example, `2m`, can be specified.\n\nIf empty, then the previous month of the current date will be used."
           },
           "relative": {
             "from": "Specifies the start of the reporting period that considers the unit in use.\n\nExample: Unit=Month, From=12, Count=12 --> last 12 months.",
@@ -2509,13 +2509,13 @@
           "compatibleMode": "Compatibility with previous JobScheduler versions includes, for example, for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
           "credentialKey": "A Credential Key can be specified that is available from the Windows Credential Manager holding the credentials that are used to switch to a target user account for execution of the ^Job^.\n\nOptionally a user profile can be loaded.",
           "loadUserProfile": "Loads the Windows User Profile. A profile includes, for example, environment variables and Windows registry settings.\n\nThis setting can be used only if a Credential Key is specified.",
-          "returnCode": "By default ^Return Code^ 0 signals successful execution, a non-zero Return Code signals failed execution.\n\nAny number of Return Codes signalling success or failure can be specified by a comma separated list, for example, *0,1,2*. A range can be specified using two dots, for example, *0..42*",
+          "returnCode": "By default ^Return Code^ 0 signals successful execution, a non-zero Return Code signals failed execution.\n\nAny number of Return Codes signalling success or failure can be specified by a comma separated list, for example, `0,1,2`. A range can be specified using two dots, for example, `0..42`",
           "checkSteadyState": "When a file arrives in a directory that is watched for incoming files, then the file size and file timestamp are checked for changes. Between each check the specified delay is applied until no further changes can be observed.",
           "jobClass": "The ^Job Class^ determines if a Job is executed with the OS Shell (Windows, Unix, MacOS etc.), or is executed as a JVM JITL Java Job, or is executed as a JVM Script Job for one of the scripting languages supported by the JVM.",
           "timeout": "When exceeding the Timeout, then with Windows a ^Job^ is cancelled.\n\nWith Unix the Job is sent a SIGTERM signal and after the *Grace Timeout* a SIGKILL signal will terminate the Job.",
           "graceTimeout": "A Grace Timeout is applied to ^Job^s with Unix that receive a SIGTERM signal when exceeding their Timeout.\n\nIf the Job will not terminate, then after the Grace Timeout a SIGKILL signal will forcibly terminate the Job.",
-          "warnIfShorter": "If the execution period of a ^Job^ is shorter than specified, then a ^Notification^, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, *30%*.",
-          "warnIfLonger": "If the execution period of a ^Job^ is longer than specified, then a ^Notification^, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, *01:30:00* for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, *30%*.",
+          "warnIfShorter": "If the execution period of a ^Job^ is shorter than specified, then a ^Notification^, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, `01:30:00` for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, `30%`.",
+          "warnIfLonger": "If the execution period of a ^Job^ is longer than specified, then a ^Notification^, for example, will be sent by e-mail.\n\nThe number of seconds can be specified as in *1s*. Alternatively, the *hh:mm:ss* format can be used, for example, `01:30:00` for one and a half hours.\n\nA percentage can be specified that is calculated from the average of successful past Job executions, for example, `30%`.",
           "fileWatcher": "^File Order Source^s are used to watch directories for incoming files and to add ^Order^s to the respective ^Workflow^ for each file.",
           "className": "The name of a Java class implementing a ^Job^.\n\nJS7 ships with a number of predefined JITL Java classes, for example, for database access, to send e-mail etc.",
           "parallelism": "The max. Parallelism specifies the number of ^Order^s in a ^Workflow^ that can execute the ^Job^ in parallel.\n\nIf the max. Parallelism is exceeded, then Orders have to wait until the value has fallen below the Job's max. Parallelism.",
@@ -2531,7 +2531,7 @@
           "mailBcc": "Send e-mail blind copy to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
           "mailOn": "Send e-mail for the indicated events of ^Job^ errors, warnings or success.",
           "description": "The Description is displayed when the ^Job^ is selected from the list of ^Job Template^s.",
-          "onWarning": "A number of ^Return Code^s can be specified that signal successful execution with warnings. A ^Notification^ will be created in case of such Return Codes.\n\nA number of Return Codes can be specified by a comma separated list, for example, *0,1,2*. A range can be specified from two dots, for example, *0..42*",
+          "onWarning": "A number of ^Return Code^s can be specified that signal successful execution with warnings. A ^Notification^ will be created in case of such Return Codes.\n\nA number of Return Codes can be specified by a comma separated list, for example, `0,1,2`. A range can be specified from two dots, for example, `0..42`",
           "agentAssignment": "The ^Job^ is assigned a ^Standalone Agent^ or ^Subagent Cluster^ for execution. Within the block of a ^ForkList Instruction^ or ^StickySubagent Instruction^ an ^Agent Cluster^ is assigned.\n\nAs an alternative, an Expression can be specified that provides the unique ^Subagent Cluster ID^ from a variable.",
           "agent": "The ^Job^ is assigned an ^Agent^ that will execute the ^Job Script^ or ^Job Class^. Users can select from the list of available Agents.",
           "agentCluster": "Selects the ^Agent Cluster^ for which a ^Subagent Cluster ID^ is specified from an Expression in a later input field.",
@@ -2545,19 +2545,19 @@
           "weekDays": "Weekdays specify days of week that can be individually selected.",
           "monthDays": "Month Days are counted from the first to the last day of month or vice versa.",
           "dayNumber": "Specific Weekdays allow determining the recurrence of the weekday in a month, for example, the first, second, last etc. occurrence.",
-          "startTime": "The period begin specifies when a cycle will initially become active. Values are specified from the *hh:mm:ss* format, for example, *00:00:00* indicates midnight.",
-          "duration": "Specifies the duration for which the cycle is active.\n\nValues are specified in hours, minutes or seconds, for example, *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*.",
+          "startTime": "The period begin specifies when a cycle will initially become active. Values are specified from the *hh:mm:ss* format, for example, `00:00:00` indicates midnight.",
+          "duration": "Specifies the duration for which the cycle is active.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`.",
           "cycleType": "The type of cycle is one of\n- **periodical**: using individual start times per period.\n- **continuous**: applying a fixed pause between start times.\n- **ticking**: using a fixed start time interval.",
-          "periodical": "The *periodical* Cycle Type allows specifying individual start times per period in seconds or minutes, for example, *0*, *15m*, *25m*, *47m*.\n\nIn this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
+          "periodical": "The *periodical* Cycle Type allows specifying individual start times per period in seconds or minutes, for example, `0`, `15m`, `25m`, `47m`.\n\nIn this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "continuous": "The *continuous* Cycle Type specifies a fixed interval, i.e. a pause, between the last cycle run and the next cycle start independently from the execution time that might be different per cycle run.",
           "ticking": "The *ticking* Cycle Type specifies a fixed interval between cycle starts, for example, every 5 minutes, independently of the time used to execute the cycle.\n\nIf a cycle runs longer than its start time interval, then it will be restarted immediately after its last run.",
-          "interval": "The interval for the *ticking* Cycle Type specifies the frequency of cycle runs, for example, every 5 minutes.\n\nValues can be specified in hours, minutes, seconds, for example, *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for an hourly cycle run.",
-          "pause": "The pause for the *continuous* Cycle Type specifies the interval between completion of the last cycle and start of the next cycle.\n\nValues can be specified in hours, minutes, seconds, for example, *1h*, *60m*, *3600s*. In addition the *hh:mm:ss* format can be used as in *01:00:00* for a one hour's pause between cycle runs.",
+          "interval": "The interval for the *ticking* Cycle Type specifies the frequency of cycle runs, for example, every 5 minutes.\n\nValues can be specified in hours, minutes, seconds, for example, `1h`, `60m`, `3600s`. In addition the *hh:mm:ss* format can be used as in `01:00:00` for an hourly cycle run.",
+          "pause": "The pause for the *continuous* Cycle Type specifies the interval between completion of the last cycle and start of the next cycle.\n\nValues can be specified in hours, minutes, seconds, for example, `1h`, `60m`, `3600s`. In addition the *hh:mm:ss* format can be used as in `01:00:00` for a one hour's pause between cycle runs.",
           "limit": "For the *continuous* Cycle Type a limit for the max. number of cycle runs can be specified.",
-          "offsets": "The offsets for a *periodical* Cycle Type specify the points in time within the given period when the cycle starts.\n\nValues can be specified in seconds or minutes, for example, *0*, *15m*, *25m*, *47m*. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
+          "offsets": "The offsets for a *periodical* Cycle Type specify the points in time within the given period when the cycle starts.\n\nValues can be specified in seconds or minutes, for example, `0`, `15m`, `25m`, `47m`. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "period": "The period specifies the duration for which a cycle is active.\n\nThe cycle will start from the period begin and will be repeated according to its Cycle Type for the specified duration.",
-          "periodBeginOfAdmissionTime": "Specifies the begin of the Job's Admission Times.\n\nValues are specified from the *hh:mm:ss* format, for example, *00:00:00* indicating midnight.",
-          "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example, *1h*, *3600s*, *60m*, or from the *hh:mm:ss* format, for example, *01:00:00*."
+          "periodBeginOfAdmissionTime": "Specifies the begin of the Job's Admission Times.\n\nValues are specified from the *hh:mm:ss* format, for example, `00:00:00` indicating midnight.",
+          "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`."
         },
         "addOrder": {
           "workflowName": "The ^AddOrder Instruction^ allows adding ^Order^s to the specified ^Workflow^.",
@@ -2580,7 +2580,7 @@
           "delay": "The Delay specifies the time in seconds before the next retry is performed.\n\nIf a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "A cycle can specify more than one period, for example, for 1pm, 2pm, 3pm with each cycle lasting for 30 minutes. By default an ^Order^ arriving at 1.45pm will run both cycles for 2pm and 3pm.\n\nWhen using the setting *One period only*, then an ^Order^ will run the first matching period only and will not consider later periods."
+          "onlyOnePeriod": "A cycle can specify more than one period, for example, for 13:00, 14:00, 15:00 with each cycle lasting for 30 minutes. By default an ^Order^ arriving at 13:45 will run both cycles for 14:00 and 15:00.\n\nWhen using the setting *One period only*, then an ^Order^ will run the first matching period only and will not consider later periods."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
@@ -3727,7 +3727,7 @@
       "file_transfer_history_age": "Specifies the retention period of the File Transfer History.\n\nAny history entries older than the value specified will be purged.",
       "monitoring_history_age": "Specifies the retention period of the Monitoring History.\n\nAny history entries older than the value specified will be purged.",
       "notification_history_age": "Specifies the retention period of the Notification History.\n\nAny history entries older than the value specified will be purged.",
-      "max_pool_size": "The max. connection pool size specifies the number of database connection used.\n\nFor environments with larger numbers of daily task history entries it can be beneficial to increase this value for example, to *10*.\n\nUsers should check that their DBMS allows an increased number of connections being used.",
+      "max_pool_size": "The max. connection pool size specifies the number of database connection used.\n\nFor environments with larger numbers of daily task history entries it can be beneficial to increase this value for example, to `10`.\n\nUsers should check that their DBMS allows an increased number of connections being used.",
       "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it will be purged.",
       "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they will be purged.",
       "reporting_age": "Specifies the retention period of the Reports and Report Run History.\n\nAny report entries older than the value specified will be purged.",
@@ -3738,7 +3738,7 @@
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the ^Daily Plan Service^ and period of the ^Daily Plan^, see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
-      "start_time": "Specifies the start time to run the ^Daily Plan Service^ on a daily basis with the indicated time zone.\n\nWithout this setting the Daily Plan Service will run 30 minutes before the point in time specified by the *period_begin* setting.\n\nThis setting accepts a time value, for example, *23:00:00*.",
+      "start_time": "Specifies the start time to run the ^Daily Plan Service^ on a daily basis with the indicated time zone.\n\nWithout this setting the Daily Plan Service will run 30 minutes before the point in time specified by the *period_begin* setting.\n\nThis setting accepts a time value, for example, `23:00:00`.",
       "period_begin": "Specifies the begin of the 24 hours ^Daily Plan^ period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which ^Order^s will be generated and will be made available with the ^planned^ state.",
       "days_ahead_submit": "Specifies the number of days ahead for which ^planned^ ^Order^s will be submitted to ^Controller^s and will be made available with the ^submitted^ state.",
@@ -4163,7 +4163,7 @@
         "iamLdapUserSearchFilter": "The LDAP User Search Filter specifies an LDAP query that is used to identify the user account in the hierarchy of LDAP entries.",
         "iamLdapUseStartTls": "The LDAP Start TLS switch makes TLS the protocol for the connection to the LDAP Server",
         "iamLdapHostNameVerification": "The LDAP Host Name Verification switch has to be active to check if hostnames in the LDAP Server URL and in the LDAP Server certificate match.",
-        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, for example, `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, for example, *js7_admins*.",
+        "iamLdapGroupRolesMap": "The LDAP Group/Roles Mapping is in fact a mapping of Security Groups that the user account is a member of and JS7 roles. Security Groups have to be specified depending on the LDAP Group Search Attribute as Distinguished Names, for example, `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, or as Common Names, for example, `js7_admins`.",
         "iamLdapTrustStorePath": "The path to a Truststore that holds the LDAP Server certificate or Root CA certificate used to sign the LDAP Server certificate.",
         "iamLdapTrustStorePassword": "If the LDAP Truststore is protected by a password, then the password must be specified.",
         "iamLdapTrustStoreType": "The LDAP Truststore Type can be PKCS12 or JKS (deprecated).",

@@ -2380,7 +2380,7 @@
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Anicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Notizbrett^s kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
-        "endOfLife": "Die Lebensdauer der ^Notiz^ wird im Format *hh:mm:ss* bestimmt, z.B. *01:30:00* für ein-einhalb Stunden.",
+        "endOfLife": "Die Lebensdauer der ^Notiz^ wird im Format *hh:mm:ss* bestimmt, z.B. `01:30:00` für ein-einhalb Stunden.",
         "readingOrderToNoticeId": "Die ^Notizkennung^ für ^Notifizierte Aufträge^ wird aus deren Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem für ^Notifizierende Aufträge^.",
         "boardType": "^Notizbrett^er des Typs **global** erzwingen Abhängigkeiten unabhängig vom ^Tagesplan^.\n\nNotizbretter des Typs **planbar** berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die ^Aufträge|auftrag^ existieren, deren ^Arbeitsabläufe|arbeitsablauf^ ^Notiz^en senden."
       },
@@ -2426,8 +2426,8 @@
         "interval": {
           "interval": "Gibt den Berichtszeitraum an. Die Voreinstellungen und relativen Einstellungen werden auf die aktuellen Werte für *Monat von* und *Monat bis* abgebildet.",
           "absolute": {
-            "monthFrom": "Bestimmt den Beginn des Berichtszeitraums.\n\nEs können absolute Werte in der Form yyyy-mm oder relative Werte, z.B. 1y, angegeben werden.",
-            "monthTo": "Gibt das Ende des Berichtszeitraums an.\n\nEs können absolute Werte in der Form *yyyy-mm* oder relative Werte, z.B. 2m, angegeben werden.\n\nIst der Wert leer, wird der Vormonat des aktuellen Datums verwendet."
+            "monthFrom": "Bestimmt den Beginn des Berichtszeitraums.\n\nEs können absolute Werte in der Form *yyyy-mm* oder relative Werte, z.B. `1y`, angegeben werden.",
+            "monthTo": "Gibt das Ende des Berichtszeitraums an.\n\nEs können absolute Werte in der Form *yyyy-mm* oder relative Werte, z.B. `2m`, angegeben werden.\n\nIst der Wert leer, wird der Vormonat des aktuellen Datums verwendet."
           },
           "relative": {
             "from": "Gibt den Beginn des Berichtszeitraums an, der die verwendete Einheit berücksichtigt: Einheit=Monat, Von=12, Anzahl=12 --> letzte 12 Monate.",
@@ -2509,13 +2509,13 @@
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit `SCHEDULER_PARAM_` präfiziert sind - analog zu JS1",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den ^Job^ mit diesen Zugangsdaten für einen anderen Anwender zu starten.\n\nOptional kann das Anwenderprofil geladen werden.",
           "loadUserProfile": "Windows Anwenderprofil laden. Das Profil enthält bspw. Umgebungsvariablen und Schlüssel der Windows Registry.\n\nDiese Einstellung kann nur verwendet werden, wenn ein Berechtigungsschlüssel angegeben wurde.",
-          "returnCode": "Im Standardfall signalisiert der ^Rückgabewert^ 0 die erfolgreiche Ausführung, andere Rückgabewerte signalisieren Fehler.\n\nIm Fall abweichender Verwendung können entweder die Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte durch Komma getrennt aufgeführt werden. Ein Bereich von Rückgabewerten wird durch zwei Punkte angegeben, z.B. *0..42*",
+          "returnCode": "Im Standardfall signalisiert der ^Rückgabewert^ 0 die erfolgreiche Ausführung, andere Rückgabewerte signalisieren Fehler.\n\nIm Fall abweichender Verwendung können entweder die Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte durch Komma getrennt aufgeführt werden. Ein Bereich von Rückgabewerten wird durch zwei Punkte angegeben, z.B. `0..42`",
           "checkSteadyState": "Eine Datei im überwachten Verzeichnis wird wiederholt auf Veränderungen der Dateigröße und des Zeitstempels geprüft bis nach Ablauf des Intervalls keine Änderungen mehr erfolgen.",
           "jobClass": "Die ^Job-Klasse^ legt fest, ob ein ^Job^ in der Shell des Betriebssystems (Windows, Unix, MacOS etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
           "timeout": "Nach Zeitablauf wird ein ^Job^ unter Windows abgebrochen.\n\nUnter Unix wird zunächst versucht den Job mit SIGTERM zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abzubrechen.",
           "graceTimeout": "Die Toleranzfrist gilt für ^Job^s unter Unix, die zunächst mit SIGTERM versucht werden zu beenden und nach Ablauf der Toleranzfrist mit SIGKILL abgebrochen werden.",
-          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine ^Benachrichtigung^, z.B. per E-Mail, gesendet.\n\nDie Anzahl Sekunden kann im Format *1s* angegeben werden.\n\nAlternativ kann das Format *hh:mm:ss* verwendet werden, z.B. *01:30:00* für ein-einhalb Stunden.\n\nEs kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. *30%*.",
-          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine ^Benachrichtigung^, z.B. per E-Mail, gesendet.\n\nDie Anzahl Sekunden kann im Format *1s* angegeben werden. Alternativ kann das Format *hh:mm:ss* verwendet werden, z.B. *01:30:00* für ein-einhalb Stunden.\n\nEs kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. *30%*.",
+          "warnIfShorter": "Bei kürzerer Dauer der Job-Ausführung als angegeben wird eine ^Benachrichtigung^, z.B. per E-Mail, gesendet.\n\nDie Anzahl Sekunden kann im Format `1s` angegeben werden.\n\nAlternativ kann das Format *hh:mm:ss* verwendet werden, z.B. `01:30:00` für ein-einhalb Stunden.\n\nEs kann ein Prozentsatz angegeben werden, der aus den Durchschnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. `30%`.",
+          "warnIfLonger": "Bei längerer Dauer der Job-Ausführung als angegeben wird eine ^Benachrichtigung^, z.B. per E-Mail, gesendet.\n\nDie Anzahl Sekunden kann im Format `1s` angegeben werden. Alternativ kann das Format *hh:mm:ss* verwendet werden, z.B. `01:30:00` für ein-einhalb Stunden.\n\nEs kann ein Prozentsatz angegeben werden, der aus dem Durchscnitt der erfolgreichen vergangenen Job-Ausführungen berechnet wird, z.B. `30%`.",
           "fileWatcher": "Eine ^Dateiauftragsquelle^ überwacht ein Verzeichnis auf eintreffende Dateien und erzeugt für jede Datei einen ^Auftrag^ für einen ^Arbeitsablauf^.",
           "className": "Der Name einer Java Klasse, die einen ^Job^ implementiert.\n\nJS7 enthält eine Reihe von JITL Java Klassen, z.B. für Datenbankzugriffe, E-Mail Versand etc.",
           "parallelism": "Die max. Parallelität eines ^Job^s bestimmt wie viele ^Aufträge|auftrag^ gleichzeitig in einem ^Arbeitsablauf^ diesen Job ausführen können.\n\nWird der Wert überschritten, dann warten Aufträge bis der Wert unterschritten wird.",
@@ -2531,7 +2531,7 @@
           "mailBcc": "Blindkopie der E-Mail an den angegeben Empfänger senden.\n\nMehrere E-Mail Adressen können durch Komma getrennt angegeben werden.",
           "mailOn": "E-Mail bei Ereignissen wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der ^Job-Vorlage^n ausgewählt wird.",
-          "onWarning": "Es können eine Reihe von ^Rückgabewert^en angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nIm Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt.\n\nEine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden, z.B. *0,1,2*. Ein Bereich wird durch zwei Punkte angegeben, z.B. *0..42*",
+          "onWarning": "Es können eine Reihe von ^Rückgabewert^en angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nIm Fall solcher Rückgabewerte wird eine Benachrichtigung erzeugt.\n\nEine Reihe von Rückgabewerten kann durch eine kommaseparierte Liste angegeben werden, z.B. `0,1,2`. Ein Bereich wird durch zwei Punkte angegeben, z.B. `0..42`",
           "agentAssignment": "Dem Job wird ein ^Autonomer Agent|standalone-agent^ oder ^Subagenten-Cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung^ und ^StickySubagent Anweisung^ wird ein ^Agenten-Cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung^ über eine Variable liefert.",
           "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job Skript^ bzw. die Java Klasse ausführt.",
           "agentCluster": "Wählt den ^Agenten-Cluster^ aus, für den eine ^Subagenten-Cluster Kennung^ aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
@@ -2545,19 +2545,19 @@
           "weekDays": "Wochentage geben Tage an, die individuell ausgewählt werden können.",
           "monthDays": "Monatstage werden vom ersten bis zum letzten Tag des Monats gezählt und umgekehrt.",
           "dayNumber": "Spezifische Wochentage ermöglichen es, die Wiederholung des Wochentages in einem Monat zu bestimmen, z.B. das erste, zweite, letzte usw. Auftreten.",
-          "startTime": "Der Periodenbeginn gibt an, wann ein Zyklus erstmalig aktiv wird. Die Werte werden im Format *hh:mm:ss* angegeben, zum Beispiel steht *00:00:00* für Mitternacht.",
-          "duration": "Gibt die Dauer an, für die der Zyklus aktiv ist.\n\nDie Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel *1h*, *3600s*, *60m*, oder im Format *hh:mm:ss*, zum Beispiel *01:00:00*.",
+          "startTime": "Der Periodenbeginn gibt an, wann ein Zyklus erstmalig aktiv wird. Die Werte werden im Format *hh:mm:ss* angegeben, zum Beispiel steht `00:00:00` für Mitternacht.",
+          "duration": "Gibt die Dauer an, für die der Zyklus aktiv ist.\n\nDie Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel `1h`, `3600s`, `60m`, oder im Format *hh:mm:ss*, zum Beispiel `01:00:00`.",
           "cycleType": "Die Art des Zyklus kann periodisch (einzelne Startzeiten pro Periode), kontinuierlich (feste Pause zwischen den Startzeiten) oder tickend (festes Startzeitintervall) sein.",
-          "periodical": "Der *periodische* Zyklustyp ermöglicht die Angabe versetzter Startzeiten pro Periode in Sekunden oder Minuten, zum Beispiel: *0*, *15m*, *25m*, *47m*.\n\nIn diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur *15.*, *25.* und *47.* Minute, sofern eine stündliche Periode angegeben ist.",
+          "periodical": "Der *periodische* Zyklustyp ermöglicht die Angabe versetzter Startzeiten pro Periode in Sekunden oder Minuten, zum Beispiel: `0`, `15m`, `25m`, `47m`.\n\nIn diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur 15., 25. und 47. Minute, sofern eine stündliche Periode angegeben ist.",
           "continuous": "Der *kontinuierliche* Zyklustyp gibt ein festes Intervall an, d.h. eine Pause, zwischen dem letzten Zyklusdurchlauf und dem nächsten Zyklusstart, unabhängig von der Ausführungszeit, die pro Zyklusdurchlauf unterschiedlich sein kann.",
           "ticking": "Der Zyklustyp *tickend* legt ein festes Intervall zwischen den Zyklusstarts fest, z.B. alle 5 Minuten, unabhängig von der für die Ausführung des Zyklus verwendeten Zeit.\n\nLäuft ein Zyklus länger als sein Startzeitintervall, wird er unmittelbar nach seinem letzten Durchlauf neu gestartet.",
-          "interval": "Das Intervall für den Zyklustyp *tickend* gibt die Häufigkeit der Zyklusdurchläufe an, z.B. alle 5 Minuten.\n\nDie Werte können in Stunden, Minuten und Sekunden angegeben werden, z.B. *1h*, *60m*, *3600s*.\n\nDarüber hinaus kann das Format *hh:mm:ss* verwendet werden, z.B. *01:00:00* für einen stündlichen Zykluslauf.",
-          "pause": "Die Pause für den kontinuierlichen Zyklustyp gibt das Intervall zwischen dem Abschluss des letzten Zyklus und dem Beginn des nächsten Zyklus an. Die Werte können in Stunden, Minuten und Sekunden angegeben werden, z.B. *1h*, *60m*, *3600s*.\n\nDarüber hinaus kann das Format *hh:mm:ss* verwendet werden, z.B. *01:00:00* für eine einstündige Pause zwischen den Zyklusläufen.",
+          "interval": "Das Intervall für den Zyklustyp *tickend* gibt die Häufigkeit der Zyklusdurchläufe an, z.B. alle 5 Minuten.\n\nDie Werte können in Stunden, Minuten und Sekunden angegeben werden, z.B. `1h`, `60m`, `3600s`.\n\nDarüber hinaus kann das Format *hh:mm:ss* verwendet werden, z.B. `01:00:00` für einen stündlichen Zykluslauf.",
+          "pause": "Die Pause für den kontinuierlichen Zyklustyp gibt das Intervall zwischen dem Abschluss des letzten Zyklus und dem Beginn des nächsten Zyklus an. Die Werte können in Stunden, Minuten und Sekunden angegeben werden, z.B. `1h`, `60m`, `3600s`.\n\nDarüber hinaus kann das Format *hh:mm:ss* verwendet werden, z.B. `01:00:00` für eine einstündige Pause zwischen den Zyklusläufen.",
           "limit": "Für den *kontinuierlichen* Zyklustyp kann eine Grenze für die maximale Anzahl von Zyklusdurchläufen festgelegt werden.",
-          "offsets": "Die versetzten Zeitpunkte für den *periodischen* Zyklustyp geben die Zeitpunkte innerhalb des angegebenen Zeitraums an, an denen der Zyklus beginnt.\n\nDie Werte können in Sekunden oder Minuten angegeben werden, zum Beispiel: *0*, *15m*, *25m*, *47m*.\n\nIn diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur *15.*, *25.* und *47.* Minute, sofern ein stündlicher Zeitraum angegeben ist.",
+          "offsets": "Die versetzten Zeitpunkte für den *periodischen* Zyklustyp geben die Zeitpunkte innerhalb des angegebenen Zeitraums an, an denen der Zyklus beginnt.\n\nDie Werte können in Sekunden oder Minuten angegeben werden, zum Beispiel `0`, `15m`, `25m`, `47m`.\n\nIn diesem Beispiel beginnt der Zyklus zu Beginn jeder Stunde und zur 15., 25. und 47. Minute, sofern ein stündlicher Zeitraum angegeben ist.",
           "period": "Die Periode gibt die Dauer an, für die ein Zyklus aktiv ist.\n\nDer Zyklus beginnt mit dem Beginn der Periode und wird entsprechend seines Zyklustyps für die angegebene Dauer wiederholt.",
-          "periodBeginOfAdmissionTime": "Gibt den Beginn der ^Zutrittszeiten^ eines Jobs an.\n\nDie Werte werden im Format *hh:mm:ss* angegeben, zum Beispiel steht *00:00:00* für Mitternacht.",
-          "durationOfAdmissionTime": "Gibt die Dauer der ^Zutrittszeiten^ eines Jobs an.\n\nDie Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel *1h*, *3600s*, *60m*, oder im Format *hh:mm:ss*, zum Beispiel *01:00:00*."
+          "periodBeginOfAdmissionTime": "Gibt den Beginn der ^Zutrittszeiten^ eines Jobs an.\n\nDie Werte werden im Format *hh:mm:ss* angegeben, zum Beispiel steht `00:00:00` für Mitternacht.",
+          "durationOfAdmissionTime": "Gibt die Dauer der ^Zutrittszeiten^ eines Jobs an.\n\nDie Werte werden in Stunden, Minuten oder Sekunden angegeben, zum Beispiel `1h`, `3600s`, `60m`, oder im Format *hh:mm:ss*, zum Beispiel `01:00:00`."
         },
         "addOrder": {
           "workflowName": "Die ^AddOrder Anweisung^ erlaubt es einem anderen ^Arbeitsablauf^ einen ^Auftrag^ hinzuzufügen.",
@@ -2580,7 +2580,7 @@
           "delay": "Die Verzögerung ist die Anzahl Sekunden, für die auf den nächsten Wiederholungsversuch gewartet wird.\n\nWerden mehrere durch Komma getrennte Werte angegeben, so gelten sie von links nach rechts für die Wartezeit auf die nächste Wiederholung."
         },
         "cycle": {
-          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13.00, 14.00 und 15.00 Uhr, wobei jeder Zyklus 30 Minuten dauert.\n\nStandardmäßig werden bei einem ^Auftrag^, der um 13.45 Uhr eintrifft, beide Zyklen für 14.00 und 15.00 Uhr ausgeführt.\n\nBei Verwendung der Einstellung wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
+          "onlyOnePeriod": "Ein Zyklus kann mehrere Zeiträume umfassen, z.B. 13:00, 14:00 und 15:00 Uhr, wobei jeder Zyklus 30 Minuten dauert.\n\nStandardmäßig werden bei einem ^Auftrag^, der um 13:45 Uhr eintrifft, beide Zyklen für 14:00 und 15:00 Uhr ausgeführt.\n\nBei Verwendung der Einstellung wird nur die erste passende Periode verwendet und spätere Perioden werden nicht berücksichtigt."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
@@ -2590,15 +2590,15 @@
         "fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
         "fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
         "exportType": "Ist eine der Optionen:\n- **Individuelle Objekte**: Anwender wählen Objekte aus dem Inventar aus.\n- **Ordner**: Anwender wählen Ordner aus, die Objekte enthalten.\n- **Änderungen**: Anwender wählen eine ^Änderung^ aus, die Objekte beinhaltet, die direkt der Änderung zugeordnet sind bzw. Objekte, die zugeordnete Objekte referenzieren oder von ihnen referenziert werden.",
-        "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. ^Arbeitsabläuf^e, ^Job-Ressource^n, ^Zeitpläne|zeitplan^ etc.",
-        "forSigning": "For Signing",
+        "objectTypes": "Erlaubt die Auswahl von Objekttypen, die der Exportdatei hinzugefügt werden, z.B. ^Arbeitsabläufe|arbeitsablauf^, ^Job-Ressource^n, ^Zeitpläne|zeitplan^ etc.",
+        "forSigning": "Zum Signieren",
         "inclusiveAllTags": "Fügt der Exportdatei ^Kennzeichnung^en hinzu, die in das Ziel importiert werden können.\n\nDies beinhaltet Kennzeichnungen der ^Arbeitsläufe^, ^Aufträge|auftrag^ und ^Job^s.\n\nBeim Import entscheidet der Anwender, ob Kennzeichnungen importiert werden sollen.",
         "filterType": "Berücksichtigt Objekte, die in *Controller* oder *Automation* Systemordnern gespeichert sind",
         "filter": "Bietet die Möglichkeit, Inventarobjekte je nach ihrem Status in die Exportdatei aufzunehmen.\n\nUngültige Objekte können exportiert und importiert werden, allerdings können sie nicht ausgerollt oder freigegeben werden.\n\nObjekte im Entwurfsstatus enthalten Änderungen, die noch nicht bereitgestellt oder freigegeben wurden.",
         "handleRecursively": "Fügt Objekte aus Unterordnern der Exportdatei hinzu.",
         "includeDependencies": "Bezieht abhängige Objekte in die Exportdatei ein, bspw. eine ^Job-Ressource^, auf die einen ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden der Exportdatei hinzugefügt.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen.",
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsabläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen.",
         "change": "Bietet die Auswahl einer ^Änderung^, die die zu exportierenden Objekte festlegt.\n\nEs werden Objekte angeboten, die direkt der Änderung zugeordnet sind, und Objekte, die von Objekten der Änderung referenziert werden oder diese referenzieren."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
@@ -2613,7 +2613,7 @@
         "includeDependencies": "Rollt abhängige Objekte aus, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "change": "Erlaubt die Auswahl einer ^Änderung^, die die auszurollenden Objekte bestimmt.\n\nEs werden Objekte angeboten, die direkt der Änderung zugeordnet sind, und Objekte, die von Objekten der Änderung referenziert werden oder diese referenzieren.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
       "revoke": {
@@ -2621,7 +2621,7 @@
         "handleRecursively": "Zieht Objekte aus Unterordnern zurück.",
         "includeDependencies": "Zieht abhängige Objekte zurück, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
       "remove": {
@@ -2629,7 +2629,7 @@
         "specificDate": "Gibt das Datum an, ab dem ^Aufträge|auftrag^ aus dem ^Tagesplan^ gelöscht werden.",
         "includeDependencies": "Entfernt abhängige Objekte, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden und es kann angegeben werden, ob die Objekte zurückgezogen oder entfernt werden sollen.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
       "release": {
@@ -2638,7 +2638,7 @@
         "includeTodaysLateOrders": "Aktualisiert ^Aufträge|auftrag^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "includeDependencies": "Gibt abhängige Objekte frei, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
       "recall": {
@@ -2647,7 +2647,7 @@
         "includeTodaysLateOrders": "Löscht ^Aufträge|auftrag^ im heutigen ^Tagesplan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "includeDependencies": "Nimmt abhängige Objekte zurück, bspw. eine ^Job-Ressource^, auf die ein ^Arbeitsablauf^ verweist, oder einen ^Zeitplan^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|arbeitsablauf^, die dieselbe ^Job-Ressource^ verwenden.\n\nIm Fall eines großen Inventars kann die Anzeige einige Zeit in Anspruch nehmen."
       }
     },
     "search": {
@@ -3738,7 +3738,7 @@
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des ^Tagesplandienst^es und der Periode des ^Tagesplan^s, siehe [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).",
-      "start_time": "Benennt die Startzeit der Erzeugung des ^Tagesplan^s auf Basis der angegebenen Zeitzone.\n\nOhne diese Einstellung startet die Erzeugung des Tagesplans 30 Minuten vor Beginn der Periode des Tagesplans, siehe Einstellung period_begin.\n\nDiese Einstellung erwartet eine Uhrzeit, z.B. *23:00:00*.",
+      "start_time": "Benennt die Startzeit der Erzeugung des ^Tagesplan^s auf Basis der angegebenen Zeitzone.\n\nOhne diese Einstellung startet die Erzeugung des Tagesplans 30 Minuten vor Beginn der Periode des Tagesplans, siehe Einstellung period_begin.\n\nDiese Einstellung erwartet eine Uhrzeit, z.B. `23:00:00`.",
       "period_begin": "Benennt den Beginn der 24 Stunden Periode des ^Tagesplan^s auf Basis der angegebenen Zeitzone.",
       "days_ahead_plan": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^ erzeugt werden und den Zustand ^geplant^ erhalten.",
       "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die ^Aufträge|auftrag^, die sich im Zustand ^geplant^ befinden, an die ^Controller^ übermittelt werden und den Zustand ^übermittelt^ erhalten.",
@@ -3779,7 +3779,7 @@
       "log_maximum_display_size": "JOC Cockpit bietet zur Anzeige von Protokollausgaben ein Fenster sofern die Größe der unkomprimierten Ausgaben diesen Wert nicht überschreitet.\n\nAndernfalls werden die Protokollausgaben nur zum Herunterlalden angeboten. Die Größe wird in MB angenommen.",
       "log_applicable_size": "Falls die Größe der Protokollausgaben eines ^Job^s diesen Wert überschreitet, wird der *Historiendienst* die Ausgaben trunkieren und die ersten und letzten 100 KB verwenden.\n\nDie originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
       "log_maximum_size": "Falls die Größe der Protokollausgaben eines ^Job^s diesen Wert überschreitet, wird der *Historiendienst* die Ausgaben trunkieren und die ersten 100 KB verwenden.\n\nDie originale Protokolldatei des Jobs wird entfernt. Die Größe wird in MB angenommen.",
-      "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail ^Benachrichtigungen^.",
+      "joc_reverse_proxy_url": "Wenn JOC Cockpit nicht über die originäre URL, sondern nur über einen Reverse Proxy Dienst erreichbar ist, gibt dieser Wert die zu verwendende URL an, zum Beispiel bei E-Mail ^Benachrichtigung^en.",
       "allow_empty_arguments": "Standardmäßig werden leere Argumente von ^Aufträgen|auftrag^n und Auftragsvorlagen nicht zugelassen, da dies die Aufträge zwingt, zwischen leeren und nicht gesetzten Variablen zu unterscheiden.\n\nBenutzer können das Verhalten aktivieren, um leere Argumente zuzulassen.",
       "allow_undeclared_variables": "Erlaubt die Verwending undeklarierter Variablen am ^Auftrag^.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. ^Job^s, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an.\n\nWenn diese Einstellung auf *falsch* gesetzt ist, werden nur die Objektnamen angezeigt.\n\nIn JS7 sind die Objektnamen eindeutig.",
@@ -4155,7 +4155,7 @@
         "iamLdapWithMemberOf": "Das `memberOf` Attribut vereinfacht das Auffinden des anzumeldenden Anwenderkontos in Security Groups.\n\nDas Attribut ist meist mit LDAP Servern vom Typ Active Directory verfügbar, kann aber auch von anderen LDAP Produkten implementiert werden.",
         "iamLdapSearchBase": "Die Basis für die Suche nach Anwenderkonten in der Hiearchie des LDAP Servers, z.B. `OU=Operations,O=IT,O=Users,DC=example,DC=com`.",
         "iamLdapGroupSearchBase": "Analog zur LDAP Search Base wird die Group Search Base zur Suche nach Security Groups verwendet, in denen ein Anwenderkonto Mitglied ist.",
-        "iamLdapUserDnTemplate": "Der Distinguished Name (DN) identifiziert ein Anwenderkonto.\n\nIm Fall von LDAP Servern des Typs Actice Directory kann hier der Wert {0} angegeben werden, der durch das Anwenderkonto der Anmeldung ersetzt wird.\n\nAndernfalls kann eine LDAP Abfrage angegeben werden, z.B. uid={0},OU=Operations,O=IT,O=Users,DC=example,DC=com.",
+        "iamLdapUserDnTemplate": "Der Distinguished Name (DN) identifiziert ein Anwenderkonto.\n\nIm Fall von LDAP Servern des Typs Actice Directory kann hier der Wert {0} angegeben werden, der durch das Anwenderkonto der Anmeldung ersetzt wird.\n\nAndernfalls kann eine LDAP Abfrage angegeben werden, z.B. `uid={0},OU=Operations,O=IT,O=Users,DC=example,DC=com`.",
         "iamLdapServerUrl": "Die URL des LDAP Servers benennt das Protokoll, z.B. `ldap://` für Plain Text und TLS Verbindungen, `ldaps://` für SSL Verbindungen. Dem Protokoll folgt der Hostname (FQDN) und Port des LDAP Servers.",
         "iamLdapGroupNameAttribute": "Das LDAP Group Name Attribut liefert den Namen der Security Group, in der ein Anwenderkonto Mitglied ist, z.B. CN (Common Name).",
         "iamLdapUserNameAttribute": "Das LDAP User Name Attribut liefert den Namen des Anwenderkontos, häufig ist dies das Attribut CN (Common Name)",
@@ -4163,7 +4163,7 @@
         "iamLdapUserSearchFilter": "Der LDAP User Search Filter spezifiziert eine LDAP Abfrage und wird verwendet, um das Anwenderkonto in der Hierarchie der LDAP Einträge zu finden.",
         "iamLdapUseStartTls": "Der Schalter LDAP Start TLS vereinbart die Verwendung des TLS Protokolls für die Verbindung zum LDAP Server.",
         "iamLdapHostNameVerification": "Der Schalter LDAP Host Name Verification muss aktiviert sein, um die Übereinstimmung des Hostnamens in der LDAP URL und im Zertifikat des LDAP Servers zu prüfen.",
-        "iamLdapGroupRolesMap": "Die LDAP Group/Roles Map stellt eine Abbildung zwischen Security Groups, in denen das Anwenderkonto Mitglied ist, und JS7 Rollen dar. Security Groups müssen in Abhängigkeit vom LDAP Group Search Attribut als Distinguished Names, z.B. `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, oder als Common Names, z.B. *js7_admins*, aufgeführt werden.",
+        "iamLdapGroupRolesMap": "Die LDAP Group/Roles Map stellt eine Abbildung zwischen Security Groups, in denen das Anwenderkonto Mitglied ist, und JS7 Rollen dar. Security Groups müssen in Abhängigkeit vom LDAP Group Search Attribut als Distinguished Names, z.B. `CN=js7_admins,OU=Operations,O=IT,O=Groups,DC=example,DC=com`, oder als Common Names, z.B. `js7_admins`, aufgeführt werden.",
         "iamLdapTrustStorePath": "Der Pfad zum LDAP Truststore, der das Server Zertifikat oder das entsprechende Root CA Zertifikat enthält, mit dem das LDAP Server Zertifikat signiert ist.",
         "iamLdapTrustStorePassword": "Sofern ein LDAP Truststore verwendet wird, der durch ein Kennwort geschützt ist, wird das Kennwort hier angegeben.",
         "iamLdapTrustStoreType": "Der Typ des LDAP Truststore kann PKCS12 oder JKS (deprecated) sein.",
@@ -4194,7 +4194,7 @@
         "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist. Im Fall bekannter Zertifizierungsstellen kann der Pfad zum `cacerts` Truststore des eingesetzten JDK/JRE angegeben werden.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
-        "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut *email* die E-Mail Adresse des Anwenders zur Anmeldung.",
+        "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut `email` die E-Mail Adresse des Anwenders zur Anmeldung.",
         "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt.\n\nBilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden.\n\nBilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt.",
         "iamOidcGroupClaims": "Für OIDC Claims geben Sie die Gruppen an, in denen das betreffende Benutzerkonto Mitglied ist.\n\nJede Gruppe kann einer oder mehreren Rollen in JS7 zugewiesen werden.",
         "iamOidcGroupScopes": "OIDC Scopes definieren eine Reihe von OIDC Claims.",
