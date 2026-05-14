@@ -1,5 +1,20 @@
 <div class="modal-header">
   <h4 class="modal-title">
+     @if(!isRevoke && !releasable && !isRemoved && preferences.showHelpPages) {
+    <i (click)="helpPage('configuration-inventory-operations-deploy-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(!isRevoke && releasable && !isRemoved && operation != 'recall' && preferences.showHelpPages) {
+    <i (click)="helpPage('configuration-inventory-operations-release-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(isRevoke && preferences.showHelpPages){
+      <i (click)="helpPage('configuration-inventory-operations-revoke-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(operation === 'recall' && preferences.showHelpPages){
+      <i (click)="helpPage('configuration-inventory-operations-recall-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(isRemoved && preferences.showHelpPages){
+      <i (click)="helpPage('configuration-inventory-operations-remove-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
     @if (!isRevoke && !releasable && !isRemoved) {
       <span translate>inventory.label.deploy</span>
     }
@@ -23,21 +38,6 @@
         }
         {{data.name}}
       </span>
-    }
-    @if(!isRevoke && !releasable && !isRemoved && preferences.showHelpPages) {
-    <i (click)="helpPage('configuration-inventory-operations-deploy-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(!isRevoke && releasable && !isRemoved && operation != 'recall' && preferences.showHelpPages) {
-    <i (click)="helpPage('configuration-inventory-operations-release-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(isRevoke && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-revoke-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(operation === 'recall' && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-recall-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(isRemoved && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-remove-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">

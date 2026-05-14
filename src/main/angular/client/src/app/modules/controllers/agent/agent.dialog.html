@@ -1,5 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
+     @if (!isCluster && preferences.showHelpPages) {
+      <i (click)="helpPage('initial-operation-register-agent-standalone')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if (isCluster && preferences.showHelpPages) {
+      <i (click)="helpPage('initial-operation-register-agent-cluster')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
     @if (!new) {
       <span>
         @if (!isCluster) {
@@ -10,12 +16,6 @@
         }:
         <span [innerHtml]="data.agentName"></span>
       </span>
-    }
-     @if (!isCluster && preferences.showHelpPages) {
-      <i (click)="helpPage('initial-operation-register-agent-standalone')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if (isCluster && preferences.showHelpPages) {
-      <i (click)="helpPage('initial-operation-register-agent-cluster')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (new && !isCluster) {
       <span translate>agent.label.addAgent</span>

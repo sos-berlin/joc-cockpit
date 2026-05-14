@@ -4,16 +4,16 @@
   }
   @if (rename && origin) {
     <h4 class="modal-title">
-      <span translate>inventory.label.rename</span>:
-      {{origin.path}}
-      @if (origin.type) {
-        <span>{{origin.path === '/' ? '' : '/'}}{{origin.name}}</span>
-      }
-      @if(folder.deepRename === 'rename' && !origin.type && preferences.showHelpPages){
+       @if(folder.deepRename === 'rename' && !origin.type && preferences.showHelpPages){
       <i (click)="helpPage('configuration-inventory-operations-rename-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
       @if(folder.deepRename === 'rename' && origin.type && preferences.showHelpPages){
       <i (click)="helpPage('configuration-inventory-operations-rename-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      <span translate>inventory.label.rename</span>:
+      {{origin.path}}
+      @if (origin.type) {
+        <span>{{origin.path === '/' ? '' : '/'}}{{origin.name}}</span>
       }
     </h4>
   }
