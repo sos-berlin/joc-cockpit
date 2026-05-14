@@ -4,11 +4,8 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage('resources-agent-job-executions')"></app-breadcrumbs>
           </div>
-          @if (preferences.showHelpPages) {
-            <i (click)="helpPage('resources-agent-job-executions')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          }
           <div class="inline">
             <div class="show-block">
               <label nz-checkbox [(ngModel)]="agentFilters.current" (ngModelChange)="changeController()" >

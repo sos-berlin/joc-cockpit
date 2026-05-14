@@ -4,11 +4,8 @@
       <div class="padding">
         <div class="text-right">
           <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="objectType === 'NOTIFICATION' && preferences.showHelpPages" (helpClick)="helpPage('configuration-notification')"></app-breadcrumbs>
           </div>
-          @if(objectType === 'NOTIFICATION' && preferences.showHelpPages) {
-            <i (click)="helpPage('configuration-notification')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          }
           <div class="inline">
             @if (nodes && nodes.length > 0) {
               <span [ngClass]="validConfig ? 'badge-success':'badge-danger'" class="badge">

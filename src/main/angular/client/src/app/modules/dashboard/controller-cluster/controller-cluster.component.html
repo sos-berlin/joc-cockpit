@@ -1,11 +1,11 @@
 <div id="controllerClusterStatus1">
   <div class="box-header b-b remove">
     <h3>
+       @if (preferences.showHelpPages) {
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+      }
       @if (selectedController.role && selectedController.role !== 'STANDALONE') {
         <span translate>dashboard.label.productStatus</span>
-      }
-      @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
       @if (selectedController.role === 'STANDALONE' || !selectedController.role) {
         <span translate>dashboard.label.productStatus</span>
