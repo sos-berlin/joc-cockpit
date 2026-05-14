@@ -36,32 +36,10 @@
             </div>
           }
           @if (auditLog.type === 'AUDITLOG') {
-            <div class="btn-group m-l-12 hidden-btn-group">
-              <button (click)="load('all')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='all'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.all
-              </button>
-              <button (click)="load('today')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='today'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.today
-              </button>
-              <button (click)="load('-1h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last1
-              </button>
-              <button (click)="load('-12h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last12
-              </button>
-              <button (click)="load('-24h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last24
-              </button>
-              <button (click)="load('-7d')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.lastWeak
-              </button>
-            </div>
-          }
-          @if (auditLog.type === 'AUDITLOG') {
-            <div class="btn-group dropdown hidden-dropdown">
+            <div class="btn-group dropdown">
               <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" translate type="button">
-                common.label.anyDate
+                common.label.dateFilter
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #menu="nzDropdownMenu">

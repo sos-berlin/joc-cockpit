@@ -86,7 +86,12 @@
     <div class="col-md-9">
       <div class="inline">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item">
+          <li class="nav-item" style="display:flex;align-items:center;">
+            @if (preferences?.showHelpPages) {
+              <i (click)="helpPage('configuration-inventory-navigation')"
+                 [appRichTooltip]="'common.tooltip.help' | translate"
+                 class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+            }
             <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
             </a>
@@ -573,9 +578,6 @@
           </perfect-scrollbar>
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
-        @if (!isTrash && preferences.showHelpPages) {
-          <i (click)="helpPage('configuration-inventory-navigation')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-        }
       </div>
       <div [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}" id="rightPanel">
         @if (isTag && tags && tags.length === 0 && isTagLoaded) {

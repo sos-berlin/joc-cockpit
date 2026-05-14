@@ -50,32 +50,10 @@
                         translate>monitor.notification.button.acknowledge
                 </button>
               </div>
-              <div class="btn-group m-l-12 hidden-btn-group">
-                <button (click)="changeDate('ALL')" [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='ALL'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.all
-                </button>
-                <button (click)="changeDate('0d')" [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='0d'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.today
-                </button>
-                <button (click)="changeDate('-1h')" [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-1h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last1
-                </button>
-                <button (click)="changeDate('-6h')" [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-6h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last6
-                </button>
-                <button (click)="changeDate('-12h')" [ngClass]="{'btn-primary': monitorFilters.orderNotification.filter.date=='-12h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last12
-                </button>
-              </div>
-              <div class="btn-group dropdown hidden-dropdown">
+              <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" translate type="button">
-                  common.label.anyDate
+                  common.label.dateFilter
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu">
@@ -147,32 +125,10 @@
                         translate>monitor.notification.button.acknowledge
                 </button>
               </div>
-              <div class="btn-group m-l-12 hidden-btn-group">
-                <button (click)="changeDate('ALL')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='ALL'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.all
-                </button>
-                <button (click)="changeDate('0d')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='0d'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.today
-                </button>
-                <button (click)="changeDate('-1h')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-1h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last1
-                </button>
-                <button (click)="changeDate('-6h')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-6h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last6
-                </button>
-                <button (click)="changeDate('-12h')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.date=='-12h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last12
-                </button>
-              </div>
-              <div class="btn-group dropdown hidden-dropdown">
+              <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" translate type="button">
-                  common.label.anyDate
+                  common.label.dateFilter
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu">
