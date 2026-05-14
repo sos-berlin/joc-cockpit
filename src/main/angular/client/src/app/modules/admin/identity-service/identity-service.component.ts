@@ -1022,6 +1022,10 @@ export class IdentityServiceComponent {
     this.subscription2.unsubscribe();
   }
 
+  helpPage(helpKey: string): void {
+    this.coreService.openHelpPage(helpKey);
+  }
+
   showUser({identityService}: { identityService: any }): void {
     if (identityService.identityServiceType === 'UNKNOWN' || (identityService.identityServiceType == 'CERTIFICATE' && identityService.secondFactor)) {
       return;

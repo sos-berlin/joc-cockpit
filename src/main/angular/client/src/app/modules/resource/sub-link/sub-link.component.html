@@ -2,7 +2,12 @@
   <div>
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
       @if (permission.currentController.agents.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-agents')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/agents']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentView</span></span>
           </a>
@@ -14,7 +19,12 @@
         </li>
       }
       @if (permission.currentController.agents.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-agent-job-executions')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/agent_job_executions']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.agentJobExecution</span></span>
           </a>
@@ -26,7 +36,12 @@
         </li>
       }
       @if (permission.currentController.locks.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-resource-locks')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/locks']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.locks</span></span>
           </a>
@@ -38,7 +53,12 @@
         </li>
       }
       @if (permission.currentController.noticeBoards.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-notice-boards')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/boards']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.boards</span></span>
           </a>
@@ -50,7 +70,12 @@
         </li>
       }
       @if (permission.joc.calendars.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-calendars')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/calendars']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.calendars</span></span>
           </a>
@@ -62,7 +87,12 @@
         </li>
       }
       @if (permission.joc.documentations.view) {
-        <li class="nav-item">
+        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('resources-documentations')"
+               [appRichTooltip]="'common.tooltip.help' | translate"
+               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a [routerLinkActive]="['active']" [routerLink]="['/resources/documentations']" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span translate>resource.label.documentations</span></span>
           </a>
