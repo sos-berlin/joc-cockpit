@@ -4,7 +4,7 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (auditLog.type === 'AUDITLOG') {
             <div class="inline valign">
@@ -37,37 +37,25 @@
           }
           @if (auditLog.type === 'AUDITLOG') {
             <div class="btn-group dropdown">
-              <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate type="button">
-                common.label.dateFilter
+              <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'"
+                      class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click" type="button">
+                @if (adtLog.filter.date) {
+                  <span> {{ selectedDateLabel | translate }} </span>
+                } @else {
+                  <span translate> common.label.dateFilter </span>
+                }
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li (click)="load('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.all</a>
-                  </li>
-                  <li (click)="load('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.today</a>
-                  </li>
-                  <li (click)="load('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.last1</a>
-                  </li>
-                  <li (click)="load('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.last12</a>
-                  </li>
-                  <li (click)="load('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.last24</a>
-                  </li>
-                  <li (click)="load('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}"
-                      nz-menu-item>
-                    <a translate>filters.button.lastWeak</a>
-                  </li>
+                  @for (opt of dateFilterOptions; track opt.date) {
+                    <li (click)="load(opt.date)"
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date===opt.date, 'disable-link': savedFilter.selected}"
+                        nz-menu-item>
+                      <a translate>{{opt.text}}</a>
+                    </li>
+                  }
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -129,7 +117,12 @@
     <div class="row m-b-12 m-t-xs">
       <div class="col-md-6 col-sm-6">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item">
+          <li class="nav-item flex-center" [ngClass]="{'tab-active': auditLog.type=='AUDITLOG'}">
+            @if (preferences?.showHelpPages) {
+              <i (click)="helpPage('AUDITLOG')"
+                [appRichTooltip]="'common.tooltip.help' | translate"
+                class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+            }
             <a (click)="auditLogTab()" [ngClass]="{'active': auditLog.type=='AUDITLOG'}" class="nav-link">
               <span class="nav-text text-dark p-b-sm">
                 <span class="text" translate>auditLog.tab.auditLog</span>
@@ -139,7 +132,12 @@
           <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li class="nav-item">
+          <li class="nav-item flex-center" [ngClass]="{'tab-active': auditLog.type=='LOGINHISTORY'}">
+            @if (preferences?.showHelpPages) {
+              <i (click)="helpPage('LOGINHISTORY')"
+                [appRichTooltip]="'common.tooltip.help' | translate"
+                class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+            }
             <a (click)="loginHistoryTab()" [ngClass]="{'active': auditLog.type=='LOGINHISTORY'}" class="nav-link">
               <span class="nav-text text-dark p-b-sm">
                 <span class="text" translate>auditLog.tab.loginHistory</span>

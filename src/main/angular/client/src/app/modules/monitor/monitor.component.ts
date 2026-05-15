@@ -20,6 +20,14 @@ export class MonitorComponent {
   subscription: any;
   tabChangeListener: any;
 
+  readonly dateFilterOptions: { date: string; text: string }[] = [
+    {date: 'ALL',  text: 'filters.button.all'},
+    {date: '0d',   text: 'filters.button.today'},
+    {date: '-1h',  text: 'filters.button.last1'},
+    {date: '-6h',  text: 'filters.button.last6'},
+    {date: '-12h', text: 'filters.button.last12'}
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService,
               private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
@@ -29,6 +37,14 @@ export class MonitorComponent {
         this.loading = true;
       }, 10);
     });
+  }
+
+  get orderDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.date === this.monitorFilters?.orderNotification?.filter?.date)?.text || '';
+  }
+
+  get systemDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.date === this.monitorFilters?.systemNotification?.filter?.date)?.text || '';
   }
 
   ngOnInit(): void {
@@ -120,10 +136,10 @@ export class MonitorComponent {
     this.dataService.announceFunction('EXPORT');
   }
 
-  helpPage(): void {
+  helpPage(tabIndex): void {
     let helpKey: string;
 
-    switch (this.monitorFilters?.tabIndex) {
+    switch (tabIndex) {
       case 0:
         helpKey = 'monitor-availability-controller';
         break;

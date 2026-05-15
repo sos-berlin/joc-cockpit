@@ -1277,6 +1277,36 @@ export class HistoryComponent {
     window.removeEventListener('change-history-type', this.tabChangeListener);
   }
 
+  get selectedOrderDateLabel(): string {
+    return this.filterBtn.find((b: any) => b.date === this.order?.filter?.date)?.text
+      ? 'filters.button.' + this.filterBtn.find((b: any) => b.date === this.order?.filter?.date).text
+      : '';
+  }
+
+  get selectedTaskDateLabel(): string {
+    return this.filterBtn.find((b: any) => b.date === this.task?.filter?.date)?.text
+      ? 'filters.button.' + this.filterBtn.find((b: any) => b.date === this.task?.filter?.date).text
+      : '';
+  }
+
+  get selectedYadeDateLabel(): string {
+    return this.filterBtn.find((b: any) => b.date === this.yade?.filter?.date)?.text
+      ? 'filters.button.' + this.filterBtn.find((b: any) => b.date === this.yade?.filter?.date).text
+      : '';
+  }
+
+  get selectedDeploymentDateLabel(): string {
+    return this.filterBtn.find((b: any) => b.date === this.deployment?.filter?.date)?.text
+      ? 'filters.button.' + this.filterBtn.find((b: any) => b.date === this.deployment?.filter?.date).text
+      : '';
+  }
+
+  get selectedSubmissionDateLabel(): string {
+    return this.subMissionFilterBtn.find((b: any) => b.date === this.submission?.filter?.date)?.text
+      ? 'filters.button.' + this.subMissionFilterBtn.find((b: any) => b.date === this.submission?.filter?.date).text
+      : '';
+  }
+
   changeController(): void {
     this.init(true);
   }
@@ -4901,10 +4931,10 @@ export class HistoryComponent {
     return '';
   }
 
-  helpPage(): void {
+  helpPage(type): void {
     let helpKey: string;
 
-    switch (this.historyFilters.type) {
+    switch (type) {
       case 'ORDER':
         helpKey = 'history-orders';
         break;

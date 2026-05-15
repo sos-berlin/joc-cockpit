@@ -4,7 +4,7 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
             @if (monitorFilters.tabIndex == 0) {
@@ -51,33 +51,24 @@
                 </button>
               </div>
               <div class="btn-group dropdown">
-                <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
-                        nzTrigger="click" translate type="button">
-                  common.label.dateFilter
+                <button [nzDropdownMenu]="orderDateMenu" [nzPlacement]="'bottomRight'"
+                        class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click" type="button">
+                  @if (monitorFilters.orderNotification.filter.date) {
+                    <span> {{ orderDateLabel | translate }} </span>
+                  } @else {
+                    <span translate> common.label.dateFilter </span>
+                  }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
-                <nz-dropdown-menu #menu="nzDropdownMenu">
+                <nz-dropdown-menu #orderDateMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='ALL'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('ALL')" translate>filters.button.all</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='0d'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('0d')" translate>filters.button.today</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-1h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-1h')" translate>filters.button.last1</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-6h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-6h')" translate>filters.button.last6</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date=='-12h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-12h')" translate>filters.button.last12</a>
-                    </li>
+                    @for (opt of dateFilterOptions; track opt.date) {
+                      <li (click)="changeDate(opt.date)"  [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.orderNotification.filter.date === opt.date}"
+                          nz-menu-item>
+                        <a translate>{{opt.text}}</a>
+                      </li>
+                    }
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -126,33 +117,24 @@
                 </button>
               </div>
               <div class="btn-group dropdown">
-                <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
-                        nzTrigger="click" translate type="button">
-                  common.label.dateFilter
+                <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'"
+                        class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click" type="button">
+                  @if (monitorFilters.systemNotification.filter.date) {
+                    <span> {{ systemDateLabel | translate }} </span>
+                  } @else {
+                    <span translate> common.label.dateFilter </span>
+                  }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='ALL'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('ALL')" translate>filters.button.all</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='0d'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('0d')" translate>filters.button.today</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-1h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-1h')" translate>filters.button.last1</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-6h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-6h')" translate>filters.button.last6</a>
-                    </li>
-                    <li [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date=='-12h'}"
-                        nz-menu-item>
-                      <a (click)="changeDate('-12h')" translate>filters.button.last12</a>
-                    </li>
+                    @for (opt of dateFilterOptions; track opt.date) {
+                      <li (click)="changeDate(opt.date)"  [ngClass]="{'ant-select-dropdown-menu-item-active': monitorFilters.systemNotification.filter.date === opt.date}"
+                          nz-menu-item>
+                        <a translate>{{opt.text}}</a>
+                      </li>
+                    }
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -187,7 +169,7 @@
     <div class="padding p-b-0">
       <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index">
         @if (permission && permission.currentController && permission.currentController.view) {
-          <nz-tab [nzTitle]="'monitor.label.controllerAvailability' | translate">
+          <nz-tab [nzTitle]="controllerTabTitle">
             @if (index === 0) {
               <div>
                 <app-controller-monitor [filters]="monitorFilters.controller" [permission]="permission"
@@ -196,9 +178,19 @@
               </div>
             }
           </nz-tab>
+          <ng-template #controllerTabTitle>
+            <div class="flex-center">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage(0)"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
+              <span translate>monitor.label.controllerAvailability</span>
+            </div>
+          </ng-template>
         }
         @if (permission && permission.currentController && permission.currentController.agents.view) {
-          <nz-tab [nzTitle]="'monitor.label.agentAvailability' | translate">
+          <nz-tab [nzTitle]="agentTabTitle">
             @if (index === 1 || (!permission.currentController.view && index === 0)) {
               <div>
                 <app-agent-monitor [filters]="monitorFilters.agent" [permission]="permission"
@@ -206,9 +198,19 @@
               </div>
             }
           </nz-tab>
+          <ng-template #agentTabTitle>
+            <div class="flex-center">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage(1)"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
+              <span translate>monitor.label.agentAvailability</span>
+            </div>
+          </ng-template>
         }
         @if (permission && permission.currentController && permission.currentController.orders.view) {
-          <nz-tab [nzTitle]="'monitor.label.orderNotification' | translate">
+          <nz-tab [nzTitle]="orderNotificationTabTitle">
             @if (index === 2 || (!permission.currentController.view && permission.currentController.agents.view && index === 1) || (!permission.currentController.agents.view && permission.currentController.view && index === 1) ||
             (!permission.currentController.view && !permission.currentController.agents.view && index === 0)) {
               <div>
@@ -218,9 +220,19 @@
               </div>
             }
           </nz-tab>
+          <ng-template #orderNotificationTabTitle>
+            <div class="flex-center">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage(2)"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
+              <span translate>monitor.label.orderNotification</span>
+            </div>
+          </ng-template>
         }
         @if (permission && permission.currentController && permission.currentController.orders.view) {
-          <nz-tab [nzTitle]="'monitor.label.systemNotification' | translate">
+          <nz-tab [nzTitle]="systemNotificationTabTitle">
             @if (index === 3 || (!permission.currentController.view && permission.currentController.agents.view && index === 1) || (!permission.currentController.agents.view && permission.currentController.view && index === 1) ||
             (!permission.currentController.view && !permission.currentController.agents.view && index === 0)) {
               <div>
@@ -229,6 +241,16 @@
               </div>
             }
           </nz-tab>
+          <ng-template #systemNotificationTabTitle>
+            <div class="flex-center">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage(3)"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
+              <span translate>monitor.label.systemNotification</span>
+            </div>
+          </ng-template>
         }
       </nz-tabset>
     </div>

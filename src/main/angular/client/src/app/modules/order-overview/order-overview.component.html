@@ -34,9 +34,14 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <div class="btn-group m-l-12">
-                <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" translate type="button">
-                  common.label.state
+              <div class="btn-group dropdown m-l-12">
+                <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'"
+                        class="btn btn-grey btn-sm" nz-dropdown nzTrigger="click" type="button">
+                  @if (orderFilters.filter.state) {
+                    <span> {{ 'common.button.' + selectedStateText | translate }} </span>
+                  } @else {
+                    <span translate> common.label.state </span>
+                  }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyState="nzDropdownMenu" [ngClass]="{'hide': (pageView === 'bulk')}">

@@ -232,7 +232,16 @@ export class AuditLogComponent {
     type: 'AUDITLOG'
   };
   searchableProperties = ['controllerId', 'category', 'account', 'request', 'created', 'comment', 'ticketLink'];
-  searchableProperties2 = ['accountName', 'loginDate']
+  searchableProperties2 = ['accountName', 'loginDate'];
+
+  readonly dateFilterOptions: { date: string; text: string }[] = [
+    {date: 'all',  text: 'filters.button.all'},
+    {date: 'today', text: 'filters.button.today'},
+    {date: '-1h',  text: 'filters.button.last1'},
+    {date: '-12h', text: 'filters.button.last12'},
+    {date: '-24h', text: 'filters.button.last24'},
+    {date: '-7d',  text: 'filters.button.lastWeak'}
+  ];
 
   subscription1: Subscription;
   subscription2: Subscription;
@@ -337,6 +346,10 @@ export class AuditLogComponent {
 
   ngOnInit(): void {
     this.init();
+  }
+
+  get selectedDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.date === this.adtLog?.filter?.date)?.text || '';
   }
 
   ngOnDestroy(): void {
@@ -1041,9 +1054,9 @@ export class AuditLogComponent {
     }
   }
 
-  helpPage(): void{
+  helpPage(type): void{
     let helpKey
-    if(this.auditLog.type === 'AUDITLOG'){
+    if(type === 'AUDITLOG'){
       helpKey = 'audit-log'
     }else{
       helpKey = 'identity-service-faíled-logins'

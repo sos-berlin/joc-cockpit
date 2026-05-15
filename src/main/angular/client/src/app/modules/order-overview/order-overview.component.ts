@@ -664,6 +664,15 @@ export class OrderOverviewComponent {
 
   }
 
+  get selectedStateText(): string {
+    const state = this.orderFilters?.filter?.state;
+    if (state) {
+      const found = this.filterBtn.find((b: any) => b.status === state);
+      return found ? found.text : '';
+    }
+    return '';
+  }
+
   ngOnInit(): void {
     this.init();
     this.fetchTags();

@@ -3795,21 +3795,24 @@ export class DailyPlanComponent {
     });
   }
 
-  helpPage(cal?: boolean): void {
+  helpPage(tabIndex): void {
     let helpKey: string;
 
-    switch (this.dailyPlanFilters?.tabIndex) {
+    switch (tabIndex) {
       case 0:
         helpKey = 'daily-plan';
         break;
       case 1:
         helpKey = 'daily-plan-projections';
         break;
-      default:
+    case 2:
         helpKey = 'daily-plan-dependencies';
-    }
-    if (cal) {
-      helpKey = 'daily-plan-calendar';
+        break;
+    case 3:
+        helpKey = 'daily-plan-calendar';
+        break;
+      default:
+        helpKey = 'daily-plan';
     }
     this.coreService.openHelpPage(helpKey);
   }

@@ -59,21 +59,26 @@
                 </nz-select>
               </div>
               <div class="btn-group dropdown">
-                <button [disabled]="savedFilter.selected" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" [nzClickHide]="false" class="btn btn-grey btn-sm m-l-12"
-                        nz-dropdown nzTrigger="click" translate type="button">
-                  common.label.status
+                <button (click)="openStatusSelectbox()" [disabled]="savedFilter.selected"
+                        [ngClass]="{'btn-primary': workflowFilters.filter.states?.length > 0}"
+                        class="btn btn-grey btn-sm m-l-12 z-index">
+                  @if (workflowFilters.filter.states?.length == 1) {
+                    {{ 'filters.button.' + selectedStateText | translate }}
+                  } @else {
+                    {{'common.label.status' | translate}}
+                  }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
-                <nz-dropdown-menu #anyState="nzDropdownMenu">
-                  <ul nz-menu>
-                    @for (btn of filterState; track btn) {
-                      <li (click)="loadWorkflow(btn.state)" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.states.includes(btn.state)}"
-                          nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
-                      </li>
-                    }
-                  </ul>
-                </nz-dropdown-menu>
+                <nz-select [(ngModel)]="workflowFilters.filter.states" [disabled]="savedFilter.selected"
+                           [nzAllowClear]="false" [nzDropdownClassName]="'multi-select-dropdown-list'" class="multi-select-dropdown cursor"
+                           id="status-select"
+                           (ngModelChange)="selectStates($event)"
+                           name="states"
+                           nzMode="multiple">
+                  @for (btn of filterState; track btn.state) {
+                    <nz-option [nzLabel]="'filters.button.' + btn.text | translate" [nzValue]="btn.state"></nz-option>
+                  }
+                </nz-select>
               </div>
             </div>
           }

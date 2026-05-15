@@ -2,7 +2,7 @@
   <div>
     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
       @if (permission.currentController.agents.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-agents')"
                [appRichTooltip]="'common.tooltip.help' | translate"
@@ -19,7 +19,7 @@
         </li>
       }
       @if (permission.currentController.agents.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-agent-job-executions')"
                [appRichTooltip]="'common.tooltip.help' | translate"
@@ -36,7 +36,7 @@
         </li>
       }
       @if (permission.currentController.locks.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-resource-locks')"
                [appRichTooltip]="'common.tooltip.help' | translate"
@@ -53,7 +53,7 @@
         </li>
       }
       @if (permission.currentController.noticeBoards.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-notice-boards')"
                [appRichTooltip]="'common.tooltip.help' | translate"
@@ -70,7 +70,7 @@
         </li>
       }
       @if (permission.joc.calendars.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-calendars')"
                [appRichTooltip]="'common.tooltip.help' | translate"
@@ -87,7 +87,7 @@
         </li>
       }
       @if (permission.joc.documentations.view) {
-        <li class="nav-item" [routerLinkActive]="'tab-active'" style="display:flex;align-items:center;">
+        <li class="nav-item flex-center" [routerLinkActive]="'tab-active'">
           @if (preferences?.showHelpPages) {
             <i (click)="helpPage('resources-documentations')"
                [appRichTooltip]="'common.tooltip.help' | translate"

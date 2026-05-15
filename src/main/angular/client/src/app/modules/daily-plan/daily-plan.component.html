@@ -451,7 +451,7 @@
       <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
@@ -756,7 +756,7 @@
 <div class='scroll-y max-ht'>
   <div class="padding p-t-sm p-b-0">
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
-      <nz-tab [nzTitle]="'dailyPlan.tab.dailyPlan' | translate">
+      <nz-tab [nzTitle]="dailyPlanTabTitle">
         <div class="row">
           <div class="col-lg-12">
             <div class="sticky leftPanel daily-plan" id="leftPanel">
@@ -770,7 +770,7 @@
                     </div>
                   </ng-template>
                   @if (preferences.showHelpPages) {
-                    <i (click)="helpPage(true)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal fa fa-info-circle cal-help-icon"></i>
+                    <i (click)="helpPage(3)" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan-cal fa fa-info-circle cal-help-icon"></i>
                   }
                   <i (click)="selectDateRange(true)" [ngClass]="{'text-primary' :isCalendarClick }"
                      class="fa fa-calendar-plus-o cal-date-icon"></i>
@@ -1331,7 +1331,17 @@
           </div>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'dailyPlan.tab.projection' | translate">
+      <ng-template #dailyPlanTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage(0)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
+          <span translate>dailyPlan.tab.dailyPlan</span>
+        </div>
+      </ng-template>
+      <nz-tab [nzTitle]="projectionTabTitle">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 m-b">
             <div class="inline btn-group">
@@ -1384,13 +1394,33 @@
           </div>
         </div>
       </nz-tab>
-      <nz-tab [nzTitle]="'dailyPlan.tab.dependencies' | translate">
+      <ng-template #projectionTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage(1)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
+          <span translate>dailyPlan.tab.projection</span>
+        </div>
+      </ng-template>
+      <nz-tab [nzTitle]="dependenciesTabTitle">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 ">
             <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded"  [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
           </div>
         </div>
       </nz-tab>
+      <ng-template #dependenciesTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage(2)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
+          <span translate>dailyPlan.tab.dependencies</span>
+        </div>
+      </ng-template>
     </nz-tabset>
 
   </div>

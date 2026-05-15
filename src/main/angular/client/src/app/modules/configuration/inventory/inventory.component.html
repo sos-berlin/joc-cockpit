@@ -86,11 +86,11 @@
     <div class="col-md-9">
       <div class="inline">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li class="nav-item" style="display:flex;align-items:center;">
+          <li class="nav-item flex-center" [routerLinkActive]="['tab-active']">
             @if (preferences?.showHelpPages) {
               <i (click)="helpPage('configuration-inventory-navigation')"
                  [appRichTooltip]="'common.tooltip.help' | translate"
-                 class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+                 class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
             }
             <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
               <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
@@ -114,7 +114,12 @@
             </li>
           }
           @if (permission.joc && permission.joc.notification.view) {
-            <li class="nav-item">
+            <li class="nav-item flex-center" [routerLinkActive]="['tab-active']">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage('configuration-notification')"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
                 <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
               </a>

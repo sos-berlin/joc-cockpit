@@ -79,6 +79,15 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-md-3 ">
+              <span [appRichTooltip]="'order.tooltip.stickToDailyPlanDate' | translate" translate>order.label.stickToDailyPlanDate</span>
+            </label>
+            <div class="col-md-8">
+              <label [(ngModel)]="stickToDailyPlanDate" name="stickToDailyPlanDate" nz-checkbox>
+              </label>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-md-3">
               <span [appRichTooltip]="'common.tooltip.startTime' | translate" translate>common.label.startTime</span>
             </label>
@@ -92,15 +101,6 @@
                   <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
                 }
               </nz-radio-group>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-3 ">
-              <span [appRichTooltip]="'order.tooltip.stickToDailyPlanDate' | translate" translate>order.label.stickToDailyPlanDate</span>
-            </label>
-            <div class="col-md-8">
-              <label [(ngModel)]="stickToDailyPlanDate" name="stickToDailyPlanDate" nz-checkbox>
-              </label>
             </div>
           </div>
           @if (dateType.at == 'later') {

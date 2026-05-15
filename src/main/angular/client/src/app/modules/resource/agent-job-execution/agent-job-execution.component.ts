@@ -225,6 +225,15 @@ export class AgentJobExecutionComponent {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  readonly dateFilterOptions: { date: string; text: string }[] = [
+    {date: 'all',   text: 'filters.button.all'},
+    {date: 'today', text: 'filters.button.today'},
+    {date: '-1h',   text: 'filters.button.last1'},
+    {date: '-12h',  text: 'filters.button.last12'},
+    {date: '-24h',  text: 'filters.button.last24'},
+    {date: '-7d',   text: 'filters.button.lastWeak'}
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -313,6 +322,10 @@ export class AgentJobExecutionComponent {
 
   ngOnInit(): void {
     this.init();
+  }
+
+  get selectedDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.date === this.agentFilters?.filter?.date)?.text || '';
   }
 
   ngOnDestroy(): void {

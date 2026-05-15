@@ -4,7 +4,7 @@
       <div class="padding">
         <div class="text-right">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="objectType === 'NOTIFICATION' && preferences.showHelpPages" (helpClick)="helpPage('configuration-notification')"></app-breadcrumbs>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
             @if (nodes && nodes.length > 0) {
@@ -139,7 +139,12 @@
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
           @if (permission.joc && permission.joc.inventory.view) {
-            <li class="nav-item">
+            <li class="nav-item flex-center" [routerLinkActive]="['tab-active']">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage('configuration-inventory-navigation')"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
                 <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
               </a>
@@ -163,7 +168,12 @@
             </li>
           }
           @if (permission.joc && permission.joc.notification.view) {
-            <li class="nav-item">
+            <li class="nav-item flex-center" [routerLinkActive]="['tab-active']">
+              @if (preferences?.showHelpPages) {
+                <i (click)="helpPage('configuration-notification')"
+                  [appRichTooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+              }
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
                 <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
               </a>

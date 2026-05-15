@@ -482,6 +482,15 @@ export class FileTransferComponent {
 
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
+    readonly dateFilterOptions: { date: string; text: string }[] = [
+    {date: 'all',   text: 'filters.button.all'},
+    {date: 'today', text: 'filters.button.today'},
+    {date: '-1h',   text: 'filters.button.last1'},
+    {date: '-12h',  text: 'filters.button.last12'},
+    {date: '-24h',  text: 'filters.button.last24'},
+    {date: '-7d',   text: 'filters.button.lastWeak'}
+  ];
+
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
@@ -496,6 +505,10 @@ export class FileTransferComponent {
 
   ngOnInit(): void {
     this.init();
+  }
+
+  get selectedDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.date === this.yadeFilters?.filter?.date)?.text || '';
   }
 
   ngOnDestroy(): void {

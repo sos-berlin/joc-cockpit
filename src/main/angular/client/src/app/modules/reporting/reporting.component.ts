@@ -151,8 +151,20 @@ export class ReportingComponent {
   filteredTemplate: string;
   runIds = new Set();
 
+    readonly dateFilterOptions: { state: string; text: string }[] = [
+    {state: 'All',         text: 'filters.button.all'},
+    {state: 'lastMonth',   text: 'reporting.label.lastMonth'},
+    {state: 'last3Months', text: 'reporting.label.last3Months'},
+    {state: 'last6Months', text: 'reporting.label.last6Months'},
+    {state: 'lastYear',    text: 'reporting.label.lastYear'}
+  ];
+
   constructor(private modal: NzModalService, private coreService: CoreService,
               private authService: AuthService, private sharingDataService: SharingDataService) {
+  }
+
+  get selectedDateLabel(): string {
+    return this.dateFilterOptions.find(o => o.state === this.filter?.generateReport?.filter?.state)?.text || '';
   }
 
   ngOnInit(): void {
@@ -288,10 +300,10 @@ export class ReportingComponent {
     this.coreService.post('reporting/reports/delete', request).subscribe();
   }
 
-  helpPage(): void {
+  helpPage(tabIndex): void {
     let helpKey: string;
 
-    switch (this.index) {
+    switch (tabIndex) {
       case 0:
         helpKey = 'report-creation';
         break;

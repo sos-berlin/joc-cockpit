@@ -4,7 +4,7 @@
       <div class="padding">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage('resources-agent-job-executions')"></app-breadcrumbs>
+            <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
             <div class="show-block">
@@ -13,37 +13,25 @@
               </label>
               <div class="inline">
                 <div class="btn-group m-l-12 dropdown">
-                  <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                          nzTrigger="click" translate>
-                    common.label.dateFilter
+                  <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'"
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                          nzTrigger="click">
+                    @if (agentFilters.filter.date) {
+                      <span> {{ selectedDateLabel | translate }} </span>
+                    } @else {
+                      <span translate> common.label.dateFilter </span>
+                    }
                     <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </button>
                   <nz-dropdown-menu #state="nzDropdownMenu">
                     <ul nz-menu>
-                      <li (click)="loadAgentTasks('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='all', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.all</a>
-                      </li>
-                      <li (click)="loadAgentTasks('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='today', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.today</a>
-                      </li>
-                      <li (click)="loadAgentTasks('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-1h', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.last1</a>
-                      </li>
-                      <li (click)="loadAgentTasks('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-12h', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.last12</a>
-                      </li>
-                      <li (click)="loadAgentTasks('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-24h', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.last24</a>
-                      </li>
-                      <li (click)="loadAgentTasks('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date=='-7d', 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a translate>filters.button.lastWeak</a>
-                      </li>
+                      @for (opt of dateFilterOptions; track opt.date) {
+                        <li (click)="loadAgentTasks(opt.date)"
+                            [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date === opt.date, 'disable-link': savedFilter.selected}"
+                            nz-menu-item>
+                          <a translate>{{opt.text}}</a>
+                        </li>
+                      }
                     </ul>
                   </nz-dropdown-menu>
                 </div>

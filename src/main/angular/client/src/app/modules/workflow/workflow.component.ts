@@ -838,6 +838,15 @@ export class WorkflowComponent {
     });
   }
 
+  get selectedStateText(): string {
+    const states = this.workflowFilters?.filter?.states;
+    if (states?.length === 1) {
+      const found = this.filterState.find((s: any) => s.state === states[0]);
+      return found ? found.text : '';
+    }
+    return '';
+  }
+
   ngOnInit(): void {
     this.workflowFilters = this.coreService.getWorkflowTab();
     this.sideView = this.coreService.getSideView();
@@ -1661,8 +1670,17 @@ export class WorkflowComponent {
     this.loadWorkflow();
   }
 
+  selectStates(list): void {
+    this.workflowFilters.filter.states = list;
+    this.loadWorkflow();
+  }
+
   openSelectbox(): void {
     $('#agent-select').click();
+  }
+
+  openStatusSelectbox(): void {
+    $('#status-select').click();
   }
 
   loadWorkflow(status?, skipChild = false): void {
