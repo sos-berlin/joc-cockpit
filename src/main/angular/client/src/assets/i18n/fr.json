@@ -822,7 +822,7 @@
     "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account, Source: user-dialog.html, Fields: blocked",
     "tooltip.blocked": "Si des comptes utilisateurs ont été ajoutés à la *Liste de Blocage*, ils s'afficheront avec le statut *bloqué*.\n\nLa connexion à JOC Cockpit est désactivée pour les comptes utilisateurs *bloqués*.\n\nLes opérations permettant d'ajouter ou de supprimer des comptes utilisateurs de la *Liste de Blocage* sont disponibles sur la page *GÉRER LES SERVICES D'IDENTITÉ*.",
     "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: folders",
-    "tooltip.folders": "Limite l'affichage des ^Workflow^s aux dossiers d'inventaire et à leurs sous-dossiers.",
+    "tooltip.folders": "Limite l'affichage des ^Workflow^s aux dossiers d'^Inventaire^ et à leurs sous-dossiers.",
     "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
     "tooltip.comment": "Explique, à partir d'un Commentaire, pourquoi le compte sera bloqué.",
     "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
@@ -1122,9 +1122,9 @@
     "tooltip.letRun": "Les ^Ordre^s pour exécution unique démarreront ou se poursuivront immédiatement.",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Create Plan, Source: create-plan-dialog.html, Fields: chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically",
     "tooltip.chooseTemplates": "Les utilisateurs peuvent choisir la portée de la création des ^Ordre^s :\n- **Tous** les ^Workflows^ déployés pour lesquels des ^Planification^s ont été publiés.\n- **Sélectionner** les Workflows déployés ou des Planifications publiés dans des dossiers.",
-    "tooltip.schedules": "Sélectionnez les ^Planification^s pour lesquelles des ^Ordre^s doivent être créés :\n- **Planification**: Ordres de la Planification correspondante\n- **Dossier**: Ordres des Planifications situées dans ce dossier\n- **Dossier via son icône +**: Ordres des Planifications contenues dans le dossier et ses sous-dossiers\n\nPar défaut, seuls les Planifications configurés pour planifier automatiquement des Ordres seront pris en compte.",
+    "tooltip.schedules": "Sélectionnez les ^Planification^s pour lesquelles des ^Ordre^s doivent être créés :\n- **Planification**: Ordres de la Planification correspondante\n- **Dossier via son icône +**: Ordres des Planifications contenues dans le dossier et ses sous-dossiers\n\nPar défaut, seuls les Planifications configurés pour planifier automatiquement des Ordres seront pris en compte.",
     "tooltip.scheduleFolders": "Affiche les dossiers sélectionnés contenant des ^Planification^s.",
-    "tooltip.workflows": "Sélectionnez les ^Workflow^s pour lesquels des ^Ordre^s doivent être créés :\n- **Workflow** limite la création des Ordres à ce Workflow.\n- **Dossier** limite la création des Ordres aux Workflows situés dans ce dossier.\n- **Dossier via son icône +** crée des Ordres à partir des Workflows contenus dans ce dossier et ses sous-dossiers.",
+    "tooltip.workflows": "Sélectionnez les ^Workflow^s pour lesquels des ^Ordre^s doivent être créés :\n- **Workflow** limite la création des Ordres à ce Workflow.\n- **Dossier via son icône +** crée des Ordres à partir des Workflows contenus dans ce dossier et ses sous-dossiers.",
     "tooltip.workflowFolders": "Affiche les dossiers sélectionnés contentant des ^Workflow^s.",
     "tooltip.overwrite": "Lorsque des ^Ordre^s sont créés, ils sont ajoutés par défaut au ^Plan Quotidien^. Cette option permet de remplacer les Ordres existantes issues de la même ^Planification^ dans le Plan Quotidien afin d'éviter les doublons.",
     "tooltip.submitWith": "Spécifie que les ^Ordre^s doivent être ^soumis^es au ^Contrôleur^ et aux ^Agent^s.\n\nSi cette option n'est pas utilisée, le ^Service du Plan Quotidien^ récupérera les Ordres ^planifié^s et les soumettra.",
@@ -1137,8 +1137,8 @@
     "tooltip.dateRange": "Indique la période pour laquelle les ^Ordre^s sont affichées.",
     "tooltip.from": "Indique la date à partir de laquelle les ^Ordre^s sont affichés.",
     "tooltip.to": "Indique la date jusqu'à laquelle les ^Ordre^s sont affichés.",
-    "tooltip.workflowTagging": "Limite l'affichage aux ^Ordre^s attribués à des ^Workflow^s :\n- **Workflow**: Ordres à ce Workflow\n- **Dossier**: Ordres aux Workflows situés dans ce dossier\n- **Dossier via son icône +**: Ordres aux Workflows contenus dans ce dossier et ses sous-dossier.",
-    "tooltip.orderTagging": "Limite l'affichage aux ^Ordre^s originaire des ^Planification^s :\n- **Planification**: Ordres de la Planification correspondante\n- **Dossier**: Ordres des Planifications situées dans ce dossier\n- **Dossier via son icône +**: Ordres des Planifications contenues dans le dossier et ses sous-dossiers",
+    "tooltip.workflowTagging": "Limite l'affichage aux ^Ordre^s attribués à des ^Workflow^s :\n- **Workflow**: Ordres à ce Workflow\n- **Dossier via son icône +**: Ordres aux Workflows contenus dans ce dossier et ses sous-dossier.",
+    "tooltip.orderTagging": "Limite l'affichage aux ^Ordre^s originaire des ^Planification^s :\n- **Planification**: Ordres de la Planification correspondante\n- **Dossier via son icône +**: Ordres des Planifications contenues dans le dossier et ses sous-dossiers",
     "tooltip.state": "Limite l'affichage aux ^Ordre^s des [États des Ordres](context:help:order-states) suivants :\n- ^planifié^\n- ^soumis^\n- ^terminé^\n- aucun",
     "tooltip.late": "Limite l'affichage aux ^Ordre^s en retard qui ont dépassé leur heure de démarrage initiale.\n\nDes raisons opérationnelles, telles que la suspension de ^Workflow^s, peuvent empêcher le lancement des Ordres.",
     "tooltip.sharedCustomization": "La ^Personnalisation^ sera mise à la disposition des autres utilisateurs de JOC Cockpit en lecture seule.",
@@ -2416,8 +2416,8 @@
         "title": "Le Titre de la ^Ressource de Tâche^ peut être spécifié à volonté."
       },
       "board": {
-        "name": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
-        "expectBoardName": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'inventaire.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'^Inventaire^.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "expectBoardName": "Un ^Tableau de Condition^ représente les dépendances entre les ^Workflow^s.\n\nL'^Instruction PostNotices^ et l'^Instruction ExpectNotices^ respectives dans les Workflows font référence au Tableau de Condition.\n\nLe nom d'un Tableau de Condition est unique dans l'^Inventaire^.\n\nPour le nom du Tableau de Condition, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Tableau de Condition^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre du ^Tableau de Condition^ peut être spécifié à volonté.",
         "toNotice": "Entrer l'^Annonce^",
@@ -2426,13 +2426,13 @@
         "boardType": "Les ^Tableaux de Condition|tableau-de-condition^ de type **global** forcent les dépendances indépendamment du ^Plan Quotidien^.\n\nLes Tableaux de Conditions de type **planifiable** prennent en compte les dépendances uniquement pour les jours pour lesquels il existe des ^Ordre^s qui créeront des Annonces."
       },
       "lock": {
-        "name": "Les ^Verrous de Ressource|verrou-de-ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'inventaire.\n\nPour le nom du Verrou de Ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Les ^Verrous de Ressource|verrou-de-ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'^Inventaire^.\n\nPour le nom du Verrou de Ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Verrou de Ressource^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre d'un ^Verrou de Ressource^ peut être spécifié à volonté.",
         "limit": "Si un ^Verrou de Ressource^ est acquis en mode partagé, chaque consommateur de Verrou de Ressource spécifie un nombre en fonction de la capacité du Verrou de Ressource. Si la capacité est dépassée, les ^Tâche^s doivent attendre que leur nombre corresponde à la capacité disponible du Verrou de Ressource."
       },
       "schedule": {
-        "name": "Une ^Planification^ est utilisé pour créer automatiquement des ^Ordre^s pour un ^Workflow^ donné en fonction du ^Calendrier^ attribué.\n\nLe nom d'une Planification est unique dans l'inventaire.\n\nPour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Une ^Planification^ est utilisé pour créer automatiquement des ^Ordre^s pour un ^Workflow^ donné en fonction du ^Calendrier^ attribué.\n\nLe nom d'une Planification est unique dans l'^Inventaire^.\n\nPour le nom de la Planification, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec la ^Planification^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre d'une ^Planification^ peut être spécifié à volonté.",
         "workflowName": "Il faut ajouter une référence à un ou plusieurs ^Workflow^s pour lesquels des ^Ordre^s sont crées.",
@@ -2452,14 +2452,14 @@
         "addOrderParameter": "Permet d'ajouter un autre ^Ordre^, si nécessaire, en utilisant des paramètres différents."
       },
       "script": {
-        "name": "Un ^Bloc Script^ est utilisé pour inclure des extraits de code récurrents dans un ^Script Job^.\n\nLe nom d'un Bloc Script est unique dans l'inventaire.\n\nPour le nom du Bloc Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
+        "name": "Un ^Bloc Script^ est utilisé pour inclure des extraits de code récurrents dans un ^Script Job^.\n\nLe nom d'un Bloc Script est unique dans l'^Inventaire^.\n\nPour le nom du Bloc Script, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Block Script^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre d'un ^Bloc Script^ peut être spécifié à volonté.",
         "script": "En fonction de son utilisation avec un ^Script Job^, le contenu d'un ^Bloc Script^ peut inclure des commandes Shell ou du code pour des langages de script tels que Python, PowerShell etc.",
         "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des ^Blocs Scripts|bloc-script^ disponibles."
       },
       "report": {
-        "name": "Le nom d'un Modèle de Rapport est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
+        "name": "Le nom d'un Modèle de Rapport est unique dans l'^Inventaire^.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
         "title": "Le Titre du Modèle de Rapport peut être spécifié à volonté.",
         "template": "Spécifie le Maquette de Rapport à appliquer.",
         "frequencies": "La Fréquence spécifie le cycle qui divise la période de rapport, par exemple, 5 minutes, 1 jour etc.",
@@ -2486,7 +2486,7 @@
         "periodStep": "Spécifie le chevauchement d'étapes entre deux étapes en minutes. Exemple : duréé d'étape=5, chevauchement=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ...."
       },
       "workflow": {
-        "name": "Le nom d'un ^Workflow^ est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
+        "name": "Le nom d'un ^Workflow^ est unique dans l'^Inventaire^.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin et aucune espace.",
         "jobResourceNames": "Il est possible d'ajouter des références aux ^Ressources de Tâche|ressource-de-tâche^ qui contiennent des variables partagées à utiliser par un certain nombre de ^Tâche^s et de Workflows.\n\nToutes les variables des Ressources de Tâche sélectionnées peuvent être utilisées par n'importe quel Tâche dans le Workflow.",
         "documentation": "Un ^Worklow^ ou une ^Tâche^ peut se voir attribuer une ^Documentation^ qui s'affiche avec la vue *WORKFLOWS*.\n\nLes Documentations sont gérées avec la vue *RESSOURCES*.",
         "title": "Le Titre du ^Workflow^ peut être spécifié à volonté. Le Titre est affiché dans la vue *WORKFLOWS*.",
@@ -2494,7 +2494,7 @@
         "allowUndeclared": "Autoriser les variables non déclarées des ^Ordre^s.\n\nCela signifie qu'un Ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés.\n\nLes ^Tâche^s échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.",
         "duration": "Durée.",
         "board": {
-          "expectBoardName": "Le nom d'un ^Tableau de Condition^ est unique dans l'inventaire.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
+          "expectBoardName": "Le nom d'un ^Tableau de Condition^ est unique dans l'^Inventaire^.\n\nLa plupart des caractères Unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
           "boardNames": "Il est possible de spécifier un certain nombre de ^Tableaux de Condition|tableau-de-condition^ pour lesquels des ^Annonce^s sont créés.",
           "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul ^Tableau de Condition^ et pour spécifier une logique Booléenne : `('A-BOARD' || 'B-BOARD') && 'C-BOARD'`.\n\nLes noms des Tableaux de Condition sont cités et les opérateurs `&&` (et) et `||` (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
           "consumeBoardExpression": "L'expression ConsumeNotice` peut être utilisée pour spécifier un seul ^Tableau de Condition^ et pour spécifier une logique Booléenne : `('A-BOARD' || 'B-BOARD') && 'C-BOARD'`. Les noms des Tableaux de Condition sont cités et les opérateurs `&&` (et) et `||` (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
@@ -4332,7 +4332,7 @@
     "label.operation": "Opération",
     "label.message": "Message",
     "label.directory": "Répertoire",
-    "label.regex": "Regex",
+    "label.regex": "Expression regulière",
     "label.start": "Démarrer",
     "label.dragAndDrop": "Glisser-déposer ici",
     "label.end": "Fin",

@@ -822,7 +822,7 @@
     "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account, Source: user-dialog.html, Fields: blocked",
     "tooltip.blocked": "If user accounts have been added to the *Blocklist*, then they will be displayed with a *blocked* status.\n\nLogin to JOC Cockpit is disabled for *blocked* user accounts.\n\nOperations for adding and removing user accounts from the *Blocklist* are offered from the *MANAGE IDENTIFY SERVICES* page.",
     "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: folders",
-    "tooltip.folders": "Limits display of ^Workflow^s to inventory folders and any sub-folders.",
+    "tooltip.folders": "Limits display of ^Workflow^s to ^Inventory^ folders and sub-folders.",
     "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
     "tooltip.comment": "Explains from a Comment why the account will be blocked.",
     "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
@@ -1122,9 +1122,9 @@
     "tooltip.letRun": "One-time ^Order^s for single execution will start or will proceed immediately.",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Create Plan, Source: create-plan-dialog.html, Fields: chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically",
     "tooltip.chooseTemplates": "Users can choose the scope of ^Order^ creation:\n- **All** deployed ^Workflow^s for which ^Schedule^s are released.\n- **Select** deployed Workflows or released Schedules from folders.",
-    "tooltip.schedules": "Choose ^Schedule^s for which ^Order^s should be created:\n- **Schedule**: Orders from the related Schedule\n- **Folder**: Orders from Schedules located in the folder\n- **Folder from its + icon**: Orders from Schedules in the folder and sub-folders\n\nBy default, only Schedules will be considered that are configured to plan Orders automatically.",
+    "tooltip.schedules": "Choose ^Schedule^s for which ^Order^s should be created:\n- **Schedule**: Orders from the related Schedule\n- **Folder from its + icon**: Orders from Schedules in the folder and sub-folders\n\nBy default, only Schedules will be considered that are configured to plan Orders automatically.",
     "tooltip.scheduleFolders": "Displays selected folders holding ^Schedule^s.",
-    "tooltip.workflows": "Choose ^Workflow^s for which ^Order^s should be created:\n- **Workflow**: Orders for the Workflow\n- **Folder**: Orders for Workflows located in the folder\n- **Folder from its + icon**: Orders for Workflows in the folder and sub-folders.",
+    "tooltip.workflows": "Choose ^Workflow^s for which ^Order^s should be created:\n- **Workflow**: Orders for the Workflow\n- **Folder from its + icon**: Orders for Workflows in the folder and sub-folders",
     "tooltip.workflowFolders": "Displays selected folders holding ^Workflow^s.",
     "tooltip.overwrite": "When ^Order^s are created, then by default they are added to the ^Daily Plan^. The option offers to overwrite existing Orders originating from the same Schedule in the Daily Plan to avoid duplicate Orders.",
     "tooltip.submitWith": "Specifies that ^Order^s should be ^submitted^ to the ^Controller^ and to ^Agent^s.\n\nIf the option is not used, then the ^Daily Plan Service^ will pick up ^planned^ Orders and will submit them.",
@@ -1137,9 +1137,9 @@
     "tooltip.dateRange": "Specifies the date range for which Orders will be displayed.",
     "tooltip.from": "Specifies the date starting from which Orders will be displayed.",
     "tooltip.to": "Specifies the date up to which Orders will be displayed.",
-    "tooltip.workflowTagging": "Limits display by ^Workflow^s for which ^Order^s are available:\n- **Workflow**: Orders for the Workflow.\n- **Folder**: Orders for Workflows located in the folder.\n- **Folder from its + icon**: Orders for Workflows in the folder and sub-folders.",
-    "tooltip.orderTagging": "Limits display by ^Schedule^s for which ^Order^s are available:\n- **Schedule**: Orders from the related Schedule.\n- **Folder**: Orders from Schedules located in the folder.\n- **Folder from its + icon**: Orders from Schedules in the folder and sub-folders.",
-    "tooltip.state": "Limits display of ^Order^s to specific [Order States](context:help:order-states):\n- ^planned^\n- ^submitted^\n- ^finished^\n- none",
+    "tooltip.workflowTagging": "Limits display by ^Workflow^s for which ^Order^s are available:\n- **Workflow**: Orders for the Workflow\n- **Folder from its + icon**: Orders for Workflows in the folder and sub-folders",
+    "tooltip.orderTagging": "Limits display by ^Schedule^s for which ^Order^s are available:\n- **Schedule**: Orders from the related Schedule\n- **Folder from its + icon**: Orders from Schedules in the folder and sub-folders",
+    "tooltip.state": "Limits display of ^Order^s to specific [Order States](context:help:order-states):\n- ^planned^ state\n- ^submitted^ state\n- ^finished^ state\n- none",
     "tooltip.late": "Limits display to Late ^Order^s that exceeded their original start time.\n\nThere can be operational reasons such as ^Workflow^s being suspended that prevent Orders from starting.",
     "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of JOC Cockpit for read access.",
     "tab": {
@@ -2416,8 +2416,8 @@
         "title": "The Title of the ^Job Resource^ can be specified as desired."
       },
       "board": {
-        "name": "A ^Notice Board^ represents the dependencies between ^Workflow^s.\n\nThe respective ^PostNotices  Instruction^ and ^ExpectNotices Instruction^ in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "expectBoardName": "A ^Notice Board^ represents the dependencies between ^Workflow^s.\n\nThe respective ^PostNotices Instruction^ and ^ExpectNotices Instruction^ in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the inventory.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A ^Notice Board^ represents the dependencies between ^Workflow^s.\n\nThe respective ^PostNotices  Instruction^ and ^ExpectNotices Instruction^ in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the ^Inventory^.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "expectBoardName": "A ^Notice Board^ represents the dependencies between ^Workflow^s.\n\nThe respective ^PostNotices Instruction^ and ^ExpectNotices Instruction^ in Workflows reference the Notice Board.\n\nThe name of a Notice Board is unique in the ^Inventory^.\n\nFor the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Notice Board^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Notice Board^ can be specified as desired.",
         "toNotice": "The ^Notice ID^ for the ^Posting Order^ is extracted from its ^Order ID^ to look up matching ^Expecting Order^s.",
@@ -2426,13 +2426,13 @@
         "boardType": "^Notice Board^s of **global** type enforce dependencies independently from the ^Daily Plan^.\n\nNotice Boards of **plannable** type consider days only for which ^Order^s exist that will create ^Notice^s."
       },
       "lock": {
-        "name": "^Resource Lock^s are used to implement mutual exclusion for a sequence of ^Job^s. They can be used in the same ^Workflow^ and across Workflows to limit parallelism of Jobs. The name of a Resource Lock is unique in the inventory.\n\nFor the name of the Resource Lock most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "^Resource Lock^s are used to implement mutual exclusion for a sequence of ^Job^s. They can be used in the same ^Workflow^ and across Workflows to limit parallelism of Jobs. The name of a Resource Lock is unique in the ^Inventory^.\n\nFor the name of the Resource Lock most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Resource Lock^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Resource Lock^ can be specified as desired.",
         "limit": "If a ^Resource Lock^ is acquired in shared mode, then each consuming ^Lock Instruction^ can specify a weight that is calculated towards the capacity of the Resource Lock.\n\nIf the capacity is exceeded, then ^Order^s must wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "A ^Schedule^ is used to automatically create ^Order^s for a given ^Workflow^ based on the ^Calendar^ assigned. The name of a ^Schedule^ is unique in the inventory.\n\nFor the name of the Schedule most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A ^Schedule^ is used to automatically create ^Order^s for a given ^Workflow^ based on the ^Calendar^ assigned. The name of a ^Schedule^ is unique in the ^Inventory^.\n\nFor the name of the Schedule most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the ^Schedule^. The *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Schedule^ can be specified as desired.",
         "workflowName": "A reference to one or more ^Workflow^s has to be added for which ^Order^s will be created.",
@@ -2452,14 +2452,14 @@
         "addOrderParameter": "Allows adding another ^Order^ optionally using different parameterization."
       },
       "script": {
-        "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^. The name of a Script Include is unique in the inventory.\n\nFor the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^. The name of a Script Include is unique in the ^Inventory^.\n\nFor the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Script Include^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Script Include^ can be specified as desired.",
         "script": "Depending on its use with ^Job Script^s the content of a ^Script Include^ can include Shell commands or Code for scripting languages such as Python, PowerShell etc.",
         "autocompleteShortCut": "Hit Ctrl+Space to retrieve the list of available Script Includes"
       },
       "report": {
-        "name": "The name of a Report Template is unique in the inventory.\n\nFor the name of the Report Template most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "The name of a Report Template is unique in the ^Inventory^.\n\nFor the name of the Report Template most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "title": "The Title of the Report Template can be specified.",
         "template": "Specifies the Report Model to be applied.",
         "frequencies": "The frequency specifies the cycle that divides the reporting period, for example, 5 minutes, 1 day etc.",
@@ -2486,7 +2486,7 @@
         "periodStep": "Specifies the Step Overlap between two steps in minutes. Example: Step Duration=5 minutes, Step Overlap=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {
-        "name": "The name of a ^Workflow^ is unique in the inventory.\n\nMost Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "The name of a ^Workflow^ is unique in the ^Inventory^.\n\nMost Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "jobResourceNames": "References to ^Job Resource^s can be added that hold shared variables for use by a number of ^Job^s and ^Workflow^s.\n\nAny variables from the selected Job Resources can be used by any Jobs in the Workflow.",
         "documentation": "A ^Workflow^ or ^Job^ can be assigned a Documentation that is displayed with the *WORKFLOWS* view. Documentations are managed with the *RESOURCES* view.",
         "title": "The Title of the ^Workflow^ can be specified as desired. The Title is displayed with the *WORKFLOWS* view.",
@@ -2494,7 +2494,7 @@
         "allowUndeclared": "Allows undeclared variables from ^Order^s.\n\nThis includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\nJob^s will fail when referencing undeclared variables that are not available from an Order.",
         "duration": "Duration.",
         "board": {
-          "expectBoardName": "The name of a ^Notice Board^ is unique in the inventory.\n\nMost Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+          "expectBoardName": "The name of a ^Notice Board^ is unique in the ^Inventory^.\n\nMost Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s are created.",
           "expectBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used, optionally including bracketing",
           "consumeBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used optionally including bracketing",
@@ -2610,7 +2610,7 @@
           "blockPosition": "An ^Order^ can be added to the position of a specific block instruction, for example, to a branch in a ^Fork Instruction^, to a ^Lock Instruction^ etc. at any nesting level of ^Workflow^ instructions.\n\nThe Order will leave the Workflow when reaching the end of the block instruction.\n\nWhen selecting a block instruction, then Start Position and End Positions are specified within the scope of the block instruction."
         },
         "lock": {
-          "name": "Names of ^Resource Lock^s are unique in the inventory. Sections in ^Workflow^s can be limited in parallelism by use of Resource Locks.",
+          "name": "Names of ^Resource Lock^s are unique in the ^Inventory^. Sections in ^Workflow^s can be limited in parallelism by use of Resource Locks.",
           "count": "The Weight for use of a ^Resource Lock^ is calculated towards its capacity.\n\nIf the capacity is exceeded, then ^Order^s must wait until a capacity is available that matches or exceeds the current Weight."
         },
         "prompt": {
@@ -2782,7 +2782,7 @@
         "environmentValue": "Environment Variable Value",
         "workflowSynchronizationStatus": "Workflow Synchronization Status",
         "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following availability status:\n- **synchronized** between ^Inventory^ and ^Controller^.\n- **not synchronized** between Inventory and Controller.\n- **suspended** for execution.\n- **outstanding** response from one or more ^Agent^s.",
-        "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **skipped**: ^Order^s will skip the Job.\n- **stopped**: Orders will be ^suspended^."
+        "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **skipped** Jobs will be skipped by ^Order^s.\n- **stopped** Jobs will ^suspend|suspended^ Orders."
       }
     },
     "updateJob": {

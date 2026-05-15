@@ -655,7 +655,7 @@
     "label.stickToDailyPlanDate": "Zuordnung zum Tagesplan beibehalten",
     "label.updateDependencies": "Abhängigkeiten aktualisieren",
     "label.closedPlanType": "Der Plan ist geschlossen.",
-    "label.none": "Keine",
+    "label.none": "Kein",
     "label.showMoreOptions": "Mehr Optionen anzeigen",
     "label.showFewerOptions": "Weniger Optionen anzeigen",
     "label.dateFilter": "Datumsfilter",
@@ -822,7 +822,7 @@
     "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account, Source: user-dialog.html, Fields: blocked",
     "tooltip.blocked": "Wenn Benutzerkonten zur *Sperrliste* hinzugefügt wurden, werden sie mit dem Status *gesperrt* angezeigt.\n\nDie Anmeldung bei JOC Cockpit ist für *gesperrte* Benutzerkonten deaktiviert.\n\nDie Funktionen zum Hinzufügen und Entfernen von Benutzerkonten aus der *Sperrliste* finden Sie auf der Seite *IDENTITÄTSDIENSTE VERWALTEN*.",
     "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: folders",
-    "tooltip.folders": Beschränkt die Anzeige von ^Arbeitsabläufen|arbeitsablauf^ auf Inventarordner und deren Unterordner.",
+    "tooltip.folders": "Beschränkt die Anzeige von ^Arbeitsabläufen|arbeitsablauf^ auf ^Inventar^ordner und deren Unterordner.",
     "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
     "tooltip.comment": "Erläutert in einem Kommentar, weshalb das Konto gesperrt wird.",
     "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
@@ -1122,9 +1122,9 @@
     "tooltip.letRun": "^Aufträge|auftrag^ zur einmaligen Ausführung werden sofort gestartet oder fortgesetzt",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Create Plan, Source: create-plan-dialog.html, Fields: chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically",
     "tooltip.chooseTemplates": "Anwender können den Umfang der ^Auftrag^serstellung festlegen:\n- **Alle** ausgerollten ^Arbeitsabläufe|arbeitsablauf^, für die ^Zeitpläne|zeitplan^ freigegeben sind.\n- **Ausgewählte** ausgerollte Arbeitsabläufe oder freigegebene Zeitpläne aus Ordnern.",
-    "tooltip.schedules": "Wählen Sie ^Zeitpläne|zeitplan^ aus, für die ^Aufträge|auftrag^ erstellt werden sollen:\n- **Zeitplan**: Aufträge des entsprechenden Zeitplans\n- **Ordner**: Aufträge der Zeitpläne, die sich in diesem Ordner befinden\n- **Ordner über dessen + Symbol**: Aufträge aus Zeitplänen im Ordner und in den Unterordnern\n\nStandardmäßig werden nur Zeitpläne berücksichtigt, die für die automatische Planung von Aufträgen konfiguriert sind.",
+    "tooltip.schedules": "Wählen Sie ^Zeitpläne|zeitplan^ aus, für die ^Aufträge|auftrag^ erstellt werden sollen:\n- **Zeitplan**: Aufträge des entsprechenden Zeitplans\n- **Ordner über dessen + Symbol**: Aufträge aus Zeitplänen im Ordner und in den Unterordnern\n\nStandardmäßig werden nur Zeitpläne berücksichtigt, die für die automatische Planung von Aufträgen konfiguriert sind.",
     "tooltip.scheduleFolders": "Zeigt die ausgewählten Ordner der ^Zeitpläne|zeitplan^.",
-    "tooltip.workflows": "Wählen Sie ^Arbeitsabläufe|arbeitsablauf^ aus, für die ^Aufträge|auftrag^ erstellt werden sollen:\n- **Arbeitsablauf**: Aufträge für diesen Arbeitsablauf\n- **Ordner**: Aufträge für Arbeitsabläufe, die sich in diesem Ordner befinden\n- **Ordner über dessen + Symbol**: Aufträge für Arbeitsabläufe in diesem Ordner und seinen Unterordnern",
+    "tooltip.workflows": "Wählen Sie ^Arbeitsabläufe|arbeitsablauf^ aus, für die ^Aufträge|auftrag^ erstellt werden sollen:\n- **Arbeitsablauf**: Aufträge für diesen Arbeitsablauf\n- **Ordner über dessen + Symbol**: Aufträge für Arbeitsabläufe in diesem Ordner und seinen Unterordnern",
     "tooltip.workflowFolders": "Zeigt die ausgewählten Ordner der ^Arbeitsabläufe|arbeitsablauf^.",
     "tooltip.overwrite": "Wenn ^Aufträge^ angelegt werden, werden sie standardmäßig dem ^Tagesplan^ hinzugefügt. Die Option bietet die Möglichkeit, bereits im Tagesplan vorhandene Aufträge aus demselben ^Zeitplan^ zu überschreiben, um doppelte Aufträge zu vermeiden.",
     "tooltip.submitWith": "Legt fest, dass ^Aufträge|auftrag^ an den ^Controller^ und an ^Agent^en ^übermittelt^ werden sollen.\n\nWird diese Option nicht verwendet, übernimmt der ^Tagesplandienst^ die ^geplant^en Aufträge und übermittelt sie.",
@@ -1137,9 +1137,9 @@
     "tooltip.dateRange": "Gibt den Datumsbereich an, für den ^Aufträge|auftrag^ angezeigt werden.",
     "tooltip.from": "Datum ab dem ^Aufträge|auftrag^ angezeigt werden.",
     "tooltip.to": "Gibt das Datum an, bis zu dem ^Aufträge|auftrag^ angezeigt werden.",
-    "tooltip.workflowTagging": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ für ^Arbeitsabläufe|arbeitsablauf^:\n- **Arbeitsablauf**: Aufträge für diesen Arbeitsablauf\n- **Ordner**: Aufträge für Arbeitsabläufe, die sich in diesem Ordner befinden\n- **Ordner über dessen + Symbol**: Aufträge für Arbeitsabläufe in diesem Ordner und seinen Unterordnern",
-    "tooltip.orderTagging": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ aus ^Zeitplänen|zeitplan^:\n- **Zeitplan**: Aufträge des entsprechenden Zeitplans\n- **Ordner**: Aufträge der Zeitpläne, die sich in diesem Ordner befinden\n- **Ordner über dessen + Symbol**: Aufträge aus Zeitplänen im Ordner und in den Unterordnern",
-    "tooltip.state": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ in bestimmten [Auftragszuständen](context:help:order-states):\n- ^geplant^\n- ^übermittelt^\n- ^beendet^\n- keine",
+    "tooltip.workflowTagging": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ für ^Arbeitsabläufe|arbeitsablauf^:\n- **Arbeitsablauf**: Aufträge für diesen Arbeitsablauf\n- **Ordner über dessen + Symbol**: Aufträge für Arbeitsabläufe in diesem Ordner und seinen Unterordnern",
+    "tooltip.orderTagging": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ aus ^Zeitplänen|zeitplan^:\n- **Zeitplan**: Aufträge des entsprechenden Zeitplans\n- **Ordner über dessen + Symbol**: Aufträge aus Zeitplänen im Ordner und in den Unterordnern",
+    "tooltip.state": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ in bestimmten [Auftragszuständen](context:help:order-states):\n- ^geplant^ Zustand\n- ^übermittelt^ Zustand\n- ^beendet^ Zustand\n- kein",
     "tooltip.late": "Beschränkt die Anzeige auf verspätete ^Aufträge|auftrag^, die ihren ursprünglichen Startzeitpunkt überschritten haben.\n\nEs kann betriebliche Gründe geben, z.B. das Aussetzen von ^Arbeitsabläufen|arbeitsablauf^, die den Start von Aufträgen verhindern.",
     "tooltip.sharedCustomization": "Die ^Personalisierung^ wird anderen Anwendern von JOC Cockpit mit Lesezugriff zur Verfügung gestellt.",
     "tab": {
@@ -2118,7 +2118,7 @@
     "label.belowNormal": "Niedriger als Normal",
     "label.Low": "Niedrig",
     "label.all": "Alle",
-    "label.none": "Keine",
+    "label.none": "Kein",
     "label.enforcedOnly": "Erzwungene",
     "label.unenforcedOnly": "Nicht-erzwungene",
     "label.deleteRepository": "Git Repository löschen",
@@ -2416,8 +2416,8 @@
         "title": "Der Titel der ^Job-Ressource^ kann nach Belieben angegeben werden."
       },
       "board": {
-        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
-        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Anicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Notizbrett^s kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
@@ -2426,13 +2426,13 @@
         "boardType": "^Notizbrett^er des Typs **global** erzwingen Abhängigkeiten unabhängig vom ^Tagesplan^.\n\nNotizbretter des Typs **planbar** berücksichtigen Abhängigkeiten des Tagesplans für Tage, für die ^Aufträge|auftrag^ existieren, deren ^Arbeitsabläufe|arbeitsablauf^ ^Notiz^en senden."
       },
       "lock": {
-        "name": "^Ressourcen-Sperre^n werden zur Limitierung der Parallelität von ^Job^s verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen ^Arbeitsabläufen|arbeitsablauf^.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im Inventar.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "^Ressourcen-Sperre^n werden zur Limitierung der Parallelität von ^Job^s verwendet.\n\nSie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen ^Arbeitsabläufen|arbeitsablauf^.\n\nDer Name einer Ressourcen-Sperre ist eindeutig im ^Inventar^.\n\nFür den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit der ^Ressourcen-Sperre^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel der ^Ressourcen-Sperre^ kann nach Belieben angegeben werden.",
         "limit": "Wird eine ^Ressourcen-Sperre^ von mehreren ^Job^s geteilt genutzt, dann kann jede Nutzung ein Gewicht für den Zugriff bestimmen, das verwendet wird, um die verfügbare Kapazität der Ressourcen-Sperre zu bestimmen und ^Job^s ggf. warten zu lassen bis eine ausreichende Kapazität verfügbar ist."
       },
       "schedule": {
-        "name": "Ein ^Zeitplan^ wird verwendet, um automatisch ^Aufträge|auftrag^ für Arbeitsabläufe basierend auf einem Kalender zu erzeugen.\n\nDer Name eines Zeitplans ist eindeutig im Inventar. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein ^Zeitplan^ wird verwendet, um automatisch ^Aufträge|auftrag^ für Arbeitsabläufe basierend auf einem Kalender zu erzeugen.\n\nDer Name eines Zeitplans ist eindeutig im ^Inventar^. Für den Namen des Zeitplans können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Zeitplan^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Zeitplan^s kann nach Belieben angegeben werden.",
         "workflowName": "Ein Verweis auf einen oder mehrere ^Arbeitsabläufe|arbeitsablauf^ muss angegeben werden, für die ^Aufträge|auftrag^ erzeugt werden.",
@@ -2452,7 +2452,7 @@
         "addOrderParameter": "Ermöglicht das optionale Hinzufügen eines weiteren ^Auftrag^s mit einer anderen Parametrierung."
       },
       "script": {
-        "name": "Ein ^Skript-Baustein^ wird verwendet, um wiederkehrend verwendeten Code in ^Job-Skript^e einzufügen.\n\nDer Name eines Skript-Bausteins ist eindeutig im Inventar. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+        "name": "Ein ^Skript-Baustein^ wird verwendet, um wiederkehrend verwendeten Code in ^Job-Skript^e einzufügen.\n\nDer Name eines Skript-Bausteins ist eindeutig im ^Inventar^. Für den Namen des Skript-Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Skript-Baustein^ angezeigt wird.\n\nDie Ansicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Skript-Baustein^s kann nach Belieben angegeben werden.",
         "script": "Der Inhalt des ^Skript-Baustein^s kann je nach Verwendung in ^Job-Skript^en aus Shell Kommandos oder Code für Skriptsprachen wie Python, PowerShell etc. bestehen.",
@@ -2486,7 +2486,7 @@
         "periodStep": "Gibt die Überlappung der Schritte in Minuten an. Beispiel: Schrittdauer=5, Schrittüberlappung=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {
-        "name": "Der Name eines ^Arbeitsablauf^s ist eindeutig im Inventar.\n\nDie meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
+        "name": "Der Name eines ^Arbeitsablauf^s ist eindeutig im ^Inventar^.\n\nDie meisten Unicode Zeichen können verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Bindestriche und Punkte sind nicht zugelassen.",
         "jobResourceNames": "^Job-Ressourcen^ definieren gemeinsame genutzte Variablen.\n\nDie Variablen der ausgewählten Job-Ressourcen stehen allen ^Job^s des ^Arbeitsablauf^s zur Verfügung.",
         "documentation": "Einem ^Arbeitsablauf^ oder ^Job^ kann eine ^Dokumetation^ zugewiesen werden, die in der Ansicht *ARBEITSABLÄUFE* angezeigt wird.\n\nDokumentationen werden in der Ansicht *RESSOURCEN -> Dokumentationen* verwaltet.",
         "title": "Der Titel des ^Arbeitsablauf^s kann nach Belieben angegeben werden. Der Titel wird in der Ansicht *ARBEITSABLÄUFE* angezeigt.",
@@ -2494,7 +2494,7 @@
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am ^Auftrag^.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft.\n\n^Job^s, die undeklarierte Variablen referenzieren, die nicht zu einem ^Auftrag^ erfasst wurden, werden fehlschlagen.",
         "duration": "Dauer.",
         "board": {
-          "expectBoardName": "Der Name eines ^Notizbrett^s ist eindeutig im Inventar.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
+          "expectBoardName": "Der Name eines ^Notizbrett^s ist eindeutig im ^Inventar^.\n\nFür den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
           "boardNames": "Mehrere ^Notizbrett^er können ausgewählt werden, für die ^Notiz^en erzeugt werden.",
           "expectBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbrett^s und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "consumeBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbrett^s und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
