@@ -373,7 +373,7 @@
     "tooltip.ticketLink": "Limits display to operations using the given Ticket Link.\n\nUse the `*` placeholder for any number of characters, `?` for a single character in a Ticket Link.",
     "tooltip.controllerId": "The ^Controller ID^ specifies the ^Controller^ for which the operation has been performed.",
     "tooltip.objectTypes": "Object Types offer limiting display to the type of ^Inventory^ objects that can be selected from a list.\n\nUsers can select more than one object type.",
-    "tooltip.objectName": "Object Names offer limiting display to operations targeting at object, such as ^Workflow^s, with the given name.\n\nUse the `*` placeholder for any number of characters, `?` for a single character in an object name.",
+    "tooltip.objectName": "Object Names offer limiting display to operations targeting at objects, such as ^Workflow^s, with the given name.\n\nUse the `*` placeholder for any number of characters, `?` for a single character in an object name.",
     "tooltip.categories": "Categories offer limiting display to operations in certain areas such as ^Inventory^ or ^Daily Plan^.\n\nUsers can select more than one category.",
     "tooltip.account": "Limits display to operations originated by the Account specified.",
     "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of JOC Cockpit for read access."
@@ -822,7 +822,7 @@
     "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account, Source: user-dialog.html, Fields: blocked",
     "tooltip.blocked": "If user accounts have been added to the *Blocklist*, then they will be displayed with a *blocked* status.\n\nLogin to JOC Cockpit is disabled for *blocked* user accounts.\n\nOperations for adding and removing user accounts from the *Blocklist* are offered from the *MANAGE IDENTIFY SERVICES* page.",
     "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: folders",
-    "tooltip.folders": "??? Folders",
+    "tooltip.folders": "Limits display of ^Workflow^s to inventory folders and any sub-folders.",
     "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
     "tooltip.comment": "Explains from a Comment why the account will be blocked.",
     "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
@@ -875,7 +875,7 @@
     "tooltip.useDefault": "Use as default Customization",
     "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
     "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
-    "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of JOC Cockpit for read access.."
+    "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of JOC Cockpit for read access."
   },
   "dashboard": {
     "label.agentStatus": "Agent Status",
@@ -1684,7 +1684,7 @@
     "tooltip.controllerId": "The ^Controller ID^ specifies the ^Controller^ by which file transfers have been performed.",
     "tooltip.workflows": "^Workflow^s can be selected limiting the list to file transfers performed by ^Job^s available with the given Workflows.",
     "tooltip.status": "The Status of file transfers includes:\n- **successful**: transfer successfully completed\n- **failed**: transfer failed with errors\n- **in progress**: transfer is ongoing\n\nFile transfers with any of the selected Status will be displayed.",
-    "tooltip.operations": "File transfer Operations include:\n- **Copy** files from source to target\n- **Move** files from source to target\n- **Remove** files from source\n- **Getlist* of files\n- **Rename** files\n\nFile transfers subject to any of the selected operations will be displayed.",
+    "tooltip.operations": "File transfer Operations include:\n- **Copy** files from source to target\n- **Move** files from source to target\n- **Remove** files from source\n- **Getlist** of files\n- **Rename** files\n\nFile transfers subject to any of the selected operations will be displayed.",
     "tooltip.numOfFilesFrom": "Limits display to file transfers including the Minimum Number of Files specified.",
     "tooltip.numOfFilesTo": "Limits display to file transfers including the Maximum Number of Files specified.",
     "tooltip.sourceFilePaths": "The Source File Path specifies the directory and file name used for the source of a transfer, for example, `/source/myfile.txt`.\n\nUse the `*` placeholder for any number of characters, `?` for a single character, prefix `*/` for a file name.\n\nMore than one Source File Path can be specified using the + icon.",
@@ -1708,8 +1708,8 @@
       "label.targetFilePaths": "Target File Paths",
       "label.sourceProtocol": "Source Protocol",
       "label.targetProtocol": "Target Protocol",
-      "label.numOfFilesFrom": "Number of files from",
-      "label.numOfFilesTo": "Number of files to",
+      "label.numOfFilesFrom": "Minimum number of files",
+      "label.numOfFilesTo": "Maximum number of files",
       "placeholder.sourceProtocol": "Select source protocol",
       "placeholder.targetProtocol": "Select target protocol",
       "placeholder.sourceFilePath": "Enter source file path, use placeholder * for any number of characters, ? for a single character, prefix */ for a file name",
@@ -2212,10 +2212,10 @@
     "button.syncToInventory": "Synchronize to Inventory",
     "tooltip.setVersion": "Set Version",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
-    "tooltip.workflowTagging": "Workflow Tags.",
-    "tooltip.orderTagging": "Order Tags.",
+    "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned one or more of the selected ^Tag^s.",
+    "tooltip.orderTagging": "Limits display to ^Workflow^s that hold ^Order^s assigned one or more of the selected Order ^Tag^s from their ^Schedule^s.",
     "--------ADD INVENTORY RECURSIVE TOOLTIP------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: handleRecursively",
-    "tooltip.handleRecursively": "Handle Recursively",
+    "tooltip.handleRecursively": "Includes ^Workflow^s from sub-folders.",
     "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: name, includeDependencies, manageDependencies, showRelatedObjects, handleRecursively",
     "tooltip.includeDependencies": "Include Dependencies",
     "tooltip.manageDependencies": "Manage Dependencies",
@@ -2781,8 +2781,8 @@
         "environmentName": "Environment Variable Name",
         "environmentValue": "Environment Variable Value",
         "workflowSynchronizationStatus": "Workflow Synchronization Status",
-        "workflowAvailabilityStatus": "Workflow Availability Status",
-        "jobAvailabilityStatus": "Job Availability Status"
+        "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following availability status:\n- **synchronized** between ^Inventory^ and ^Controller^.\n- **not synchronized** between Inventory and Controller.\n- **suspended** for execution.\n- **outstanding** response from one or more ^Agent^s.",
+        "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **skipped**: ^Order^s will skip the Job.\n- **stopped**: Orders will be ^suspended^."
       }
     },
     "updateJob": {
@@ -4611,7 +4611,7 @@
     "tooltip.listOfSchemes": "The list of admission time cycles defined for this Workflow.",
     "tooltip.admissionTime": "The admission time periods during which Orders are permitted to start.",
     "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: regex",
-    "tooltip.regex": "Regex",
+    "tooltip.regex": "A ^regular expression^ specifies the pattern used to match the name or title of a ^Workflow^. For example, `test` matches the string `a-test-b`, `[0-9]{8}-test` matches the string `a-20260515-test-b`.",
     "tooltip.enterDateAndTime": "Enter Date and Time",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Title",
