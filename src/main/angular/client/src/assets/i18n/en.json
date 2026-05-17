@@ -497,7 +497,7 @@
         "certAlias": "The Certificate Alias is the unique identifier of a Certificate. The alias name can be freely chosen.",
         "certificate": "The Certificate is expected in PEM format.\n\nThe first line should be `-----BEGIN CERTIFICATE-----`.\n\nThe last line should be `-----END CERTIFICATE-----`",
         "privateKeyPath": "The Path to Private Key File specifies the location of the Private Key with the Agent.\n\nAn absolute path can be specified.\n\nIf a relative path is specified, then it starts from the Agent's working directory.",
-        "jobResourceFolder": "The Job Resource Folder specifies the inventory folder in which a ^Job Resource^ will be created that holds the Certificate.",
+        "jobResourceFolder": "The Job Resource Folder specifies the ^Inventory^ folder in which a ^Job Resource^ will be created that holds the Certificate.",
         "showAssignedAgents": "Displays the list of ^Agent^s that are assigned the related Private Key.\n\nUsers must copy the Private Key file to the hosts of related Agents.\n\nThe *Manage Controllers/Agents* page allows specifying which Agents have access to the Private Key file.",
         "assignAgents": "Similar to the *Manage Controller/Agents* page specifies which ^Agent^s have access to the Private Key file.\n\nUsers must copy the Private Key file to the hosts of related Agents.",
         "showEncryptionSample": "The Encryption Test offers performing encryption with the given Certificate from sample input.",
@@ -509,7 +509,7 @@
       "importEncipherment": {
         "certAlias": "The Certificate Alias is the unique identifier of a Certificate. The alias name can be freely chosen.",
         "privateKeyPath": "The Path to Private Key File specifies the location of the Private Key with the ^Agent^.\n\nAn absolute path can be specified.\n\nIf a relative path is specified, then it starts from the Agent's working directory.",
-        "jobResourceFolder": "The Job Resource Folder specifies the inventory folder in which a ^Job Resource^ will be created that holds the Certificate."
+        "jobResourceFolder": "The Job Resource Folder specifies the ^Inventory^ folder in which a ^Job Resource^ will be created that holds the Certificate."
       }
     }
   },
@@ -2210,7 +2210,7 @@
     "button.unlink": "Unlink",
     "button.syncToController": "Synchronize to Controller",
     "button.syncToInventory": "Synchronize to Inventory",
-    "tooltip.setVersion": "??? probably unused: Set Version",
+    "tooltip.setVersion": "??? 2213: probably unused: Set Version",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned one or more of the selected ^Tag^s.",
     "tooltip.orderTagging": "Limits display to ^Workflow^s that hold ^Order^s assigned one or more of the selected Order ^Tag^s from their ^Schedule^s.",
@@ -2219,7 +2219,7 @@
     "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: name, includeDependencies, manageDependencies, showRelatedObjects, handleRecursively",
     "tooltip.includeDependencies": "Includes dependent objects, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders.\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits the operation to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
     "tooltip.manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-    "tooltip.showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time.",
+    "tooltip.showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time.",
     "--------EXPORT BULK DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Export, Source: export-bulk-dialog.html, Fields: fileName, fileFormat",
     "tooltip.fileName": "Specifies the name of the export file such as `export.zip` or `export.tar.gz`.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
     "tooltip.fileFormat": "Specifies zip or tar.gz for the compression type.",
@@ -2245,7 +2245,7 @@
     "tooltip.folderName": "Renaming offers the following options:\n- **New folder name** for example, `myFolder`should become `yourFolder`.\n- **New folder location** for example, `myFolder` located in `/someFolders` should be relocated to `/myFolders/myFolder`. Top-level folders are created if they do not exist.\n- **New path** for example, `myFolder` located in `/someFolders` should be renamed to `/yourFolders/yourFolder`.",
     "tooltip.rename": "Renaming is performed for a folder or for objects included with a folder:\n- **Folder**: renames or relocates the folder in the ^Inventory^.\n- **Objects recursively**: modifies object names in the folder and sub-folders from a search/replace operation.",
     "tooltip.newName": "Specifies the new name of the object that should be renamed.",
-    "tooltip.newPath": "??? 2248: New Path",
+    "tooltip.newPath": "Specifies the new name of the folder that should be renamed.",
     "tooltip.search": "The *Search* expression is a ^regular expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
     "tooltip.replace": "The *Search* expression is a ^regular expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
     "--------GIT DIALOG TOOLTIPS (inventory)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Clone / Push, Source: git-dialog.html, Fields: gitUri, folderName, gitMessage",
@@ -2263,7 +2263,7 @@
     "tooltip.workflowNames": "Updates ^Workflow^ references in selected ^Schedule^s.",
     "tooltip.planOrderAutomatically": "Updates the *Plan Order automatically* setting in selected ^Schedule^s.",
     "tooltip.submitOrderToControllerWhenPlanned": "Updates the *Submit planned Order to Controller* setting in selected ^Schedule^s.",
-    "tooltip.script": "Updates the ^Job Script^ in the ^Job^s of selected ^Workflow^s.",
+    "tooltip.script": "Updates the ^Job Script^ in selected ^Script Include^s.",
     "tooltip.controllers": "??? 2267: Controllers",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -2348,10 +2348,10 @@
       "label.calendarName": "Calendar Name",
       "label.agentName": "Agent Name",
       "label.systemCrontab": "System crontab",
-      "tooltip.systemCrontab": "crontab file contains user",
-      "tooltip.folder": "Folder",
-      "tooltip.calendarName": "Calendar Name",
-      "tooltip.agentName": "Agent Name",
+      "tooltip.systemCrontab": "If activated, the crontab file must contain user accounts.",
+      "tooltip.folder": "Selects the ^Inventory^ folder to which ^Workflow^s holding converted crontab ^Job^s will be stored.",
+      "tooltip.calendarName": "Selects the ^Calendar^ that will be assigned ^Schedule^s for ^Workflow^s with converted crontab ^Job^s.",
+      "tooltip.agentName": "Selects the ^Agent^ that will be assigned converted crontab ^Job^s.",
       "button.convert": "Convert"
     },
     "export": {
@@ -2617,7 +2617,7 @@
           "question": "The ^Prompt Instruction^ includes that ^Workflow^ execution will be temporarily stopped. ^Order^s are set to the ^prompting^ state.\n\nUsers can check the Message that is assigned the ^Prompt Instruction^ and can confirm execution of the Workflow. The Order will be set to the ^running^ state."
         },
         "retry": {
-          "maxTries": "When reaching the max. number of Retries, then the ^Retry Instruction^ wil ends and the ^Order^ will be set to the ^failed^ state.",
+          "maxTries": "When reaching the max. number of Retries, then the ^Retry Instruction^ will end and the ^Order^ will be set to the ^failed^ state.",
           "delay": "The Delay specifies the time in seconds before the next retry is performed.\n\nIf a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
@@ -2626,20 +2626,20 @@
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
       "export": {
-        "controllerId": "La Controller ID",
+        "controllerId": "??? 2629: Controller ID",
         "useRelativePathOnly": "When exporting scheduling objects, by default an absolute path is used inside the export file.\n\nUsers can specify a relative path to be used starting from the selected folder.\n\nIf no folder is selected but scheduling objects only, then using a relative path maps to exporting as top-level objects to the export file.",
         "fileName": "Specifies the name of the export file such as `export.zip` or `export.tar.gz`.\n\nThe export file will be provided in the browser's *Download* directory.\n\nBy default the file will be provided in zip format and the .zip extension will be added.",
         "fileFormat": "Specifies zip or tar.gz for the compression type.",
-        "exportType": "Is one of\n- **Individual Objects**: users select objects from the inventory tree.\n- **Folders**: users select folders holding objects.\n- **Changes**: users select a ^Change^ that includes all objects directly assigned the Change and dependent objects that are referencing or are referenced by objects assigned the Change.",
-        "objectTypes": "Allows selecting types of inventory objects that should be included with the export file, for example, ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.",
+        "exportType": "Is one of\n- **Individual Objects**: users select objects from the ^Inventory^ tree.\n- **Folders**: users select folders holding objects.\n- **Changes**: users select a ^Change^ that includes all objects directly assigned the Change and dependent objects that are referencing or are referenced by objects assigned the Change.",
+        "objectTypes": "Allows selecting ^Inventory^ object types that should be included with the export file, for example, ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.",
         "forSigning": "For Signing",
         "inclusiveAllTags": "Offers adding ^Tag^s to the export file.\n\nThis includes all of Workflow Tags, Order Tags and Job Tags.\n\nOn import users can decide to import Tags from an export file.",
         "filterType": "Offers selecting **Controller** and/or **Automation** objects located in the related system folders.",
-        "filter": "Offers filtering inventory objects for addition to the export file based on their status.\n- **Invalid Objects** can be exported and can be imported, though they cannot be deployed or released.\n- **Draft Objects** include changes that have not been deployed or released.\n- **Deployed Objects** are ^deployed|deployment^ on a ^Controller^.\n- **Released Objects** are available in the *Automation* system folder and are ^released|releasing^ for use.",
-        "handleRecursively": "Adds inventory objects from sub-folders to the export file.",
+        "filter": "Offers filtering ^Inventory^ objects for addition to the export file based on their status.\n- **Invalid Objects** can be exported and can be imported, though they cannot be deployed or released.\n- **Draft Objects** include changes that have not been deployed or released.\n- **Deployed Objects** are ^deployed|deployment^ on a ^Controller^.\n- **Released Objects** are available in the *Automation* system folder and are ^released|releasing^ for use.",
+        "handleRecursively": "Adds objects from sub-folders of the ^Inventory^ to the export file.",
         "includeDependencies": "Adds dependent objects to the export file, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders and will be added to the export file.\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits export to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time.",
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time.",
         "change": "Offers selecting a ^Change^ that specifies objects for export.\n\nThe ^Change^ holds objects that have been directly assigned by the user and it can include dependent objects that reference objects or that are referenced by objects assigned the Change."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
@@ -2647,22 +2647,22 @@
         "controllers": "Offers selecting the ^Controller^ to which objects will be deployed.\n\nMore than one Controller can be connected to ^JOC Cockpit^ that will receive deployed objects.\n\nBy default the currently selected Controller will be used.",
         "updateDailyPlan": "Specifies that ^Order^s will be added to or will be updated in the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the ^Daily Plan^ remains unchanged.",
         "specificDate": "Specifies the date starting from which ^Order^s will be added to or will be updated in the ^Daily Plan^.",
-        "deployType": "Offers deployment from the following options:\n- **Individual Objects**: users select objects individually from the tree of inventory objects. This includes selecting folders.\n- **Changes**: users select a ^Change^ that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
+        "deployType": "Offers deployment from the following options:\n- **Individual Objects**: users select objects individually from the tree of ^Inventory^ objects. This includes selecting folders.\n- **Changes**: users select a ^Change^ that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
         "includeTodaysLateOrders": "Updates Orders in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
-        "filter": "Offers adding inventory objects to the ^Deployment^ based on their status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
-        "handleRecursively": "Deploys inventory objects from sub-folders too.",
+        "filter": "Offers adding ^Inventory^ objects based on their ^Deployment^ status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
+        "handleRecursively": "Deploys ^Inventory^ objects from sub-folders too.",
         "includeDependencies": "Deploys dependent objects, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders and will be deployed too:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: selected objects only.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "change": "Offers selecting a ^Change^ that specifies objects for ^Deployment^.\n\nThe Change holds objects that have been directly assigned by the user and it holds objects that reference or that are referenced by objects that are assigned the Change.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
       "revoke": {
         "controllers": "Offers selecting the ^Controller^ from which objects will be revoked.\n\nMore than one Controller can be connected to ^JOC Cockpit^.\n\nBy default the currently selected Controller will be used.",
-        "handleRecursively": "Revokes inventory objects from sub-folders.",
+        "handleRecursively": "Revokes objects from sub-folders of the ^Inventory^.",
         "includeDependencies": "Revokes dependent objects, for example, when revoking a ^Workflow^, then the referencing ^Schedule^ will be recalled.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits revocation to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
       "remove": {
@@ -2670,7 +2670,7 @@
         "specificDate": "Specifies the date starting from which ^Order^s will be cancelled from the ^Daily Plan^.",
         "includeDependencies": "Removes dependent objects, for example, when removing a ^Workflow^, then the referencing ^Schedule^ will be recalled or removed.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits removal to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected and users can decide to revoke dependent objects instead of removing objects.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
       "release": {
@@ -2679,7 +2679,7 @@
         "includeTodaysLateOrders": "Updates ^Order^s in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
         "includeDependencies": "Releases dependent objects, for example, when releasing a ^Schedule^, then the referenced ^Calendar^ will be released too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits releasing to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
       "recall": {
@@ -2688,7 +2688,7 @@
         "includeTodaysLateOrders": "Cancels ^Order^s in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
         "includeDependencies": "Recalls dependent objects, for example, when recalling a ^Calendar^, then the referencing ^Schedule^ will be recalled too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits recalling to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
-        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the inventory is large, display may take some time."
+        "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
       }
     },
     "search": {
@@ -2743,7 +2743,7 @@
         "propagateJob": "Propagate to Jobs"
       },
       "placeholder": {
-        "search": "Search in Name or Title using, for example, `%search%`",
+        "search": "Search in Name or Title using, for example, %search%",
         "selectFromTree": "Select from tree"
       },
       "message": {
@@ -2751,37 +2751,37 @@
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
       },
       "tooltips": {
-        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.",
-        "folders": "Select one or more Folders to filter results.",
-        "currentController": "Limit results to objects available with the Current Controller.",
-        "deployedOrReleased": "Limit results to objects that are Deployed/Released.",
-        "validOrInvalid": "Limit results to objects that are valid, invalid or both",
-        "return": "Specify the object types to Return",
-        "advanced": "Advanced",
-        "agent": "Agent Name",
-        "workflow": "Workflow",
-        "fileOrderSource": "File Order Source",
-        "jobResources": "Job Resources",
-        "boards": "Notice Board",
-        "lock": "Lock",
-        "schedule": "Schedule",
-        "jobTemplate": "Job Template",
-        "countJobs": "Count Jobs",
-        "from": "From",
-        "to": "To",
-        "jobName": "Job Name",
-        "jobNameExactMatch": "Exact match for Job Name",
-        "jobCriticality": "Job Criticality",
-        "jobScript": "Job Script",
-        "includeScript": "Script Include",
-        "calendar": "Calendar",
-        "report": "Report Template",
-        "argumentName": "Argument Name",
-        "argumentValue": "Argument Value",
-        "environmentName": "Environment Variable Name",
-        "environmentValue": "Environment Variable Value",
-        "workflowSynchronizationStatus": "Workflow Synchronization Status",
-        "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following availability status:\n- **synchronized** between ^Inventory^ and ^Controller^.\n- **not synchronized** between Inventory and Controller.\n- **suspended** for execution.\n- **outstanding** response from one or more ^Agent^s.",
+        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.\n\nFor details see [Inventory Search](context:help:search-inventory).",
+        "folders": "Select one or more folders to filter results.",
+        "currentController": "Limits results to objects available with the current Controller.",
+        "deployedOrReleased": "Limits results to objects that are deployed/released.",
+        "validOrInvalid": "Limits results to objects that are valid, invalid or allows both",
+        "return": "Specifies the object type of results such as ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.\n\nUsers can perform dependency search, for example returning Workflows that are triggered by incoming files from ^File Order Source^s matching the given search string in their name or title.\n\nFor details see [Inventory Search](context:help:search-inventory).",
+        "advanced": "Offers advanced search options for attribute search and dependency search.\n\nFor details see [Inventory Search](context:help:search-inventory).",
+        "agent": "Limits results to the selected ^Agent^ from its ^Agent Name^.",
+        "workflow": "Limits results to ^Workflow^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "fileOrderSource": "Limits results to ^File Order Source^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "jobResources": "Limits results to ^Job Resource^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "boards": "Limits results to ^Notice Board^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "lock": "Limits results to ^Resource Lock^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "schedule": "Limits results to ^Schedule^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "jobTemplate": "Limits results to ^Job Template^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "countJobs": "Limits results to ^Workflow^s with the indicated minimum/maximum number of ^Job^s.",
+        "from": "Specifies the minimum number of ^Job^s that must be available from a ^Workflow^.",
+        "to": "Specifies the maximum number of ^Job^s that can be available from a ^Workflow^.",
+        "jobName": "Limits results to ^Workflow^s holding ^Job^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "jobNameExactMatch": "Limits results to ^Workflow^s including a ^Job^ with the exact name without left-truncation or right-truncation being performed.",
+        "jobCriticality": "Limits results to ^Workflow^s including ^Job^s with the given criticality.",
+        "jobScript": "Limits results to ^Workflow^s holding ^Job^s with ^Job Script^s that contain the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "includeScript": "Limits results to ^Script Include^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "calendar": "Limits results to ^Calendar^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "report": "Limits results to ^Report^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "argumentName": "Limits results to ^Workflow^s holding ^Job^s with argument names that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "argumentValue": "Limits results to ^Workflow^s holding ^Job^s with argument values that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "environmentName": "Limits results to ^Workflow^s holding ^Job^s with environment variable names that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "environmentValue": "Limits results to ^Workflow^s holding ^Job^s with environment variable values that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
+        "workflowSynchronizationStatus": "Limits results to ^Workflow^s holding the given synchronization status:\n- **synchronized** between ^Inventory^ and ^Controller^, i.e. Workflows are deployed.\n- **not synchronized** between Inventory and Controller, i.e. Workflows are not available with the Controller.",
+        "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following availability status:\n- **suspended**: Workflows are put on hold by user intervention.\n- **outstanding**: response from one or more ^Agent^s missing after Workflows have been suspended or resumed.",
         "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **skipped** Jobs will be skipped by ^Order^s.\n- **stopped** Jobs will ^suspend|suspended^ Orders."
       }
     },
@@ -4614,10 +4614,10 @@
     "tooltip.regex": "A ^regular expression^ specifies the pattern used to match the name or title of a ^Workflow^. For example, `test` matches the string `a-test-b`, `[0-9]{8}-test` matches the string `a-20260515-test-b`.",
     "tooltip.enterDateAndTime": "Enter Date and Time",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
-    "tooltip.title": "Title",
-    "tooltip.jobResourceNames": "Job Resource Names",
-    "tooltip.agent": "Agent",
-    "tooltip.delay": "Delay",
+    "tooltip.title": "Updates the *Title* of selected objects.",
+    "tooltip.jobResourceNames": "Updates ^Job Resource^ references in selected objects.",
+    "tooltip.agent": "Updates the ^Agent^ assignment in selected ^File Order Source^ objects.",
+    "tooltip.delay": "Updates the *Delay* for waiting for incoming files being persisted in selected ^File Order Source^ objects.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

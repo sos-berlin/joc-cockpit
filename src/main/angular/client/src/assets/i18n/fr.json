@@ -497,7 +497,7 @@
         "certAlias": "L'Alias est l'identifiant unique d'un Certificat. L'Alias peut être choisi librement.",
         "certificate": "Le Certificat doit être fourni au format PEM.\n\nLa première ligne doit être `-----BEGIN CERTIFICATE-----`.\n\nLa dernière ligne doit être `-----END CERTIFICATE-----`",
         "privateKeyPath": "Le Chemin d'accès de la Clé Privée indique l'emplacement de la clé privée au niveau de l'^Agent^.\n\nIl est possible de spécifier un chemin d'accès absolu.\n\nSi un chemin d'accès relatif est indiqué, celui-ci part du répertoire de travail de l'Agent.",
-        "jobResourceFolder": "Le Dossier de la Ressource de Tâche indique le dossier d'inventaire dans lequel sera créée une ^Ressource de Tâche^ contenant le Certificat.",
+        "jobResourceFolder": "Le Dossier de la Ressource de Tâche indique le dossier d'^Inventaire^ dans lequel sera créée une ^Ressource de Tâche^ contenant le Certificat.",
         "showAssignedAgents": "Affiche la liste des ^Agent^s auxquels la Clé Privée indiqué a été attribué.\n\nLes utilisateurs doivent copier le fichier de Clé Privée sur les Agents concernés.\n\nLa page 'Gérer Contrôleurs/Agents' permet de définir quels Agents ont accès au fichier de Clé Privée.",
         "assignAgents": "Tout comme la page 'Gérer Contrôleurs/Agents', cette page permet de spécifier quels ^Agent^s ont accès au fichier de Clé Privée.\n\nLes utilisateurs doivent copier le fichier de Clé Privée sur les hôtes des Agents concernés.",
         "showEncryptionSample": "Le Test de Cryptage permet d'effectuer un chiffrement à l'aide du Certificat fourni à partir d'un exemple d'entrée.",
@@ -509,7 +509,7 @@
       "importEncipherment": {
         "certAlias": "L'Alias est l'identifiant unique d'un Certificat. L'Alias peut être choisi librement.",
         "privateKeyPath": "Le Chemin d'accès de la Clé Privée indique l'emplacement de la clé privée au niveau de l'^Agent^.\n\nIl est possible de spécifier un chemin d'accès absolu.\n\nSi un chemin d'accès relatif est indiqué, celui-ci part du répertoire de travail de l'Agent.",
-        "jobResourceFolder": "Le Dossier de la Ressource de Tâche indique le dossier d'inventaire dans lequel sera créée une ^Ressource de Tâche^ contenant le Certificat."
+        "jobResourceFolder": "Le Dossier de la Ressource de Tâche indique le dossier d'^Inventaire^ dans lequel sera créée une ^Ressource de Tâche^ contenant le Certificat."
       }
     }
   },
@@ -536,7 +536,7 @@
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Le Nom est l'identifiant unique du ^Changement^.",
     "tooltip.title": "Le Titre du ^Changement^ peut être spécifié à volonté.",
-    "tooltip.state": "L'état du ^Changement^ est *ouvert* ou *fermé*.\n\nLes objets d'inventaire peuvent être ajoutés aux Changement *ouverts*, mais pas aux Changement *fermés*.",
+    "tooltip.state": "L'état du ^Changement^ est *ouvert* ou *fermé*.\n\nLes objets d'^Inventaire^ peuvent être ajoutés aux Changement *ouverts*, mais pas aux Changement *fermés*.",
     "tooltip.includeDependencies": "Un ^Changement^ comprend les objets qui lui sont directement associés par l'utilisateur, ainsi que, le cas échéant, les objets dépendants qui sont référencés par les objets du Changement ou qui les référencent.\n\nLes utilisateurs peuvent choisir d'inclure les objets dépendants.",
     "--------PUBLISH CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Publish Change, Source: publish-change-dialog.html, Fields: name, includeDependencies, manageDependencies, showRelatedObjects",
     "tooltip.manageDependencies": "NOT USED: Manage Dependencies",
@@ -1121,7 +1121,7 @@
     "tooltip.future": "Indique qu'une ^Annonce^ est prévu, c'est-à-dire qu'un ^Ordre^ existe pour le ^Workflow^ de publication.\n\nL'Annonce sera disponible ultérieurement.",
     "tooltip.letRun": "Les ^Ordre^s pour exécution unique démarreront ou se poursuivront immédiatement.",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Create Plan, Source: create-plan-dialog.html, Fields: chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically",
-    "tooltip.chooseTemplates": "Les utilisateurs peuvent choisir la portée de la création des ^Ordre^s :\n- **Tous** les ^Workflows^ déployés pour lesquels des ^Planification^s ont été publiés.\n- **Sélectionner** les Workflows déployés ou des Planifications publiés dans des dossiers.",
+    "tooltip.chooseTemplates": "Les utilisateurs peuvent choisir la portée de la création des ^Ordre^s :\n- **Tous** les ^Workflow^s déployés pour lesquels des ^Planification^s ont été publiés.\n- **Sélectionner** les Workflows déployés ou des Planifications publiés dans des dossiers.",
     "tooltip.schedules": "Sélectionnez les ^Planification^s pour lesquelles des ^Ordre^s doivent être créés :\n- **Planification**: Ordres de la Planification correspondante\n- **Dossier**: Ordres des Planifications contenues dans le dossier et ses sous-dossiers\n\nPar défaut, seuls les Planifications configurés pour planifier automatiquement des Ordres seront pris en compte.",
     "tooltip.scheduleFolders": "Affiche les dossiers sélectionnés contenant des ^Planification^s.",
     "tooltip.workflows": "Sélectionnez les ^Workflow^s pour lesquels des ^Ordre^s doivent être créés :\n- **Workflow**: limite la création des Ordres à ce Workflow.\n- **Dossier**: crée des Ordres à partir des Workflows contenus dans ce dossier et ses sous-dossiers.",
@@ -2210,7 +2210,7 @@
     "button.unlink": "Désactiver le Lien",
     "button.syncToController": "Synchroniser avec le Contrôleur",
     "button.syncToInventory": "Synchroniser avec l'inventaire",
-    "tooltip.setVersion": "??? probably unused: Définir la version",
+    "tooltip.setVersion": "??? 2213: probably unused: Définir la version",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limite l'affichage aux ^Workflow^s auxquels ont été attribués un ou plusieurs ^Tag^s parmi une liste donnée.",
     "tooltip.orderTagging": "Limite l'affichage aux ^Workflow^s contenant des ^Ordre^s auxquels ont été attribués un ou plusieurs des ^Tag^s de l'Ordre sélectionnés.",
@@ -2219,7 +2219,7 @@
     "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: name, includeDependencies, manageDependencies, showRelatedObjects, handleRecursively",
     "tooltip.includeDependencies": "Inclut les objets dépendants, par exemple, une ^Ressource de Tâche^ référencée par un ^Workflow^ ou une ^Planification^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'opération aux objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
     "tooltip.manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-    "tooltip.showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps.",
+    "tooltip.showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps.",
     "--------EXPORT BULK DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Export, Source: export-bulk-dialog.html, Fields: fileName, fileFormat",
     "tooltip.fileName": "Indique le nom du fichier d'exportation, par exemple, `export.zip` ou `export.tar.gz`.",
     "tooltip.fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
@@ -2236,7 +2236,7 @@
     "tooltip.filter": "Filtre les objets à mettre à jour à partir du ^Modèle de Tâche^:\b- **Brouillon** : si pas cochée, les objets en brouillon sont exclus.\n- **Déployé** : si pas cochée, les ^Workflow^s déployés ne sont pas mis à jour.",
     "tooltip.overwriteNotification": "Met à jour les paramètres de ^Notification^ des ^Tâche^s dans les ^Workflow^s cibles à partir du ^Modèle de Tâche^.",
     "tooltip.overwriteAdmissionTime": "Met à jour les ^Heures d'Admission^ des ^Tâche^s dans les ^Workflow^s cibles à partir du ^Modèle de Tâche^.",
-    "tooltip.overwriteRequiredArguments": "Met à jour les arguments des ^Tâche^s dans les ^Workflows^ cibles à partir des arguments obligatoires du ^Modèle de Tâche^.",
+    "tooltip.overwriteRequiredArguments": "Met à jour les arguments des ^Tâche^s dans les ^Workflow^s cibles à partir des arguments obligatoires du ^Modèle de Tâche^.",
     "tooltip.overwriteOptionalArguments": "Met à jour les arguments des ^tâches^ dans les ^Workflow^s cibles à partir des arguments facultatifs du ^Modèle de Tâche^.",
     "--------ADD GROUPS DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Add Groups / Rename Group, Source: add-groups-dialog.html, Fields: groups, groupName",
     "tooltip.groups": "Spécifie les groupes ^Tag^ à ajouter.\n\nPour ajouter des groupes, saisissez le nom d'un nouveau groupe.",
@@ -2245,9 +2245,9 @@
     "tooltip.folderName": "La fonction de renommage propose les options suivantes :\n- **Nouveau nom de dossier** : par exemple, `monDossier` doit devenir `tonDossier`.\n- **Nouvel emplacement du dossier** : par exemple, `monDossier`, situé dans `/nosDossiers`, doit être déplacé vers `/mesDossiers/monDossier`. Les dossiers de niveau supérieur sont créés s'ils n'existent pas.\n- **Nouveau chemin** : par exemple, `monDossier` situé dans `/nosDossiers` doit être renommé en `/tesDossiers/tonDossier`.",
     "tooltip.rename": "Le changement de nom s'applique à un dossier ou aux objets qu'il contient :\n- **Dossier** : renomme ou déplace le dossier dans l'^Inventaire^.\n- **Objets récursifs** : modifie les noms des objets contenus dans le dossier et ses sous-dossiers à l'aide d'une opération de recherche et de remplacement.",
     "tooltip.newName": "Indique le nouveau nom de l'objet à renommer.",
-    "tooltip.newPath": "??? 2248: New Path",
-    "tooltip.search": "L'expression *Rechercher* est une ^expression régulière^. Elle utilise des *Captruging Groups* qui sont utilisés dans l'expression *Remplacer* :\n- **Exemple** : deux objets `wfToBeRenamed1` et `wfToBeRenamed2` qui doivent être renommés en `wfNotToBeRenamed1` et `wfNotToBeRenamed2`.\n - **Rechercher** : `(.*)(ToBe)(.*)` crée 3 *Capturing Groups* indiqués par des parenthèses.\n- **Remplacer** : `$1NotToBe$3` fait référence aux 1er et 3e *Capturing Group* et insère la chaîne constante `NotToBe`.",
-    "tooltip.replace": "L'expression *Rechercher* est une ^expression régulière^. Elle utilise des *Captruging Groups* qui sont utilisés dans l'expression *Remplacer* :\n- **Exemple** : deux objets `wfToBeRenamed1` et `wfToBeRenamed2` qui doivent être renommés en `wfNotToBeRenamed1` et `wfNotToBeRenamed2`.\n - **Rechercher** : `(.*)(ToBe)(.*)` crée 3 *Capturing Groups* indiqués par des parenthèses.\n- **Remplacer** : `$1NotToBe$3` fait référence aux 1er et 3e *Capturing Group* et insère la chaîne constante `NotToBe`.",
+    "tooltip.newPath": "Indique le nouveau nom du dossier à renommer.",
+    "tooltip.search": "L'expression *Rechercher* est une ^expression régulière^. Elle utilise des *Capturing Groups* qui sont utilisés dans l'expression *Remplacer* :\n- **Exemple** : deux objets `wfToBeRenamed1` et `wfToBeRenamed2` qui doivent être renommés en `wfNotToBeRenamed1` et `wfNotToBeRenamed2`.\n - **Rechercher** : `(.*)(ToBe)(.*)` crée 3 *Capturing Groups* indiqués par des parenthèses.\n- **Remplacer** : `$1NotToBe$3` fait référence aux 1er et 3e *Capturing Group* et insère la chaîne constante `NotToBe`.",
+    "tooltip.replace": "L'expression *Rechercher* est une ^expression régulière^. Elle utilise des *Capturing Groups* qui sont utilisés dans l'expression *Remplacer* :\n- **Exemple** : deux objets `wfToBeRenamed1` et `wfToBeRenamed2` qui doivent être renommés en `wfNotToBeRenamed1` et `wfNotToBeRenamed2`.\n - **Rechercher** : `(.*)(ToBe)(.*)` crée 3 *Capturing Groups* indiqués par des parenthèses.\n- **Remplacer** : `$1NotToBe$3` fait référence aux 1er et 3e *Capturing Group* et insère la chaîne constante `NotToBe`.",
     "--------GIT DIALOG TOOLTIPS (inventory)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Clone / Push, Source: git-dialog.html, Fields: gitUri, folderName, gitMessage",
     "tooltip.gitUri": "Lors du clonage ou de la mise en lien d'un dépôt Git, l'URI Git du dépôt doit être spécifiée.\n\nExemple : `git@github.com:sos-berlin/js7-demo-inventory-rollout-test.git`\n\nL'URL de l'exemple comprend les éléments suivants :\n- **git@** Le préfixe est une valeur constante utilisée pour l'accès SSH au serveur Git.\n- **github.com** Le nom d'hôte et, éventuellement, le port (séparés par deux points) du serveur Git.\n- **:sos-berlin** Le compte propriétaire du dépôt, commençant par deux points.\n- **/js7-demo-inventory-rollout-test** Le chemin d'accès au dépôt.\n- **.git** : le suffixe est une valeur constante.",
     "tooltip.gitMessage": "Pour les opérations Git telles que *push* et *pull* proposées par ^JOC Cockpit^, il est possible d'ajouter un message. Les utilisateurs sont libres d'y saisir toute information qui sera ensuite disponible avec les détails du *commit* sur le serveur Git.",
@@ -2259,11 +2259,11 @@
     "tooltip.toNotice": "Met à jour l'*ID Annonce pour l'Ordre d'envoi* dans les ^Tableaux de Condition|tableau-de-condition^ globaux sélectionnés.",
     "tooltip.readingOrderToNoticeId": "Met à jour l'*ID Annonce pour l'Ordre en attente* dans les ^Tableaux de Condition|tableau-de-condition^ globaux sélectionnés.",
     "tooltip.endOfLife": "Met à jour la *Durée de vie de l'Annonce* dans les ^Tableaux de Condition|tableau-de-condition^ globaux sélectionnés.",
-    "tooltip.limit": "Met à jour la *Capacité* dans les ^Verrous de Ressource|verrou-de-ressource^ sélectionnés.",
+    "tooltip.limit": "Met à jour le *Limite* dans les ^Verrous de Ressource|verrou-de-ressource^ sélectionnés.",
     "tooltip.workflowNames": "Met à jour les références ^Workflow^ dans les ^Planification^s sélectionnées.",
-    "tooltip.planOrderAutomatically": "Met à jour la *Planifier l'Ordre automatiquement* dans les ^Planification^s sélectionnées.",
-    "tooltip.submitOrderToControllerWhenPlanned": "Met à jour la *Soumettre l'Ordre au Contrôleur* dans les ^Planification^s sélectionnées.",
-    "tooltip.script": "Met à jour le ^Script Job^ dans les ^Tâche^s des ^Workflow^s sélectionnés.",
+    "tooltip.planOrderAutomatically": "Met à jour le paramètre *Planifier l'Ordre automatiquement* dans les ^Planification^s sélectionnées.",
+    "tooltip.submitOrderToControllerWhenPlanned": "Met à jour le paramètre *Soumettre l'Ordre au Contrôleur* dans les ^Planification^s sélectionnées.",
+    "tooltip.script": "Met à jour le ^Script Job^ dans les ^Scripts Blocs|script-bloc^ sélectionnés.",
     "tooltip.controllers": "??? 2267: Controllers",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2348,10 +2348,10 @@
       "label.calendarName": "Nom du Calendrier",
       "label.agentName": "Nom de l'Agent",
       "label.systemCrontab": "Système crontab",
-      "tooltip.systemCrontab": "Le fichier crontab contient le compte d'utilisateur",
-      "tooltip.folder": "Folder",
-      "tooltip.calendarName": "Calendar Name",
-      "tooltip.agentName": "Agent Name",
+      "tooltip.systemCrontab": "Si cette option est activée, le fichier crontab doit contenir les identifiants des utilisateurs.",
+      "tooltip.folder": "Sélectionne le dossier de l'^Inventaire^ dans lequel les ^Workflow^s contenant les ^Tâche^s crontab converties sont enregistrés.",
+      "tooltip.calendarName": "Sélectionne le ^Calendrier^ qui sera attribués aux ^Planification^s pour les ^Workflow^s avec des ^Tâche^s crontab converties.",
+      "tooltip.agentName": "Sélectionne l'^Agent^ auquel sont attribuées les ^Tâche^s crontab converties.",
       "button.convert": "Convertir"
     },
     "export": {
@@ -2429,7 +2429,7 @@
         "name": "Les ^Verrous de Ressource|verrou-de-ressource^ sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de ^Tâche^.\n\nIls peuvent être utilisés dans le même ^Workflow^ et dans tous les Workflows pour limiter le parallélisme des Tâches.\n\nLe nom d'un Verrou de Ressource est unique dans l'^Inventaire^.\n\nLes ^Règles de Dénomination des Objets^ s'appliquent.",
         "documentation": "Une référence à une ^Documentation^ peut être ajoutée qui sera affichée avec le ^Verrou de Ressource^.\n\nLa vue *RESSOURCES* permet de gérer la Documentation.",
         "title": "Le Titre d'un ^Verrou de Ressource^ peut être spécifié à volonté.",
-        "limit": "Si un ^Verrou de Ressource^ est acquis en mode partagé, chaque consommateur de Verrou de Ressource spécifie un nombre en fonction de la capacité du Verrou de Ressource. Si la capacité est dépassée, les ^Tâche^s doivent attendre que leur nombre corresponde à la capacité disponible du Verrou de Ressource."
+        "limit": "Si un ^Verrou de Ressource^ est acquis en mode partagé, chaque consommateur de Verrou de Ressource spécifie un limite en fonction de la capacité du Verrou de Ressource. Si la capacité est dépassée, les ^Tâche^s doivent attendre que leur nombre corresponde à la capacité disponible du Verrou de Ressource."
       },
       "schedule": {
         "name": "Une ^Planification^ est utilisé pour créer automatiquement des ^Ordre^s pour un ^Workflow^ donné en fonction du ^Calendrier^ attribué.\n\nLe nom d'une Planification est unique dans l'^Inventaire^.\n\nLes ^Règles de Dénomination des Objets^ s'appliquent.",
@@ -2610,7 +2610,7 @@
           "blockPosition": "Un ^Ordre^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork^, à une ^Instruction Lock^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n- L^Ordre^ sera exécutée dans le Worfklow au début de l'instruction de bloc ou à partir d'une Position de Départ ultérieure.\n- L'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc ou à une Position de Fin antérieure."
         },
         "lock": {
-          "name": "Les noms des ^Verrous de Ressource|verrou-de-ressource^ sont uniques dans l'inventaire.\n\nLes sections des Workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressource.",
+          "name": "Les noms des ^Verrous de Ressource|verrou-de-ressource^ sont uniques dans l'^Inventaire^.\n\nLes sections des Workflows peuvent être limitées dans leur parallélisme en utilisant des Verrous de Ressource.",
           "count": "Le nombre pour l'utilisation d'un ^Verrou de Ressource^ est calculé en fonction de sa capacité.\n\nSi la capacité est dépassée, l'^Ordre^ doit attendre jusqu'à ce qu'une capacité soit disponible qui correspond ou dépasse le nombre actuel."
         },
         "prompt": {
@@ -2630,16 +2630,16 @@
         "useRelativePathOnly": "Lors de l'exportation d'objets, un chemin absolu est utilisé par défaut.\n\nLes utilisateurs peuvent spécifier un chemin relatif à utiliser à partir du dossier sélectionné.\n\nSi aucun dossier n'est sélectionné, mais uniquement des objets individuels, l'utilisation d'un chemin relatif correspond à l'exportation d'objets de premier niveau dans le fichier d'archive d'exportation.",
         "fileName": "Indique le nom du fichier d'exportation, par exemple, `export.zip` ou `export.tar.gz`.",
         "fileFormat": "Spécifie le format de compression .zip ou .tar.gz.",
-        "exportType": "S'agit-il des\n- **Objets individuels**: les utilisateurs sélectionnent des objets dans l'arborescence de l'inventaire.\n- **Dossiers**: les utilisateurs sélectionnent les dossiers contenant des objets.\n- **Changements**: les utilisateurs sélectionnent un Changement qui inclut tous les objets directement affectés à ce Changement, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci",
-        "objectTypes": "Permet de sélectionner les types d'objets d'inventaire à inclure dans l'exportation, par exemple, les ^Workflow^s, les ^Ressources de Tâche|ressource-de-tâche^, les ^Planification^s etc.",
+        "exportType": "S'agit-il des\n- **Objets individuels**: les utilisateurs sélectionnent des objets dans l'arborescence de l'^Inventaire^.\n- **Dossiers**: les utilisateurs sélectionnent les dossiers contenant des objets.\n- **Changements**: les utilisateurs sélectionnent un Changement qui inclut tous les objets directement affectés à ce Changement, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci",
+        "objectTypes": "Permet de sélectionner les types d'objets d'^Inventaire^ à inclure dans l'exportation, par exemple, les ^Workflow^s, les ^Ressources de Tâche|ressource-de-tâche^, les ^Planification^s etc.",
         "forSigning": "Pour signer",
         "inclusiveAllTags": "Ajoute des ^Tag^s au fichier d'exportation qui seront importé vers la destination.\n\nCela inclut tout les Tags de ^Workflow^, les Tags d'^Ordre^ et les Tags de ^Tâche^.\n\nLors de l'importation, les utilisateurs peuvent choisir d'importer des Tags à partir d'un fichier d'exportation.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",
-        "filter": "Propose d'inclure des objets de l'inventaire dans le fichier d'exportation en fonction de leur statut:\n- **objets non valides** peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n- **objets en brouillon** comprennent les modifications qui n'ont pas encore été déployées ou publiées.\n- **objets déployés** sont ^déployés|déploiement^ sur un ^Contrôleur^.\n- **objets publiés** sont disponibles dans le dossier système *Automation* et sont ^publiés|publication^ pour être utilisés.",
-        "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers dans le fichier d'exportation.",
+        "filter": "Propose d'inclure des objets de l'^Inventaire^ dans le fichier d'exportation en fonction de leur statut:\n- **objets non valides** peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n- **objets en brouillon** comprennent les modifications qui n'ont pas encore été déployées ou publiées.\n- **objets déployés** sont ^déployés|déploiement^ sur un ^Contrôleur^.\n- **objets publiés** sont disponibles dans le dossier système *Automation* et sont ^publiés|publication^ pour être utilisés.",
+        "handleRecursively": "Inclut les objets d'^Inventaire^ des sous-dossiers dans le fichier d'exportation.",
         "includeDependencies": "Inclut les objets dépendants dans le fichier d'exportation, par exemple, une ^Ressource de Tâche^ référencée par un ^Workflow^ ou une ^Planification^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au fichier d'exportation.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'exportation aux objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps.",
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps.",
         "change": "Permet de sélectionner un ^Changement^ qui définit les objets à exporter.\n\nLe Changement contient les objets qui ont été directement affectés par l'utilisateur, ainsi que les objets qui font référence à des objets affectés à ce Changement ou qui sont référencés par celui-ci."
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
@@ -2647,22 +2647,22 @@
         "controllers": "Permet de sélectionner le ^Contrôleur^ sur lequel les objets seront déployés.\n\nPlusieurs Contrôleurs peuvent être connectés à ^JOC Cockpit^.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
         "updateDailyPlan": "Indique que les ^Ordre^s seront ajoutées ou mises à jour dans le ^Plan Quotidien^.\n\nLes options suivantes sont proposées:\n- **Maintenant**: à partir de l'heure actuelle.\n- **À partir de**: à partir de la date indiquée.\n- **Non**: le Plan Quotidien reste inchangé.",
         "specificDate": "Indique la date à partir de laquelle les ^Ordre^s seront ajoutées ou mises à jour dans le ^Plan Quotidien^.",
-        "deployType": "Permet le déploiement à partir des options suivantes :\n- **Objets individuels** : les utilisateurs sélectionnent les objets un par un dans l'arborescence des objets d'inventaire. Cela inclut la sélection de dossiers.\n- **Changements** : les utilisateurs sélectionnent un ^Changement^ qui contient les objets directement affectés à ce Changement, ainsi que les objets qui font référence à ces derniers ou qui sont référencés par eux.",
+        "deployType": "Permet le déploiement à partir des options suivantes :\n- **Objets individuels** : les utilisateurs sélectionnent les objets un par un dans l'arborescence des objets d'^Inventaire^. Cela inclut la sélection de dossiers.\n- **Changements** : les utilisateurs sélectionnent un ^Changement^ qui contient les objets directement affectés à ce Changement, ainsi que les objets qui font référence à ces derniers ou qui sont référencés par eux.",
         "includeTodaysLateOrders": "Met à jour les ^Ordre^s du ^Plan Quotidien^ d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
-        "filter": "Propose d'inclure des objets de l'inventaire au déploiement en fonction de leur statut.\n\nLes objets non valides ne peuvent pas être déployés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
-        "handleRecursively": "Inclut les objets d'inventaire des sous-dossiers au déploiement.",
+        "filter": "Propose d'inclure des objets de l'^Inventaire^ au ^Déploiement^ en fonction de leur statut.\n\nLes objets non valides ne peuvent pas être déployés.\n\nLes objets en brouillon comprennent les modifications qui n'ont pas encore été déployées ou publiées.",
+        "handleRecursively": "Inclut les objets d'^Inventaire^ des sous-dossiers au déploiement.",
         "includeDependencies": "Inclut les objets dépendants au déploiement, par exemple, une ^Ressource de Tâche^ référencée par un ^Workflow^ ou une ^Planification^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au déploiement.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite le déploiement aux objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "change": "Permet de sélectionner un ^Changement^ qui définit les objets à déployer.\n\nLe Changement contient les objets qui ont été directement attribués par l'utilisateur, ainsi que les objets qui font référence à des objets attribués à ce Changement ou qui sont référencés par ceux-ci.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REVOKE MISSING TOOLTIPS------------": "",
       "revoke": {
         "controllers": "Permet de sélectionner le ^Contrôleur^ duquel les objets seront révoqués.\n\nPlusieurs ^Contrôleur^s peuvent être connectés à ^JOC Cockpit^.\n\nPar défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.",
-        "handleRecursively": "Révoque les objets d'inventaire des sous-dossiers.",
+        "handleRecursively": "Révoque les objets d'^Inventaire^ des sous-dossiers.",
         "includeDependencies": "Révoque les objets dépendants, par exemple, une ^Ressource de Tâche^ référencée par un ^Workflow^ ou une ^Planification^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâch^e.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâch^e.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD REMOVE MISSING TOOLTIPS------------": "",
       "remove": {
@@ -2670,7 +2670,7 @@
         "specificDate": "Indique la date à partir de laquelle les ^Ordre^s seront supprimés du ^Plan Quotidien^.",
         "includeDependencies": "Supprime les objets dépendants, par exemple, une ^Ressource de Tâche^ référencée par un ^Workflow^ ou une ^Planification^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront révoqués.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RELEASE MISSING TOOLTIPS------------": "",
       "release": {
@@ -2679,7 +2679,7 @@
         "includeTodaysLateOrders": "Met à jour les ^Ordre^s du ^Plan Quotidien^ d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "includeDependencies": "Publie les objets dépendants, par exemple, une ^Planification^ faisant référence à un ^Calendrier^.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront publiés.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps."
       },
       "--------ADD RECALL MISSING TOOLTIPS------------": "",
       "recall": {
@@ -2688,7 +2688,7 @@
         "includeTodaysLateOrders": "Supprime les ^Ordre^s du ^Plan Quotidien^ d'aujourd'hui qui sont en retard et dont le démarrage n'a pas pu avoir lieu à l'heure prévue.",
         "includeDependencies": "Retire les objets dépendants, par exemple, une ^Planification^ faisant référence à un ^Calendrier^.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront retirés.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
-        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'inventaire est volumineux, l'affichage peut prendre un certain temps."
+        "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche^.\n\nSi l'^Inventaire^ est volumineux, l'affichage peut prendre un certain temps."
       }
     },
     "search": {
@@ -2751,38 +2751,38 @@
         "updateSelectedObjects": "Mise à jour de {{objectCount}} objets sélectionnés"
       },
       "tooltips": {
-        "search": "La recherche s'effectue sur le nom ou le titre des objets.\n\nSi d'autres critères de recherche sont spécifiés sur les lignes suivantes de ce formulaire, ils sont combinés par 'et'.\n\nSi des critères de recherche sont spécifiés sur la même ligne, par exemple, si des cases à cocher alternatives sont proposées, ils sont combinés par 'ou'.",
-        "folders": "Sélectionnez un ou plusieurs Dossiers pour filtrer les résultats.",
-        "currentController": "Limiter les résultats aux objets disponibles avec le ^Contrôleur^ actuel.",
-        "deployedOrReleased": "Limiter les résultats aux objets qui sont Déployé/Publié.",
-        "validOrInvalid": "Limiter les résultats aux objets qui sont valides, non valides ou les deux.",
-        "return": "Spécifier les types d'objets à retourner.",
-        "advanced": "Avancé",
-        "agent": "Nom de l'Agent",
-        "workflow": "Workflow",
-        "fileOrderSource": "Source d'Ordres de Fichiers",
-        "jobResources": "Ressource de Tâche",
-        "boards": "Tableaux de Condition",
-        "lock": "Verrou",
-        "schedule": "Planification",
-        "jobTemplate": "Modèle de Tâche",
-        "countJobs": "Compter les Tâches",
-        "from": "De",
-        "to": "à",
-        "jobName": "Nom de la Tâche",
-        "jobNameExactMatch": "Correspondance exacte du nom de la Tâche",
-        "jobCriticality": "Criticité de la Tâche",
-        "jobScript": "Script Job",
-        "includeScript": "Bloc Script",
-        "calendar": "Calendrier",
-        "report": "Modèle de Rapport",
-        "argumentName": "Nom de l'Argument",
-        "argumentValue": "Valeur de l'Argument",
-        "environmentName": "Nom de la Variable d'Environnement",
-        "environmentValue": "Valeur de la Variable d'Environnement",
-        "workflowSynchronizationStatus": "Statut de la synchronisation des Workflows",
-        "workflowAvailabilityStatus": "Limite les résultats aux ^Workflow^s présentant l'un des états de disponibilité suivants :\n- **synchronisé** entre ^Inventaire^ et ^Contrôleur^.\n- **non synchronisé** entre Inventaire et Contrôleur.\n- **suspendu** pour exécution.\n- **pendant** en attente d'une réponse de la part d'un ou plusieurs ^Agent^s.",
-        "jobAvailabilityStatus": "Limite les résultats aux ^Workflow^s dont le statut de disponibilité de la ^Tâche^ est l'un des suivants :\n- **ignorée** : les ^Ordre^s ignoreront la Tâche.\n- **arrêtée** : les Ordres seront ^suspendu^s."
+        "search": "La recherche s'effectue sur le nom ou le titre des objets.\n\nSi d'autres critères de recherche sont spécifiés sur les lignes suivantes de ce formulaire, ils sont combinés par 'et'.\n\nSi des critères de recherche sont spécifiés sur la même ligne, par exemple, si des cases à cocher alternatives sont proposées, ils sont combinés par 'ou'.\n\nPour plus de détails, consultez [Recherche d'Inventaire](context:help:search-inventory).",
+        "folders": "Sélectionnez un ou plusieurs dossiers pour filtrer les résultats.",
+        "currentController": "Limite les résultats aux objets disponibles avec le ^Contrôleur^ actuel.",
+        "deployedOrReleased": "Limite les résultats aux objets qui sont déployé/publié.",
+        "validOrInvalid": "Limite les résultats aux objets qui sont valides, non valides ou permet les deux.",
+        "return": "Spécifie le type d'objet des résultats, tels que les ^Workflow^s, les ^Ressources de Tâche|ressource-de-tâche^, les ^Planification^s, etc.\n\nLes utilisateurs peuvent effectuer une recherche par dépendance, par exemple pour obtenir les Workflows démarrés par des fichiers entrants provenant d'une ^Source d'Ordres de Fichiers^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus de détails, consultez [Recherche d'Inventaire](context:help:search-inventory).",
+        "advanced": "Propose des options de recherche avancée pour la recherche par attribut et la recherche par dépendance.\n\nPour plus de détails, consultez [Recherche d'Inventaire](context:help:search-inventory).",
+        "agent": "Limite les résultats à l'^Agent^ sélectionné en fonction de son ^Nom de l'Agent^.",
+        "workflow": "Limite les résultats aux ^Workflow^s dont le nom ou le titre contient la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "fileOrderSource": "Limite les résultats aux ^Source d'Ordres de Fichiers^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "jobResources": "Limite les résultats aux ^Ressources de Tâche|ressource-de-tâche^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "boards": "Limite les résultats aux ^Tableaux de Condition|tableau-de-condition^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "lock": "Limite les résultats aux ^Verrous de Ressource|verrou-de-ressource^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "schedule": "Limite les résultats aux ^Planification^s dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "jobTemplate": "Limite les résultats aux ^Modèles de Tâche|modèle-de-tâche^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "countJobs": "Limite les résultats aux ^Workflow^s dont le nombre de ^Tâche^s est compris entre les valeurs minimales et maximales indiquées.",
+        "from": "Spécifie le nombre minimum de ^Tâche^s qui doivent être disponibles dans un ^Workflow^.",
+        "to": "Spécifie le nombre maximal de ^Tâche^s pouvant être disponibles dans un ^Workflow^.",
+        "jobName": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "jobNameExactMatch": "Limite les résultats aux ^Workflow^s comprenant une ^Tâche^ portant exactement ce nom, sans tronquage ni à gauche ni à droite.",
+        "jobCriticality": "Limite les résultats aux ^Workflow^s comprenant des ^Tâche^s présentant le niveau de criticité indiqué.",
+        "jobScript": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont les ^Scripts Jobs|script-job^ contiennent la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "includeScript": "Limite les résultats aux ^Blocs Scripts|block-script^ dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "calendar": "Limite les résultats aux ^Calendriert^s dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "report": "Limite les résultats aux ^Rapport^s dont le nom ou le titre correspond à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "argumentName": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont les noms d'arguments correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "argumentValue": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont les valeurs d'arguments correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "environmentName": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont les noms des variables d'environnement correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "environmentValue": "Limite les résultats aux ^Workflow^s contenant des ^Tâche^s dont les valeurs des variables d'environnement correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire^.",
+        "workflowSynchronizationStatus": "Limite les résultats aux ^Workflow^s présentant l'état de synchronisation indiqué :\n- **synchronisés** entre ^Inventaire^ et ^Contrôleur^, c'est-à-dire que les Workflows sont ^déployés|deploiement^.\n- **non synchronisés** entre Inventaire et Contrôleur, c'est-à-dire que les Workflows ne sont pas disponibles sur le Contrôleur.",
+        "workflowAvailabilityStatus": "Limite les résultats aux ^Workflow^s présentant l'un des états de disponibilité suivants :\n- **suspendu** : les Workflows sont mis en attente à la suite d'une intervention de l'utilisateur.\n- **pendant** : la réponse d'un ou plusieurs ^Agents^ fait défaut après la suspension ou la reprise des Workflows.",
+        "jobAvailabilityStatus": "Limite les résultats aux ^Workflow^s dont le statut de disponibilité des ^Tâche^s est le suivant :\n- **ignoré** : les tâches seront ignorées par les ^Ordre^s.\n- **arrêté** : les Tâches ^suspendront|suspendu^ les Ordres."
       }
     },
     "updateJob": {
@@ -4614,10 +4614,10 @@
     "tooltip.regex": "Une ^expression régulière^ définit le modèle utilisé pour identifier le nom ou le titre d'un ^Workflow^. Par exemple, `test` correspond à la chaîne `a-test-b`, tandis que `[0-9]{8}-test` correspond à la chaîne `a-20260515-test-b`.",
     "tooltip.enterDateAndTime": "Enter Date and Time",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
-    "tooltip.title": "Title",
-    "tooltip.jobResourceNames": "Job Resource Names",
-    "tooltip.agent": "Agent",
-    "tooltip.delay": "Delay",
+    "tooltip.title": "Met à jour le *Titre* des objets sélectionnés.",
+    "tooltip.jobResourceNames": "Met à jour des références aux ^Ressources de Tâche|ressource-de-tâche^ dans les objets sélectionnés.",
+    "tooltip.agent": "Met à jour l'^Agent^ associé aux ^Tâche^s dans les ^Source d'Ordres des Fichiers^ sélectionnées.",
+    "tooltip.delay": "Met à jour le *Délai* pendant lequel le système attend que les fichiers entrants soient complets dans les objets ^Source d'Ordres des Fichiers^ sélectionnées.",
     "findAndReplace": {
       "label.find": "Rechercher",
       "label.replace": "Remplacer",

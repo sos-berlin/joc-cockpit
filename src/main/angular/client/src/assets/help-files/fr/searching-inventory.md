@@ -1,4 +1,4 @@
-# Recherche d'inventaire
+# Recherche d'Inventaire
 
 La recherche d'inventaire est utilisée pour limiter les résultats par type d'objet, par exemple :
 

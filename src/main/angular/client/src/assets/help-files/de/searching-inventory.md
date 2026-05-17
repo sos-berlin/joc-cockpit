@@ -10,7 +10,7 @@ Die Inventarsuche wird verwendet, um die Ergebnisse nach Objekttyp einzuschränk
 - **?** Metazeichen ersetzt ein einzelnes Zeichen.
 - **\*** Metazeichen ersetzt kein oder mehr Zeichen.
 
-Die Suche erfolgt unabhängig von der Groß-/Kleinschreibung und teilweise qualifiziert, zum Beispiel:
+Die Suche erfolgt unabhängig von der Groß-/Kleinschreibung und teilqualifiziert, zum Beispiel:
 
 - **rest** findet Objekte mit dem Namen "pdfNon**Rest**artable" und "**REST**-RunningTaskLog"
 - **re?t** findet Objekte mit dem Namen "ActivePassiveDi**rect**or" und "JITL-JS7**REST**ClientJob"
