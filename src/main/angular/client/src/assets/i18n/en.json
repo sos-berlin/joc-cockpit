@@ -2452,7 +2452,7 @@
         "addOrderParameter": "Allows adding another ^Order^ optionally using different parameterization."
       },
       "script": {
-        "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^.\n\nThe name of a Script Include is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
+        "name": "A ^Script Include^ is used to include reusable code snippets into a ^Job Script^.\n\nThe name of a Script Include is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Script Include^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Script Include^ can be specified as desired.",
         "script": "Depending on its use with ^Job Script^s the content of a ^Script Include^ can include Shell commands or Code for scripting languages such as Python, PowerShell etc.",
@@ -2751,13 +2751,13 @@
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
       },
       "tooltips": {
-        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.\n\nFor details see [Inventory Search](context:help:search-inventory).",
+        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.\n\nFor details see [Inventory Search](context:help:searching-inventory).",
         "folders": "Select one or more folders to filter results.",
         "currentController": "Limits results to objects available with the current Controller.",
         "deployedOrReleased": "Limits results to objects that are deployed/released.",
         "validOrInvalid": "Limits results to objects that are valid, invalid or allows both",
-        "return": "Specifies the object type of results such as ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.\n\nUsers can perform dependency search, for example returning Workflows that are triggered by incoming files from ^File Order Source^s matching the given search string in their name or title.\n\nFor details see [Inventory Search](context:help:search-inventory).",
-        "advanced": "Offers advanced search options for attribute search and dependency search.\n\nFor details see [Inventory Search](context:help:search-inventory).",
+        "return": "Specifies the object type of results such as ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.\n\nUsers can perform dependency search, for example returning Workflows that are triggered by incoming files from ^File Order Source^s matching the given search string in their name or title.\n\nFor details see [Inventory Search](context:help:searching-inventory).",
+        "advanced": "Offers advanced search options for attribute search and dependency search.\n\nFor details see [Inventory Search](context:help:searching-inventory).",
         "agent": "Limits results to the selected ^Agent^ from its ^Agent Name^.",
         "workflow": "Limits results to ^Workflow^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
         "fileOrderSource": "Limits results to ^File Order Source^s that match the given search string in their name or title.\n\nFor use of search meta-characters see ^Inventory Search^.",
