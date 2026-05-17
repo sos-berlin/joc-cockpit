@@ -841,7 +841,7 @@
     "tooltip.time": "Specifies a relative time in seconds or from the format *hh:mm:ss*.",
     "tooltip.specificDate": "Enter date and time when the ^Order^ should start.",
     "--------API REQUEST COMPONENT TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: type",
-    "tooltip.type": "??? 844 Type",
+    "tooltip.type": "Selects one of the following authentication methods:\n- **None**: no authentication required\n- **API Key**: specifies a secret similar to a password\n- **Bearer Token**: specifies an encrypted token\n- **Basic Auth**: specifies the base64 encoded string for `<user>:<password>`\n- **OAuth 2.0**: specifies the *Client ID*, *Client Secret* and *Token URL* for the *Client Credentials Flow*",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (common)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: timeZone, type",
     "tooltip.timeZone": "Updates the ^Time Zone^ of selected objects."
   },
@@ -2426,14 +2426,14 @@
         "boardType": "^Notice Board^s of **global** type enforce dependencies independently from the ^Daily Plan^.\n\nNotice Boards of **plannable** type consider days only for which ^Order^s exist that will create ^Notice^s."
       },
       "lock": {
-        "name": "^Resource Lock^s are used to implement mutual exclusion for a sequence of ^Job^s. They can be used in the same ^Workflow^ and across Workflows to limit parallelism of Jobs. The name of a Resource Lock is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
+        "name": "^Resource Lock^s are used to implement mutual exclusion for a sequence of ^Job^s. They can be used in the same ^Workflow^ and across Workflows to limit parallelism of Jobs.\n\nThe name of a Resource Lock is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Resource Lock^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Resource Lock^ can be specified as desired.",
         "limit": "If a ^Resource Lock^ is acquired in shared mode, then each consuming ^Lock Instruction^ can specify a weight that is calculated towards the capacity of the Resource Lock.\n\nIf the capacity is exceeded, then ^Order^s must wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "A ^Schedule^ is used to automatically create ^Order^s for a given ^Workflow^ based on the ^Calendar^ assigned. The name of a Schedule is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
-        "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Schedule^. The *RESOURCES* view allows managing Documentations.",
+        "name": "A ^Schedule^ is used to automatically create ^Order^s for a given ^Workflow^ based on the ^Calendar^ assigned.\n\nThe name of a Schedule is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
+        "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Schedule^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Schedule^ can be specified as desired.",
         "workflowName": "A reference to one or more ^Workflow^s has to be added for which ^Order^s will be created.",
         "planOrderAutomatically": "^Order^s will be ^planned^ automatically, i.e. based on the ^Daily Plan Service^ settings Orders will be created for the next few days in advance.",
@@ -2452,7 +2452,7 @@
         "addOrderParameter": "Allows adding another ^Order^ optionally using different parameterization."
       },
       "script": {
-        "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^. The name of a Script Include is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
+        "name": "A ^Script Include^ is used to include recurring code snippets into a ^Job Script^.\n\nThe name of a Script Include is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
         "documentation": "A reference to a ^Documentation^ can be added that will be displayed with the ^Script Include^.\n\nThe *RESOURCES* view allows managing Documentations.",
         "title": "The Title of the ^Script Include^ can be specified as desired.",
         "script": "Depending on its use with ^Job Script^s the content of a ^Script Include^ can include Shell commands or Code for scripting languages such as Python, PowerShell etc.",
@@ -3117,7 +3117,7 @@
     "--------UPDATE OBJECT DIALOG TOOLTIPS (order)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: orderName",
     "tooltip.orderName": "The ^Order Name^ is a non-qualifying part of the ^Order^ identifier.\n\nUsers can freely specify the Order Name when creating ^Schedule^s and when adding on-demand Orders.\n\nThe Order Name can be used to search for Orders, for example, in the *HISTORY* view.",
     "--------CHANGE PARAMETER AND START TIME DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Change Parameter / Start Time, Source: change-parameter-dialog.html start-time-dialog.html, Fields: blockPosition, startNode, endNode, ignoreAdmissionTimes, stickToDailyPlanDate",
-    "tooltip.blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^ ,^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected. The ^Order^ will leave the Workflow when reaching the end of the block instruction.",
+    "tooltip.blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^ ,^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected:\n- The ^Order^ will start in the Workflow at the beginning of the block instruction.\n- The Order will leave the Workflow when reaching the end of the block instruction.",
     "tooltip.startNode": "Specifies a later position in the ^Workflow^ from which the ^Order^ will start:\n- **No Start Position** is specified, then the Order will start from the first node.\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected as the Start Position from which the Order will start.\n- **Block Position** is specified, then the Start Position is a same-level node inside the block.",
     "tooltip.endNode": "Specifies End Positions when the ^Order^ should leave the ^Workflow^:\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.\n- **Block Position** is specified, then any same-level node inside the block can be specified before which the Order will terminate.\n- **No End Position** is specified, then the Order will terminate when reaching the end of the block.\n\nMore than one End Position can be specified.",
     "tooltip.ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
@@ -3549,17 +3549,17 @@
     "tooltip.validFrom": "The start time rule can be set to not being applied before the specified date.",
     "tooltip.validTo": "The start time rule can be set to expire after the specified date.",
     "tooltip.dayNumber": "The ascending or descending order in which the days of the week appear in the month.",
-    "tooltip.monthDays": "The days of the month, counted from the first or last day of the month. Multiple selections are allowed.",
-    "tooltip.every": "Selects the frequency and a unit, e.g., `2 weeks`, `3 months`. Users must specify the start date for the start time rule.",
+    "tooltip.monthDays": "The days of the month, counted from the first or last day of the month.\n\nMultiple selections are allowed.",
+    "tooltip.every": "Selects the frequency and a unit, e.g., `2 weeks`, `3 months`.\n\nUsers must specify the start date for the start time rule.",
     "tooltip.country": "Selects the country for which national holidays are offered.",
-    "tooltip.year": "Selects the year for which national holidays are to be displayed. The resulting list of holidays is calculated and is not binding. It does not include regional or local holidays.",
+    "tooltip.year": "Selects the year for which national holidays are to be displayed.\n\nThe resulting list of holidays is calculated and is not binding. It does not include regional or local holidays.",
     "tooltip.selectAll": "Selects all objects on the same hierarchical level.",
     "tooltip.nonWorkingDayCalendars": "Selects a Non-working Day ^Calendar^ for which no ^Order^s will be created.",
     "tooltip.monthRange": "Months can be individually selected.",
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "The repeat interval specifies one of:\n- **Single Start** for creation of a single ^Order^.\n- **Repeat** for creation of a ^Cyclic Order^\n\nFor high frequency of repeated executions, users should preferably use ^Cyclic Workflow^s from a *Single Start* and should avoid *Cyclic Orders*.",
     "tooltip.startTime": "The ^Order^'s start time in the format *hh:mm:ss*.",
-    "tooltip.onHoliday": "Specifies what should happen if the ^Schedule^ meets a non-working day provided from a ^Calendar^:\n- **suppress execution**: no ^Order^ is created.\n- **ignore non-working day**: creates the Order.\n- **before non-working day**: looks up the closest previous working day for which no Order is created by the same Schedule.\n- **after non-working day**: looks up the next working day for which no Order is created by the same Schedule."
+    "tooltip.onHoliday": "Specifies what should happen if the ^Schedule^ meets a non-working day provided from a ^Calendar^:\n- **suppress execution**: no ^Order^ is created.\n- **ignore non-working day**: creates the Order.\n- **before non-working day**: creates the Order for the closest previous working day for which no other Order is created by the same Schedule.\n- **after non-working day**: creates the Order for the next working day for which no other Order is created by the same Schedule."
   },
   "resource": {
     "label.boards": "Notice Boards",
@@ -4735,11 +4735,11 @@
       "tooltip.value": "Value",
       "tooltip.name": "Name",
       "--------API REQUEST COMPONENT ADDITIONAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: keyName, in, clientId, clientSecret, tokenUrl",
-      "tooltip.keyName": "Key Name",
-      "tooltip.in": "In",
-      "tooltip.clientId": "Client ID",
-      "tooltip.clientSecret": "Client Secret",
-      "tooltip.tokenUrl": "Token URL"
+      "tooltip.keyName": "The *Key Name* specifies the name of the key in the *API Key* authentication method.",
+      "tooltip.in": "Specifies how the key is forwarded when using *API Key* authentication:\n- **Header** corresponding to `<Key Name>` and `<Key Value>`\n- **Query** parameter for `<Key Name>` and `<Key Value>`",
+      "tooltip.clientId": "The **Client ID** holds the identifier in the client's credentials for the OAuth2 *Client Credentials Flow*.",
+      "tooltip.clientSecret": "The **Client Secret** holds the password in the client's credentials for the OAuth2 *Client Credentials Flow*.",
+      "tooltip.tokenUrl": "The **Token URL** specifies the endpoint for the OAuth2 *Client Credentials Flow*."
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",
@@ -4815,7 +4815,7 @@
     "button.showAllChildNodes": "Show all Child Nodes of selected Node",
     "button.assign": "Assign",
     "button.gotoKeyElement": "Go to Key Element",
-    "button.gotoRefElement": "Go to Ref Element",
+    "button.gotoRefElement": "Go to Reference Element",
     "button.new": "New",
     "button.deleteAll": "Delete All",
     "button.reassignSchema": "Reassign Schema",
@@ -4840,7 +4840,7 @@
     "message.invalidXMLFile": "Invalid XML file or empty file",
     "message.invalidXSDFile": "Invalid XSD file or empty file",
     "message.wouldYouLikeToDeleteThisConfiguration": "Would you like to delete this configuration?",
-    "message.validateSuccessfully": "XML document validated successfully",
+    "message.validateSuccessfully": "XML document successfully validated",
     "message.removeXML": "Are you sure you want to remove this configuration?",
     "message.deleteAllDraft": "Are you sure you want to delete all XML drafts?",
     "message.noConfigurationFound": "No configuration found",
@@ -4911,11 +4911,11 @@
       "jump_to": "Go to",
       "jump_to_confirm": "confirm",
       "page": "",
-      "prev_page": "Previous Page",
-      "next_page": "Next Page",
-      "prev_5": "Previous 5 Pages",
+      "prev_page": "Previous page",
+      "next_page": "Next page",
+      "prev_5": "Previous 5 pages",
       "next_5": "Next 5 Pages",
-      "prev_3": "Previous 3 Pages",
+      "prev_3": "Previous 3 pages",
       "next_3": "Next 3 Pages"
     },
     "DatePicker": {
@@ -5009,7 +5009,7 @@
         "today": "Today",
         "now": "Now",
         "backToToday": "Back to today",
-        "ok": "Ok",
+        "ok": "OK",
         "clear": "Clear",
         "month": "Month",
         "year": "Year",
@@ -5055,14 +5055,14 @@
     "button.next": "Next",
     "button.close": "Close",
     "label.matchCase": "Match case",
-    "label.wholeWord": "Match whole word",
+    "label.wholeWord": "Match word",
     "status.noResults": "No results",
     "status.matchCount": "{{current}} of {{total}}",
-    "tooltip.search": "Search in document (Ctrl+F)",
-    "tooltip.previous": "Previous (Shift+Enter)",
-    "tooltip.next": "Next (Enter)",
-    "tooltip.close": "Close (Esc)",
-    "tooltip.matchCase": "Match case",
-    "tooltip.wholeWord": "Match whole word"
+    "tooltip.search": "Search in Context Help document (Ctrl+F).",
+    "tooltip.previous": "Previous hit (Shift+Enter).",
+    "tooltip.next": "Next hit (Enter).",
+    "tooltip.close": "Close Context Help window (Esc)",
+    "tooltip.matchCase": "Search for matching case.",
+    "tooltip.wholeWord": "Search for matching whole word."
   }
 }

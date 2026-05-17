@@ -841,7 +841,7 @@
     "tooltip.time": "Gibt eine relative Zeit in Sekunden oder im Format *hh:mm:ss* an.",
     "tooltip.specificDate": "Gibt das Datum und die Uhrzeit an, zu der der ^Auftrag^ starten soll.",
     "--------API REQUEST COMPONENT TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: type",
-    "tooltip.type": "??? 844 Typ",
+    "tooltip.type": "Wählt eine der folgenden Authentifizierungsmethoden:\n - **None**: keine Authentifizierung erforderlich\n- **API Key**: gibt einen Schlüssel ähnlich einem Kennwort an\n- **Bearer Token**: gibt ein verschlüsseltes Token an\n- **Basic Auth**: gibt die Base64-kodierte Zeichenfolge für `<Benutzer>:<Kennwort>` an\n- **OAuth 2.0**: gibt die *Client ID*, das *Client Secret* und die *Token URL* im *Client Credentials Flow* an",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (common)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: timeZone, type",
     "tooltip.timeZone": "Aktualisiert die ^Zeitzone^ in den ausgewählten Objekten."
   },
@@ -2416,8 +2416,8 @@
         "title": "Der Titel der ^Job-Ressource^ kann nach Belieben angegeben werden."
       },
       "board": {
-        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nEs gelten die ^Regeln für die Benennung von Objekten^.",
-        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett. Der Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nEs gelten die ^Regeln für die Benennung von Objekten^.",
+        "name": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett.\n\nDer Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nEs gelten die ^Regeln für die Benennung von Objekten^.",
+        "expectBoardName": "Ein ^Notizbrett^ benennt die Abhängigkeit zwischen ^Arbeitsabläufen|arbeitsablauf^.\n\nDie ^PostNotices Anweisung^ und ^ExpectNotices Anweisung^ von Arbeitsabläufen verweisen auf das Notizbrett.\n\nDer Name eines Notizbretts ist eindeutig im ^Inventar^.\n\nEs gelten die ^Regeln für die Benennung von Objekten^.",
         "documentation": "Ein Verweis auf eine ^Dokumentation^ kann hinzugefügt werden, die mit dem ^Notizbrett^ angezeigt wird.\n\nDie Anicht *RESSOURCEN* erlaubt die Verwaltung von Dokumentationen.",
         "title": "Der Titel des ^Notizbrett^s kann nach Belieben angegeben werden.",
         "toNotice": "Die ^Notizkennung^ für ^Notifizierende Aufträge^ wird aus deren ^Auftragskennung^ extrahiert, z.B. das Tagesplandatum passend zu demjenigen für ^Notifizierte Aufträge^.",
@@ -3117,7 +3117,7 @@
     "--------UPDATE OBJECT DIALOG TOOLTIPS (order)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: orderName",
     "tooltip.orderName": "Der ^Auftragsname^ ist ein nicht-qualifizierender Bestandteil der ^Auftragskennung^.\n\nBenutzer können den Auftragsnamen bei der Anlage von ^Zeitplänen|zeitplan^ und beim Hinzufügen von Ad hoc Aufträgen frei angeben.\n\nDer Auftragsname kann zur Suche nach Aufträgen, z.B. in der Ansicht *HISTORIE*, verwendet werden.",
     "--------CHANGE PARAMETER AND START TIME DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Change Parameter / Start Time, Source: change-parameter-dialog.html start-time-dialog.html, Fields: blockPosition, startNode, endNode, ignoreAdmissionTimes, stickToDailyPlanDate",
-    "tooltip.blockPosition": "Für ^Arbeitsabläufe|arbeitsablauf^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n\nDer ^Auftrag^ verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
+    "tooltip.blockPosition": "Für ^Arbeitsabläufe|arbeitsablauf^ mit Blockanweisungen wie ^Try-Catch Anweisung^, ^Lock Anweisung^, ^Fork Anweisung^, ^Cycle Anweisung^ kann die entsprechende Anweisung ausgewählt werden.\n- Der ^Auftrag^ startet im Arbeitsablauf am Beginn der Blockanweisung.\n- Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist.",
     "tooltip.startNode": "Legt eine spätere Position im ^Arbeitsablauf^ fest, an der der ^Auftrag^ beginnen soll:\n- **Keine Startposition** angegeben, dann beginnt der Auftrag am ersten Knoten.\n- **Keine Blockposition** angegeben, dann kann jede Anweisung der obersten Ebene im Arbeitsablauf als Startposition ausgewählt werden.\n- **Blockposition** angegeben, dann ist die Startposition ein Knoten derselben Ebene innerhalb des Blocks.",
     "tooltip.endNode": "Legt die Endpositionen fest, an denen der ^Auftrag^ den ^Arbeitsablauf^ verlassen soll:\n- **Keine Blockposition** angegeben, dann kann eine beliebige Anweisung der obersten Ebene im Arbeitsablauf ausgewählt werden, vor der der Auftrag beendet wird.\n- **Blockposition** angegeben, dann kann ein beliebiger Knoten derselben Ebene innerhalb des Blocks angegeben werden, vor dem der Auftrag beendet wird.\n- **Keine Endposition** angegeben, dann endet der Auftrag beim Erreichen des Blockendes.\n\nEs können mehrere Endpositionen angegeben werden.",
     "tooltip.ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf^ kann durch ^Zutrittszeiten^ der Jobs oder der ^AdmissionTimes Anweisung^ eingeschränkt sein.\n\nDie Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
@@ -3550,16 +3550,16 @@
     "tooltip.validTo": "Die Startzeitregel kann bis zum angegebenen Datum zeitlich befristet werden.",
     "tooltip.dayNumber": "Das aufsteigende oder absteigende Auftreten des Wochentags im Monat.",
     "tooltip.monthDays": "Die Monatstage ab dem ersten oder letzten Tag im Monat gezählt. Mehrfachauswahl ist möglich.",
-    "tooltip.every": "Wählt die Häufigkeit und eine Einheit, z.B. `2 Wochen`, `3 Monate`. Der Beginn der Startzeitregel muss angegeben werden.",
+    "tooltip.every": "Wählt die Häufigkeit und eine Einheit, z.B. `2 Wochen`, `3 Monate`.\n\nDer Beginn der Startzeitregel muss angegeben werden.",
     "tooltip.country": "Wählt das Land, für das Nationale Feiertage ausgewählt werden.",
-    "tooltip.year": "Wählt das Jahr für das Nationale Feiertage ausgewählt werden. Die Liste der resultierenden Tage ist errechnet und nicht verbindlich. Sie berücksichtigt keine regionalen und lokalen Feiertage.",
+    "tooltip.year": "Wählt das Jahr für das Nationale Feiertage ausgewählt werden.\n\nDie Liste der resultierenden Tage ist errechnet und nicht verbindlich. Sie berücksichtigt keine regionalen und lokalen Feiertage.",
     "tooltip.selectAll": "Wählt alle Objekte derselben Hierarchiestufe aus.",
     "tooltip.nonWorkingDayCalendars": "Ein ^Kalender^ der Nicht-Arbeitstage kann ausgewählt werden, für dessen resultierende Tage keine ^Aufträge|auftrag^ erzeugt werden.",
     "tooltip.monthRange": "Die Monate können einzeln ausgewählt werden.",
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "Das Wiederholungsintervall bietet eine der folgenden Optionen an:\n- **Einzelner Start** für die Erstellung eines einzelnen ^Auftrag^s.\n- **Wiederholen** für die Erstellung eines ^Zyklischen Auftrags|zyklischer-auftrag^\n\nBei einer hohen Häufigkeit wiederholter Ausführungen sollten Benutzer vorzugsweise ^Zyklische Arbeitsabläufe|zyklischer-arbeitsablauf^ mit *Einzelnem Start* verwenden und *Zyklische Aufträge* vermeiden.",
     "tooltip.startTime": "Die Startzeit des ^Auftrag^s im Format *hh:mm:ss*.",
-    "tooltip.onHoliday": "Legt fest, was geschehen soll, wenn der ^Zeitplan^ auf einen Nicht-Arbeitstag des ^Kalender^s trifft:\n- **Ausführung verhindern**: es wird kein ^Auftrag^ erzeugt.\n- **Nicht-Arbeitstag ignorieren**: Der Auftrag wird erzeugt.\n- **vor Nicht-Arbeitstag**: es wird der nächstgelegene vorherige Arbeitstag ermittelt, für den kein Auftrag durch denselben Zeitplan erstellt wird.\n- **nach Nicht-Arbeitstag**: sucht den nächsten Arbeitstag, für den kein Auftrag durch denselben Zeitplan erstellt wird."
+    "tooltip.onHoliday": "Legt fest, was geschehen soll, wenn der ^Zeitplan^ auf einen Nicht-Arbeitstag des ^Kalender^s trifft:\n- **Ausführung verhindern**: es wird kein ^Auftrag^ erzeugt.\n- **Nicht-Arbeitstag ignorieren**: Der Auftrag wird erzeugt.\n- **vor Nicht-Arbeitstag**: der Auftrag wird für den nächstgelegenen vorherigen Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird.\n- **nach Nicht-Arbeitstag**: der Auftrag wird für den nächsten Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird."
   },
   "resource": {
     "label.boards": "Notizbretter",
@@ -4644,7 +4644,7 @@
       "tab.jitl": "JITL Job-Vorlagen",
       "tab.jobTemplate": "Benutzer Job-Vorlagen",
       "--------JOB WIZARD TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Job Wizard, Source: job-wizard.component.html, Fields: title",
-      "tooltip.title": "Title"
+      "tooltip.title": "??? Title"
     },
     "admissionTime": {
       "label.on": "Am",
@@ -4732,14 +4732,14 @@
       "message.invalidBody": "Ungültiges JSON in Request Body",
       "message.invalidAuth": "Benutzername und Kennwort erforderlich für Anmeldung mit Basic Authentication",
       "--------API REQUEST DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request Dialog, Source: api-request-dialog.html, Fields: value, name",
-      "tooltip.value": "Value",
+      "tooltip.value": "Wert",
       "tooltip.name": "Name",
       "--------API REQUEST COMPONENT ADDITIONAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: keyName, in, clientId, clientSecret, tokenUrl",
-      "tooltip.keyName": "Key Name",
-      "tooltip.in": "In",
-      "tooltip.clientId": "Client ID",
-      "tooltip.clientSecret": "Client Secret",
-      "tooltip.tokenUrl": "Token URL"
+      "tooltip.keyName": "Der *Name des Schlüssels* wird bei der Authentifizierungsmethode *API Key* angegeben.",
+      "tooltip.in": "Legt fest, wie der Schlüssel bei der Authentifizierungsmethode *API Key* weitergeleitet wird:\n- **Header** entsprechend `<Name des Schlüssels>` und `<Wert des Schlüssels>`\n- **Request** Parameter für `<Name des Schlüssels>` und `<Wert des Schlüssels>`",
+      "tooltip.clientId": "Die **Client ID** enthält die Kennung in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
+      "tooltip.clientSecret": "Das **Client Secret** enthält das Kennwort in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
+      "tooltip.tokenUrl": "Die **Token URL** gibt den Endpunkt an für den OAuth2 *Client Credentials Flow*."
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",
@@ -4991,7 +4991,7 @@
         "weekPlaceholder": "Woche auswählen",
         "rangePlaceholder": [
           "Start Datum",
-          "Ended Dtum"
+          "Ende Datum"
         ],
         "rangeYearPlaceholder": [
           "Start Jahr",
@@ -5058,11 +5058,11 @@
     "label.wholeWord": "Übereinstimmung Wort",
     "status.noResults": "Keine Ergebnisse",
     "status.matchCount": "{{current}} von {{total}}",
-    "tooltip.search": "Im Dokument suchen (Ctrl+F)",
-    "tooltip.previous": "Vorherige (Shift+Enter)",
-    "tooltip.next": "Nächste (Enter)",
-    "tooltip.close": "Schließen (Esc)",
-    "tooltip.matchCase": "Übereinstimmung Groß-/Kleinschreibung",
-    "tooltip.wholeWord": "Übereinstimmung Wort"
+    "tooltip.search": "Erlaubt die Suche im Dokument der Kontexthilfe (Ctrl+F).",
+    "tooltip.previous": "Vorheriger Treffer (Shift+Enter.)",
+    "tooltip.next": "Nächster Treffer (Enter).",
+    "tooltip.close": "Schließt das Fenster der Kontexthilfe (Esc).",
+    "tooltip.matchCase": "Sucht nach Übereinstimmung der Groß-/Kleinschreibung.",
+    "tooltip.wholeWord": "Sucht nach Übereinstimmung für das ganze Wort."
   }
 }
