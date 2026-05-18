@@ -92,10 +92,10 @@
           </li>
         }
         @if (controller && permission.currentController && permission.currentController.getLog) {
-          <li (click)="clusterAction('download', controller, false)"
+          <li (click)="logs(controller)"
               [nzDisabled]="controller && controller.componentState._text !== 'operational'"
               nz-menu-item>
-            <a translate>dashboard.button.downloadLog</a>
+            <a translate>dashboard.button.logs</a>
           </li>
         }
         @if (permission.currentController && permission.currentController.switchOver && cluster) {
@@ -169,7 +169,7 @@
         }
         @if (joc && joc.current && permission.joc && permission.joc.getLog) {
           <li (click)="downloadJocLog()" nz-menu-item>
-            <a translate>dashboard.button.downloadLog</a>
+            <a translate>dashboard.button.logs</a>
           </li>
         }
       </ul>

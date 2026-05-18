@@ -265,6 +265,7 @@
     "button.addEnciphermentCertificate": "Attribuer Certificat",
     "button.metricsPriority": "Priorité basée sur des Métriques",
     "button.SubmitAllSubagents": "Soumettre à tous les Sous-Agents",
+    "button.logs": "Logs",
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-Agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
@@ -348,6 +349,7 @@
     "message.defaultAuditLog": "[créé automatiquement]",
     "tab.auditLog": "Journal d'Audit",
     "tab.loginHistory": "Échecs de Connexion",
+    "section.audit": "Audit",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Justification",
@@ -841,7 +843,7 @@
     "tooltip.time": "Indique une durée relative en secondes ou au format *hh:mm:ss*.",
     "tooltip.specificDate": "Permet de saisir la date et l'heure auxquelles l'^Ordre^ doit démarrer.",
     "--------API REQUEST COMPONENT TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: type",
-    "tooltip.type": "Sélectionne l'une des méthodes d'authentification suivantes :\n- **None** : aucune authentification requise\n- **API Key** : spécifie un secret similaire à un mot de passe\n- **Bearer Token** : spécifie un jeton chiffré\n- **Basic Auth** : spécifie la chaîne encodée en base64 pour `<utilisateur>:<mot de passe>`\n- **OAuth 2.0** : spécifie le *Client ID*, le *Client Secret* et la *Token URL* pour le *Client Credentials Flow*",
+    "tooltip.type": "Type",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (common)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: timeZone, type",
     "tooltip.timeZone": "Met à jour le ^fuseau horaire^ des objets sélectionnés."
   },
@@ -945,7 +947,7 @@
     "button.withFailover": "Avec bascule automatique ",
     "button.withApplicableFailover": "Avec bascule automatique applicable",
     "button.withOutSwitchover": "Sans bascule manuelle",
-    "button.downloadLog": "Télécharger le Journal",
+    "button.logs": "Logs",
     "button.restartCluster": "Redémarrer les Services",
     "button.restartService": "Redémarrer le Service",
     "button.dailyPlanService": "Service du Plan Quotidien",
@@ -2863,6 +2865,27 @@
     "button.copyToClipboard": "Copier dans le presse-papier",
     "message.noLogsToViewEnableIt": "Aucun journal à afficher. Active la journalisation."
   },
+  "logConsole": {
+    "--------LOG CONSOLE FILTER MODAL------------": "Page: Log Console, Pop-up: Log Console Filter, Source: log-console-modal.component.html",
+    "label.dateFrom": "Date From",
+    "label.dateTo": "Date To",
+    "label.dateType": "Date Type",
+    "label.level": "Log Level",
+    "label.numOfLines": "Number of Lines",
+    "placeholder.selectDate": "Select date",
+    "placeholder.selectTime": "Select time",
+    "placeholder.relativeDateFrom": "e.g. 1d  6h  12h  1w  (s/m/h/d/w/M/y)",
+    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for no end)",
+    "placeholder.numOfLines": "e.g. 100  500  1000  (leave blank for all lines)",
+    "button.showLogs": "Show Logs",
+    "button.download": "Download",
+    "button.cancel": "Cancel",
+    "tooltip.dateFrom": "Date From",
+    "tooltip.dateTo": "Date To",
+    "tooltip.dateType": "Date Type",
+    "tooltip.level": "Log Level",
+    "tooltip.numOfLines": "Number of Lines"
+  },
   "login": {
     "label.account": "Compte",
     "label.password": "Mot de passe",
@@ -3671,7 +3694,8 @@
       "button.editDocument": "Modifier la Document",
       "placeholder.assignReference": "Attribuer une référence à une Documentation",
       "message.documentNotUsed": "Cette Documentation n'est pas encore utilisé",
-      "tooltip.documentName": "Le chemin d'accès au dossier et le nom de la ^Documentation^ s'affichent.\n\nLe chemin d'accès ne peut pas être modifié. La documentation peut être exportée et téléchargée vers un nouveau chemin d'accès."
+      "tooltip.documentName": "Le chemin d'accès au dossier et le nom de la ^Documentation^ s'affichent.\n\nLe chemin d'accès ne peut pas être modifié. La documentation peut être exportée et téléchargée vers un nouveau chemin d'accès.",
+      "tooltip.reference": "Reference"
     }
   },
   "reporting": {
@@ -4739,7 +4763,8 @@
       "tooltip.in": "Spécifie la manière dont la clé est transmise lors de l'authentification par *API Key* :\n- **en-tête** correspondant à `<Nom de la Clé>` et `<Valeur de la Clé>`.\n- **requête** utilisant le `<Nom de la Clé>` et la `<Valeur de la Clé>` comme paramètre.",
       "tooltip.clientId": "Le **Client ID** correspond à l'identifiant pour le *Client Credentials Flow* de OAuth2.",
       "tooltip.clientSecret": "Le **Client Secret** contient le mot de passe pour le *Client Credentials Flow* de OAuth2.",
-      "tooltip.tokenUrl": "La **Token URL** indique le point d'accès pour le *Client Credentials Flow* de OAuth2."
+      "tooltip.tokenUrl": "La **Token URL** indique le point d'accès pour le *Client Credentials Flow* de OAuth2.",
+      "tooltip.type": "Sélectionne l'une des méthodes d'authentification suivantes :\n- **None** : aucune authentification requise\n- **API Key** : spécifie un secret similaire à un mot de passe\n- **Bearer Token** : spécifie un jeton chiffré\n- **Basic Auth** : spécifie la chaîne encodée en base64 pour `<utilisateur>:<mot de passe>`\n- **OAuth 2.0** : spécifie le *Client ID*, le *Client Secret* et la *Token URL* pour le *Client Credentials Flow*"
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",

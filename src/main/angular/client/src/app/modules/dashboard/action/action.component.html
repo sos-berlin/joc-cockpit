@@ -77,9 +77,9 @@
         </li>
       }
       @if (controller && controllerPermission && controllerPermission.getLog) {
-        <li (click)="clusterAction('downloadLog', controller, false)" nz-menu-item>
+        <li (click)="logs(controller)" nz-menu-item>
           <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-             translate>dashboard.button.downloadLog</a>
+             translate>dashboard.button.logs</a>
         </li>
       }
     </ul>

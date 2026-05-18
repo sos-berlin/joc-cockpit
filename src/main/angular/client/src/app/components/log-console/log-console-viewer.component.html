@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <i nz-icon nzType="file-text" nzTheme="outline" class="text-primary m-r-xs"></i>
+    {{ title }}
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body" style="padding: 0; overflow: hidden">
+  @if (request) {
+    <div style="--log-body-max-height: calc(100vh - 205px)">
+      <app-log-console [request]="request"></app-log-console>
+    </div>
+  }
+</div>
+
+<div class="modal-footer">
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+    common.button.cancel
+  </button>
+</div>

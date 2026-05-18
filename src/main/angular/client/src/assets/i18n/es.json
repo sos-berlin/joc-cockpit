@@ -265,6 +265,7 @@
     "button.addEnciphermentCertificate": "Asignar Certificado de cifrado",
     "button.metricsPriority": "Prioridad basada en Métricas",
     "button.SubmitAllSubagents": "Enviar a todos los Subagentes",
+    "button.logs": "Logs",
     "message.dropHereToDetach": "Suelte aquí para eliminar Subagente",
     "message.noClusterFound": "No se encontró Clúster",
     "message.clickHereToAdd": "Haga clic aquí para agregar",
@@ -348,6 +349,7 @@
     "message.defaultAuditLog": "[creado automáticamente]",
     "tab.auditLog": "Registro de Auditoría",
     "tab.loginHistory": "Intentos fallidos de inicio de sesión",
+    "section.audit": "Audit",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Motivo",
@@ -945,7 +947,7 @@
     "button.withFailover": "Con conmutación por error",
     "button.withApplicableFailover": "Con conmutación por error cuando corresponda",
     "button.withOutSwitchover": "Sin conmutación manual",
-    "button.downloadLog": "Descargar Log",
+    "button.logs": "Logs",
     "button.restartCluster": "Reiniciar servicios",
     "button.restartService": "Reiniciar servicio",
     "button.dailyPlanService": "Servicio de Plan Diario",
@@ -983,6 +985,27 @@
     "--------ACTION DIALOG TOOLTIPS------------": "Page: Dashboard, Sub-tab: -, Pop-up: Action, Source: action-dialog.html, Fields: controllerId, operation",
     "tooltip.controllerId": "Controller ID",
     "tooltip.operation": "Operation"
+  },
+  "logConsole": {
+    "--------LOG CONSOLE FILTER MODAL------------": "Page: Log Console, Pop-up: Log Console Filter, Source: log-console-modal.component.html",
+    "label.dateFrom": "Date From",
+    "label.dateTo": "Date To",
+    "label.dateType": "Date Type",
+    "label.level": "Log Level",
+    "label.numOfLines": "Number of Lines",
+    "placeholder.selectDate": "Select date",
+    "placeholder.selectTime": "Select time",
+    "placeholder.relativeDateFrom": "e.g. 1d  6h  12h  1w  (s/m/h/d/w/M/y)",
+    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for no end)",
+    "placeholder.numOfLines": "e.g. 100  500  1000  (leave blank for all lines)",
+    "button.showLogs": "Show Logs",
+    "button.download": "Download",
+    "button.cancel": "Cancel",
+    "tooltip.dateFrom": "Date From",
+    "tooltip.dateTo": "Date To",
+    "tooltip.dateType": "Date Type",
+    "tooltip.level": "Log Level",
+    "tooltip.numOfLines": "Number of Lines"
   },
   "dailyPlan": {
     "label.createPlan": "Crear Plan Diario",
@@ -3671,7 +3694,8 @@
       "button.editDocument": "Editar documentación",
       "placeholder.assignReference": "Asignar referencia de documentación",
       "message.documentNotUsed": "Esta documentación aún no está en uso",
-      "tooltip.documentName": "Document Name"
+      "tooltip.documentName": "Document Name",
+      "tooltip.reference": "Reference"
     }
   },
   "reporting": {
@@ -4739,7 +4763,8 @@
       "tooltip.in": "In",
       "tooltip.clientId": "Client ID",
       "tooltip.clientSecret": "Client Secret",
-      "tooltip.tokenUrl": "Token URL"
+      "tooltip.tokenUrl": "Token URL",
+      "tooltip.type": "Type"
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",

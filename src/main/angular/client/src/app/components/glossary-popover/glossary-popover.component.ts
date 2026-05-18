@@ -15,7 +15,7 @@ import { SafeHtml } from '@angular/platform-browser';
     <div class="glossary-popover-bubble" role="tooltip">
       <div class="glossary-popover-header">
         <span class="glossary-popover-title">
-          <i class="fa fa-book text-primary m-r-xs"></i>{{ termLabel || termKey }}
+          <i class="fa fa-book text-primary m-r-xs"></i>
         </span>
       </div>
       <div class="glossary-popover-body">

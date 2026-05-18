@@ -1,0 +1,155 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ sourceName }}</h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form #myForm="ngForm">
+  <div class="modal-body p-a">
+
+    <!-- Agent: Subagent ID only (Controller ID + Agent ID + Role pre-filled from caller) -->
+    @if (type === 'agent') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>agent.label.subagentId</label>
+        <div class="col-sm-8">
+          <input nz-input [(ngModel)]="form.subagentId" name="agt_subagentId" class="w-full" />
+        </div>
+      </div>
+    }
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.dateType' | translate" translate>logConsole.label.dateType</span>
+      </label>
+      <div class="col-sm-8">
+        <nz-radio-group [(ngModel)]="form.dateMode" name="dateMode">
+          <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
+          <label nz-radio nzValue="specific" class="m-l-sm"><span translate>common.label.specificDate</span></label>
+        </nz-radio-group>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.dateFrom' | translate" translate>logConsole.label.dateFrom</span>
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        @if (form.dateMode === 'relative') {
+          <div [ngClass]="{'has-error': (dateFrom.dirty || dateFrom.touched) && dateFrom.invalid}">
+            <input #dateFrom="ngModel" nz-input [(ngModel)]="form.dateFrom" name="dateFrom"
+                   class="w-full" required autocomplete="off"
+                   relativeDateValidatorRegex
+                   [placeholder]="'logConsole.placeholder.relativeDateFrom' | translate" />
+            @if ((dateFrom.dirty || dateFrom.touched) && dateFrom.errors?.['required']) {
+              <div class="help-block text-danger" translate>error.message.requiredError</div>
+            }
+            @if ((dateFrom.dirty || dateFrom.touched) && dateFrom.errors?.['validateRelativeDateRegex']) {
+              <div class="help-block text-danger" translate>common.message.invalid</div>
+            }
+          </div>
+        }
+        @if (form.dateMode === 'specific') {
+          <div class="d-flex">
+            <div class="flex-grow-1 p-r-xs" [ngClass]="{'has-error': dateFromDate.touched && !form.dateFromDate}">
+              <nz-date-picker #dateFromDate="ngModel" [(ngModel)]="form.dateFromDate" name="dateFromDate"
+                              class="w-full" nzAllowClear required
+                              nzFormat="yyyy-MM-dd"
+                              [nzPlaceHolder]="'logConsole.placeholder.selectDate' | translate">
+              </nz-date-picker>
+              @if (dateFromDate.touched && !form.dateFromDate) {
+                <div class="help-block text-danger" translate>error.message.requiredError</div>
+              }
+            </div>
+            <div class="p-l-xs">
+              <nz-time-picker [(ngModel)]="form.dateFromTime" name="dateFromTime"
+                              class="w-full" nzAllowClear nzFormat="HH:mm:ss"
+                              [nzPlaceHolder]="'logConsole.placeholder.selectTime' | translate">
+              </nz-time-picker>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.dateTo' | translate" translate>logConsole.label.dateTo</span>
+      </label>
+      <div class="col-sm-8">
+        @if (form.dateMode === 'relative') {
+          <div [ngClass]="{'has-error': (dateTo.dirty || dateTo.touched) && dateTo.invalid}">
+            <input #dateTo="ngModel" nz-input [(ngModel)]="form.dateTo" name="dateTo"
+                   class="w-full" autocomplete="off"
+                   relativeDateValidatorRegex
+                   [placeholder]="'logConsole.placeholder.relativeDateTo' | translate" />
+            @if ((dateTo.dirty || dateTo.touched) && dateTo.errors?.['validateRelativeDateRegex']) {
+              <div class="help-block text-danger" translate>common.message.invalid</div>
+            }
+          </div>
+        }
+        @if (form.dateMode === 'specific') {
+          <div class="d-flex">
+            <div class="flex-grow-1 p-r-xs">
+              <nz-date-picker [(ngModel)]="form.dateToDate" name="dateToDate"
+                              class="w-full" nzAllowClear
+                              nzFormat="yyyy-MM-dd"
+                              [nzPlaceHolder]="'logConsole.placeholder.selectDate' | translate">
+              </nz-date-picker>
+            </div>
+            <div class="p-l-xs">
+              <nz-time-picker [(ngModel)]="form.dateToTime" name="dateToTime"
+                              class="w-full" nzAllowClear nzFormat="HH:mm:ss"
+                              [nzPlaceHolder]="'logConsole.placeholder.selectTime' | translate">
+              </nz-time-picker>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.level' | translate" translate>logConsole.label.level</span>
+      </label>
+      <div class="col-sm-8">
+        <nz-select [(ngModel)]="form.level" name="level" class="w-full">
+          @for (l of levelOptions; track l) {
+            <nz-option [nzValue]="l" [nzLabel]="l"></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.numOfLines' | translate" translate>logConsole.label.numOfLines</span>
+      </label>
+      <div class="col-sm-8">
+        <nz-input-number [(ngModel)]="form.numOfLines" name="numOfLines"
+                         class="w-full" [nzMin]="1" [nzStep]="100"
+                         [nzPlaceHolder]="'logConsole.placeholder.numOfLines' | translate">
+        </nz-input-number>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-primary btn-sm" (click)="showLogs()" [disabled]="isShowDisabled">
+      <i class="fa fa-eye p-r-xs"></i>
+      <span translate>logConsole.button.showLogs</span>
+    </button>
+    <button class="btn btn-default btn-sm" (click)="download()" [disabled]="isDownloadDisabled">
+      @if (isDownloading) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      } @else {
+          <i class="fa fa-download p-r-xs"></i>
+      }
+      <span translate>logConsole.button.download</span>
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button" translate>logConsole.button.cancel</button>
+  </div>
+</form>
+

@@ -1,80 +1,87 @@
-<div class="form-group row">
-  <label class="col-sm-{{sizeX}}">
-    <span [appRichTooltip]="'common.tooltip.selectComments' | translate" translate>common.label.selectComments</span>
-  </label>
-  <div class="col-sm-8">
-    <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
-      <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
-      <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
-    </nz-radio-group>
+<div class="b-a m-b-sm section-box">
+  <div class="section-box-header">
+    <small class="_600 section-box-title" translate>auditLog.section.audit</small>
   </div>
-</div>
-@if (comments.radio=='predefined') {
-  <div class="form-group row">
-    <label class="col-sm-{{sizeX}} form-control-label">
-      <span [appRichTooltip]="'common.tooltip.selectComment' | translate" translate>common.label.selectComment</span>
-      @if (required) {
-        <sup class="text-danger text-sm">*</sup>
-      }
-    </label>
-    <div class="col-sm-{{sizeY}}">
-      <app-select-input  [attributeName]="'comment'" [isRequired]="required" [placeholder]="'common.label.selectPredefinedReason'"
-                         [listArray]="messageList" [name]="'comment'" [isAllowClear]="true"
-                         [object]="comments"></app-select-input>
+  <div class="p-a-sm">
+    <div class="form-group row">
+      <label class="col-sm-{{sizeX}}">
+        <span [appRichTooltip]="'common.tooltip.selectComments' | translate" translate>common.label.selectComments</span>
+      </label>
+      <div class="col-sm-8">
+        <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
+          <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
+          <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+        </nz-radio-group>
+      </div>
     </div>
-  </div>
-}
-@if (comments.radio=='new') {
-  <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
-       class="form-group row">
-    <label class="col-sm-{{sizeX}} ">
-      <span [appRichTooltip]="'common.tooltip.comment' | translate" translate>common.label.comment</span>
-      @if (required) {
-        <sup class="text-danger text-sm">*</sup>
-      }
-    </label>
-    <div class="col-sm-{{sizeY}}">
-      <textarea class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
-                [required]="required" [(ngModel)]="comments.comment"
-                placeholder="{{'common.placeholder.enterComment' | translate}}" rows="3"
-      ></textarea>
-      @if (textComment.invalid && (textComment.dirty || textComment.touched)) {
-        <div class="text-danger help-block">
-          @if (textComment.errors && textComment.errors['required']) {
-            <div translate>
-              common.message.requiredError
+    @if (comments.radio=='predefined') {
+      <div class="form-group row">
+        <label class="col-sm-{{sizeX}} form-control-label">
+          <span [appRichTooltip]="'common.tooltip.selectComment' | translate" translate>common.label.selectComment</span>
+          @if (required) {
+            <sup class="text-danger text-sm">*</sup>
+          }
+        </label>
+        <div class="col-sm-{{sizeY}}">
+          <app-select-input  [attributeName]="'comment'" [isRequired]="required" [placeholder]="'common.label.selectPredefinedReason'"
+                            [listArray]="messageList" [name]="'comment'" [isAllowClear]="true"
+                            [object]="comments"></app-select-input>
+        </div>
+      </div>
+    }
+    @if (comments.radio=='new') {
+      <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
+          class="form-group row">
+        <label class="col-sm-{{sizeX}} ">
+          <span [appRichTooltip]="'common.tooltip.comment' | translate" translate>common.label.comment</span>
+          @if (required) {
+            <sup class="text-danger text-sm">*</sup>
+          }
+        </label>
+        <div class="col-sm-{{sizeY}}">
+          <textarea class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
+                    [required]="required" [(ngModel)]="comments.comment"
+                    placeholder="{{'common.placeholder.enterComment' | translate}}" rows="3"
+          ></textarea>
+          @if (textComment.invalid && (textComment.dirty || textComment.touched)) {
+            <div class="text-danger help-block">
+              @if (textComment.errors && textComment.errors['required']) {
+                <div translate>
+                  common.message.requiredError
+                </div>
+              }
             </div>
           }
         </div>
-      }
+      </div>
+    }
+    <div class="form-group row">
+      <label class="col-sm-{{sizeX}} form-control-label">
+        <span [appRichTooltip]="'common.tooltip.timeSpend' | translate" translate>common.label.timeSpend</span>
+      </label>
+      <div class="col-sm-{{sizeY}}">
+        <nz-input-number name="timeSpend" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
+                        [nzMin]="0" [nzStep]="1" [(ngModel)]="comments.timeSpent"></nz-input-number>
+      </div>
     </div>
-  </div>
-}
-<div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label">
-    <span [appRichTooltip]="'common.tooltip.timeSpend' | translate" translate>common.label.timeSpend</span>
-  </label>
-  <div class="col-sm-{{sizeY}}">
-    <nz-input-number name="timeSpend" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
-                     [nzMin]="0" [nzStep]="1" [(ngModel)]="comments.timeSpent"></nz-input-number>
+    <div class="form-group row">
+      <label class="col-sm-{{sizeX}} form-control-label">
+        <span [appRichTooltip]="'common.tooltip.ticketLink' | translate" translate>common.label.ticketLink</span>
+      </label>
+      <div class="col-sm-{{sizeY}}">
+        <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
+              [(ngModel)]="comments.ticketLink">
+      </div>
+    </div>
+    @if (router.url.match('/users/') || router.url.match('/settings')) {
+      <div class="form-group row">
+        <label class="col-sm-{{sizeX}}">
+          <span [appRichTooltip]="'user.tooltip.reuseReason' | translate" translate>user.label.reuseReason</span>
+        </label>
+        <div class="col-sm-{{sizeY}}">
+          <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
+        </div>
+      </div>
+    }
   </div>
 </div>
-<div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label">
-    <span [appRichTooltip]="'common.tooltip.ticketLink' | translate" translate>common.label.ticketLink</span>
-  </label>
-  <div class="col-sm-{{sizeY}}">
-    <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
-           [(ngModel)]="comments.ticketLink">
-  </div>
-</div>
-@if (router.url.match('/users/') || router.url.match('/settings')) {
-  <div class="form-group row">
-    <label class="col-sm-{{sizeX}}">
-      <span [appRichTooltip]="'user.tooltip.reuseReason' | translate" translate>user.label.reuseReason</span>
-    </label>
-    <div class="col-sm-{{sizeY}}">
-      <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
-    </div>
-  </div>
-}

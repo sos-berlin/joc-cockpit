@@ -156,6 +156,11 @@
                                   <a translate>agent.button.confirmNodeLoss</a>
                                 </li>
                               </ul>
+                              <ul nz-menu>
+                                <li (click)="logs(cluster)" nz-menu-item>
+                                  <a translate>agent.button.logs</a>
+                                </li>
+                              </ul>
                             </nz-dropdown-menu>
                           </div>
                         }
@@ -295,15 +300,15 @@
                   <tbody>
                     @for (cluster of ajaxTable.data; track cluster) {
                       <tr [ngClass]="{'light-bg':cluster.show}">
-                        @if (permission.currentController && permission.currentController.switchOver) {
-                          <td>
-                            <div class="btn-group dropdown">
-                              <button [nzDisabled]="!!cluster.url" [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                                      nz-dropdown nzTrigger="click" type="button">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                                <ul nz-menu>
+                        <td>
+                          <div class="btn-group dropdown">
+                            <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                    nz-dropdown nzTrigger="click" type="button">
+                              <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                              <ul nz-menu>
+                                @if (permission.currentController && permission.currentController.switchOver) {
                                   <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
                                     <a translate>dashboard.button.switchOver</a>
                                   </li>
@@ -311,11 +316,14 @@
                                       nz-menu-item>
                                     <a translate>agent.button.confirmNodeLoss</a>
                                   </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </div>
-                          </td>
-                        }
+                                }
+                                <li (click)="logs(cluster)" nz-menu-item>
+                                  <a translate>agent.button.logs</a>
+                                </li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                        </td>
                         <td>
                           @if (!cluster.url) {
                             <i class="pos-abt font11" nz-icon
@@ -468,7 +476,21 @@
                           <tr
                             [ngClass]="{'light-bg':cluster.show || cluster.showSubagent, 'disabled-row': subagent.disabled}">
                             @if (permission.currentController && permission.currentController.switchOver) {
-                              <td></td>
+                              <td>
+                                <div class="btn-group dropdown">
+                                  <button [nzDropdownMenu]="subOption" class="btn-drop more-option-h"
+                                          nz-dropdown nzTrigger="click" type="button">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                  </button>
+                                  <nz-dropdown-menu #subOption="nzDropdownMenu" role="menu">
+                                    <ul nz-menu>
+                                      <li (click)="logs(cluster, subagent)" nz-menu-item>
+                                        <a translate>agent.button.logs</a>
+                                      </li>
+                                    </ul>
+                                  </nz-dropdown-menu>
+                                </div>
+                              </td>
                             }
                             <td>
                               @if (subagent.disabled) {

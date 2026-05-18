@@ -38,20 +38,41 @@ export class RichTooltipRegistry {
 /**
  * Converts lightweight markdown to safe HTML.
  * Supported: **bold**, *italic*, `code`, [text](url), \n → <br>, - item → <ul><li>
+ *
+ * Processing order (critical for correctness):
+ *  1. Extract inline code spans into STX/ETX-delimited placeholders so their
+ *     content is never interpreted as Markdown (fixes `*` / `_` / `[` etc.
+ *     inside backticks being treated as formatting syntax).
+ *  2. HTML-escape the remaining text.
+ *  3. Apply Markdown formatting rules (bold, italic, links, glossary terms…).
+ *  4. Process bullet lists and join with <br>.
+ *  5. Restore code span placeholders → <code>…</code>.
  */
 export function mdToHtml(src: string): string {
   if (!src) return '';
 
-  // HTML escape — must include " to prevent attribute injection when
-  // content is later interpolated into HTML attribute strings.
-  let out = src
+  // Step 1 — Extract inline code spans BEFORE any other processing.
+  // Their content is HTML-escaped individually and stored; a U+0002/U+0003
+  // (STX/ETX) placeholder is left in the stream. These control characters
+  // never appear in i18n strings and survive the subsequent HTML-escape step
+  // unmodified (they are not &, <, > or ").
+  const codeTokens: string[] = [];
+  let out = src.replace(/`([^`\n]+?)`/g, (_match: string, inner: string) => {
+    const safe = inner
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    codeTokens.push(`<code>${safe}</code>`);
+    return `\x02${codeTokens.length - 1}\x03`;
+  });
+
+  // Step 2 — HTML-escape the non-code remainder.
+  // Must include " to prevent attribute injection.
+  out = out
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  // Inline formatting
+  // Step 3 — Inline Markdown (operates only on non-code text now).
   out = out
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>')
-    .replace(/`([^`\n]+?)`/g, '<code>$1</code>')
     .replace(/\[([^\]]+)]\(context:([^:)]+):([^)]*)\)/g,
       '<a data-rt-action-type="$2" data-rt-action-param="$3" class="rt-action-link" tabindex="0" role="button">$1</a>')
     .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
@@ -64,7 +85,7 @@ export function mdToHtml(src: string): string {
       return `<span class="glossary-term" data-glossary-key="${key}" data-glossary-label="${label}" tabindex="0" role="button" aria-label="${label} \u2014 glossary term">${display}</span>`;
     });
 
-  // Bullet list: group consecutive lines starting with '- '
+  // Step 4 — Bullet list: group consecutive lines starting with '- '.
   const lines = out.split('\n');
   const result: string[] = [];
   let listItems: string[] = [];
@@ -83,10 +104,31 @@ export function mdToHtml(src: string): string {
     }
   }
   flushList();
-  return result.join('<br>');
+  out = result.join('<br>');
+
+  // Step 5 — Restore code spans: placeholders → <code>…</code>.
+  if (codeTokens.length > 0) {
+    out = out.replace(/\x02(\d+)\x03/g, (_m: string, idx: string) => codeTokens[+idx]);
+  }
+
+  return out;
 }
 
 let _tooltipIdSeq = 0;
+
+/**
+ * Focus-visible pattern: tooltip on focus only fires for keyboard navigation (Tab),
+ * not for programmatic focus (e.g. dialog open) or mouse-click focus.
+ */
+let _keyboardFocusMode = false;
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') { _keyboardFocusMode = true; }
+  }, { capture: true, passive: true });
+  document.addEventListener('mousedown', () => {
+    _keyboardFocusMode = false;
+  }, { capture: true, passive: true });
+}
 
 /**
  * [appRichTooltip] — unified tooltip directive.
@@ -189,8 +231,9 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   // ── Keyboard: focus opens, blur closes ─────────────────
   @HostListener('focus')
   onFocus(): void {
-    // Keyboard focus: always immediate, never suppressed
-    if (!this.content) return;
+    // Only open on keyboard-triggered focus (Tab navigation), not on
+    // programmatic focus (dialog init) or mouse-click focus.
+    if (!this.content || !_keyboardFocusMode) return;
     this.open();
   }
 

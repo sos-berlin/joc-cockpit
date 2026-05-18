@@ -2,6 +2,11 @@
   <div class="col-md-12">
     <div class="text-right ">
       <div class="text-md text-primary pull-left text-16">
+        @if (preferences?.showHelpPages) {
+          <i (click)="helpPage('identity-service-permissions')"
+            [appRichTooltip]="'common.tooltip.help' | translate"
+            class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+        }
         <a class="pointer">{{controllerName || 'default'}}</a>
         <i class="text-black-lt m-l-sm m-r-sm">/</i>
         <span class="text-muted">{{roleName}}</span>

@@ -2,6 +2,7 @@ import {Component, inject, Input} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
+import { LogConsoleModalComponent } from 'src/app/components/log-console/log-console.component';
 
 @Component({
   standalone: false,
@@ -15,6 +16,7 @@ export class CommentModalComponent {
   @Input() obj: any;
   @Input() performAction;
   @Input() controllerID;
+  @Input() controllerData;
   submitted = false;
   required = false;
   show = false;
@@ -26,6 +28,7 @@ export class CommentModalComponent {
     this.action = this.modalData.action;
     this.comments = this.modalData.comments;
     this.obj = this.modalData.obj;
+    this.controllerData = this.modalData.controllerData;
     this.performAction = this.modalData.performAction;
     this.controllerID = this.modalData.controllerID;
     this.show = this.modalData.show;
@@ -41,7 +44,7 @@ export class CommentModalComponent {
       timeSpent: result.timeSpent,
       ticketLink: result.ticketLink
     };
-    this.performAction(this.action, obj);
+    this.performAction(this.action, obj, this.controllerData);
     this.activeModal.close()
   }
 
@@ -125,6 +128,19 @@ export class ActionComponent {
 
       });
     }
+  }
+
+  logs(controller){
+    let role = controller?.role == 'STANDALONE' ? 'PRIMARY' : controller?.role;
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: LogConsoleModalComponent,
+      nzData: { type: 'controller', controllerId: controller.controllerId, role: role, timeZone: this.coreService.getTimeZone() },
+      nzFooter: null,
+      nzClassName: 'lg',
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   private postCall(url, obj): void {

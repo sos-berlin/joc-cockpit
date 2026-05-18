@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
+    @if (preferences.showHelpPages) {
+      <i (click)="helpPage('approval-request')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
     @if (!edit) {
       <span translate>common.label.requestApproval</span>
     }
     @if (edit) {
       <span translate>common.button.edit</span>
-    }
-    @if (preferences.showHelpPages) {
-      <i (click)="helpPage('approval-request')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">

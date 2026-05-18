@@ -265,6 +265,7 @@
     "button.addEnciphermentCertificate": "Назначить сертификат шифрования",
     "button.metricsPriority": "Приоритет на основе метрик",
     "button.SubmitAllSubagents": "Передать всем субагентам",
+    "button.logs": "Logs",
     "message.dropHereToDetach": "Перетащите сюда, чтобы удалить субагента",
     "message.noClusterFound": "Кластер не найден",
     "message.clickHereToAdd": "Нажмите здесь, чтобы добавить",
@@ -348,6 +349,7 @@
     "message.defaultAuditLog": "[сгенерировано автоматически]",
     "tab.auditLog": "Журнал действий",
     "tab.loginHistory": "Неудачные попытки входа",
+    "section.audit": "Audit",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Обоснование",
@@ -821,11 +823,11 @@
     "tooltip.video": "Посмотреть обучающее видео",
     "--------ADD BLOCKED ACCOUNT TOOLTIP------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account, Source: user-dialog.html, Fields: blocked",
     "tooltip.blocked": "Заблокированы",
-    "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
+    "--------ADD WORKFLOW FILTER COMMON TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: folders",
     "tooltip.folders": "Папки",
-    "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
+    "--------ADD BLOCKLIST DIALOG TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Blocklist, Pop-up: Add to Blocklist, Source: add-to-blocklist-dialog.html, Fields: comment",
     "tooltip.comment": "Обоснование",
-    "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Tooltips for labels in approval-modal and audit-log-input components",
+    "--------APPROVAL MODAL AND AUDIT LOG INPUT TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Approval / Audit Log, Source: approval-modal.html audit-log-input.html, Fields: title, approver, selectComments, selectComment, timeSpend, ticketLink",
     "tooltip.title": "Краткое описание",
     "tooltip.approver": "Согласующий",
     "tooltip.selectComments": "Выберите обоснования",
@@ -945,7 +947,7 @@
     "button.withFailover": "С отказоустойчивостью",
     "button.withApplicableFailover": "С отказоустойчивостью",
     "button.withOutSwitchover": "Без переключения",
-    "button.downloadLog": "Скачать протокол",
+    "button.logs": "Logs",
     "button.restartCluster": "Перезапустить все службы",
     "button.restartService": "Перезапустить службу",
     "button.dailyPlanService": "Дневной план",
@@ -983,6 +985,27 @@
     "--------ACTION DIALOG TOOLTIPS------------": "Page: Dashboard, Sub-tab: -, Pop-up: Action, Source: action-dialog.html, Fields: controllerId, operation",
     "tooltip.controllerId": "ID контроллера",
     "tooltip.operation": "операция"
+  },
+  "logConsole": {
+    "--------LOG CONSOLE FILTER MODAL------------": "Page: Log Console, Pop-up: Log Console Filter, Source: log-console-modal.component.html",
+    "label.dateFrom": "Date From",
+    "label.dateTo": "Date To",
+    "label.dateType": "Date Type",
+    "label.level": "Log Level",
+    "label.numOfLines": "Number of Lines",
+    "placeholder.selectDate": "Select date",
+    "placeholder.selectTime": "Select time",
+    "placeholder.relativeDateFrom": "e.g. 1d  6h  12h  1w  (s/m/h/d/w/M/y)",
+    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for no end)",
+    "placeholder.numOfLines": "e.g. 100  500  1000  (leave blank for all lines)",
+    "button.showLogs": "Show Logs",
+    "button.download": "Download",
+    "button.cancel": "Cancel",
+    "tooltip.dateFrom": "Date From",
+    "tooltip.dateTo": "Date To",
+    "tooltip.dateType": "Date Type",
+    "tooltip.level": "Log Level",
+    "tooltip.numOfLines": "Number of Lines"
   },
   "dailyPlan": {
     "label.createPlan": "Создать дневной план",
@@ -3671,7 +3694,8 @@
       "button.editDocument": "Изменить документацию",
       "placeholder.assignReference": "Добавить ссылку на документацию",
       "message.documentNotUsed": "Эта документация ещё не используется",
-      "tooltip.documentName": "Document Name"
+      "tooltip.documentName": "Document Name",
+      "tooltip.reference": "Reference"
     }
   },
   "reporting": {
@@ -4739,7 +4763,8 @@
       "tooltip.in": "In",
       "tooltip.clientId": "Client ID",
       "tooltip.clientSecret": "Client Secret",
-      "tooltip.tokenUrl": "Token URL"
+      "tooltip.tokenUrl": "Token URL",
+      "tooltip.type": "Тип"
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",

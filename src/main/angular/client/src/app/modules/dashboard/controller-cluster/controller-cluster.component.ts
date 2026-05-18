@@ -12,6 +12,7 @@ import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.c
 import {UpdateUrlModalComponent} from "../dashboard.component";
 import {CommentModalComponent as CommentModalComp} from '../../../components/comment-modal/comment.component';
 import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+import { LogConsoleModalComponent } from 'src/app/components/log-console/log-console.component';
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -789,6 +790,19 @@ export class ControllerClusterComponent {
       }, 'controller.log.gz', (res) => {
       });
     }
+  }
+
+  logs(controller){
+    let role = controller?.role == 'STANDALONE' ? 'PRIMARY' : controller?.role;
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: LogConsoleModalComponent,
+      nzData: { type: 'controller', controllerId: controller.controllerId, role: role, timeZone: this.coreService.getTimeZone() },
+      nzFooter: null,
+      nzClassName: 'lg',
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   restartService(type): void {

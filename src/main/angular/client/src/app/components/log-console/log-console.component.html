@@ -1,0 +1,103 @@
+<div class="log-console">
+
+  <!-- ─── Toolbar ─────────────────────────────────────────────────────────── -->
+  <div class="log-console-toolbar">
+
+    <!-- Filter badges -->
+    <div class="log-console-filters">
+      <label nz-checkbox [(ngModel)]="filters.info">
+        <span class="log-badge log-badge-info">INFO</span>
+      </label>
+      @if (hasWarn) {
+        <label nz-checkbox [(ngModel)]="filters.warn">
+          <span class="log-badge log-badge-warn">WARN</span>
+        </label>
+      }
+      @if (hasError) {
+        <label nz-checkbox [(ngModel)]="filters.error">
+          <span class="log-badge log-badge-error">ERROR</span>
+        </label>
+      }
+      @if (hasDebug) {
+        <label nz-checkbox [(ngModel)]="filters.debug">
+          <span class="log-badge log-badge-debug">DEBUG</span>
+        </label>
+      }
+      <label nz-checkbox [(ngModel)]="filters.other">
+        <span class="log-badge log-badge-other">OTHER</span>
+      </label>
+      @if (allLines.length > 0) {
+        <span class="log-line-count">{{ filteredLines.length }}/{{ allLines.length }}</span>
+      }
+    </div>
+
+    <!-- Toolbar actions -->
+    <div class="log-console-actions">
+      @if (displayTz) {
+        <span style="font-size:11px;color:#888" title="Log timestamps are in this timezone">
+          <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ displayTz }}
+        </span>
+      }
+      <button class="btn btn-xs btn-default" title="Reload"
+              (click)="reload()" [disabled]="isLoading">
+        <i nz-icon nzType="reload" nzTheme="outline"></i>
+      </button>
+      <button class="btn btn-xs btn-default" title="Download log"
+              (click)="download()" [disabled]="isDownloading">
+        <i nz-icon nzType="download" nzTheme="outline"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Log panel ────────────────────────────────────────────────────────── -->
+  <div class="log-console-body">
+
+    @if (isLoading && allLines.length === 0) {
+      <div class="log-console-loading">
+        <nz-spin nzSimple></nz-spin>
+        <span>Loading…</span>
+      </div>
+    }
+
+    @if (errorMsg) {
+      <div class="log-console-error">
+        <i nz-icon nzType="warning" nzTheme="outline"></i>
+        <span>{{ errorMsg }}</span>
+      </div>
+    }
+
+    @if (!isLoading && !errorMsg && allLines.length === 0) {
+      <div class="log-console-empty">
+        <i nz-icon nzType="file-text" nzTheme="outline" style="font-size:26px;color:#444"></i>
+        <span>No log entries found</span>
+      </div>
+    }
+
+    @for (line of filteredLines; track $index) {
+      <div class="log-line" [style.border-left-color]="lineBorderColor(line.level)">
+        @if (line.timestamp) {
+          <span class="log-ts">{{ formatTimestamp(line.timestamp) }}</span>
+          <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.level }}</span>
+        }
+        <span class="log-text" [style.color]="lineColor(line.level)">{{ line.text }}</span>
+      </div>
+    }
+
+    @if (!isComplete && !isLoading && allLines.length > 0) {
+      <div class="log-console-more">
+        <button class="btn btn-xs btn-default" (click)="loadMore()">Load more&hellip;</button>
+      </div>
+    }
+
+    @if (isLoading && allLines.length > 0) {
+      <div class="log-console-more">
+        <nz-spin nzSimple nzSize="small"></nz-spin>
+      </div>
+    }
+
+    @if (isComplete && allLines.length > 0) {
+      <div class="log-console-end">&#8212; end of log &#8212;</div>
+    }
+
+  </div>
+</div>

@@ -408,9 +408,10 @@ export class TaskSearchComponent {
     {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
   criticalities = [
-    {label: 'normal', value: 'NORMAL', checked: false},
     {label: 'minor', value: 'MINOR', checked: false},
-    {label: 'major', value: 'MAJOR', checked: false}
+    {label: 'normal', value: 'NORMAL', checked: false},
+    {label: 'major', value: 'MAJOR', checked: false},
+    {label: 'critical', value: 'CRITICAL', checked: false},
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {

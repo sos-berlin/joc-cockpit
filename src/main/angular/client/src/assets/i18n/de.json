@@ -265,6 +265,7 @@
     "button.addEnciphermentCertificate": "Verschlüsselungszertifikat zuweisen",
     "button.metricsPriority": "Metrikbasierte Priorität",
     "button.SubmitAllSubagents": "An alle Subagenten übertragen",
+    "button.logs": "Logs",
     "message.dropHereToDetach": "Hierher ziehen, um Subagenten zu entfernen",
     "message.noClusterFound": "Keinen Cluster gefunden",
     "message.clickHereToAdd": "Hier klicken zum Hinzufügen",
@@ -348,6 +349,7 @@
     "message.defaultAuditLog": "[automatisch generiert]",
     "tab.auditLog": "Prüfprotokoll",
     "tab.loginHistory": "Fehlgeschlagene Anmeldungen",
+    "section.audit": "Audit",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Begründung",
@@ -841,7 +843,7 @@
     "tooltip.time": "Gibt eine relative Zeit in Sekunden oder im Format *hh:mm:ss* an.",
     "tooltip.specificDate": "Gibt das Datum und die Uhrzeit an, zu der der ^Auftrag^ starten soll.",
     "--------API REQUEST COMPONENT TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: type",
-    "tooltip.type": "Wählt eine der folgenden Authentifizierungsmethoden:\n- **None**: keine Authentifizierung erforderlich\n- **API Key**: gibt einen Schlüssel ähnlich einem Kennwort an\n- **Bearer Token**: gibt ein verschlüsseltes Token an\n- **Basic Auth**: gibt die Base64-kodierte Zeichenfolge für `<Benutzer>:<Kennwort>` an\n- **OAuth 2.0**: gibt die *Client ID*, das *Client Secret* und die *Token URL* im *Client Credentials Flow* an",
+    "tooltip.type": "Type",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (common)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: timeZone, type",
     "tooltip.timeZone": "Aktualisiert die ^Zeitzone^ in den ausgewählten Objekten."
   },
@@ -945,7 +947,7 @@
     "button.withFailover": "Mit Ausfallsicherung",
     "button.withApplicableFailover": "Mit Ausfallsicherung",
     "button.withOutSwitchover": "Ohne Umschalten",
-    "button.downloadLog": "Protokoll herunterladen",
+    "button.logs": "Logs",
     "button.restartCluster": "Dienste neu starten",
     "button.restartService": "Dienst neu starten",
     "button.dailyPlanService": "Tagesplandienst",
@@ -2863,6 +2865,27 @@
     "button.copyToClipboard": "In Zwischenablage kopieren",
     "message.noLogsToViewEnableIt": "Kein Protokoll vorhanden! Aktivieren Sie die Protokollierung"
   },
+  "logConsole": {
+    "--------LOG CONSOLE FILTER MODAL------------": "Page: Log Console, Pop-up: Log Console Filter, Source: log-console-modal.component.html",
+    "label.dateFrom": "Date From",
+    "label.dateTo": "Date To",
+    "label.dateType": "Date Type",
+    "label.level": "Log Level",
+    "label.numOfLines": "Number of Lines",
+    "placeholder.selectDate": "Select date",
+    "placeholder.selectTime": "Select time",
+    "placeholder.relativeDateFrom": "e.g. 1d  6h  12h  1w  (s/m/h/d/w/M/y)",
+    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for no end)",
+    "placeholder.numOfLines": "e.g. 100  500  1000  (leave blank for all lines)",
+    "button.showLogs": "Show Logs",
+    "button.download": "Download",
+    "button.cancel": "Cancel",
+    "tooltip.dateFrom": "Date From",
+    "tooltip.dateTo": "Date To",
+    "tooltip.dateType": "Date Type",
+    "tooltip.level": "Log Level",
+    "tooltip.numOfLines": "Number of Lines"
+  },
   "login": {
     "label.account": "Konto",
     "label.password": "Kennwort",
@@ -3671,7 +3694,8 @@
       "button.editDocument": "Dokument editieren",
       "placeholder.assignReference": "Referenz zu einer Dokumentation hinzufügen",
       "message.documentNotUsed": "Diese Dokumentation wird bisher nicht verwendet",
-      "tooltip.documentName": "Der Pfad zum Ordner und Namen der ^Dokumentation^ wird angezeigt.\n\nDer Pfad ist nicht änderbar. Die Dokumentation kann exportiert und in einen neuen Pfad hochgeladen werden."
+      "tooltip.documentName": "Der Pfad zum Ordner und Namen der ^Dokumentation^ wird angezeigt.\n\nDer Pfad ist nicht änderbar. Die Dokumentation kann exportiert und in einen neuen Pfad hochgeladen werden.",
+      "tooltip.reference": "Reference"
     }
   },
   "reporting": {
@@ -4739,7 +4763,8 @@
       "tooltip.in": "Legt fest, wie der Schlüssel bei der Authentifizierungsmethode *API Key* weitergeleitet wird:\n- **Header** entsprechend `<Name des Schlüssels>` und `<Wert des Schlüssels>`\n- **Request** Parameter für `<Name des Schlüssels>` und `<Wert des Schlüssels>`",
       "tooltip.clientId": "Die **Client ID** enthält die Kennung in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
       "tooltip.clientSecret": "Das **Client Secret** enthält das Kennwort in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
-      "tooltip.tokenUrl": "Die **Token URL** gibt den Endpunkt an für den OAuth2 *Client Credentials Flow*."
+      "tooltip.tokenUrl": "Die **Token URL** gibt den Endpunkt an für den OAuth2 *Client Credentials Flow*.",
+      "tooltip.type": "Wählt eine der folgenden Authentifizierungsmethoden:\n- **None**: keine Authentifizierung erforderlich\n- **API Key**: gibt einen Schlüssel ähnlich einem Kennwort an\n- **Bearer Token**: gibt ein verschlüsseltes Token an\n- **Basic Auth**: gibt die Base64-kodierte Zeichenfolge für `<Benutzer>:<Kennwort>` an\n- **OAuth 2.0**: gibt die *Client ID*, das *Client Secret* und die *Token URL* im *Client Credentials Flow* an"
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",

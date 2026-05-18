@@ -96,14 +96,14 @@ export class ApprovalsComponent {
     });
   }
 
-  helpPage(): void{
+  helpPage(tabIndex): void{
     let key;
 
-    if (this.approvalsFilters.tabIndex === 0){
+    if (tabIndex === 0){
       key = 'approval-requests'
-    }else if (this.approvalsFilters.tabIndex === 1){
+    }else if (tabIndex === 1){
       key = 'approval-profiles'
-    }else if (this.approvalsFilters.tabIndex === 2){
+    }else if (tabIndex === 2){
       key = 'approval-notification-settings'
     }
     this.coreService.openHelpPage(key);

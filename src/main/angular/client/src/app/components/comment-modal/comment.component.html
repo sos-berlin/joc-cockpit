@@ -8,6 +8,7 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     @if (comments.node) {
       <div class="form-group row">
         <label class="col-sm-4">
@@ -29,7 +30,6 @@
         </label>
       <label class="col-sm-8">{{comments.operation | translate}}</label>
     </div>
-    <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
   </div>
   <div class="modal-footer">
     <button [disabled]="(required && !comments.comment) || submitted || !myForm.form.valid" class="btn btn-primary btn-sm" type="submit">

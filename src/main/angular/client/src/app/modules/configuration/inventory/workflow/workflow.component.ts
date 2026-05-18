@@ -6469,9 +6469,11 @@ export class WorkflowComponent {
       if (index === 24) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
+          $(this).css('pointer-events', 'auto');
           $(this).attr('title', '');
         } else {
           $(this).removeClass('disable-link');
+          $(this).css('pointer-events', '');
           $(this).attr('title', (operation === 'copy' ? 'Paste of ' : '') + (cell ? cell.value.tagName : name));
         }
       }
@@ -6482,7 +6484,7 @@ export class WorkflowComponent {
         "Sleep", "Prompt", "Admission<br>Times", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
-        "Option", "Paste"
+        "Options", "Paste"
       ];
 
       var tooltipKeys = [

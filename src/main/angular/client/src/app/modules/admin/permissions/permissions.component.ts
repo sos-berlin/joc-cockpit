@@ -1711,4 +1711,8 @@ export class PermissionsComponent {
     self.nodes = nodes;
   }
 
+  helpPage(helpKey): void {
+    this.coreService.openHelpPage(helpKey);
+  }
+
 }

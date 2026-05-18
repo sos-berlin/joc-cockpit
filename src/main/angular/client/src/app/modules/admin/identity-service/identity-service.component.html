@@ -3,7 +3,12 @@
     <div class="pull-left">
 
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-        <li class="nav-item">
+        <li class="nav-item flex-center" [ngClass]="{'tab-active': !adminFilter.isBlocklist && !adminFilter.isSession}">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('identity-services')"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a (click)="adminFilter.isSession = false;adminFilter.isBlocklist = false;" [ngClass]="{'active': !adminFilter.isBlocklist && !adminFilter.isSession}"
              class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.identityService</span></span>
@@ -12,7 +17,12 @@
         <li class="nav-item dropdown-separator">
           <span class="separator"></span>
         </li>
-        <li class="nav-item">
+        <li class="nav-item flex-center" [ngClass]="{'tab-active': adminFilter.isBlocklist && !adminFilter.isSession}">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('identity-service-blocklist')"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a (click)="adminFilter.isBlocklist = true;adminFilter.isSession = false;" [ngClass]="{'active': adminFilter.isBlocklist && !adminFilter.isSession}"
              class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.blocklist</span></span>
@@ -21,7 +31,12 @@
         <li class="nav-item dropdown-separator">
           <span class="separator"></span>
         </li>
-        <li class="nav-item">
+        <li class="nav-item flex-center" [ngClass]="{'tab-active': adminFilter.isSession && !adminFilter.isBlocklist}">
+          @if (preferences?.showHelpPages) {
+            <i (click)="helpPage('identity-service-active-sessions')"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
+          }
           <a (click)="adminFilter.isSession = true;adminFilter.isBlocklist = false;" [ngClass]="{'active': adminFilter.isSession && !adminFilter.isBlocklist}"
              class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.sessions</span></span>

@@ -7,6 +7,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {LogConsoleModalComponent} from '../../../components/log-console/log-console.component';
 
 @Component({
   standalone: false,
@@ -412,6 +413,24 @@ private getAgentClassList(obj): void {
         this.router.navigate(['/controllers']).then();
       }
     }
+  }
+
+  logs(agent: any, subagent?: any): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: LogConsoleModalComponent,
+      nzData: {
+        type: 'agent',
+        controllerId: agent.controllerId,
+        agentId: subagent ? subagent.agentId : agent.agentId,
+        subagentId: subagent ? subagent.subagentId : undefined,
+        timeZone: this.coreService.getTimeZone()
+      },
+      nzFooter: null,
+      nzClassName: 'lg',
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
   helpPage(key): void{

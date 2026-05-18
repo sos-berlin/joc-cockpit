@@ -278,24 +278,7 @@ export class AdminComponent {
     }
   }
 
-  helpPage(): void {
-    let helpKey: string;
-    if(this.adminFilter.isBlocklist){
-      helpKey = 'identity-service-blocklist'
-    }else if(this.adminFilter.isSession){
-      helpKey = 'identity-service-active-sessions'
-    }else if(this.route.match('/users/identity_service/role')){
-      helpKey = 'identity-service-roles'
-    }else if(this.route.match('/users/identity_service/account')){
-      helpKey = 'identity-service-accounts'
-    }else if(this.route.match('/users/identity_service/profiles')){
-      helpKey = 'identity-service-profiles'
-    }else if(this.route.match('/users/identity_service/permissions')){
-      helpKey = 'identity-service-permissions'
-    }else{
-      helpKey = 'identity-services'
-    }
-
+  helpPage(helpKey): void {
     this.coreService.openHelpPage(helpKey);
   }
 
