@@ -831,7 +831,7 @@
     "tooltip.title": "The current operation requires approval by another user. The Title identifies the Approval Request and should explain to the approver the purpose of the operation.",
     "tooltip.approver": "Selects the preferred approver that will be notified about the approval request.\n\nAny of the approvers displayed can pick up the approval request and can confirm or deny approval.",
     "tooltip.selectComments": "Selects from a list of predefined reasons or specifies an individual reason for user intervention.",
-    "tooltip.selectComment": "Specifies an individual reason for user intervention.",
+    "tooltip.selectComment": "Specifies a reason for user intervention.",
     "tooltip.timeSpend": "Specifies the time spent in minutes for user intervention.",
     "tooltip.ticketLink": "Specifies a Ticket Link that holds details about the user intervention.",
     "--------COMMENT MODAL TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Comment, Source: comment.component.html, Fields: node, operation, path",
@@ -843,7 +843,7 @@
     "tooltip.time": "Specifies a relative time in seconds or from the format *hh:mm:ss*.",
     "tooltip.specificDate": "Enter date and time when the ^Order^ should start.",
     "--------API REQUEST COMPONENT TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: type",
-    "tooltip.type": "Type",
+    "tooltip.type": "Updates the Calendar type:\n- Working Day\n- Non-working Day\n\nThe selected Calendars will be assigned the same Calendar type.",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (common)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: timeZone, type",
     "tooltip.timeZone": "Updates the ^Time Zone^ of selected objects."
   },
@@ -2867,24 +2867,24 @@
   },
   "logConsole": {
     "--------LOG CONSOLE FILTER MODAL------------": "Page: Log Console, Pop-up: Log Console Filter, Source: log-console-modal.component.html",
-    "label.dateFrom": "Date From",
-    "label.dateTo": "Date To",
+    "label.dateFrom": "Date from",
+    "label.dateTo": "Date to",
     "label.dateType": "Date Type",
     "label.level": "Log Level",
     "label.numOfLines": "Number of Lines",
     "placeholder.selectDate": "Select date",
     "placeholder.selectTime": "Select time",
     "placeholder.relativeDateFrom": "e.g. 1d  6h  12h  1w  (s/m/h/d/w/M/y)",
-    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for no end)",
+    "placeholder.relativeDateTo": "e.g. 0  1d  6h  (leave blank for running log)",
     "placeholder.numOfLines": "e.g. 100  500  1000  (leave blank for all lines)",
     "button.showLogs": "Show Logs",
     "button.download": "Download",
     "button.cancel": "Cancel",
-    "tooltip.dateFrom": "Date From",
-    "tooltip.dateTo": "Date To",
-    "tooltip.dateType": "Date Type",
-    "tooltip.level": "Log Level",
-    "tooltip.numOfLines": "Number of Lines"
+    "tooltip.dateFrom": "Specifies the date from which log output is displayed.\n- **Relative Date**: uses a ^Date Formula^\n- **Specific Date**: uses the computer's date format.",
+    "tooltip.dateTo": "Specifies the date up to which log output is displayed.\n- **Relative Date**: uses a ^Date Formula^\n- **Specific date**: uses the computer's date format.",
+    "tooltip.dateType": "Specifies how a date is entered:\n- **Relative date**: uses a ^Date Formula^\n- **Specific date**: uses the computer's date format.",
+    "tooltip.level": "Limits log output to lines using the matching Log Level:\n- **INFO**: informational output.\n- **WARN**: warnings are temporary, for example, connection loss to an ^Agent^\n- **ERROR**: can temporary or persistent and needs attention.\n- **DEBUG**: is detailed and is used by support team members.\n- **TRACE** is highly detailed and is used by developers.",
+    "tooltip.numOfLines": "Limits log output to the indicated number of lines.\n\nIf not specified, then a running log will be displayed that is updated automatically on a arrival of next log output."
   },
   "login": {
     "label.account": "Account",
@@ -3695,7 +3695,7 @@
       "placeholder.assignReference": "Assign Documentation reference",
       "message.documentNotUsed": "The Documentation is not yet used",
       "tooltip.documentName": "The path to the folder and the name of the ^Documentation^ are displayed.\n\nThe path cannot be modified in the lifetime of a Documentation. The documentation can be exported and uploaded to a new path.",
-      "tooltip.reference": "Reference"
+      "tooltip.reference": "The reference specifies the unique name used by ^Inventory^ objects to link to the ^Documentation^."
     }
   },
   "reporting": {
