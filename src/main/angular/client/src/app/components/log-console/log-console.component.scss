@@ -167,7 +167,114 @@
   color: var(--text-color);
 }
 
-// Level-colored text overrides (applied via [style.color])
-.log-line-error .log-text { color: var(--red)   !important; }
-.log-line-warn  .log-text { color: var(--gold)  !important; }
-.log-line-debug .log-text { color: var(--green) !important; }
+// Level-specific row treatment.
+// Visual weight is carried by the border-left stripe + level badge.
+// Text stays at full contrast — never override text color for readability.
+// Subtle background tints (≤5 % opacity) are safe across light/dark/grey themes.
+.log-line-error { background: rgba(220, 53, 69, 0.05); }
+.log-line-warn  { background: rgba(255, 160,  0, 0.05); }
+
+// ─── Event summary bar ───────────────────────────────────────────────────────
+.log-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 10px;
+  background: var(--bg-footer);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 11px;
+}
+
+.log-summary-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 5px 2px 2px;
+  border-radius: 4px;
+  color: var(--text-color);
+  line-height: 1;
+  transition: background 80ms;
+
+  &:hover { background: rgba(128, 128, 128, .10); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+}
+
+.log-summary-count {
+  font-weight: 600;
+  font-size: 12px;
+  min-width: 16px;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.log-summary-note {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+// ─── Keyword search ─────────────────────────────────────────────────────────────
+.log-search-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+
+  .log-search-icon {
+    position: absolute;
+    left: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    pointer-events: none;
+  }
+
+  .log-search-input {
+    height: 24px;
+    padding: 0 24px 0 26px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-box);
+    color: var(--text-color);
+    font-size: 11px;
+    width: 160px;
+    outline: none;
+    transition: border-color 150ms, width 150ms;
+
+    &:focus {
+      border-color: var(--primary);
+      width: 220px;
+    }
+
+    &::placeholder { color: var(--text-muted); }
+  }
+
+  .log-search-clear {
+    position: absolute;
+    right: 7px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+
+    &:hover { color: var(--text-color); }
+  }
+}
+
+// ─── Search match highlight ────────────────────────────────────────────────────
+mark.log-search-match {
+  background: rgba(255, 214, 0, 0.45);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-style: normal;
+}

@@ -1,4 +1,5 @@
-import {Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import * as moment from 'moment-timezone';
@@ -61,10 +62,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   timeZone = '';
 
   filters = {info: true, warn: true, error: true, debug: true, other: true};
+  searchTerm = '';
+  followTail = false;
+
+  @ViewChild('logBody') logBodyRef?: ElementRef<HTMLElement>;
 
   private destroyed = false;
 
-  constructor(private coreService: CoreService) {}
+  constructor(private coreService: CoreService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     if (this.request?.dateFrom) {
@@ -83,15 +88,63 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get filteredLines(): ParsedLine[] {
+    const term = this.searchTerm.trim().toLowerCase();
     return this.allLines.filter(l => {
-      switch (l.level) {
-        case 'INFO':  return this.filters.info;
-        case 'WARN':  return this.filters.warn;
-        case 'ERROR': return this.filters.error;
-        case 'DEBUG': return this.filters.debug;
-        default:      return this.filters.other;
-      }
+      const levelOk = (() => {
+        switch (l.level) {
+          case 'INFO':  return this.filters.info;
+          case 'WARN':  return this.filters.warn;
+          case 'ERROR': return this.filters.error;
+          case 'DEBUG': return this.filters.debug;
+          default:      return this.filters.other;
+        }
+      })();
+      return levelOk && (!term || l.text.toLowerCase().includes(term));
     });
+  }
+
+  /** Per-level counts over allLines (unfiltered), used by the summary bar. */
+  get levelCounts(): Record<string, number> {
+    const c: Record<string, number> = {error: 0, warn: 0, info: 0, debug: 0, other: 0};
+    for (const l of this.allLines) {
+      switch (l.level) {
+        case 'ERROR': c['error']++; break;
+        case 'WARN':  c['warn']++; break;
+        case 'INFO':  c['info']++; break;
+        case 'DEBUG': c['debug']++; break;
+        default:      c['other']++; break;
+      }
+    }
+    return c;
+  }
+
+  /**
+   * Returns HTML with search matches wrapped in <mark> tags.
+   * Called only when searchTerm is non-empty (template uses @if guard).
+   * Text is HTML-escaped before marking to prevent injection.
+   */
+  highlightText(text: string): SafeHtml {
+    const escaped = text
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const term = this.searchTerm.trim();
+    if (!term) return this.sanitizer.bypassSecurityTrustHtml(escaped);
+    const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.sanitizer.bypassSecurityTrustHtml(
+      escaped.replace(new RegExp(safeRe, 'gi'), '<mark class="log-search-match">$&</mark>')
+    );
+  }
+
+  /** Scroll the log body to the first visible line of the given level. */
+  jumpToLevel(level: string): void {
+    const el = this.logBodyRef?.nativeElement;
+    if (!el) return;
+    const target = el.querySelector<HTMLElement>(`.log-line-${level}`);
+    target?.scrollIntoView({block: 'center', behavior: 'smooth'});
+  }
+
+  toggleFollowTail(): void {
+    this.followTail = !this.followTail;
+    if (this.followTail) this.scrollToBottom();
   }
 
   get hasWarn():  boolean { return this.allLines.some(l => l.level === 'WARN'); }
@@ -130,6 +183,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.token = res.token || null;
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
+        if (this.followTail) this.scrollToBottom();
       },
       error: (err) => {
         if (!this.destroyed) {
@@ -151,6 +205,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isComplete = res.isComplete === true;
         this.token = res.token || null;
         this.isLoading = false;
+        if (this.followTail) this.scrollToBottom();
       },
       error: (err) => {
         if (!this.destroyed) {
@@ -179,16 +234,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.fetchLog();
   }
 
-  lineColor(level: ParsedLine['level']): string {
-    switch (level) {
-      case 'ERROR': return 'var(--red)';
-      case 'WARN':  return 'var(--gold)';
-      case 'INFO':  return 'var(--primary)';
-      case 'DEBUG': return 'var(--green)';
-      default:      return 'var(--text-color)';
-    }
-  }
-
   lineBorderColor(level: ParsedLine['level']): string {
     switch (level) {
       case 'ERROR': return 'var(--red)';
@@ -196,6 +241,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       case 'DEBUG': return 'var(--green)';
       default:      return 'transparent';
     }
+  }
+
+  private scrollToBottom(): void {
+    const el = this.logBodyRef?.nativeElement;
+    if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
   }
 
   private processLines(lines: string[]): void {

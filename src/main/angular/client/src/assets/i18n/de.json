@@ -1880,7 +1880,7 @@
     "tooltip.orderId": "Beschränkt die Anzeige auf ^Aufträge|auftrag^, deren ^Auftragskennung^en einem Muster entsprechen.\n\nVerwenden Sie den Platzhalter `*` für eine beliebige Anzahl von Zeichen, `?` für ein einzelnes Zeichen einer Auftragskennung.\n\nZum Beispiel: `#2026-05*` für Aufträge des Mai 2026, `*cyclic*` für Aufträge deren ^Auftragsname^ den Begriff enthält.",
     "tooltip.status": "Beschränkt die Anzeige auf ^Aufträge|auftrag^ eines bestimmten Status in der Auftragshistorie:\n- **erfolgreich**\n- **fehlgeschlagen**\n- **fortschreitend** sind Aufträge, die nicht abgeschlossen sind.",
     "--------SUBMISSION FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Submissions, Pop-up: -, Source: history/submission-form-template.html, Fields: type",
-    "tooltip.type": "??? 1881 Status should be used for label: Der Status gibt das Ergebnis der Übermittlung von ^Aufträgen|auftrag^ aus dem ^Tagesplan^ an den ^Controller^ durch den Benutzer oder durch den ^Tagesplandienst^ an:\n- **Übermittelt**: Aufträge sind erfolgreich ^übermittelt^\n- **Nicht Übermittelt**: Übermittlung fehlgeschlagen, Aufträge verbleiben im Status ^geplant^",
+    "tooltip.subimission.state": "??? 1881 Status should be used for label: Der Status gibt das Ergebnis der Übermittlung von ^Aufträgen|auftrag^ aus dem ^Tagesplan^ an den ^Controller^ durch den Benutzer oder durch den ^Tagesplandienst^ an:\n- **Übermittelt**: Aufträge sind erfolgreich ^übermittelt^\n- **Nicht Übermittelt**: Übermittlung fehlgeschlagen, Aufträge verbleiben im Status ^geplant^",
     "--------TASK FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Tasks, Pop-up: -, Source: history/task-form-template.html, Fields: job, criticality",
     "tooltip.job": "Beschränkt die Anzeige auf ^Job^s, deren Namen eine bestimmte Zeichenfolge enthalten.\n\nVerwenden Sie den Platzhalter `*` für eine beliebige Anzahl von Zeichen, `?` für ein einzelnes Zeichen im Namen eines Jobs.\n\nBeispiel: `job*` findet Jobs, deren Namen mit *job* beginnt, `*EOD` findet Jobs, deren Namen mit *EOD* endet.",
     "tooltip.criticality": "Beschränkt die Anzeige auf ^Job^s mit der angegebenen Kritikalität:\n- **Gering**\n- **Normal**\n- **Hoch**\n- **Kritisch**",
@@ -2212,7 +2212,6 @@
     "button.unlink": "Verknüpfung aufheben",
     "button.syncToController": "Synchronisieren des Controller",
     "button.syncToInventory": "Synchronisieren des Inventars",
-    "tooltip.setVersion": "??? 2213: probably unused: Version setzen",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|arbeitsablauf^, denen eine oder mehrere der ausgewählten ^Kennzeichnung^en zugewiesen sind.",
     "tooltip.orderTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|arbeitsablauf^, die ^Aufträge|auftrag^ enthalten, denen in ihren ^Zeitplänen|zeitplan^ eine oder mehrere der ausgewählten Auftrags-^Kennzeichnung^en zugewiesen wurden.",
@@ -2225,9 +2224,6 @@
     "--------EXPORT BULK DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Export, Source: export-bulk-dialog.html, Fields: fileName, fileFormat",
     "tooltip.fileName": "Gibt den Namen der Exportdatei an, z.B. `export.zip` oder `export.tar.gz`.\n\nDie Datei wird im *Download* Verzeichnis des Browsers zur Verfügung gestellt.\n\nPer Voreinstellung wird die Exportdatei im zip Format erzeugt und die .zip Dateinamenerweiterung verwendet.",
     "tooltip.fileFormat": "Gibt zip oder tar.gz für den Komprimierungstyp an.",
-    "--------CONFIRM MODAL TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Confirm, Source: confirm.component.html, Fields: affectedObjects, referencedObjects",
-    "tooltip.affectedObjects": "??? 2227: Affected Objects",
-    "tooltip.referencedObjects": "???: 2228: Referenced Objects",
     "--------FILE UPLOADER TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: File Upload, Source: file-uploader.component.html, Fields: folder, signatureAlgorithm, overwrite, overwriteTags, objectName",
     "tooltip.folder": "Gibt einen oder mehrere Ordner des ^Inventar^s an, denen die aus dem Importarchiv verfügbare Ordnerhierarchie nachgestellt werden soll.\n\nFalls die angegebenen Ordner nicht vorhanden sind, werden sie angelegt.",
     "tooltip.signatureAlgorithm": "Gibt den Signaturalgorithmus an, der zum Signieren der Objekte im Importarchiv verwendet wird:\n- **SHA256withECDSA** (Voreinstellung)\n- **SHA256withRSA**\n- **SHA512withECDSA**\n- **SHA512withRSA**",
@@ -4668,7 +4664,7 @@
       "tab.jitl": "JITL Job-Vorlagen",
       "tab.jobTemplate": "Benutzer Job-Vorlagen",
       "--------JOB WIZARD TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Job Wizard, Source: job-wizard.component.html, Fields: title",
-      "tooltip.title": "??? Title"
+      "tooltip.title": "??? Title - Used in Job Wizard modals in Inventory, for example: the Job Wizard modal for the Job Wizard button in the drawer."
     },
     "admissionTime": {
       "label.on": "Am",

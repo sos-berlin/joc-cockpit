@@ -148,7 +148,7 @@
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
            (click)="toggleAllAffectedCollapse()"></i>
         <label class="m-l-sm">
-          <span [appRichTooltip]="'inventory.tooltip.affectedObjects' | translate" translate>inventory.label.affectedObjects</span>
+          <span translate>inventory.label.affectedObjects</span>
         </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllAffected()"></i>
@@ -202,7 +202,7 @@
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
            (click)="toggleAllReferencedCollapse()"></i>
         <label class="m-l-sm">
-          <span [appRichTooltip]="'inventory.tooltip.referencedObjects' | translate" translate>inventory.label.referencedObjects</span>
+          <span translate>inventory.label.referencedObjects</span>
         </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllReferenced()"></i>

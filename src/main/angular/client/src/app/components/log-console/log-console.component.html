@@ -29,6 +29,17 @@
       @if (allLines.length > 0) {
         <span class="log-line-count">{{ filteredLines.length }}/{{ allLines.length }}</span>
       }
+      <!-- Keyword search -->
+      <div class="log-search-wrap">
+        <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
+        <input class="log-search-input" type="text" [(ngModel)]="searchTerm"
+               placeholder="Search logs…" autocomplete="off" aria-label="Search log lines">
+        @if (searchTerm) {
+          <button class="log-search-clear" (click)="searchTerm=''" title="Clear search" aria-label="Clear search">
+            <i nz-icon nzType="close-circle" nzTheme="filled"></i>
+          </button>
+        }
+      </div>
     </div>
 
     <!-- Toolbar actions -->
@@ -46,11 +57,50 @@
               (click)="download()" [disabled]="isDownloading">
         <i nz-icon nzType="download" nzTheme="outline"></i>
       </button>
+      <!-- Follow tail toggle -->
+      <button class="btn btn-xs" [class.btn-primary]="followTail" [class.btn-default]="!followTail"
+              title="Follow tail — auto-scroll to latest lines" (click)="toggleFollowTail()"
+              [attr.aria-pressed]="followTail">
+        <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
+      </button>
     </div>
   </div>
 
-  <!-- ─── Log panel ────────────────────────────────────────────────────────── -->
-  <div class="log-console-body">
+  <!-- ─── Event summary bar ─────────────────────────────────────────────────── -->
+  @if (allLines.length > 0) {
+    <div class="log-summary-bar">
+      @if (levelCounts['error'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('error')" title="Jump to first ERROR">
+          <span class="log-badge log-badge-error">ERROR</span>
+          <span class="log-summary-count">{{ levelCounts['error'] }}</span>
+        </button>
+      }
+      @if (levelCounts['warn'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('warn')" title="Jump to first WARN">
+          <span class="log-badge log-badge-warn">WARN</span>
+          <span class="log-summary-count">{{ levelCounts['warn'] }}</span>
+        </button>
+      }
+      @if (levelCounts['info'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('info')" title="Jump to first INFO">
+          <span class="log-badge log-badge-info">INFO</span>
+          <span class="log-summary-count">{{ levelCounts['info'] }}</span>
+        </button>
+      }
+      @if (levelCounts['debug'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('debug')" title="Jump to first DEBUG">
+          <span class="log-badge log-badge-debug">DEBUG</span>
+          <span class="log-summary-count">{{ levelCounts['debug'] }}</span>
+        </button>
+      }
+      @if (!isComplete) {
+        <span class="log-summary-note">loading…</span>
+      }
+    </div>
+  }
+
+  <!-- ─── Log panel ──────────────────────────────────────────────────────── -->
+  <div class="log-console-body" #logBody>
 
     @if (isLoading && allLines.length === 0) {
       <div class="log-console-loading">
@@ -74,12 +124,16 @@
     }
 
     @for (line of filteredLines; track $index) {
-      <div class="log-line" [style.border-left-color]="lineBorderColor(line.level)">
+      <div class="log-line log-line-{{line.level.toLowerCase()}}" [style.border-left-color]="lineBorderColor(line.level)">
         @if (line.timestamp) {
           <span class="log-ts">{{ formatTimestamp(line.timestamp) }}</span>
           <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.level }}</span>
         }
-        <span class="log-text" [style.color]="lineColor(line.level)">{{ line.text }}</span>
+        @if (searchTerm) {
+          <span class="log-text" [innerHTML]="highlightText(line.text)"></span>
+        } @else {
+          <span class="log-text">{{ line.text }}</span>
+        }
       </div>
     }
 
