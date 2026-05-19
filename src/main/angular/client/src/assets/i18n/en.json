@@ -297,7 +297,7 @@
     "tooltip.validUntil": "The end of the validity period of the Token that is calculated from the ^Time Zone^.",
     "tooltip.timeZone": "The ^Time Zone^ used to calculate the validity period.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
-    "tooltip.token": "Token",
+    "tooltip.token": "If the **Bearer Token** authentication method is used, then a *Token* is specified by the user.",
     "cluster": {
       "tooltip.agentClusterName": "The ^Agent Cluster^ Name is a unique identifier of the Agent Cluster that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
       "tooltip.subagentId": "The ^Subagent ID^ is a unique identifier of a ^Director Agent^ that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
@@ -541,8 +541,8 @@
     "tooltip.state": "The State of the ^Change^ is *open* or *closed*.\n\nInventory objects can be added to *open* Changes, they cannot be added to *closed* Changes.",
     "tooltip.includeDependencies": "A ^Change^ holds objects that have been directly assigned by the user and it can include dependent objects that reference objects or that are referenced by objects assigned the Change.\n\nUsers can specify to include dependent objects.",
     "--------PUBLISH CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Publish Change, Source: publish-change-dialog.html, Fields: name, includeDependencies, manageDependencies, showRelatedObjects",
-    "tooltip.manageDependencies": "NOT USED: Manage Dependencies",
-    "tooltip.showRelatedObjects": "NOT USED: Show Related Objects"
+    "tooltip.manageDependencies": "??? 544: NOT USED: Manage Dependencies",
+    "tooltip.showRelatedObjects": "??? 545: NOT USED: Show Related Objects"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used by multiple pages",
   "common": {
@@ -873,8 +873,8 @@
     "button.updateCustomization": "Update Customization",
     "placeholder.enterName": "Enter name",
     "message.filterDeleteSuccessfully": "Customization successfully deleted",
-    "tooltip.deactivateCustomization": "Deactivate Customization",
-    "tooltip.useDefault": "Use as default Customization",
+    "tooltip.deactivateCustomization": "The ^Customization^ will not be used and no filtering will be in place.\n\nThe Customization can be activated later on.",
+    "tooltip.useDefault": "Use as default ^Customization^.",
     "--------ADVANCE SEARCH - FORM TEMPLATE------------": "",
     "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
     "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of ^JOC Cockpit^ for read access."
@@ -980,11 +980,11 @@
     "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?",
     "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?",
     "--------UPDATE URL DIALOG TOOLTIPS------------": "Page: Dashboard, Sub-tab: -, Pop-up: Update URL, Source: update-url-dialog.html, Fields: jocInstanceId, url",
-    "tooltip.jocInstanceId": "The ^JOC Cockpit Instance ID^ is a unique identifies that cannot be changed through the lifetime of ^JOC Cockpit^.",
+    "tooltip.jocInstanceId": "The ^JOC Cockpit Instance ID^ is a unique identifier that cannot be changed through the lifetime of ^JOC Cockpit^.",
     "tooltip.url": "Allows specifying the URL that is displayed in the *DASHBOARD* view for ^JOC Cockpit^.\n\nBy default, the URL used by the first user connecting to JOC Cockpit will be used.",
     "--------ACTION DIALOG TOOLTIPS------------": "Page: Dashboard, Sub-tab: -, Pop-up: Action, Source: action-dialog.html, Fields: controllerId, operation",
-    "tooltip.controllerId": "??? 984 Controller ID",
-    "tooltip.operation": "??? 985 Operation"
+    "tooltip.controllerId": "??? 984: Controller ID",
+    "tooltip.operation": "??? 985: Operation"
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",
@@ -1132,8 +1132,8 @@
     "tooltip.submitWith": "Specifies that ^Order^s should be ^submitted^ to the ^Controller^ and to ^Agent^s.\n\nIf the option is not used, then the ^Daily Plan Service^ will pick up ^planned^ Orders and will submit them.",
     "tooltip.plannedAllAutomatically": "Offers to include ^Order^s from released ^Schedule^s that are not configured for automated planning.\n\nWhen the ^Daily Plan Service^ creates Orders, it does not consider Schedules not configured for automated planning.",
     "--------DAILY PLAN - EXPORT DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Export, Source: projection/export-dialog.html, Fields: startDate, endDate",
-    "tooltip.startDate": "??? 1133 Start Date",
-    "tooltip.endDate": "??? 1134 End Date",
+    "tooltip.startDate": "??? 1135: Start Date",
+    "tooltip.endDate": "??? 1136: End Date",
     "--------DAILY PLAN - FORM TEMPLATE TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: -, Source: form-template.html, Fields: customizationName, dateRange, from, to, workflowTagging, orderTagging, state, late, sharedCustomization",
     "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
     "tooltip.dateRange": "Specifies the date range for which Orders will be displayed.",
@@ -1857,7 +1857,7 @@
     "tooltip.dateRange": "Specifies the date range for which ^Deployment^ operations should be displayed.",
     "tooltip.from": "Specifies the date starting from which ^Deployment^ operations should be displayed.",
     "tooltip.to": "Specifies the date up to which ^Deployment^ operations should be displayed.",
-    "tooltip.processExecuted": "Specifies a relative date when ^Deployment^s have been performed:\n- **today**: since begin of day\n- **now-seconds**: the number of seconds ago, for example, `now-1800` translates to 30 minutes ago\n- **yesterday**: in the 24 hours of the previous day\n- **-1h|d|w|M|y**: specifies alternative units for hour, day, week, month, year, for example, `-3h` maps to 3 hours ago, `-1w` maps to last week's period\n- **08:00am**: since 8am",
+    "tooltip.processExecuted": "Specifies a relative date when ^Deployment^s have been performed:\n- **today**: since begin of day\n- **now-seconds**: the number of seconds ago, for example, `now-1800` translates to 30 minutes ago\n- **yesterday**: in the 24 hours of the previous day\n- **-1h|d|w|M|y**: specifies a ^Date Formula^, for example, `-3h` maps to 3 hours ago, `-1w` maps to last week's period\n- **08:00am**: since 8am",
     "tooltip.controllerId": "The ^Controller ID^ limits display of entries to one or more ^Controller^s.",
     "tooltip.deployType": "Object Types offer limiting display to the type of ^Inventory^ objects that can be selected from a list.\n\nUsers can select more than one object type.",
     "tooltip.operation": "Specifies the type of operation performed:\n- **All** includes any operation\n- **Submit** includes ^Deployment^ operations\n- **Delete** includes operations to remove or to revoke objects",
@@ -1885,7 +1885,7 @@
     "tooltip.job": "Limits display to ^Job^s whose name matches a pattern.\n\nUse the `*` wildcard for any number of characters, and `?` for a single character in a Job name.\n\nExample: `job*` finds Jobs whose name starts with *job*, `*EOD` finds jobs whose name ends with *EOD*.",
     "tooltip.criticality": "Limits display to ^Job^s with the specified criticality:\n- **Minor**\n- **Normal**\n- **Major**\n- **Critical**",
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
-    "tooltip.date": "??? 1886 Date"
+    "tooltip.date": "??? 1886: Date"
   },
   "info": {
     "label.welcome": "Welcome to JS7",
@@ -2242,7 +2242,7 @@
     "tooltip.overwriteOptionalArguments": "Updates arguments of ^Job^s in target ^Workflow^s from the ^Job Template^'s optional arguments.",
     "--------ADD GROUPS DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Add Groups / Rename Group, Source: add-groups-dialog.html, Fields: groups, groupName",
     "tooltip.groups": "Specifies ^Tag^ groups that should be added.\n\nGroups can be added by typing a new group name.",
-    "tooltip.groupName": "??? 2243 Group Name",
+    "tooltip.groupName": "Specifies the name of a ^Tag Group^ that is used to manage ^Tag^s.",
     "--------CREATE FOLDER DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create Folder / Rename, Source: create-folder-dialog.html, Fields: folderName, rename, newName, newPath, search, replace",
     "tooltip.folderName": "Renaming offers the following options:\n- **New folder name** for example, `myFolder`should become `yourFolder`.\n- **New folder location** for example, `myFolder` located in `/someFolders` should be relocated to `/myFolders/myFolder`. Top-level folders are created if they do not exist.\n- **New path** for example, `myFolder` located in `/someFolders` should be renamed to `/yourFolders/yourFolder`.",
     "tooltip.rename": "Renaming is performed for a folder or for objects included with a folder:\n- **Folder**: renames or relocates the folder in the ^Inventory^.\n- **Objects recursively**: modifies object names in the folder and sub-folders from a search/replace operation.",
@@ -2830,13 +2830,13 @@
       "label.style": "Style",
       "button.preview": "Preview",
       "button.post": "Post",
-      "tooltip.bold": "bold",
-      "tooltip.notes": "Notes",
-      "tooltip.italic": "italic",
-      "tooltip.bullets": "Bullets",
-      "tooltip.colorPicker": "Change Color",
+      "tooltip.bold": "bold typeface",
+      "tooltip.notes": "Notes offer sharing messages between users of ^JOC Cockpit^.\n\nNotes are displayed with the object name in a number of views and indicate the Note`s priority from its color.",
+      "tooltip.italic": "italic typeface",
+      "tooltip.bullets": "bullet list",
+      "tooltip.colorPicker": "Change color",
       "tooltip.fullscreen": "Full screen mode",
-      "tooltip.exitFullscreen": "exit Full screen mode",
+      "tooltip.exitFullscreen": "exit full screen mode",
       "placeholder.message": "Type your message here..."
     }
   },
@@ -3197,9 +3197,9 @@
       },
       "allOrderResume": {
         "--------ADD RESUME ORDER DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Resume Order, Source: all-order-resume-dialog.html, Fields: resumeOrder, position, force",
-        "resumeOrder": "Resume Order",
-        "position": "Position",
-        "force": "Force resumption"
+        "resumeOrder": "When ^Order^s are resumed from a bulk operation, then the following positions in the ^Workflow^ are offered:\n- **Resume from same position**: each Order will be resumed from its respective position in the Workflow.\n- **Resume from current block**: if the Workflow holds block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^ etc., then Orders will be resumed from the begin of the respective block instruction in which they failed.\n- **Resume from label**: will resume Orders from a common position in the Workflow, i.e. from the instruction that is assigned the label.",
+        "position": "The identifier of the instruction in the ^Workflow^ from which the selected ^Order^s will be resumed, for example, a common *Label* of a ^Job^.",
+        "force": "If an ^Order^ ^failed^ due to crash of the ^Agent^ or its host, then the related ^Job^'s setting being *restartable* decides if resumption can be performed from the Job's position.\n\nIf checked, then resumption will be forced and the Job's setting will be ignored."
       }
     }
   },
@@ -3297,10 +3297,10 @@
     "tooltip.stateColorChange": "Change color of Order states",
     "--------ADD PROFILE TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Account / Add Approver, Source: user-dialog.html add-approver-dialog.html, Fields: confirmPassword, userName",
     "tooltip.confirmPassword": "Confirm password",
-    "tooltip.userName": "User name",
+    "tooltip.userName": "User account",
     "--------CHANGE PASSWORD DIALOG TOOLTIPS------------": "Page: Profile, Sub-tab: -, Pop-up: Change Password, Source: change-password-dialog.html, Fields: oldPassword, newPassword",
-    "tooltip.oldPassword": "Old Password",
-    "tooltip.newPassword": "New Password",
+    "tooltip.oldPassword": "Old password",
+    "tooltip.newPassword": "New password",
     "favoriteManagement": {
       "label.manageFavorite": "Manage Favorite",
       "label.addFavorite": "Add Favorite",
@@ -3314,8 +3314,8 @@
       "tooltip.sharedByMe": "Shared by me",
       "tooltip.sharedWithMe": "Shared with me",
       "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
-      "tooltip.name": "Name",
-      "tooltip.facet": "Facet"
+      "tooltip.name": "The Name is the unique identifier of a Facet.",
+      "tooltip.facet": "The Facet holds a ^regular expression^ that is applied to user input when ^Order^s are added on demand that require values for Order Variables.\n\nIf the Regular Expression is successfully evaluated, user input will be accepted and otherwise will be denied."
     },
     "permission": {
       "label.order": "Order",
@@ -3414,24 +3414,24 @@
       "tooltip.updateCertificate": "Update Certificate",
       "tooltip.deleteCertificate": "Delete Certificate",
       "--------ADD KEY MANAGEMENT FORM TOOLTIPS------------": "Page: Profile, Sub-tab: Key Management, Pop-up: Generate Key / Update Key, Source: generate-key-dialog.html update-dialog.html, Fields: keyID, setExpiryDate, date, keyAlgorithm, useSigningKeys, distinguishedName, privateKey, publicKey, x509Certificate, keyExpiredOn, certificateExpiredOn",
-      "tooltip.keyID": "Key Id",
-      "tooltip.setExpiryDate": "Set Expiry Date",
-      "tooltip.date": "Date",
+      "tooltip.keyID": "Key ID",
+      "tooltip.setExpiryDate": "Set the expiration date of the Certificate.",
+      "tooltip.date": "Expiration Date",
       "tooltip.keyAlgorithm": "Key Algorithm",
       "tooltip.useSigningKeys": "Use Signing Keys",
       "tooltip.distinguishedName": "Distinguished Name",
-      "tooltip.privateKey": "Private key",
-      "tooltip.publicKey": "Public key",
+      "tooltip.privateKey": "Private Key",
+      "tooltip.publicKey": "Public Key",
       "tooltip.x509Certificate": "Certificate",
-      "tooltip.keyExpiredOn": "Key Expire Date",
-      "tooltip.certificateExpiredOn": "Certificate Expire Date",
+      "tooltip.keyExpiredOn": "Key expiration date",
+      "tooltip.certificateExpiredOn": "Certificate expiration date",
       "popup.deleteSubmissions": "Are you sure that you want to delete the Certificate?"
     },
     "gitManagement": {
       "label.manageGitCredentials": "Manage Git Credentials",
       "label.gitAccount": "Git Account",
       "label.gitServer": "Git Server",
-      "label.userName": "Account Name",
+      "label.userName": "Git Username",
       "label.emailAddress": "E-Mail Address",
       "label.gitPassword": "Git Password",
       "label.keyfilePath": "Path to Git Private Key",
@@ -3444,14 +3444,14 @@
       "message.deleteGitCredentials": "Deleting Git credentials will permanently remove them from the credentials list.",
       "message.noCredentialFound": "No credentials present",
       "--------ADD GIT MANAGEMENT TOOLTIPS------------": "Page: Profile, Sub-tab: Git Management, Pop-up: Manage Git Credentials, Source: git-dialog.html, Fields: gitServer, gitAccount, userName, emailAddress, gitPassword, keyfilePath, gitAccessToken, authenticationType",
-      "tooltip.gitServer": "Git server",
-      "tooltip.gitAccount": "Git Account",
-      "tooltip.userName": "Git username",
-      "tooltip.emailAddress": "E-mail address",
-      "tooltip.gitPassword": "Password",
-      "tooltip.keyfilePath": "Key File Path",
-      "tooltip.gitAccessToken": "Git Access Token",
-      "tooltip.authenticationType": "Authentication Type"
+      "tooltip.gitServer": "The hostname of the *Git Server* in use, for example, `github.com`",
+      "tooltip.gitAccount": "The name of the *Git Account* used to authenticate with the *Git Sever*",
+      "tooltip.userName": "The *Git Username* is the name of a user who applies changes to a local repository.",
+      "tooltip.emailAddress": "E-Mail address assigned the *Git Username*",
+      "tooltip.gitPassword": "Password assigned the *Git Account*",
+      "tooltip.keyfilePath": "Path to a Private Key file used for authentication with the *Git Server*",
+      "tooltip.gitAccessToken": "The Access Token used for authentication with the *Git Server*",
+      "tooltip.authenticationType": "Authentication is performed by one of:\n- Password\n- Private Key\n-Access Token"
     }
   },
   "runtime": {
@@ -4174,7 +4174,7 @@
     "tooltip.user": "User",
     "tooltip.password": "Password",
     "tooltip.roles": "Roles",
-    "tooltip.forcePasswordChange": "Force Password Change",
+    "tooltip.forcePasswordChange": "The user must change password on next login.",
     "tooltip.disabled": "Disabled",
     "tooltip.banned": "Blocked",
     "--------ADD IDENTITY SERVICE TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: Identity Services, Pop-up: Add Identity Service, Source: identity-service-dialog.html, Fields: identityServiceName, identityServiceType, identityServiceOrdering, identityServiceRequired, usedAsSecondFactor, disable, serviceAuthenticationScheme, listOfFido, listOfCert",
