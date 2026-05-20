@@ -6,6 +6,9 @@ import { SafeHtml } from '@angular/platform-browser';
  *
  * Lightweight popover rendered by GlossaryHostDirective via CDK portal.
  * Content (definitionHtml) is set programmatically after creation.
+ *
+ * Supports language switching via the `activeLang` input and `onLangSwitch`
+ * callback. The switcher shows all supported languages except the active one.
  */
 @Component({
   standalone: false,
@@ -16,6 +19,17 @@ import { SafeHtml } from '@angular/platform-browser';
       <div class="glossary-popover-header">
         <span class="glossary-popover-title">
           <i class="fa fa-book text-primary m-r-xs"></i>
+          <!-- <span class="glossary-term-label">{{ termLabel }}</span> -->
+        </span>
+        <span class="glossary-lang-switcher" aria-label="Switch glossary language">
+          @for (l of allLangs; track l; let last = $last) {
+            @if (l === activeLang) {
+              <span class="glossary-lang-btn glossary-lang-btn--active" aria-current="true">{{ l }}</span>
+            } @else {
+              <button class="glossary-lang-btn" type="button" (click)="switchLang(l)">{{ l }}</button>
+            }
+            @if (!last) { <span class="glossary-lang-sep" aria-hidden="true">|</span> }
+          }
         </span>
       </div>
       <div class="glossary-popover-body">
@@ -31,9 +45,20 @@ import { SafeHtml } from '@angular/platform-browser';
   `,
 })
 export class GlossaryPopoverComponent {
-  @Input() termKey  = '';
+  @Input() termKey   = '';
   @Input() termLabel = '';
   @Input() definitionHtml: SafeHtml | null = null;
-  @Input() notFound = false;
+  @Input() notFound  = false;
   @Input() isLoading = true;
+  @Input() activeLang = 'en';
+
+  /** Called by GlossaryHostDirective when user clicks a language button. */
+  onLangSwitch?: (lang: string) => void;
+
+  /** Set by GlossaryHostDirective from coreService.locales — dynamic, not hardcoded. */
+  @Input() allLangs: string[] = ['en'];
+
+  switchLang(lang: string): void {
+    this.onLangSwitch?.(lang);
+  }
 }
