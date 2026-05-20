@@ -1,4 +1,5 @@
 import {
+  ComponentRef,
   Directive,
   ElementRef,
   inject,
@@ -41,6 +42,13 @@ export class GlossaryHostDirective implements OnDestroy {
     } catch { return 'en'; }
   }
 
+  /** Dynamic list of supported language codes derived from coreService.locales. */
+  private get supportedLangs(): string[] {
+    return this.coreService.locales?.length
+      ? this.coreService.locales.map((l: any) => l.lang)
+      : ['en'];
+  }
+
   private overlayRef: OverlayRef | null = null;
   private activeKey: string | null = null;
   private hoverTimer: ReturnType<typeof setTimeout> | null = null;
@@ -60,10 +68,11 @@ export class GlossaryHostDirective implements OnDestroy {
   private readonly coreService = inject(CoreService);
 
   constructor() {
-    // Eagerly load the glossary for the current language so it is already
-    // cached by the time the user hovers on a term. This eliminates the
-    // network-wait delay that would otherwise appear as a spinner on first hover.
-    this.glossary.loadGlossary(this.lang).subscribe();
+    // Eagerly load all supported language files so that language switching
+    // is instant (no HTTP fetch at click time). The service caches each file
+    // after the first load, so across all directive instances this fires at
+    // most one request per language for the lifetime of the page.
+    this.supportedLangs.forEach(l => this.glossary.loadGlossary(l).subscribe());
 
     const host: HTMLElement = this.el.nativeElement;
 
@@ -175,33 +184,40 @@ export class GlossaryHostDirective implements OnDestroy {
 
     popoverInstance.termKey   = key;
     popoverInstance.termLabel = anchor.getAttribute('data-glossary-label') || key;
+    popoverInstance.activeLang = this.lang;
+    popoverInstance.allLangs   = this.supportedLangs;
+    popoverInstance.onLangSwitch = (newLang: string) => {
+      this.switchPopoverLang(newLang, popoverInstance, compRef);
+    };
 
-    const cacheKey = `${this.lang}:${key}`;
+    const lang = this.lang;
+    const cacheKey = `${lang}:${key}`;
     if (this.renderCache.has(cacheKey)) {
       // Content already pre-warmed — render instantly, no spinner.
       const cached = this.renderCache.get(cacheKey)!;
-      popoverInstance.definitionHtml = cached;
-      popoverInstance.notFound = cached === null;
-      popoverInstance.isLoading = false;
-      compRef.changeDetectorRef.markForCheck();
+      if (cached !== null) {
+        popoverInstance.definitionHtml = cached;
+        popoverInstance.notFound       = false;
+        popoverInstance.isLoading      = false;
+        compRef.changeDetectorRef.markForCheck();
+      } else {
+        // No data in user's language → fall back to English immediately.
+        this.applyWithEnFallback(key, lang, popoverInstance, compRef);
+      }
     } else {
       // Not cached yet — fetch & render now (shows spinner until ready).
-      const lang = this.lang;
       this.glossary.getDefinition(key, lang).subscribe(rawDef => {
         if (!popoverInstance) return;
-        const rendered = rawDef
-          ? this.domSanitizer.bypassSecurityTrustHtml(
-              this.md.parseMarkdown(rawDef, {
-                gfm: true, tables: false, breaks: false,
-                smartypants: true, headerIds: false, headerPrefix: '', sanitize: true,
-              }) as string
-            )
-          : null;
+        const rendered = rawDef ? this.renderMarkdown(rawDef) : null;
         this.renderCache.set(cacheKey, rendered);
-        popoverInstance.definitionHtml = rendered;
-        popoverInstance.notFound = rendered === null;
-        popoverInstance.isLoading = false;
-        compRef.changeDetectorRef.markForCheck();
+        if (rendered !== null) {
+          popoverInstance.definitionHtml = rendered;
+          popoverInstance.notFound       = false;
+          popoverInstance.isLoading      = false;
+          compRef.changeDetectorRef.markForCheck();
+        } else {
+          this.applyWithEnFallback(key, lang, popoverInstance, compRef);
+        }
       });
     }
 
@@ -271,26 +287,126 @@ export class GlossaryHostDirective implements OnDestroy {
   };
 
   /**
+   * Switches the displayed language in an already-open popover.
+   * Re-uses the render cache when available; otherwise fetches & renders.
+   * Falls back to English if the selected language has no definition.
+   */
+  private switchPopoverLang(
+    newLang: string,
+    popoverInstance: GlossaryPopoverComponent,
+    compRef: ComponentRef<GlossaryPopoverComponent>,
+  ): void {
+    const key = this.activeKey;
+    if (!key) return;
+
+    const cacheKey = `${newLang}:${key}`;
+
+    if (this.renderCache.has(cacheKey)) {
+      const cached = this.renderCache.get(cacheKey)!;
+      if (cached !== null) {
+        popoverInstance.activeLang     = newLang;
+        popoverInstance.definitionHtml = cached;
+        popoverInstance.notFound       = false;
+        popoverInstance.isLoading      = false;
+        compRef.changeDetectorRef.markForCheck();
+      } else {
+        // Cached as not-found — apply en fallback.
+        popoverInstance.activeLang = newLang;
+        this.applyWithEnFallback(key, newLang, popoverInstance, compRef);
+      }
+      return;
+    }
+
+    popoverInstance.activeLang     = newLang;
+    popoverInstance.isLoading      = true;
+    popoverInstance.definitionHtml = null;
+    popoverInstance.notFound       = false;
+    compRef.changeDetectorRef.markForCheck();
+
+    this.glossary.getDefinition(key, newLang).subscribe(rawDef => {
+      const rendered = rawDef ? this.renderMarkdown(rawDef) : null;
+      this.renderCache.set(cacheKey, rendered);
+      if (rendered !== null) {
+        popoverInstance.definitionHtml = rendered;
+        popoverInstance.notFound       = false;
+        popoverInstance.isLoading      = false;
+        compRef.changeDetectorRef.markForCheck();
+      } else {
+        this.applyWithEnFallback(key, newLang, popoverInstance, compRef);
+      }
+    });
+  }
+
+  /**
+   * Applies content, falling back to English when the requested language
+   * has no definition. activeLang stays at the requested language so the
+   * selected button remains highlighted — only the displayed content changes to English.
+   */
+  private applyWithEnFallback(
+    key: string,
+    requestedLang: string,
+    popoverInstance: GlossaryPopoverComponent,
+    compRef: ComponentRef<GlossaryPopoverComponent>,
+  ): void {
+    if (requestedLang === 'en') {
+      // Already English, nothing to fall back to.
+      popoverInstance.definitionHtml = null;
+      popoverInstance.notFound       = true;
+      popoverInstance.isLoading      = false;
+      compRef.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    const enCacheKey = `en:${key}`;
+    const applyEn = (rendered: import('@angular/platform-browser').SafeHtml | null) => {
+      // Show English content as fallback but keep activeLang as the language
+      // the user selected — its button stays highlighted/active.
+      popoverInstance.definitionHtml = rendered;
+      popoverInstance.notFound       = rendered === null;
+      popoverInstance.isLoading      = false;
+      // activeLang intentionally NOT changed — the clicked language stays active.
+      compRef.changeDetectorRef.markForCheck();
+    };
+
+    if (this.renderCache.has(enCacheKey)) {
+      applyEn(this.renderCache.get(enCacheKey)!);
+      return;
+    }
+
+    this.glossary.getDefinition(key, 'en').subscribe(enDef => {
+      const rendered = enDef ? this.renderMarkdown(enDef) : null;
+      this.renderCache.set(enCacheKey, rendered);
+      applyEn(rendered);
+    });
+  }
+
+  /** Renders a raw markdown definition string to SafeHtml. */
+  private renderMarkdown(rawDef: string): import('@angular/platform-browser').SafeHtml {
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.md.parseMarkdown(rawDef, {
+        gfm: true, tables: false, breaks: false,
+        smartypants: true, headerIds: false, headerPrefix: '', sanitize: true,
+      }) as string
+    );
+  }
+
+  /**
    * Pre-warms the render cache for a glossary key so that when the popover
    * opens (after hoverDelay) the content is already rendered and shown
    * instantly without any loading spinner.
    * Safe to call multiple times — skips if already cached.
    */
   private prewarm(key: string): void {
-    const cacheKey = `${this.lang}:${key}`;
-    if (this.renderCache.has(cacheKey)) return;
-    const lang = this.lang;
-    this.glossary.getDefinition(key, lang).subscribe(rawDef => {
-      if (this.renderCache.has(cacheKey)) return; // may have been set by a concurrent open
-      const rendered = rawDef
-        ? this.domSanitizer.bypassSecurityTrustHtml(
-            this.md.parseMarkdown(rawDef, {
-              gfm: true, tables: false, breaks: false,
-              smartypants: true, headerIds: false, headerPrefix: '', sanitize: true,
-            }) as string
-          )
-        : null;
-      this.renderCache.set(cacheKey, rendered);
+    // Pre-warm all supported languages for this key in parallel so that
+    // switching language in the popover is instant with no spinner.
+    this.supportedLangs.forEach(lang => {
+      const cacheKey = `${lang}:${key}`;
+      if (this.renderCache.has(cacheKey)) return;
+      this.glossary.getDefinition(key, lang).subscribe(rawDef => {
+        if (this.renderCache.has(cacheKey)) return;
+        const rendered = rawDef ? this.renderMarkdown(rawDef) : null;
+        this.renderCache.set(cacheKey, rendered);
+      });
     });
   }
 
