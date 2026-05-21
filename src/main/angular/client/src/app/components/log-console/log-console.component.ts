@@ -1,42 +1,76 @@
 import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
+import {LogSearchService} from '../../services/log-search.service';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {Subject, Subscription, debounceTime} from 'rxjs';
 import * as moment from 'moment-timezone';
 
 interface ParsedLine {
   timestamp: string;
-  level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'OTHER';
+  level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'TRACE' | 'OTHER';
   text: string;
   raw: string;
+  rawLower: string; // pre-lowercased for fast search comparisons
 }
 
-const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3})\s+(info|WARN|ERROR|DEBUG|FATAL)\s+/i;
+/** Contextual block shown in filter mode: match line + N surrounding lines. */
+interface ContextBlock {
+  /** Global index of the first line in this block inside filteredLines. */
+  startIdx: number;
+  lines: { line: ParsedLine; globalIdx: number }[];
+  collapsed: boolean;
+}
+
+const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3})\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
+
+// Matches JS7 Order IDs:  #<date>-P-<seq>  or  #<date>-<letter>-<seq>
+// Examples: #2026-01-01T00:00:00Z-P-1   or shorter patterns used in logs
+const ORDER_ID_RE = /#[\w\-.:+@]+/g;
 
 function parseLine(raw: string): ParsedLine {
+  const rawLower = raw.toLowerCase();
   const m = raw.match(TIMESTAMP_RE);
   if (m) {
     const lvlStr = m[2].toUpperCase();
     let level: ParsedLine['level'] = 'OTHER';
-    if (lvlStr === 'INFO')  level = 'INFO';
-    else if (lvlStr === 'WARN')  level = 'WARN';
+    if (lvlStr === 'INFO')                     level = 'INFO';
+    else if (lvlStr === 'WARN')                level = 'WARN';
     else if (lvlStr === 'ERROR' || lvlStr === 'FATAL') level = 'ERROR';
-    else if (lvlStr === 'DEBUG') level = 'DEBUG';
-    return {timestamp: m[1], level, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw};
+    else if (lvlStr === 'DEBUG')               level = 'DEBUG';
+    else if (lvlStr === 'TRACE')               level = 'TRACE';
+    return { timestamp: m[1], level, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower };
   }
-  return {timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw};
+  return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower };
 }
+
+/** Predefined quick-search presets. */
+const PREDEFINED_SEARCHES: { label: string; value: string }[] = [
+  { label: 'Exception',        value: 'Exception' },
+  { label: 'ERROR',            value: 'ERROR' },
+  { label: 'WARN',             value: 'WARN' },
+  { label: 'Controller started', value: 'Controller started' },
+  { label: 'Agent started',    value: 'Agent started' },
+  { label: 'Connection lost',  value: 'Connection lost' },
+  { label: 'Restart',          value: 'Restart' },
+  { label: 'Terminated',       value: 'Terminated' },
+];
+
+/** Context line count options for filter mode. */
+const CONTEXT_OPTIONS = [
+  { label: '2 lines', value: 2 },
+  { label: '5 lines', value: 5 },
+  { label: '10 lines', value: 10 },
+  { label: '20 lines', value: 20 },
+];
 
 export interface LogConsoleRequest {
   type: 'controller' | 'agent' | 'joc';
-  /** Controller & Agent */
   controllerId?: string;
-  /** Controller only */
   role?: string;
-  /** Agent only */
   agentId?: string;
   subagentId?: string;
-  /** Common */
+  /** REST level: WARN | INFO | DEBUG  (no TRACE — DEBUG includes TRACE automatically). */
   level?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -51,9 +85,16 @@ export interface LogConsoleRequest {
   styleUrls: ['./log-console.component.scss']
 })
 export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() request: LogConsoleRequest = {type: 'controller'};
+  @Input() request: LogConsoleRequest = { type: 'controller' };
 
   allLines: ParsedLine[] = [];
+  // Cached computed arrays — updated by private methods, never re-derived as getters.
+  filteredLines: ParsedLine[] = [];
+  contextBlocks: ContextBlock[] = [];
+  levelCounts: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
+  hasWarn  = false;
+  hasError = false;
+  hasDebug = false;
   isLoading = false;
   isDownloading = false;
   isComplete = false;
@@ -61,17 +102,61 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   token: string | null = null;
   timeZone = '';
 
-  filters = {info: true, warn: true, error: true, debug: true, other: true};
+  // ── Level visibility checkboxes (display filter, not REST level) ──────────
+  filters = { info: true, warn: true, error: true, debug: true, trace: true, other: true };
+
+  // ── Global search (shared via LogSearchService) ────────────────────────────
   searchTerm = '';
+  /** Debounced, trimmed, lowercased search term used for all computations. */
+  private _committedSearchTerm = '';
+  /** Subject that feeds the 300 ms debounce before committing a search. */
+  private readonly _searchDebounce = new Subject<string>();
+  showPredefined = false;
+  readonly predefined = PREDEFINED_SEARCHES;
+
+  // ── Search mode ────────────────────────────────────────────────────────────
+  /** true = filtered mode (only matching lines + context), false = full log with highlights */
+  filterMode = false;
+  /** Number of context lines shown above/below each match in filter mode. */
+  contextLines = 5;
+  readonly contextOptions = CONTEXT_OPTIONS;
+
   followTail = false;
 
   @ViewChild('logBody') logBodyRef?: ElementRef<HTMLElement>;
+  @ViewChild('searchInput') searchInputRef?: ElementRef<HTMLInputElement>;
 
   private destroyed = false;
+  private searchSub?: Subscription;
+  private debounceSub?: Subscription;
+  /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
+  private readonly highlightCache = new Map<string, SafeHtml>();
 
-  constructor(private coreService: CoreService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private coreService: CoreService,
+    private sanitizer: DomSanitizer,
+    private logSearch: LogSearchService
+  ) {}
 
   ngOnInit(): void {
+    // Debounced search commitment — only recalculates filtered data 300ms after typing stops.
+    this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
+      this.commitSearch(term);
+    });
+
+    // Sync with global search state (apply immediately — another window already debounced).
+    const current = this.logSearch.currentTerm;
+    if (current) {
+      this.searchTerm = current;
+      this.commitSearch(current);
+    }
+    this.searchSub = this.logSearch.searchTerm$.subscribe(term => {
+      if (this.searchTerm !== term) {
+        this.searchTerm = term;
+        this.commitSearch(term);
+      }
+    });
+
     if (this.request?.dateFrom) {
       this.fetchLog();
     }
@@ -85,61 +170,222 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.searchSub?.unsubscribe();
+    this.debounceSub?.unsubscribe();
+    this._searchDebounce.complete();
   }
 
-  get filteredLines(): ParsedLine[] {
-    const term = this.searchTerm.trim().toLowerCase();
-    return this.allLines.filter(l => {
-      const levelOk = (() => {
-        switch (l.level) {
-          case 'INFO':  return this.filters.info;
-          case 'WARN':  return this.filters.warn;
-          case 'ERROR': return this.filters.error;
-          case 'DEBUG': return this.filters.debug;
-          default:      return this.filters.other;
-        }
-      })();
-      return levelOk && (!term || l.text.toLowerCase().includes(term));
-    });
+  // ── Search ─────────────────────────────────────────────────────────────────
+
+  onSearchChange(): void {
+    // Push to debounce subject — actual computation happens after 300ms idle.
+    this._searchDebounce.next(this.searchTerm);
   }
 
-  /** Per-level counts over allLines (unfiltered), used by the summary bar. */
-  get levelCounts(): Record<string, number> {
-    const c: Record<string, number> = {error: 0, warn: 0, info: 0, debug: 0, other: 0};
-    for (const l of this.allLines) {
-      switch (l.level) {
-        case 'ERROR': c['error']++; break;
-        case 'WARN':  c['warn']++; break;
-        case 'INFO':  c['info']++; break;
-        case 'DEBUG': c['debug']++; break;
-        default:      c['other']++; break;
-      }
-    }
-    return c;
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.commitSearch('');
+    this.logSearch.clearTerm();
   }
 
-  /**
-   * Returns HTML with search matches wrapped in <mark> tags.
-   * Called only when searchTerm is non-empty (template uses @if guard).
-   * Text is HTML-escaped before marking to prevent injection.
-   */
-  highlightText(text: string): SafeHtml {
-    const escaped = text
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const term = this.searchTerm.trim();
-    if (!term) return this.sanitizer.bypassSecurityTrustHtml(escaped);
-    const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return this.sanitizer.bypassSecurityTrustHtml(
-      escaped.replace(new RegExp(safeRe, 'gi'), '<mark class="log-search-match">$&</mark>')
+  applyPredefined(value: string): void {
+    this.searchTerm = value;
+    this.commitSearch(value);   // bypass debounce for deliberate preset selection
+    this.logSearch.setTerm(value);
+    this.showPredefined = false;
+  }
+
+  togglePredefined(): void {
+    this.showPredefined = !this.showPredefined;
+  }
+
+  onFilterChange(): void {
+    this.computeFilteredLines();
+  }
+
+  onContextLinesChange(): void {
+    this.computeContextBlocks();
+  }
+
+  // ── Search commitment & cache management ──────────────────────────────────
+
+  private commitSearch(raw: string): void {
+    const term = raw.trim().toLowerCase();
+    if (this._committedSearchTerm === term) return;
+    this._committedSearchTerm = term;
+    this.highlightCache.clear();
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+  }
+
+  // ── Filtered lines (level + search) — computed into cached fields ──────────
+
+  private computeFilteredLines(): void {
+    const term = this._committedSearchTerm;
+    this.filteredLines = this.allLines.filter(l =>
+      this.levelVisible(l.level) && (!term || l.rawLower.includes(term))
     );
   }
 
-  /** Scroll the log body to the first visible line of the given level. */
+  private levelVisible(level: ParsedLine['level']): boolean {
+    switch (level) {
+      case 'INFO':  return this.filters.info;
+      case 'WARN':  return this.filters.warn;
+      case 'ERROR': return this.filters.error;
+      case 'DEBUG': return this.filters.debug;
+      case 'TRACE': return this.filters.trace;
+      default:      return this.filters.other;
+    }
+  }
+
+  // ── Context blocks (filter mode) ──────────────────────────────────────────
+
+  /**
+   * Builds context blocks for filter mode into the cached `contextBlocks` field.
+   * Each matching line gets ±contextLines surrounding lines; overlapping windows
+   * are merged so the DOM stays small.
+   */
+  private computeContextBlocks(): void {
+    const term = this._committedSearchTerm;
+    if (!term) { this.contextBlocks = []; return; }
+
+    const matchIdxSet = new Set<number>();
+    for (let i = 0; i < this.allLines.length; i++) {
+      if (this.allLines[i].rawLower.includes(term)) matchIdxSet.add(i);
+    }
+    if (matchIdxSet.size === 0) { this.contextBlocks = []; return; }
+
+    const windows: [number, number][] = [];
+    for (const idx of Array.from(matchIdxSet).sort((a, b) => a - b)) {
+      const start = Math.max(0, idx - this.contextLines);
+      const end   = Math.min(this.allLines.length - 1, idx + this.contextLines);
+      if (windows.length > 0 && start <= windows[windows.length - 1][1] + 1) {
+        windows[windows.length - 1][1] = Math.max(windows[windows.length - 1][1], end);
+      } else {
+        windows.push([start, end]);
+      }
+    }
+
+    this.contextBlocks = windows.map(([start, end]) => ({
+      startIdx: start,
+      lines: Array.from({ length: end - start + 1 }, (_, i) => ({
+        line: this.allLines[start + i],
+        globalIdx: start + i,
+      })),
+      collapsed: false,
+    }));
+  }
+
+  isMatchLine(line: ParsedLine): boolean {
+    return this._committedSearchTerm.length > 0 && line.rawLower.includes(this._committedSearchTerm);
+  }
+
+  // ── Level stats ─────────────────────────────────────────────────────────────
+
+  private refreshLevelStats(): void {
+    const c: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
+    let hasW = false, hasE = false, hasD = false;
+    for (const l of this.allLines) {
+      switch (l.level) {
+        case 'ERROR': c['error']++; hasE = true; break;
+        case 'WARN':  c['warn']++;  hasW = true; break;
+        case 'INFO':  c['info']++; break;
+        case 'DEBUG': c['debug']++; hasD = true; break;
+        case 'TRACE': c['trace']++; hasD = true; break;
+        default:      c['other']++; break;
+      }
+    }
+    this.levelCounts = c;
+    this.hasWarn  = hasW;
+    this.hasError = hasE;
+    this.hasDebug = hasD;
+  }
+
+  // ── Highlight ──────────────────────────────────────────────────────────────
+
+  highlightText(text: string): SafeHtml {
+    const cached = this.highlightCache.get(text);
+    if (cached !== undefined) return cached;
+
+    const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const term = this._committedSearchTerm;
+    let result: SafeHtml;
+    if (!term) {
+      result = this.sanitizer.bypassSecurityTrustHtml(escaped);
+    } else {
+      const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      result = this.sanitizer.bypassSecurityTrustHtml(
+        escaped.replace(new RegExp(safeRe, 'gi'), '<mark class="log-search-match">$&</mark>')
+      );
+    }
+    this.highlightCache.set(text, result);
+    return result;
+  }
+
+  // ── Order ID double-click detection ───────────────────────────────────────
+
+  /**
+   * On double-click anywhere inside the log body, detect if the cursor is
+   * within an Order ID token (starts with #) and copy it to the clipboard.
+   */
+  onLogBodyDblClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const textContent = target?.textContent || '';
+
+    // Walk up to the nearest element that contains the full text of the line
+    const lineEl = (target.closest('.log-line') as HTMLElement) || target;
+    const lineText = lineEl?.textContent || textContent;
+
+    // Extract all Order IDs from the full line text
+    const ids = lineText.match(ORDER_ID_RE);
+    if (!ids || ids.length === 0) return;
+
+    // Find which one is closest to the double-click selection
+    const sel = window.getSelection();
+    const selectedText = sel?.toString().trim() || '';
+
+    // Prefer an exact match with the selected text first
+    const matched =
+      ids.find(id => id === selectedText || id === '#' + selectedText) ||
+      ids.find(id => id.includes(selectedText)) ||
+      ids[0];
+
+    if (matched) {
+      navigator.clipboard.writeText(matched).then(() => {
+        this.showCopyFeedback(matched);
+      }).catch(() => {
+        // Fallback for browsers that restrict clipboard API
+        const el = document.createElement('textarea');
+        el.value = matched;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        this.showCopyFeedback(matched);
+      });
+      // Paste into global search as well
+      this.searchTerm = matched;
+      this.commitSearch(matched);  // immediate — no debounce for explicit selection
+      this.logSearch.setTerm(matched);
+    }
+  }
+
+  copiedOrderId: string | null = null;
+  private copyFeedbackTimer?: ReturnType<typeof setTimeout>;
+
+  private showCopyFeedback(id: string): void {
+    this.copiedOrderId = id;
+    if (this.copyFeedbackTimer) clearTimeout(this.copyFeedbackTimer);
+    this.copyFeedbackTimer = setTimeout(() => { this.copiedOrderId = null; }, 2000);
+  }
+
+  // ── Navigation ─────────────────────────────────────────────────────────────
+
   jumpToLevel(level: string): void {
     const el = this.logBodyRef?.nativeElement;
     if (!el) return;
     const target = el.querySelector<HTMLElement>(`.log-line-${level}`);
-    target?.scrollIntoView({block: 'center', behavior: 'smooth'});
+    target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 
   toggleFollowTail(): void {
@@ -147,29 +393,35 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this.followTail) this.scrollToBottom();
   }
 
-  get hasWarn():  boolean { return this.allLines.some(l => l.level === 'WARN'); }
-  get hasError(): boolean { return this.allLines.some(l => l.level === 'ERROR'); }
-  get hasDebug(): boolean { return this.allLines.some(l => l.level === 'DEBUG'); }
+  // ── Convenience getters ────────────────────────────────────────────────────
 
-  /** Effective display timezone: from request, or from API response. */
+  // hasWarn / hasError / hasDebug are now cached fields updated by refreshLevelStats().
+
   get displayTz(): string {
     return this.request?.timeZone || this.timeZone;
   }
 
-  /**
-   * Format a raw log timestamp (e.g. '2026-04-30T10:00:00,123') in the display timezone.
-   * The comma-separated milliseconds are a log4j convention; moment handles dot-separated.
-   */
   formatTimestamp(raw: string): string {
     if (!raw) return raw;
     const tz = this.displayTz;
     const iso = raw.replace(',', '.');
     if (tz) {
-      // Timestamp is already in the selected tz — parse it there and format cleanly
       return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', tz).format('YYYY-MM-DD HH:mm:ss');
     }
     return iso.replace('T', ' ').slice(0, 23);
   }
+
+  lineBorderColor(level: ParsedLine['level']): string {
+    switch (level) {
+      case 'ERROR': return 'var(--red)';
+      case 'WARN':  return 'var(--gold)';
+      case 'DEBUG': return 'var(--green)';
+      case 'TRACE': return 'var(--cyan, #17a2b8)';
+      default:      return 'transparent';
+    }
+  }
+
+  // ── HTTP ───────────────────────────────────────────────────────────────────
 
   fetchLog(): void {
     if (this.isLoading) return;
@@ -198,7 +450,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.token || this.isLoading) return;
     this.isLoading = true;
     const apiUrl = this.getApiUrl();
-    this.coreService.post(apiUrl, {token: this.token}).subscribe({
+    this.coreService.post(apiUrl, { token: this.token }).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
         this.processLines(res.logLines || []);
@@ -234,14 +486,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.fetchLog();
   }
 
-  lineBorderColor(level: ParsedLine['level']): string {
-    switch (level) {
-      case 'ERROR': return 'var(--red)';
-      case 'WARN':  return 'var(--gold)';
-      case 'DEBUG': return 'var(--green)';
-      default:      return 'transparent';
-    }
-  }
+  // ── Private helpers ────────────────────────────────────────────────────────
 
   private scrollToBottom(): void {
     const el = this.logBodyRef?.nativeElement;
@@ -253,13 +498,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       const cleaned = raw.replace(/\r?\n$/, '');
       if (!cleaned.trim()) continue;
       const parsed = parseLine(cleaned);
-      // Continuation line — append to last entry
       if (!parsed.timestamp && this.allLines.length > 0) {
-        this.allLines[this.allLines.length - 1].text += '\n' + parsed.text;
+        const last = this.allLines[this.allLines.length - 1];
+        last.text    += '\n' + parsed.text;
+        last.raw     += '\n' + parsed.text;
+        last.rawLower = last.raw.toLowerCase();
       } else {
         this.allLines.push(parsed);
       }
     }
+    this.refreshLevelStats();
+    this.computeFilteredLines();
+    this.computeContextBlocks();
   }
 
   private getApiUrl(): string {
@@ -289,6 +539,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       if (r.agentId)      req.agentId      = r.agentId;
       if (r.subagentId)   req.subagentId   = r.subagentId;
     }
+    // Hierarchical level: DEBUG → server sends DEBUG + TRACE; WARN → WARN + ERROR
     req.level    = r.level    || 'INFO';
     req.dateFrom = r.dateFrom;
     if (r.dateTo)     req.dateTo     = r.dateTo;
@@ -298,6 +549,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 }
 
+// ─── Filter/config modal ─────────────────────────────────────────────────────
 @Component({
   standalone: false,
   selector: 'app-log-console-modal',
@@ -313,6 +565,11 @@ export class LogConsoleModalComponent implements OnInit {
     role:            '',
     agentId:         '',
     subagentId:      '',
+    /**
+     * GUI log levels — TRACE is intentionally omitted.
+     * Selecting DEBUG automatically includes TRACE on the server side.
+     * Hierarchical: WARN → WARN+ERROR, INFO → INFO+WARN+ERROR, DEBUG → all.
+     */
     level:           'INFO',
     dateMode:        'relative' as 'relative' | 'specific',
     dateFrom:        '1d',
@@ -328,14 +585,23 @@ export class LogConsoleModalComponent implements OnInit {
   logRequest: LogConsoleRequest | null = null;
   isDownloading = false;
 
-  readonly levelOptions    = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
-  readonly roleOptions     = ['PRIMARY', 'BACKUP'];
+  /**
+   * GUI level options — three tiers only.
+   * TRACE is not exposed; requesting DEBUG includes TRACE automatically.
+   * ERROR-only is not supported per spec.
+   */
+  readonly levelOptions = [
+    { value: 'WARN',  label: 'WARN  (includes ERROR)',              hint: 'WARN + ERROR' },
+    { value: 'INFO',  label: 'INFO  (includes WARN, ERROR)',        hint: 'INFO + WARN + ERROR' },
+    { value: 'DEBUG', label: 'DEBUG (includes TRACE, INFO, WARN, ERROR)', hint: 'All levels' },
+  ];
+  readonly roleOptions = ['PRIMARY', 'BACKUP'];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService) {}
 
   ngOnInit(): void {
     const data = this.modalData || {};
-    if (data.type)         this.type             = data.type;
+    if (data.type)         this.type              = data.type;
     if (data.controllerId) this.form.controllerId = data.controllerId;
     if (data.agentId)      this.form.agentId      = data.agentId;
     if (data.timeZone)     this.form.timeZone     = data.timeZone;
@@ -352,7 +618,6 @@ export class LogConsoleModalComponent implements OnInit {
     return this.form.timeZone || this.coreService.getTimeZone();
   }
 
-  /** Re-initialize date defaults when the timezone changes. */
   onTimezoneChange(): void {}
 
   get isShowDisabled(): boolean {
@@ -372,12 +637,11 @@ export class LogConsoleModalComponent implements OnInit {
   showLogs(): void {
     const req = this.buildLogRequest();
     const title = this.sourceName;
-    // Close filter modal, open a dedicated fullscreen viewer modal
     this.activeModal.destroy();
     this.modal.create({
       nzTitle:        undefined,
       nzContent:      LogConsoleViewerComponent,
-      nzData:         {request: req, title},
+      nzData:         { request: req, title },
       nzFooter:       null,
       nzClassName:    'maximum',
       nzClosable:     false,
@@ -435,12 +699,6 @@ export class LogConsoleModalComponent implements OnInit {
     };
   }
 
-  /**
-   * Download API payload.
-   * /controller/log/download → role (opt)
-   * /agent/log/download      → agentId (req), subagentId (opt)  — no controllerId
-   * /joc/log/download        → (no id fields)
-   */
   private buildDownloadPayload(req: LogConsoleRequest): any {
     const p: any = {};
     if (req.type === 'controller') {
@@ -468,7 +726,7 @@ export class LogConsoleModalComponent implements OnInit {
   }
 }
 
-// ─── Viewer modal: lightweight wrapper opened after the filter form ────────────
+// ─── Viewer modal: wrapper opened after the filter form ─────────────────────
 @Component({
   standalone: false,
   selector: 'app-log-console-viewer',

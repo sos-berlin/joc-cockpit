@@ -30,6 +30,10 @@ import { CoreService } from '../services/core.service';
  * Example:
  *   <div [innerHTML]="html" appGlossaryHost></div>
  */
+
+/** Module-level counter of currently open glossary popovers across all directive instances. */
+let openGlossaryCount = 0;
+
 @Directive({
   standalone: false,
   selector: '[appGlossaryHost]',
@@ -40,6 +44,16 @@ export class GlossaryHostDirective implements OnDestroy {
       const prefs = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
       return prefs.locale || 'en';
     } catch { return 'en'; }
+  }
+
+  /**
+   * Returns the language to use when opening a glossary popover.
+   * Prefers the last language the user explicitly selected this session
+   * (stored in sessionStorage under 'glossary_lang').
+   * Falls back to the preference locale on a fresh page load (sessionStorage cleared).
+   */
+  private get glossaryLang(): string {
+    return sessionStorage.getItem('glossary_lang') || this.lang;
   }
 
   /** Dynamic list of supported language codes derived from coreService.locales. */
@@ -147,8 +161,11 @@ export class GlossaryHostDirective implements OnDestroy {
   }
 
   private openFor(anchor: HTMLElement, key: string): void {
+    const replacing = !!this.overlayRef;
     if (this.overlayRef) this.close(true);
 
+    // Count new opens only — replacements (same directive, new key) keep count stable.
+    if (!replacing) openGlossaryCount++;
     this.activeKey = key;
 
     const positionStrategy = (this.positionBuilder
@@ -184,13 +201,13 @@ export class GlossaryHostDirective implements OnDestroy {
 
     popoverInstance.termKey   = key;
     popoverInstance.termLabel = anchor.getAttribute('data-glossary-label') || key;
-    popoverInstance.activeLang = this.lang;
+    popoverInstance.activeLang = this.glossaryLang;
     popoverInstance.allLangs   = this.supportedLangs;
     popoverInstance.onLangSwitch = (newLang: string) => {
       this.switchPopoverLang(newLang, popoverInstance, compRef);
     };
 
-    const lang = this.lang;
+    const lang = this.glossaryLang;
     const cacheKey = `${lang}:${key}`;
     if (this.renderCache.has(cacheKey)) {
       // Content already pre-warmed — render instantly, no spinner.
@@ -298,6 +315,10 @@ export class GlossaryHostDirective implements OnDestroy {
   ): void {
     const key = this.activeKey;
     if (!key) return;
+
+    // Persist selection so all subsequent glossary popovers in this session
+    // open in the same language. Cleared automatically when the tab/session ends.
+    sessionStorage.setItem('glossary_lang', newLang);
 
     const cacheKey = `${newLang}:${key}`;
 
@@ -471,6 +492,14 @@ export class GlossaryHostDirective implements OnDestroy {
     } else {
       ref.dispose();
     }
+
+    if (!immediate) {
+      // Actual close (not a replace-with-new-key). Decrement the global counter
+      // and reset the session language once all popovers are gone so the next
+      // open goes back to the preference locale.
+      openGlossaryCount = Math.max(0, openGlossaryCount - 1);
+      if (openGlossaryCount === 0) sessionStorage.removeItem('glossary_lang');
+    }
   }
 
   ngOnDestroy(): void {
@@ -479,6 +508,11 @@ export class GlossaryHostDirective implements OnDestroy {
     document.removeEventListener('click', this.outsideClick, true);
     document.removeEventListener('keydown', this.escapeHandler, true);
     this.positionSub?.unsubscribe();
-    this.overlayRef?.dispose();
+    if (this.overlayRef) {
+      // Directive torn down while popover is still open — treat as a close.
+      openGlossaryCount = Math.max(0, openGlossaryCount - 1);
+      if (openGlossaryCount === 0) sessionStorage.removeItem('glossary_lang');
+      this.overlayRef.dispose();
+    }
   }
 }

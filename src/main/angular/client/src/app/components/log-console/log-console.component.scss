@@ -45,7 +45,6 @@
     font-size: 12px;
     line-height: 1.65;
     min-height: 180px;
-    // Override via --log-body-max-height CSS variable (e.g. from the viewer wrapper)
     max-height: var(--log-body-max-height, 460px);
     overflow-y: auto;
     padding: 4px 0;
@@ -104,11 +103,12 @@
   line-height: 16px;
   white-space: nowrap;
 
-  &-info  { color: var(--primary);    border: 1px solid var(--primary);    background: transparent; opacity: .9; }
-  &-warn  { color: var(--gold);       border: 1px solid var(--gold);       background: transparent; opacity: .9; }
-  &-error { color: var(--red);        border: 1px solid var(--red);        background: transparent; opacity: .9; }
-  &-debug { color: var(--green);      border: 1px solid var(--green);      background: transparent; opacity: .9; }
-  &-other { color: var(--text-muted); border: 1px solid var(--text-muted); background: transparent; opacity: .8; }
+  &-info  { color: var(--primary);              border: 1px solid var(--primary);              background: transparent; opacity: .9; }
+  &-warn  { color: var(--gold);                  border: 1px solid var(--gold);                  background: transparent; opacity: .9; }
+  &-error { color: var(--red);                   border: 1px solid var(--red);                   background: transparent; opacity: .9; }
+  &-debug { color: var(--green);                 border: 1px solid var(--green);                 background: transparent; opacity: .9; }
+  &-trace { color: var(--cyan, #17a2b8);         border: 1px solid var(--cyan, #17a2b8);         background: transparent; opacity: .85; }
+  &-other { color: var(--text-muted);            border: 1px solid var(--text-muted);            background: transparent; opacity: .8; }
 }
 
 .log-line-count {
@@ -128,6 +128,12 @@
   &:hover {
     background: rgba(128, 128, 128, .06);
   }
+
+  // Highlighted match line in filter mode
+  &-match {
+    background: rgba(255, 214, 0, 0.10) !important;
+    border-left-width: 3px;
+  }
 }
 
 .log-ts {
@@ -138,6 +144,17 @@
   font-size: 11px;
   padding-top: 1px;
   opacity: 0.85;
+}
+
+// Compact line number in filter/context mode
+.log-ts-small {
+  flex-shrink: 0;
+  min-width: 32px;
+  text-align: right;
+  margin-right: 8px;
+  font-size: 10px;
+  opacity: 0.5;
+  user-select: none;
 }
 
 .log-level {
@@ -153,11 +170,12 @@
   border-radius: 2px;
   line-height: 18px;
 
-  &-info  { color: var(--primary);    background: transparent; border: 1px solid var(--primary);    opacity: .85; }
-  &-warn  { color: var(--gold);       background: transparent; border: 1px solid var(--gold);       opacity: .85; }
-  &-error { color: var(--red);        background: transparent; border: 1px solid var(--red);        opacity: .9;  }
-  &-debug { color: var(--green);      background: transparent; border: 1px solid var(--green);      opacity: .85; }
-  &-other { color: var(--text-muted); background: transparent; }
+  &-info  { color: var(--primary);          background: transparent; border: 1px solid var(--primary);          opacity: .85; }
+  &-warn  { color: var(--gold);              background: transparent; border: 1px solid var(--gold);              opacity: .85; }
+  &-error { color: var(--red);              background: transparent; border: 1px solid var(--red);              opacity: .9;  }
+  &-debug { color: var(--green);            background: transparent; border: 1px solid var(--green);            opacity: .85; }
+  &-trace { color: var(--cyan, #17a2b8);    background: transparent; border: 1px solid var(--cyan, #17a2b8);    opacity: .8;  }
+  &-other { color: var(--text-muted);       background: transparent; }
 }
 
 .log-text {
@@ -167,10 +185,7 @@
   color: var(--text-color);
 }
 
-// Level-specific row treatment.
-// Visual weight is carried by the border-left stripe + level badge.
-// Text stays at full contrast — never override text color for readability.
-// Subtle background tints (≤5 % opacity) are safe across light/dark/grey themes.
+// Level-specific row background tints
 .log-line-error { background: rgba(220, 53, 69, 0.05); }
 .log-line-warn  { background: rgba(255, 160,  0, 0.05); }
 
@@ -218,12 +233,64 @@
   margin-left: 4px;
 }
 
-// ─── Keyword search ─────────────────────────────────────────────────────────────
+.log-summary-filter-active {
+  color: var(--primary);
+  font-style: normal;
+}
+
+// ─── Search area ─────────────────────────────────────────────────────────────
+.log-search-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+// ─── Predefined quick-search dropdown ────────────────────────────────────────
+.log-predefined-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.log-predefined-btn {
+  &.active { color: var(--primary); border-color: var(--primary); }
+}
+
+.log-predefined-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 9999;
+  background: var(--bg-box, #fff);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  min-width: 180px;
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+}
+
+.log-predefined-item {
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(var(--primary-rgb, 14,138,139), .08);
+    color: var(--primary);
+  }
+}
+
+// ─── Keyword search ─────────────────────────────────────────────────────────
 .log-search-wrap {
   position: relative;
   display: inline-flex;
   align-items: center;
-  margin-left: 4px;
 
   .log-search-icon {
     position: absolute;
@@ -241,13 +308,13 @@
     background: var(--bg-box);
     color: var(--text-color);
     font-size: 11px;
-    width: 160px;
+    width: 180px;
     outline: none;
     transition: border-color 150ms, width 150ms;
 
     &:focus {
       border-color: var(--primary);
-      width: 220px;
+      width: 260px;
     }
 
     &::placeholder { color: var(--text-muted); }
@@ -270,6 +337,97 @@
   }
 }
 
+// ─── Search mode toggle buttons ───────────────────────────────────────────────
+.log-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.log-mode-btn {
+  background: none;
+  border: none;
+  padding: 2px 7px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  transition: background 100ms, color 100ms;
+
+  &:hover { background: rgba(128, 128, 128, .10); color: var(--text-color); }
+
+  &.active {
+    background: var(--primary, #0e8a8b);
+    color: #fff;
+  }
+}
+
+// ─── Context line count input ──────────────────────────────────────────────────
+.log-context-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.log-context-label {
+  white-space: nowrap;
+}
+
+// ─── Context blocks (filter mode) ─────────────────────────────────────────────
+.log-context-block {
+  border-bottom: 1px dashed var(--border-color);
+  margin-bottom: 2px;
+
+  &:last-child { border-bottom: none; }
+}
+
+.log-context-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  background: rgba(128, 128, 128, .04);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-muted);
+  user-select: none;
+
+  &:hover { background: rgba(128, 128, 128, .09); }
+}
+
+.log-context-chevron {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.log-context-label-text {
+  flex: 1;
+}
+
+.log-context-match-count {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+// ─── Order ID copy feedback ───────────────────────────────────────────────────
+.log-copy-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--green);
+  white-space: nowrap;
+  animation: log-copy-fadein 200ms ease;
+}
+
+@keyframes log-copy-fadein {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 // ─── Search match highlight ────────────────────────────────────────────────────
 mark.log-search-match {
   background: rgba(255, 214, 0, 0.45);
@@ -278,3 +436,5 @@ mark.log-search-match {
   padding: 0 1px;
   font-style: normal;
 }
+
+
