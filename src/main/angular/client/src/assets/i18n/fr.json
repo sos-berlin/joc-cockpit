@@ -4293,7 +4293,14 @@
         "initialPassword": "Lorsque des comptes d'utilisateur sont ajoutés, un mot de passe initial leur est attribué, qui doit être modifié lors de la prochaine connexion.",
         "minPasswordLength": "La qualité du mot de passe dépend de préférence de sa longueur. Un mot de passe plus court que la longueur minimale spécifiée sera refusé."
       }
-    }
+    },
+    "--------ADD USERS SECTION------------": "",
+    "section.identityService" : "Identity Service",
+    "section.blocklistDetails": "Blocklist Details",
+    "section.change": "Change",
+    "section.certificate":"Certificate",
+    "section.agentDetails": "Agent Details",
+    "section.export": "Export"
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

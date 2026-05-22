@@ -4293,7 +4293,14 @@
         "initialPassword": "初期パスワード",
         "minPasswordLength": "最少パスワード文字数"
       }
-    }
+    },
+    "--------ADD USERS SECTION------------": "",
+    "section.identityService" : "Identity Service",
+    "section.blocklistDetails": "Blocklist Details",
+    "section.change": "Change",
+    "section.certificate":"Certificate",
+    "section.agentDetails": "Agent Details",
+    "section.export": "Export"
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "ジョブ定義 > インベントリー表示 > ワークフロー",

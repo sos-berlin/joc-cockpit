@@ -4293,7 +4293,14 @@
         "initialPassword": "Cuando se agregan cuentas de usuario, se les asigna una contraseña inicial que debe cambiarse en el próximo inicio de sesión.",
         "minPasswordLength": "La fortaleza de la contraseña preferiblemente depende de la longitud. Se rechazará una contraseña que sea más corta que la Longitud mínima de contraseña especificada."
       }
-    }
+    },
+    "--------ADD USERS SECTION------------": "",
+    "section.identityService" : "Identity Service",
+    "section.blocklistDetails": "Blocklist Details",
+    "section.change": "Change",
+    "section.certificate":"Certificate",
+    "section.agentDetails": "Agent Details",
+    "section.export": "Export"
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

@@ -4293,7 +4293,14 @@
         "initialPassword": "When user accounts are added, then they are assigned an initial password that must be changed with the next login.",
         "minPasswordLength": "Password strength preferably depends on length. A password that is shorter than the specified Minimum Password Length will be denied."
       }
-    }
+    },
+    "--------ADD USERS SECTION------------": "",
+    "section.identityService" : "Identity Service",
+    "section.blocklistDetails": "Blocklist Details",
+    "section.change": "Change",
+    "section.certificate":"Certificate",
+    "section.agentDetails": "Agent Details",
+    "section.export": "Export"
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

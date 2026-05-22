@@ -4293,7 +4293,14 @@
         "initialPassword": "При создании учётных записей пользователей назначается начальный пароль, который необходимо изменить при следующем входе в систему.",
         "minPasswordLength": "Надёжность пароля в значительной степени зависит от его длины. Пароль должен иметь указанную минимальную длину."
       }
-    }
+    },
+    "--------ADD USERS SECTION------------": "",
+    "section.identityService" : "Identity Service",
+    "section.blocklistDetails": "Blocklist Details",
+    "section.change": "Change",
+    "section.certificate":"Certificate",
+    "section.agentDetails": "Agent Details",
+    "section.export": "Export"
   },
   "workflow": {
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",

@@ -22,122 +22,129 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="form-group row">
-      <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.identityServiceName' | translate" translate>user.label.identityServiceName</span>
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
-               #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
-        @if (name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors['required']) {
-              <div translate>common.message.requiredError</div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>user.section.identityService</small>
+      </div>
+      <div class="p-a-sm">
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="form-group row">
+          <label class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'user.tooltip.identityServiceName' | translate" translate>user.label.identityServiceName</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
+                   #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
+            @if (name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+            @if (!isUnique) {
+              <div class="help-block text-danger">
+                <div translate>common.message.uniqueError</div>
+              </div>
             }
           </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'user.tooltip.identityServiceType' | translate" translate>user.label.identityServiceType</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'type'"
+                              [placeholder]="'user.placeholder.selectIdentityServiceType'"
+                              [object]="currentObj" [attributeName]="'identityServiceType'"
+                              (modelChange)="changeType($event)"
+                              [listArray]="identityServiceTypes | orderBy"></app-select-input>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'user.tooltip.identityServiceOrdering' | translate" translate>user.label.identityServiceOrdering</span>
+          </label>
+          <div class="col-sm-6">
+            <nz-input-number [(ngModel)]="currentObj.ordering" [nzMin]="0" [nzStep]="1"
+                             name="ordering"></nz-input-number>
+          </div>
+        </div>
+        @if (currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'user.tooltip.identityServiceRequired' | translate" translate>user.label.identityServiceRequired</span>
+            </label>
+            <div class="col-sm-6">
+              <label [(ngModel)]="currentObj.required" name="serviceRequired"
+                     nz-checkbox></label>
+            </div>
+          </div>
         }
-        @if (!isUnique) {
-          <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+        @if ((currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'user.tooltip.usedAsSecondFactor' | translate" translate>user.label.usedAsSecondFactor</span>
+            </label>
+            <div class="col-sm-6">
+              <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
+                     nz-checkbox></label>
+            </div>
+          </div>
+        }
+        @if (identityService) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'user.tooltip.disable' | translate" translate>user.label.disable</span>
+            </label>
+            <div class="col-sm-6">
+              <label nz-checkbox [(ngModel)]="currentObj.disabled"
+                     name="disabled"></label>
+            </div>
+          </div>
+        }
+        @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
+          <div class="form-group row b-t p-t">
+            <label class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate" translate>user.label.serviceAuthenticationScheme</span>
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6">
+              <app-select-input [isRequired]="true" [name]="'serviceAuthenticationScheme'"
+                                [object]="currentObj" [attributeName]="'serviceAuthenticationScheme'"
+                                [listArray]="serviceAuthenticationSchemes"></app-select-input>
+            </div>
+          </div>
+        }
+        @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO') {
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'user.tooltip.listOfFido' | translate" translate>user.label.listOfFido</span>
+            </label>
+            <div class="col-sm-6">
+              <app-select-input [name]="'fidoName'"
+                                [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                                [listArray]="fidoList" [optionLabel]="'identityServiceName'"
+                                [optionValue]="'identityServiceName'"></app-select-input>
+            </div>
+          </div>
+        }
+        @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE') {
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'user.tooltip.listOfCert' | translate" translate>user.label.listOfCert</span>
+            </label>
+            <div class="col-sm-6">
+              <app-select-input [name]="'certName'"
+                                [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                                [listArray]="certList" [optionLabel]="'identityServiceName'"
+                                [optionValue]="'identityServiceName'"></app-select-input>
+            </div>
           </div>
         }
       </div>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.identityServiceType' | translate" translate>user.label.identityServiceType</span>
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'type'"
-                          [placeholder]="'user.placeholder.selectIdentityServiceType'"
-                          [object]="currentObj" [attributeName]="'identityServiceType'"
-                          (modelChange)="changeType($event)"
-                          [listArray]="identityServiceTypes | orderBy"></app-select-input>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.identityServiceOrdering' | translate" translate>user.label.identityServiceOrdering</span>
-      </label>
-      <div class="col-sm-6">
-        <nz-input-number [(ngModel)]="currentObj.ordering" [nzMin]="0" [nzStep]="1"
-                         name="ordering"></nz-input-number>
-      </div>
-    </div>
-    @if (currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.identityServiceRequired' | translate" translate>user.label.identityServiceRequired</span>
-        </label>
-        <div class="col-sm-6">
-          <label [(ngModel)]="currentObj.required" name="serviceRequired"
-                 nz-checkbox></label>
-        </div>
-      </div>
-    }
-    @if ((currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.usedAsSecondFactor' | translate" translate>user.label.usedAsSecondFactor</span>
-        </label>
-        <div class="col-sm-6">
-          <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
-                 nz-checkbox></label>
-        </div>
-      </div>
-    }
-    @if (identityService) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.disable' | translate" translate>user.label.disable</span>
-        </label>
-        <div class="col-sm-6">
-          <label nz-checkbox [(ngModel)]="currentObj.disabled"
-                 name="disabled"></label>
-        </div>
-      </div>
-    }
-    @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
-      <div class="form-group row b-t p-t">
-        <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate" translate>user.label.serviceAuthenticationScheme</span>
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <app-select-input [isRequired]="true" [name]="'serviceAuthenticationScheme'"
-                            [object]="currentObj" [attributeName]="'serviceAuthenticationScheme'"
-                            [listArray]="serviceAuthenticationSchemes"></app-select-input>
-        </div>
-      </div>
-    }
-    @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO') {
-      <div class="form-group row">
-        <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.listOfFido' | translate" translate>user.label.listOfFido</span>
-        </label>
-        <div class="col-sm-6">
-          <app-select-input [name]="'fidoName'"
-                            [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
-                            [listArray]="fidoList" [optionLabel]="'identityServiceName'"
-                            [optionValue]="'identityServiceName'"></app-select-input>
-        </div>
-      </div>
-    }
-    @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE') {
-      <div class="form-group row">
-        <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.listOfCert' | translate" translate>user.label.listOfCert</span>
-        </label>
-        <div class="col-sm-6">
-          <app-select-input [name]="'certName'"
-                            [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
-                            [listArray]="certList" [optionLabel]="'identityServiceName'"
-                            [optionValue]="'identityServiceName'"></app-select-input>
-        </div>
-      </div>
-    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm"

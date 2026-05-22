@@ -17,43 +17,49 @@
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
         </div>
       </div>
-      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-           class="form-group row">
-        <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <input #name="ngModel" [(ngModel)]="changesObj.name" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 name="name" placeholder="{{'common.placeholder.name' | translate}}" required type="text"/>
-          @if (name.invalid && (name.dirty || name.touched)) {
-            <div class="text-danger help-block">
-              @if (name.errors['required']) {
-                <div translate>common.message.requiredError</div>
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>user.section.change</small>
+        </div>
+        <div class="p-a-sm">
+          <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+               class="form-group row">
+            <label class="col-sm-3 form-control-label">
+              <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6">
+              <input #name="ngModel" [(ngModel)]="changesObj.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     name="name" placeholder="{{'common.placeholder.name' | translate}}" required type="text"/>
+              @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-danger help-block">
+                  @if (name.errors['required']) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
               }
             </div>
-          }
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'changes.tooltip.title' | translate" translate>common.label.title</span>
-        </label>
-        <div class="col-sm-9">
-          <input [(ngModel)]="changesObj.title" autocomplete="off" class="form-control"
-                 name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text"/>
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'changes.tooltip.state' | translate" translate>common.label.state</span>
-        </label>
-        <div class="col-sm-9">
-          <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
-            <nz-option [nzLabel]="'changes.label.open' | translate" [nzValue]="'OPEN'"></nz-option>
-            <nz-option [nzLabel]="'changes.label.closed' | translate" [nzValue]="'CLOSED'"></nz-option>
-          </nz-select>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 form-control-label">
+              <span [appRichTooltip]="'changes.tooltip.title' | translate" translate>common.label.title</span>
+            </label>
+            <div class="col-sm-9">
+              <input [(ngModel)]="changesObj.title" autocomplete="off" class="form-control"
+                     name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 form-control-label">
+              <span [appRichTooltip]="'changes.tooltip.state' | translate" translate>common.label.state</span>
+            </label>
+            <div class="col-sm-9">
+              <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
+                <nz-option [nzLabel]="'changes.label.open' | translate" [nzValue]="'OPEN'"></nz-option>
+                <nz-option [nzLabel]="'changes.label.closed' | translate" [nzValue]="'CLOSED'"></nz-option>
+              </nz-select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
