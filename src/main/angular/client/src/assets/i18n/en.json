@@ -2244,8 +2244,8 @@
     "tooltip.rename": "Renaming is performed for a folder or for objects included with a folder:\n- **Folder**: renames or relocates the folder in the ^Inventory^.\n- **Objects recursively**: modifies object names in the folder and sub-folders from a search/replace operation.",
     "tooltip.newName": "Specifies the new name of the object that should be renamed.",
     "tooltip.newPath": "Specifies the new name of the folder that should be renamed.",
-    "tooltip.search": "The *Search* expression is a ^regular expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
-    "tooltip.replace": "The *Search* expression is a ^regular expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
+    "tooltip.search": "The *Search* expression is a ^Regular Expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
+    "tooltip.replace": "The *Search* expression is a ^Regular Expression^. It makes use of *Capturing Groups* that are used in the *Replace* expression:\n- **Example**: two objects `wfToBeRenamed1` and `wfToBeRenamed2` that should be renamed to `wfNotToBeRenamed1` and `wfNotToBeRenamed2`.\n- **Search**: `(.*)(ToBe)(.*)` creates 3 *Capturing Groups* indicated by round brackets.\n- **Replace**: `$1NotToBe$3` references the 1st and 3rd *Capturing Group* and inserts the constant string `NotToBe`.",
     "--------GIT DIALOG TOOLTIPS (inventory)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Clone / Push, Source: git-dialog.html, Fields: gitUri, folderName, gitMessage",
     "tooltip.gitUri": "When cloning or linking a Git Repository, then the Git URI of the Repository must be specified.\n\nExample: `git@github.com:sos-berlin/js7-demo-inventory-rollout-test.git`\n\nThe URL from the example includes the following parts:\n- **git@** The prefix is a constant value used for ssh access to the Git server.\n- **github.com** The hostname and optionally port - separated by a colon - of the Git Server.\n- **:sos-berlin** The owner account of the repository - starting with a colon.\n- **/js7-demo-inventory-rollout-test** The path of the repository.\n- **.git**: The suffix is a constant value.",
     "tooltip.gitMessage": "For Git operations such as *push* and *pull* offered by ^JOC Cockpit^ a message can be added. Users are free to type any information into the message that will become available with the *commit* information at the Git Server.",
@@ -2404,7 +2404,7 @@
         "workflowName": "A reference to a ^Workflow^ must be added. An ^Order^ will be created for the Workflow on arrival of a file in the directory that is watched for incoming files.",
         "agent": "The ^Agent^ has to be specified that performs file watching on the respective host on which the Agent is installed.",
         "directory": "The Directory is specified that is watched for incoming files. Consider that the Directory is accessible for the ^Agent^'s host and account.\n\nThe directory is specified as an expression, for example, a string `'/tmp/files'` or in combination with a ^function^ as in `env('HOME') ++ '/files'`",
-        "pattern": "A ^regular expression^ Pattern specifies the path to files that the Directory is watched for.\n\nFor example, `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
+        "pattern": "A ^Regular Expression^ Pattern specifies the path to files that the Directory is watched for.\n\nFor example, `.*` means any files, `.*\\.txt$` means any files with the .txt extension.",
         "timeZone": "When a file arrives, the ^Agent^ will create an ^Order^ that includes the current date with its ^Order ID^.\n\nThis item specifies the ^time zone^ that is used for the date in the Order ID.",
         "delay": "A Delay is applied for which the ^Agent^ waits that an incoming file remains unchanged.\n\nChanges are detected from the file size and file timestamp. If the file changes, for example, if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further changes can be observed."
       },
@@ -2514,7 +2514,7 @@
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
-          "regex": "A ^regular expression^ specifies the Pattern for the paths of incoming files that a directory is watched for. For example, `.*` means any files, `.*\\.txt$` means any files with a .txt extension."
+          "regex": "A ^Regular Expression^ specifies the Pattern for the paths of incoming files that a directory is watched for. For example, `.*` means any files, `.*\\.txt$` means any files with a .txt extension."
         },
         "fork": {
           "joinVariables": "Variables of Child Orders in the branches of a ^Fork Instruction^ are added to the Parent Order when reaching the end of the instruction block.",
@@ -3311,7 +3311,7 @@
       "tooltip.sharedWithMe": "Shared with me",
       "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
       "tooltip.name": "The Name is the unique identifier of a Facet.",
-      "tooltip.facet": "The Facet holds a ^regular expression^ that is applied to user input when ^Order^s are added on demand that require values for Order Variables.\n\nIf the Regular Expression is successfully evaluated, user input will be accepted and otherwise will be denied."
+      "tooltip.facet": "The Facet holds a ^Regular Expression^ that is applied to user input when ^Order^s are added on demand that require values for Order Variables.\n\nIf the Regular Expression is successfully evaluated, user input will be accepted and otherwise will be denied."
     },
     "permission": {
       "label.order": "Order",
@@ -4245,18 +4245,18 @@
         "iamKeycloakTrustStorePath": "The path to a Truststore that holds the Keycloak Server certificate or Root CA certificate used to sign the Keycloak Server certificate.",
         "iamKeycloakAdminAccount": "Keycloak Administrator Account",
         "iamKeycloakAdminPassword": "Keycloak Administrator Password",
-        "iamKeycloakClientId": "The Keycloak Client ID is registered with Keycloak and has to match the value specified with the Identity Service settings.",
+        "iamKeycloakClientId": "The Keycloak Client ID is registered with Keycloak and has to match the value specified with the ^Identity Service^ settings.",
         "iamKeycloakTrustStorePassword": "If the Keycloak Truststore is protected by a password, then the password has to be specified.",
         "iamKeycloakTrustStoreType": "The Keycloak Truststore Type can be PKCS12 or JKS (deprecated).",
-        "iamKeycloakClientSecret": "The Keycloak Client Secret is registered with Keycloak and has to match the value specified with the Identity Service settings.",
-        "iamKeycloakRealm": "The Keycloak Realm is registered with Keycloak and has to match the value specified with the Identity Service settings.",
+        "iamKeycloakClientSecret": "The Keycloak Client Secret is registered with Keycloak and has to match the value specified with the ^Identity Service^ settings.",
+        "iamKeycloakRealm": "The Keycloak Realm is registered with Keycloak and has to match the value specified with the ^Identity Service^ settings.",
         "iamKeycloakVersionCompatibility": "Version 16 or earlier"
       },
       "oidc": {
-        "iamOidcName": "The name of the Identity Service using OIDC.",
+        "iamOidcName": "The name of the ^Identity Service^ using OIDC.",
         "iamOidcAuthenticationUrl": "The OIDC Authentication URL is the endpoint to which the ^JOC Cockpit^ GUI (Client) performs authentication.",
-        "iamOidcClientId": "The OIDC Client ID is registered with the OIDC Identity Provider and has to match the value specified with the Identiy Service settings.",
-        "iamOidcClientSecret": "The OIDC Client Secret is registered with the OIDC Identity Provider and has to match the value specified with the Identity Service settings.",
+        "iamOidcClientId": "The OIDC Client ID is registered with the OIDC Identity Provider and has to match the value specified with the ^Identity Service^ settings.",
+        "iamOidcClientSecret": "The OIDC Client Secret is registered with the OIDC Identity Provider and has to match the value specified with the ^Identity Service^ settings.",
         "iamOidcTruststorePath": "The path to a Truststore that holds the OIDC Identity Provider certificate or Root CA certificate used to sign the OIDC Identity Provider certificate.\n\nIn case of known Certificate Authorities the path to the `cacerts` truststore of the JDK/JRE in use can be specified.",
         "iamOidcTruststoreType": "The OIDC Truststore Type can be PKCS12 or JKS (deprecated).",
         "iamOidcTruststorePassword": "If the OIDC Truststore is protected by a password, then the password must be specified.",
@@ -4290,7 +4290,7 @@
       },
       "general": {
         "sessionTimeout": "A user session will be terminated by ^JOC Cockpit^ and the user has to login after the given number of seconds if no action is performed in JOC Cockpit.",
-        "initialPassword": "When user accounts are added, then they are assigned an initial password that must be changed with the next login.",
+        "initialPassword": "When user accounts are added, then they are assigned an initial password that must be changed with the first login.",
         "minPasswordLength": "Password strength preferably depends on length. A password that is shorter than the specified Minimum Password Length will be denied."
       }
     },
@@ -4454,7 +4454,7 @@
     "label.timeZone": "Time Zone",
     "label.addOrder": "Add Order",
     "label.workflowPath": "Workflow Path",
-    "label.remainWhenTerminated": "Remain When Terminated",
+    "label.remainWhenTerminated": "Remain when terminated",
     "label.startPosition": "Start Position before Instruction",
     "label.endPositions": "End Positions before Instructions",
     "label.blockPosition": "Block Position",
@@ -4627,18 +4627,18 @@
     "tooltip.removeJobTemplateReference": "Remove Job Template Reference",
     "tooltip.singleClickToSelect": "Single-clicking highlights an instruction and makes its properties available for editing.",
     "tooltip.doubleClickToSelect": "Double-clicking highlights an instruction. If a new instruction is dropped onto it, then the new instruction will be added as its parent.",
-    "tooltip.warningMessageForShortIntervalSelection": "Cyclic ^Order^s for short repeat intervals can cause performance penalties. Consider switching to Cyclic Workflows using ^Cycle Instruction^s.",
+    "tooltip.warningMessageForShortIntervalSelection": "^Cyclic Order^s for short repeat intervals can cause performance penalties.\n\nConsider switching to ^Cyclic Workflow^s using ^Cycle Instruction^s.",
     "tooltip.restrictedMonthsTooltip": "Max. 11 months can be selected. To use all months, leave the month restriction empty.",
     "--------WORKFLOW/ FACET EDITOR MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Facet Editor, Source: facet-editor.component.html, Fields: facet, message",
-    "tooltip.facet": "Facet",
-    "tooltip.message": "Message",
+    "tooltip.facet": "A Facet holds a ^Regular Expression^ that is applied to user input when ^Order^s are added on demand that require values for Order Variables.\n\nIf the Regular Expression is successfully evaluated, user input will be accepted and otherwise will be denied.",
+    "tooltip.message": "The Message is displayed when adding ^Order^s and is intended to instruct users which values are accepted.",
     "--------ADD SCRIPT MODAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Script Modal, Source: script-modal.component.html, Fields: script, predicate, listOfSchemes, admissionTime",
-    "tooltip.script": "The script or executable code that this Job will run.",
+    "tooltip.script": "The ^Job Script^ holds executable commands that the ^Job^ will run.",
     "tooltip.predicate": "A boolean expression evaluated to determine whether this branch or condition is met.",
-    "tooltip.listOfSchemes": "The list of admission time cycles defined for this Workflow.",
-    "tooltip.admissionTime": "The admission time periods during which Orders are permitted to start.",
+    "tooltip.listOfSchemes": "The list of ^Admission Times^ defined for this ^Workflow^.",
+    "tooltip.admissionTime": "The periods in ^Admission Times^ for which ^Orders|order^ can start.",
     "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: regex",
-    "tooltip.regex": "A ^regular expression^ specifies the pattern used to match the name or title of a ^Workflow^. For example, `test` matches the string `a-test-b`, `[0-9]{8}-test` matches the string `a-20260515-test-b`.",
+    "tooltip.regex": "A ^Regular Expression^ specifies the pattern used to match the name or title of a ^Workflow^. For example, `test` matches the string `a-test-b`, `[0-9]{8}-test` matches the string `a-20260515-test-b`.",
     "tooltip.enterDateAndTime": "Enter Date and Time",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Updates the *Title* of selected objects.",
@@ -4655,8 +4655,8 @@
       "tooltip": "Enter non-existing Agent after hitting <enter> key",
       "--------FIND AND REPLACE MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Find and Replace, Source: find-and-replace.component.html, Fields: find, replace",
       "tooltips": {
-        "find": "Find",
-        "replace": "Replace"
+        "find": "Specifies an existing ^Agent^ assignment to find and replace the assignment.",
+        "replace": "Specifies the replacement ^Agent^ that should be assigned."
       }
     },
     "wizard": {

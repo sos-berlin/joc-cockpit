@@ -2244,8 +2244,8 @@
     "tooltip.rename": "Die Umbenennung erfolgt für einen Ordner oder für die in einem Ordner enthaltenen Objekte:\n- **Ordner**: Der Ordner im Verzeichnis wird umbenannt oder verschoben.\n- **Objekte rekursiv**: Die Objektnamen im Ordner und in den Unterordnern werden durch eine Such- und Ersetzungsfunktion geändert.",
     "tooltip.newName": "Gibt den neuen Namen des Objekts an, das umbenannt werden soll.",
     "tooltip.newPath": "Gibt den neuen Namen des Ordners an, der umbenannt werden soll.",
-    "tooltip.search": "Der *Suchen* Ausdruck ist ein ^regulärer Ausdruck|regular-expression^. Er nutzt *Capturing Groups*, die im *Ersetzen* Ausdruck verwendet werden:\n - **Beispiel**: zwei Objekte `wfToBeRenamed1` und `wfToBeRenamed2`, die in `wfNotToBeRenamed1` und `wfNotToBeRenamed2` umbenannt werden sollen.\n- **Suchen**: `(.*)(ToBe)(.*)` erstellt 3 *Capturing Groups*, die durch runde Klammern gekennzeichnet sind.\n- **Ersetzen**: `$1NotToBe$3` verweist auf die erste und dritte *Capturing Group* und fügt die konstante Zeichenfolge `NotToBe` ein.",
-    "tooltip.replace": "Der *Suchen* Ausdruck ist ein ^regulärer Ausdruck|regular-expression^. Er nutzt *Capturing Groups*, die im *Ersetzen* Ausdruck verwendet werden:\n - **Beispiel**: zwei Objekte `wfToBeRenamed1` und `wfToBeRenamed2`, die in `wfNotToBeRenamed1` und `wfNotToBeRenamed2` umbenannt werden sollen.\n- **Suchen**: `(.*)(ToBe)(.*)` erstellt 3 *Capturing Groups*, die durch runde Klammern gekennzeichnet sind.\n- **Ersetzen**: `$1NotToBe$3` verweist auf die erste und dritte *Capturing Group* und fügt die konstante Zeichenfolge `NotToBe` ein.",
+    "tooltip.search": "Der *Suchen* Ausdruck ist ein ^Regulärer Ausdruck|regular-expression^. Er nutzt *Capturing Groups*, die im *Ersetzen* Ausdruck verwendet werden:\n - **Beispiel**: zwei Objekte `wfToBeRenamed1` und `wfToBeRenamed2`, die in `wfNotToBeRenamed1` und `wfNotToBeRenamed2` umbenannt werden sollen.\n- **Suchen**: `(.*)(ToBe)(.*)` erstellt 3 *Capturing Groups*, die durch runde Klammern gekennzeichnet sind.\n- **Ersetzen**: `$1NotToBe$3` verweist auf die erste und dritte *Capturing Group* und fügt die konstante Zeichenfolge `NotToBe` ein.",
+    "tooltip.replace": "Der *Suchen* Ausdruck ist ein ^Regulärer Ausdruck|regular-expression^. Er nutzt *Capturing Groups*, die im *Ersetzen* Ausdruck verwendet werden:\n - **Beispiel**: zwei Objekte `wfToBeRenamed1` und `wfToBeRenamed2`, die in `wfNotToBeRenamed1` und `wfNotToBeRenamed2` umbenannt werden sollen.\n- **Suchen**: `(.*)(ToBe)(.*)` erstellt 3 *Capturing Groups*, die durch runde Klammern gekennzeichnet sind.\n- **Ersetzen**: `$1NotToBe$3` verweist auf die erste und dritte *Capturing Group* und fügt die konstante Zeichenfolge `NotToBe` ein.",
     "--------GIT DIALOG TOOLTIPS (inventory)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Clone / Push, Source: git-dialog.html, Fields: gitUri, folderName, gitMessage",
     "tooltip.gitUri": "Beim Klonen oder Linken eines Git-Repository muss die Git URI des Repository angegeben werden.\n\nBeispiel: `git@github.com:sos-berlin/js7-demo-inventory-rollout-test.git`\n\nDie URL aus dem Beispiel enthält die folgenden Teile:\n- **git@** Das Präfix ist ein konstanter Wert, der für den SSH-Zugriff auf den Git-Server verwendet wird.\n- **github.com** Der Hostname und optional der Port – getrennt durch einen Doppelpunkt – des Git-Servers.\n- **:sos-berlin** Das Eigentümerkonto des Repository – beginnend mit einem Doppelpunkt.\n- **/js7-demo-inventory-rollout-test** Der Pfad des Repository.\n- **.git**: Das Suffix ist ein konstanter Wert.",
     "tooltip.gitMessage": "Bei Git-Operationen wie *push* und *pull*, die von ^JOC Cockpit^ angeboten werden, kann eine Nachricht hinzugefügt werden. Die Benutzer können in die Nachricht beliebige Informationen eingeben, die zusammen mit den Informationen des *commit* auf dem Git-Server verfügbar werden.",
@@ -2514,7 +2514,7 @@
         },
         "fileWatch": {
           "directory": "Das Verzeichnis, das auf die Existenz neuer Dateien hin überwacht wird.",
-          "regex": "Ein ^regulärer Ausdruck|regular-expression^ beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden. Zum Beispiel, `.*` bezeichnet alle Dateien, `.*\\.txt$` bezeichnet Dateien mit der Endung .txt."
+          "regex": "Ein ^Regulärer Ausdruck|regular-expression^ beschreibt das Muster der Namen von Dateien, die im Verzeichnis überwacht werden. Zum Beispiel, `.*` bezeichnet alle Dateien, `.*\\.txt$` bezeichnet Dateien mit der Endung .txt."
         },
         "fork": {
           "joinVariables": "Auftragsvariablen aus Zweigen einer ^Fork Anweisung|fork-instruction^ werden in der entsprechenden *Join Anweisung* dem Elternauftrag übergeben.",
@@ -3311,7 +3311,7 @@
       "tooltip.sharedWithMe": "Mit mir geteilt",
       "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
       "tooltip.name": "Der Name ist die eindeutige Kennung einer Eingabeprüfung.",
-      "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regulärer-ausdruck^, der auf Benutzereingaben angewendet wird, wenn ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt."
+      "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt."
     },
     "permission": {
       "label.order": "Auftrag",
@@ -4245,19 +4245,19 @@
         "iamKeycloakTrustStorePath": "Der Pfad zum Keycloak Truststore, der das Keycloak Server Zertifikat oder das Root CA Zertifikat enthält, mit dem das Keycloak Server Zertifikat signiert ist.",
         "iamKeycloakAdminAccount": "Keycloak Administrator Konto",
         "iamKeycloakAdminPassword": "Keycloak Administrator Kennwort",
-        "iamKeycloakClientId": "Die Keycloak Client ID wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des Identitätsdienstes entsprechen.",
+        "iamKeycloakClientId": "Die Keycloak Client ID wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des ^Identitätsdienstes|identity-service^ entsprechen.",
         "iamKeycloakTrustStorePassword": "Ist der Keycloak Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
         "iamKeycloakTrustStoreType": "Der Typ des Keycloak Truststore kann PKCS12 sein oder JKS (deprecated).",
-        "iamKeycloakClientSecret": "Das Keycloak Client Secret wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des Identitätsdienstes entsprechen.",
-        "iamKeycloakRealm": "Der Keycloak Realm wird in Keycloak registriert und muss dem angebenen Wert der Einstellung des Identitätsdienstes entsprechen.",
+        "iamKeycloakClientSecret": "Das Keycloak Client Secret wird in Keycloak registriert und muss dem angegebenen Wert der Einstellung des ^Identitätsdienstes|identity-service^ entsprechen.",
+        "iamKeycloakRealm": "Der Keycloak Realm wird in Keycloak registriert und muss dem angebenen Wert der Einstellung des ^Identitätsdienstes|identity-service^ entsprechen.",
         "iamKeycloakVersionCompatibility": "Version 16 oder früher"
       },
       "oidc": {
-        "iamOidcName": "Der Name des OIDC Identitätsdienstes.",
+        "iamOidcName": "Der Name des OIDC ^Identitätsdienstes|identity-service^.",
         "iamOidcAuthenticationUrl": "Die OIDC Authentifizierungs-URL ist der Endpunkt, an dem das ^JOC Cockpit^ GUI (Client) die Authentifizierung durchführt.",
-        "iamOidcClientId": "Die OIDC Client ID wird beim OIDC Identity Provider registriert und muss mit dem in den Einstellungen des Identitätsdienstes angegebenen Wert übereinstimmen.",
+        "iamOidcClientId": "Die OIDC Client ID wird beim OIDC Identity Provider registriert und muss mit dem in den Einstellungen des ^Identitätsdienstes|identity-service^ angegebenen Wert übereinstimmen.",
         "iamOidcClientSecret": "Das OIDC Client Secret wird beim OIDC Identity Provider registriert und muss mit dem in den Einstellungen des Identitätsdienstes angegebenen Wert übereinstimmen.",
-        "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist. Im Fall bekannter Zertifizierungsstellen kann der Pfad zum `cacerts` Truststore des eingesetzten JDK/JRE angegeben werden.",
+        "iamOidcTruststorePath": "Der Pfad zum OIDC Truststore, der das OIDC Identity Provider Zertifikat oder das Root CA Zertifikat enthält, mit dem das OIDC Identity Provider Zertifikat signiert ist.\n\nIm Fall bekannter Zertifizierungsstellen kann der Pfad zum `cacerts` Truststore des eingesetzten JDK/JRE angegeben werden.",
         "iamOidcTruststoreType": "Der Typ des OIDC Truststore kann PKCS12 sein oder JKS (deprecated).",
         "iamOidcTruststorePassword": "Ist der OIDC Truststore mit einem Kennwort geschützt, dann wird hier das Kennwort angegeben.",
         "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Benutzers enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut `email` die E-Mail Adresse des Benutzers zur Anmeldung.",
@@ -4289,17 +4289,17 @@
         "sendMailToNotifyRegistrationEmail": "E-Mail an Benutzer zur Benachrichtigung über erfolgreiche Registrierung senden"
       },
       "general": {
-        "sessionTimeout": "Eine Benutzersitzung wird von ^JOC Cockpit^ geschlossen und der Benutzer zur Anmeldung aufgeforder, wenn für die in Sekunden angegebene Dauer keine Aktivitäten in JOC Cockpit durch den Benutzer erfolgt sind.",
-        "initialPassword": "Werden Benutzerkonten hinzugefügt, dann wird ein initiales Kennwort vergeben, das bei der nächsten Anmeldung geändert werden muss.",
+        "sessionTimeout": "Eine Benutzersitzung wird von ^JOC Cockpit^ geschlossen und der Benutzer zur Anmeldung aufgefordert, wenn für die in Sekunden angegebene Dauer keine Aktivität in JOC Cockpit durch den Benutzer erfolgt ist.",
+        "initialPassword": "Werden Benutzerkonten hinzugefügt, dann wird ein initiales Kennwort vergeben, das bei der ersten Anmeldung geändert werden muss.",
         "minPasswordLength": "Die Stärke von Kennwörtern hängt vorwiegend von ihrer Länge ab. Ein Kennwort muss mindestens die angegebene Minimallänge aufweisen."
       }
     },
     "--------ADD USERS SECTION------------": "",
-    "section.identityService": "Identity Service",
-    "section.blocklistDetails": "Blocklist Details",
-    "section.change": "Change",
-    "section.certificate": "Certificate",
-    "section.agentDetails": "Agent Details",
+    "section.identityService": "Identitätsdienst",
+    "section.blocklistDetails": "Details der Sperrliste",
+    "section.change": "Änderung",
+    "section.certificate": "Zertifikat",
+    "section.agentDetails": "Details des Agenten",
     "section.export": "Export"
   },
   "workflow": {
@@ -4555,7 +4555,7 @@
     "tab.nodeProperties": "Knoten-Eigenschaften",
     "tab.notification": "Benachrichtigungen",
     "tab.jobTags": "Kennz. Job",
-    "message.noBranchFound": "Keinen Zweig gefunden",
+    "message.noBranchFound": "Kein Zweig gefunden",
     "message.invalidTarget": "Ungültiges Ziel",
     "message.validationError": "Anweisung kann nur eine eingehende und eine ausgehende Kante verwenden",
     "message.orderInstructionValidationError": "Anweisung kann nur Auftragsereignisse verwenden",
@@ -4627,19 +4627,19 @@
     "tooltip.removeJobTemplateReference": "Verweis auf ^Job-Vorlage|job-template^ entfernen",
     "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
     "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
-    "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung der `Cycle` Anweisung.",
+    "tooltip.warningMessageForShortIntervalSelection": "^Zyklische Aufträge|cyclic-order^ für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu ^Zyklischen Arbeitsabläufen|cyclic-workflow^ unter Verwendung der ^Cycle Anweisung|cycle-instruction^.",
     "tooltip.restrictedMonthsTooltip": "Max. 11 Monate können ausgewählt werden. Um alle Monate zu verwenden, lassen Sie die Monatsbeschränkung leer.",
     "--------WORKFLOW/ FACET EDITOR MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Facet Editor, Source: facet-editor.component.html, Fields: facet, message",
-    "tooltip.facet": "Facet",
-    "tooltip.message": "Message",
+    "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt.",
+    "tooltip.message": "Die Meldung wird beim Hinzufügen von ^Aufträgen|order^ angezeigt und soll den Benutzern mitteilen, welche Werte akzeptiert werden.",
     "--------ADD SCRIPT MODAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Script Modal, Source: script-modal.component.html, Fields: script, predicate, listOfSchemes, admissionTime",
-    "tooltip.script": "The script or executable code that this Job will run.",
-    "tooltip.predicate": "A boolean expression evaluated to determine whether this branch or condition is met.",
-    "tooltip.listOfSchemes": "The list of admission time cycles defined for this Workflow.",
-    "tooltip.admissionTime": "The admission time periods during which Orders are permitted to start.",
+    "tooltip.script": "Das ^Job Skript|job-script^ enthält ausführbare Kommandos, die der ^Job^ ausführen wird.",
+    "tooltip.predicate": "Ein boolescher Ausdruck, der ausgewertet wird, um festzustellen, ob diese Verzweigung oder Bedingung erfüllt ist.",
+    "tooltip.listOfSchemes": "Die Liste der ^Zutrittszeiten|admission-times^ für den ^Arbeitsablauf|workflow^.",
+    "tooltip.admissionTime": "Die Liste der Perioden in ^Zutrittszeiten|admission-times^, in denen ^Aufträge|order^ starten können.",
     "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: workflow-form-template.html, Fields: regex",
-    "tooltip.regex": "Ein ^regulärer Ausdruck|regular-expression^ legt das Muster fest, das im Namen oder Titel eines ^Arbeitsablaufs|workflow^ gesucht wird. Bspw. passt `test` auf die Zeichenfolge `a-test-b`, während `[0-9]{8}-test` auf die Zeichenfolge `a-20260515-test-b` passt.",
-    "tooltip.enterDateAndTime": "Enter Date and Time",
+    "tooltip.regex": "Ein ^Regulärer Ausdruck|regular-expression^ legt das Muster fest, das im Namen oder Titel eines ^Arbeitsablaufs|workflow^ gesucht wird. Bspw. passt `test` auf die Zeichenfolge `a-test-b`, während `[0-9]{8}-test` auf die Zeichenfolge `a-20260515-test-b` passt.",
+    "tooltip.enterDateAndTime": "Gibt Datum und Zeit an.",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Aktualisiert den *Titel* der ausgewählten Objekte.",
     "tooltip.jobResourceNames": "Aktualisiert Verweise auf ^Job-Ressourcen|job-resource^ in den ausgewählten Objekten.",
@@ -4652,11 +4652,11 @@
       "button.findAndReplace": "Suchen und Ersetzen",
       "placeholder.selectFind": "Einen oder mehrere Agenten auswählen",
       "placeholder.selectReplace": "Agenten zur Ersetzung der Zuordnung auswählen",
-      "tooltip": "Nicht vorhandenen Agente nach Eingabe von <enter> angeben",
+      "tooltip": "Nicht vorhandenen Agenten nach Eingabe von <enter> angeben",
       "--------FIND AND REPLACE MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Find and Replace, Source: find-and-replace.component.html, Fields: find, replace",
       "tooltips": {
-        "find": "Find",
-        "replace": "Replace"
+        "find": "Gibt eine vorhandene ^Agenten|agent^-Zuweisung an, um diese zu suchen und zu ersetzen.",
+        "replace": "Gibt den ersetzenden ^Agenten|agent^ an, der zugewiesen werden soll."
       }
     },
     "wizard": {
