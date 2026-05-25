@@ -452,10 +452,10 @@
     "tooltip.standaloneUrlForJOC": "Verbindung von ^JOC Cockpit^ zum ^Autonomen Controller|standalone-controller^",
     "tooltip.primaryUrlForJOC": "Verbindung von ^JOC Cockpit^ zum ^Primären Controller|controller-cluster^",
     "tooltip.backupUrlForJOC": "Verbindung von ^JOC Cockpit^ zum ^Sekundären Controller|controller-cluster^",
-    "tooltip.urlForBackup": "Verbindung des Sekundären ^Controller^s zum Primären Controller",
-    "tooltip.urlForPrimary": "Verbindung des Primären ^Controller^s zum Sekundären Controller",
-    "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären ^Controller^-Instanz in der Ansicht *ÜBERSICHT*",
-    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären ^Controller^-Instanz in der Ansicht *ÜBERSICHT*"
+    "tooltip.urlForBackup": "Verbindung des ^Sekundären Controller|controller-cluster^ zum Primären Controller",
+    "tooltip.urlForPrimary": "Verbindung des ^Primären Controller|controller-cluster^ zum Sekundären Controller",
+    "tooltip.primaryTitle": "Beschriftung der Kopfzeile des ^Primären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*",
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile des ^Sekundären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -2879,7 +2879,7 @@
     "tooltip.dateFrom": "Gibt das Datum an, ab dem Protokollausgaben angezeigt werden.\n- **Relatives Datum**: verwendet eine ^Datumsformel|date-formula^\n- **Bestimmtes Datum**: verwendet das Datumsformat des Rechners.",
     "tooltip.dateTo": "Gibt das Datum an, bis zu dem Protokollausgaben angezeigt werden.\n- **Relatives Datum**: verwendet eine ^Datumsformel|date-formula^\n- **Bestimmtes Datum**: verwendet das Datumsformat des Rechners.",
     "tooltip.dateType": "Legt fest, wie ein Datum eingegeben wird:\n- **Relatives Datum**: verwendet eine ^Datumsformel|date-formula^\n- **Bestimmtes Datum**: verwendet das Datumsformat des Rechners.",
-    "tooltip.level": "Beschränkt die Protokollausgabe auf Zeilen, die der Protokollierungsstufe entsprechen:\n- **INFO**: Informationsausgabe.\n- **WARN**: Warnungen sind temporärer Natur, z.B. bei Verbindungsabbruch zu einem ^Agent^en\n- **ERROR**: Fehler können vorübergehend oder dauerhaft sein und erfordern Maßnahmen.\n- **DEBUG**: Meldungen sind detailliert und werden von Support-Mitarbeitern verwendet.\n- **TRACE**: Meldungen sind sehr detailliert und werden von Entwicklern verwendet.",
+    "tooltip.level": "Beschränkt die Protokollausgabe auf Zeilen der Protokollierungsstufe:\n- **INFO**: Informationsausgabe.\n- **WARN**: Warnungen sind temporär, z.B. bei Verbindungsabbruch zu einem ^Agent^en\n- **ERROR**: Fehler sind vorübergehend oder dauerhaft und erfordern Maßnahmen\n- **DEBUG**: Meldungen sind detailliert und werden von Support-Mitarbeitern verwendet\n- **TRACE**: Meldungen sind sehr detailliert und werden von Entwicklern verwendet",
     "tooltip.numOfLines": "Beschränkt die Protokollausgabe auf die angegebene Zeilenzahl.\n\nWird kein Wert angegeben, wird ein fortlaufendes Protokoll angezeigt, das bei neuen Protokollausgaben automatisch aktualisiert wird."
   },
   "login": {
@@ -4177,11 +4177,11 @@
     "tooltip.identityServiceName": "Der Name des ^Identitätsdienstes|identity-service^ ist eindeutig und kann jederzeit geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
     "tooltip.identityServiceType": "Wählt den ^Typ des Identitätsdienstes|identity-service-type^ für die Authentifizierung.",
     "tooltip.identityServiceOrdering": "Spezifiziert die Reihenfolge, in der ^Identitätsdienste|identity-service^ verarbeitet werden, bis die Authentifizierung erfolgreich ist.",
-    "tooltip.identityServiceRequired": "Fakultative ^Identitätsdienste|identity-service^ werden verabeitet, bis die Authentifizierung eines Dienstes erfolgreich ist.\n\nAlle obligatorischen Identitätsdienste müssen zu einer erfolgreichen Authentifizieren führen.",
-    "tooltip.usedAsSecondFactor": "Der ^Identitätsdienst|identity-service^ wird als Zweiter Faktor für einen anderen Identitätsdienst verwendeet.",
+    "tooltip.identityServiceRequired": "Fakultative ^Identitätsdienste|identity-service^ werden verabeitet bis die Authentifizierung eines Dienstes erfolgreich ist.\n\nAlle obligatorischen Identitätsdienste müssen zu einer erfolgreichen Authentifizierung führen.",
+    "tooltip.usedAsSecondFactor": "Der ^Identitätsdienst|identity-service^ wird als Zweiter Faktor für einen anderen Identitätsdienst verwendet.",
     "tooltip.disable": "Der ^Identitätsdienst|identity-service^ wird deaktiviert und wird für Anmeldungen an JOC Cockpit nicht berücksichtigt.",
     "tooltip.serviceAuthenticationScheme": "Das Authentifizierungsschema bietet die Optionen:\n- **Ein Faktor**: der ^Identitätsdienst|identity-service^ erlaubt Authentifizierung als alleiniger Faktor.\n- **Zwei Faktoren**: der Identitätsdienst erfordert die Authentifizierung mit einem weiteren Identitätsdienst als zweiten Faktor.",
-    "tooltip.listOfFido": "Wenn das Authentifizierungsschema **Zwei Faktoren** ausgewählt ist, kann ein FIDO basierter ^Identitätsdienst|identity-service^ aus der Liste ausgewählt werden.\n\nAlternativ ist die Auswahl eines zertifikatsbasierten Identitätsdienstes aus einer weiteren Liste möglich.",
+    "tooltip.listOfFido": "Wenn das Authentifizierungsschema **Zwei Faktoren** ausgewählt ist, kann ein FIDO basierter ^Identitätsdienst|identity-service^ als zweiter Faktor aus der Liste ausgewählt werden.\n\nAlternativ ist die Auswahl eines zertifikatsbasierten Identitätsdienstes aus einer weiteren Liste möglich.",
     "tooltip.listOfCert": "Wenn das Authentifizierungsschema **Zwei Faktoren** ausgewählt ist, kann ein zertifikatsbasierter ^Identitätsdienst|identity-service^ aus der Liste ausgewählt werden.\n\nAlternativ ist die Auswahl eines FIDO basierten Identitätsdienstes aus einer weiteren Liste möglich.",
     "--------ADD CONTROLLER ROLE TOOLTIPS------------": "Page: User Management, Sub-tab: -, Pop-up: Add Controller Role, Source: controller-dialog.html, Fields: js7Controller, role",
     "tooltip.js7Controller": "Wählt den ^Controller^ für den die Berechtigungen der Rolle gelten.\n\nWenn mehrere Controller mit JOC Cockpit verbunden sind, werden die als *default* konfigurierten Berechtigungen bzw. die für den einzelnen Controller konfigurierten Berechtigungen verwendet.\n\nBenutzern können unterschiedliche Berechtigungen pro verwendetem Controller zugewiesen werden.",

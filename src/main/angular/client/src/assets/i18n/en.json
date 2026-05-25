@@ -452,10 +452,10 @@
     "tooltip.standaloneUrlForJOC": "^JOC Cockpit^ connection to ^Standalone Controller^",
     "tooltip.primaryUrlForJOC": "^JOC Cockpit^ connection to ^Primary Controller|controller-cluster^",
     "tooltip.backupUrlForJOC": "^JOC Cockpit^ connection to ^Secondary Controller|controller-cluster^",
-    "tooltip.urlForBackup": "Connection of the Secondary ^Controller^ to the Primary Controller",
-    "tooltip.urlForPrimary": "Connection of the Primary ^Controller^ to the Secondary Controller",
-    "tooltip.primaryTitle": "Caption of the Primary ^Controller^ instance",
-    "tooltip.backupTitle": "Caption of the Secondary ^Controller^ instance"
+    "tooltip.urlForBackup": "Connection of the ^Secondary Controller|controller-cluster^ to the Primary Controller",
+    "tooltip.urlForPrimary": "Connection of the ^Primary Controller|controller-cluster^ to the Secondary Controller",
+    "tooltip.primaryTitle": "Caption of the ^Primary Controller|controller-cluster^ instance",
+    "tooltip.backupTitle": "Caption of the ^Secondary Controller|controller-cluster^ instance"
   },
   "encipherment": {
     "label.addCertificate": "Add Encryption Certificate",
@@ -2879,8 +2879,8 @@
     "tooltip.dateFrom": "Specifies the date from which log output is displayed.\n- **Relative Date**: uses a ^Date Formula^\n- **Specific Date**: uses the computer's date format.",
     "tooltip.dateTo": "Specifies the date up to which log output is displayed.\n- **Relative Date**: uses a ^Date Formula^\n- **Specific date**: uses the computer's date format.",
     "tooltip.dateType": "Specifies how a date is entered:\n- **Relative date**: uses a ^Date Formula^\n- **Specific date**: uses the computer's date format.",
-    "tooltip.level": "Limits log output to lines using the matching Log Level:\n- **INFO**: informational output.\n- **WARN**: warnings are temporary, for example, connection loss to an ^Agent^\n- **ERROR**: can temporary or persistent and needs attention.\n- **DEBUG**: is detailed and is used by support team members.\n- **TRACE** is highly detailed and is used by developers.",
-    "tooltip.numOfLines": "Limits log output to the indicated number of lines.\n\nIf not specified, then a running log will be displayed that is updated automatically on a arrival of next log output."
+    "tooltip.level": "Limits log output to lines using the matching Log Level:\n- **INFO**: informational output\n- **WARN**: warnings are temporary, for example, connection loss to an ^Agent^\n- **ERROR**: temporary or persistent problem that needs attention.\n- **DEBUG**: detailed output for use by support team\n- **TRACE** highly detailed output used by developers.",
+    "tooltip.numOfLines": "Limits log output to the indicated number of lines.\n\nIf not specified, then a running log will be displayed that is updated automatically on arrival of next log output."
   },
   "login": {
     "label.account": "Account",

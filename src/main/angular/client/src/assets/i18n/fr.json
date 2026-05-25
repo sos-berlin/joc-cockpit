@@ -450,12 +450,12 @@
     "tooltip.type": "Un ^Contrôleur Autonome|standalone-controller^ est configuré à l'aide d'une seule instance.\n\nUn ^Cluster de Contrôleurs|controller-cluster^ peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
     "tooltip.standaloneTitle": "Légende du ^Contrôleur Autonome|standalone-controller^ dans la vue *TABLEAU DE BORD*",
     "tooltip.standaloneUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Autonome|standalone-controller^",
-    "tooltip.primaryUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Primaire|cluster-de-contrôleurs^",
-    "tooltip.backupUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Secondaire|cluster-de-contrôleurs^",
-    "tooltip.urlForBackup": "Connexion du ^Contrôleur|controller^ Secondaire au Contrôleur Primaire",
-    "tooltip.urlForPrimary": "Connexion du ^Contrôleur|controller^ Primaire au Contrôleur Secondaire",
-    "tooltip.primaryTitle": "Légende du ^Contrôleur|controller^ Primaire dans la vue *TABLEAU DE BORD*",
-    "tooltip.backupTitle": "Légende du ^Contrôleur|controller^ Secondaire dans la vue *TABLEAU DE BORD*"
+    "tooltip.primaryUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Primaire|controller-cluster^",
+    "tooltip.backupUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Secondaire|controller-cluster^",
+    "tooltip.urlForBackup": "Connexion du ^Contrôleur Secondaire|controller-cluster^ au Contrôleur Primaire",
+    "tooltip.urlForPrimary": "Connexion du ^Contrôleur Primaire|controller-cluster^ au Contrôleur Secondaire",
+    "tooltip.primaryTitle": "Légende du ^Contrôleur Primaire|controller-cluster^ dans la vue *TABLEAU DE BORD*",
+    "tooltip.backupTitle": "Légende du ^Contrôleur Secondaire|controller-cluster^ dans la vue *TABLEAU DE BORD*"
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Cryptage",
@@ -2878,7 +2878,7 @@
     "button.cancel": "Annuler",
     "tooltip.dateFrom": "Indique la date à partir de laquelle les sorties du journal sont affichées.\n- **Date relative** : utilise une ^Formule de Date|date-formula^\n- **Date spécifique** : utilise le format de date de l'ordinateur.",
     "tooltip.dateTo": "Indique la date jusqu'à laquelle les sorties du journal sont affichées.\n- **Date relative** : utilise une ^Formule de Date|date-formula^\n- **Date spécifique** : utilise le format de date de l'ordinateur.",
-    "tooltip.dateType": "Date Type",
+    "tooltip.dateType": "Définit le mode de saisie d'une date :\n- **Date relative** : utilise une ^Formule de Date|date-formula^\n- **Date spécifique** : utilise le format de date de l'ordinateur.",
     "tooltip.level": "Limite l'affichage du journal aux lignes correspondant au niveau de journalisation :\n- **INFO** : informations d'ordre général.\n- **WARN** : les avertissements sont temporaires, par exemple une perte de connexion à un ^Agent^\n- **ERROR** : peut être temporaire ou persistant et nécessite une intervention.\n- **DEBUG** : est détaillé et utilisé par les membres de l'équipe d'assistance.\n- **TRACE** : est très détaillé et utilisé par les développeurs.",
     "tooltip.numOfLines": "Limite l'affichage du journal au nombre de lignes indiqué.\n\nSi aucune valeur n'est spécifiée, un journal en continu s'affiche et est mis à jour automatiquement à chaque nouvelle entrée."
   },
