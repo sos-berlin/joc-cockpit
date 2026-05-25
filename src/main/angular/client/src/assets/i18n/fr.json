@@ -989,26 +989,26 @@
     "tooltip.workflows": "Indique le nombre de ^Workflow^s disponibles dans l'^Inventaire|inventory^ accessible à l'utilisateur.",
     "tooltip.jobs": "Indique le nombre de ^Tâches|job^ disponibles dans l'^Inventaire|inventory^ accessible à l'utilisateur.",
     "tooltip.locks": "Indique le nombre de ^Verrous de Ressource|resource-lock^ disponibles dans l'^Inventaire|inventory^ accessible à l'utilisateur.",
-    "tooltip.schedules": "Schedules",
+    "tooltip.schedules": "Indique le nombre de ^Planifications|schedule^ disponibles dans l'^Inventaire|inventory^ accessible à l'utilisateur.",
     "--------ORDERS OVERVIEW WIDGET TOOLTIPS------------": "Page: Dashboard, Sub-tab: Order Overview, Pop-up: -, Source: order-overview.component.html, Fields: pending, scheduled, incomplete, running, suspended, completed, prompting, waiting, blocked, failed",
-    "tooltip.pending": "Indique le nombre de ^Ordres|order^ ^à venir|pending^ auxquels l'utilisateur a accès.",
-    "tooltip.scheduled": "Indique le nombre de ^Ordres|order^ ^prévus|scheduled^ auxquels l'utilisateur a accès.",
-    "tooltip.incomplete": "Indique le nombre de ^Ordres|order^ ^en progression|in-progress^ auxquels l'utilisateur a accès.",
-    "tooltip.running": "Indique le nombre de ^Ordres|order^ ^en exécution|running^ auxquels l'utilisateur a accès.",
-    "tooltip.suspended": "Indique le nombre de ^Ordres|order^ ^suspendus|suspended^ auxquels l'utilisateur a accès.",
-    "tooltip.completed": "Indique le nombre de ^Ordres|order^ ^complétés|completed^ auxquels l'utilisateur a accès.",
-    "tooltip.prompting": "Indique le nombre de ^Ordres|order^ ^à confirmer|prompting^ auxquels l'utilisateur a accès.",
-    "tooltip.waiting": "Indique le nombre de ^Ordres|order^ ^en attente|waiting^ auxquelles l'utilisateur a accès.",
-    "tooltip.blocked": "Indique le nombre de ^Ordres|order^ ^bloqués|waiting^ auxquels l'utilisateur a accès.",
-    "tooltip.failed": "Indique le nombre de ^Ordres|order^ ^échoués|waiting^ auxquels l'utilisateur a accès.",
+    "tooltip.pending": "Indique le nombre d'^Ordres|order^ ^à venir|pending^ auxquels l'utilisateur a accès.",
+    "tooltip.scheduled": "Indique le nombre d'^Ordres|order^ ^prévus|scheduled^ auxquels l'utilisateur a accès.",
+    "tooltip.incomplete": "Indique le nombre d'^Ordres|order^ ^en progression|in-progress^ auxquels l'utilisateur a accès.",
+    "tooltip.running": "Indique le nombre d'^Ordres|order^ ^en exécution|running^ auxquels l'utilisateur a accès.",
+    "tooltip.suspended": "Indique le nombre d'^Ordres|order^ ^suspendus|suspended^ auxquels l'utilisateur a accès.",
+    "tooltip.completed": "Indique le nombre d'^Ordres|order^ ^complétés|completed^ auxquels l'utilisateur a accès.",
+    "tooltip.prompting": "Indique le nombre d'^Ordres|order^ ^à confirmer|prompting^ auxquels l'utilisateur a accès.",
+    "tooltip.waiting": "Indique le nombre d'^Ordres|order^ ^en attente|waiting^ auxquelles l'utilisateur a accès.",
+    "tooltip.blocked": "Indique le nombre d'^Ordres|order^ ^bloqués|blocked^ auxquels l'utilisateur a accès.",
+    "tooltip.failed": "Indique le nombre d'^Ordres|order^ ^échoués|failed^ auxquels l'utilisateur a accès.",
     "--------HISTORY SUMMARY WIDGET TOOLTIPS------------": "Page: Dashboard, Sub-tab: History, Pop-up: -, Source: history-summary.component.html, Fields: successfulOrders, failedOrders, successfulJobs, failedJobs",
-    "tooltip.successfulOrders": "Indique le nombre de ^Ordres|order^ réussis dans la vue *HISTORIQUE*.",
-    "tooltip.failedOrders": "Indique le nombre de ^Ordres|order^ échoués dans la vue *HISTORIQUE*.",
+    "tooltip.successfulOrders": "Indique le nombre d'^Ordres|order^ réussis dans la vue *HISTORIQUE*.",
+    "tooltip.failedOrders": "Indique le nombre d'^Ordres|order^ échoués dans la vue *HISTORIQUE*.",
     "tooltip.successfulJobs": "Indique le nombre de ^Tâches|job^ réussies dans la vue *HISTORIQUE*.",
     "tooltip.failedJobs": "Indique le nombre de ^Tâches|job^ échouées dans la vue *HISTORIQUE*.",
     "--------FILE TRANSFER HISTORY WIDGET TOOLTIPS------------": "Page: Dashboard, Sub-tab: File Tranfers, Pop-up: -, Source: file-transfer-history-summary.component.html, Fields: successful, failed",
-    "tooltip.successfulTransfers": "Indique le nombre de ^Ordres|order^ réussies dans la vue *TRANSFERTS DE FICHIERS*.",
-    "tooltip.failedTransfers": "Indique le nombre de ^Ordres|order^ échouées dans la vue *TRANSFERTS DE FICHIERS*."
+    "tooltip.successfulTransfers": "Indique le nombre d'^Ordres|order^ réussies dans la vue *TRANSFERTS DE FICHIERS*.",
+    "tooltip.failedTransfers": "Indique le nombre d'^Ordres|order^ échouées dans la vue *TRANSFERTS DE FICHIERS*."
   },
   "dailyPlan": {
     "label.createPlan": "Créer le plan quotidien",
@@ -1335,7 +1335,7 @@
         "httpsPort": "Entrer Port HTTPS",
         "javaHome": "Entrer Répertoire d'Installation Java",
         "javaOptions": "Entrer Options Java",
-        "controllerId": "Entrer la ID Contrôleur",
+        "controllerId": "Entrer l'ID Contrôleur",
         "keyStore": "Entrer le Magasin de Clés",
         "keyStorePassword": "Entrer Mot de passe du Magasin de Clés",
         "keyPassword": "Entrer Mot de passe Clé",
@@ -1603,7 +1603,7 @@
         "keyFile": "Le chemin d'accès au fichier clé pour l'authentification de la connexion SSH à l'hôte du ^JOC Cockpit^.",
         "packageLocation": "Le chemin d'accès à la localisation du paquet d'installation du logiciel sur l'hôte du ^JOC Cockpit^.",
         "execPre": "La commande de pré-traitement est exécutée sur l'hôte du ^JOC Cockpit^ avant que le paquet de l'installation du logiciel ne soit extrait.\n\nUne commande de système d'exploitation peut être spécifiée.\n\nAvec la spécification `StopService`, le service du JOC Cockpit est arrêté sous Unix et Windows.",
-        "execPost": "La commande de post-traitement est exécutée après l'extraction du paquet de l'installation du logiciel sur l'hôte du Contrôleur.\n\nUne commande de système d'exploitation peut être spécifiée.\n\nAvec la spécification `StartService`, le service du ^JOC Cockpit^ est lancé sous Unix et Windows.",
+        "execPost": "La commande de post-traitement est exécutée après l'extraction du paquet de l'installation du logiciel sur l'hôte du ^JOC Cockpit^.\n\nUne commande de système d'exploitation peut être spécifiée.\n\nAvec la spécification `StartService`, le service du ^JOC Cockpit^ est lancé sous Unix et Windows.",
         "makeService": "Le service du ^JOC Cockpit^ sous Unix ou Windows est configuré.",
         "release": "La version du logiciel du ^JOC Cockpit^.",
         "tarball": "L'archive Tarball de l'installation du logiciel du ^JOC Cockpit^. Pour Unix, il s'agit d'une archive .tar.gz, pour Windows d'une archive .zip.",
@@ -2259,7 +2259,7 @@
     "tooltip.overwriteNotification": "Met à jour les paramètres de ^Notification^ des ^Tâches|job^ dans les ^Workflow^s cibles à partir du ^Modèle de Tâche|job-template^.",
     "tooltip.overwriteAdmissionTime": "Met à jour les ^Heures d'Admission|admission-times^ des ^Tâches|job^ dans les ^Workflow^s cibles à partir du ^Modèle de Tâche|job-template^.",
     "tooltip.overwriteRequiredArguments": "Met à jour les arguments des ^Tâches|job^ dans les ^Workflow^s cibles à partir des arguments obligatoires du ^Modèle de Tâche|job-template^.",
-    "tooltip.overwriteOptionalArguments": "Met à jour les arguments des ^Tâches^ dans les ^Workflow^s cibles à partir des arguments facultatifs du ^Modèle de Tâche|job-template^.",
+    "tooltip.overwriteOptionalArguments": "Met à jour les arguments des ^Tâches|job^ dans les ^Workflow^s cibles à partir des arguments facultatifs du ^Modèle de Tâche|job-template^.",
     "--------ADD GROUPS DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Add Groups / Rename Group, Source: add-groups-dialog.html, Fields: groups, groupName",
     "tooltip.groups": "Spécifie les ^Groupes des Tags|tag-group^ à ajouter.\n\nPour ajouter des groupes, saisissez le nom d'un nouveau groupe.",
     "tooltip.groupName": "Indique le nom d'un ^Groupe de Tags|tag-group^ utilisé pour gérer les ^Tag^s.",
@@ -2481,11 +2481,11 @@
         "autocompleteShortCut": "Tapez Ctrl+Espace pour récupérer la liste des ^Blocs Scripts|script-include^ disponibles."
       },
       "report": {
-        "name": "Le nom d'un Modèle de Rapport est unique dans l'^Inventaire|inventory^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
-        "title": "Le Titre du Modèle de Rapport peut être spécifié à volonté.",
-        "template": "Spécifie le Maquette de Rapport à appliquer.",
+        "name": "Le nom d'un ^Modèle de Rapport|report-template^ est unique dans l'^Inventaire|inventory^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
+        "title": "Le Titre du ^Modèle de Rapport|report-template^ peut être spécifié à volonté.",
+        "template": "Spécifie le ^Maquette de Rapport|report-model^ à appliquer.",
         "frequencies": "La Fréquence spécifie le cycle qui divise la période de rapport, par exemple, 5 minutes, 1 jour etc.",
-        "controllerId": "Le rapport peut être limité aux données d'un seul Contrôleur.",
+        "controllerId": "Le rapport peut être limité aux données d'un seul ^Contrôleur|controller^.",
         "interval": {
           "interval": "Spécifie la période de rapport.\n\nLes préréglages et les paramètres relatifs seront mis en correspondance avec les valeurs actuelles pour le mois de début et le mois de fin.",
           "absolute": {
@@ -2493,9 +2493,9 @@
             "monthTo": "Indique la fin de la période de rapport.\n\nDes valeurs absolues sous la forme yyyy-mm ou des valeurs relatives, par exemple, `2m`, peuvent être spécifiées.\n\nSi le champ est vide, c'est le mois précédent de la date actuelle qui sera utilisé."
           },
           "relative": {
-            "from": "Spécifie le début de la période de rapport qui prend en compte l'unité utilisée.\nExemple : Unit=Month, From=12, Count=12 --> 12 derniers mois.",
-            "unit": "Spécifie l'unité par laquelle la date de début de la période de rapport est calculée.\nExemple : Unit=Year, From=1, Count=1 --> l'année dernière.",
-            "count": "La fin de la période de rapport est calculée comme (De-Compte+1)*Unité à partir du début de la période de rapport. Le mois correspondant est calculé à partir de la Fréquence, annuelle : 12, trimestriel : dernier mois du trimestre etc."
+            "from": "Spécifie le début de la période de rapport qui prend en compte l'unité utilisée.\nExemple : unité=mois, de=12, compté=12 --> 12 derniers mois.",
+            "unit": "Spécifie l'unité par laquelle la date de début de la période de rapport est calculée.\nExemple : unité=année, de=1, compté=1 --> l'année dernière.",
+            "count": "La fin de la période de rapport est calculée comme (de-compté+1)*unité à partir du début de la période de rapport.\n\nLe mois correspondant est calculé à partir de la Fréquence, annuelle : 12, trimestriel : dernier mois du trimestre etc."
           },
           "preset": {
             "preset": "Préréglage",
@@ -2597,7 +2597,7 @@
           "onWarning": "Il est possible de spécifier un ^Code de Retour^ qui signale une exécution réussie avec des avertissements.\n\nUne ^Notification^ est créée dans le cas de tels Codes de Retour.\n\nUn certain nombre de Codes de Retour peuvent être spécifiés par une liste séparée par des virgules. On peut définir une plage à l'aide de deux points, par exemple `0..42`",
           "agentAssignment": "La ^Tâche|job^ se voit attribuer un ^Agent Autonome|standalone-agent^ ou un ^Cluster de Sous-Agents|subagent-cluster^ pour son exécution.\n\nDans un bloc des instructions comme l'^Instruction ForkList|forklist-instruction^ ou l'^Instruction StickySubagent|stickysubagent-instruction^ un ^Cluster d'Agents|agent-cluster^ est attribué.\n\nIl est également possible de spécifier une Expression qui fournit l'^ID Cluster de Sous-Agents|subagent-cluster-id^ à partir d'une variable.",
           "agent": "Un ^Agent^ est assigné à une ^Tâche|job^ qui exécutera le ^Script Job|job-script^ ou la ^Catégorie de Tâche|job-class^. Faites votre choix dans la liste des ^Agent^s disponibles.",
-          "agentCluster": "Sélectionne le ^Cluster d'Agents|agent-cluster^ pour lequel la ^ID Cluster de Sous-Agents|subagent-cluster-id^ est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
+          "agentCluster": "Sélectionne le ^Cluster d'Agents|agent-cluster^ pour lequel l'^ID Cluster de Sous-Agents|subagent-cluster-id^ est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
           "subagentClusterIdExpr": "L'Expression spécifie l'^ID Cluster de Sous-Agents|subagent-cluster-id^ à partir d'une variable.\n\nSi aucune variable n'est spécifiée, un défaut intégré devient actif si la ^Tâche|job^ est inclus dans une ^Instruction ForkList|forklist-instruction^ ou une ^Instruction StickySubagent|stickysubagent-instruction^.\n\nLes utilisateurs peuvent spécifier une variable individuelle, par exemple, si les Tâches prédécesseurs sont utilisés pour déterminer le Cluster de Sous-Agents sur lequel exécuter une Tâche successeur.",
           "jobNotRestartable": "S'applique aux ^Tâches|job^ qui ont été interrompus de force par l'^Agent^ ou lors de l'arrêt ou de l'annulation de l'Agent.\n\nPar défaut, les ^Tâches|job^ sont considérés comme redémarrables et seront redémarrés lorsque l'Agent sera redémarré.\n\nLes utilisateurs peuvent empêcher ce comportement en activant la case à cocher."
         },
@@ -2657,7 +2657,7 @@
         "forSigning": "Pour signer",
         "inclusiveAllTags": "Ajoute des ^Tag^s au fichier d'exportation qui seront importé vers la destination.\n\nCela inclut tout les Tags de ^Workflow^, les Tags d'^Ordre|order^ et les Tags de ^Tâche|job^.\n\nLors de l'importation, les utilisateurs peuvent choisir d'importer des Tags à partir d'un fichier d'exportation.",
         "filterType": "Permet de sélectionner les objets *Contrôleur* et/ou *Automatisation* situés dans les dossiers système correspondants.",
-        "filter": "Propose d'inclure des objets de l'^Inventaire|inventory^ dans le fichier d'exportation en fonction de leur statut:\n- **objets non valides** peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n- **objets en brouillon** comprennent les modifications qui n'ont pas encore été déployées ou publiées.\n- **objets déployés** sont ^déployés|déploiement^ sur un ^Contrôleur|controller^.\n- **objets publiés** sont disponibles dans le dossier système *Automation* et sont ^publiés|releasing^ pour être utilisés.",
+        "filter": "Propose d'inclure des objets de l'^Inventaire|inventory^ dans le fichier d'exportation en fonction de leur statut:\n- **objets non valides** peuvent être exportés et importés, mais ils ne peuvent être ni déployés ni publiés.\n- **objets en brouillon** comprennent les modifications qui n'ont pas encore été déployées ou publiées.\n- **objets déployés** sont ^déployés|deployment^ sur un ^Contrôleur|controller^.\n- **objets publiés** sont disponibles dans le dossier système *Automation* et sont ^publiés|releasing^ pour être utilisés.",
         "handleRecursively": "Inclut les objets d'^Inventaire|inventory^ des sous-dossiers dans le fichier d'exportation.",
         "includeDependencies": "Inclut les objets dépendants dans le fichier d'exportation, par exemple, une ^Ressource de Tâche|job-resource^ référencée par un ^Workflow^ ou une ^Planification|schedule^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront ajoutés au fichier d'exportation.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'exportation aux objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
@@ -3166,7 +3166,7 @@
     "message.remove": "Glisser-déposer l'Ordre pour déplacer sa position",
     "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle en secondes ou en *heures:minutes:secondes*.\n\nLes utilisateurs peuvent spécifier une période plus courte ou plus longue que celle prédéfinie pour la fin du cycle à condition que le cycle ait été effectué une fois.\n\nL'^Ordre|order^ reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'Ordre reviendra au début du cycle.",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (order)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: orderName",
-    "tooltip.orderName": "Le ^Nom de l'Ordre|order-name^ est un élément non qualifiant de l'identifiant de la ^ID Ordre|order-id^.\n\nLes utilisateurs peuvent indiquer librement le Nom de l'Ordre lors de la création des ^Planifications|schedule^ et de l'ajout des ^Ordres|order^ ad hoc.",
+    "tooltip.orderName": "Le ^Nom de l'Ordre|order-name^ est un élément non qualifiant de l'identifiant de l'^ID Ordre|order-id^.\n\nLes utilisateurs peuvent indiquer librement le Nom de l'Ordre lors de la création des ^Planifications|schedule^ et de l'ajout des ^Ordres|order^ ad hoc.",
     "--------CHANGE PARAMETER AND START TIME DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Change Parameter / Start Time, Source: change-parameter-dialog.html start-time-dialog.html, Fields: blockPosition, startNode, endNode, ignoreAdmissionTimes, stickToDailyPlanDate",
     "tooltip.blockPosition": "Un ^Ordre|order^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork|fork-instruction^, à une ^Instruction Lock|lock-instruction^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n- L^Ordre|order^ sera exécutée dans le Worfklow au début de l'instruction de bloc ou à partir d'une Position de Départ ultérieure.\n- L'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc ou à une Position de Fin antérieure.",
     "tooltip.startNode": "Définit la position de départ dans le ^Workflow^ à partir de laquelle l'^Ordre|order^ doit commencer :\n- **Aucune position de départ** n'est indiquée, l'Ordre commence alors au premier nœud.\n- **Aucune position de bloc** n'est indiquée, n'importe quelle instruction du niveau supérieur du Workflow peut alors être sélectionnée comme position de départ.\n- **Une position de bloc** est indiquée, la position de départ est alors un nœud du même niveau au sein du bloc.",
@@ -3901,9 +3901,9 @@
       "git_hold_job_templates": "Indique si les ^Modèles de Tâche|job-template^ doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
     },
     "lognotification": {
-      "log_server_active": "Active le *Service de Notification des Journaux* disponible sur un serveur syslog. Le service recevra les avertissements et les erreurs des instances du Contrôleur et des Agents. Pour plus de détails, voir [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)",
+      "log_server_active": "Active le *Service de Notification des Journaux* disponible sur un serveur syslog. Le service recevra les avertissements et les erreurs des instances du ^Contrôleur|controller^ et des ^Agent^s.\n\nPour plus de détails, voir [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)",
       "log_server_max_messages_per_second": "Spécifie le nombre maximum de messages par seconde traités par le serveur syslog.",
-      "log_server_port": "Spécifie le port UDP que le serveur syslog écoute afin de recevoir les avertissements et les erreurs des instances du Contrôleur et des Agents."
+      "log_server_port": "Spécifie le port UDP que le serveur syslog écoute afin de recevoir les avertissements et les erreurs des instances du ^Contrôleur|controller^ et des ^Agent^s."
     },
     "identityService": {
       "idle_session_timeout": "Le délai de séance inactive spécifie la durée en minutes pendant laquelle une séance reste active sans activité de la part de l'utilisateur. Si le délai de séance inactive est dépassé, l'utilisateur est déconnecté.",
@@ -3911,7 +3911,7 @@
       "minimum_password_length": "Longueur minimale d'un mot de passe spécifiée par les utilisateurs."
     },
     "kiosk": {
-      "kiosk_role": "Le mode kiosque nécessite la création d'un rôle spécifique. Le rôle kiosque n'est pas fourni avec ^JOC Cockpit^.\n\nLe rôle doit être créé par l'utilisateur disposant d'autorisations de lecture seule pour le Contrôleur et JOC Cockpit.\n\nPar défaut, le nom du rôle est 'kiosque'. Les utilisateurs peuvent modifier le nom du rôle.",
+      "kiosk_role": "Le mode kiosque nécessite la création d'un rôle spécifique. Le rôle kiosque n'est pas fourni avec ^JOC Cockpit^.\n\nLe rôle doit être créé par l'utilisateur disposant d'autorisations de lecture seule pour le ^Contrôleur|controller^ et JOC Cockpit.\n\nPar défaut, le nom du rôle est 'kiosque'. Les utilisateurs peuvent modifier le nom du rôle.",
       "view_dashboard_duration": "Durée en secondes pendant laquelle la vue *TABLEAU DE BORD* sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
       "view_monitor_order_notification_duration": "Durée en secondes pendant laquelle la vue *MONITEUR -> Notifications Ordres* sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
       "view_monitor_system_notification_duration": "Durée en secondes pendant laquelle la vue *MONITEUR -> Notifications Système* sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
@@ -4217,7 +4217,7 @@
     "tooltip.listOfCert": "Si le Schéma d'Authentification à **deux facteurs** est sélectionné, un ^Service d'Identité|identity-service^ basé sur un certificat peut être choisi dans la liste.\n\nIl est également possible de sélectionner un Service d'Identité basé sur FIDO dans une autre liste.",
     "--------ADD CONTROLLER ROLE TOOLTIPS------------": "Page: User Management, Sub-tab: -, Pop-up: Add Controller Role, Source: controller-dialog.html, Fields: js7Controller, role",
     "tooltip.js7Controller": "Sélectionne le ^Contrôleur|controller^ auquel s'appliquent les autorisations du rôle.\n\nSi plusieurs Contrôleurs sont connectés à JOC Cockpit, ce sont les autorisations configurées par *défaut* ou celles configurées pour chaque Contrôleur qui sont utilisées.\n\nDes autorisations différentes peuvent être attribuées aux comptes utilisateurs en fonction du Contrôleur utilisé.",
-    "tooltip.role": "Sélectionne les rôles auxquels les autorisations du ^Contrôleur^ sélectionné doivent s'appliquer.\n\nSi plusieurs Contrôleurs sont connectés à JOC Cockpit, ce sont les autorisations configurées par *défaut* ou celles configurées pour chaque Contrôleur qui sont utilisées dans les rôles sélectionnés.\n\nDes autorisations différentes peuvent être attribuées aux utilisateurs en fonction du Contrôleur utilisé.",
+    "tooltip.role": "Sélectionne les rôles auxquels les autorisations du ^Contrôleur|controller^ sélectionné doivent s'appliquer.\n\nSi plusieurs Contrôleurs sont connectés à JOC Cockpit, ce sont les autorisations configurées par *défaut* ou celles configurées pour chaque Contrôleur qui sont utilisées dans les rôles sélectionnés.\n\nDes autorisations différentes peuvent être attribuées aux utilisateurs en fonction du Contrôleur utilisé.",
     "--------FOLDER MODAL TOOLTIPS------------": "Page: User Management, Sub-tab: -, Pop-up: Folder, Source: folder-modal.html, Fields: folders, recursive",
     "tooltip.folders": "Sélectionne le dossier d'^Inventaire|inventory^ pour lequel un rôle doit être configuré.\n\nVous pouvez sélectionner plusieurs dossiers.\n\nEn attribuant des dossiers à des rôles, vous pouvez limiter les autorisations des utilisateurs à des dossiers spécifiques.",
     "tooltip.recursive": "Inclut les sous-dossiers auxquels les mêmes autorisations doivent s'appliquer.",

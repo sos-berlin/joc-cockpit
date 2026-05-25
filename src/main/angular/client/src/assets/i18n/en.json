@@ -2481,9 +2481,9 @@
         "autocompleteShortCut": "Hit Ctrl+Space to retrieve the list of available Script Includes"
       },
       "report": {
-        "name": "The name of a Report Template is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
-        "title": "The Title of the Report Template can be specified.",
-        "template": "Specifies the Report Model to be applied.",
+        "name": "The name of a ^Report Template^ is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
+        "title": "The Title of the ^Report Template^ can be specified.",
+        "template": "Specifies the ^Report Model^ to be applied.",
         "frequencies": "The frequency specifies the cycle that divides the reporting period, for example, 5 minutes, 1 day etc.",
         "controllerId": "The report can be limited to history data of a specific ^Controller^.",
         "interval": {
@@ -3901,12 +3901,12 @@
       "git_hold_job_templates": "Specifies if ^Job Template^s should be considered local to an environment or are intended for rollout with Git."
     },
     "lognotification": {
-      "log_server_active": "Activates the Log Notification Services that is available from a syslog server.\n\nThe service will receive warnings and errors from ^Controller^ and ^Agent^ instances. For details see [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)",
+      "log_server_active": "Activates the Log Notification Services that is available from a syslog server.\n\nThe service will receive warnings and errors from ^Controller^ and ^Agent^ instances.\n\nFor details see [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)",
       "log_server_max_messages_per_second": "Specifies the max. number of messages per second processed by the syslog server.",
       "log_server_port": "Specifies the UDP port that the syslog server is listening to in order to receive warnings and errors from ^Controller^ and ^Agent^ instances."
     },
     "identityService": {
-      "idle_session_timeout": "The **Idle Session Timeout** specifies the duration in minutes for which a session remains active without user activity.\n\nIf the Idle Session Timeout is exceeded, the user will be disconnected.",
+      "idle_session_timeout": "The **Idle Session Timeout** specifies the duration in minutes for which a session remains active without user activity.\n\nIf the *Idle Session Timeout* is exceeded, the user will be disconnected.",
       "initial_password": "The **Initial Password** that is applied, for example, to new user accounts. Users have to change the password on next login.",
       "minimum_password_length": "The minimum length of a password specified by users."
     },

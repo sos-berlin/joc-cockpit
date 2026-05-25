@@ -2481,11 +2481,11 @@
         "autocompleteShortCut": "Verwenden Sie die Tasten Strg+Leertaste, um die Liste der Skript-Bausteine anzuzeigen."
       },
       "report": {
-        "name": "Der Name einer Berichtsvorlage ist im ^Inventar|inventory^ eindeutig.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
-        "title": "Der Titel einer Berichtsvorlage kann beliebig angegeben werden.",
-        "template": "Bestimmt das zu verwendende Berichtsmuster.",
+        "name": "Der Name einer ^Berichtsvorlage|report-template^ ist im ^Inventar|inventory^ eindeutig.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
+        "title": "Der Titel einer ^Berichtsvorlage|report-template^ kann beliebig angegeben werden.",
+        "template": "Bestimmt das zu verwendende ^Berichtsmuster|report-model^.",
         "frequencies": "Die Häufigkeit gibt den Zyklus an, der den Berichtszeitraum unterteilt, z.B. 5 Minuten, 1 Tag usw.",
-        "controllerId": "Der Bericht kann für die Daten der Historie eines Controllers limitiert werden.",
+        "controllerId": "Der Bericht kann für die Daten der Historie eines ^Controller^s limitiert werden.",
         "interval": {
           "interval": "Gibt den Berichtszeitraum an. Die Voreinstellungen und relativen Einstellungen werden auf die aktuellen Werte für *Monat von* und *Monat bis* abgebildet.",
           "absolute": {
@@ -2495,7 +2495,7 @@
           "relative": {
             "from": "Gibt den Beginn des Berichtszeitraums an, der die verwendete Einheit berücksichtigt: Einheit=Monat, Von=12, Anzahl=12 --> letzte 12 Monate.",
             "unit": "Gibt die Einheit an, nach der die Anfangszeit des Berichtszeitraums berechnet wird.\nBeispiel: Einheit=Jahr, Von=1, Anzahl=1 --> letztes Jahr.",
-            "count": "Das Ende des Berichtszeitraums wird berechnet als (Von-Anzahl+1)*Einheit ab dem Beginn des Berichtszeitraums. Der zugehörige Monat wird anhand der Häufigkeit berechnet, jährlich: 12, vierteljährlich: letzter Monat des Quartals usw."
+            "count": "Das Ende des Berichtszeitraums wird berechnet als (Von-Anzahl+1)*Einheit ab dem Beginn des Berichtszeitraums.\n\nDer zugehörige Monat wird anhand der Häufigkeit berechnet, jährlich: 12, vierteljährlich: letzter Monat des Quartals usw."
           },
           "preset": {
             "preset": "voreingestellt",
@@ -3906,7 +3906,7 @@
       "log_server_port": "Gibt den UDP Port an, den der Syslog Server überwacht, um Warnungen und Fehler von ^Controller^ und ^Agent^en zu empfangen."
     },
     "identityService": {
-      "idle_session_timeout": "Die Leerlaufzeit gibt die Dauer in Minuten an, für die eine Sitzung ohne Benutzeraktivität aktiv bleibt.\n\nWird die Leerlaufzeit überschritten, dann wird die Sitzung des Benutzers getrennt.",
+      "idle_session_timeout": "Die **Leerlauffrist** gibt die Dauer in Minuten an, für die eine Sitzung ohne Benutzeraktivität aktiv bleibt.\n\nWird die Leerlauffrist überschritten, dann wird die Sitzung des Benutzers getrennt.",
       "initial_password": "Das Initialkennwort, das zum Beispiel für neue Benutzerkonten verwendet wird. Benutzer müssen das Kennwort bei der nächsten Anmeldung ändern.",
       "minimum_password_length": "Die Mindestlänge eines Kennworts."
     },
@@ -3979,7 +3979,7 @@
     "label.identityServicesFound": "Identitätsdienste gefunden",
     "label.generalSetting": "Globale Einstellungen",
     "label.settingFor": "Einstellungen für",
-    "label.sessionTimeout": "Max. Leerlaufzeit der Sitzung",
+    "label.sessionTimeout": "Max. Leerlauffrist der Sitzung",
     "label.iamKeycloakUrl": "Keycloak URL",
     "label.iamKeycloakAdminAccount": "Keycloak Administrative Account",
     "label.iamKeycloakAdminPassword": "Keycloak Administrative Password",
