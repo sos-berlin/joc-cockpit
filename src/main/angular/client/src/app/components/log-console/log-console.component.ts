@@ -2,9 +2,10 @@ import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, Simp
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
 import {LogSearchService} from '../../services/log-search.service';
-import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {Subject, Subscription, debounceTime} from 'rxjs';
 import * as moment from 'moment-timezone';
+import {TranslateService} from '@ngx-translate/core';
 
 interface ParsedLine {
   timestamp: string;
@@ -24,9 +25,10 @@ interface ContextBlock {
 
 const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3})\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
 
-// Matches JS7 Order IDs:  #<date>-P-<seq>  or  #<date>-<letter>-<seq>
-// Examples: #2026-01-01T00:00:00Z-P-1   or shorter patterns used in logs
-const ORDER_ID_RE = /#[\w\-.:+@]+/g;
+// Matches JS7 Order IDs:  #<date>#P<seq>-<name>  or  #<date>-P-<seq>  etc.
+// The '#' character is NOT a terminator — a single Order ID may contain multiple '#' segments.
+// Begin terminators: space ( [ {   End terminators: space ) ] }
+const ORDER_ID_RE = /#[\w\-.:+@#]+/g;
 
 function parseLine(raw: string): ParsedLine {
   const rawLower = raw.toLowerCase();
@@ -103,7 +105,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   timeZone = '';
 
   // ── Level visibility checkboxes (display filter, not REST level) ──────────
-  filters = { info: true, warn: true, error: true, debug: true, trace: true, other: true };
+  filters = { info: true, warn: true, error: true, debug: true, trace: true };
 
   // ── Global search (shared via LogSearchService) ────────────────────────────
   searchTerm = '';
@@ -234,7 +236,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       case 'ERROR': return this.filters.error;
       case 'DEBUG': return this.filters.debug;
       case 'TRACE': return this.filters.trace;
-      default:      return this.filters.other;
+      default: return true;
     }
   }
 
@@ -591,27 +593,29 @@ export class LogConsoleModalComponent implements OnInit {
    * ERROR-only is not supported per spec.
    */
   readonly levelOptions = [
-    { value: 'WARN',  label: 'WARN  (includes ERROR)',              hint: 'WARN + ERROR' },
-    { value: 'INFO',  label: 'INFO  (includes WARN, ERROR)',        hint: 'INFO + WARN + ERROR' },
-    { value: 'DEBUG', label: 'DEBUG (includes TRACE, INFO, WARN, ERROR)', hint: 'All levels' },
+    { value: 'WARN',  label: 'logConsole.label.levelOption.warn'  },
+    { value: 'INFO',  label: 'logConsole.label.levelOption.info'  },
+    { value: 'DEBUG', label: 'logConsole.label.levelOption.debug' },
   ];
   readonly roleOptions = ['PRIMARY', 'BACKUP'];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService) {}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     const data = this.modalData || {};
     if (data.type)         this.type              = data.type;
     if (data.controllerId) this.form.controllerId = data.controllerId;
     if (data.agentId)      this.form.agentId      = data.agentId;
+    if (data.subagentId)   this.form.subagentId   = data.subagentId;
     if (data.timeZone)     this.form.timeZone     = data.timeZone;
     if (data.role)         this.form.role         = data.role;
   }
 
   get sourceName(): string {
-    if (this.type === 'joc') return 'JOC Logs';
-    if (this.type === 'agent') return (this.form.agentId || 'Agent') + ' Logs';
-    return (this.form.controllerId || 'Controller') + ' Logs';
+    const suffix = this.translate.instant('log.label.logs');
+    if (this.type === 'joc') return this.translate.instant('logConsole.label.joc') + ' ' + suffix;
+    if (this.type === 'agent') return (this.form.agentId || this.translate.instant('logConsole.label.agent')) + ' ' + suffix;
+    return (this.form.controllerId || this.translate.instant('logConsole.label.controller')) + ' ' + suffix;
   }
 
   get effectiveTz(): string {
@@ -636,17 +640,27 @@ export class LogConsoleModalComponent implements OnInit {
 
   showLogs(): void {
     const req = this.buildLogRequest();
-    const title = this.sourceName;
+    const params = new URLSearchParams();
+    params.set('type', req.type);
+    if (req.controllerId) params.set('controllerId', req.controllerId);
+    if (req.role)         params.set('role',         req.role);
+    if (req.agentId)      params.set('agentId',      req.agentId);
+    if (req.subagentId)   params.set('subagentId',   req.subagentId);
+    if (req.level)        params.set('level',        req.level);
+    if (req.dateFrom)     params.set('dateFrom',     req.dateFrom);
+    if (req.dateTo)       params.set('dateTo',       req.dateTo);
+    if (req.timeZone)     params.set('timeZone',     req.timeZone);
+    if (req.numOfLines)   params.set('numOfLines',   String(req.numOfLines));
     this.activeModal.destroy();
-    this.modal.create({
-      nzTitle:        undefined,
-      nzContent:      LogConsoleViewerComponent,
-      nzData:         { request: req, title },
-      nzFooter:       null,
-      nzClassName:    'maximum',
-      nzClosable:     false,
-      nzMaskClosable: false
-    });
+    const w = window.innerWidth  || 1400;
+    const h = window.innerHeight || 800;
+    const left = Math.max(0, (screen.width  - w) / 2);
+    const top  = Math.max(0, (screen.height - h) / 2);
+    window.open(
+      '#/system-log?' + params.toString(),
+      '_blank',
+      `width=${w},height=${h},top=${top},left=${left},resizable=1,scrollbars=1,status=0,toolbar=0,menubar=0,location=0`
+    );
   }
 
   download(): void {
@@ -736,13 +750,13 @@ export class LogConsoleViewerComponent implements OnInit {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
   request!: LogConsoleRequest;
-  title = 'System Logs';
+  title = '';
 
-  constructor(public activeModal: NzModalRef) {}
+  constructor(public activeModal: NzModalRef, private translate: TranslateService) {}
 
   ngOnInit(): void {
     const data = this.modalData || {};
     this.request = data.request;
-    this.title   = data.title || 'System Logs';
+    this.title   = data.title || this.translate.instant('logConsole.label.systemLogs');
   }
 }

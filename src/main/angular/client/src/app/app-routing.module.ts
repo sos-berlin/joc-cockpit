@@ -14,6 +14,10 @@ const routes: Routes = [
     component: SignupCompleteComponent
   },
   {
+    path: 'system-log',
+    loadChildren: () => import('./modules/system-log/system-log.module').then(m => m.SystemLogModule)
+  },
+  {
     path: '',
     loadChildren: () => import('./modules/layout/layout.module').then(m => m.LayoutModule),
     canActivate: [AuthGuard]

@@ -6,29 +6,26 @@
     <!-- Level filter checkboxes -->
     <div class="log-console-filters">
       <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()">
-        <span class="log-badge log-badge-info">INFO</span>
+        <span class="log-badge log-badge-info" translate>log.label.info</span>
       </label>
       @if (hasWarn) {
         <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()">
-          <span class="log-badge log-badge-warn">WARN</span>
+          <span class="log-badge log-badge-warn" translate>log.label.warn</span>
         </label>
       }
       @if (hasError) {
         <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()">
-          <span class="log-badge log-badge-error">ERROR</span>
+          <span class="log-badge log-badge-error" translate>log.label.error</span>
         </label>
       }
       @if (hasDebug) {
         <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()">
-          <span class="log-badge log-badge-debug">DEBUG</span>
+          <span class="log-badge log-badge-debug" translate>log.label.debug</span>
         </label>
         <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()">
-          <span class="log-badge log-badge-trace">TRACE</span>
+          <span class="log-badge log-badge-trace" translate>log.label.trace</span>
         </label>
       }
-      <label nz-checkbox [(ngModel)]="filters.other" (ngModelChange)="onFilterChange()">
-        <span class="log-badge log-badge-other">OTHER</span>
-      </label>
       @if (allLines.length > 0) {
         <span class="log-line-count">{{ filteredLines.length }}/{{ allLines.length }}</span>
       }
@@ -40,7 +37,6 @@
       <!-- Predefined quick-search dropdown -->
       <div class="log-predefined-wrap" [class.open]="showPredefined">
         <button class="btn btn-xs btn-default log-predefined-btn"
-                title="Quick search presets"
                 (click)="togglePredefined()"
                 [class.active]="showPredefined"
                 aria-haspopup="listbox"
@@ -65,26 +61,22 @@
                class="log-search-input" type="text"
                [(ngModel)]="searchTerm"
                (ngModelChange)="onSearchChange()"
-               placeholder="Search all windows…"
+               placeholder="Search…"
                autocomplete="off"
-               aria-label="Search all open log windows">
+               aria-label="Search">
         @if (searchTerm) {
-          <button class="log-search-clear" (click)="clearSearch()" title="Clear search" aria-label="Clear search">
+          <button class="log-search-clear" (click)="clearSearch()">
             <i nz-icon nzType="close-circle" nzTheme="filled"></i>
           </button>
         }
       </div>
 
       <!-- Mode toggle: highlight ↔ filter -->
-      <div class="log-mode-toggle" title="Toggle between full-log highlight mode and filtered results mode">
-        <button class="log-mode-btn" [class.active]="!filterMode" (click)="filterMode = false"
-                title="Highlight mode — show all lines, highlight matches"
-                [attr.aria-pressed]="!filterMode">
+      <div class="log-mode-toggle">
+        <button class="log-mode-btn" [class.active]="!filterMode" (click)="filterMode = false" [attr.aria-pressed]="!filterMode">
           <i nz-icon nzType="highlight" nzTheme="outline"></i>
         </button>
-        <button class="log-mode-btn" [class.active]="filterMode" (click)="filterMode = true"
-                title="Filter mode — show only matching lines + context"
-                [attr.aria-pressed]="filterMode">
+        <button class="log-mode-btn" [class.active]="filterMode" (click)="filterMode = true" [attr.aria-pressed]="filterMode">
           <i nz-icon nzType="filter" nzTheme="outline"></i>
         </button>
       </div>
@@ -92,7 +84,7 @@
       <!-- Context lines selector (filter mode only) -->
       @if (filterMode && searchTerm) {
         <div class="log-context-select">
-          <span class="log-context-label">± context:</span>
+          <span class="log-context-label">Context:</span>
           <nz-input-number [(ngModel)]="contextLines"
                            (ngModelChange)="onContextLinesChange()"
                            [nzMin]="0" [nzMax]="200" [nzStep]="1"
@@ -106,27 +98,24 @@
     <!-- Toolbar actions -->
     <div class="log-console-actions">
       @if (copiedOrderId) {
-        <span class="log-copy-feedback" title="Copied to clipboard">
+        <span class="log-copy-feedback">
           <i nz-icon nzType="check-circle" nzTheme="filled" style="color:var(--green)"></i>
-          copied: {{ copiedOrderId }}
+          Copied: {{ copiedOrderId }}
         </span>
       }
       @if (displayTz) {
-        <span style="font-size:11px;color:#888" title="Log timestamps are in this timezone">
+        <span style="font-size:11px;color:#888" >
           <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ displayTz }}
         </span>
       }
-      <button class="btn btn-xs btn-default" title="Reload"
-              (click)="reload()" [disabled]="isLoading">
+      <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading">
         <i nz-icon nzType="reload" nzTheme="outline"></i>
       </button>
-      <button class="btn btn-xs btn-default" title="Download log"
-              (click)="download()" [disabled]="isDownloading">
+      <button class="btn btn-xs btn-default" (click)="download()" [disabled]="isDownloading">
         <i nz-icon nzType="download" nzTheme="outline"></i>
       </button>
       <button class="btn btn-xs" [class.btn-primary]="followTail" [class.btn-default]="!followTail"
-              title="Follow tail — auto-scroll to latest lines" (click)="toggleFollowTail()"
-              [attr.aria-pressed]="followTail">
+              (click)="toggleFollowTail()" [attr.aria-pressed]="followTail">
         <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
       </button>
     </div>
@@ -135,43 +124,43 @@
   <!-- ─── Event summary bar ─────────────────────────────────────────────────── -->
   @if (allLines.length > 0) {
     <div class="log-summary-bar">
-      @if (levelCounts['error'] > 0) {
-        <button class="log-summary-item" (click)="jumpToLevel('error')" title="Jump to first ERROR">
-          <span class="log-badge log-badge-error">ERROR</span>
-          <span class="log-summary-count">{{ levelCounts['error'] }}</span>
-        </button>
-      }
-      @if (levelCounts['warn'] > 0) {
-        <button class="log-summary-item" (click)="jumpToLevel('warn')" title="Jump to first WARN">
-          <span class="log-badge log-badge-warn">WARN</span>
-          <span class="log-summary-count">{{ levelCounts['warn'] }}</span>
-        </button>
-      }
       @if (levelCounts['info'] > 0) {
-        <button class="log-summary-item" (click)="jumpToLevel('info')" title="Jump to first INFO">
-          <span class="log-badge log-badge-info">INFO</span>
+        <button class="log-summary-item" (click)="jumpToLevel('info')">
+          <span class="log-badge log-badge-info"translate>log.label.info</span>
           <span class="log-summary-count">{{ levelCounts['info'] }}</span>
         </button>
       }
+      @if (levelCounts['warn'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('warn')">
+          <span class="log-badge log-badge-warn"translate>log.label.warn</span>
+          <span class="log-summary-count">{{ levelCounts['warn'] }}</span>
+        </button>
+      }
+      @if (levelCounts['error'] > 0) {
+        <button class="log-summary-item" (click)="jumpToLevel('error')">
+          <span class="log-badge log-badge-error" translate>log.label.error</span>
+          <span class="log-summary-count">{{ levelCounts['error'] }}</span>
+        </button>
+      }
       @if (levelCounts['debug'] > 0) {
-        <button class="log-summary-item" (click)="jumpToLevel('debug')" title="Jump to first DEBUG">
-          <span class="log-badge log-badge-debug">DEBUG</span>
+        <button class="log-summary-item" (click)="jumpToLevel('debug')">
+          <span class="log-badge log-badge-debug"translate>log.label.debug</span>
           <span class="log-summary-count">{{ levelCounts['debug'] }}</span>
         </button>
       }
       @if (levelCounts['trace'] > 0) {
-        <button class="log-summary-item" (click)="jumpToLevel('trace')" title="Jump to first TRACE">
-          <span class="log-badge log-badge-trace">TRACE</span>
+        <button class="log-summary-item" (click)="jumpToLevel('trace')">
+          <span class="log-badge log-badge-trace"translate>log.label.trace</span>
           <span class="log-summary-count">{{ levelCounts['trace'] }}</span>
         </button>
       }
       @if (!isComplete) {
-        <span class="log-summary-note">loading…</span>
+        <span class="log-summary-note" translate>common.label.loading</span>
       }
       @if (filterMode && searchTerm) {
         <span class="log-summary-note log-summary-filter-active">
           <i nz-icon nzType="filter" nzTheme="outline"></i>
-          {{ contextBlocks.length }} match block(s) — double-click an Order ID (#…) to copy &amp; search
+          {{ contextBlocks.length }} match block(s)
         </span>
       }
     </div>
@@ -183,7 +172,7 @@
     @if (isLoading && allLines.length === 0) {
       <div class="log-console-loading">
         <nz-spin nzSimple></nz-spin>
-        <span>Loading…</span>
+        <span translate>common.label.loading</span>
       </div>
     }
 
@@ -206,17 +195,16 @@
       @if (contextBlocks.length === 0 && allLines.length > 0) {
         <div class="log-console-empty">
           <i nz-icon nzType="search" nzTheme="outline" style="font-size:20px;color:#666"></i>
-          <span>No matches for "{{ searchTerm }}"</span>
+          <span>No matches for “{{ searchTerm }}”</span>
         </div>
       }
       @for (block of contextBlocks; track block.startIdx) {
         <div class="log-context-block">
-          <div class="log-context-header" (click)="block.collapsed = !block.collapsed"
-               title="Collapse/expand this context block">
+          <div class="log-context-header" (click)="block.collapsed = !block.collapsed">
             <i nz-icon [nzType]="block.collapsed ? 'right' : 'down'" nzTheme="outline"
                class="log-context-chevron"></i>
             <span class="log-context-label-text">
-              lines {{ block.startIdx + 1 }}–{{ block.startIdx + block.lines.length }}
+              Lines {{ block.startIdx + 1 }}–{{ block.startIdx + block.lines.length }}
             </span>
           </div>
           @if (!block.collapsed) {
@@ -258,7 +246,7 @@
 
     @if (!isComplete && !isLoading && allLines.length > 0) {
       <div class="log-console-more">
-        <button class="btn btn-xs btn-default" (click)="loadMore()">Load more&hellip;</button>
+        <button class="btn btn-xs btn-default" (click)="loadMore()">Load more…</button>
       </div>
     }
 
@@ -269,7 +257,7 @@
     }
 
     @if (isComplete && allLines.length > 0) {
-      <div class="log-console-end">&#8212; end of log &#8212;</div>
+      <div class="log-console-end">— end of log —</div>
     }
 
   </div>

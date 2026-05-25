@@ -116,11 +116,11 @@
       <div class="col-sm-8">
         <nz-select [(ngModel)]="form.level" name="level" class="w-full">
           @for (l of levelOptions; track l.value) {
-            <nz-option [nzValue]="l.value" [nzLabel]="l.label"></nz-option>
+            <nz-option [nzValue]="l.value" [nzLabel]="l.label | translate"></nz-option>
           }
         </nz-select>
         <div class="help-block" style="font-size:11px;color:var(--text-muted)">
-          WARN → WARN + ERROR &nbsp;|&nbsp; INFO → INFO + WARN + ERROR &nbsp;|&nbsp; DEBUG → all (incl. TRACE)
+          <span translate>logConsole.label.levelDescription</span>
         </div>
       </div>
     </div>

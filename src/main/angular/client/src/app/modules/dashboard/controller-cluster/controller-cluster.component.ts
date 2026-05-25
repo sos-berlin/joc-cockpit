@@ -734,10 +734,17 @@ export class ControllerClusterComponent {
     };
 
     if (this.preferences.auditLog && (action !== 'download')) {
+      const operationMap: Record<string, string> = {
+        terminate: isFailOver ? 'Terminate' : 'Terminate without fail-over',
+        terminateAndRestart: 'Terminate and Restart',
+        abortAndRestart: 'Abort and Restart',
+        abort: 'Abort',
+        switchover: 'Switch Over'
+      };
       const comments = {
         radio: 'predefined',
         name: obj.controllerId + ' (' + obj.url + ')',
-        operation: (action === 'terminate' && !isFailOver) ? 'Terminate without fail-over' : action === 'terminateAndRestart' ? 'Terminate and Restart' : action === 'abortAndRestart' ? 'Abort and Restart' : action === 'terminate' ? 'Terminate' : action === 'abort' ? 'Abort' : 'Switch Over'
+        operation: operationMap[action] || action
       };
       this.modal.create({
         nzTitle: undefined,
@@ -810,8 +817,17 @@ export class ControllerClusterComponent {
       type: type
     };
     if (this.preferences.auditLog) {
+      const operationMap: Record<string, string> = {
+        cluster: 'Restart Services',
+        cleanup: 'Restart Cleanup Service',
+        dailyplan: 'Restart Daily Plan Service',
+        history: 'Restart History Service',
+        lognotification: 'Restart Log Notification Service',
+        monitor: 'Restart Monitor Service'
+      };
       let comments = {
-        radio: 'predefined'
+        radio: 'predefined',
+        operation: operationMap[type] || 'Restart ' + type
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -845,8 +861,13 @@ export class ControllerClusterComponent {
       type: type
     };
     if (this.preferences.auditLog) {
+      const operationMap: Record<string, string> = {
+        cleanup: 'Run Cleanup Service',
+        dailyplan: 'Run Daily Plan Service'
+      };
       let comments = {
-        radio: 'predefined'
+        radio: 'predefined',
+        operation: operationMap[type] || 'Run ' + type
       };
       const modal = this.modal.create({
         nzTitle: undefined,

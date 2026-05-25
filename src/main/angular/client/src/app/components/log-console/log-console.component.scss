@@ -2,6 +2,7 @@
 .log-console {
   display: flex;
   flex-direction: column;
+  height: 100%;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
@@ -44,8 +45,8 @@
     font-family: 'Consolas', 'Menlo', 'Monaco', 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.65;
-    min-height: 180px;
-    max-height: var(--log-body-max-height, 460px);
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 4px 0;
 
@@ -426,6 +427,33 @@
 @keyframes log-copy-fadein {
   from { opacity: 0; transform: translateY(-3px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Log viewer window (non-modal, draggable, resizable) ──────────────────────
+.log-viewer-window {
+  // Allow multiple windows to overlay without a dark mask
+  pointer-events: auto;
+
+  .ant-modal {
+    // Start with a generous default size
+    max-width: 92vw !important;
+    top: 40px;
+  }
+
+  .ant-modal-content {
+    // Make the modal dialog itself resizable
+    resize: both;
+    overflow: auto;
+    min-width: 480px;
+    min-height: 320px;
+    max-width: 98vw;
+    max-height: 96vh;
+  }
+
+  .ant-modal-body {
+    padding: 0;
+    overflow: hidden;
+  }
 }
 
 // ─── Search match highlight ────────────────────────────────────────────────────

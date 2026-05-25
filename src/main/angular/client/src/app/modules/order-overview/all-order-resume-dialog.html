@@ -1,8 +1,8 @@
 <div class="modal-header">
-  @if (preferences.showHelpPages) {
-    <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
-  }
   <h4 class="modal-title">
+    @if (preferences.showHelpPages) {
+      <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
+    }
     <span translate>order.label.resumeOrder</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
