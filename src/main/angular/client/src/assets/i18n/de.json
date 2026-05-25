@@ -831,7 +831,7 @@
     "tooltip.title": "Die aktuelle Operation muss von einem anderen Benutzer genehmigt werden.\n\nDer Titel identifiziert die Autorisierungsanfrage und soll dem Autorisierer den Zweck der Operation erläutern.",
     "tooltip.approver": "Wählt den bevorzugten Autorisierer aus, der über die Autorisierungsanfrage benachrichtigt wird.\n\nJeder der angezeigten Autorisierer kann die Autorisierungsanfrage annehmen und bestätigen oder ablehnen.",
     "tooltip.selectComments": "Wählt aus einer Liste vordefinierter Gründe aus oder lässt die Eingabe eines individuellen Grunds für den Benutzereingriff zu.",
-    "tooltip.selectComment": "Gibt einen Grund für den Benutzereingriff an.",
+    "tooltip.selectComment": "Wählt einen Grund für den Benutzereingriff aus.",
     "tooltip.timeSpend": "Gibt die für den Benutzereingriff aufgewendete Zeit in Minuten an.",
     "tooltip.ticketLink": "Gibt einen Link zu einem Ticket an, das Details Benutzereingriff enthält.",
     "--------COMMENT MODAL TOOLTIPS------------": "Page: Multiple, Sub-tab: -, Pop-up: Comment, Source: comment.component.html, Fields: node, operation, path",
@@ -3311,7 +3311,7 @@
       "tooltip.sharedWithMe": "Mit mir geteilt",
       "--------ADD PROFILE TOOLTIPS - EDIT FAVORITE MODAL------------": "",
       "tooltip.name": "Der Name ist die eindeutige Kennung einer Eingabeprüfung.",
-      "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt."
+      "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn Ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt."
     },
     "permission": {
       "label.order": "Auftrag",
@@ -4630,7 +4630,7 @@
     "tooltip.warningMessageForShortIntervalSelection": "^Zyklische Aufträge|cyclic-order^ für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu ^Zyklischen Arbeitsabläufen|cyclic-workflow^ unter Verwendung der ^Cycle Anweisung|cycle-instruction^.",
     "tooltip.restrictedMonthsTooltip": "Max. 11 Monate können ausgewählt werden. Um alle Monate zu verwenden, lassen Sie die Monatsbeschränkung leer.",
     "--------WORKFLOW/ FACET EDITOR MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Facet Editor, Source: facet-editor.component.html, Fields: facet, message",
-    "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt.",
+    "tooltip.facet": "Die Eingabeprüfung enthält einen ^Regulären Ausdruck|regular-expression^, der auf Benutzereingaben angewendet wird, wenn Ad hoc ^Aufträge|order^ hinzugefügt werden, für die Werte für Auftragsvariablen erforderlich sind.\n\nWird der Reguläre Ausdruck erfolgreich ausgewertet, wird die Benutzereingabe akzeptiert; andernfalls wird sie abgelehnt.",
     "tooltip.message": "Die Meldung wird beim Hinzufügen von ^Aufträgen|order^ angezeigt und soll den Benutzern mitteilen, welche Werte akzeptiert werden.",
     "--------ADD SCRIPT MODAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Script Modal, Source: script-modal.component.html, Fields: script, predicate, listOfSchemes, admissionTime",
     "tooltip.script": "Das ^Job Skript|job-script^ enthält ausführbare Kommandos, die der ^Job^ ausführen wird.",
