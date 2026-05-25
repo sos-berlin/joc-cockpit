@@ -40,138 +40,107 @@
         <table class="w-full">
           <tr class="text-center">
             <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <div translate>common.label.pending</div>
+              <a (click)="navigate('PENDING')" [appRichTooltip]="'dashboard.tooltip.pending' | translate">
+                <div translate>common.label.pending</div>
+                <div [innerHtml]="orders.pending || 0" [ngClass]="{'light-yellow' : orders.pending > 0}" class="text-lg _600"></div>
+              </a>
             </td>
             <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <div translate>common.label.scheduled</div>
+              <a (click)="navigate('SCHEDULED')" [appRichTooltip]="'dashboard.tooltip.scheduled' | translate">
+                <div translate>common.label.scheduled</div>
+                <div [innerHtml]="orders.scheduled || 0" [ngClass]="{'gold' : orders.scheduled > 0}" class="text-lg _600"></div>
+              </a>
             </td>
             <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <div translate>common.label.incomplete</div>
+              <a (click)="navigate('INPROGRESS')" [appRichTooltip]="'dashboard.tooltip.incomplete' | translate">
+                <div translate>common.label.incomplete</div>
+                <div [innerHtml]="orders.inProgress || 0" [ngClass]="{'light-blue' : orders.inProgress > 0}" class="text-lg _600"></div>
+              </a>
             </td>
             <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <div translate>common.label.running</div>
+              <a (click)="navigate('RUNNING')" [appRichTooltip]="'dashboard.tooltip.running' | translate">
+                <div translate>common.label.running</div>
+                <div [innerHtml]="orders.running || 0" [ngClass]="{'green' : orders.running > 0}" class="text-lg _600"></div>
+              </a>
             </td>
             <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <div translate>common.label.suspended</div>
+              <a (click)="navigate('SUSPENDED')" [appRichTooltip]="'dashboard.tooltip.suspended' | translate">
+                <div translate>common.label.suspended</div>
+                <div [innerHtml]="orders.suspended || 0" [ngClass]="{'orange' : orders.suspended > 0}" class="text-lg _600"></div>
+              </a>
             </td>
             @if (xbody > 7 && ybody == 2) {
               <td class="w-10-per">
-                <div translate>common.label.completed</div>
+                <a (click)="navigate('COMPLETED')" [appRichTooltip]="'dashboard.tooltip.completed' | translate">
+                  <div translate>common.label.completed</div>
+                  <div [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue' : orders.terminated > 0}" class="text-lg _600"></div>
+                </a>
               </td>
             }
             @if (xbody > 7 && ybody == 2) {
               <td class="w-10-per">
-                <div translate>common.label.prompting</div>
+                <a (click)="navigate('PROMPTING')" [appRichTooltip]="'dashboard.tooltip.prompting' | translate">
+                  <div translate>common.label.prompting</div>
+                  <div [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green' : orders.prompting > 0}" class="text-lg _600 "></div>
+                </a>
               </td>
             }
             @if (xbody > 7 && ybody == 2) {
               <td class="w-10-per">
-                <div translate>common.label.waiting</div>
+                <a (click)="navigate('WAITING')" [appRichTooltip]="'dashboard.tooltip.waiting' | translate">
+                  <div translate>common.label.waiting</div>
+                  <div [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green' : orders.waiting > 0}" class="text-lg _600"></div>
+                </a>
               </td>
             }
             @if (xbody > 7 && ybody == 2) {
               <td class="w-10-per">
-                <div translate>common.label.blocked</div>
+                <a (click)="navigate('BLOCKED')" [appRichTooltip]="'dashboard.tooltip.blocked' | translate">
+                  <div translate>common.label.blocked</div>
+                  <div [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta' : orders.blocked > 0}" class="text-lg _600"></div>
+                </a>
               </td>
             }
             @if (xbody > 7 && ybody == 2) {
               <td class="w-10-per">
-                <div translate>common.label.failed</div>
-              </td>
-            }
-          </tr>
-          <tr class="text-center">
-            <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <a (click)="navigate('PENDING')" [innerHtml]="orders.pending || 0" [ngClass]="{'light-yellow' : orders.pending > 0}"
-                 class="text-lg _600 "></a>
-            </td>
-            <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <a (click)="navigate('SCHEDULED')" [innerHtml]="orders.scheduled || 0" [ngClass]="{'gold' : orders.scheduled > 0}"
-                 class="text-lg _600"></a>
-            </td>
-            <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <a (click)="navigate('INPROGRESS')" [innerHtml]="orders.inProgress || 0" [ngClass]="{'light-blue' : orders.inProgress > 0}"
-                 class="text-lg _600"></a>
-            </td>
-            <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <a (click)="navigate('RUNNING')" [innerHtml]="orders.running || 0" [ngClass]="{'green' : orders.running > 0}"
-                 class="text-lg _600"></a>
-            </td>
-            <td [width]="(xbody > 7 && ybody == 2) ? '10%' : '20%'">
-              <a (click)="navigate('SUSPENDED')" [innerHtml]="orders.suspended || 0" [ngClass]="{'orange' : orders.suspended > 0}"
-                 class="text-lg _600"></a>
-            </td>
-            @if (xbody > 7 && ybody == 2) {
-              <td class="w-10-per">
-                <a (click)="navigate('COMPLETED')" [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue' : orders.terminated > 0}"
-                   class="text-lg _600"></a>
-              </td>
-            }
-            @if (xbody > 7 && ybody == 2) {
-              <td class="w-10-per">
-                <a (click)="navigate('PROMPTING')" [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green' : orders.prompting > 0}"
-                   class="text-lg _600 "></a>
-              </td>
-            }
-            @if (xbody > 7 && ybody == 2) {
-              <td class="w-10-per">
-                <a (click)="navigate('WAITING')" [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green' : orders.waiting > 0}"
-                   class="text-lg _600"></a>
-              </td>
-            }
-            @if (xbody > 7 && ybody == 2) {
-              <td class="w-10-per">
-                <a (click)="navigate('BLOCKED')" [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta' : orders.blocked > 0}"
-                   class="text-lg _600"></a>
-              </td>
-            }
-            @if (xbody > 7 && ybody == 2) {
-              <td class="w-10-per">
-                <a (click)="navigate('FAILED')" [innerHtml]="orders.failed || 0" [ngClass]="{'red' : orders.failed > 0}"
-                   class="text-lg _600"></a>
+                <a (click)="navigate('FAILED')" [appRichTooltip]="'dashboard.tooltip.failed' | translate">
+                  <div translate>common.label.failed</div>
+                  <div [innerHtml]="orders.failed || 0" [ngClass]="{'red' : orders.failed > 0}" class="text-lg _600"></div>
+                </a>
               </td>
             }
           </tr>
           @if (xbody < 8 || ybody !== 2) {
             <tr class="text-center border-16-transparent">
               <td class="w-20-per">
-                <div translate>common.label.completed</div>
+                <a (click)="navigate('COMPLETED')" [appRichTooltip]="'dashboard.tooltip.completed' | translate">
+                  <div translate>common.label.completed</div>
+                  <div [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue' : orders.terminated > 0}" class="text-lg _600"></div>
+                </a>
               </td>
               <td class="w-20-per">
-                <div translate>common.label.prompting</div>
+                <a (click)="navigate('PROMPTING')" [appRichTooltip]="'dashboard.tooltip.prompting' | translate">
+                  <div translate>common.label.prompting</div>
+                  <div [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green' : orders.prompting > 0}" class="text-lg _600 "></div>
+                </a>
               </td>
               <td class="w-20-per">
-                <div translate>common.label.waiting</div>
+                <a (click)="navigate('WAITING')" [appRichTooltip]="'dashboard.tooltip.waiting' | translate">
+                  <div translate>common.label.waiting</div>
+                  <div [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green' : orders.waiting > 0}" class="text-lg _600"></div>
+                </a>
               </td>
               <td class="w-20-per">
-                <div translate>common.label.blocked</div>
+                <a (click)="navigate('BLOCKED')" [appRichTooltip]="'dashboard.tooltip.blocked' | translate">
+                  <div translate>common.label.blocked</div>
+                  <div [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta' : orders.blocked > 0}" class="text-lg _600"></div>
+                </a>
               </td>
               <td class="w-20-per">
-                <div translate>common.label.failed</div>
-              </td>
-            </tr>
-          }
-          @if (xbody < 8 || ybody !== 2) {
-            <tr class="text-center">
-              <td class="w-20-per">
-                <a (click)="navigate('COMPLETED')" [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue' : orders.terminated > 0}"
-                   class="text-lg _600"></a>
-              </td>
-              <td class="w-20-per">
-                <a (click)="navigate('PROMPTING')" [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green' : orders.prompting > 0}"
-                   class="text-lg _600 "></a>
-              </td>
-              <td class="w-20-per">
-                <a (click)="navigate('WAITING')" [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green' : orders.waiting > 0}"
-                   class="text-lg _600"></a>
-              </td>
-              <td class="w-20-per">
-                <a (click)="navigate('BLOCKED')" [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta' : orders.blocked > 0}"
-                   class="text-lg _600"></a>
-              </td>
-              <td class="w-20-per">
-                <a (click)="navigate('FAILED')" [innerHtml]="orders.failed || 0" [ngClass]="{'red' : orders.failed > 0}"
-                   class="text-lg _600"></a>
+                <a (click)="navigate('FAILED')" [appRichTooltip]="'dashboard.tooltip.failed' | translate">
+                  <div translate>common.label.failed</div>
+                  <div [innerHtml]="orders.failed || 0" [ngClass]="{'red' : orders.failed > 0}" class="text-lg _600"></div>
+                </a>
               </td>
             </tr>
           }

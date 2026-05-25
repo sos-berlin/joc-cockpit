@@ -156,11 +156,6 @@
                                   <a translate>agent.button.confirmNodeLoss</a>
                                 </li>
                               </ul>
-                              <ul nz-menu>
-                                <li (click)="logs(cluster)" nz-menu-item>
-                                  <a translate>agent.button.logs</a>
-                                </li>
-                              </ul>
                             </nz-dropdown-menu>
                           </div>
                         }
@@ -317,9 +312,11 @@
                                     <a translate>agent.button.confirmNodeLoss</a>
                                   </li>
                                 }
-                                <li (click)="logs(cluster)" nz-menu-item>
-                                  <a translate>agent.button.logs</a>
-                                </li>
+                                @if (cluster.url) {
+                                  <li (click)="logs(cluster)" nz-menu-item>
+                                    <a translate>agent.button.logs</a>
+                                  </li>
+                                }
                               </ul>
                             </nz-dropdown-menu>
                           </div>

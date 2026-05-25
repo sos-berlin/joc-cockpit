@@ -53,36 +53,28 @@
       <table class="w-full">
         <tr class="text-center">
           <td style="width: 25%">
-            <div translate>dashboard.label.successfulOrders</div>
+            <a (click)="showOrderSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulOrders' | translate">
+              <div translate>dashboard.label.successfulOrders</div>
+              <div [innerHtml]="orderSummary.successful || 0" [ngClass]="{'dark-blue':orderSummary.successful >0}" class="text-lg _600"></div>
+            </a>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.failedOrders</div>
+            <a (click)="showOrderSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedOrders' | translate">
+              <div translate>dashboard.label.failedOrders</div>
+              <div [innerHtml]="orderSummary.failed || 0" [ngClass]="{'red':orderSummary.failed >0}" class="text-lg _600"></div>
+            </a>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.successfulJobs</div>
+            <a (click)="showTaskSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulJobs' | translate">
+              <div translate>dashboard.label.successfulJobs</div>
+              <div [innerHtml]="taskSummary.successful || 0" [ngClass]="{'dark-blue':taskSummary.successful >0}" class="text-lg _600"></div>
+            </a>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.failedJobs</div>
-          </td>
-        </tr>
-        <tr class="text-center">
-          <td style="width: 25%">
-            <a (click)="showOrderSummary('SUCCESSFUL')" [innerHtml]="orderSummary.successful || 0"
-               [ngClass]="{'dark-blue':orderSummary.successful >0}"
-               class="text-lg _600"></a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showOrderSummary('FAILED')" [innerHtml]="orderSummary.failed || 0"
-               [ngClass]="{'red':orderSummary.failed  >0}" class="text-lg _600"></a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showTaskSummary('SUCCESSFUL')" [innerHtml]="taskSummary.successful || 0"
-               [ngClass]="{'dark-blue':taskSummary.successful >0}"
-               class="text-lg _600"></a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showTaskSummary('FAILED')" [innerHtml]="taskSummary.failed || 0"
-               [ngClass]="{'red':taskSummary.failed  >0}" class="text-lg _600"></a>
+            <a (click)="showTaskSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedJobs' | translate">
+              <div translate>dashboard.label.failedJobs</div>
+              <div [innerHtml]="taskSummary.failed || 0" [ngClass]="{'red':taskSummary.failed >0}" class="text-lg _600"></div>
+            </a>
           </td>
         </tr>
       </table>

@@ -53,21 +53,16 @@
       <table class="w-full">
         <tr class="text-center">
           <td style="width: 50%">
-            <div translate>common.label.successful</div>
+            <a (click)="showSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulTransfers' | translate">
+              <div translate>common.label.successful</div>
+              <div [innerHtml]="summary.successful || 0" [ngClass]="{'dark-blue':summary.successful >0}" class="text-lg _600"></div>
+            </a>
           </td>
           <td style="width: 50%">
-            <div translate>common.label.failed</div>
-          </td>
-        </tr>
-        <tr class="text-center">
-          <td style="width: 50%">
-            <a (click)="showSummary('SUCCESSFUL')" [innerHtml]="summary.successful || 0"
-               [ngClass]="{'dark-blue':summary.successful >0}"
-               class="text-lg _600"></a>
-          </td>
-          <td style="width: 50%">
-            <a (click)="showSummary('FAILED')" [innerHtml]="summary.failed || 0"
-               [ngClass]="{'red':summary.failed  >0}" class="text-lg _600"></a>
+            <a (click)="showSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedTransfers' | translate">
+              <div translate>common.label.failed</div>
+              <div [innerHtml]="summary.failed || 0" [ngClass]="{'red':summary.failed >0}" class="text-lg _600"></div>
+            </a>
           </td>
         </tr>
       </table>
