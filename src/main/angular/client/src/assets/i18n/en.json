@@ -2566,7 +2566,7 @@
           "predicate": "A Predicate in an ^If Instruction^ is an expression or comparison that evaluates to *true* or *false*"
         },
         "job": {
-          "name": "A ^Job^ is an atomic unit of work within a ^Workflow^. A Job with the same name can occur with a number of ^Job Instruction^s in the same Workflow if individual Job Labels are used.\n\n^Object Naming Rules^ apply.",
+          "name": "A ^Job^ is the smallest unit of work within a ^Workflow^. A Job with the same name can occur with a number of ^Job Instruction^s in the same Workflow if individual Job Labels are used.\n\n^Object Naming Rules^ apply.",
           "label": "A Label is used to distinguish multiple occurrences of the same ^Job^ or instruction in a ^Workflow^.",
           "title": "The Title of a ^Job^ can be specified as desired.\n\nThe Title becomes visible with the *WORKFLOWS* view.\n\nThe Job's Title can include links in markdown syntax, for example, `[Example](https://www.example.com)`.",
           "compatibleMode": "Compatibility with previous JobScheduler versions includes, for example, for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
@@ -2803,8 +2803,8 @@
         "environmentName": "Limits results to ^Workflow^s holding ^Job^s with environment variable names that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
         "environmentValue": "Limits results to ^Workflow^s holding ^Job^s with environment variable values that match the given search string.\n\nFor use of search meta-characters see ^Inventory Search^.",
         "workflowSynchronizationStatus": "Limits results to ^Workflow^s holding the given synchronization status:\n- **synchronized** between ^Inventory^ and ^Controller^, i.e. Workflows are deployed.\n- **not synchronized** between Inventory and Controller, i.e. Workflows are not available with the Controller.",
-        "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following availability status:\n- **suspended**: Workflows are put on hold by user intervention.\n- **outstanding**: response from one or more ^Agent^s missing after Workflows have been suspended or resumed.",
-        "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **skipped** Jobs will be skipped by ^Order^s.\n- **stopped** Jobs will ^suspend|suspended^ Orders."
+        "workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following status:\n- **Synchronized** between ^Inventory^ and ^Controller^.\n- **Not Synchronized** Workflows are not available with the Controller.\n- **Suspended** Workflows are put on hold by user intervention.\n- **Outstanding** response from one or more ^Agent^s missing after Workflows have been suspended or resumed.",
+        "jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **Skipped** Jobs will be skipped by ^Order^s.\n- **Stopped** Jobs will ^suspend|suspended^ Orders."
       }
     },
     "updateJob": {

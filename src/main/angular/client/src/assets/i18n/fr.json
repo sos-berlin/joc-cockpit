@@ -1594,7 +1594,7 @@
       },
       "tooltip": {
         "jocInstanceId": "L'^ID Instance JOC Cockpit|joc-cockpit-instance-id^ est un numéro unique qui spécifie l'instance dans un ^Cluster JOC Cockpit|joc-cockpit-cluster^.",
-        "jocClusterId": "L'ID Cluster JOC Cockpit|joc-cockpit-cluster-id^ est un identifiant commun utilisé par toutes les instances d'un ^Cluster JOC Cockpit|joc-cockpit-cluster^.",
+        "jocClusterId": "L'^ID Cluster JOC Cockpit|joc-cockpit-cluster-id^ est un identifiant commun utilisé par toutes les instances d'un ^Cluster JOC Cockpit|joc-cockpit-cluster^.",
         "ordering": "Ordre coissant de l'instance de ^JOC Cockpit^ dans la vue *TABLEAU DE BORD*.",
         "host": "L'hôte sur lequel le ^JOC Cockpit^ est installé.",
         "port": "Le port par lequel une connexion à l'hôte est établie. Il s'agit souvent du port 22 pour les connexions SSH.",
@@ -2802,9 +2802,9 @@
         "argumentValue": "Limite les résultats aux ^Workflow^s contenant des ^Tâches|job^ dont les valeurs d'arguments correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire|inventory-search^.",
         "environmentName": "Limite les résultats aux ^Workflow^s contenant des ^Tâches|job^ dont les noms des variables d'environnement correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire|inventory-search^.",
         "environmentValue": "Limite les résultats aux ^Workflow^s contenant des ^Tâches|job^ dont les valeurs des variables d'environnement correspondent à la chaîne de recherche indiquée.\n\nPour plus d'informations sur l'utilisation des méta-caractères de recherche, voir ^Recherche d'Inventaire|inventory-search^.",
-        "workflowSynchronizationStatus": "Limite les résultats aux ^Workflow^s présentant l'état de synchronisation indiqué :\n- **synchronisés** entre ^Inventaire|inventory^ et ^Contrôleur|controller^, c'est-à-dire que les Workflows sont ^déployés|deploiement^.\n- **non synchronisés** entre Inventaire et Contrôleur, c'est-à-dire que les Workflows ne sont pas disponibles sur le Contrôleur.",
-        "workflowAvailabilityStatus": "Limite les résultats aux ^Workflow^s présentant l'un des états de disponibilité suivants :\n- **suspendu** : les Workflows sont mis en attente à la suite d'une intervention de l'utilisateur.\n- **pendant** : la réponse d'un ou plusieurs ^Agents^ fait défaut après la suspension ou la reprise des Workflows.",
-        "jobAvailabilityStatus": "Limite les résultats aux ^Workflow^s dont le statut de disponibilité des ^Tâches|job^ est le suivant :\n- **ignoré** : les Tâches seront ignorées par les ^Ordres|order^.\n- **arrêté** : les Tâches ^suspendront|suspended^ les Ordres."
+        "workflowSynchronizationStatus": "Limite les résultats aux ^Workflow^s présentant l'état de synchronisation indiqué :\n- **synchronisés** entre ^Inventaire|inventory^ et ^Contrôleur|controller^, c'est-à-dire que les Workflows sont ^déployés|deployment^.\n- **non synchronisés** entre Inventaire et Contrôleur, c'est-à-dire que les Workflows ne sont pas disponibles sur le Contrôleur.",
+        "workflowAvailabilityStatus": "Limite les résultats aux ^Workflow^s présentant l'un des états de disponibilité suivants :\n- **Synchronisés** entre ^Inventaire|inventory^ et ^Contrôleur|controller^, Workflows sont ^déployés|deployment^.\n- **Non Synchronisés** entre Inventaire et Contrôleur, Workflows ne sont pas disponibles sur le Contrôleur.\n- **Suspendu** : les Workflows sont mis en attente à la suite d'une intervention de l'utilisateur.\n- **Pendant** : la réponse d'un ou plusieurs ^Agent^s fait défaut après la suspension ou la reprise des Workflows.",
+        "jobAvailabilityStatus": "Limite les résultats aux ^Workflow^s dont le statut de disponibilité des ^Tâches|job^ est le suivant :\n- **Ignoré** : les Tâches seront ignorées par les ^Ordres|order^.\n- **Arrêté** : les Tâches ^suspendront|suspended^ les Ordres."
       }
     },
     "updateJob": {
@@ -3823,7 +3823,7 @@
       "file_transfer_history_age": "Spécifie la période de rétention de l'historique des transferts de fichier.\n\nToutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "monitoring_history_age": "Spécifie la période de rétention du *Suivi de l'Activité*.\n\nToutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
       "notification_history_age": "Spécifie la période de rétention des ^Notification^s.\n\nToutes les entrées plus anciennes que la valeur spécifiée seront purgées.",
-      "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées.\n\nPour les environnements ayant un grand nombre d'entrées de l'*Historique des ^Tâches|job^* quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple, à `10`.\n\nLes utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
+      "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées.\n\nPour les environnements ayant un grand nombre d'entrées de l'*Historique des Tâches* quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple, à `10`.\n\nLes utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
       "profile_age": "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
       "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports.\n\nToutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées.",
