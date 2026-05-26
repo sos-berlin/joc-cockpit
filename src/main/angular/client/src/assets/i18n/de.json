@@ -3215,13 +3215,13 @@
         "timeZone": "Gibt die ^Zeitzone|time-zone^ an, für die Datum und Uhrzeit gelten.",
         "planKey": "Wenn der ^Arbeitsablauf|workflow^ Abhängigkeiten auf der Basis von ^Notizen|notice^ enthält, kann ein Tagesplandatum angegeben werden, für das die Abhängigkeiten aufgelöst werden sollen.\n\nStandardmäßig wird der aktuelle Tag verwendet. Es werden zurückliegende Tage akzeptiert, für die ein Plan geöffnet ist.\n\nZukünftige Tage werden akzeptiert.",
         "assignParameterizationFromSchedules": "Wenn dem ^Arbeitsablauf|workflow^ ein ^Zeitplan|schedule^ zugewiesen ist, kann dieser ausgewählt werden, um seine Parametrierung wie Variablen und ^Kennzeichnungen|tag^ in den ^Auftrag|order^ zu kopieren.",
-        "selectSchedule": "Bietet die Möglichkeit, einen ^Zeitplan|schedule^ auszuwählen, aus dem die Parametrierung und die ^Kennzeichnungen|tag^ in den Auftrag kopiert werden.",
+        "selectSchedule": "Bietet die Möglichkeit, einen ^Zeitplan|schedule^ auszuwählen, aus dem die Parametrierung und die ^Kennzeichnungen|tag^ in den ^Auftrag|order^ kopiert werden.",
         "selectOrder": "Bietet die Möglichkeit, eine oder mehrere Auftragsvorlagen aus dem ausgewählten ^Zeitplan|schedule^ auszuwählen.",
         "modifyVariable": "Wenn der ^Arbeitsablauf|workflow^ Variablen ohne Standardwerte angibt, muss der ^Auftrag|order^ die entsprechenden Werte angeben.\n\nWenn der Arbeitsablauf Variablen mit Standardwerten angibt, können Sie über den Link eine Variable auswählen, für die ein neuer Wert angegeben werden soll.",
         "modifyVariables": "Verhält sich ähnlich wie **Variable ändern**, zeigt aber alle verfügbaren Variablen an.",
         "addVariable": "Der Link wird angezeigt, sofern die globalen Einstellungen das Hinzufügen nicht deklarierter Variablen zu einem ^Arbeitsablauf|workflow^ zulassen",
         "addOrderParameterization": "Ermöglicht das Hinzufügen eines weiteren ^Auftrags|order^, optional mit einer anderen Parametrierung.",
-        "addOrdersFromAllSchedules": "Ermöglicht das Hinzufügen weiterer ^Aufträge|order^, die den Auftragsvorlagen entsprechen, die in allen ^Zeitplänen|schedule^ verfügbar sind, die den ^Arbeitsablauf|workflow^ verwenden."
+        "addOrdersFromAllSchedules": "Ermöglicht das Hinzufügen weiterer ^Aufträge|order^, die den Auftragsvorlagen entsprechen, die in den ^Zeitplänen|schedule^ verfügbar sind, die den ^Arbeitsablauf|workflow^ verwenden."
       },
       "allOrderResume": {
         "--------ADD RESUME ORDER DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Resume Order, Source: all-order-resume-dialog.html, Fields: resumeOrder, position, force",
@@ -3435,7 +3435,7 @@
       "placeholder.pastePublicKey": "Öffentlichen Schlüssel hier einfügen",
       "placeholder.pasteCertificate": "Zertifikat hier einfügen",
       "tooltip.import": "Importieren",
-      "tooltip.updateKey": "Schlüssel aktualisieren",
+      "tooltip.updateKey": "Privaten/Öffentlichen Schlüssel aktualisieren",
       "tooltip.deleteKey": "Privaten/Öffentlichen Schlüssel löschen",
       "tooltip.generate": "Erzeugen",
       "tooltip.importCertificate": "Zertifikat importieren",
@@ -3445,11 +3445,11 @@
       "tooltip.keyID": "Key ID",
       "tooltip.setExpiryDate": "Ablaufdatum des Zertifikats setzen",
       "tooltip.date": "Ablaufdatum",
-      "tooltip.keyAlgorithm": "Key Algorithm",
+      "tooltip.keyAlgorithm": "Schlüsselalgorithmus",
       "tooltip.useSigningKeys": "Signierschlüssel verwenden",
       "tooltip.distinguishedName": "Distinguished Name",
-      "tooltip.privateKey": "Private Key",
-      "tooltip.publicKey": "Public Key",
+      "tooltip.privateKey": "Privater Schlüssel",
+      "tooltip.publicKey": "Öffentlicher Schlüssel",
       "tooltip.x509Certificate": "Zertifikat",
       "tooltip.keyExpiredOn": "Ablaufdatum",
       "tooltip.certificateExpiredOn": "Ablaufdatum des Zertifikats",
@@ -4684,7 +4684,7 @@
       "button.findAndReplace": "Suchen und Ersetzen",
       "placeholder.selectFind": "Einen oder mehrere Agenten auswählen",
       "placeholder.selectReplace": "Agenten zur Ersetzung der Zuordnung auswählen",
-      "tooltip": "Nicht vorhandenen Agenten nach Eingabe von <enter> angeben",
+      "tooltip": "Nicht vorhandenen ^Agent^en nach Eingabe von `<enter>` angeben",
       "--------FIND AND REPLACE MODAL------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: Find and Replace, Source: find-and-replace.component.html, Fields: find, replace",
       "tooltips": {
         "find": "Gibt eine vorhandene ^Agenten|agent^-Zuweisung an, um diese zu suchen und zu ersetzen.",
@@ -4795,11 +4795,11 @@
       "tooltip.name": "Name",
       "--------API REQUEST COMPONENT ADDITIONAL TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: keyName, in, clientId, clientSecret, tokenUrl",
       "tooltip.keyName": "Der *Name des Schlüssels* wird bei der Authentifizierungsmethode *API Key* angegeben.",
-      "tooltip.in": "Legt fest, wie der Schlüssel bei der Authentifizierungsmethode *API Key* weitergeleitet wird:\n- **Header** entsprechend `<Name des Schlüssels>` und `<Wert des Schlüssels>`\n- **Request** Parameter für `<Name des Schlüssels>` und `<Wert des Schlüssels>`",
+      "tooltip.in": "Legt fest, wie der Schlüssel bei der Authentifizierungsmethode *API Key* weitergeleitet wird:\n- **Header** entsprechend `<name-des-schlüssels>` und `<wert-des-schlüssels>`\n- **Request** Parameter für `<name-des-schlüssels>` und `<wert-des-schlüssels>`",
       "tooltip.clientId": "Die **Client ID** enthält die Kennung in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
       "tooltip.clientSecret": "Das **Client Secret** enthält das Kennwort in den Anmeldedaten des Clients für den OAuth2 *Client Credentials Flow*.",
       "tooltip.tokenUrl": "Die **Token URL** gibt den Endpunkt an für den OAuth2 *Client Credentials Flow*.",
-      "tooltip.type": "Wählt eine der folgenden Authentifizierungsmethoden:\n- **None**: keine Authentifizierung erforderlich\n- **API Key**: gibt einen Schlüssel ähnlich einem Kennwort an\n- **Bearer Token**: gibt ein verschlüsseltes Token an\n- **Basic Auth**: gibt die Base64-kodierte Zeichenfolge für `<Benutzer>:<Kennwort>` an\n- **OAuth 2.0**: gibt die *Client ID*, das *Client Secret* und die *Token URL* im *Client Credentials Flow* an"
+      "tooltip.type": "Wählt eine der folgenden Authentifizierungsmethoden:\n- **None**: keine Authentifizierung erforderlich\n- **API Key**: gibt einen Schlüssel ähnlich einem Kennwort an\n- **Bearer Token**: gibt ein verschlüsseltes Token an\n- **Basic Auth**: gibt die Base64-kodierte Zeichenfolge für `<benutzer>:<kennwort>` an\n- **OAuth 2.0**: gibt die *Client ID*, das *Client Secret* und die *Token URL* im *Client Credentials Flow* an"
     },
     "toolbar": {
       "--------TOOLBAR INSTRUCTION TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: -, Source: workflow.component.ts, Fields: job, try, retry, finish, fail, fork, forkList, cycle, break, lock, sleep, prompt, admissionTimes, addOrder, postNotices, expectNotices, consumeNotices, if, case, caseWhen, caseElse, stickySubagent, option, paste",
