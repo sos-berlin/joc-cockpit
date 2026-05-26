@@ -1137,7 +1137,7 @@
     "tooltip.dateRangeSelectStep1": "Mauszeiger gedrückt halten und ziehen, um Datumsbereich auszuwählen",
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
-    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen ^Aufträge|order^ ausgeführt werden, und die Anzahl der Aufträge.\n\nWenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die ^Zeitpläne|schedule^ existieren, die keine Aufträge erzeugen.\n\nWird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit ^Arbeitsabläufen|workflow^ oder Zeitplänen.",
+    "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen ^Aufträge|order^ ausgeführt werden, und die Anzahl der Aufträge.\n\nWenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die keine Aufträge projiziert sind.\n\nBenutzer können die Anzeige auf ausgewählte ^Zeitpläne|schedule^ und ^Arbeitsabläufe|workflow^ beschränken.\n\nWird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt, die für den Tag keine Aufträge generieren.",
     "tooltip.viewOrders": "Anklicken, um Aufträge anzuzeigen.",
     "tooltip.normal": "Normaler Zustand.",
     "tooltip.pending": "Zeigt das Vorhandensein von ^Aufträgen|order^ in den Zuständen ^anstehend|pending^ und ^eingeplant|scheduled^ an.\n\nSolche Aufträge können Abhängigkeiten auflösen, sobald sie gestartet sind.",
@@ -2285,7 +2285,7 @@
     "tooltip.workflowNames": "Aktualisiert die Verweise auf ^Arbeitsabläufe|workflow^ in den ausgewählten ^Zeitplänen|schedule^.",
     "tooltip.planOrderAutomatically": "Aktualisiert die Einstellung *Auftrag automatisch planen* in den ausgewählten ^Zeitplänen|schedule^.",
     "tooltip.submitOrderToControllerWhenPlanned": "Aktualisiert die Einstellung *Geplanten Auftrag an Controller übermitteln* in den ausgewählten ^Zeitplänen|schedule^.",
-    "tooltip.script": "Aktualisiert das ^Job-Skript|job-script^ in den ^Skript-Bausteinen|script-include^.",
+    "tooltip.script": "Aktualisiert die ausgewählten ^Skript-Bausteine|script-include^.",
     "tooltip.controllers": "Aktualisiert den Controller in den ausgewählten Objekten.",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -2517,7 +2517,7 @@
         "duration": "Dauer.",
         "board": {
           "expectBoardName": "Der Name eines ^Notizbretts|notice-board^ ist eindeutig im ^Inventar|inventory^.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
-          "boardNames": "Mehrere ^Notizbretter|notice-board^ können ausgewählt werden, für die ^Notizen|notice^ erzeugt werden.",
+          "boardNames": "Mehrere ^Notizbretter|notice-board^ können ausgewählt werden, für die ^Notizen|notice^ durch die ^PostNotices Anweisung|postnotices-instruction^ erzeugt werden.",
           "expectBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbretts|notice-board^ und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "consumeBoardExpression": "Der Ausdruck kann zur Angabe eines einzelnen ^Notizbretts|notice-board^ und zur Angabe einer Booleschen Logik verwendet werden: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nDie Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren `&&` (und) und `||` (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "whenNotAnnounced": "Standardmäßig wird auf ^Notizen|notice^ gewartet. Falls keine Notiz angekündigt ist, können folgende Optionen verwendet werden:\n- **Warten** auf Notiz.\n- **Ausführen** der Anweisung an Tagen, für die keine Notiz angekündigt ist.\n- **Überspringen** der Instruktion an Tagen, für die keine Notiz angekündigt ist."
@@ -2567,7 +2567,7 @@
         },
         "job": {
           "name": "Der Name eines ^Job^s ist eindeutig im ^Arbeitsablauf|workflow^.\n\nDerselbe Job kann mehrfach im Arbeitsablauf vorkommen sofern er durch seine Kennung unterschieden ist.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
-          "label": "Eindeutige Kennung des ^Job^s oder der Anweisung im ^Arbeitsablauf|workflow^.\n\nEin Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Kennung unterschieden.",
+          "label": "Eindeutige Kennung des ^Job^s oder einer anderen Anweisung im ^Arbeitsablauf|workflow^.\n\nEin Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Kennung unterschieden.",
           "title": "Der Titel eines ^Job^s kann nach Belieben angegeben werden.\n\nDer Titel wird in der Ansicht *ARBEITSABLÄUFE* angezeigt.\n\nDer Titel eines Jobs kann Links in Markdown-Syntax enthalten, zum Beispiel `[Example](https://www.example.com)`.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit `SCHEDULER_PARAM_` präfiziert sind - analog zu JS1",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den ^Job^ mit diesen Zugangsdaten für einen anderen Benutzer zu starten.\n\nOptional kann das Benutzerprofil geladen werden.",
@@ -2596,7 +2596,7 @@
           "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der ^Job-Vorlagen|job-template^ ausgewählt wird.",
           "onWarning": "Es können ^Rückgabewerte|return-value^ angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nFür Warnungen wird eine ^Benachrichtigung|notification^ erzeugt.\n\nMehrere Rückgabewerte werden durch Komma getrennt angegeben, z.B. `0,1,2`. Ein Bereich wird durch zwei Punkte angegeben, z.B. `0..42`",
           "agentAssignment": "Dem Job wird ein ^Autonomer Agent|standalone-agent^ oder ^Subagenten-Cluster|subagent-cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung|forklist-instruction^ und ^StickySubagent Anweisung|stickysubagent-instruction^ wird ein ^Agenten-Cluster|agent-cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung|subagent-cluster-id^ über eine Variable liefert.",
-          "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job-Skript|job-script^ bzw. die Java Klasse ausführt.",
+          "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job-Skript|job-script^ bzw. den Java Job in der JVM entsprechend der ^Job-Klasse|job-class^ ausführt. Der Agent kann aus der Liste ausgewählt werden.",
           "agentCluster": "Wählt den ^Agenten-Cluster|agent-cluster^ aus, für den eine ^Subagenten-Cluster Kennung|subagent-cluster-id^ aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
           "subagentClusterIdExpr": "Der Ausdruck gibt die ^Subagenten-Cluster Kennung|subagent-cluster-id^ über eine Variable an.\n\nWird keine Variable angegeben, so wird ein eingebauter Standardwert aktiv, wenn der Job in einer ^ForkList Anweisung|forklist-instruction^ oder ^StickySubagent Anweisung|stickysubagent-instruction^ enthalten ist.\n\nBenutzer können eine individuelle Variable angeben, wenn z.B. Vorgänger-Jobs verwendet werden, um den ^Subagenten-Cluster|subagent-cluster^ zu bestimmen, auf dem Folge-Jobs ausgeführt werden sollen.",
           "jobNotRestartable": "Im Fall, dass ein ^Agent^ abgebrochen wird, durch Absturz des Server oder des Agenten, werden abgebrochene ^Job^s beim Neustart des Agenten automatisch ausgeführt.\n\nDie Voreinstellung ist sinnvoll für wiederanlauffähige Jobs.\n\nFür Jobs, die nicht wiederanlauffähig sind, kann die Option gewählt werden, um den Start abgebrochener Jobs beim Neustart des Agenten zu verhindern."
@@ -2632,7 +2632,7 @@
           "blockPosition": "Für ^Arbeitsabläufe|workflow^ mit Blockanweisungen wie ^Try-Catch Anweisung|try-catch-instruction^, ^Lock Anweisung|lock-instruction^, ^Fork Anweisung|fork-instruction^, ^Cycle Anweisung|cycle-instruction^ kann die entsprechende Anweisung ausgewählt werden.\n- Der ^Auftrag|order^ startet im Arbeitsablauf am Beginn der Blockanweisung oder an einer späteren Startposition.\n- Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist oder eine frühere Endposition."
         },
         "lock": {
-          "name": "Der Name einer ^Ressourcen-Sperre ^ist eindeutig im System. Abschnitte in ^Arbeitsabläufen|workflow^ können durch Ressourcen-Sperren für die parallele Ausführung eingeschränkt werden.",
+          "name": "Der Name einer ^Ressourcen-Sperre ^ist eindeutig im System.\n\nAbschnitte in ^Arbeitsabläufen|workflow^ können durch die ^Lock Anweisung|lock-instruction^ für die parallele Ausführung eingeschränkt werden:\n- **Exklusiv**: nur eine Lock Anweisung kann die Ressourcen-Sperre belegen.\n- **Geteilt**: mehrere Lock Anweisungen können die Ressourcen-Sperre belegen, wenn ihr Gewicht zur verbleibenden Kapazität passt.\n\n^Aufträge|order^ bleiben im Zustand ^wartend|waiting^ bis die angegebenen Ressourcen-Sperren verfügbar sind.",
           "count": "Das Gewicht für die Nutzung einer ^Ressourcen-Sperre|resource-lock^ wird auf deren Kapazität angerechnet.\n\nWird die Kapazität überschritten, dann wartet der ^Auftrag|order^ bis die Kapazität für das angegebene Gewicht verfügbar ist."
         },
         "prompt": {

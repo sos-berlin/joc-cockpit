@@ -1137,7 +1137,7 @@
     "tooltip.dateRangeSelectStep1": "Hold mouse pressed and drag to select date range",
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon, then select start date and end date using mouse click",
-    "tooltip.invertProjection": "By default the Projection indicates the days for which ^Order^s will be executed and the number of Orders.\n\nWhen inverting the Projection, then days are highlighted for which ^Schedule^s exist that will not create Orders.\n\nWhen clicking the related day, then Schedules without Orders will be displayed. This includes limiting Projection to certain folders holding ^Workflow^s or Schedules.",
+    "tooltip.invertProjection": "By default the Projection indicates the days for which ^Order^s will be executed and the number of Orders.\n\nWhen inverting the Projection, then days are highlighted for which no Orders are projected. Users can limit display of Orders by selecting one or more ^Schedule^s or ^Workflow^s.\n\nWhen clicking the related day, then Schedules without Orders will be displayed. This includes limiting the Projection to certain folders holding Workflows or Schedules.",
     "tooltip.viewOrders": "Click to display ^Order^s.",
     "tooltip.normal": "Normal State.",
     "tooltip.pending": "Indicates existence of ^Order^s in the ^pending^ or ^scheduled^ state. Such Orders can resolve dependencies once they are started.",
@@ -1148,9 +1148,9 @@
     "tooltip.letRun": "One-time ^Order^s for single execution will start or will proceed immediately.",
     "--------ADD CREATE PLAN DIALOG TOOLTIPS------------": "Page: Daily Plan, Sub-tab: -, Pop-up: Create Plan, Source: create-plan-dialog.html, Fields: chooseTemplates, schedules, scheduleFolders, workflows, workflowFolders, overwrite, submitWith, plannedAllAutomatically",
     "tooltip.chooseTemplates": "Users can choose the scope of ^Order^ creation:\n- **All** deployed ^Workflow^s for which ^Schedule^s are released.\n- **Select** deployed Workflows or released Schedules from folders.",
-    "tooltip.schedules": "Choose ^Schedule^s for which ^Order^s should be created:\n- **Schedule**: Orders from the related Schedule\n- **Folder**: Orders from Schedules in the folder and sub-folders\n\nBy default, only Schedules will be considered that are configured to plan Orders automatically.",
+    "tooltip.schedules": "Chooses ^Schedule^s for which ^Order^s should be created:\n- **Schedule**: Orders from the related Schedule\n- **Folder**: Orders from Schedules in the folder and sub-folders\n\nBy default, only Schedules will be considered that are configured to plan Orders automatically.",
     "tooltip.scheduleFolders": "Displays selected folders holding ^Schedule^s.",
-    "tooltip.workflows": "Choose ^Workflow^s for which ^Order^s should be created:\n- **Workflow**: Orders for the Workflow\n- **Folder**: Orders for Workflows in the folder and sub-folders",
+    "tooltip.workflows": "Chooses ^Workflow^s for which ^Order^s should be created:\n- **Workflow**: Orders for the Workflow\n- **Folder**: Orders for Workflows in the folder and sub-folders",
     "tooltip.workflowFolders": "Displays selected folders holding ^Workflow^s.",
     "tooltip.overwrite": "When ^Order^s are created, then by default they are added to the ^Daily Plan^. The option offers to overwrite existing Orders originating from the same Schedule in the Daily Plan to avoid duplicate Orders.",
     "tooltip.submitWith": "Specifies that ^Order^s should be ^submitted^ to the ^Controller^ and to ^Agent^s.\n\nIf the option is not used, then the ^Daily Plan Service^ will pick up ^planned^ Orders and will submit them.",
@@ -2280,12 +2280,12 @@
     "tooltip.pattern": "Updates the *Pattern* for matching files in selected ^File Order Source^ objects.",
     "tooltip.toNotice": "Updates the *Notice ID for Posting Order* in selected ^Notice Board^s.",
     "tooltip.readingOrderToNoticeId": "Updates the *Notice ID for Expecting Order* in selected ^Notice Board^s.",
-    "tooltip.endOfLife": "Updates the *Lifetime of Notices* in selected ^Notice Board^s.",
+    "tooltip.endOfLife": "Updates the *Lifetime of Notice* in selected ^Notice Board^s.",
     "tooltip.limit": "Updates the *Capacity* in selected ^Resource Lock^s.",
     "tooltip.workflowNames": "Updates ^Workflow^ references in selected ^Schedule^s.",
     "tooltip.planOrderAutomatically": "Updates the *Plan Order automatically* setting in selected ^Schedule^s.",
     "tooltip.submitOrderToControllerWhenPlanned": "Updates the *Submit planned Order to Controller* setting in selected ^Schedule^s.",
-    "tooltip.script": "Updates the ^Job Script^ in selected ^Script Include^s.",
+    "tooltip.script": "Updates the selected ^Script Include^s.",
     "tooltip.controllers": "Updates the ^Controller^ in selected objects.",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -2517,7 +2517,7 @@
         "duration": "Duration.",
         "board": {
           "expectBoardName": "The name of a ^Notice Board^ is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
-          "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s are created.",
+          "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s will be created by the ^PostNotices Instruction^.",
           "expectBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used, optionally including bracketing",
           "consumeBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used optionally including bracketing",
           "whenNotAnnounced": "By default ^Notice^s are waited for. In case that no ^Notice^ is announced, the following options are offered:\n- **wait** for Notice.\n- **process** the ^Order^ and continue immediately on days for which no Notice is announced.\n- **skip** the current instruction on days for which no Notice is announced."
@@ -2567,7 +2567,7 @@
         },
         "job": {
           "name": "A ^Job^ is the smallest unit of work within a ^Workflow^. A Job with the same name can occur with a number of ^Job Instruction^s in the same Workflow if individual Job Labels are used.\n\n^Object Naming Rules^ apply.",
-          "label": "A Label is used to distinguish multiple occurrences of the same ^Job^ or instruction in a ^Workflow^.",
+          "label": "A Label is used to specify the unique occurrence of a ^Job^ or other instruction in a ^Workflow^.\n\nJobs and other instructions can be reused in a Workflow with the *Label* specifying the unique occurrence.",
           "title": "The Title of a ^Job^ can be specified as desired.\n\nThe Title becomes visible with the *WORKFLOWS* view.\n\nThe Job's Title can include links in markdown syntax, for example, `[Example](https://www.example.com)`.",
           "compatibleMode": "Compatibility with previous JobScheduler versions includes, for example, for Shell Jobs to automatically create environment variables prefixed with `SCHEDULER_PARAM_` for any Order Variables as in JS1.",
           "credentialKey": "A Credential Key can be specified that is available from the Windows Credential Manager holding the credentials that are used to switch to a target user account for execution of the ^Job^.\n\nOptionally a user profile can be loaded.",
@@ -2596,7 +2596,7 @@
           "description": "The Description is displayed when the ^Job^ is selected from the list of ^Job Template^s.",
           "onWarning": "A number of ^Return Code^s can be specified that signal successful execution with warnings. A ^Notification^ will be created in case of such Return Codes.\n\nA number of Return Codes can be specified by a comma separated list, for example, `0,1,2`. A range can be specified from two dots, for example, `0..42`",
           "agentAssignment": "The ^Job^ is assigned a ^Standalone Agent^ or ^Subagent Cluster^ for execution. Within the block of a ^ForkList Instruction^ or ^StickySubagent Instruction^ an ^Agent Cluster^ is assigned.\n\nAs an alternative, an Expression can be specified that provides the unique ^Subagent Cluster ID^ from a variable.",
-          "agent": "The ^Job^ is assigned an ^Agent^ that will execute the ^Job Script^ or ^Job Class^. Users can select from the list of available Agents.",
+          "agent": "The ^Job^ is assigned an ^Agent^ that will execute the ^Job Script^ or Job in the JVM, depending on the ^Job Class^ specified. Users can select from the list of available Agents.",
           "agentCluster": "Selects the ^Agent Cluster^ for which a ^Subagent Cluster ID^ is specified from an Expression in a later input field.",
           "subagentClusterIdExpr": "The Expression specifies the ^Subagent Cluster ID^ from a variable.\n\nIf no variable is specified, then a built-in default becomes active if the ^Job^ is included with a ^ForkList Instruction^ or ^StickySubagent Instruction^.\n\nUsers can specify an individual variable, for example, if a predecessor Job is used to determine the ^Subagent Cluster^ on which to execute a successor Job.",
           "jobNotRestartable": "Applies to ^Job^s that have been forcibly terminated by the ^Agent^ or by its watchdog when stopping or cancelling the Agent.\n\nBy default Jobs are considered restartable and will be restarted when the Agent is restarted. Users can prevent this behavior by activating the checkbox."
@@ -2632,7 +2632,7 @@
           "blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected:\n- The ^Order^ will start in the Workflow at the beginning of the block instruction or at a later Start Position.\n- The Order will leave the Workflow when reaching the end of the block instruction or an earlier End Position."
         },
         "lock": {
-          "name": "Names of ^Resource Lock^s are unique in the ^Inventory^. Sections in ^Workflow^s can be limited in parallelism by use of Resource Locks.",
+          "name": "Names of ^Resource Lock^s are unique in the ^Inventory^.\n\nSections in ^Workflow^s can be limited in parallelism by use of the ^Lock Instruction^:\n- **Exclusive**: only one Lock Instruction can hold the Resource Lock.\n- **Shared**: Multiple Lock Instructions can hold the Resource Lock if their combined weight matches the remaining capacity.\n\n^Order^s remain in the ^waiting^ state until the Resource Locks specified become available.",
           "count": "The Weight for use of a ^Resource Lock^ is calculated towards its capacity.\n\nIf the capacity is exceeded, then ^Order^s must wait until a capacity is available that matches or exceeds the current Weight."
         },
         "prompt": {
@@ -3595,7 +3595,7 @@
     "tooltip.begin": "Specifies the begin of period in the *hh:mm:ss* format.",
     "tooltip.end": "Specifies the end of period in the *hh:mm:ss* format.",
     "--------FREQUENCY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: frequencyType, weekDays, validFrom, validTo, dayNumber, monthDays, every, country, year, selectAll, nonWorkingDayCalendars, monthRange",
-    "tooltip.frequencyType": "Choose from a range of start time rules:\n- **Weekdays**: e.g., `Monday`, `Sunday`\n- **Specific weekdays**: e.g., the `third Monday` of the month, the `last Sunday` of the month\n- **Specific dates**: e.g., `15.05.2026`\n- **Days of the month**: e.g., the `3rd` and `4th` day of the month, the `last` and `second-to-last` day of the month\n- **Every**: e.g., the `2nd week`, the `3rd day`\n- **National holidays**: e.g., `25.12.2025` in Germany\n- **Calendar of non-working days**: selects all days of the ^Calendar^\n\n.Multiple start time rules can be combined.",
+    "tooltip.frequencyType": "Chooses from a range of start time rules:\n- **Weekdays**: e.g., `Monday`, `Sunday`\n- **Specific weekdays**: e.g., the `third Monday` of the month, the `last Sunday` of the month\n- **Specific dates**: e.g., `15.05.2026`\n- **Days of the month**: e.g., the `3rd` and `4th` day of the month, the `last` and `second-to-last` day of the month\n- **Every**: e.g., the `2nd week`, the `3rd day`\n- **National holidays**: e.g., `25.12.2025` in Germany\n- **Calendar of non-working days**: selects all days of the ^Calendar^\n\n.Multiple start time rules can be combined.",
     "tooltip.weekDays": "Specifies the day of the week.",
     "tooltip.validFrom": "The start time rule can be set to not being applied before the specified date.",
     "tooltip.validTo": "The start time rule can be set to expire after the specified date.",
@@ -4676,7 +4676,7 @@
     "tooltip.title": "Updates the *Title* of selected objects.",
     "tooltip.jobResourceNames": "Updates ^Job Resource^ references in selected objects.",
     "tooltip.agent": "Updates the ^Agent^ assignment in selected ^File Order Source^ objects.",
-    "tooltip.delay": "Updates the *Delay* for waiting for incoming files being persisted in selected ^File Order Source^ objects.",
+    "tooltip.delay": "Updates the *Delay* for processing of incoming files being persisted in selected ^File Order Source^ objects.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",
