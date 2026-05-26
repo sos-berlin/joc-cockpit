@@ -37,6 +37,7 @@
       <!-- Predefined quick-search dropdown -->
       <div class="log-predefined-wrap" [class.open]="showPredefined">
         <button class="btn btn-xs btn-default log-predefined-btn"
+                [appRichTooltip]="'logConsole.tooltip.predefined' | translate"
                 (click)="togglePredefined()"
                 [class.active]="showPredefined"
                 aria-haspopup="listbox"
@@ -47,7 +48,7 @@
           <ul class="log-predefined-menu" role="listbox">
             @for (p of predefined; track p.value) {
               <li role="option" (click)="applyPredefined(p.value)" class="log-predefined-item">
-                {{ p.label }}
+                {{ p.label | translate }}
               </li>
             }
           </ul>
@@ -55,13 +56,13 @@
       </div>
 
       <!-- Keyword search input (synced globally across all log windows) -->
-      <div class="log-search-wrap">
+      <div class="log-search-wrap" [appRichTooltip]="'logConsole.tooltip.search' | translate">
         <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
         <input #searchInput
                class="log-search-input" type="text"
                [(ngModel)]="searchTerm"
                (ngModelChange)="onSearchChange()"
-               placeholder="Search…"
+               [placeholder]="'logConsole.placeholder.search' | translate"
                autocomplete="off"
                aria-label="Search">
         @if (searchTerm) {
@@ -73,18 +74,20 @@
 
       <!-- Mode toggle: highlight ↔ filter -->
       <div class="log-mode-toggle">
-        <button class="log-mode-btn" [class.active]="!filterMode" (click)="filterMode = false" [attr.aria-pressed]="!filterMode">
+        <button class="log-mode-btn" [class.active]="!filterMode" (click)="filterMode = false" [attr.aria-pressed]="!filterMode"
+                [appRichTooltip]="'logConsole.tooltip.highlightMode' | translate">
           <i nz-icon nzType="highlight" nzTheme="outline"></i>
         </button>
-        <button class="log-mode-btn" [class.active]="filterMode" (click)="filterMode = true" [attr.aria-pressed]="filterMode">
+        <button class="log-mode-btn" [class.active]="filterMode" (click)="filterMode = true" [attr.aria-pressed]="filterMode"
+                [appRichTooltip]="'logConsole.tooltip.filterMode' | translate">
           <i nz-icon nzType="filter" nzTheme="outline"></i>
         </button>
       </div>
 
       <!-- Context lines selector (filter mode only) -->
       @if (filterMode && searchTerm) {
-        <div class="log-context-select">
-          <span class="log-context-label">Context:</span>
+        <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
+          <span class="log-context-label">{{ 'logConsole.label.context' | translate }}:</span>
           <nz-input-number [(ngModel)]="contextLines"
                            (ngModelChange)="onContextLinesChange()"
                            [nzMin]="0" [nzMax]="200" [nzStep]="1"
@@ -100,7 +103,7 @@
       @if (copiedOrderId) {
         <span class="log-copy-feedback">
           <i nz-icon nzType="check-circle" nzTheme="filled" style="color:var(--green)"></i>
-          Copied: {{ copiedOrderId }}
+          {{ 'logConsole.message.copied' | translate }}: {{ copiedOrderId }}
         </span>
       }
       @if (displayTz) {
@@ -108,14 +111,17 @@
           <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ displayTz }}
         </span>
       }
-      <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading">
+      <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading"
+              [appRichTooltip]="'logConsole.tooltip.reload' | translate">
         <i nz-icon nzType="reload" nzTheme="outline"></i>
       </button>
-      <button class="btn btn-xs btn-default" (click)="download()" [disabled]="isDownloading">
+      <button class="btn btn-xs btn-default" (click)="download()" [disabled]="isDownloading"
+              [appRichTooltip]="'logConsole.tooltip.download' | translate">
         <i nz-icon nzType="download" nzTheme="outline"></i>
       </button>
       <button class="btn btn-xs" [class.btn-primary]="followTail" [class.btn-default]="!followTail"
-              (click)="toggleFollowTail()" [attr.aria-pressed]="followTail">
+              (click)="toggleFollowTail()" [attr.aria-pressed]="followTail"
+              [appRichTooltip]="'logConsole.tooltip.followTail' | translate">
         <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
       </button>
     </div>
@@ -160,7 +166,7 @@
       @if (filterMode && searchTerm) {
         <span class="log-summary-note log-summary-filter-active">
           <i nz-icon nzType="filter" nzTheme="outline"></i>
-          {{ contextBlocks.length }} match block(s)
+          {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
         </span>
       }
     </div>
@@ -186,7 +192,7 @@
     @if (!isLoading && !errorMsg && allLines.length === 0) {
       <div class="log-console-empty">
         <i nz-icon nzType="file-text" nzTheme="outline" style="font-size:26px;color:#444"></i>
-        <span>No log entries found</span>
+        <span translate>logConsole.message.noEntries</span>
       </div>
     }
 
@@ -195,7 +201,7 @@
       @if (contextBlocks.length === 0 && allLines.length > 0) {
         <div class="log-console-empty">
           <i nz-icon nzType="search" nzTheme="outline" style="font-size:20px;color:#666"></i>
-          <span>No matches for “{{ searchTerm }}”</span>
+          <span>{{ 'logConsole.message.noMatches' | translate: { term: searchTerm } }}</span>
         </div>
       }
       @for (block of contextBlocks; track block.startIdx) {
@@ -204,7 +210,7 @@
             <i nz-icon [nzType]="block.collapsed ? 'right' : 'down'" nzTheme="outline"
                class="log-context-chevron"></i>
             <span class="log-context-label-text">
-              Lines {{ block.startIdx + 1 }}–{{ block.startIdx + block.lines.length }}
+              {{ 'logConsole.label.contextLines' | translate: { from: block.startIdx + 1, to: block.startIdx + block.lines.length } }}
             </span>
           </div>
           @if (!block.collapsed) {
@@ -246,7 +252,7 @@
 
     @if (!isComplete && !isLoading && allLines.length > 0) {
       <div class="log-console-more">
-        <button class="btn btn-xs btn-default" (click)="loadMore()">Load more…</button>
+        <button class="btn btn-xs btn-default" (click)="loadMore()">{{ 'logConsole.button.loadMore' | translate }}</button>
       </div>
     }
 
@@ -257,7 +263,7 @@
     }
 
     @if (isComplete && allLines.length > 0) {
-      <div class="log-console-end">— end of log —</div>
+      <div class="log-console-end">{{ 'logConsole.message.endOfLog' | translate }}</div>
     }
 
   </div>

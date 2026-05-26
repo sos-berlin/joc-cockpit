@@ -53,15 +53,18 @@
     <div class="m-l-sm m-r-sm m-b-sm text-right">
       <div>
         @if (!showMoreAdvanceOptions) {
-        <a class="text-primary cursor" (click)="showMoreOptions()">
-          <i class="fa fa-caret-right m-r-xs"></i>
-          <span translate>common.label.showMoreOptions</span>
-        </a>
+          <a class="text-primary cursor" (click)="showMoreOptions()">
+            <i class="fa fa-caret-right m-r-xs"></i>
+            <span translate>common.label.showMoreOptions</span>
+          </a>
         } @else {
-        <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
-          <i class="fa fa-caret-down m-r-xs"></i>
-          <span translate>common.label.showFewerOptions</span>
-        </a>
+          @if (preferences.showHelpPages && operation !== 'recall' && !releasable) {
+            <i (click)="videoPage(isRemove ? 'workflows-remove' : isRevoke ? 'workflows-revoke' : 'workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+          }
+          <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+            <i class="fa fa-caret-down m-r-xs"></i>
+            <span translate>common.label.showFewerOptions</span>
+          </a>
         }
       </div>
     </div>

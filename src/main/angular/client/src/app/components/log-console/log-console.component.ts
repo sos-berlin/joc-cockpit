@@ -25,10 +25,64 @@ interface ContextBlock {
 
 const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3})\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
 
-// Matches JS7 Order IDs:  #<date>#P<seq>-<name>  or  #<date>-P-<seq>  etc.
-// The '#' character is NOT a terminator — a single Order ID may contain multiple '#' segments.
-// Begin terminators: space ( [ {   End terminators: space ) ] }
-const ORDER_ID_RE = /#[\w\-.:+@#]+/g;
+// ── Order ID parsing ────────────────────────────────────────────────────────
+// Matches JS7 Order IDs: #YYYY-MM-DD#<word chars, colon, hyphen>
+// e.g. #2026-05-22#P0, #2026-05-22#P0:1, #2026-05-22#F1:2-suffix
+const ORDER_ID_RE = /#\d{4}-\d{2}-\d{2}#[\w:-]+/g;
+
+/**
+ * Finds the JS7 Order ID token that contains `cursorIndex` in `text`.
+ * Returns the token and its [start, end) offsets, or null.
+ */
+export function extractOrderId(
+  text: string,
+  cursorIndex: number
+): { id: string; start: number; end: number } | null {
+  ORDER_ID_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = ORDER_ID_RE.exec(text)) !== null) {
+    const start = m.index;
+    const end   = start + m[0].length;
+    if (cursorIndex >= start && cursorIndex <= end) {
+      return { id: m[0], start, end };
+    }
+  }
+  return null;
+}
+
+/** Returns the character offset of (targetNode, targetOffset) within rootEl's full text. */
+function getCharOffsetInElement(rootEl: Element, targetNode: Node, targetOffset: number): number {
+  const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT);
+  let total = 0;
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node === targetNode) return total + targetOffset;
+    total += (node.textContent || '').length;
+  }
+  return total + targetOffset;
+}
+
+/** Creates a DOM Range spanning [startOffset, endOffset) inside rootEl's text nodes. */
+function buildRangeInElement(rootEl: Element, startOffset: number, endOffset: number): Range | null {
+  const range = document.createRange();
+  const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT);
+  let pos = 0;
+  let startDone = false;
+  while (walker.nextNode()) {
+    const node = walker.currentNode as Text;
+    const len = (node.textContent || '').length;
+    if (!startDone && startOffset <= pos + len) {
+      range.setStart(node, startOffset - pos);
+      startDone = true;
+    }
+    if (startDone && endOffset <= pos + len) {
+      range.setEnd(node, endOffset - pos);
+      return range;
+    }
+    pos += len;
+  }
+  return null;
+}
 
 function parseLine(raw: string): ParsedLine {
   const rawLower = raw.toLowerCase();
@@ -48,14 +102,14 @@ function parseLine(raw: string): ParsedLine {
 
 /** Predefined quick-search presets. */
 const PREDEFINED_SEARCHES: { label: string; value: string }[] = [
-  { label: 'Exception',        value: 'Exception' },
-  { label: 'ERROR',            value: 'ERROR' },
-  { label: 'WARN',             value: 'WARN' },
-  { label: 'Controller started', value: 'Controller started' },
-  { label: 'Agent started',    value: 'Agent started' },
-  { label: 'Connection lost',  value: 'Connection lost' },
-  { label: 'Restart',          value: 'Restart' },
-  { label: 'Terminated',       value: 'Terminated' },
+  { label: 'logConsole.label.predefined.exception',        value: 'Exception' },
+  { label: 'logConsole.label.predefined.error',            value: 'ERROR' },
+  { label: 'logConsole.label.predefined.warn',             value: 'WARN' },
+  { label: 'logConsole.label.predefined.controllerStarted', value: 'Controller started' },
+  { label: 'logConsole.label.predefined.agentStarted',     value: 'Agent started' },
+  { label: 'logConsole.label.predefined.connectionLost',   value: 'Connection lost' },
+  { label: 'logConsole.label.predefined.restart',          value: 'Restart' },
+  { label: 'logConsole.label.predefined.terminated',       value: 'Terminated' },
 ];
 
 /** Context line count options for filter mode. */
@@ -327,49 +381,57 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Order ID double-click detection ───────────────────────────────────────
 
   /**
-   * On double-click anywhere inside the log body, detect if the cursor is
-   * within an Order ID token (starts with #) and copy it to the clipboard.
+   * On double-click inside the log body, detect if the cursor is within an
+   * Order ID token and — if so — select the FULL token, copy it, and search.
+   * Falls back to native browser selection when clicked outside an Order ID.
    */
   onLogBodyDblClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const textContent = target?.textContent || '';
+    // Use event.target (always an Element) to find the .log-text span.
+    // This is more reliable than walking up from a text node.
+    const textEl = (event.target as Element)?.closest('.log-text') as HTMLElement | null;
+    if (!textEl) return;  // clicked on timestamp, level badge, or padding — ignore
 
-    // Walk up to the nearest element that contains the full text of the line
-    const lineEl = (target.closest('.log-line') as HTMLElement) || target;
-    const lineText = lineEl?.textContent || textContent;
+    const fullText = textEl.textContent || '';
+    if (!fullText.includes('#')) return;  // no Order IDs possible in this line
 
-    // Extract all Order IDs from the full line text
-    const ids = lineText.match(ORDER_ID_RE);
-    if (!ids || ids.length === 0) return;
-
-    // Find which one is closest to the double-click selection
+    // The browser already applied its word-selection by the time dblclick fires.
+    // Read its start position as our cursor index within .log-text.
     const sel = window.getSelection();
-    const selectedText = sel?.toString().trim() || '';
+    if (!sel || sel.rangeCount === 0) return;
 
-    // Prefer an exact match with the selected text first
-    const matched =
-      ids.find(id => id === selectedText || id === '#' + selectedText) ||
-      ids.find(id => id.includes(selectedText)) ||
-      ids[0];
+    const r = sel.getRangeAt(0);
+    if (r.startContainer.nodeType !== Node.TEXT_NODE) return;
 
-    if (matched) {
-      navigator.clipboard.writeText(matched).then(() => {
-        this.showCopyFeedback(matched);
-      }).catch(() => {
-        // Fallback for browsers that restrict clipboard API
-        const el = document.createElement('textarea');
-        el.value = matched;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        this.showCopyFeedback(matched);
-      });
-      // Paste into global search as well
-      this.searchTerm = matched;
-      this.commitSearch(matched);  // immediate — no debounce for explicit selection
-      this.logSearch.setTerm(matched);
+    const charOffset = getCharOffsetInElement(textEl, r.startContainer, r.startOffset);
+    const match = extractOrderId(fullText, charOffset);
+
+    // Not inside an Order ID — leave browser word selection as-is
+    if (!match) return;
+
+    // Override browser selection with the full Order ID span
+    const domRange = buildRangeInElement(textEl, match.start, match.end);
+    if (domRange) {
+      sel.removeAllRanges();
+      sel.addRange(domRange);
     }
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(match.id).then(() => {
+      this.showCopyFeedback(match.id);
+    }).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = match.id;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.showCopyFeedback(match.id);
+    });
+
+    // Push into global search
+    this.searchTerm = match.id;
+    this.commitSearch(match.id);
+    this.logSearch.setTerm(match.id);
   }
 
   copiedOrderId: string | null = null;

@@ -9,10 +9,23 @@
   },
 
   "workflows-orders-add": {
-    "id": "5J6R9ycBWB0",
+    "id": "U6ISJx7vUeg",
     "title": "Add Order",
-    "description": "How to add an order to a workflow in JS7 JobScheduler",
-    "start": 30,
-    "playlist": "PLye7bjY2p1cciVkWJQj6c3p_3GqZ28GYx"
+    "description": "How to add an order to a workflow?"
+  },
+  "workflows-deploy": {
+    "id": "L75msf2xKMo",
+    "title": "Deploy Workflow",
+    "description": "How to deploy a workflow?"
+  },
+  "workflows-remove": {
+    "id": "pws33fDoMBk",
+    "title": "Remove Workflow",
+    "description": "How to remove an existing Workflow?"
+  },
+  "workflows-revoke": {
+    "id": "foCvk7M_kEw",
+    "title": "Revoke Workflow",
+    "description": "How to revoke a workflow?"
   }
 }

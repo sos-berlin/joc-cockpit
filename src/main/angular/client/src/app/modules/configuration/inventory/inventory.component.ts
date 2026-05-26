@@ -4885,6 +4885,10 @@ export class DeployComponent {
     this.coreService.openHelpPage(key);
   }
 
+  videoPage(key): void {
+    this.coreService.openVideoPage(key);
+  }
+
   getInvalidObjects(): string[] {
     if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       const invalidObjects: string[] = [];

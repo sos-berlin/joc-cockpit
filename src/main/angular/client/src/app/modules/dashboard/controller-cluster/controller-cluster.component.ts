@@ -899,7 +899,8 @@ export class ControllerClusterComponent {
   proxyService(): void {
     if (this.preferences.auditLog) {
       let comments = {
-        radio: 'predefined'
+        radio: 'predefined',
+        operation: 'Proxy Service'
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -935,7 +936,8 @@ export class ControllerClusterComponent {
     };
     if (this.preferences.auditLog) {
       let comments = {
-        radio: 'predefined'
+        radio: 'predefined',
+        operation: 'Switch Over'
       };
       const modal = this.modal.create({
         nzTitle: undefined,
@@ -970,7 +972,8 @@ export class ControllerClusterComponent {
     };
     if (this.preferences.auditLog) {
       let comments = {
-        radio: 'predefined'
+        radio: 'predefined',
+        operation: 'Remove from Inventory'
       };
       const modal = this.modal.create({
         nzTitle: undefined,
