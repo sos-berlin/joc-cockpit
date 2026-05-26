@@ -4577,6 +4577,7 @@ export class HistoryComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.historyFilters,
         controllerId: this.schedulerIds.selected
       },
@@ -4851,6 +4852,7 @@ export class HistoryComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.historyFilters,
         controllerId: this.schedulerIds.selected
       },

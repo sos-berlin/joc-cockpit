@@ -20,55 +20,62 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div class="form-group row">
-      <label class="col-sm-3">
-        <span [appRichTooltip]="'agent.tooltip.validityPeriod' | translate" translate>agent.label.validityPeriod</span>
-      </label>
-      <div class="col-md-8">
-        <nz-radio-group [(ngModel)]="token.at" name="at">
-          <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-          <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
-        </nz-radio-group>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>Token Details</small>
       </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'agent.tooltip.validUntil' | translate" translate>agent.label.validUntil</span>
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      @if (token.at === 'date') {
-        <div class="col-sm-8">
-          <app-date-input [object]="token" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
-                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
-                          [placeholder]="( dateFormat | uppercase )"
-          ></app-date-input>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label class="col-sm-3">
+            <span [appRichTooltip]="'agent.tooltip.validityPeriod' | translate" translate>agent.label.validityPeriod</span>
+          </label>
+          <div class="col-md-8">
+            <nz-radio-group [(ngModel)]="token.at" name="at">
+              <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+              <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
+            </nz-radio-group>
+          </div>
         </div>
-      }
-      @if (token.at !== 'date') {
-        <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-8">
-          <input #time="ngModel" [(ngModel)]="token.atTime" class="form-control" name="atTime" placeholder="+1(h|d|w|M|y)"
-                 relativeDateValidator required type="text">
-          @if (time.errors && (time.dirty || time.touched)) {
-            <div class="help-block text-danger">
-              @if (!time.valid && !time.errors.required) {
-                <div translate>common.message.invalid</div>
-              }
-              @if (time.errors.required) {
-                <div translate>common.message.requiredError</div>
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label">
+            <span [appRichTooltip]="'agent.tooltip.validUntil' | translate" translate>agent.label.validUntil</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          @if (token.at === 'date') {
+            <div class="col-sm-8">
+              <app-date-input [object]="token" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
+                              [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                              [placeholder]="( dateFormat | uppercase )"
+              ></app-date-input>
+            </div>
+          }
+          @if (token.at !== 'date') {
+            <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-8">
+              <input #time="ngModel" [(ngModel)]="token.atTime" class="form-control" name="atTime" placeholder="+1(h|d|w|M|y)"
+                     relativeDateValidator required type="text">
+              @if (time.errors && (time.dirty || time.touched)) {
+                <div class="help-block text-danger">
+                  @if (!time.valid && !time.errors.required) {
+                    <div translate>common.message.invalid</div>
+                  }
+                  @if (time.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
               }
             </div>
           }
         </div>
-      }
-    </div>
-    <div class="form-group row">
-      <div class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'agent.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
-        <sup class="text-danger text-sm">*</sup>
-      </div>
-      <div class="col-sm-8">
-        <app-select-input [attributeName]="'timezone'" [isSearchable]="true" [isRequired]="true" [ignoreTranslate]="true"
-                          [listArray]="zones" [name]="'timeZone'" [object]="token"></app-select-input>
+        <div class="form-group row">
+          <div class="col-sm-3 form-control-label">
+            <span [appRichTooltip]="'agent.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
+            <sup class="text-danger text-sm">*</sup>
+          </div>
+          <div class="col-sm-8">
+            <app-select-input [attributeName]="'timezone'" [isSearchable]="true" [isRequired]="true" [ignoreTranslate]="true"
+                              [listArray]="zones" [name]="'timeZone'" [object]="token"></app-select-input>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -433,6 +433,7 @@
   "controller": {
     "label.caption": "名称",
     "label.standalone": "スタンドアロン",
+    "label.standaloneController": "Standalone Controller",
     "label.cluster": "クラスター",
     "label.registerController": "コントローラー登録",
     "label.newController": "新規コントローラー登録",

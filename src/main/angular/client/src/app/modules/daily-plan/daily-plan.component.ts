@@ -3039,6 +3039,7 @@ export class DailyPlanComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.dailyPlanFilters,
         controllerId: this.schedulerIds.selected
       },
@@ -3474,6 +3475,7 @@ export class DailyPlanComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.dailyPlanFilters,
         controllerId: this.schedulerIds.selected
       },

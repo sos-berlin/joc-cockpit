@@ -105,7 +105,7 @@
           </div>
         }
         @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
-          <div class="form-group row b-t p-t">
+          <div class="form-group row p-t">
             <label class="col-sm-4 form-control-label">
               <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate" translate>user.label.serviceAuthenticationScheme</span>
               <sup class="text-danger text-sm">*</sup>

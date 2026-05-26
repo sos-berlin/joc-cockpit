@@ -1968,6 +1968,7 @@ export class OrderOverviewComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.orderFilters,
         controllerId: this.schedulerIds.selected
       },
@@ -2012,6 +2013,7 @@ export class OrderOverviewComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.orderFilters,
         controllerId: this.schedulerIds.selected
       },

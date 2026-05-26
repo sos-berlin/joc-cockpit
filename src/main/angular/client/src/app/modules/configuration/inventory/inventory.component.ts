@@ -76,6 +76,7 @@ export class CreateTagModalComponent {
 
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
+    this.preferences = this.modalData.preferences;
     if (this.modalData.filters && this.modalData.filters.tagType === 'workflowTags') {
       this.filters = this.modalData.filters;
       this.controllerId = this.modalData.controllerId;
@@ -87,7 +88,6 @@ export class CreateTagModalComponent {
       this.filter.orderTags = this.coreService.selectedOrderTags;
       this.fetchAllOrderTags();
     } else {
-      this.preferences = this.modalData.preferences;
       this.data = this.modalData.data;
       this.isJobTag = this.modalData.isJobTag;
       if (this.modalData.isRename) {

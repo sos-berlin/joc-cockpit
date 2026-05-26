@@ -433,6 +433,7 @@
   "controller": {
     "label.caption": "Краткое описание",
     "label.standalone": "Автономный",
+    "label.standaloneController": "Standalone Controller",
     "label.cluster": "Кластер",
     "label.registerController": "Зарегистрировать контроллер",
     "label.newController": "Зарегистрировать новый контроллер",

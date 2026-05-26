@@ -433,6 +433,7 @@
   "controller": {
     "label.caption": "Légende",
     "label.standalone": "Autonome",
+    "label.standaloneController": "Standalone Controller",
     "label.cluster": "Cluster",
     "label.registerController": "Enregister le Contrôleur",
     "label.newController": "Enregistrer un nouveau Contrôleur",

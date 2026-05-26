@@ -1800,6 +1800,7 @@ export class WorkflowComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
+        preferences: this.preferences,
         filters: this.workflowFilters,
         controllerId: this.schedulerIds.selected
       },
@@ -2873,6 +2874,7 @@ export class WorkflowComponent {
         nzClassName: 'lg',
         nzAutofocus: null,
         nzData: {
+          preferences: this.preferences,
           filters: this.workflowFilters,
           controllerId: this.schedulerIds.selected
         },

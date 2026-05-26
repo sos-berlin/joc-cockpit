@@ -433,6 +433,7 @@
   "controller": {
     "label.caption": "Descripción",
     "label.standalone": "Autónomo",
+    "label.standaloneController": "Standalone Controller",
     "label.cluster": "Clúster",
     "label.registerController": "Registrar Controlador",
     "label.newController": "Registrar nuevo Controlador",
