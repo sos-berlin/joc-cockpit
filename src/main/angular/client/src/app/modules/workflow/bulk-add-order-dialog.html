@@ -16,7 +16,7 @@
 
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.schedule.orderName' | translate" translate>order.label.orderName</span>
+                    <span [appRichTooltip]="'workflow.tooltip.orderName' | translate" translate>order.label.orderName</span>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
                     <input #orderId="ngModel" [(ngModel)]="orders[0].orderId" [appAutofocus]="true" autocomplete="off"
@@ -35,7 +35,7 @@
             <!-- Force Job Admission -->
             <div class="form-group row">
                 <label class="col-sm-4 ">
-                    <span [appRichTooltip]="'inventory.tooltips.schedule.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                    <span [appRichTooltip]="'workflow.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
                 </label>
                 <div class="col-md-8">
                     <label [(ngModel)]="orders[0].forceJobAdmission" name="ignoreAdmissionTimes0" nz-checkbox>
@@ -47,7 +47,7 @@
             <!-- @if (orders.length < 2) { -->
               <div class="form-group row">
                     <label class="col-sm-4 ">
-                        <span [appRichTooltip]="'order.tooltips.addOrder.startTime' | translate" translate>common.label.startTime</span>
+                        <span [appRichTooltip]="'workflow.tooltip.startTime' | translate" translate>common.label.startTime</span>
                     </label>
                     <div class="col-md-8">
                         <nz-radio-group [(ngModel)]="orders[0].at" name="at" (ngModelChange)="onTimeChange($event, 0)">
@@ -64,7 +64,7 @@
             @if (orders[0].at == 'later') {
               <div class="form-group row">
                     <label class="col-sm-4 form-control-label">
-                        <span [appRichTooltip]="'order.tooltips.addOrder.time' | translate" translate>common.label.time</span>
+                        <span [appRichTooltip]="'workflow.tooltip.time' | translate" translate>common.label.time</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -86,7 +86,7 @@
             @if (orders[0].at == 'date') {
               <div class="form-group row">
                     <label class="col-sm-4 form-control-label">
-                        <span [appRichTooltip]="'order.tooltips.addOrder.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
+                        <span [appRichTooltip]="'workflow.tooltip.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div class="col-sm-6">
@@ -111,7 +111,7 @@
             }
 
             <div class="form-group row">
-                <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
+                <label [appRichTooltip]="'workflow.tooltip.priority' | translate"
                         class="col-sm-4 form-control-label"
                         translate>order.label.priority</label>
                 <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"

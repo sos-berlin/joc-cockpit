@@ -58,6 +58,7 @@ export class VideoViewerComponent implements OnInit {
       rel: '0',
       modestbranding: '1',
       enablejsapi: '0',
+      origin: window.location.origin,
     });
 
     if (this.entry.start) {
@@ -67,7 +68,9 @@ export class VideoViewerComponent implements OnInit {
       params.set('list', this.entry.playlist);
     }
 
-    const url = `https://www.youtube.com/embed/${this.entry.id}?${params.toString()}`;
+    // Use youtube-nocookie.com (privacy-enhanced mode) — avoids cookie/tracking
+    // restrictions that cause "This content is blocked" in production environments.
+    const url = `https://www.youtube-nocookie.com/embed/${this.entry.id}?${params.toString()}`;
     this.embedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 

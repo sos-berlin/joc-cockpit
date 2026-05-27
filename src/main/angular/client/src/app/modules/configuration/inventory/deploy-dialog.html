@@ -1,29 +1,32 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if(!releasable && !isRemove && !isRevoke && preferences.showHelpPages) {
-    <i (click)="helpPage('configuration-inventory-operations-deploy-folder')"
-      [appRichTooltip]="'common.tooltip.help' | translate"
-      class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-deploy-folder')"
+        [appRichTooltip]="'common.tooltip.help' | translate"
+        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="videoPage('workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
     }
     @if(releasable && !isRemove && operation !== 'recall' && preferences.showHelpPages) {
-    <i (click)="helpPage('configuration-inventory-operations-release-folder')"
-      [appRichTooltip]="'common.tooltip.help' | translate"
-      class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-release-folder')"
+        [appRichTooltip]="'common.tooltip.help' | translate"
+        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if(isRevoke && preferences.showHelpPages){
-    <i (click)="helpPage('configuration-inventory-operations-revoke-folder')"
-      [appRichTooltip]="'common.tooltip.help' | translate"
-      class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-revoke-folder')"
+        [appRichTooltip]="'common.tooltip.help' | translate"
+        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="videoPage('workflows-revoke')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
     }
     @if(operation === 'recall' && preferences.showHelpPages){
-    <i (click)="helpPage('configuration-inventory-operations-recall-folder')"
-      [appRichTooltip]="'common.tooltip.help' | translate"
-      class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-recall-folder')"
+        [appRichTooltip]="'common.tooltip.help' | translate"
+        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if(isRemove && preferences.showHelpPages){
-    <i (click)="helpPage('configuration-inventory-operations-remove-folder')"
-      [appRichTooltip]="'common.tooltip.help' | translate"
-      class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-remove-folder')"
+        [appRichTooltip]="'common.tooltip.help' | translate"
+        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="videoPage('workflows-remove')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
     }
     @if (!releasable && !isRemove && !isRevoke) {
     <span translate>inventory.label.deploy</span>
@@ -58,9 +61,6 @@
             <span translate>common.label.showMoreOptions</span>
           </a>
         } @else {
-          @if (preferences.showHelpPages && operation !== 'recall' && !releasable) {
-            <i (click)="videoPage(isRemove ? 'workflows-remove' : isRevoke ? 'workflows-revoke' : 'workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
-          }
           <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
             <i class="fa fa-caret-down m-r-xs"></i>
             <span translate>common.label.showFewerOptions</span>

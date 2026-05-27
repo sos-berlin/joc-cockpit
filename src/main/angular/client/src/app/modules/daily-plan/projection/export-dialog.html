@@ -29,7 +29,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflows' | translate" translate>dailyPlan.label.workflows</span>
       </label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
@@ -40,7 +40,7 @@
     @if (filter.workflowFolders?.length > 0) {
       <div class="form-group row">
         <label class="col-md-3">
-          <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
         </label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.workflowFolders; track path) {
@@ -54,7 +54,7 @@
     }
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.schedules' | translate" translate>dailyPlan.label.schedules</span>
       </label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
@@ -65,7 +65,7 @@
     @if (filter.scheduleFolders?.length > 0) {
       <div class="form-group row">
         <label class="col-md-3">
-          <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
         </label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.scheduleFolders; track path) {
@@ -79,7 +79,7 @@
     }
     <div class="form-group row ">
       <label class="col-md-3">
-        <span [appRichTooltip]="'dailyPlan.tooltip.invertProjection' | translate" translate>dailyPlan.label.invertProjection</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.invertProjection' | translate" translate>dailyPlan.label.invertProjection</span>
       </label>
       <div class="col-md-6">
         <label [(ngModel)]="filter.withoutStartTime" name="late" nz-checkbox></label>
