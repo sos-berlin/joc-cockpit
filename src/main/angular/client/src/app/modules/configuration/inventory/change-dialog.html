@@ -13,7 +13,7 @@
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
       <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
+        <label class="col-sm-3 form-control-label" translate [appRichTooltip]="'changes.tooltip.change' | translate">changes.label.change
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">

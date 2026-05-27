@@ -25,14 +25,14 @@
         <div class="box p-a p-b-md">
           <h5 translate>profile.label.userDetails</h5>
           <div class="row m-t">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.userName</span></div>
+            <div class="col-md-4 col-lg-3"><span class="text-dark" translate [appRichTooltip]="'profile.tooltip.accountName' | translate">profile.label.userName</span></div>
             <div class="col-md-8 col-lg-9">
               <span [innerHtml]="authService.currentUserData | decodeSpace" class="text-black-lt"></span>
             </div>
           </div>
           @if (identityServiceType === 'JOC') {
             <div class="row m-t">
-              <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.label.password</span></div>
+              <div class="col-md-4 col-lg-3"><span class="text-dark" translate [appRichTooltip]="'profile.tooltip.password' | translate">user.label.password</span></div>
               <div class="col-md-8 col-lg-9">
                 <a (click)="changePassword()" class="text-u-l text-hover-primary"
                    translate>profile.button.changePassword</a>
@@ -75,7 +75,11 @@
               </ng-template>
               <div class="m-l-12 p-b-xs">
                 <div class="row">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.language' | translate">
+                      profile.label.language
+                    </span>
+                  </div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="setLocale()" [attributeName]="'locale'" [classNames]="'w-xl'"
                                       [listArray]="coreService.locales" [name]="'language'" [object]="preferences"
@@ -83,7 +87,11 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.timeZone' | translate">
+                      profile.label.timeZone
+                    </span>
+                  </div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
                                       [extraLabelText]="'local '" [isSearchable]="true" [ignoreTranslate]="true"
@@ -92,7 +100,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.dateTimeFormat' | translate">
+                      profile.label.dateTimeFormat
+                    </span>
                   </div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'dateFormat'" [classNames]="'w-xl'"
@@ -108,8 +119,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.maxNumberOfHistoryEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfHistoryEntries' | translate">
+                      profile.label.maxNumberOfHistoryEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration(isGroupBtnActive)" [(ngModel)]="preferences.maxRecords" [nzMin]="1" [nzStep]="5"
@@ -123,8 +136,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfAuditLogEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogPerObject' | translate">
+                      profile.label.maxNumberOfAuditLogEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -140,9 +155,11 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfNotificationEntries
-                  </div>
+                    <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                      <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfNotificationEntries' | translate">
+                        profile.label.maxNumberOfNotificationEntries
+                      </span>
+                    </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
                       <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxNotificationRecords" [nzMin]="1"
@@ -157,8 +174,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfOverviewEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderOverviewEntries' | translate">
+                      profile.label.maxNumberOfOverviewEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -174,8 +193,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfDailyPlanEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfDailyPlanEntries' | translate">
+                      profile.label.maxNumberOfDailyPlanEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -191,8 +212,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfWorkflowEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerWorkflow' | translate">
+                      profile.label.maxNumberOfWorkflowEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -208,8 +231,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfFileTransferEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFileTransferEntries' | translate">
+                      profile.label.maxNumberOfFileTransferEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -225,8 +250,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfResourceLockEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerResourceLock' | translate">
+                      profile.label.maxNumberOfResourceLockEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -242,8 +269,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfNoticeBoardEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerNoticeBoard' | translate">
+                      profile.label.maxNumberOfNoticeBoardEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -259,8 +288,11 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfHistoryEntriesPerOrder
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate
+                      [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderHistoryEntriesPerWorkflow' | translate">
+                      profile.label.maxNumberOfHistoryEntriesPerOrder
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerOrder" [nzMin]="1" [nzStep]="5"
@@ -268,8 +300,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfHistoryEntriesPerTask
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfJobHistoryEntriesPerWorkflow' | translate">
+                      profile.label.maxNumberOfHistoryEntriesPerTask
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerTask" [nzMin]="1" [nzStep]="5"
@@ -277,8 +311,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfAuditLogPerObject
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogEntriesPerObject' | translate">
+                      profile.label.maxNumberOfAuditLogPerObject
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogPerObject" [nzMin]="1"
@@ -287,8 +323,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.maxNumberOfFavoriteEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFavoriteEntries' | translate">
+                      profile.label.maxNumberOfFavoriteEntries
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFavoriteEntries" [nzMin]="1"
@@ -297,7 +335,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
+                      profile.label.maxEntryPerPage
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
@@ -308,7 +349,11 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
+                      profile.label.entryPerPage
+                    </span>
+                  </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
                                       [listArray]="entryPerPage"
@@ -317,7 +362,11 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.changeTheme' | translate">
+                      profile.label.theme
+                    </span>
+                  </div>
                   <div class="col-md-6" style="display: flex">
                     <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
                                       [listArray]="themeArray" [object]="preferences"
@@ -479,7 +528,11 @@
 
                 @if (this.preferences.theme === 'light') {
                   <div class="row m-t">
-                    <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
+                    <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                      <span translate [appRichTooltip]="'profile.preferences.tooltip.menuBarColor' | translate">
+                        profile.label.menuBarTheme
+                      </span>
+                    </div>
                     <div class="col-md-6">
                       <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'headerColor'" [classNames]="'w-xl'"
                                         [isSearchable]="true"
@@ -490,21 +543,33 @@
                 }
 
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.themeTitle' | translate">
+                      profile.label.themeTitle
+                    </span>
+                  </div>
                   <div class="col-md-6">
                     <input (blur)="changeConfiguration()" [(ngModel)]="preferences.themeTitle" class="form-control w-xl"
                            type="text">
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.tabSize</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
+                      profile.label.tabSize
+                    </span>
+                  </div>
                   <div class="col-md-6">
                     <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
                            type="text">
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
+                  <div class="col-md-4 col-lg-3 text-dark">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
+                      profile.label.showLogs
+                    </span>
+                  </div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
@@ -514,7 +579,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
@@ -523,7 +588,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
                       <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
@@ -533,28 +598,28 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showFilesImmediatelyFileTransferView' | translate">profile.label.showFilesImmediately</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showFiles"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableReasonsForAuditLog' | translate">profile.label.enableCommentsForAuditLog</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
                     ></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.useTimeZoneForLogTimestamps' | translate">profile.label.useTimezoneForLog</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.logTimezone"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
                     profile.label.currentController
                   </div>
                   <div class="col-md-6">
@@ -563,8 +628,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.tooltipDelay
+                  <div class="col-md-4 col-lg-3 text-dark">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.tooltipDelay' | translate">
+                      profile.label.tooltipDelay
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <app-select-input [attributeName]="'tooltipDelay'" [classNames]="'w-xl'"
@@ -575,7 +642,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
                     profile.label.licenseWarningGotIt
                   </div>
                   <div class="col-md-6">
@@ -584,7 +651,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showMoreOptions' | translate">
                     profile.label.showMoreOptions
                   </div>
                   <div class="col-md-6">
@@ -593,7 +660,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.collapseListVariable' | translate">
                     profile.label.listVariableCollapse
                   </div>
                   <div class="col-md-6">
@@ -602,7 +669,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
@@ -611,7 +678,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.orderOverviewPageView</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
                       <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
@@ -621,21 +688,21 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHelpPages</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">profile.label.showHelpPages</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                  <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableTagging</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableTagging' | translate">profile.label.enableTagging</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.enableTagging"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableApprovalRequests</div>
+                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableApprovalRequests' | translate">profile.label.enableApprovalRequests</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.enableApprovalRequests"
                            (ngModelChange)="changeConfiguration()"></label>
@@ -649,7 +716,11 @@
                   </div>
                 </div>
                 <div class="row m-t-xs">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.orientation</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
+                      profile.label.orientation
+                    </span>
+                  </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
                                       [isSearchable]="false"
@@ -661,8 +732,11 @@
                     The minimum distance between instructions on adjacent ranks. Default 40px
                 -->
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.interRankCellSpacing
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                    <span translate
+                      [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnAdjacentLayers' | translate">
+                      profile.label.interRankCellSpacing
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
@@ -675,8 +749,10 @@
                     The minimum buffer between instructions on the same rank. Default 30px
                 -->
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.intraCellSpacing
+                  <div class="col-md-4 col-lg-3 text-dark">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnTheSameLayer' | translate">
+                      profile.label.intraCellSpacing
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
@@ -686,8 +762,10 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.edgeRounded
+                  <div class="col-md-4 col-lg-3 text-dark">
+                    <span translate [appRichTooltip]="'profile.preferences.tooltip.roundEdgesForConnections' | translate">
+                      profile.label.edgeRounded
+                    </span>
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.edgeRounded"
