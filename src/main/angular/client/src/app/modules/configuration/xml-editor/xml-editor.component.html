@@ -360,7 +360,7 @@
                       <span
                         (click)="selectNode(node);addContent(node.origin.values);"
                         [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
-                        [appRichTooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip">{{node.origin.ref || node.origin.name }}
+                        [appRichTooltip]="hasTooltipContent(node.origin) ? (htmlContent) : ''">{{node.origin.ref || node.origin.name }}
                         </span>
                       <span (click)="selectNode(node)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)" class="text-sm pl-2">
                           {{getFirstNotEmptyAttribute(node.origin.attributes)}}

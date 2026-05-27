@@ -165,7 +165,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
+                <div [appRichTooltip]="'common.tooltip.timeZone' | translate" class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
                     @for (zone of zones; track zone) {
@@ -827,18 +827,18 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-md-3 col-md-4 form-control-label">
+                <label class="col-md-2 col-xl-2 col-xxl-2 form-control-label">
                   <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
                 </label>
-                <div class="col-md-3 col-xl-3 col-xxl-2">
+                <div class="col-md-3 col-xl-3 col-xxl-3">
                   <nz-date-picker [(ngModel)]="object.from" (ngModelChange)="toggleCheckbox('validFrom', $event)"
                                   [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                                   name="from"></nz-date-picker>
                 </div>
-                <label class="col-md-3 col-xl-2 col-xxl-2 form-control-label date-center">
+                <label class="col-md-2 col-xl-2 col-xxl-2 form-control-label date-center">
                   <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
                 </label>
-                <div class="col-md-3 col-xl-3 col-xxl-2 date-right">
+                <div class="col-md-3 col-xl-3 col-xxl-3 date-right">
                   <nz-date-picker [(ngModel)]="object.validTo" (ngModelChange)="toggleCheckbox('validTo', $event)" [nzFormat]="dateFormat"
                                   [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" id="to"
                                   name="to"></nz-date-picker>

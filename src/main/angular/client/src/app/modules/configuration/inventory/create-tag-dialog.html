@@ -35,7 +35,7 @@
     @if (data && !data.controller && !data.object && !data.type) {
       <div class="form-group row">
         <div class="col-md-3">
-          <label translate>inventory.label.handleRecursively</label>
+          <label [appRichTooltip]="'inventory.tooltip.create.tag.handleRecursively' | translate" translate>inventory.label.handleRecursively</label>
         </div>
         <div class="col-md-6">
           <label [(ngModel)]="object.isRecursive" name="isRecursive"
@@ -46,7 +46,7 @@
 
     @if (!isRename) {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.tags
+        <label [appRichTooltip]="!filters ? ('inventory.tooltip.create.tag.new.tags' | translate) : ('inventory.tooltip.create.tag.filter.tags' | translate)" class="col-md-3 form-control-label" translate>inventory.label.tags
           <sup class="text-danger text-sm">*</sup>
         </label>
         @if (!filters) {
@@ -114,7 +114,7 @@
     }
     @if (isRename) {
       <div class="form-group row">
-        <label class="col-md-3 form-control-label" translate>inventory.label.tagName
+        <label [appRichTooltip]="'inventory.tooltip.create.tag.tagName' | translate" class="col-md-3 form-control-label" translate>inventory.label.tagName
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">

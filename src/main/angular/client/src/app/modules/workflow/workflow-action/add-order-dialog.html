@@ -278,6 +278,7 @@
       <h4 class="modal-title">
         @if (preferences.showHelpPages) {
           <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          <i (click)="videoPage()" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
         }
         <span translate>workflow.label.addNewOrderTo</span>
         {{workflow.path}}
@@ -297,9 +298,6 @@
                 <span translate>common.label.showMoreOptions</span>
               </a>
             } @else {
-              @if (preferences.showHelpPages) {
-                <i (click)="videoPage()" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
-              }
               <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                 <i class="fa fa-caret-down m-r-xs"></i>
                 <span translate>common.label.showFewerOptions</span>
@@ -455,7 +453,7 @@
                 }
               </div>
             </div>
-            
+
             <!-- ── Section 2: Identification ── -->
             @if (showMoreAdvanceOptions || order.orderId || order.tags?.length > 0) {
               <div class="b-a m-b-sm section-box">

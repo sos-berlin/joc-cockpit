@@ -12,7 +12,7 @@
     <div class="col-sm-12">
       <label nz-checkbox [(ngModel)]="allSelected" (ngModelChange)="toggleSelectAll($event)">
         <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
-        <span translate>Schedules</span>
+        <span [appRichTooltip]="'workflow.tooltip.schedules' | translate" translate>dashboard.label.schedules</span>
       </label>
     </div>
   </div>

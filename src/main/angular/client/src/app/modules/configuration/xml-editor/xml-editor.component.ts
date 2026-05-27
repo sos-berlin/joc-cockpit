@@ -1086,7 +1086,7 @@ export class XmlEditorComponent {
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: 'Notification',
+        type: this.objectType === 'NOTIFICATION' ? 'Notification' : 'File Transfer',
         operation: 'Delete',
         name: ''
       };
@@ -1110,8 +1110,11 @@ export class XmlEditorComponent {
               ticketLink: result.ticketLink
             }
           };
-
-          this.deleteNotification(obj);
+          if (this.objectType === 'NOTIFICATION') {
+            this.deleteNotification(obj);
+          } else {
+            this.del(tab, obj.auditLog);
+          }
         }
       });
     } else {
@@ -1133,7 +1136,7 @@ export class XmlEditorComponent {
           if (this.objectType === 'NOTIFICATION') {
             this.deleteNotification({});
           } else {
-            this.del(tab);
+            this.del(tab, '');
           }
         }
       });
@@ -1168,8 +1171,11 @@ export class XmlEditorComponent {
               ticketLink: result.ticketLink
             }
           };
-
-          this.deleteNotification(obj);
+          if (this.objectType === 'NOTIFICATION') {
+            this.deleteNotification(obj);
+          } else {
+            this.del(null, obj.auditLog);
+          }
         }
       });
     } else {
@@ -1193,7 +1199,7 @@ export class XmlEditorComponent {
 
             this.deleteNotification(obj);
           } else {
-            this.del(null);
+            this.del(null, '');
           }
         }
       });
@@ -2405,18 +2411,41 @@ export class XmlEditorComponent {
 
   getVal(nodeValue): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let attrTypePath = '/xs:schema/xs:element[@name=\'' + (nodeValue.ref || nodeValue.name) + '\']/@type';
+    const name = nodeValue.ref || nodeValue.name;
+    // Try top-level element first; fall back to inline/nested element definitions
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + name + '\']/@type';
     let ele = select(attrTypePath, this.doc);
+    if (ele.length === 0) {
+      attrTypePath = '//xs:element[@name=\'' + name + '\']/@type';
+      ele = select(attrTypePath, this.doc);
+    }
     let valueArr: any = [];
     let value: any = {};
     for (let i = 0; i < ele.length; i++) {
-      if (ele[i].nodeValue === 'xs:string' || ele[i].nodeValue === 'xs:long' || ele[i].nodeValue === 'xs:positiveInteger' || ele[i].nodeValue === 'BooleanOrVarType') {
-        value.base = ele[i].nodeValue;
+      const typeName = ele[i].nodeValue;
+      // Accept any built-in XSD type (xs:*) or any named xs:simpleType in the schema.
+      // Named xs:complexType elements are handled by getValueFromType() — exclude them here.
+      const isBuiltinType = typeName.startsWith('xs:');
+      const isNamedSimpleType = !isBuiltinType &&
+        select('/xs:schema/xs:simpleType[@name=\'' + typeName + '\']', this.doc).length > 0;
+      if (isBuiltinType || isNamedSimpleType) {
+        value.base = typeName;
         value.parent = nodeValue.ref;
         value.grandFather = nodeValue.parent;
+        // Read @default so the initial value is pre-populated
+        let defaultPath = '/xs:schema/xs:element[@name=\'' + name + '\']/@default';
+        let defEle = select(defaultPath, this.doc);
+        if (defEle.length === 0) {
+          defEle = select('//xs:element[@name=\'' + name + '\']/@default', this.doc);
+        }
+        if (defEle.length > 0) {
+          value.data = defEle[0].nodeValue;
+          value.default = defEle[0].nodeValue;
+        }
       }
-      if (!(isEmpty(value))) {
+      if (!isEmpty(value)) {
         valueArr.push(value);
+        break; // take first match only to avoid duplicates
       }
     }
     return valueArr;
@@ -5767,6 +5796,16 @@ export class XmlEditorComponent {
     }
   }
 
+  hasTooltipContent(node: any): boolean {
+    if (node.attributes && node.attributes.some(a => a.data != null)) {
+      return true;
+    }
+    if (node.values && node.values.some(v => v.data != null)) {
+      return true;
+    }
+    return false;
+  }
+
   hidePanel(): void {
     this.sideView.xml.show = false;
     this.coreService.hideConfigPanel();
@@ -5865,7 +5904,7 @@ export class XmlEditorComponent {
     }
   }
 
-  private del(tab) {
+  private del(tab, auditLog) {
     if (tab?.id < 0) {
       this.tabsArray = this.tabsArray.filter(x => {
         return x.id !== tab.id;
@@ -5882,6 +5921,10 @@ export class XmlEditorComponent {
       objectType: this.objectType,
       id: tab?.id
     };
+
+    if (auditLog){
+      obj.auditLog = auditLog;
+    }
 
     this.coreService.post('xmleditor/remove', obj).subscribe({
       next: (res: any) => {
