@@ -21,7 +21,9 @@
               </button>
             </div>
             <div class="row col-md-12 m-t m-b-sm">
-              <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
+              <div class="col-sm-3 form-control-label">
+                <span [appRichTooltip]="'runtime.tooltip.timeZone' | translate" translate>runtime.label.timeZone</span>
+              </div>
               <div class="col-sm-6">
                 <nz-select [(ngModel)]="timeZone" [nzDisabled]="isTrash" name="timeZone" nzAllowClear nzShowSearch>
                   @for (zone of zones; track zone) {

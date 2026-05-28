@@ -2309,7 +2309,7 @@
     "--------CREATE TAG DIALOG TOOLTIPS------------": "Page: Multiple, Sub-tab: Inventory, Daily plan, Workflow - Workflow Tag or Order Tag tab, Pop-up: Update Object, Source: create-tag-dialog.component.html",
     "tooltip.create.tag.handleRecursively": "The indicated ^Tag^s will be added to objects in sub-folders.",
     "tooltip.create.tag.new.tags": "The indicated ^Tag^s will be added to objects.",
-    "tooltip.create.tag.filter.tags": "??? 2312: Where is this used? Filter Tags",
+    "tooltip.create.tag.filter.tags": "??? 2312: Where is this used? Filter Tags - It appears when the modal is opened from the Daily Plan or Workflow page after clicking the plus icon in the Workflow Tags or Order Tags tab.",
     "tooltip.create.tag.tagName": "Specifies the new name of the ^Tag^.",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -2737,6 +2737,14 @@
         "includeDependencies": "Recalls dependent objects, for example, when recalling a ^Calendar^, then the referencing ^Schedule^ will be recalled too.\n\nDependent objects can be located in other folders:\n- **All**: all referencing and referenced objects recursively.\n- **Enforced**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits recalling to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Enforced** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time."
+      },
+      "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
+      "createObject": {
+        "objectName": "Object Name",
+        "allowPathObjectName": "Object Name",
+        "copyNewName": "New Name",
+        "withoutFolder": "Without Folder",
+        "restoreObjectName": "Object Name"
       }
     },
     "search": {
@@ -3282,6 +3290,7 @@
       },
       "startTime": {
         "--------START TIME DIALOG TOOLTIPS------------": "Page: Workflows / Daily Plan / Order overview, Sub-tab: -, Pop-up: Set Start Time, Source: start-time-dialog.html, Fields: ignoreAdmissionTimes, stickToDailyPlanDate, startTime, time, enterDateAndTime, repeatTime, specificDate, begin, end",
+        "plannedStart": "Planned Start",
         "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThe option ignores Admission Times and forces the start of Jobs.",
         "stickToDailyPlanDate": "Allows modifying the start time of ^Order^s and keep their original ^Daily Plan^ assignment.\n\n^Notice^s created from Orders will resolve to the original Daily Plan date and will match ^Expecting Order^s waiting for Notices for that date.",
         "startTime": "The ^Order^'s start time in the format *hh:mm:ss*.",
@@ -3290,7 +3299,8 @@
         "repeatTime": "Specifies the interval for repeated executions within the period in the *hh:mm:ss* format.",
         "specificDate": "Specifies date and time when the ^Order^ should start.",
         "begin": "Specifies the begin of period in the *hh:mm:ss* format.",
-        "end": "Specifies the end of period in the *hh:mm:ss* format."
+        "end": "Specifies the end of period in the *hh:mm:ss* format.",
+        "timeZone": "Time Zone"
       }
     }
   },
@@ -3720,7 +3730,9 @@
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "The repeat interval specifies one of:\n- **Single Start** for creation of a single ^Order^.\n- **Repeat** for creation of a ^Cyclic Order^\n\nFor high frequency of repeated executions, users should preferably use ^Cyclic Workflow^s from a *Single Start* and should avoid *Cyclic Orders*.",
     "tooltip.startTime": "The ^Order^'s start time in the format *hh:mm:ss*.",
-    "tooltip.onHoliday": "Specifies what should happen if the ^Schedule^ meets a non-working day provided from a ^Calendar^:\n- **suppress execution**: no ^Order^ is created.\n- **ignore non-working day**: creates the Order.\n- **before non-working day**: creates the Order for the closest previous working day for which no other Order is created by the same Schedule.\n- **after non-working day**: creates the Order for the next working day for which no other Order is created by the same Schedule."
+    "tooltip.onHoliday": "Specifies what should happen if the ^Schedule^ meets a non-working day provided from a ^Calendar^:\n- **suppress execution**: no ^Order^ is created.\n- **ignore non-working day**: creates the Order.\n- **before non-working day**: creates the Order for the closest previous working day for which no other Order is created by the same Schedule.\n- **after non-working day**: creates the Order for the next working day for which no other Order is created by the same Schedule.",
+    "--------RUN TIME DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Run-time Dialog, Source: run-time-dialog.html, Fields: timeZone",
+    "tooltip.timeZone": "Time Zone"
   },
   "resource": {
     "label.boards": "Notice Boards",

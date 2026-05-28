@@ -2737,6 +2737,14 @@
         "includeDependencies": "Retire les objets dépendants, par exemple, une ^Planification|schedule^ faisant référence à un ^Calendrier|calendar^.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et seront retirés.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Forcé**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Forcé**, il est possible de désélectionner des objets.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche|job-resource^.\n\nSi l'^Inventaire|inventory^ est volumineux, l'affichage peut prendre un certain temps."
+      },
+      "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
+      "createObject": {
+        "objectName": "Object Name",
+        "allowPathObjectName": "Object Name",
+        "copyNewName": "New Name",
+        "withoutFolder": "Without Folder",
+        "restoreObjectName": "Object Name"
       }
     },
     "search": {
@@ -3282,6 +3290,7 @@
       },
       "startTime": {
         "--------START TIME DIALOG TOOLTIPS------------": "Page: Workflows / Daily Plan / Order overview, Sub-tab: -, Pop-up: Set Start Time, Source: start-time-dialog.html, Fields: ignoreAdmissionTimes, stickToDailyPlanDate, startTime, time, enterDateAndTime, repeatTime, specificDate, begin, end",
+        "plannedStart": "Planned Start",
         "ignoreAdmissionTimes": "L'exécution des ^Tâches|job^ peut être limitée par les ^Heures d'Admission|admission-times^ des Tâches et par l'^Instruction AdmissionTimes|admissiontimes-instruction^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
         "stickToDailyPlanDate": "Permet de modifier l'heure de démarrage des ^Ordres|order^ tout en conservant leur affectation initiale au ^Plan Quotidien|daily-plan^.\n\nLes ^Annonces|notice^ créées à partir de l'Ordre seront associées à la date initiale du Plan Quotidien et correspondront aux Ordres qui attendent des Annonces pour cette date.",
         "startTime": "L'heure de démarrage de l'^Ordre|order^ au format *hh:mm:ss*.",
@@ -3290,7 +3299,8 @@
         "repeatTime": "Indique l'intervalle entre les exécutions répétées au cours de la période, au format *hh:mm:ss*.",
         "specificDate": "Permet de saisir la date et l'heure auxquelles l'^Ordre|order^ doit démarrer.",
         "begin": "Indique le début de la période au format *hh:mm:ss*.",
-        "end": "Indique la fin de la période au format *hh:mm:ss*."
+        "end": "Indique la fin de la période au format *hh:mm:ss*.",
+        "timeZone": "Time Zone"
       }
     }
   },
@@ -3720,7 +3730,9 @@
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "L'intervalle de répétition permet de choisir l'une des options suivantes :\n- **Démarrage individuel** pour la création d'un seul ^Ordre|order^.\n- **Répétition** pour la création d'un ^Ordre Cyclique|cyclic-order^\n\nEn cas de fréquence élevée d'exécutions répétées, il est recommandé d'utiliser de préférence des ^Workflows Cycliques|cyclic-workflow^ à partir d'un *Démarrage individuel* et d'éviter les *Ordres Cycliques*.",
     "tooltip.startTime": "L'heure de démarrage de l'^Ordre|order^ au format *hh:mm:ss*.",
-    "tooltip.onHoliday": "Spécifie ce qui doit se passer si la ^Planification|schedule^ rencontre un jour non ouvré provenant d'un ^Calendrier|calendar^ :\n- **supprimer l'exécution** : aucun ^Ordre|order^ n'est créé.\n- **ignorer les jours non ouvrés** : crée l'Ordre.\n- **avant le jour non ouvré** : crée l'Ordre pour le jour ouvré précédent le plus proche pour lequel aucun autre Ordre n'a été créé par la même Planification.\n- **après le jour non ouvré** : crée l'Ordre pour le jour ouvrable suivant pour lequel aucun autre Ordre n'est créé par la même Planification."
+    "tooltip.onHoliday": "Spécifie ce qui doit se passer si la ^Planification|schedule^ rencontre un jour non ouvré provenant d'un ^Calendrier|calendar^ :\n- **supprimer l'exécution** : aucun ^Ordre|order^ n'est créé.\n- **ignorer les jours non ouvrés** : crée l'Ordre.\n- **avant le jour non ouvré** : crée l'Ordre pour le jour ouvré précédent le plus proche pour lequel aucun autre Ordre n'a été créé par la même Planification.\n- **après le jour non ouvré** : crée l'Ordre pour le jour ouvrable suivant pour lequel aucun autre Ordre n'est créé par la même Planification.",
+    "--------RUN TIME DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Run-time Dialog, Source: run-time-dialog.html, Fields: timeZone",
+    "tooltip.timeZone": "Time Zone"
   },
   "resource": {
     "label.boards": "Tableaux de Condition",

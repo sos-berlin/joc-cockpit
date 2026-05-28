@@ -46,7 +46,7 @@
     @if (filter.radio === 'current') {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'dailyPlan.tooltip.from' | translate" translate>common.label.from</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.planned.from' | translate" translate>common.label.from</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -58,7 +58,7 @@
     @if (filter.radio === 'current') {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'dailyPlan.tooltip.to' | translate" translate>common.label.to</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.planned.to' | translate" translate>common.label.to</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -70,7 +70,7 @@
     @if (filter.radio === 'planned') {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'dailyPlan.tooltip.from' | translate" translate>common.label.from</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.specific.from' | translate" translate>common.label.from</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((from.dirty || from.touched) && from.invalid)}" class=" col-sm-6">
@@ -90,7 +90,7 @@
     @if (filter.radio === 'planned') {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'dailyPlan.tooltip.to' | translate" translate>common.label.to</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.specific.to' | translate" translate>common.label.to</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}" class=" col-sm-6">
@@ -109,7 +109,7 @@
     }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.filter.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflows' | translate" translate>dailyPlan.label.workflows</span>
       </label>
       <div class="col-sm-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
@@ -120,7 +120,7 @@
     @if (filter.workflowFolders.length > 0) {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-          <span [appRichTooltip]="'dailyPlan.filter.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
         </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.workflowFolders; track path) {
@@ -134,7 +134,7 @@
     }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.filter.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.filter.schedules' | translate" translate>dailyPlan.label.schedules</span>
       </label>
       <div class="col-sm-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="filter" [list]="filter"
@@ -145,7 +145,7 @@
     @if (filter.scheduleFolders.length > 0) {
       <div class="form-group row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-          <span [appRichTooltip]="'dailyPlan.filter.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.filter.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
         </label>
         <div class="col-sm-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.scheduleFolders; track path) {

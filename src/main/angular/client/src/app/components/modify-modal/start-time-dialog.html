@@ -44,7 +44,9 @@
         }
         @if (order && order.orderId) {
           <div class="form-group row">
-            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <label class="col-md-3">
+              <span [appRichTooltip]="'order.tooltips.startTime.plannedStart' | translate" translate>dailyPlan.label.plannedStart</span>
+            </label>
             <div class="col-md-9">
               @if (order.plannedStartTime) {
                 <span>{{order.plannedStartTime}}</span>
@@ -57,7 +59,9 @@
         }
         @if (plan) {
           <div class="form-group row">
-            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <label class="col-md-3">
+              <span [appRichTooltip]="'order.tooltips.startTime.plannedStart' | translate" translate>dailyPlan.label.plannedStart</span>
+            </label>
             <div class="col-md-9">
               @if (plan.value.length ==1 && plan.value[0].plannedStartTime) {
                 <span>{{plan.value[0].plannedStartTime}}</span>
@@ -213,7 +217,9 @@
         }
 
         <div class="form-group row" [hidden]="!(dateType.at =='date')">
-          <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
+          <div class="col-md-3 form-control-label">
+            <span [appRichTooltip]="'order.tooltips.startTime.timeZone' | translate" translate>common.label.timeZone</span>
+          </div>
           <div class="col-sm-6">
             <app-select-input isSearchable='true' isAllowClear="true" [attributeName]="'timeZone'" [name]="'timeZone'"
                               [listArray]="zones" [object]="dateType"></app-select-input>

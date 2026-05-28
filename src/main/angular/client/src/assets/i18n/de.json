@@ -2737,6 +2737,14 @@
         "includeDependencies": "Nimmt abhängige Objekte zurück, bspw. eine ^Job-Ressource|job-resource^, auf die ein ^Arbeitsablauf|workflow^ verweist, oder einen ^Zeitplan|schedule^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Erzwungene**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Dependency Matrix](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Erzwungene** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsbläufe|workflow^, die dieselbe ^Job-Ressource|job-resource^ verwenden.\n\nIm Fall eines großen ^Inventars|inventory^ kann die Anzeige einige Zeit in Anspruch nehmen."
+      },
+      "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
+      "createObject": {
+        "objectName": "Object Name",
+        "allowPathObjectName": "Object Name",
+        "copyNewName": "New Name",
+        "withoutFolder": "Without Folder",
+        "restoreObjectName": "Object Name"
       }
     },
     "search": {
@@ -3282,6 +3290,7 @@
       },
       "startTime": {
         "--------START TIME DIALOG TOOLTIPS------------": "Page: Workflows / Daily Plan / Order overview, Sub-tab: -, Pop-up: Set Start Time, Source: start-time-dialog.html, Fields: ignoreAdmissionTimes, stickToDailyPlanDate, startTime, time, enterDateAndTime, repeatTime, specificDate, begin, end",
+        "plannedStart": "Planned Start",
         "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf|workflow^ kann durch ^Zutrittszeiten|admission-times^ der Jobs oder der ^AdmissionTimes Anweisung|admissiontimes-instruction^ eingeschränkt sein.\n\nDie Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
         "stickToDailyPlanDate": "Ermöglicht die Änderung der Startzeit von ^Aufträgen|order^ unter Beibehaltung ihrer ursprünglichen Zuordnung zum ^Tagesplan|daily-plan^.\n\nAus dem Auftrag erstellte ^Notizen|notice^ werden auf das ursprüngliche Datum des Tagesplans gesetzt und aktivieren ^Wartende Aufträge|expecting-order^, die auf Notizen für dieses Datum warten.",
         "startTime": "Die Startzeit des ^Auftrags|order^ im Format *hh:mm:ss*.",
@@ -3290,7 +3299,8 @@
         "repeatTime": "Legt das Intervall für wiederholte Ausführungen innerhalb des Zeitraums im Format *hh:mm:ss* fest.",
         "specificDate": "Gibt das Datum und die Uhrzeit an, zu der der ^Auftrag|order^ starten soll.",
         "begin": "Gibt den Beginn des Zeitraums im Format *hh:mm:ss* an.",
-        "end": "Gibt das Ende des Zeitraums im Format *hh:mm:ss* an."
+        "end": "Gibt das Ende des Zeitraums im Format *hh:mm:ss* an.",
+        "timeZone": "Time Zone"
       }
     }
   },
@@ -3720,7 +3730,9 @@
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "Das Wiederholungsintervall bietet eine der folgenden Optionen an:\n- **Einzelner Start** für die Erstellung eines einzelnen ^Auftrags|order^.\n- **Wiederholen** für die Erstellung eines ^Zyklischen Auftrags|cyclic-order^\n\nBei einer hohen Häufigkeit wiederholter Ausführungen sollten Benutzer vorzugsweise ^Zyklische Arbeitsabläufe|cyclic-workflow^ mit *Einzelnem Start* verwenden und *Zyklische Aufträge* vermeiden.",
     "tooltip.startTime": "Die Startzeit des ^Auftrags|order^ im Format *hh:mm:ss*.",
-    "tooltip.onHoliday": "Legt fest, was geschehen soll, wenn der ^Zeitplan|schedule^ auf einen Nicht-Arbeitstag des ^Kalenders|calendar^ trifft:\n- **Ausführung verhindern**: es wird kein ^Auftrag|order^ erzeugt.\n- **Nicht-Arbeitstag ignorieren**: Der Auftrag wird erzeugt.\n- **vor Nicht-Arbeitstag**: der Auftrag wird für den nächstgelegenen vorherigen Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird.\n- **nach Nicht-Arbeitstag**: der Auftrag wird für den nächsten Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird."
+    "tooltip.onHoliday": "Legt fest, was geschehen soll, wenn der ^Zeitplan|schedule^ auf einen Nicht-Arbeitstag des ^Kalenders|calendar^ trifft:\n- **Ausführung verhindern**: es wird kein ^Auftrag|order^ erzeugt.\n- **Nicht-Arbeitstag ignorieren**: Der Auftrag wird erzeugt.\n- **vor Nicht-Arbeitstag**: der Auftrag wird für den nächstgelegenen vorherigen Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird.\n- **nach Nicht-Arbeitstag**: der Auftrag wird für den nächsten Arbeitstag erzeugt, für den kein anderer Auftrag durch denselben Zeitplan erzeugt wird.",
+    "--------RUN TIME DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Run-time Dialog, Source: run-time-dialog.html, Fields: timeZone",
+    "tooltip.timeZone": "Time Zone"
   },
   "resource": {
     "label.boards": "Notizbretter",

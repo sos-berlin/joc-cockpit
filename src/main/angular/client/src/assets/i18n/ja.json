@@ -2737,6 +2737,14 @@
         "includeDependencies": "Include Dependencies",
         "manageDependencies": "Manage Dependencies",
         "showRelatedObjects": "Show Related Objects"
+      },
+      "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
+      "createObject": {
+        "objectName": "Object Name",
+        "allowPathObjectName": "Object Name",
+        "copyNewName": "New Name",
+        "withoutFolder": "Without Folder",
+        "restoreObjectName": "Object Name"
       }
     },
     "search": {
@@ -3282,6 +3290,7 @@
       },
       "startTime": {
         "--------START TIME DIALOG TOOLTIPS------------": "Page: Workflows / Daily Plan / Order overview, Sub-tab: -, Pop-up: Set Start Time, Source: start-time-dialog.html, Fields: ignoreAdmissionTimes, stickToDailyPlanDate, startTime, time, enterDateAndTime, repeatTime, specificDate, begin, end",
+        "plannedStart": "Planned Start",
         "ignoreAdmissionTimes": "Ignore Admission Times",
         "stickToDailyPlanDate": "Keep Daily Plan Assignment",
         "startTime": "Start Time",
@@ -3290,7 +3299,8 @@
         "repeatTime": "Repeat Time",
         "specificDate": "Specific Date",
         "begin": "Begin",
-        "end": "End"
+        "end": "End",
+        "timeZone": "Time Zone"
       }
     }
   },
@@ -3720,7 +3730,9 @@
     "--------PERIOD EDITOR DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Period Editor, Source: period-editor-dialog.html, Fields: repeatInterval, startTime, onHoliday",
     "tooltip.repeatInterval": "Repeat Interval",
     "tooltip.startTime": "Start Time",
-    "tooltip.onHoliday": "On Holiday"
+    "tooltip.onHoliday": "On Holiday",
+    "--------RUN TIME DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Run-time Dialog, Source: run-time-dialog.html, Fields: timeZone",
+    "tooltip.timeZone": "Time Zone"
   },
   "resource": {
     "label.boards": "通知ボード",
