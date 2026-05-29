@@ -10588,6 +10588,17 @@ cdk-virtual-scroll-viewport {
   margin-right: 9px;
 }
 
+// ─── Log console modal hint lines ─────────────────────────────────────────────
+.log-modal-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.log-modal-hint--warning {
+  font-size: 11px;
+  color: var(--warning, #faad14);
+}
+
 .help-info-workflows {
   float: right;
   margin-top: 4px;

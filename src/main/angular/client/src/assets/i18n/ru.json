@@ -2945,6 +2945,9 @@
     "label.predefined.connectionLost": "Connection lost",
     "label.predefined.restart": "Restart",
     "label.predefined.terminated": "Terminated",
+    "label.timeZone": "Time Zone",
+    "label.timeZoneDefault": "Profile timezone",
+    "label.timeZoneModified": "Profile timezone (overridden)",
     "placeholder.selectDate": "Выберите дату",
     "placeholder.selectTime": "Выберите время",
     "placeholder.relativeDateFrom": "например 1d 6h 12h 1w (s/m/h/d/w/M/y)",
@@ -2971,7 +2974,8 @@
     "tooltip.contextLines": "Number of context lines shown above and below each match in filter mode",
     "tooltip.reload": "Reload log",
     "tooltip.download": "Download log",
-    "tooltip.followTail": "Follow tail: auto-scroll to latest entries"
+    "tooltip.followTail": "Follow tail: auto-scroll to latest entries",
+    "tooltip.timeZone": "Time zone"
   },
   "login": {
     "label.account": "Имя пользователя",
@@ -3351,7 +3355,7 @@
     "label.tooltipDelay.immediate": "Показывать сразу (0s)",
     "label.tooltipDelay.short": "Короткая задержка (0.2s)",
     "label.tooltipDelay.medium": "Средняя задержка (0.5s)",
-    "label.tooltipDelay.long": "Длинная задержка (0.5s)",    
+    "label.tooltipDelay.long": "Длинная задержка (0.5s)",
     "label.selectAll": "Выбрать все",
     "label.all": "Все",
     "label.current": "Текущий",
