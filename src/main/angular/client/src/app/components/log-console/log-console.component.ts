@@ -13,6 +13,7 @@ interface ParsedLine {
   text: string;
   raw: string;
   rawLower: string; // pre-lowercased for fast search comparisons
+  globalIdx: number; // index in allLines, set by processLines
 }
 
 /** Contextual block shown in filter mode: match line + N surrounding lines. */
@@ -95,9 +96,9 @@ function parseLine(raw: string): ParsedLine {
     else if (lvlStr === 'ERROR' || lvlStr === 'FATAL') level = 'ERROR';
     else if (lvlStr === 'DEBUG')               level = 'DEBUG';
     else if (lvlStr === 'TRACE')               level = 'TRACE';
-    return { timestamp: m[1], level, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower };
+    return { timestamp: m[1], level, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
   }
-  return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower };
+  return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
 }
 
 /** Predefined quick-search presets. */
@@ -187,6 +188,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private debounceSub?: Subscription;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   private readonly highlightCache = new Map<string, SafeHtml>();
+  private syslogResizeHandler?: () => void;
+  private readonly levelJumpIndices = new Map<string, number>();
 
   constructor(
     private coreService: CoreService,
@@ -195,6 +198,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Persist window size so the next system-log popup opens at the same size.
+    this.syslogResizeHandler = () => {
+      window.localStorage['syslog_window_wt'] = String(window.innerWidth);
+      window.localStorage['syslog_window_ht'] = String(window.innerHeight);
+    };
+    window.addEventListener('resize', this.syslogResizeHandler);
+    this.syslogResizeHandler(); // save initial size immediately
+
     // Debounced search commitment — only recalculates filtered data 300ms after typing stops.
     this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
       this.commitSearch(term);
@@ -229,6 +240,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.searchSub?.unsubscribe();
     this.debounceSub?.unsubscribe();
     this._searchDebounce.complete();
+    if (this.syslogResizeHandler) {
+      window.removeEventListener('resize', this.syslogResizeHandler);
+    }
   }
 
   // ── Search ─────────────────────────────────────────────────────────────────
@@ -435,6 +449,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   copiedOrderId: string | null = null;
+  activeLineIdx: number | null = null;
   private copyFeedbackTimer?: ReturnType<typeof setTimeout>;
 
   private showCopyFeedback(id: string): void {
@@ -448,8 +463,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   jumpToLevel(level: string): void {
     const el = this.logBodyRef?.nativeElement;
     if (!el) return;
-    const target = el.querySelector<HTMLElement>(`.log-line-${level}`);
-    target?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const targets = Array.from(el.querySelectorAll<HTMLElement>(`.log-line-${level}`));
+    if (targets.length === 0) return;
+    const idx = (this.levelJumpIndices.get(level) ?? 0) % targets.length;
+    targets[idx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+    this.levelJumpIndices.set(level, idx + 1);
+    const lineIdx = targets[idx].getAttribute('data-lineidx');
+    if (lineIdx !== null) this.activeLineIdx = Number(lineIdx);
   }
 
   toggleFollowTail(): void {
@@ -547,6 +567,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.token = null;
     this.isComplete = false;
     this.errorMsg = null;
+    this.activeLineIdx = null;
+    this.levelJumpIndices.clear();
     this.fetchLog();
   }
 
@@ -568,6 +590,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         last.raw     += '\n' + parsed.text;
         last.rawLower = last.raw.toLowerCase();
       } else {
+        parsed.globalIdx = this.allLines.length;
         this.allLines.push(parsed);
       }
     }
@@ -648,6 +671,8 @@ export class LogConsoleModalComponent implements OnInit {
 
   logRequest: LogConsoleRequest | null = null;
   isDownloading = false;
+  zones: string[] = [];
+  preferencesTz = '';
 
   /**
    * GUI level options — three tiers only.
@@ -664,13 +689,50 @@ export class LogConsoleModalComponent implements OnInit {
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
 
   ngOnInit(): void {
+    // Resolve user profile timezone
+    if (sessionStorage['preferences']) {
+      try {
+        const prefs = JSON.parse(sessionStorage['preferences']);
+        this.preferencesTz = prefs.zone || '';
+      } catch { /**/ }
+    }
+    if (!this.preferencesTz) {
+      this.preferencesTz = this.coreService.getTimeZone();
+    }
+
+    // Load timezone list for the selector
+    this.coreService.getTimeZoneList((timezones: string[]) => {
+      this.zones = timezones;
+    });
+
+    // Apply context-specific fields from the modal caller
     const data = this.modalData || {};
     if (data.type)         this.type              = data.type;
     if (data.controllerId) this.form.controllerId = data.controllerId;
     if (data.agentId)      this.form.agentId      = data.agentId;
     if (data.subagentId)   this.form.subagentId   = data.subagentId;
-    if (data.timeZone)     this.form.timeZone     = data.timeZone;
     if (data.role)         this.form.role         = data.role;
+
+    // Default timezone = user profile timezone
+    this.form.timeZone = this.preferencesTz;
+
+    // Restore last-used form parameters from session storage
+    const saved = sessionStorage['logConsoleLastForm'];
+    if (saved) {
+      try {
+        const s = JSON.parse(saved);
+        if (s.level !== undefined)      this.form.level      = s.level;
+        if (s.dateMode !== undefined)   this.form.dateMode   = s.dateMode;
+        if (s.dateFrom !== undefined)   this.form.dateFrom   = s.dateFrom;
+        if (s.dateTo !== undefined)     this.form.dateTo     = s.dateTo;
+        if (s.numOfLines !== undefined) this.form.numOfLines = s.numOfLines;
+        if (s.timeZone)                 this.form.timeZone   = s.timeZone;
+        if (s.dateFromDate) this.form.dateFromDate = new Date(s.dateFromDate);
+        if (s.dateFromTime) this.form.dateFromTime = new Date(s.dateFromTime);
+        if (s.dateToDate)   this.form.dateToDate   = new Date(s.dateToDate);
+        if (s.dateToTime)   this.form.dateToTime   = new Date(s.dateToTime);
+      } catch { /**/ }
+    }
   }
 
   get sourceName(): string {
@@ -681,7 +743,12 @@ export class LogConsoleModalComponent implements OnInit {
   }
 
   get effectiveTz(): string {
-    return this.form.timeZone || this.coreService.getTimeZone();
+    return this.form.timeZone || this.preferencesTz;
+  }
+
+  /** True when the user chose a timezone different from their profile timezone. */
+  get isTimezoneModified(): boolean {
+    return !!(this.form.timeZone && this.form.timeZone !== this.preferencesTz);
   }
 
   onTimezoneChange(): void {}
@@ -701,6 +768,7 @@ export class LogConsoleModalComponent implements OnInit {
   }
 
   showLogs(): void {
+    this.saveFormState();
     const req = this.buildLogRequest();
     const params = new URLSearchParams();
     params.set('type', req.type);
@@ -714,8 +782,10 @@ export class LogConsoleModalComponent implements OnInit {
     if (req.timeZone)     params.set('timeZone',     req.timeZone);
     if (req.numOfLines)   params.set('numOfLines',   String(req.numOfLines));
     this.activeModal.destroy();
-    const w = window.innerWidth  || 1400;
-    const h = window.innerHeight || 800;
+    const savedW = window.localStorage['syslog_window_wt'];
+    const savedH = window.localStorage['syslog_window_ht'];
+    const w = savedW ? Number(savedW) : (window.innerWidth  || 1400);
+    const h = savedH ? Number(savedH) : (window.innerHeight || 800);
     const left = Math.max(0, (screen.width  - w) / 2);
     const top  = Math.max(0, (screen.height - h) / 2);
     window.open(
@@ -726,6 +796,7 @@ export class LogConsoleModalComponent implements OnInit {
   }
 
   download(): void {
+    this.saveFormState();
     this.isDownloading = true;
     const req = this.buildLogRequest();
     const apiUrl  = this.getDownloadApiUrl(req.type);
@@ -737,27 +808,47 @@ export class LogConsoleModalComponent implements OnInit {
 
   onTypeChange(): void {}
 
+  private saveFormState(): void {
+    const toSave: any = {
+      level:      this.form.level,
+      dateMode:   this.form.dateMode,
+      dateFrom:   this.form.dateFrom,
+      dateTo:     this.form.dateTo,
+      numOfLines: this.form.numOfLines,
+      timeZone:   this.form.timeZone
+    };
+    if (this.form.dateFromDate instanceof Date) toSave.dateFromDate = this.form.dateFromDate.toISOString();
+    if (this.form.dateFromTime instanceof Date) toSave.dateFromTime = this.form.dateFromTime.toISOString();
+    if (this.form.dateToDate   instanceof Date) toSave.dateToDate   = this.form.dateToDate.toISOString();
+    if (this.form.dateToTime   instanceof Date) toSave.dateToTime   = this.form.dateToTime.toISOString();
+    try { sessionStorage['logConsoleLastForm'] = JSON.stringify(toSave); } catch { /**/ }
+  }
+
   private buildLogRequest(): LogConsoleRequest {
     const tz = this.effectiveTz;
+    // Build a datetime string from picker values without browser-timezone influence,
+    // then interpret it in the effective timezone and send UTC to the API.
+    const buildDateStr = (dateVal: Date, timeVal: Date | null, defaultTime: string): string => {
+      const y  = dateVal.getFullYear();
+      const mo = String(dateVal.getMonth() + 1).padStart(2, '0');
+      const d  = String(dateVal.getDate()).padStart(2, '0');
+      let timePart = defaultTime;
+      if (timeVal) {
+        timePart = `${String(timeVal.getHours()).padStart(2, '0')}:${String(timeVal.getMinutes()).padStart(2, '0')}:${String(timeVal.getSeconds()).padStart(2, '0')}`;
+      }
+      return `${y}-${mo}-${d} ${timePart}`;
+    };
     let dateFrom: string;
     if (this.form.dateMode === 'specific' && this.form.dateFromDate) {
-      const d = moment(this.form.dateFromDate).startOf('day');
-      if (this.form.dateFromTime) {
-        const t = moment(this.form.dateFromTime);
-        d.hours(t.hours()).minutes(t.minutes()).seconds(t.seconds());
-      }
-      dateFrom = moment.tz(d.toDate(), tz).format('YYYY-MM-DDTHH:mm:ssZ');
+      const localStr = buildDateStr(this.form.dateFromDate, this.form.dateFromTime, '00:00:00');
+      dateFrom = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
     } else {
       dateFrom = this.form.dateFrom?.trim() || '1d';
     }
     let dateTo: string | undefined;
     if (this.form.dateMode === 'specific' && this.form.dateToDate) {
-      const d = moment(this.form.dateToDate).startOf('day');
-      if (this.form.dateToTime) {
-        const t = moment(this.form.dateToTime);
-        d.hours(t.hours()).minutes(t.minutes()).seconds(t.seconds());
-      }
-      dateTo = moment.tz(d.toDate(), tz).format('YYYY-MM-DDTHH:mm:ssZ');
+      const localStr = buildDateStr(this.form.dateToDate, this.form.dateToTime, '23:59:59');
+      dateTo = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
     } else {
       dateTo = this.form.dateTo?.trim() || undefined;
     }
@@ -770,7 +861,8 @@ export class LogConsoleModalComponent implements OnInit {
       level:        this.form.level        || 'INFO',
       dateFrom,
       dateTo,
-      timeZone:     this.effectiveTz,
+      // Only send timeZone to API when user selected a zone different from their profile
+      timeZone:     this.isTimezoneModified ? this.form.timeZone : undefined,
       numOfLines:   this.form.numOfLines ? Number(this.form.numOfLines) : undefined
     };
   }

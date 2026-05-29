@@ -10,13 +10,9 @@
   // ─── Toolbar ──────────────────────────────────────────────────────────────
   &-toolbar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
+    flex-direction: column;
     background: var(--bg-footer);
     border-bottom: 1px solid var(--border-color);
-    flex-wrap: wrap;
-    gap: 6px;
   }
 
   &-filters {
@@ -118,6 +114,20 @@
   padding-left: 4px;
 }
 
+// ─── Toolbar rows ─────────────────────────────────────────────────────────
+.log-toolbar-row {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  gap: 6px;
+  width: 100%;
+
+  &--filters {
+    border-top: 1px solid var(--border-color);
+    padding: 3px 10px;
+  }
+}
+
 // ─── Log line ─────────────────────────────────────────────────────────────
 .log-line {
   display: flex;
@@ -125,9 +135,16 @@
   padding: 1px 12px 1px 6px;
   border-left: 3px solid transparent;
   transition: background 80ms;
+  cursor: pointer;
 
   &:hover {
-    background: rgba(128, 128, 128, .06);
+    background: rgba(var(--primary-rgb, 14, 138, 139), 0.05);
+  }
+
+  &--active,
+  &.log-line--active {
+    background: rgba(var(--primary-rgb, 14, 138, 139), 0.12) !important;
+    border-left-color: var(--primary) !important;
   }
 
   // Highlighted match line in filter mode
@@ -139,7 +156,7 @@
 
 .log-ts {
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: var(--text-color);
   margin-right: 8px;
   white-space: nowrap;
   font-size: 11px;
@@ -190,16 +207,41 @@
 .log-line-error { background: rgba(220, 53, 69, 0.05); }
 .log-line-warn  { background: rgba(255, 160,  0, 0.05); }
 
-// ─── Event summary bar ───────────────────────────────────────────────────────
-.log-summary-bar {
+// ─── Log source inline heading ──────────────────────────────────────────────
+.log-source-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.log-source-type {
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.log-source-sep {
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.log-source-value {
+  color: var(--text-color);
+}
+
+// ─── Event summary inline ─────────────────────────────────────────────────────
+.log-summary-inline {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  padding: 4px 10px;
-  background: var(--bg-footer);
-  border-bottom: 1px solid var(--border-color);
   font-size: 11px;
+  margin-left: 6px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
 }
 
 .log-summary-item {
@@ -377,6 +419,20 @@
   white-space: nowrap;
 }
 
+.log-context-lines-input {
+  width: 65px;
+}
+
+// ─── Empty / no-matches state icons ───────────────────────────────────────────
+.log-state-icon {
+  font-size: 26px;
+  color: var(--text-muted);
+
+  &--sm {
+    font-size: 20px;
+  }
+}
+
 // ─── Context blocks (filter mode) ─────────────────────────────────────────────
 .log-context-block {
   border-bottom: 1px dashed var(--border-color);
@@ -422,6 +478,9 @@
   color: var(--green);
   white-space: nowrap;
   animation: log-copy-fadein 200ms ease;
+
+  // Icon inherits color from parent; no inline style needed
+  [nz-icon] { color: inherit; }
 }
 
 @keyframes log-copy-fadein {
@@ -464,5 +523,4 @@ mark.log-search-match {
   padding: 0 1px;
   font-style: normal;
 }
-
 

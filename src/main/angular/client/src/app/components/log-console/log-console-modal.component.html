@@ -108,7 +108,7 @@
             <nz-option [nzValue]="l.value" [nzLabel]="l.label | translate"></nz-option>
           }
         </nz-select>
-        <div class="help-block" style="font-size:11px;color:var(--text-muted)">
+        <div class="help-block log-modal-hint">
           <span translate>logConsole.label.levelDescription</span>
         </div>
       </div>
@@ -123,6 +123,33 @@
                          class="w-full" [nzMin]="1" [nzStep]="100"
                          [nzPlaceHolder]="'logConsole.placeholder.numOfLines' | translate">
         </nz-input-number>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label">
+        <span [appRichTooltip]="'logConsole.tooltip.timeZone' | translate" translate>logConsole.label.timeZone</span>
+      </label>
+      <div class="col-sm-8">
+        <nz-select [(ngModel)]="form.timeZone" name="timeZone" nzShowSearch nzAllowClear
+                   class="w-full" (ngModelChange)="onTimezoneChange()"
+                   [nzPlaceHolder]="preferencesTz">
+          @for (zone of zones; track zone) {
+            <nz-option [nzLabel]="zone" [nzValue]="zone"></nz-option>
+          }
+        </nz-select>
+        @if (!isTimezoneModified && preferencesTz) {
+          <div class="help-block log-modal-hint">
+            <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+            {{ 'logConsole.label.timeZoneDefault' | translate }}: {{ preferencesTz }}
+          </div>
+        }
+        @if (isTimezoneModified) {
+          <div class="help-block log-modal-hint log-modal-hint--warning">
+            <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+            {{ 'logConsole.label.timeZoneModified' | translate }}: {{ preferencesTz }}
+          </div>
+        }
       </div>
     </div>
 
