@@ -1,31 +1,40 @@
 {
   "_template": {
-    "id":          "REQUIRED — YouTube video ID from the URL: youtube.com/watch?v=<ID>",
-    "title":       "OPTIONAL — shown in the modal header (falls back to key name if omitted)",
+    "id": "REQUIRED — YouTube video ID from the URL: youtube.com/watch?v=<ID>",
+    "title": "OPTIONAL — shown in the modal header (falls back to key name if omitted)",
     "description": "OPTIONAL — short text shown below the modal header",
-    "start":       30,
+    "start": 30,
     "_start_note": "OPTIONAL — number of seconds to skip at the start. e.g. 30 means the video begins playing from the 0:30 mark instead of from the beginning. Useful when the relevant content starts mid-video.",
-    "playlist":    "OPTIONAL — YouTube playlist ID; maps to ?list= in the embed URL"
+    "playlist": "OPTIONAL — YouTube playlist ID; maps to ?list= in the embed URL"
   },
-
   "workflows-orders-add": {
-    "id": "U6ISJx7vUeg",
-    "title": "Add Order",
+    "id": "hq5Kil19Ne0",
+    "title": "Add Order to Workflow",
     "description": "How to add an order to a workflow?"
   },
   "workflows-deploy": {
-    "id": "L75msf2xKMo",
+    "id": "Fb8kQJUxy98",
     "title": "Deploy Workflow",
     "description": "How to deploy a workflow?"
   },
   "workflows-remove": {
-    "id": "pws33fDoMBk",
+    "id": "O97w1MmDTW0",
     "title": "Remove Workflow",
-    "description": "How to remove an existing Workflow?"
+    "description": "How to remove an existing workflow?"
   },
   "workflows-revoke": {
-    "id": "eD4XAem40KQ",
+    "id": "SpZuG7FrBOc",
     "title": "Revoke Workflow",
     "description": "How to revoke a workflow?"
+  },
+  "workflows-release": {
+    "id": "QCZ2DxWCZaM",
+    "title": "Release Schedule",
+    "description": "How to release a schedule?"
+  },
+  "workflows-recall": {
+    "id": "Ckf4qSO08cE",
+    "title": "Recall Schedule",
+    "description": "How to recall a schedule?"
   }
 }
