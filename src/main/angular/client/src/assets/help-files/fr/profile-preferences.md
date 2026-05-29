@@ -67,7 +67,7 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 
 ### Préférences de l'éditeur
 
-- **Taille de l'onglet** est utilisé dans l'onglet [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties) lors de l'édition du *Job Script*. Le paramètre spécifie le nombre d'espaces correspondant à la taille lorsque vous appuyez sur la touche TAB.
+- **Taille de tabulation** est utilisé dans l'onglet [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties) lors de l'édition du *Job Script*. Le paramètre spécifie le nombre d'espaces correspondant à la taille lorsque vous appuyez sur la touche TAB.
 
 ### Préférences d'affichage
 
