@@ -279,12 +279,12 @@
     "tooltip.agentId": "The ^Agent ID^ is a unique identifier of an ^Agent^ that cannot be changed during the Agent's lifetime.\n\n^Object Naming Rules^ apply.",
     "tooltip.agentName": "The ^Agent Name^ is a unique designation of an ^Agent^ that can be changed. Agents are assigned to ^Job^s by their Agent Name.\n\n^Object Naming Rules^ apply.",
     "tooltip.title": "The Title of an ^Agent^ can be specified as desired.",
-    "tooltip.agentNameAliases": "An ^Agent^ can be assigned a number of Alias Names. The Agent can be assigned to a ^Job^ or ^File Order Source^ using its Alias Name.\n\n^Object Naming Rules^ apply.",
+    "tooltip.agentNameAliases": "Alias Names are variants of the ^Agent Name^ that are used for an ^Agent^.\n\nThe Agent Name and its Alias Names can be assigned to a ^Job^ or ^File Order Source^.\n\n^Object Naming Rules^ apply.",
     "tooltip.url": "The URL of an ^Agent^ specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, for example, `http://localhost:4445`",
     "tooltip.asStandaloneAgent": "A ^Standalone Agent^ or a ^Director Agent^ in an ^Agent Cluster^ can act as a Cluster Watch. The Agent specified will be created as a Standalone Agent if this checkbox is checked.",
     "tooltip.primaryDirectorId": "The ^Director Agent^ ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime.\n\n^Object Naming Rules^ apply.",
     "tooltip.hidden": "^Agent^s can be hidden to prevent them from being displayed in the ^JOC Cockpit^ user interface. This applies to the *DASHBOARD* view as well as to all occurrences in which Agents are assigned.",
-    "tooltip.processLimit": "^Agent^s by default run an unlimited number of parallel processes for ^Job^s. A Process Limit can be assigned to restrict resource usage. A Process Limit value of 0 will prevent Jobs from starting.",
+    "tooltip.processLimit": "^Agent^s by default run an unlimited number of parallel processes for ^Job^s.\n\nA Process Limit can be assigned to avoid overloading the machine.\n\nA Process Limit value of 0 will prevent Jobs from starting.",
     "tooltip.$js7SubagentProcessCount": "Indicates the number of processes running with the ^Subagent^.",
     "tooltip.$js7ClusterSubagentProcessCount": "Indicates the number of processes running with the ^Subagent^ for the given ^Subagent Cluster^.",
     "tooltip.$js7CpuLoad": "Java documentation [Interface OperatingSystemMXBean](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html): Returns the \"recent cpu usage\" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value.\n\nA negative value is reported as missing. CPU Load is not available for MacOS and is reported as missing.",
@@ -304,7 +304,7 @@
       "tooltip.title": "The Title of an ^Agent Cluster^ can be specified as desired.",
       "tooltip.url": "The URL of a ^Director Agent^ specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, for example, `http://localhost:4445`",
       "tooltip.withGenerateSubagentCluster": "A ^Director Agent^ can be set up as a separate ^Subagent Cluster^ that includes the single Director Agent.\n\nThis allows ^Job^s running on a specific Director Agent.",
-      "tooltip.agentNameAliases": "An ^Agent Cluster^ can be assigned a number of Alias Names.\n\nThe Agent Cluster can be assigned to a ^Job^ or ^File Order Source^ using its Alias Name.\n\n^Object Naming Rules^ apply.",
+      "tooltip.agentNameAliases": "Alias Names are variants of the ^Agent Name^ that can be specified for an ^Agent Cluster^.\n\nThe Agent Cluster Name or its Alias Name can be assigned to a ^Job^ or ^File Order Source^.\n\n^Object Naming Rules^ apply.",
       "tooltip.processLimit": "^Agent^s by default run an unlimited number of parallel processes for ^Job^s. A Process Limit can be assigned to restrict resource usage across all ^Subagent^s in an ^Agent Cluster^. A Process Limit value of 0 will prevent Jobs from starting.",
       "subagent": {
         "tooltip.clusterName": "The ^Subagent Cluster^ Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime.\n\n^Object Naming Rules^ apply.",
@@ -2137,7 +2137,7 @@
     "label.addTagsToWorkflow": "Manage Tags for Workflows",
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
-    "label.testMail": "Test E-Mail",
+    "label.testMail": "Test e-mail",
     "label.impactedSchedules": "Referencing Schedules",
     "label.impactedWorkflows": "Referencing Workflows",
     "label.affectedObjects": "Referencing Objects",
@@ -2241,7 +2241,7 @@
     "button.deleteTag": "Delete Tag",
     "button.deleteTags": "Delete Tags",
     "button.renameTag": "Rename Tag",
-    "button.testMail": "Test E-Mail",
+    "button.testMail": "Test e-mail",
     "button.sendMail": "Send Mail",
     "button.updateDependencies": "Update Dependencies",
     "button.change": "Change",
@@ -2538,13 +2538,13 @@
         "title": "The Title of the ^Workflow^ can be specified as desired.\n\nThe Title is displayed with the *WORKFLOWS* view.\n\nThe Workflow's title can include links in markdown syntax, for example, `[Example](https://www.example.com)`.",
         "timeZone": "The ^Time Zone^ is used for calculation of ^Admission Times^ and for ^Cycle Instruction^s.\n\nBy default the Time Zone specified from the user profile is used.",
         "allowUndeclared": "Allows undeclared variables from ^Order^s.\n\nThis includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\nJob^s will fail when referencing undeclared variables that are not available from an Order.",
-        "duration": "Duration.",
+        "duration": "??? 2541: Not used: Duration.",
         "board": {
           "expectBoardName": "The name of a ^Notice Board^ is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
           "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s will be created by the ^PostNotices Instruction^.",
-          "expectBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used, optionally including bracketing",
-          "consumeBoardExpression": "The expression is used by an ^Expecting Order^ to specify a single ^Notice Board^ and to specify Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used optionally including bracketing",
-          "whenNotAnnounced": "By default ^Notice^s are waited for. In case that no ^Notice^ is announced, the following options are offered:\n- **wait** for Notice.\n- **process** the ^Order^ and continue immediately on days for which no Notice is announced.\n- **skip** the current instruction on days for which no Notice is announced."
+          "expectBoardExpression": "The expression is used for ^Expecting Order^s and specifies a single ^Notice Board^ or Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used, optionally including bracketing",
+          "consumeBoardExpression": "The expression is used for an ^Expecting Order^s and specifies a single ^Notice Board^ or Boolean logic: `( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'`.\n\nThe Notice Board names are quoted and the *&&* (and) operator and *||* (or) operator can be used optionally including bracketing",
+          "whenNotAnnounced": "By default ^Order^s are waiting for ^Notice^s. In case that no Notice is announced, the following options are offered:\n- **wait** for Notice.\n- **process** the Order and continue immediately on days for which no Notice is announced.\n- **skip** the current instruction on days for which no Notice is announced."
         },
         "fail": {
           "message": "The instruction allows specifying a message that is attached the ^Order^ and that becomes visible with the Order History.",
@@ -2558,7 +2558,7 @@
           "unchanged": "Specifies that the ^Order^'s current execution status being successful or failed will remain unchanged with the Order History."
         },
         "options": {
-          "stopOnFailure": "The setting impacts instructions such as ^Lock Instruction^, ^ConsumeNotices Instruction^ and ^Cycle Instruction^. It causes ^Order^s in case of errors to remain with the current instruction instead of returning to the begin of the respective ^Lock Instruction^, ^ConsumeNotices Instruction^ or ^Cycle Instruction^."
+          "stopOnFailure": "The setting impacts instructions such as ^Lock Instruction^, ^ConsumeNotices Instruction^ and ^Cycle Instruction^. It causes ^Order^s in case of errors to remain with the current instruction instead of returning to the begin of the respective instruction."
         },
         "fileWatch": {
           "directory": "The Directory that is watched for incoming files.",
@@ -2572,7 +2572,7 @@
           "children": "List Variable for dynamic forking: expects the name of a Workflow Variable that holds a list of elements.\n\nFor each element of the List Variable a branch will be created dynamically from the assigned ^ForkList Instruction^.\n\nThe number of List Variable elements determines the number of parallel branches of the ^ForkList Instruction^ that are executed in parallel by Child Orders.",
           "childToId": "List element for branch mapping: expects the name of an element within the selected List Variable that holds a unique identifier for the branch that should be created dynamically.",
           "joinIfFailed": "A Child Order is terminated in case of failure. The Parent Order will be set to the ^failed^ state.",
-          "agentAssignment": "The ^ForkList Instruction^ is assigned a ^Subagent Cluster^ that specifies a number of ^Subagent^s on which ^Job^s are executed in parallel. Two options for assignment are offered:\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the ^Subagent Cluster ID^.\n\nThis includes specifying a Workflow Variable, optionally carried by an Order that specifies the Subagent Cluster.",
+          "agentAssignment": "The ^ForkList Instruction^ is assigned a ^Subagent Cluster^ that specifies a number of ^Subagent^s on which ^Job^s are executed in parallel. Two options for assignment are offered:\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the ^Subagent Cluster ID^.\n\nThis includes specifying a Workflow Variable, optionally carried by an Order that indicates the ^Subagent Cluster ID^.",
           "subagent": "Allows selecting the ^Subagent Cluster^ from which all available ^Agent^s will be used to execute ^Job^s in parallel within the ^ForkList Instruction^.",
           "agentCluster": "The ^Agent Cluster^ is selected from which the ^Subagent Cluster ID^ is specified by an expression in a separate input field.",
           "subagentClusterIdExpr": "The Expression specifies the ^Subagent Cluster ID^ from a variable. If no expression is specified, then the `js7ForkListSubagentClusterId` variable will be used. If a variable is specified, then it should hold the ^Subagent Cluster ID^.",
@@ -2583,7 +2583,7 @@
           "agentAssignment": "The ^StickySubagent Instruction^ is assigned a ^Subagent Cluster^ that specifies a number of ^Subagent^s from which one Subagent will be selected. Two options for assignment are offered:\n- selection of a Subagent Cluster that allows selecting from a list.\n- input of an expression that specifies the ^Subagent Cluster ID^. This includes specifying a Workflow Variable, optionally carried by an ^Order^ that specifies the Subagent Cluster.",
           "subagent": "Allows selecting the ^Subagent Cluster^ from which one ^Subagent^ will be used to execute ^Job^s within the ^StickySubagent Instruction^.",
           "agentCluster": "The ^Agent Cluster^ is selected from which the ^Subagent Cluster^ is specified by an expression in a separate input field.",
-          "subagentClusterIdExpr": "The Expression specifies the ^Subagent Cluster ID^ from a variable. If no expression is specified, then an arbitrary ^Subagent^ of the given ^Agent Cluster^ will be used. If a variable is specified, then it should hold the Subagent Cluster ID.",
+          "subagentClusterIdExpr": "The Expression specifies the ^Subagent Cluster ID^ from a variable. If no expression is specified, then an arbitrary ^Subagent^ of the given ^Agent Cluster^ will be used. If a variable is specified, then it must hold the Subagent Cluster ID.",
           "infoMessage": "Visit the documentation at [JS7 - StickySubagent Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters)"
         },
         "if": {
@@ -2609,7 +2609,7 @@
           "criticality": "The Criticality of ^Job^s can be used in ^Notification^s to better distinguish the urgency of an incident.",
           "failOnOutputErr": "If a ^Job^ writes output to the *stderr* channel, then this is considered an error and the ^Order^ is set to the ^failed^ state.",
           "warnOnOutputErr": "If a ^Job^ writes output to the *stderr* channel, then this is considered a warning. Job execution is considered successful and the ^Order^ continues. A ^Notification^ is created for the warning.",
-          "admissionTime": "^Admission Times^ rule access to ^Job^s, for example, based on weekdays and hours.\n\nAn ^Order^ waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
+          "admissionTime": "^Admission Times^ rule access to ^Job^s, for example, based on weekdays and hours, month days etc.\n\nAn ^Order^ waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
           "skipIfNoAdmissionForOrderDay": "The ^Job^ is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the ^Job Instruction^ until the Admission Time is reached.",
           "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the ^AdmissionTimes Instruction^ until the Admission Time is reached.",
           "killAtEndOfAdmissionPeriod": "A ^Job^ will be forcibly terminated if it exceeds the ^Admission Times^ period.",
@@ -2633,8 +2633,8 @@
           "weekDays": "Weekdays can be individually selected.",
           "monthDays": "Month Days are counted from the first to the last day of month or vice versa.",
           "dayNumber": "Specific Weekdays allow determining the recurrence of the weekday in a month, for example, the first, second, last etc. occurrence.",
-          "startTime": "The period begin specifies when a cycle will initially become active. Values are specified from the *hh:mm:ss* format, for example, `00:00:00` indicates midnight.",
-          "duration": "Specifies the duration for which the cycle is active.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`.",
+          "startTime": "The period begin specifies when a cycle will initially be executed. Values are specified from the *hh:mm:ss* format, for example, `00:00:00` indicates midnight.",
+          "duration": "Specifies the duration for which the cycle is repeated.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`.",
           "cycleType": "The cycle type is one of\n- **periodical**: using individual start times per period\n- **continuous**: applying a fixed pause between start times\n- **ticking**: using a fixed start time interval",
           "periodical": "The *periodical* Cycle Type allows specifying individual start times per period in seconds or minutes, for example, `0`, `15m`, `25m`, `47m`.\n\nIn this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
           "continuous": "The *continuous* Cycle Type specifies a fixed interval, i.e. a pause, between the last cycle run and the next cycle start independently from the execution time that might be different per cycle run.",
@@ -2642,33 +2642,33 @@
           "interval": "The interval for the *ticking* Cycle Type specifies the frequency of cycle runs, for example, every 5 minutes.\n\nValues can be specified in hours, minutes, seconds, for example, `1h`, `60m`, `3600s`. In addition the *hh:mm:ss* format can be used as in `01:00:00` for an hourly cycle run.",
           "pause": "The pause for the *continuous* Cycle Type specifies the interval between completion of the last cycle and start of the next cycle.\n\nValues can be specified in hours, minutes, seconds, for example, `1h`, `60m`, `3600s`. In addition the *hh:mm:ss* format can be used as in `01:00:00` for a one hour's pause between cycle runs.",
           "limit": "For the *continuous* Cycle Type a limit for the max. number of cycle runs can be specified.",
-          "offsets": "The offsets for a *periodical* Cycle Type specify the points in time within the given period when the cycle starts.\n\nValues can be specified in seconds or minutes, for example, `0`, `15m`, `25m`, `47m`. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
-          "period": "The period specifies the duration for which a cycle is active.\n\nThe cycle will start from the period begin and will be repeated according to its Cycle Type for the specified duration.",
+          "offsets": "The offsets for a *periodical* Cycle Type specify the points in time within the given period when the cycle is executed.\n\nValues can be specified in seconds or minutes, for example, `0`, `15m`, `25m`, `47m`. In this example the cycle will start at the begin of each hour and at the 15th, 25th and 47th minute provided that an hourly period is specified.",
+          "period": "The period specifies the duration for which a cycle is executed.\n\nThe cycle will start from the period begin and will be repeated according to its Cycle Type for the specified duration.",
           "periodBeginOfAdmissionTime": "Specifies the begin of the Job's Admission Times.\n\nValues are specified from the *hh:mm:ss* format, for example, `00:00:00` indicating midnight.",
-          "durationOfAdmissionTime": "Specifies the duration of the Job's Admission Times.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`."
+          "durationOfAdmissionTime": "Specifies the duration of the ^Job^'s ^Admission Times^:\n- ^Order^s arriving within the duration will execute the Job immediately.\n- Orders arriving after the duration elapsed will wait for the next Admission Time.\n\nValues are specified in hours, minutes or seconds, for example, `1h`, `3600s`, `60m`, or from the *hh:mm:ss* format, for example, `01:00:00`."
         },
         "addOrder": {
           "workflowName": "The ^AddOrder Instruction^ allows adding ^Order^s to the specified ^Workflow^.",
           "arguments": "Arguments have to be added to the ^Order^ if required by the target ^Workflow^. Optional arguments can be omitted.",
-          "remainWhenTerminated": "After termination the ^Order^ remains with the ^Workflow^. This requires manually performing the *Leave Workflow* operation that is available from the *WORKFLOWS* view.",
+          "remainWhenTerminated": "After termination the ^Order^ remains with the ^Workflow^.\n\nThis requires manually performing the *Leave Workflow* operation that is available from the *WORKFLOWS* view.",
           "startPosition": "Specifies a later position in the ^Workflow^ from which the ^Order^ will start:\n- **No Start Position** is specified, then the Order will start from the first node.\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected as the Start Position from which the Order will start.\n- **Block Position** is specified, then the Start Position is a same-level node inside the block.",
-          "endPositions": "Specifies End Positions when the ^Order^ should leave the ^Workflow^:\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.\n- **Block Position** is specified, then any same-level node inside the block can be specified before which the Order will terminate.\n- **No End Position** is specified, then the Order will terminate when reaching the end of the block.\n\nMore than one End Position can be specified.",
+          "endPositions": "Specifies end positions when the ^Order^ should leave the ^Workflow^:\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.\n- **Block Position** is specified, then any same-level node inside the block can be specified before which the Order will terminate.\n- **No End Position** is specified, then the Order will terminate when reaching the end of the block.\n\nMore than one end position can be specified.",
           "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of the Jobs or the ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
           "blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected:\n- The ^Order^ will start in the Workflow at the beginning of the block instruction or at a later Start Position.\n- The Order will leave the Workflow when reaching the end of the block instruction or an earlier End Position."
         },
         "lock": {
           "name": "Names of ^Resource Lock^s are unique in the ^Inventory^.\n\nSections in ^Workflow^s can be limited in parallelism by use of the ^Lock Instruction^:\n- **Exclusive**: only one Lock Instruction can hold the Resource Lock.\n- **Shared**: Multiple Lock Instructions can hold the Resource Lock if their combined weight matches the remaining capacity.\n\n^Order^s remain in the ^waiting^ state until the Resource Locks specified become available.",
-          "count": "The Weight for use of a ^Resource Lock^ is calculated towards its capacity.\n\nIf the capacity is exceeded, then ^Order^s must wait until a capacity is available that matches or exceeds the current Weight."
+          "count": "The weight for use of a ^Resource Lock^ is calculated towards its capacity.\n\nIf the capacity is exceeded, then ^Order^s must wait until a capacity is available that matches or exceeds the current Weight."
         },
         "prompt": {
-          "question": "The ^Prompt Instruction^ includes that ^Workflow^ execution will be temporarily stopped. ^Order^s are set to the ^prompting^ state.\n\nUsers can check the Message that is assigned the ^Prompt Instruction^ and can confirm execution of the Workflow. The Order will be set to the ^running^ state."
+          "question": "The ^Prompt Instruction^ includes that ^Workflow^ execution will be temporarily stopped. ^Order^s are set to the ^prompting^ state.\n\nUsers can check the Message that is assigned the Prompt Instruction and can confirm execution of the Workflow. The Order will be set to the ^running^ state."
         },
         "retry": {
           "maxTries": "When reaching the max. number of Retries, then the ^Retry Instruction^ will end and the ^Order^ will be set to the ^failed^ state.",
           "delay": "The Delay specifies the time in seconds before the next retry is performed.\n\nIf a number of values are specified - separated by a comma - then each value from left to right applies to the period that the next retry is waited for."
         },
         "cycle": {
-          "onlyOnePeriod": "A cycle can specify more than one period, for example, for 13:00, 14:00, 15:00 with each cycle lasting for 30 minutes. By default an ^Order^ arriving at 13:45 will run both cycles for 14:00 and 15:00.\n\nWhen using the setting *One period only*, then an ^Order^ will run the first matching period only and will not consider later periods."
+          "onlyOnePeriod": "For the ^Cycle Instruction^ a number of periods can be specified, for example, 08:00 to 10:00 and 11:00 to 14:00. By default an ^Order^ arriving at 09:00 will run in both periods.\n\nWhen using the setting *One period only*, then an ^Order^ will run the first matching period only and will not consider later periods."
         }
       },
       "--------ADD EXPORT MISSING TOOLTIPS------------": "",
@@ -2679,7 +2679,7 @@
         "fileFormat": "Specifies zip or tar.gz for the compression type.",
         "exportType": "Is one of\n- **Individual Objects**: users select objects from the ^Inventory^ tree.\n- **Folders**: users select folders holding objects.\n- **Changes**: users select a ^Change^ that includes all objects directly assigned the Change and dependent objects that are referencing or are referenced by objects assigned the Change.",
         "objectTypes": "Allows selecting ^Inventory^ object types that should be included with the export file, for example, ^Workflow^s, ^Job Resource^s, ^Schedule^s etc.",
-        "forSigning": "For Signing",
+        "forSigning": "When operating JOC Cockpit in ^High Security Level^, to ^deploy|deployment^ objects they must be exported, must be digitally signed and imported/deployed.",
         "inclusiveAllTags": "Offers adding ^Tag^s to the export file.\n\nThis includes all of Workflow Tags, Order Tags and Job Tags.\n\nOn import users can decide to import Tags from an export file.",
         "filterType": "Offers selecting **Controller** and/or **Automation** objects located in the related system folders.",
         "filter": "Offers filtering ^Inventory^ objects for addition to the export file based on their status.\n- **Invalid Objects** can be exported and can be imported, though they cannot be deployed or released.\n- **Draft Objects** include changes that have not been deployed or released.\n- **Deployed Objects** are ^deployed|deployment^ on a ^Controller^.\n- **Released Objects** are available in the *Automation* system folder and are ^released|releasing^ for use.",
@@ -2691,10 +2691,10 @@
       },
       "--------ADD DEPLOY MISSING TOOLTIPS------------": "",
       "deploy": {
-        "controllers": "Offers selecting the ^Controller^ to which objects will be deployed.\n\nMore than one Controller can be connected to ^JOC Cockpit^ that will receive deployed objects.\n\nBy default the currently selected Controller will be used.",
+        "controllers": "Offers selecting the ^Controller^ to which objects will be ^deployed|deployment^.\n\nMore than one Controller can be connected to ^JOC Cockpit^ that will receive deployed objects.\n\nBy default the currently selected Controller will be used.",
         "updateDailyPlan": "Specifies that ^Order^s will be added to or will be updated in the ^Daily Plan^:\n- **Now**: starting from the current time.\n- **Start Date**: starting from the date specified.\n- **No**: the Daily Plan remains unchanged.",
         "specificDate": "Specifies the date starting from which ^Order^s will be added to or will be updated in the ^Daily Plan^.",
-        "deployType": "Offers deployment from the following options:\n- **Individual Objects**: users select objects individually from the tree of ^Inventory^ objects. This includes selecting folders.\n- **Changes**: users select a ^Change^ that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
+        "deployType": "Offers ^Deployment^ from the following options:\n- **Individual Objects**: users select objects individually from the tree of ^Inventory^ objects. This includes selecting folders.\n- **Changes**: users select a ^Change^ that holds objects directly assigned the Change and objects that are referencing or are referenced by objects assigned the Change.",
         "includeTodaysLateOrders": "Updates Orders in today's ^Daily Plan^ that are late as they have been prevented from starting at the scheduled time.",
         "filter": "Offers adding ^Inventory^ objects based on their ^Deployment^ status.\n\nInvalid objects cannot be deployed.\n\nDraft objects include changes that have not been deployed or released.",
         "handleRecursively": "Deploys ^Inventory^ objects from sub-folders too.",
@@ -2965,7 +2965,7 @@
     "tooltip.dateFrom": "Specifies the date from which log output is displayed.\n- **Relative Date**: selects a period relative to the current time using a ^Date Formula^.\n- **Specific Date**: selects date and time.",
     "tooltip.dateTo": "Specifies the date up to which log output is displayed.\n- **Relative Date**: selects a period relative to the current time using a ^Date Formula^.\n- **Specific date**: selects date and time.",
     "tooltip.dateType": "Specifies how a date is entered:\n- **Relative date**: selects a period relative to the current time using a ^Date Formula^.\n- **Specific date**: selects date and time.",
-    "tooltip.level": "Limits log output to lines using the matching Log Level:\n- **INFO**: informational output\n- **WARN**: warnings are temporary, for example, connection loss to an ^Agent^\n- **ERROR**: temporary or persistent problem that needs attention.\n- **DEBUG**: detailed output for use by support team\n- **TRACE** highly detailed output used by developers.",
+    "tooltip.level": "Limits log output to lines using the matching Log Level and following levels:\n- **ERROR**: temporary or persistent problem that needs attention\n- **WARN**: warnings are temporary, for example, connection loss to an ^Agent^\n- **INFO**: informational output\n- **DEBUG**: detailed output for use by Support Team\n- **TRACE** highly detailed output used by developers",
     "tooltip.numOfLines": "Limits log output to the indicated number of lines.\n\nIf not specified, then a running log will be displayed that is updated automatically on arrival of next log output.",
     "tooltip.search": "Search in log content, for example, use keywords, log levels, or ^Order ID^s.\n\nDouble-click an Order ID to select, copy and search for.",
     "tooltip.predefined": "Selects from a list of presets for searching log content:\n- **Exception**: problems hinting at wrong use or bugs in the software\n- **ERROR**: errors that need attention\n- **WARN**: temporary errors\n- **Controller started**: startup sequence of Controller\n- **Agent started**: startup sequence of Agent\n- **Connection lost**: connection to Controller or Agent lost\n- **Restarted**: restart sequence of Controller or Agent\n- **Shutdown**: Controller or Agent terminated",
@@ -3069,7 +3069,7 @@
       },
       "--------MONITOR - ACKNOWLEDGE MODAL------------": "",
       "tooltip": {
-        "comment": "Comment"
+        "comment": "Accepts a comment that explains why the ^Notification^ was acknowledged."
       }
     },
     "approvalRequest": {
@@ -3113,7 +3113,7 @@
         "addNewApprover": "Add Approver Profile",
         "firstName": "First Name",
         "lastName": "Last Name",
-        "email": "E-Mail",
+        "email": "E-mail",
         "approversFound": "Approver Profile entries found",
         "approverFound": "Approver Profile entry found"
       },
@@ -3123,13 +3123,13 @@
       "placeholder": {
         "firstName": "Enter First Name",
         "lastName": "Enter Last Name",
-        "email": "Enter E-Mail"
+        "email": "Enter E-mail"
       },
       "--------ADD APPROVER TOOLTIPS------------": "Page: Monitor, Sub-tab: Approver Profiles, Pop-up: Add Approver Profile, Source: add-approver-dialog.html, Fields: firstName, lastName, email",
       "tooltip": {
-        "firstName": "First name",
-        "lastName": "Last name",
-        "email": "E-mail address"
+        "firstName": "Specifies the Approver's first name.",
+        "lastName": "Specifies the Approver's last name.",
+        "email": "Specifies the Approver's e-mail address."
       }
     }
   },
@@ -3294,7 +3294,7 @@
       },
       "startTime": {
         "--------START TIME DIALOG TOOLTIPS------------": "Page: Workflows / Daily Plan / Order overview, Sub-tab: -, Pop-up: Set Start Time, Source: start-time-dialog.html, Fields: ignoreAdmissionTimes, stickToDailyPlanDate, startTime, time, enterDateAndTime, repeatTime, specificDate, begin, end",
-        "plannedStart": "Indicates the original start time of an ^Order^.",
+        "plannedStart": "Indicates the original start time of the ^Order^.",
         "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThe option ignores Admission Times and forces the start of Jobs.",
         "stickToDailyPlanDate": "Allows modifying the start time of ^Order^s and keep their original ^Daily Plan^ assignment.\n\n^Notice^s created from Orders will resolve to the original Daily Plan date and will match ^Expecting Order^s waiting for Notices for that date.",
         "startTime": "The ^Order^'s start time in the format *hh:mm:ss*.",
@@ -3380,11 +3380,11 @@
     "label.licenseWarningGotIt": "License Warning acknowledged",
     "label.showMoreOptions": "Show more options",
     "label.tabSize": "Tab Size",
-    "label.listVariableCollapse": "Collapse list variable",
+    "label.listVariableCollapse": "Collapse list variables",
     "label.customizeWorkflowLayout": "Customize Workflow Layout",
     "label.orientation": "Orientation",
-    "label.interRankCellSpacing": "Spacing between instructions on adjacent layers",
-    "label.intraCellSpacing": "Spacing between instructions on the same layer",
+    "label.interRankCellSpacing": "Spacing between vertical instructions",
+    "label.intraCellSpacing": "Spacing between horizontal instructions",
     "label.edgeRounded": "Round Edges for Connections",
     "label.horizontal": "Horizontal",
     "label.vertical": "Vertical",
@@ -3584,7 +3584,7 @@
       "label.gitAccount": "Git Account",
       "label.gitServer": "Git Server",
       "label.userName": "Git Username",
-      "label.emailAddress": "E-Mail Address",
+      "label.emailAddress": "E-mail Address",
       "label.gitPassword": "Git Password",
       "label.keyfilePath": "Path to Git Private Key",
       "label.gitAccessToken": "Git Access Token",
@@ -3598,8 +3598,8 @@
       "--------ADD GIT MANAGEMENT TOOLTIPS------------": "Page: Profile, Sub-tab: Git Management, Pop-up: Manage Git Credentials, Source: git-dialog.html, Fields: gitServer, gitAccount, userName, emailAddress, gitPassword, keyfilePath, gitAccessToken, authenticationType",
       "tooltip.gitServer": "The hostname of the *Git Server* in use, for example, `github.com`",
       "tooltip.gitAccount": "The name of the *Git Account* used to authenticate with the *Git Sever*",
-      "tooltip.userName": "The *Git Username* is the name of a user who applies changes to a local repository.",
-      "tooltip.emailAddress": "E-Mail address assigned the *Git Username*",
+      "tooltip.userName": "The *Git Username* is the name of a user who applies changes to a repository.",
+      "tooltip.emailAddress": "E-mail address assigned the *Git Username*",
       "tooltip.gitPassword": "Password assigned the *Git Account*",
       "tooltip.keyfilePath": "Path to a Private Key file used for authentication with the *Git Server*.\n\nThe location of the Private Key is considered for the respective ^JOC Cockpit^ instance, for details see [JS7 - Profiles - Git Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Git+Management).",
       "tooltip.gitAccessToken": "The Access Token used for authentication with the *Git Server*",
@@ -3937,7 +3937,7 @@
     "placeholder.enterKioskInteger": "Enter 0 or a number >10 seconds",
     "cleanup": {
       "time_zone": "Specifies the ^Time Zone^ applied to the start time and to the period of *Cleanup Service* execution.",
-      "period": "Specifies weekdays on which the *Cleanup Service* is performed.\n\nThe first day of week is considered being Monday. When initially installing JS7, the default specifies the full week.\n\nWithout this setting the *Cleanup Service* will not start.",
+      "period": "Specifies weekdays on which the *Cleanup Service* is executed.\n\nWhen initially installing JOC Cockpit, the default specifies the full week.\n\nWithout this setting the *Cleanup Service* will not start.",
       "period_begin": "Specifies the start time of the *Cleanup Service* for the given period, for example, on a daily basis.",
       "period_end": "Specifies the end of the period for which the *Cleanup Service* is allowed to run.\n\nIf the *Cleanup Service* completes earlier, then it will stop before the indicated time.\n\nThe *Cleanup Service* will not continue running beyond the indicated time.",
       "batch_size": "Specifies the number of records that are purged within a single transaction.\n\nIncreasing this value can improve performance, at the same time it will increase the risk of conflicts with concurrent transactions should parallel Services operate on the database.",
@@ -4202,7 +4202,7 @@
     "label.sessions": "Active Sessions",
     "label.sessionsFound": "Sessions found",
     "label.sessionFound": "Session found",
-    "label.approvalsConfirmationEmail": "Approval Request E-Mail",
+    "label.approvalsConfirmationEmail": "Approval Request E-mail",
     "label.banned": "Blocked",
     "button.addGroupRole": "Add Group/Roles",
     "button.addIdentityService": "Add Identity Service",
@@ -4431,7 +4431,7 @@
         "iamResidentKey": "The Resident Key (*discoverable credentials*) requirement specifies that the user's private key is stored in the security key.\n\nFor FIDO2 and Passkey protocols a Resident Key is required.",
         "iamAuthenticatorType": "The Authenticator Type can be **roaming** or **platform**.\n\nRoaming Authenticators ship on a security key such as a USB Stick or smartphone and limit availability of the user's private key to the respective device.\n\nPlatform Authenticators store the user's private key on the platform, for example, on a computer or phone and allow the private key to be replicated to other user devices such as tablets.\n\nPlatform authenticators frequently store security keys in the cloud to allow synchronization with user devices.",
         "iamRequireAccount": "The requirement to specify the user's Account during authentication can be considered an additional authentication factor. During registration users have to specify an account, when it comes to authentication, then JS7 administrators can force the account to be specified.",
-        "emailSettings": "E-Mail Settings include specifying the mail server connection and the events on which e-mail will be sent for confirmation or ^Notification^ purposes.",
+        "emailSettings": "E-mail Settings include specifying the mail server connection and the events on which e-mail will be sent for confirmation or ^Notification^ purposes.",
         "jobResource": "The E-mail Job Resource specifies a reference that holds variables required for the connection to the mail server. This includes the mail server's SMTP hostname, port, protocol and authentication used when sending mail.",
         "contentType": "The E-mail Content Type frequently specifies `text/html` or `text/plain` for the format of the mail body.",
         "charset": "The E-mail Charset specifies the character set used for the mail body which frequently is `ISO-8859-1` or `UTF-8`.",
@@ -4796,16 +4796,16 @@
     "tooltip.listOfSchemes": "The list of ^Admission Times^ defined for this ^Workflow^.",
     "tooltip.admissionTime": "The periods in ^Admission Times^ for which ^Orders|order^ can start.",
     "--------ADD WORKFLOW FORM FILTER TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: -, Source: form-template.html, Fields: customizationName, regex, folders, handleRecursively, agents, workflowTagging, orderTagging, workflowAvailabilityStatus, jobAvailabilityStatus, sharedCustomization",
-    "tooltip.customizationName": "Customization name",
+    "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
     "tooltip.regex": "A ^Regular Expression^ specifies the pattern used to match the name or title of a ^Workflow^. For example, `test` matches the string `a-test-b`, `[0-9]{8}-test` matches the string `a-20260515-test-b`.",
-    "tooltip.folders": "Folders",
+    "tooltip.folders": "Limits display to ^Workflow^s from selected folders.",
     "tooltip.handleRecursively": "Includes sub-folders.",
-    "tooltip.agents": "Agents",
-    "tooltip.workflowTagging": "Workflow Tags.",
-    "tooltip.orderTagging": "Order Tags",
-    "tooltip.workflowAvailabilityStatus": "Workflow Availability Status",
-    "tooltip.jobAvailabilityStatus": "Job Availability Status",
-    "tooltip.sharedCustomization": "Shared Customization",
+    "tooltip.agents": "Limits display to ^Workflow^s that include ^Job^s that are assigned one of the selected ^Agent^s.",
+    "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned the selected ^Tag^s.",
+    "tooltip.orderTagging": "Limits display to ^Workflow^s holding ^Order^s assigned the selected ^Tag^s.",
+    "tooltip.workflowAvailabilityStatus": "Limits results to ^Workflow^s with the following status:\n- **Synchronized** between ^Inventory^ and ^Controller^.\n- **Not Synchronized** Workflows are not available with the Controller.\n- **Suspended** Workflows are put on hold by user intervention.\n- **Outstanding** response from one or more ^Agent^s missing after Workflows have been suspended or resumed.",
+    "tooltip.jobAvailabilityStatus": "Limits results to ^Workflow^s with the following ^Job^ availability status:\n- **Skipped** Jobs will be skipped by ^Order^s.\n- **Stopped** Jobs will ^suspend|suspended^ Orders.",
+    "tooltip.sharedCustomization": "The ^Customization^ will be shared with other users of ^JOC Cockpit^ for read access.",
     "--------BULK ADD ORDER DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Bulk Add Order, Source: bulk-add-order-dialog.html, Fields: orderName, ignoreAdmissionTimes, startTime, time, enterDateAndTime, priority",
     "tooltip.orderName": "The ^Order Name^ is a non-qualifying part of the ^Order ID^.\n\nUsers can freely specify the Order Name when creating ^Schedule^s and when adding on-demand Orders.\n\nThe Order Name can be used to search for Orders, for example, in the *HISTORY* view.",
     "tooltip.ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThe option ignores Admission Times and forces the start of Jobs.",
@@ -4814,7 +4814,7 @@
     "tooltip.priority": "If an ^Order^ meets a ^Lock Instruction^ in the ^Workflow^ that limits parallelism, then its ^Order Priority^ determines the position in the queue of ^waiting^ Orders.",
     "tooltip.enterDateAndTime": "Specifies date and time when the ^Order^ should start.",
     "--------ADD SCHEDULES DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Add Schedules, Source: add-schedules-dialog.html, Fields: schedules",
-    "tooltip.schedules": "Schedules",
+    "tooltip.schedules": "??? 4817: where is this used? Schedules",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Updates the *Title* of selected objects.",
     "tooltip.jobResourceNames": "Updates ^Job Resource^ references in selected objects.",
