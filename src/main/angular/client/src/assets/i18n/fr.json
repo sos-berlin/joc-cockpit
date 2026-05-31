@@ -589,7 +589,7 @@
     "label.relativeDate": "Date relative",
     "label.relativeTime": "Relatif à l'heure actuelle",
     "label.relativeTimeFromCurrentTime": "Relatif à l'heure de démarrage",
-    "label.processExecuted": "Processus exécuté",
+    "label.processExecuted": "Date d'exécution",
     "label.selectController": "Choisissez le Contrôleur",
     "placeholder.setEndDate": "Définir la date de fin",
     "placeholder.setStartDate": "Définir la date de démarrage",

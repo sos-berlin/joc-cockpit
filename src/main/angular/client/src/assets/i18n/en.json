@@ -589,7 +589,7 @@
     "label.relativeDate": "Relative Date",
     "label.relativeTime": "Relative to Current Time",
     "label.relativeTimeFromCurrentTime": "Relative to Start Time",
-    "label.processExecuted": "Process executed",
+    "label.processExecuted": "Execution date",
     "label.selectController": "Choose Controller",
     "placeholder.setEndDate": "Set End Time",
     "placeholder.setStartDate": "Set Start Time",
