@@ -53,7 +53,7 @@
         @if (object.type === 'changes' && operation === 'store') {
           <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'inventory.repository.tooltip.name' | translate" translate>common.label.name</span>
+              <span [appRichTooltip]="'inventory.repository.tooltip.change' | translate" translate>inventory.export.label.change</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">

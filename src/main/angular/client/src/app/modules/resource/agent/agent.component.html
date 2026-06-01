@@ -139,26 +139,33 @@
                           <span (click)="navToController(cluster, null);$event.stopPropagation()"
                                 [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
                                 [appRichTooltip]="cluster.path"
-                                class="text text-ellipsis1 cursor m-l-xs"></span>
+                                class="text text-ellipsis1 cursor m-l-sm"></span>
                         </div>
-                        @if (permission.currentController && permission.currentController.switchOver) {
-                          <div class="btn-group dropdown pull-right abt-dropdown ">
-                            <a [nzDisabled]="!!cluster.url" [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown
-                               nzPlacement="bottomRight" nzTrigger="click">
-                              <i class="text fa fa-ellipsis-h"></i></a>
-                            <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                              <ul nz-menu>
+                        <div class="btn-group dropdown pull-right abt-dropdown ">
+                          <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown
+                              nzPlacement="bottomRight" nzTrigger="click">
+                            <i class="text fa fa-ellipsis-h"></i></a>
+                          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
                                 <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
                                   <a translate>dashboard.button.switchOver</a>
                                 </li>
+                              }
+                              @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
                                 <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                                     nz-menu-item>
                                   <a translate>agent.button.confirmNodeLoss</a>
                                 </li>
-                              </ul>
-                            </nz-dropdown-menu>
-                          </div>
-                        }
+                              }
+                              @if (cluster.url) {
+                                <li (click)="logs(cluster)" nz-menu-item>
+                                  <a translate>agent.button.logs</a>
+                                </li>
+                              }
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
                       </div>
                       <div class="text-sm text-left text-muted p-t-xs">
                         <span translate>agent.label.agentName</span>:
@@ -303,10 +310,12 @@
                             </button>
                             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                               <ul nz-menu>
-                                @if (permission.currentController && permission.currentController.switchOver) {
+                                @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
                                   <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
                                     <a translate>dashboard.button.switchOver</a>
                                   </li>
+                                }
+                                @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
                                   <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                                       nz-menu-item>
                                     <a translate>agent.button.confirmNodeLoss</a>

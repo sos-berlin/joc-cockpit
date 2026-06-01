@@ -2437,7 +2437,7 @@
       "label.addDraftVersion": "use draft version if no deployed/released version exists",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Storing deployed/released versions is recommended.\n\nChoosing both draft and deployed/released versions will result in drafts being stored only if no deployed/released version exists.\n\nChoosing draft versions only will result in draft version being stored and no deployed/released versions. Draft versions are untested.",
-      "tooltip.name": "??? 2435: where is this used? Name"
+      "tooltip.change": "??? 2435: where is this used? Name - Used in Git popups. When the type is changed, an additional field appears for selection of change."
     },
     "tooltips": {
       "calendar": {
@@ -2543,7 +2543,7 @@
         "title": "The Title of the ^Workflow^ can be specified as desired.\n\nThe Title is displayed with the *WORKFLOWS* view.\n\nThe Workflow's title can include links in markdown syntax, for example, `[Example](https://www.example.com)`.",
         "timeZone": "The ^Time Zone^ is used for calculation of ^Admission Times^ and for ^Cycle Instruction^s.\n\nBy default the Time Zone specified from the user profile is used.",
         "allowUndeclared": "Allows undeclared variables from ^Order^s.\n\nThis includes that an Order can carry variables that are not checked for their data type or mandatory use.\n\nJob^s will fail when referencing undeclared variables that are not available from an Order.",
-        "duration": "??? 2541: Not used: Duration.",
+        "duration": "??? 2541: Not used: Duration - It is used in the Workflow Properties for the Sleep instruction.",
         "board": {
           "expectBoardName": "The name of a ^Notice Board^ is unique in the ^Inventory^.\n\n^Object Naming Rules^ apply.",
           "boardNames": "A number of ^Notice Board^ Names can be specified for which ^Notice^s will be created by the ^PostNotices Instruction^.",
@@ -2659,7 +2659,8 @@
           "startPosition": "Specifies a later position in the ^Workflow^ from which the ^Order^ will start:\n- **No Start Position** is specified, then the Order will start from the first node.\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected as the Start Position from which the Order will start.\n- **Block Position** is specified, then the Start Position is a same-level node inside the block.",
           "endPositions": "Specifies end positions when the ^Order^ should leave the ^Workflow^:\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.\n- **Block Position** is specified, then any same-level node inside the block can be specified before which the Order will terminate.\n- **No End Position** is specified, then the Order will terminate when reaching the end of the block.\n\nMore than one end position can be specified.",
           "ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of the Jobs or the ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
-          "blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected:\n- The ^Order^ will start in the Workflow at the beginning of the block instruction or at a later Start Position.\n- The Order will leave the Workflow when reaching the end of the block instruction or an earlier End Position."
+          "blockPosition": "For ^Workflow^s holding block instructions such as ^Try-Catch Instruction^, ^Lock Instruction^, ^Fork Instruction^, ^Cycle Instruction^, the related instruction can be selected:\n- The ^Order^ will start in the Workflow at the beginning of the block instruction or at a later Start Position.\n- The Order will leave the Workflow when reaching the end of the block instruction or an earlier End Position.",
+          "tagName": "Tag Name"
         },
         "lock": {
           "name": "Names of ^Resource Lock^s are unique in the ^Inventory^.\n\nSections in ^Workflow^s can be limited in parallelism by use of the ^Lock Instruction^:\n- **Exclusive**: only one Lock Instruction can hold the Resource Lock.\n- **Shared**: Multiple Lock Instructions can hold the Resource Lock if their combined weight matches the remaining capacity.\n\n^Order^s remain in the ^waiting^ state until the Resource Locks specified become available.",
@@ -3923,6 +3924,10 @@
       "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} periods with ${sort} number of job executions",
       "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} Jobs with ${sort} number of successful executions",
       "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} Workflows with ${sort} number of successful executions"
+    },
+    "message": {
+      "--------REPORTING MESSAGES------------": "Page: Reporting, Sub-tab: Report Creation, Pop-up: -, Source: report-run-dialog.html, Fields: template, frequencies, dateFrom, dateTo, periodLength, periodStep",
+      "confirmRunReport": "Are you sure to run all the selected reports?"
     }
   },
   "settings": {
@@ -4819,7 +4824,7 @@
     "tooltip.priority": "If an ^Order^ meets a ^Lock Instruction^ in the ^Workflow^ that limits parallelism, then its ^Order Priority^ determines the position in the queue of ^waiting^ Orders.",
     "tooltip.enterDateAndTime": "Specifies date and time when the ^Order^ should start.",
     "--------ADD SCHEDULES DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Add Schedules, Source: add-schedules-dialog.html, Fields: schedules",
-    "tooltip.schedules": "??? 4817: where is this used? Schedules",
+    "tooltip.schedules": "??? 4817: where is this used? Schedules - Add Order Popup → Bulk Operations → Add Orders from Schedules.",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Updates the *Title* of selected objects.",
     "tooltip.jobResourceNames": "Updates ^Job Resource^ references in selected objects.",

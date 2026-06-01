@@ -1189,7 +1189,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
+                  <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.tagName' | translate" class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
                   <div class="col-md-8 col-lg-9">
                     <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
                       @for (tag of selectedNode.obj.tags; track $index; let i = $index) {

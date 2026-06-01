@@ -2437,7 +2437,7 @@
       "label.addDraftVersion": "usar versión borrador si no existe versión desplegada/liberada",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Por defecto se recomienda almacenar preferentemente versiones desplegadas/liberadas. Elegir tanto borrador como desplegada/liberada hará que se almacenen borradores solo si no existe versión desplegada/liberada. Elegir solo versiones borrador hará que se almacene la versión borrador y no versiones desplegadas/liberadas. Las versiones borrador se consideran no probadas y por lo tanto no seguras.",
-      "tooltip.name": "Name"
+      "tooltip.change": "Change"
     },
     "tooltips": {
       "calendar": {
@@ -2659,7 +2659,8 @@
           "startPosition": "Permite seleccionar la posición de inicio de la Orden en el workflow. Sin una posición de inicio, la Orden comienza desde el principio del workflow.",
           "endPositions": "Permite la selección de una o más posiciones finales de la Orden en el workflow. Sin una posición final, la Orden termina con el fin del workflow.",
           "ignoreAdmissionTimes": "La ejecución de los Jobs puede estar restringida por las Horas de Admisión de los Jobs. Esta opción ignora las Horas de Admisión y fuerza el inicio de los Jobs.",
-          "blockPosition": "Una Orden puede agregarse a la posición de una instrucción de bloque específica, por ejemplo a una rama en una instrucción Fork, a una instrucción Lock, etc. en cualquier nivel de anidamiento de instrucciones del workflow. La Orden abandonará el workflow al alcanzar el final de la instrucción de bloque. Al seleccionar una instrucción de bloque, la posición de inicio y las posiciones finales se especifican dentro del ámbito de la instrucción de bloque."
+          "blockPosition": "Una Orden puede agregarse a la posición de una instrucción de bloque específica, por ejemplo a una rama en una instrucción Fork, a una instrucción Lock, etc. en cualquier nivel de anidamiento de instrucciones del workflow. La Orden abandonará el workflow al alcanzar el final de la instrucción de bloque. Al seleccionar una instrucción de bloque, la posición de inicio y las posiciones finales se especifican dentro del ámbito de la instrucción de bloque.",
+          "tagName": "Tag Name"
         },
         "lock": {
           "name": "Los nombres de los Recursos de Lock son únicos en el inventario. El paralelismo de secciones en workflows puede limitarse mediante el uso de Recursos de Locks.",
@@ -3923,6 +3924,10 @@
       "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} períodos con ${sort} número de ejecuciones de Job",
       "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} Jobs con ${sort} número de ejecuciones exitosas",
       "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows con ${sort} número de ejecuciones exitosas"
+    },
+    "message": {
+      "--------REPORTING MESSAGES------------": "Page: Reporting, Sub-tab: Report Creation, Pop-up: -, Source: report-run-dialog.html, Fields: template, frequencies, dateFrom, dateTo, periodLength, periodStep",
+      "confirmRunReport": "Are you sure to run all the selected reports?"
     }
   },
   "settings": {
