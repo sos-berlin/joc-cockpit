@@ -734,7 +734,17 @@ export class CoreService {
     };
     this.http.post(url, options, headers).subscribe({
       next: (response: any) => {
-        saveAs(response.body, fileName || response.headers.get('content-disposition'));
+        const disposition = response.headers.get('content-disposition');
+        let resolvedName = fileName;
+        if (disposition) {
+          const match = disposition.match(/filename\*=UTF-8''([^;\s]+)/i)
+            || disposition.match(/filename="([^"]+)"/i)
+            || disposition.match(/filename=([^;\s]+)/i);
+          if (match) {
+            resolvedName = decodeURIComponent(match[1]);
+          }
+        }
+        saveAs(response.body, resolvedName);
         cb(true);
       }, error: () => {
         cb(false);

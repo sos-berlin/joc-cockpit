@@ -2437,7 +2437,7 @@
       "label.addDraftVersion": "Entwurfsversion verwenden, falls keine ausgerollte/freigegebene Version existiert",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Standardmäßig wird die Speicherung von ausgerollten/freigegebenen Versionen empfohlen.\n\nWenn sowohl Entwurfsversionen als auch ausgerollte/freigegebene Versionen ausgewählt werden, so werden Entwurfsversionen dann gespeichert, wenn keine ausgerollte/freigegebene Version existiert.\n\nWenn nur Entwurfsversionen auswählt werden, werden nur Entwurfsversionen gespeichert und keine ausgerollten/freigegebenen Versionen.\n\nEntwurfsversionen gelten als ungetestet.",
-      "tooltip.name": "??? 2435: where is this used? Name"
+      "tooltip.change": "??? 2435: where is this used? Name"
     },
     "tooltips": {
       "calendar": {
@@ -2659,7 +2659,8 @@
           "startPosition": "Legt eine spätere Position im ^Arbeitsablauf|workflow^ fest, an der der ^Auftrag|order^ starten soll:\n- **Keine Startposition**: der Auftrag startet am ersten Knoten.\n- **Keine Blockposition**: jede Anweisung der obersten Ebene im Arbeitsablauf kann als Startposition ausgewählt werden.\n- **Blockposition**: die Startposition ist ein Knoten derselben Ebene innerhalb des Blocks.",
           "endPositions": "Legt die Endpositionen fest, an denen der ^Auftrag|order^ den ^Arbeitsablauf|workflow^ verlassen soll:\n- **Keine Blockposition**: eine beliebige Anweisung der obersten Ebene im Arbeitsablauf kann ausgewählt werden, vor der der Auftrag beendet wird.\n- **Blockposition**: ein beliebiger Knoten derselben Ebene innerhalb des Blocks kann angegeben werden, vor dem der Auftrag beendet wird.\n- **Keine Endposition**: der Auftrag endet beim Erreichen des Blockendes.\n\nEs können mehrere Endpositionen angegeben werden.",
           "ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf|workflow^ kann durch ^Zutrittszeiten|admission-times^ der Jobs oder der ^AdmissionTimes Anweisung|admissiontimes-instruction^ eingeschränkt sein.\n\nDiese Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
-          "blockPosition": "Für ^Arbeitsabläufe|workflow^ mit Blockanweisungen wie ^Try-Catch Anweisung|try-catch-instruction^, ^Lock Anweisung|lock-instruction^, ^Fork Anweisung|fork-instruction^, ^Cycle Anweisung|cycle-instruction^ kann die entsprechende Anweisung ausgewählt werden.\n- Der ^Auftrag|order^ startet im Arbeitsablauf am Beginn der Blockanweisung oder an einer späteren Startposition.\n- Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist oder eine frühere Endposition."
+          "blockPosition": "Für ^Arbeitsabläufe|workflow^ mit Blockanweisungen wie ^Try-Catch Anweisung|try-catch-instruction^, ^Lock Anweisung|lock-instruction^, ^Fork Anweisung|fork-instruction^, ^Cycle Anweisung|cycle-instruction^ kann die entsprechende Anweisung ausgewählt werden.\n- Der ^Auftrag|order^ startet im Arbeitsablauf am Beginn der Blockanweisung oder an einer späteren Startposition.\n- Der Auftrag verlässt den Arbeitsablauf sobald das Ende der Blockanweisung erreicht ist oder eine frühere Endposition.",
+          "tagName": "Tag Name"
         },
         "lock": {
           "name": "Der Name einer ^Ressourcen-Sperre|resource-lock^ ist eindeutig im System.\n\nAbschnitte in ^Arbeitsabläufen|workflow^ können durch die ^Lock Anweisung|lock-instruction^ für die parallele Ausführung eingeschränkt werden:\n- **Exklusiv**: nur eine Lock Anweisung kann die Ressourcen-Sperre belegen.\n- **Geteilt**: mehrere Lock Anweisungen können die Ressourcen-Sperre belegen, wenn ihr Gewicht zur verbleibenden Kapazität passt.\n\n^Aufträge|order^ bleiben im Zustand ^wartend|waiting^ bis die angegebenen Ressourcen-Sperren verfügbar sind.",
@@ -3923,6 +3924,10 @@
       "PERIODS_MOST_JOB_EXECUTIONS": "Häufigste ${hits} Zeiträume mit ${sort} Anzahl Job-Ausführungen",
       "JOBS_SUCCESSFUL_EXECUTIONS": "Häufigste ${hits} Jobs mit ${sort} Anzahl erfolgreicher Job-Ausführungen",
       "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Häufigste ${hits} Arbeitsabläufe mit ${sort} Anzahl erfolgreicher Ausführungen"
+    },
+    "message": {
+      "--------REPORTING MESSAGES------------": "Page: Reporting, Sub-tab: Report Creation, Pop-up: -, Source: report-run-dialog.html, Fields: template, frequencies, dateFrom, dateTo, periodLength, periodStep",
+      "confirmRunReport": "Are you sure to run all the selected reports?"
     }
   },
   "settings": {

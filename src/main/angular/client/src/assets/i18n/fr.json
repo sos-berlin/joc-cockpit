@@ -2437,7 +2437,7 @@
       "label.addDraftVersion": "utiliser la version provisoire si aucune version deployée/publiée n'existe",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Par défaut, le stockage des versions déployées/publiées est privilégié.\n\nSi vous choisissez à la fois les versions provisoires et les versions déployées/publiées, les versions provisoires sont stockées si aucune version déployée/publiée n'existe.\n\nEn choisissant uniquement les versions provisoires, les versions provisoires sont stockées et aucune version déployée/publiée n'est stockée. Les versions provisoires sont considérées comme non testées.",
-      "tooltip.name": "??? 2435: where is this used? Name"
+      "tooltip.change": "??? 2435: where is this used? Name"
     },
     "tooltips": {
       "calendar": {
@@ -2659,7 +2659,8 @@
           "startPosition": "Définit la position de départ dans le ^Workflow^ à partir de laquelle l'^Ordre|order^ doit commencer :\n- **Aucune position de départ** n'est indiquée, l'Ordre commence alors au premier nœud.\n- **Aucune position de bloc** n'est indiquée, n'importe quelle instruction du niveau supérieur du Workflow peut alors être sélectionnée comme position de départ.\n- **Une position de bloc** est indiquée, la position de départ est alors un nœud du même niveau au sein du bloc.",
           "endPositions": "Définit les positions de fin auxquelles l'^Ordre|order^ doit quitter le ^Workflow^ :\n- Si aucune **position de bloc** n'est indiquée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow avant laquelle l'Ordre doit prendre fin.\n- Si une **position de bloc** est indiquée, il est possible de spécifier n'importe quel nœud du même niveau au sein du bloc, avant lequel l'Ordre doit prendre fin.\n- Si aucune **position de fin** n'est indiquée, l'Ordre prend fin à la fin du bloc.\n\nIl est possible d'indiquer plusieurs positions de fin.",
           "ignoreAdmissionTimes": "L'exécution des ^Tâches|job^ peut être limitée par les ^Heures d'Admission|admission-times^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
-          "blockPosition": "Un ^Ordre|order^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork|fork-instruction^, à une ^Instruction Lock|lock-instruction^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n- L^Ordre|order^ est exécuté dans le Worfklow au début de l'instruction de bloc ou à partir d'une position de départ ultérieure.\n- L'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc ou à une position de fin antérieure."
+          "blockPosition": "Un ^Ordre|order^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork|fork-instruction^, à une ^Instruction Lock|lock-instruction^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n- L^Ordre|order^ est exécuté dans le Worfklow au début de l'instruction de bloc ou à partir d'une position de départ ultérieure.\n- L'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc ou à une position de fin antérieure.",
+          "tagName": "Tag Name"
         },
         "lock": {
           "name": "Les noms des ^Verrous de Ressource|resource-lock^ sont uniques dans l'^Inventaire|inventory^.\n\nLes sections des ^Workflow^s peuvent être limitées dans leur parallélisme en utilisant l'^Instruction Lock|lock-instruction^ :\n- **Exclusif** : une seule Instruction Lock peut occuper le Verrou de Ressource.\n- **Partagé** : plusieurs Instructions Lock peuvent occuper le Verrou de Ressource si leur poids correspond à la capacité restante.\n\nLes ^Ordres|order^ restent ^en attente|waiting^ pour la disponibilité des Verrous de Ressoure specifieés.",
@@ -3923,6 +3924,10 @@
       "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} périodes du nombre ${sort} des exécutions de Tâches",
       "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} Tâches du nombre ${sort} des exécutions réussies",
       "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} Workflows du nombre ${sort} des exécutions réussies"
+    },
+    "message": {
+      "--------REPORTING MESSAGES------------": "Page: Reporting, Sub-tab: Report Creation, Pop-up: -, Source: report-run-dialog.html, Fields: template, frequencies, dateFrom, dateTo, periodLength, periodStep",
+      "confirmRunReport": "Are you sure to run all the selected reports?"
     }
   },
   "settings": {

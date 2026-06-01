@@ -516,7 +516,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         if (this.destroyed) return;
         this.processLines(res.logLines || []);
         this.isComplete = res.isComplete === true;
-        this.token = res.token || null;
+        this.token = res.logToken || null;
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
@@ -533,13 +533,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   loadMore(): void {
     if (!this.token || this.isLoading) return;
     this.isLoading = true;
-    const apiUrl = this.getApiUrl();
-    this.coreService.post(apiUrl, { token: this.token }).subscribe({
+    const apiUrl = this.getRunningApiUrl();
+    this.coreService.post(apiUrl, { logToken: this.token }).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
         this.processLines(res.logLines || []);
         this.isComplete = res.isComplete === true;
-        this.token = res.token || null;
+        this.token = res.logToken || null;
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
       },
@@ -556,8 +556,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.isDownloading = true;
     const type = this.request?.type || 'controller';
     const downloadUrl = this.getDownloadApiUrl();
-    const filename = type === 'agent' ? 'agent.log.gz' : type === 'joc' ? 'joc.log.gz' : 'controller.log.gz';
-    this.coreService.download(downloadUrl, this.buildRequest(), filename, () => {
+    this.coreService.download(downloadUrl, this.buildRequest(), '', () => {
       this.isDownloading = false;
     });
   }
@@ -580,23 +579,38 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private processLines(lines: string[]): void {
-    for (const raw of lines) {
-      const cleaned = raw.replace(/\r?\n$/, '');
-      if (!cleaned.trim()) continue;
-      const parsed = parseLine(cleaned);
-      if (!parsed.timestamp && this.allLines.length > 0) {
-        const last = this.allLines[this.allLines.length - 1];
-        last.text    += '\n' + parsed.text;
-        last.raw     += '\n' + parsed.text;
-        last.rawLower = last.raw.toLowerCase();
-      } else {
-        parsed.globalIdx = this.allLines.length;
-        this.allLines.push(parsed);
+    const CHUNK_SIZE = 500;
+    let offset = 0;
+
+    const processChunk = () => {
+      if (this.destroyed) return;
+      const end = Math.min(offset + CHUNK_SIZE, lines.length);
+      for (let i = offset; i < end; i++) {
+        const raw = lines[i];
+        const cleaned = raw.replace(/\r?\n$/, '');
+        if (!cleaned.trim()) continue;
+        const parsed = parseLine(cleaned);
+        if (!parsed.timestamp && this.allLines.length > 0) {
+          const last = this.allLines[this.allLines.length - 1];
+          last.text    += '\n' + parsed.text;
+          last.raw     += '\n' + parsed.text;
+          last.rawLower = last.raw.toLowerCase();
+        } else {
+          parsed.globalIdx = this.allLines.length;
+          this.allLines.push(parsed);
+        }
       }
-    }
-    this.refreshLevelStats();
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+      offset = end;
+      this.refreshLevelStats();
+      this.computeFilteredLines();
+      this.computeContextBlocks();
+      if (this.followTail) this.scrollToBottom();
+      if (offset < lines.length) {
+        setTimeout(processChunk, 0);
+      }
+    };
+
+    processChunk();
   }
 
   private getApiUrl(): string {
@@ -604,6 +618,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       case 'agent': return 'agent/log';
       case 'joc':   return 'joc/log';
       default:      return 'controller/log';
+    }
+  }
+
+  private getRunningApiUrl(): string {
+    switch (this.request?.type) {
+      case 'agent': return 'agent/log/running';
+      case 'joc':   return 'joc/log/running';
+      default:      return 'controller/log/running';
     }
   }
 
@@ -659,7 +681,7 @@ export class LogConsoleModalComponent implements OnInit {
      */
     level:           'INFO',
     dateMode:        'relative' as 'relative' | 'specific',
-    dateFrom:        '1d',
+    dateFrom:        '0d',
     dateFromDate:    null as Date | null,
     dateFromTime:    null as Date | null,
     dateTo:          '',
@@ -800,8 +822,7 @@ export class LogConsoleModalComponent implements OnInit {
     this.isDownloading = true;
     const req = this.buildLogRequest();
     const apiUrl  = this.getDownloadApiUrl(req.type);
-    const filename = req.type === 'agent' ? 'agent.log.gz' : req.type === 'joc' ? 'joc.log.gz' : 'controller.log.gz';
-    this.coreService.download(apiUrl, this.buildDownloadPayload(req), filename, () => {
+    this.coreService.download(apiUrl, this.buildDownloadPayload(req), '', () => {
       this.isDownloading = false;
     });
   }
@@ -843,7 +864,7 @@ export class LogConsoleModalComponent implements OnInit {
       const localStr = buildDateStr(this.form.dateFromDate, this.form.dateFromTime, '00:00:00');
       dateFrom = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
     } else {
-      dateFrom = this.form.dateFrom?.trim() || '1d';
+      dateFrom = this.form.dateFrom?.trim() || '0d';
     }
     let dateTo: string | undefined;
     if (this.form.dateMode === 'specific' && this.form.dateToDate) {
