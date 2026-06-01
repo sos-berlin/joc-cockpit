@@ -495,7 +495,7 @@
     "button.deleteCertificate": "Zertifikat löschen",
     "button.updateCertificate": "Zertifikat aktualisieren",
     "button.copyEncryptValue": "Verschlüssellungsergebnis kopieren",
-    "section.certificate":"Certificate",
+    "section.certificate":"Zertifikat",
     "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -539,7 +539,7 @@
     "button.addToChange": "Zu Änderung hinzufügen",
     "button.removeFromChange": "Aus Änderung entfernen",
     "button.publishChange": "Änderung ausrollen",
-    "section.change":"Change",
+    "section.change":"Änderung",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Der Name ist die eindeutige Kennung der ^Änderung|change^.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
     "tooltip.title": "Der Titel der ^Änderung|change^ kann nach Belieben erfasst werden.",
@@ -2258,8 +2258,8 @@
     "button.unlink": "Verknüpfung aufheben",
     "button.syncToController": "Synchronisieren des Controller",
     "button.syncToInventory": "Synchronisieren des Inventars",
-    "section.object":"Object",
-    "section.folder":"Folder",
+    "section.object":"Objekte",
+    "section.folder":"Ordner",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|workflow^, denen eine oder mehrere der ausgewählten ^Kennzeichnungen|tag^ zugewiesen sind.",
     "tooltip.orderTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|workflow^, die ^Aufträge|order^ enthalten, denen in ihren ^Zeitplänen|schedule^ eine oder mehrere der ausgewählten Auftrags-^Kennzeichnungen|tag^ zugewiesen wurden.",

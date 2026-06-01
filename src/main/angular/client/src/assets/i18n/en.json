@@ -2258,7 +2258,7 @@
     "button.unlink": "Unlink",
     "button.syncToController": "Synchronize to Controller",
     "button.syncToInventory": "Synchronize to Inventory",
-    "section.object":"Object",
+    "section.object":"Objects",
     "section.folder":"Folder",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned one or more of the selected ^Tag^s.",
