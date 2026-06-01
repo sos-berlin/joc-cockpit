@@ -448,6 +448,7 @@
     "label.agentAsClusterWatch": "エージェントからクラスター監視",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
+    "section.export":"Export",
     "tooltip.type": "タイプ",
     "tooltip.standaloneTitle": "スタンドアロンタイトル",
     "tooltip.standaloneUrlForJOC": "JOCコクピットがみるスタンドアロンコントローラーURL",
@@ -494,6 +495,7 @@
     "button.deleteCertificate": "証明書削除",
     "button.updateCertificate": "証明書更新",
     "button.copyEncryptValue": "暗号化文コピー",
+    "section.certificate":"Certificate",
     "tooltips" : {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -537,6 +539,7 @@
     "button.addToChange": "変更に追加",
     "button.removeFromChange": "変更から削除",
     "button.publishChange": "変更を発行",
+    "section.change":"Change",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Name",
     "tooltip.title": "Title",
@@ -2255,6 +2258,8 @@
     "button.unlink": "Unlink",
     "button.syncToController": "コントローラーに同期",
     "button.syncToInventory": "インベントリーに同期",
+    "section.object":"Object",
+    "section.folder":"Folder",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Workflow Tags.",
     "tooltip.orderTagging": "Order Tags.",
