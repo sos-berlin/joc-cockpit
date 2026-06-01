@@ -1722,7 +1722,7 @@
     "--------FORM TEMPLATE TOOLTIPS------------": "Page: File Transfers, Sub-tab: -, Pop-up: -, Source: file-transfer/form-template.html, Fields: customizationName, profileNames, dateRange, from, to, processExecuted, controllerId, workflows, status, operations, numOfFilesFrom, numOfFilesTo, sourceFilePaths, sourceHost, sourceProtocol, targetFilePaths, targetHost, targetProtocol, sharedCustomization",
     "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
     "tooltip.profileNames": "File transfer Profiles can be specified to limit display of transfers.\n\nProfiles are managed from the *Configuration -> File Transfer* view.\n\nMore than one Profile can be specified using the + icon.",
-    "tooltip.dateRange": "Specifies the date range for which file transfers will be displayed.",
+    "tooltip.dateRange": "Specifies the date range for which file transfers will be displayed:\n- **Specific Date**: selects date and time.\n- **Relative Date**: selects a period relative to the current time using a ^Date Formula^.",
     "tooltip.from": "Specifies the date starting from which file transfers will be displayed.",
     "tooltip.to": "Specifies the date up to which file transfers will be displayed.",
     "tooltip.processExecuted": "Specifies a relative date when file transfers have been performed:\n- **today**: since begin of day\n- **now-seconds**: the number of seconds ago, for example, `now-1800` translates to 30 minutes ago\n- **yesterday**: in the 24 hours of the previous day\n- **-1h|d|w|M|y**: specifies alternative units for hour, day, week, month, year, for example, `-3h` maps to 3 hours ago, `-1w` maps to last week's period\n- **08:00am**: since 8am",
@@ -2612,7 +2612,7 @@
           "admissionTime": "^Admission Times^ rule access to ^Job^s, for example, based on weekdays and hours, month days etc.\n\nAn ^Order^ waits in front of a Job node until the Job's Admission Time is reached or can be configured to skip the Job if Admission Times do not match the Order's date.",
           "skipIfNoAdmissionForOrderDay": "The ^Job^ is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the Job will be skipped. On Monday and Tuesday the Order will wait with the ^Job Instruction^ until the Admission Time is reached.",
           "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if ^Admission Times^ have been configured that do not match the ^Order^'s date.\n\nFor example, if Admission Times are configured for Monday and Tuesday, but the Order is scheduled for Wednesday, then the instruction and any instructions included will be skipped. On Monday and Tuesday the Order will wait with the ^AdmissionTimes Instruction^ until the Admission Time is reached.",
-          "killAtEndOfAdmissionPeriod": "A ^Job^ will be forcibly terminated if it exceeds the ^Admission Times^ period.",
+          "killAtEndOfAdmissionPeriod": "A ^Job^ will be forcibly terminated if it exceeds the ^Admission Times^ period for which it was started.",
           "mailTo": "Send e-mail to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
           "mailCC": "Send e-mail copy to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
           "mailBcc": "Send e-mail blind copy to the indicated recipient.\n\nA number of e-mail addresses can be specified separated by a comma.",
@@ -2807,7 +2807,7 @@
         "updateSelectedObjects": "Update {{objectCount}} selected objects"
       },
       "tooltips": {
-        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.\n\nFor details see ^Inventory Search^.",
+        "search": "Search is performed for the name or title of objects.\n\nIf further search criteria are specified from next lines in this form, then they are combined by 'and'.\n\nIf search criteria are specified from the same line, for example, if alternative checkboxes are offered, then they are combined by 'or'.\n\nFor details see [Inventory Search](context:help:searching-inventory).",
         "folders": "Select one or more folders to filter results.",
         "currentController": "Limits results to objects available with the current Controller.",
         "deployedOrReleased": "Limits results to objects that are deployed/released or undeployed/unreleased.",
