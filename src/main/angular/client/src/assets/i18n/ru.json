@@ -448,6 +448,7 @@
     "label.agentAsClusterWatch": "Агент как наблюдатель кластера",
     "button.testConnection": "Проверить соединение",
     "button.newController": "Новый контроллер",
+    "section.export":"Export",
     "tooltip.type": "Настройка как ^автономный контроллер|standalone-controller^ или при использовании коммерческой лицензии как ^кластер контроллеров|controller-cluster^.",
     "tooltip.standaloneTitle": "Краткое описание ^автономного контроллера|standalone-controller^ в  разделе *ОБЗОР*",
     "tooltip.standaloneUrlForJOC": "Соединение ^JOC Cockpit|joc-cockpit^ с ^автономным контроллером|standalone-controller^",
@@ -494,6 +495,7 @@
     "button.deleteCertificate": "Удалить сертификат",
     "button.updateCertificate": "Обновить сертификат",
     "button.copyEncryptValue": "Копировать результат шифрования",
+    "section.certificate":"Certificate",
     "tooltips" : {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -537,6 +539,7 @@
     "button.addToChange": "Добавить к изменению",
     "button.removeFromChange": "Удалить из изменения",
     "button.publishChange": "Опубликовать изменение",
+    "section.change":"Change",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Название является уникальным идентификатором ^изменения|change^.",
     "tooltip.title": "Краткое описание ^изменения|change^ не является обязательным и может быть задано произвольно.",
@@ -2255,6 +2258,8 @@
     "button.unlink": "Разорвать связь",
     "button.syncToController": "Синхронизировать контроллер",
     "button.syncToInventory": "Синхронизировать инвентарь",
+    "section.object":"Object",
+    "section.folder":"Folder",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Workflow Tags.",
     "tooltip.orderTagging": "Order Tags.",

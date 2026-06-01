@@ -448,6 +448,7 @@
     "label.agentAsClusterWatch": "Agent as Cluster Watch",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
+    "section.export":"Export",
     "tooltip.type": "A ^Standalone Controller^ is configured using a single instance.\n\nA ^Controller Cluster^ is configured from two instances for high availability.",
     "tooltip.standaloneTitle": "Caption of the ^Standalone Controller^ instance",
     "tooltip.standaloneUrlForJOC": "^JOC Cockpit^ connection to ^Standalone Controller^",
@@ -494,6 +495,7 @@
     "button.deleteCertificate": "Delete Certificate",
     "button.updateCertificate": "Update Certificate",
     "button.copyEncryptValue": "Copy encryption result",
+    "section.certificate":"Certificate",
     "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -537,6 +539,7 @@
     "button.addToChange": "Add to Change",
     "button.removeFromChange": "Remove from Change",
     "button.publishChange": "Publish Change",
+    "section.change":"Change",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "The Name is the unique identifier of the ^Change^.\n\n^Object Naming Rules^ apply.",
     "tooltip.title": "The Title of a ^Change^ can be specified as desired.",
@@ -2255,6 +2258,8 @@
     "button.unlink": "Unlink",
     "button.syncToController": "Synchronize to Controller",
     "button.syncToInventory": "Synchronize to Inventory",
+    "section.object":"Object",
+    "section.folder":"Folder",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned one or more of the selected ^Tag^s.",
     "tooltip.orderTagging": "Limits display to ^Workflow^s that hold ^Order^s assigned one or more of the selected Order ^Tag^s from their ^Schedule^s.",

@@ -448,6 +448,7 @@
     "label.agentAsClusterWatch": "Agent comme Observateur de Cluster",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
+    "section.export":"Export",
     "tooltip.type": "Un ^Contrôleur Autonome|standalone-controller^ est configuré à l'aide d'une seule instance.\n\nUn ^Cluster de Contrôleurs|controller-cluster^ peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
     "tooltip.standaloneTitle": "Légende du ^Contrôleur Autonome|standalone-controller^ dans la vue *TABLEAU DE BORD*",
     "tooltip.standaloneUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Autonome|standalone-controller^",
@@ -494,6 +495,7 @@
     "button.deleteCertificate": "Supprimer Certificat",
     "button.updateCertificate": "Actualiser Certificat",
     "button.copyEncryptValue": "Copier le résultat du cryptage",
+    "section.certificate":"Certificate",
     "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -537,6 +539,7 @@
     "button.addToChange": "Ajouter au Changement",
     "button.removeFromChange": "Supprimer du Changement",
     "button.publishChange": "Publier Changement",
+    "section.change":"Change",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Le Nom est l'identifiant unique du ^Changement|change^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
     "tooltip.title": "Le Titre du ^Changement|change^ peut être spécifié à volonté.",
@@ -2255,6 +2258,8 @@
     "button.unlink": "Désactiver le Lien",
     "button.syncToController": "Synchroniser avec le Contrôleur",
     "button.syncToInventory": "Synchroniser avec l'inventaire",
+    "section.object":"Object",
+    "section.folder":"Folder",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limite l'affichage aux ^Workflow^s auxquels ont été attribués un ou plusieurs ^Tag^s parmi une liste donnée.",
     "tooltip.orderTagging": "Limite l'affichage aux ^Workflow^s contenant des ^Ordres|order^ auxquels ont été attribués un ou plusieurs des ^Tag^s de l'Ordre sélectionnés.",
