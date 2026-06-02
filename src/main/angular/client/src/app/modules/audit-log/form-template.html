@@ -3,6 +3,13 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
+    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
+      @if (!isSearch) {
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>auditLog.section.customizations</small>
+        </div>
+      }
+      <div [class.p-a-sm]="!isSearch">
     <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
       <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
         <span [appRichTooltip]="'auditLog.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
@@ -179,6 +186,8 @@
         </div>
       </div>
     }
+      </div>
+    </div>
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
         <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>

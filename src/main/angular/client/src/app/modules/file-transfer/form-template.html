@@ -3,6 +3,13 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
+    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
+      @if (!isSearch) {
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>fileTransfer.section.customization</small>
+        </div>
+      }
+      <div [class.p-a-sm]="!isSearch">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
@@ -184,7 +191,16 @@
                          [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesTo"></nz-input-number>
       </div>
     </div>
-    <div class="form-group row b-t p-t-12">
+      </div>
+    </div>
+    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
+      @if (!isSearch) {
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>fileTransfer.section.source</small>
+        </div>
+      }
+      <div [class.p-a-sm]="!isSearch">
+    <div class="form-group row" [class.b-t]="isSearch" [class.p-t-12]="isSearch">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
         <span [appRichTooltip]="'fileTransfer.tooltip.sourceFilePaths' | translate" translate>fileTransfer.search.label.sourceFilePaths</span>
       </label>
@@ -225,7 +241,16 @@
                           [object]="filter"></app-select-input>
       </div>
     </div>
-    <div class="form-group row b-t p-t-12">
+      </div>
+    </div>
+    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
+      @if (!isSearch) {
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>fileTransfer.section.target</small>
+        </div>
+      }
+      <div [class.p-a-sm]="!isSearch">
+    <div class="form-group row" [class.b-t]="isSearch" [class.p-t-12]="isSearch">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
         <span [appRichTooltip]="'fileTransfer.tooltip.targetFilePaths' | translate" translate>fileTransfer.search.label.targetFilePaths</span>
       </label>
@@ -275,6 +300,8 @@
         </div>
       </div>
     }
+      </div>
+    </div>
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
         <button (click)="search();" class="btn btn-primary btn-sm" translate type="button">common.button.search</button>

@@ -32,6 +32,11 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>inventory.section.tag</small>
+      </div>
+      <div class="p-a-sm">
     @if (data && !data.controller && !data.object && !data.type) {
       <div class="form-group row">
         <div class="col-md-3">
@@ -191,6 +196,8 @@
         </div>
       </ng-container>
     }
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || !isUnique" class="btn btn-primary btn-sm"
