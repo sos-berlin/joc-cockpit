@@ -327,8 +327,8 @@
       "expression6": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 Tâches pour le Cluster de Sous-Agents donné.",
       "expression7": "Exemple pour la plus petite consommation de CPU pondérée par 2, la mémoire libre et le plus petit nombre global de Tâches exécutées dans le Sous-Agent pondéré par 3."
     },
-    "section.controller":"Controller",
-    "section.certificate":"Certificate"
+    "section.controller": "Contrôleur",
+    "section.certificate": "Certificat"
   },
   "auditLog": {
     "label.auditLog": "Journal d'Audit",
@@ -352,7 +352,7 @@
     "tab.auditLog": "Journal d'Audit",
     "tab.loginHistory": "Échecs de Connexion",
     "section.audit": "Audit",
-    "section.customizations": "Customizations",
+    "section.customizations": "Personnalisations",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Justification",
@@ -451,7 +451,7 @@
     "label.agentAsClusterWatch": "Agent comme Observateur de Cluster",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
-    "section.export":"Exportation",
+    "section.export": "Exportation",
     "tooltip.type": "Un ^Contrôleur Autonome|standalone-controller^ est configuré à l'aide d'une seule instance.\n\nUn ^Cluster de Contrôleurs|controller-cluster^ peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
     "tooltip.standaloneTitle": "Légende du ^Contrôleur Autonome|standalone-controller^ dans la vue *TABLEAU DE BORD*",
     "tooltip.standaloneUrlForJOC": "Connexion de ^JOC Cockpit^ au ^Contrôleur Autonome|standalone-controller^",
@@ -498,7 +498,7 @@
     "button.deleteCertificate": "Supprimer Certificat",
     "button.updateCertificate": "Actualiser Certificat",
     "button.copyEncryptValue": "Copier le résultat du cryptage",
-    "section.certificate":"Certificat",
+    "section.certificate": "Certificat",
     "tooltips": {
       "--------ADD/UPDATE ENCIPHERMENT MODAL TOOLTIPS------------": "",
       "addEncipherment": {
@@ -542,7 +542,7 @@
     "button.addToChange": "Ajouter au Changement",
     "button.removeFromChange": "Supprimer du Changement",
     "button.publishChange": "Publier Changement",
-    "section.change":"Changement",
+    "section.change": "Changement",
     "--------ADD CHANGE DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Changes, Pop-up: Add Change, Source: add-change-dialog.html, Fields: name, title, state, includeDependencies",
     "tooltip.name": "Le Nom est l'identifiant unique du ^Changement|change^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
     "tooltip.title": "Le Titre du ^Changement|change^ peut être spécifié à volonté.",
@@ -1198,8 +1198,8 @@
       "projection": "Projection",
       "dependencies": "Dépendances"
     },
-    "section.DailyPlan":"Daily Plan",
-    "section.customization":"Customization"
+    "section.DailyPlan": "Plan Quotidien",
+    "section.customization": "Personnalisation"
   },
   "deploymentService": {
     "label": {
@@ -1668,7 +1668,7 @@
         "forceSudo": "L'utilisation de `sudo` est forcé pour les operations concernant des répertoires et des fichiers."
       }
     },
-    "section.customization":"Customization"
+    "section.customization": "Personnalisation"
   },
   "error": {
     "button.backHome": "Retour",
@@ -1775,9 +1775,9 @@
       "placeholder.numOfFilesFrom": "Nombre de fichiers transférés de",
       "placeholder.numOfFilesTo": "Nombre de fichiers transférés à"
     },
-    "section.customization":"Customization",
-    "section.source":"Source",
-    "section.target":"Target",
+    "section.customization": "Personnalisation",
+    "section.source": "Source",
+    "section.target": "Cible",
     "--------ADVANCE SEARCH END------------": ""
   },
   "filters": {
@@ -1907,7 +1907,7 @@
     "tab.fileTransfers": "Transferts de Fichiers",
     "tab.deployments": "Déploiements",
     "tab.dailyPlan": "Soumissions",
-    "section.customization":"Customization",
+    "section.customization": "Personnalisation",
     "--------DEPLOYMENT FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Deployments, Pop-up: -, Source: history/deployment-form-template.html, Fields: customizationName, dateRange, from, to, processExecuted, controllerId, deployType, operation, state, sharedCustomization",
     "tooltip.customizationName": "Le Nom est un identifiant unique de la ^Personnalisation|customization^ et peut être choisi librement.",
     "tooltip.dateRange": "Indique la période pour laquelle l'*Historique -> Déploiements* est affichés.",
@@ -2268,15 +2268,15 @@
     "button.unlink": "Désactiver le Lien",
     "button.syncToController": "Synchroniser avec le Contrôleur",
     "button.syncToInventory": "Synchroniser avec l'inventaire",
-    "section.object":"Object",
-    "section.folder":"Folder",
-    "section.operation":"Operation",
-    "section.crontab":"Crontab",
-    "section.import":"Import",
-    "section.documentation":"Documentation",
-    "section.tag":"Tag",
-    "section.update":"Update",
-    "section.customization":"Customization",
+    "section.object": "Objets",
+    "section.folder": "Dossier",
+    "section.operation": "Opération",
+    "section.crontab": "Crontab",
+    "section.import": "Importation",
+    "section.documentation": "Documentation",
+    "section.tag": "Tag",
+    "section.update": "Mis à jour",
+    "section.customization": "Personnalilsation",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limite l'affichage aux ^Workflow^s auxquels ont été attribués un ou plusieurs ^Tag^s parmi une liste donnée.",
     "tooltip.orderTagging": "Limite l'affichage aux ^Workflow^s contenant des ^Ordres|order^ auxquels ont été attribués un ou plusieurs des ^Tag^s de l'Ordre sélectionnés.",
@@ -2331,7 +2331,7 @@
     "--------CREATE TAG DIALOG TOOLTIPS------------": "Page: Multiple, Sub-tab: Inventory, Daily plan, Workflow - Workflow Tag or Order Tag tab, Pop-up: Update Object, Source: create-tag-dialog.component.html",
     "tooltip.create.tag.handleRecursively": "Les ^Tag^s indiqués y sont ajoutés aux objets dans les sous-dossiers.",
     "tooltip.create.tag.new.tags": "Les ^Tag^s indiqués y sont ajoutés aux objets.",
-    "tooltip.create.tag.filter.tags": "??? 2312: Where is this used? ",
+    "tooltip.create.tag.filter.tags": "Vous pouvez sélectionner autant de ^Tag^s que vous le souhaitez ; celles-ci serviront à filtrer les ^Workflow^s auxquels a été attribué un de ces Tags.\n\nLorsqu'ils sont utilisés pour les Tags ^Ordre|order^, l'affichage se limite aux Workflows contenant des Ordres auxquels a été attribué un des Tags.",
     "tooltip.create.tag.tagName": "Spécifie le nouveu nom du ^Tag^.",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2454,7 +2454,7 @@
       "label.addDraftVersion": "utiliser la version provisoire si aucune version deployée/publiée n'existe",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Par défaut, le stockage des versions déployées/publiées est privilégié.\n\nSi vous choisissez à la fois les versions provisoires et les versions déployées/publiées, les versions provisoires sont stockées si aucune version déployée/publiée n'existe.\n\nEn choisissant uniquement les versions provisoires, les versions provisoires sont stockées et aucune version déployée/publiée n'est stockée. Les versions provisoires sont considérées comme non testées.",
-      "tooltip.change": "??? 2435: where is this used? Name"
+      "tooltip.change": "Les opérations Git peuvent être limitées aux objets qui sont attribués un ^Changement|change^.\n\nLes utilisateurs sont libres d'inclure les objets dépendants qui sont directement référencés par les objets inclus dans le Changement ou qui font référence à des objets inclus dans le Changement."
     },
     "tooltips": {
       "calendar": {
@@ -2560,7 +2560,7 @@
         "title": "Le Titre du ^Workflow^ peut être spécifié à volonté.\n\nLe Titre est affiché dans la vue *WORKFLOWS*.\n\nLe titre d'un Workflow peut contenir des liens au format Markdown, par exemple : `[Example](https://www.example.com)`.",
         "timeZone": "Le ^fuseau horaire|time-zone^ sert à calculer les ^Heures d'Admission|admission-times^ et l'^Instruction Cycle|cycle-instruction^.\n\nPar défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
         "allowUndeclared": "Autoriser les variables non déclarées des ^Ordres|order^.\n\nCela signifie qu'un Ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés.\n\nLes ^Tâches|job^ échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.",
-        "duration": "??? 2541: Not used: Durée.",
+        "duration": "Spécifie la durée, en secondes, pendant laquelle les ^Ordres|order^ sont retardés par l'^Instruction Sleep|sleep-instruction^.\n\nPour les fractions de seconde, on peut utiliser le point décimale, comme dans `1.5`.",
         "board": {
           "expectBoardName": "Le nom d'un ^Tableau de Condition|notice-board^ est unique dans l'^Inventaire|inventory^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
           "boardNames": "Spécifie un certain nombre de ^Tableaux de Condition|notice-board^ pour lesquels des ^Annonces|notice^ sont créés par l'^Instruction PostNotices|postnotices-instruction^.",
@@ -2677,7 +2677,7 @@
           "endPositions": "Définit les positions de fin auxquelles l'^Ordre|order^ doit quitter le ^Workflow^ :\n- Si aucune **position de bloc** n'est indiquée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow avant laquelle l'Ordre doit prendre fin.\n- Si une **position de bloc** est indiquée, il est possible de spécifier n'importe quel nœud du même niveau au sein du bloc, avant lequel l'Ordre doit prendre fin.\n- Si aucune **position de fin** n'est indiquée, l'Ordre prend fin à la fin du bloc.\n\nIl est possible d'indiquer plusieurs positions de fin.",
           "ignoreAdmissionTimes": "L'exécution des ^Tâches|job^ peut être limitée par les ^Heures d'Admission|admission-times^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
           "blockPosition": "Un ^Ordre|order^ peut être ajouté à la position d'une instruction de bloc spécifique, par exemple, à une branche dans une ^Instruction Fork|fork-instruction^, à une ^Instruction Lock|lock-instruction^ etc. à n'importe quel niveau d'imbrication des instructions du ^Workflow^.\n- L^Ordre|order^ est exécuté dans le Worfklow au début de l'instruction de bloc ou à partir d'une position de départ ultérieure.\n- L'Ordre quittera le Workflow lorsqu'il atteindra la fin de l'instruction de bloc ou à une position de fin antérieure.",
-          "tagName": "Tag Name"
+          "tagName": "Il est possible d'ajouter un nombre quelconque de ^Tag^s qui sont affectés aux ^Ordres|order^ créés à partir de la ^Planification|schedule^."
         },
         "lock": {
           "name": "Les noms des ^Verrous de Ressource|resource-lock^ sont uniques dans l'^Inventaire|inventory^.\n\nLes sections des ^Workflow^s peuvent être limitées dans leur parallélisme en utilisant l'^Instruction Lock|lock-instruction^ :\n- **Exclusif** : une seule Instruction Lock peut occuper le Verrou de Ressource.\n- **Partagé** : plusieurs Instructions Lock peuvent occuper le Verrou de Ressource si leur poids correspond à la capacité restante.\n\nLes ^Ordres|order^ restent ^en attente|waiting^ pour la disponibilité des Verrous de Ressoure specifieés.",
@@ -3345,7 +3345,7 @@
     "label.showDocumentations": "Afficher les Documentations",
     "label.maxEntryPerPage": "Nombre max. d'entrées par page",
     "label.maxNumberOfAuditLogEntries": "Nombre max. d'entrées du Journal d'Audit",
-    "label.maxNumberOfAuditLogPerObject": "Nombre max. d'entrées du Journal d'Audit par objet",
+    "label.maxNumberOfAuditLogPerObject": "Nombre max. d'entrées du Journal d'Audit par Workflow",
     "label.maxNumberOfHistoryEntries": "Nombre max. d'entrées d'Historique",
     "label.maxNumberOfNotificationEntries": "Nombre max. d'entrées des Notifications",
     "label.maxNumberOfOverviewEntries": "Nombre max. d'entrées du Aperçu des Ordres",
@@ -3354,8 +3354,8 @@
     "label.maxNumberOfFileTransferEntries": "Nombre max. d'entrées du Transfert de Fichiers",
     "label.maxNumberOfResourceLockEntries": "Nombre max. d'Ordres par Verrou de Ressource",
     "label.maxNumberOfNoticeBoardEntries": "Nombre max. d'Ordres par Condition",
-    "label.maxNumberOfHistoryEntriesPerOrder": "Nombre max. d'entrées d'Historique par Ordre",
-    "label.maxNumberOfHistoryEntriesPerTask": "Nombre max. d'entrées d'Historique par Tâche",
+    "label.maxNumberOfHistoryEntriesPerOrder": "Nombre max. d'entrées d'Historique d'Ordres par Workflow",
+    "label.maxNumberOfHistoryEntriesPerTask": "Nombre max. d'entrées d'Historique de Tâche par Workflow",
     "label.maxNumberOfFavoriteEntries": "Nombre max. d'entrées de Favoris",
     "label.showSubFolderAndFolderContents": "Afficher les sous-dossiers et le contenu des dossiers",
     "label.subFolderAndFolderContents": "Sous-dossiers et contenu des dossiers",
@@ -3944,7 +3944,7 @@
     },
     "message": {
       "--------REPORTING MESSAGES------------": "Page: Reporting, Sub-tab: Report Creation, Pop-up: -, Source: report-run-dialog.html, Fields: template, frequencies, dateFrom, dateTo, periodLength, periodStep",
-      "confirmRunReport": "Are you sure to run all the selected reports?"
+      "confirmRunReport": "Vous êtes sûr de vouloir créer les rapports sélectionnés ?"
     }
   },
   "settings": {
@@ -4841,7 +4841,7 @@
     "tooltip.priority": "Si l'^Ordre|order^ doit répondre à une ^Instruction Lock|lock-instruction^ d'un ^Verrou de Ressource|resource-lock^ dans le ^Workflow^ qui limite le parallélisme, la ^Priorité de l'Ordre|order-priority^ détermine la position dans la file d'attente des Ordres ^en attente|waiting^.",
     "tooltip.enterDateAndTime": "Spécifie la date et l'heure.",
     "--------ADD SCHEDULES DIALOG TOOLTIPS------------": "Page: Workflows, Sub-tab: -, Pop-up: Add Schedules, Source: add-schedules-dialog.html, Fields: schedules",
-    "tooltip.schedules": "??? 4817: where is this used? Schedules",
+    "tooltip.schedules": "Si les ^Ordres|order^ contiennent des variables permettant de paramétrer l'exécution d'un ^Workflow^, les utilisateurs peuvent sélectionner une ou plusieurs ^Planifications|schedule^ comme source de paramétrage.\n\nPour chaque Planification, un Ordre sera ajouté contenant les variables d'Ordre de la Planification.",
     "--------UPDATE OBJECT DIALOG TOOLTIPS (workflow)------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Update Object, Source: update-object.component.html, Fields: title, jobResourceNames, agent, delay",
     "tooltip.title": "Met à jour le *Titre* des objets sélectionnés.",
     "tooltip.jobResourceNames": "Met à jour des références aux ^Ressources de Tâche|job-resource^ dans les objets sélectionnés.",
