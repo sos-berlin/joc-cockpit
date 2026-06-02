@@ -125,7 +125,7 @@
         <button class="btn btn-xs" [class.btn-primary]="followTail" [class.btn-default]="!followTail"
                 (click)="toggleFollowTail()" [attr.aria-pressed]="followTail"
                 [appRichTooltip]="'logConsole.tooltip.followTail' | translate">
-          <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
+          <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
         </button>
       </div>
 
@@ -136,9 +136,11 @@
 
       <!-- Level filter checkboxes -->
       <div class="log-console-filters">
-        <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()">
-          <span class="log-badge log-badge-info" translate>log.label.info</span>
-        </label>
+        @if (hasInfo) {
+          <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()">
+            <span class="log-badge log-badge-info" translate>log.label.info</span>
+          </label>
+        }
         @if (hasWarn) {
           <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()">
             <span class="log-badge log-badge-warn" translate>log.label.warn</span>
@@ -221,14 +223,7 @@
       </div>
     }
 
-    @if (errorMsg) {
-      <div class="log-console-error">
-        <i nz-icon nzType="warning" nzTheme="outline"></i>
-        <span>{{ errorMsg }}</span>
-      </div>
-    }
-
-    @if (!isLoading && !errorMsg && allLines.length === 0) {
+    @if (!isLoading && allLines.length === 0) {
       <div class="log-console-empty">
         <i nz-icon nzType="file-text" nzTheme="outline" class="log-state-icon"></i>
         <span translate>logConsole.message.noEntries</span>
