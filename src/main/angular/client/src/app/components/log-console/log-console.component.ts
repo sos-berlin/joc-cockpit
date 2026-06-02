@@ -149,13 +149,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   filteredLines: ParsedLine[] = [];
   contextBlocks: ContextBlock[] = [];
   levelCounts: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
+  hasInfo  = false;
   hasWarn  = false;
   hasError = false;
   hasDebug = false;
   isLoading = false;
   isDownloading = false;
   isComplete = false;
-  errorMsg: string | null = null;
   token: string | null = null;
   timeZone = '';
 
@@ -354,18 +354,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private refreshLevelStats(): void {
     const c: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
-    let hasW = false, hasE = false, hasD = false;
+    let hasI = false, hasW = false, hasE = false, hasD = false;
     for (const l of this.allLines) {
       switch (l.level) {
         case 'ERROR': c['error']++; hasE = true; break;
         case 'WARN':  c['warn']++;  hasW = true; break;
-        case 'INFO':  c['info']++; break;
+        case 'INFO':  c['info']++; hasI = true; break;
         case 'DEBUG': c['debug']++; hasD = true; break;
         case 'TRACE': c['trace']++; hasD = true; break;
         default:      c['other']++; break;
       }
     }
     this.levelCounts = c;
+    this.hasInfo  = hasI;
     this.hasWarn  = hasW;
     this.hasError = hasE;
     this.hasDebug = hasD;
@@ -477,10 +478,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this.followTail) this.scrollToBottom();
   }
 
-  // ── Convenience getters ────────────────────────────────────────────────────
-
-  // hasWarn / hasError / hasDebug are now cached fields updated by refreshLevelStats().
-
   get displayTz(): string {
     return this.request?.timeZone || this.timeZone;
   }
@@ -521,10 +518,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
       },
-      error: (err) => {
-        if (!this.destroyed) {
-          this.errorMsg = err?.error?.message || err?.message || ('HTTP ' + (err?.status || '?'));
-        }
+      error: () => {
         this.isLoading = false;
       }
     });
@@ -543,10 +537,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
       },
-      error: (err) => {
-        if (!this.destroyed) {
-          this.errorMsg = err?.error?.message || err?.message || ('HTTP ' + (err?.status || '?'));
-        }
+      error: () => {
         this.isLoading = false;
       }
     });
@@ -565,7 +556,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.allLines = [];
     this.token = null;
     this.isComplete = false;
-    this.errorMsg = null;
     this.activeLineIdx = null;
     this.levelJumpIndices.clear();
     this.fetchLog();
@@ -674,11 +664,6 @@ export class LogConsoleModalComponent implements OnInit {
     role:            '',
     agentId:         '',
     subagentId:      '',
-    /**
-     * GUI log levels — TRACE is intentionally omitted.
-     * Selecting DEBUG automatically includes TRACE on the server side.
-     * Hierarchical: WARN → WARN+ERROR, INFO → INFO+WARN+ERROR, DEBUG → all.
-     */
     level:           'INFO',
     dateMode:        'relative' as 'relative' | 'specific',
     dateFrom:        '0d',
@@ -696,11 +681,6 @@ export class LogConsoleModalComponent implements OnInit {
   zones: string[] = [];
   preferencesTz = '';
 
-  /**
-   * GUI level options — three tiers only.
-   * TRACE is not exposed; requesting DEBUG includes TRACE automatically.
-   * ERROR-only is not supported per spec.
-   */
   readonly levelOptions = [
     { value: 'WARN',  label: 'logConsole.label.levelOption.warn'  },
     { value: 'INFO',  label: 'logConsole.label.levelOption.info'  },

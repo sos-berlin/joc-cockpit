@@ -758,7 +758,6 @@ export class LayoutComponent {
     preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
     preferences.enableTagging = false;
-    preferences.enableApprovalRequests = false;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -874,9 +873,6 @@ export class LayoutComponent {
       }
       if (data.enableTagging === undefined) {
         data.enableTagging = false;
-      }
-      if (data.enableApprovalRequests === undefined) {
-        data.enableApprovalRequests = false;
       }
       // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
       if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {

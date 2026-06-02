@@ -2385,6 +2385,13 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
     if (data[type] !== null && data[type] !== undefined) {
       // Check if the value originally had double quotes (marked by default1)
       if (data['default1'] === '""' && typeof data[type] == 'string') {
+        // If the user has re-entered a properly quoted value (single- or double-quoted),
+        // treat it like a normal quoted value rather than re-wrapping via JSON.stringify.
+        const _s = data[type].substring(0, 1);
+        const _e = data[type].substring(data[type].length - 1);
+        if ((_s === '\'' && _e === '\'') || (_s === '"' && _e === '"')) {
+          return;
+        }
         // Wrap the value in quotes using JSON.stringify to properly escape
         data[type] = JSON.stringify(data[type]);
         return;

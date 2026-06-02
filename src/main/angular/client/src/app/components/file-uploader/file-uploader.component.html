@@ -56,6 +56,11 @@
       </div>
       @if (type === 'CRON') {
         <div class="col-md-12">
+          <div class="b-a m-b-sm section-box">
+            <div class="section-box-header">
+              <small class="_600 section-box-title" translate>inventory.section.crontab</small>
+            </div>
+            <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
@@ -133,10 +138,17 @@
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
             </div>
           </div>
+            </div>
+          </div>
         </div>
       }
       @if (type === 'DOCUMENTATION') {
         <div class="col-md-12">
+          <div class="b-a m-b-sm section-box">
+            <div class="section-box-header">
+              <small class="_600 section-box-title" translate>inventory.section.documentation</small>
+            </div>
+            <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-sm-3 form-control-label">
               <span [appRichTooltip]="'common.tooltip.path' | translate" translate>common.label.path</span>
@@ -164,12 +176,19 @@
               </nz-tree-select>
             </div>
           </div>
+            </div>
+          </div>
         </div>
       }
       @if (type === 'INVENTORY') {
         <ng-container>
           @if (isDeploy) {
             <div class="col-md-12">
+              <div class="b-a m-b-sm section-box">
+                <div class="section-box-header">
+                  <small class="_600 section-box-title" translate>inventory.section.import</small>
+                </div>
+                <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
@@ -193,10 +212,17 @@
                                     [listArray]="fileFormat" [object]="requestObj"></app-select-input>
                 </div>
               </div>
+                </div>
+              </div>
             </div>
           }
           @if (!isDeploy) {
             <div class="col-md-12">
+              <div class="b-a m-b-sm section-box">
+                <div class="section-box-header">
+                  <small class="_600 section-box-title" translate>inventory.section.import</small>
+                </div>
+                <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
@@ -316,12 +342,19 @@
                   </div>
                 </div>
               }
+                </div>
+              </div>
             </div>
           }
         </ng-container>
       }
       @if (type === 'CONTROLLER') {
         <div class="col-md-12">
+          <div class="b-a m-b-sm section-box">
+            <div class="section-box-header">
+              <small class="_600 section-box-title" translate>agent.section.controller</small>
+            </div>
+            <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
@@ -341,6 +374,8 @@
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
+            </div>
+          </div>
             </div>
           </div>
         </div>

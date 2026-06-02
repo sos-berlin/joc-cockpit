@@ -326,7 +326,9 @@
       "expression5": "Example for conditional use of a Subagent if it runs fewer than 10 tasks.",
       "expression6": "Example for conditional use of a Subagent if it runs fewer than 10 tasks for the given Subagent Cluster.",
       "expression7": "Example for least consumption of CPU weighted by 2, free Memory and the least overall number of tasks running in the Subagent weighted by 3."
-    }
+    },
+    "section.controller":"Controller",
+    "section.certificate":"Certificate"
   },
   "auditLog": {
     "label.auditLog": "Audit Log",
@@ -350,6 +352,7 @@
     "tab.auditLog": "Audit Log",
     "tab.loginHistory": "Failed Logins",
     "section.audit": "Audit",
+    "section.customizations": "Customizations",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Reason",
@@ -1194,7 +1197,9 @@
       "dailyPlan": "Daily Plan",
       "projection": "Projection",
       "dependencies": "Dependencies"
-    }
+    },
+    "section.DailyPlan":"Daily Plan",
+    "section.customization":"Customization"
   },
   "deploymentService": {
     "label": {
@@ -1662,7 +1667,8 @@
         "serviceDir": "Specifies the path to the systemd Service Directory, default `/usr/lib/systemd/system`, for example, `/etc/systemd/system`.",
         "forceSudo": "Force use of `sudo` for any operation on directories and files."
       }
-    }
+    },
+    "section.customization":"Customization"
   },
   "error": {
     "button.backHome": "Back Home",
@@ -1769,6 +1775,9 @@
       "placeholder.numOfFilesFrom": "Number of files transferred from",
       "placeholder.numOfFilesTo": "Number of files transferred until"
     },
+    "section.customization":"Customization",
+    "section.source":"Source",
+    "section.target":"Target",
     "--------ADVANCE SEARCH END------------": ""
   },
   "filters": {
@@ -1898,6 +1907,7 @@
     "tab.fileTransfers": "File Transfers",
     "tab.deployments": "Deployments",
     "tab.dailyPlan": "Submissions",
+    "section.customization":"Customization",
     "--------DEPLOYMENT FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Deployments, Pop-up: -, Source: history/deployment-form-template.html, Fields: customizationName, dateRange, from, to, processExecuted, controllerId, deployType, operation, state, sharedCustomization",
     "tooltip.customizationName": "The Name is a unique identifier of the ^Customization^ and can be freely chosen.",
     "tooltip.dateRange": "Specifies the date range for which ^Deployment^ operations should be displayed.",
@@ -2260,6 +2270,13 @@
     "button.syncToInventory": "Synchronize to Inventory",
     "section.object":"Objects",
     "section.folder":"Folder",
+    "section.operation":"Operation",
+    "section.crontab":"Crontab",
+    "section.import":"Import",
+    "section.documentation":"Documentation",
+    "section.tag":"Tag",
+    "section.update":"Update",
+    "section.customization":"Customization",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Limits display to ^Workflow^s assigned one or more of the selected ^Tag^s.",
     "tooltip.orderTagging": "Limits display to ^Workflow^s that hold ^Order^s assigned one or more of the selected Order ^Tag^s from their ^Schedule^s.",

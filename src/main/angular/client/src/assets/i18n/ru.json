@@ -326,7 +326,9 @@
       "expression5": "Пример условного использования субагента, если он выполняет менее 10 процессов.",
       "expression6": "Пример условного использования субагента, если он выполняет менее 10 заданий для данного кластера субагентов.",
       "expression7": "Пример наименьшего потребления ЦП, взвешенного с коэффициентом 2, свободного места на диске и наименьшего общего количества выполняющихся заданий в субагенте, взвешенного с коэффициентом 3."
-    }
+    },
+    "section.controller":"Controller",
+    "section.certificate":"Certificate"
   },
   "auditLog": {
     "label.auditLog": "Журнал действий",
@@ -350,6 +352,7 @@
     "tab.auditLog": "Журнал действий",
     "tab.loginHistory": "Неудачные попытки входа",
     "section.audit": "Журнал действий",
+    "section.customizations": "Customizations",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Обоснование",
@@ -1194,7 +1197,9 @@
       "dailyPlan": "Дневной план",
       "projection": "Прогноз",
       "dependencies": "Зависимости"
-    }
+    },
+    "section.DailyPlan":"Daily Plan",
+    "section.customization":"Customization"
   },
   "deploymentService": {
     "label": {
@@ -1662,7 +1667,8 @@
         "serviceDir": "Папка, в которой размещается файл службы `systemd`, по умолчанию: `/usr/lib/systemd/system`, например, `/etc/systemd/system`.",
         "forceSudo": "Принудительное использование `sudo` для всех операций с папками и файлами."
       }
-    }
+    },
+    "section.customization":"Customization"
   },
   "error": {
     "button.backHome": "Назад",
@@ -1769,6 +1775,9 @@
       "placeholder.numOfFilesFrom": "Количество переданных файлов от",
       "placeholder.numOfFilesTo": "Количество переданных файлов до"
     },
+    "section.customization":"Customization",
+    "section.source":"Source",
+    "section.target":"Target",
     "--------ADVANCE SEARCH END------------": ""
   },
   "filters": {
@@ -1898,6 +1907,7 @@
     "tab.fileTransfers": "Передача файлов",
     "tab.deployments": "Развёртывания",
     "tab.dailyPlan": "Дневной план",
+    "section.customization":"Customization",
     "--------DEPLOYMENT FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Deployments, Pop-up: -, Source: history/deployment-form-template.html, Fields: customizationName, dateRange, from, to, processExecuted, controllerId, deployType, operation, state, sharedCustomization",
     "tooltip.customizationName": "Название является уникальным идентификатором ^персонализации|customization^ и может быть выбрано произвольно.",
     "tooltip.dateRange": "Диапазон дат, используемый при поиске ^развёртываний|deployment^.",
@@ -2260,6 +2270,13 @@
     "button.syncToInventory": "Синхронизировать инвентарь",
     "section.object":"Object",
     "section.folder":"Folder",
+    "section.operation":"Operation",
+    "section.crontab":"Crontab",
+    "section.import":"Import",
+    "section.documentation":"Documentation",
+    "section.tag":"Tag",
+    "section.update":"Update",
+    "section.customization":"Customization",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Workflow Tags.",
     "tooltip.orderTagging": "Order Tags.",

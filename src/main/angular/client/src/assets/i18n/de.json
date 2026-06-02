@@ -326,7 +326,9 @@
       "expression5": "Beispiel für die bedingte Verwendung eines Subagenten, wenn er weniger als 10 Jobs ausführt.",
       "expression6": "Beispiel für die bedingte Verwendung eines Subagenten, wenn er weniger als 10 Jobs für den gegebenen Subagenten-Cluster ausführt.",
       "expression7": "Beispiel für den geringsten CPU-Verbrauch, gewichtet mit 2, freien Speicherplatz und die geringste Gesamtzahl der im Subagenten laufenden Jobs, gewichtet mit 3."
-    }
+    },
+    "section.controller":"Controller",
+    "section.certificate":"Certificate"
   },
   "auditLog": {
     "label.auditLog": "Prüfprotokoll",
@@ -350,6 +352,7 @@
     "tab.auditLog": "Prüfprotokoll",
     "tab.loginHistory": "Fehlgeschlagene Anmeldungen",
     "section.audit": "Audit",
+    "section.customizations": "Customizations",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "search": {
       "label.reason": "Begründung",
@@ -1194,7 +1197,9 @@
       "dailyPlan": "Tagesplan",
       "projection": "Projektion",
       "dependencies": "Abhängigkeiten"
-    }
+    },
+    "section.DailyPlan":"Daily Plan",
+    "section.customization":"Customization"
   },
   "deploymentService": {
     "label": {
@@ -1662,7 +1667,8 @@
         "serviceDir": "Das Verzeichnis, in dem die systemd Service Datei abgelegt wird, Voreinstellung `/usr/lib/systemd/system`, zum Beispiel `/etc/systemd/system`.",
         "forceSudo": "Die Verwendung von `sudo` für alle Operationen auf Verzeichnisse und Dateien erzwingen."
       }
-    }
+    },
+    "section.customization":"Customization"
   },
   "error": {
     "button.backHome": "Zurück",
@@ -1769,6 +1775,9 @@
       "placeholder.numOfFilesFrom": "Anzahl transferierter Dateien ab",
       "placeholder.numOfFilesTo": "Anzahl transferierter Dateien bis"
     },
+    "section.customization":"Customization",
+    "section.source":"Source",
+    "section.target":"Target",
     "--------ADVANCE SEARCH END------------": ""
   },
   "filters": {
@@ -1898,6 +1907,7 @@
     "tab.fileTransfers": "Dateiübertragungen",
     "tab.deployments": "Ausrollen",
     "tab.dailyPlan": "Übermittlungen",
+    "section.customization":"Customization",
     "--------DEPLOYMENT FORM TEMPLATE TOOLTIPS------------": "Page: History, Sub-tab: Deployments, Pop-up: -, Source: history/deployment-form-template.html, Fields: customizationName, dateRange, from, to, processExecuted, controllerId, deployType, operation, state, sharedCustomization",
     "tooltip.customizationName": "Der Name ist eine eindeutige Kennung der ^Personalisierung|customization^ und kann frei gewählt werden.",
     "tooltip.dateRange": "Gibt den Datumsbereich an, für den Operationen für das ^Ausrollen|deployment^ angezeigt werden.",
@@ -2258,8 +2268,15 @@
     "button.unlink": "Verknüpfung aufheben",
     "button.syncToController": "Synchronisieren des Controller",
     "button.syncToInventory": "Synchronisieren des Inventars",
-    "section.object":"Objekte",
-    "section.folder":"Ordner",
+    "section.object":"Object",
+    "section.folder":"Folder",
+    "section.operation":"Operation",
+    "section.crontab":"Crontab",
+    "section.import":"Import",
+    "section.documentation":"Documentation",
+    "section.tag":"Tag",
+    "section.update":"Update",
+    "section.customization":"Customization",
     "--------ADD INVENTORY TAB TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: -, Source: workflow-form-template.html, Fields: workflowTagging, orderTagging",
     "tooltip.workflowTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|workflow^, denen eine oder mehrere der ausgewählten ^Kennzeichnungen|tag^ zugewiesen sind.",
     "tooltip.orderTagging": "Beschränkt die Anzeige auf ^Arbeitsabläufe|workflow^, die ^Aufträge|order^ enthalten, denen in ihren ^Zeitplänen|schedule^ eine oder mehrere der ausgewählten Auftrags-^Kennzeichnungen|tag^ zugewiesen wurden.",

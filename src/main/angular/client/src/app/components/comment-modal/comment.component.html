@@ -9,6 +9,11 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>inventory.section.operation</small>
+      </div>
+      <div class="p-a-sm">
     @if (comments.node) {
       <div class="form-group row">
         <label class="col-sm-4">
@@ -29,6 +34,8 @@
           <span [appRichTooltip]="'common.tooltip.operation' | translate" translate>common.label.operation</span>
         </label>
       <label class="col-sm-8">{{comments.operation | translate}}</label>
+    </div>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

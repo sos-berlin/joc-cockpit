@@ -13,6 +13,11 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title">Approver Profile</small>
+      </div>
+      <div class="p-a-sm">
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
         <span [appRichTooltip]="'profile.tooltip.userName' | translate" translate>profile.label.userName</span>
@@ -90,6 +95,8 @@
                    #email="ngModel" autocomplete="off"/>
           </div>
         </div>
+      </div>
+    </div>
       </div>
     </div>
   </div>

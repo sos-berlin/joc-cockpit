@@ -13,6 +13,11 @@
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
     </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>agent.section.certificate</small>
+      </div>
+      <div class="p-a-sm">
     <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
          class="form-group row">
       <label class="col-sm-3 form-control-label">
@@ -52,6 +57,8 @@
             }
           </div>
         }
+      </div>
+    </div>
       </div>
     </div>
   </div>
