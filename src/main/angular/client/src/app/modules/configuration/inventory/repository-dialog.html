@@ -39,124 +39,132 @@
         <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
         </div>
-        @if (operation === 'store') {
-          <div class="form-group row">
-              <div class="col-md-3" translate>common.label.type</div>
-              <div class="col-md-6">
-                <nz-radio-group [(ngModel)]="object.type" name="type" (ngModelChange)="filterList()">
-                  <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
-                  <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
-                </nz-radio-group>
-            </div>
+        <div class="b-a m-b-sm section-box">
+          <div class="section-box-header">
+            <small class="_600 section-box-title" translate>{{'inventory.repository.section.git' | translate}}</small>
           </div>
-        }
-        @if (object.type === 'changes' && operation === 'store') {
-          <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
-            <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'inventory.repository.tooltip.change' | translate" translate>inventory.export.label.change</span>
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6">
-              <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
-                         name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-                @for (option of changeObj; track option) {
-                  <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-                }
-              </nz-select>
-              @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
-                <div class="text-danger help-block">
-                  @if (changeName.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+          <div class="p-a-sm">
+            @if (operation === 'store') {
+              <div class="form-group row">
+                  <div class="col-md-3">
+                    <span [appRichTooltip]="'inventory.repository.tooltip.type' | translate" translate>common.label.type</span>
+                  </div>
+                  <div class="col-md-6">
+                    <nz-radio-group [(ngModel)]="object.type" name="type" (ngModelChange)="filterList()">
+                      <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
+                      <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
+                    </nz-radio-group>
+                </div>
+              </div>
+            }
+            @if (object.type === 'changes' && operation === 'store') {
+              <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
+                <label class="col-sm-3 form-control-label">
+                  <span [appRichTooltip]="'inventory.repository.tooltip.change' | translate" translate>inventory.export.label.change</span>
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-sm-6">
+                  <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
+                            name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+                    @for (option of changeObj; track option) {
+                      <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                    }
+                  </nz-select>
+                  @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
+                    <div class="text-danger help-block">
+                      @if (changeName.errors['required']) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                    </div>
                   }
                 </div>
-              }
-            </div>
-          </div>
-        }
+              </div>
+            }
 
-        @if (operation === 'store' && object.type === 'individual') {
-          <div class="form-group row">
-            <div class="col-md-3">
-              <label>{{'inventory.repository.label.deployed' | translate}}
-                / {{'inventory.repository.label.released'| translate}}</label>
-              <i [appRichTooltip]="'inventory.repository.tooltip.perDefaultStorageOfDeployedReleased' | translate"
-                 class="fa fa-info-circle p-l-xs"></i>
-            </div>
-            <div class="col-md-9">
-              <nz-switch [(ngModel)]="filter.deploy" name="deployed" (ngModelChange)="filterList()"></nz-switch>
-            </div>
-          </div>
-        }
-        @if (operation === 'store' && object.type === 'individual') {
-          <div class="form-group row">
-            <div class="col-md-3">
-              <label>
-                @if (showLabel) {
-                  <span translate>inventory.repository.label.addDraftVersion</span>
-                }
-              </label>
-            </div>
-            <div class="col-md-9">
-              <label [(ngModel)]="filter.draft" [nzDisabled]="!filter.deploy" name="draft"
-                     nz-checkbox (ngModelChange)="filterList()" >
-                {{'inventory.repository.label.draft'| translate}}
-              </label>
-              <label [(ngModel)]="filter.valid" class="m-l-md" name="valid" nz-checkbox (ngModelChange)="filterList()" >
-                {{'inventory.repository.label.validOnly'| translate}}
-              </label>
-            </div>
-          </div>
-        }
-        @if ((object.type === 'individual' || object.type === 'changes') && (operation !== 'update' && operation !== 'delete')) {
-          <div class="form-group row">
-            <div class="col-md-3">
-              <label>
-                <span [appRichTooltip]="'inventory.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
-              </label>
-            </div>
-            <div class="col-md-9">
-              <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-                <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-                <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-              </nz-radio-group>
-            </div>
-          </div>
-        }
-        @if (nodes.length > 0 && dependencyMode !== 'none' && (operation !== 'update' && operation !== 'delete')) {
-          <div class="form-group row">
-            <label class="col-md-3">
-              <span [appRichTooltip]="'inventory.tooltip.manageDependencies' | translate" translate>inventory.label.manageDependencies</span>
-            </label>
-            <div class="col-md-6">
-              <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
-            </div>
-          </div>
-        }
+            @if (operation === 'store' && object.type === 'individual') {
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label>
+                    <span [appRichTooltip]="'inventory.repository.tooltip.perDefaultStorageOfDeployedReleased' | translate">{{'inventory.repository.label.deployed' | translate}} / {{'inventory.repository.label.released'| translate}}</span>
+                  </label>
+                </div>
+                <div class="col-md-9">
+                  <nz-switch [nzSize]="'small'" [(ngModel)]="filter.deploy" name="deployed" (ngModelChange)="filterList()"></nz-switch>
+                </div>
+              </div>
+            }
+            @if (operation === 'store' && object.type === 'individual') {
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label>
+                    @if (showLabel) {
+                      <span translate>inventory.repository.label.addDraftVersion</span>
+                    }
+                  </label>
+                </div>
+                <div class="col-md-9">
+                  <label [(ngModel)]="filter.draft" [nzDisabled]="!filter.deploy" name="draft"
+                        nz-checkbox (ngModelChange)="filterList()" >
+                    {{'inventory.repository.label.draft'| translate}}
+                  </label>
+                  <label [(ngModel)]="filter.valid" class="m-l-md" name="valid" nz-checkbox (ngModelChange)="filterList()" >
+                    {{'inventory.repository.label.validOnly'| translate}}
+                  </label>
+                </div>
+              </div>
+            }
+            @if ((object.type === 'individual' || object.type === 'changes') && (operation !== 'update' && operation !== 'delete')) {
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+                  </label>
+                </div>
+                <div class="col-md-9">
+                  <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
+                    <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+                    <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
+                    <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+                  </nz-radio-group>
+                </div>
+              </div>
+            }
+            @if (nodes.length > 0 && dependencyMode !== 'none' && (operation !== 'update' && operation !== 'delete')) {
+              <div class="form-group row">
+                <label class="col-md-3">
+                  <span [appRichTooltip]="'inventory.tooltip.manageDependencies' | translate" translate>inventory.label.manageDependencies</span>
+                </label>
+                <div class="col-md-6">
+                  <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
+                </div>
+              </div>
+            }
 
-        @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies) {
-          <div class="form-group row">
-            <label class="col-md-3">
-              <span [appRichTooltip]="'inventory.tooltip.showRelatedObjects' | translate" translate>inventory.label.showRelatedObjects</span>
-            </label>
-            <div class="col-md-6">
-              <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
-            </div>
+            @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies) {
+              <div class="form-group row">
+                <label class="col-md-3">
+                  <span [appRichTooltip]="'inventory.tooltip.showRelatedObjects' | translate" translate>inventory.label.showRelatedObjects</span>
+                </label>
+                <div class="col-md-6">
+                  <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
+                </div>
+              </div>
+            }
+            @if (nodes.length > 0 && object.type === 'individual') {
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label>
+                    <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label [(ngModel)]="exportObj.isRecursive" name="isRecursive"
+                        nz-checkbox (ngModelChange)="handleRecursive()"></label>
+                </div>
+              </div>
+            }
           </div>
-        }
-        @if (nodes.length > 0 && object.type === 'individual') {
-          <div class="form-group row">
-            <div class="col-md-3">
-              <label>
-                <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
-              </label>
-            </div>
-            <div class="col-md-6">
-              <label [(ngModel)]="exportObj.isRecursive" name="isRecursive"
-                     nz-checkbox (ngModelChange)="handleRecursive()"></label>
-            </div>
-          </div>
-        }
+        </div>
         @if (nodes.length > 0 && object.type === 'individual') {
           <div class="row m-b-sm">
             <div class="col-md-12">

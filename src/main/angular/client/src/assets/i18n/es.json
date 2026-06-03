@@ -2446,6 +2446,7 @@
       "section.scheduling": "Scheduling"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "Filtro",
       "label.validOnly": "Solo válido",
       "label.draft": "Borrador",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "usar versión borrador si no existe versión desplegada/liberada",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Por defecto se recomienda almacenar preferentemente versiones desplegadas/liberadas. Elegir tanto borrador como desplegada/liberada hará que se almacenen borradores solo si no existe versión desplegada/liberada. Elegir solo versiones borrador hará que se almacene la versión borrador y no versiones desplegadas/liberadas. Las versiones borrador se consideran no probadas y por lo tanto no seguras.",
-      "tooltip.change": "Change"
+      "tooltip.change": "Change",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {

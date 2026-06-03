@@ -186,6 +186,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private destroyed = false;
   private searchSub?: Subscription;
   private debounceSub?: Subscription;
+  private pollTimer?: ReturnType<typeof setTimeout>;
+  private readonly POLL_INTERVAL_MS = 3000;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   private readonly highlightCache = new Map<string, SafeHtml>();
   private syslogResizeHandler?: () => void;
@@ -237,6 +239,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    this.clearPollTimer();
     this.searchSub?.unsubscribe();
     this.debounceSub?.unsubscribe();
     this._searchDebounce.complete();
@@ -487,6 +490,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const tz = this.displayTz;
     const iso = raw.replace(',', '.');
     if (tz) {
+      // Log timestamps are stored in UTC by Controller/Agent.
+      // Parse as UTC first, then convert to the display timezone.
+      // return moment.utc(iso, 'YYYY-MM-DDTHH:mm:ss.SSS').tz(tz).format('YYYY-MM-DD HH:mm:ss');
       return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', tz).format('YYYY-MM-DD HH:mm:ss');
     }
     return iso.replace('T', ' ').slice(0, 23);
@@ -517,6 +523,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
+        this.scheduleNextPoll();
       },
       error: () => {
         this.isLoading = false;
@@ -536,6 +543,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.token = res.logToken || null;
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
+        this.scheduleNextPoll();
       },
       error: () => {
         this.isLoading = false;
@@ -553,6 +561,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   reload(): void {
+    this.clearPollTimer();
     this.allLines = [];
     this.token = null;
     this.isComplete = false;
@@ -562,6 +571,24 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // ── Private helpers ────────────────────────────────────────────────────────
+
+  private scheduleNextPoll(): void {
+    this.clearPollTimer();
+    if (!this.isComplete && this.token) {
+      this.pollTimer = setTimeout(() => {
+        if (!this.destroyed && !this.isComplete && this.token) {
+          this.loadMore();
+        }
+      }, this.POLL_INTERVAL_MS);
+    }
+  }
+
+  private clearPollTimer(): void {
+    if (this.pollTimer !== undefined) {
+      clearTimeout(this.pollTimer);
+      this.pollTimer = undefined;
+    }
+  }
 
   private scrollToBottom(): void {
     const el = this.logBodyRef?.nativeElement;
@@ -862,8 +889,9 @@ export class LogConsoleModalComponent implements OnInit {
       level:        this.form.level        || 'INFO',
       dateFrom,
       dateTo,
-      // Only send timeZone to API when user selected a zone different from their profile
-      timeZone:     this.isTimezoneModified ? this.form.timeZone : undefined,
+      // Always send timeZone so the API interprets dateFrom/dateTo in the correct
+      // timezone and so that displayTz is populated for timestamp rendering.
+      timeZone:     this.effectiveTz || undefined,
       numOfLines:   this.form.numOfLines ? Number(this.form.numOfLines) : undefined
     };
   }

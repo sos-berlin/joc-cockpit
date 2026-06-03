@@ -290,13 +290,7 @@
       }
     }
 
-    @if (!isComplete && !isLoading && allLines.length > 0) {
-      <div class="log-console-more">
-        <button class="btn btn-xs btn-default" (click)="loadMore()">{{ 'logConsole.button.loadMore' | translate }}</button>
-      </div>
-    }
-
-    @if (isLoading && allLines.length > 0) {
+    @if (!isComplete && allLines.length > 0) {
       <div class="log-console-more">
         <nz-spin nzSimple nzSize="small"></nz-spin>
       </div>

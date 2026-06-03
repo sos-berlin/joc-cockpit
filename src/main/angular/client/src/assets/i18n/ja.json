@@ -2446,6 +2446,7 @@
       "section.scheduling": "Scheduling"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "フィルター",
       "label.validOnly": "有効のみ",
       "label.draft": "下書き",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "未配置のものがあれば、下書きが追加されます",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "デフォルトでは、配置/リリース版の保存が優先的にサポートされます。下書き版と配置/リリース版の両方を選択すると、配置/リリース版が存在しない場合、下書き版のみが保存されます。下書き版のみを選択すると、配置/リリースバージョンが存在する場合でも、下書き版が保存されます。下書き版は未検証のため、安全ではありません。",
-      "tooltip.change": "Change"
+      "tooltip.change": "Change",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {

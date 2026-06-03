@@ -2446,6 +2446,7 @@
       "section.scheduling": "Планирование"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "Фильтр",
       "label.validOnly": "Только действительные",
       "label.draft": "Черновик",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "Использовать версию черновика, если нет развёрнутой или опубликованной версии.",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "По умолчанию рекомендуется сохранять развёрнутые/опубликованные версии. Если выбраны как черновики, так и развёрнутые/опубликованные версии, черновики сохраняются только при отсутствии опубликованной версии. Если выбраны только черновики, сохраняются только они, а развёрнутые/опубликованные версии не сохраняются. Черновики считаются непроверенными и, следовательно, небезопасными.",
-      "tooltip.change": "Change"
+      "tooltip.change": "Change",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {

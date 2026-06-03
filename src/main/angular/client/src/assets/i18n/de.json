@@ -2446,6 +2446,7 @@
       "section.scheduling": "Tagesplan"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "Filter",
       "label.validOnly": "Nur gültige",
       "label.draft": "Entwurf",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "Entwurfsversion verwenden, falls keine ausgerollte/freigegebene Version existiert",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Standardmäßig wird die Speicherung von ausgerollten/freigegebenen Versionen empfohlen.\n\nWenn sowohl Entwurfsversionen als auch ausgerollte/freigegebene Versionen ausgewählt werden, so werden Entwurfsversionen dann gespeichert, wenn keine ausgerollte/freigegebene Version existiert.\n\nWenn nur Entwurfsversionen auswählt werden, werden nur Entwurfsversionen gespeichert und keine ausgerollten/freigegebenen Versionen.\n\nEntwurfsversionen gelten als ungetestet.",
-      "tooltip.change": "Git-Operationen können auf Objekte beschränkt werden, die einer ^Änderung|change^ zugewiesen sind.\n\nBenutzern steht es frei, abhängige Objekte einzubeziehen, die Objekte der Änderung referenzieren oder von Objekten der Änderung referenziert werden."
+      "tooltip.change": "Git-Operationen können auf Objekte beschränkt werden, die einer ^Änderung|change^ zugewiesen sind.\n\nBenutzern steht es frei, abhängige Objekte einzubeziehen, die Objekte der Änderung referenzieren oder von Objekten der Änderung referenziert werden.",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {

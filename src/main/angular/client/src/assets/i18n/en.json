@@ -2446,6 +2446,7 @@
       "section.scheduling": "Scheduling"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "Filter",
       "label.validOnly": "Valid Only",
       "label.draft": "Draft",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "use draft version if no deployed/released version exists",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Storing deployed/released versions is recommended.\n\nChoosing both draft and deployed/released versions will result in drafts being stored only if no deployed/released version exists.\n\nChoosing draft versions only will result in draft version being stored and no deployed/released versions. Draft versions are untested.",
-      "tooltip.change": "Git operations can be limited to objects that are assigned a ^Change^.\n\nUsers are free to include dependent objects that are directly referenced by objects included with the Change or that are referencing objects included with the Change."
+      "tooltip.change": "Git operations can be limited to objects that are assigned a ^Change^.\n\nUsers are free to include dependent objects that are directly referenced by objects included with the Change or that are referencing objects included with the Change.",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {

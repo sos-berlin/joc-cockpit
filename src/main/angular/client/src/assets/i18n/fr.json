@@ -2446,6 +2446,7 @@
       "section.scheduling": "Plan Quotidien"
     },
     "repository": {
+      "section.git": "Git",
       "label.filter": "Filtre",
       "label.validOnly": "Valable uniquement",
       "label.draft": "Brouillon",
@@ -2454,7 +2455,8 @@
       "label.addDraftVersion": "utiliser la version provisoire si aucune version deployée/publiée n'existe",
       "--------REPOSITORY DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Store / Delete / Update, Source: repository-dialog.html, Fields: deployed, draft, validOnly, name",
       "tooltip.perDefaultStorageOfDeployedReleased": "Par défaut, le stockage des versions déployées/publiées est privilégié.\n\nSi vous choisissez à la fois les versions provisoires et les versions déployées/publiées, les versions provisoires sont stockées si aucune version déployée/publiée n'existe.\n\nEn choisissant uniquement les versions provisoires, les versions provisoires sont stockées et aucune version déployée/publiée n'est stockée. Les versions provisoires sont considérées comme non testées.",
-      "tooltip.change": "Les opérations Git peuvent être limitées aux objets qui sont attribués un ^Changement|change^.\n\nLes utilisateurs sont libres d'inclure les objets dépendants qui sont directement référencés par les objets inclus dans le Changement ou qui font référence à des objets inclus dans le Changement."
+      "tooltip.change": "Les opérations Git peuvent être limitées aux objets qui sont attribués un ^Changement|change^.\n\nLes utilisateurs sont libres d'inclure les objets dépendants qui sont directement référencés par les objets inclus dans le Changement ou qui font référence à des objets inclus dans le Changement.",
+      "tooltip.type": "Type"
     },
     "tooltips": {
       "calendar": {
