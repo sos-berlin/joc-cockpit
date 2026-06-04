@@ -901,9 +901,9 @@ pre#pre {
 }
 
 .ant-select-multiple .ant-select-selection-item, .ant-tag {
-  background: #4e6d8c;
-  border-color: #4e6d8c;
-  color: #fafafa;
+  background: #4e6d8c !important;
+  border-color: #4e6d8c !important;
+  color: #fafafa !important;
 }
 
 /*

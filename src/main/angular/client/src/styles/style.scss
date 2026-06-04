@@ -5743,6 +5743,29 @@ tr.disabled-row td:not(.menu):not(.chk) {
   border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
+/* ── Settings visual hierarchy ── */
+.setting-row-critical {
+  margin-left: 0;
+  margin-right: 0;
+  border-left: 3px solid #f59e0b;
+}
+
+.setting-row-frequent {
+  margin-left: 0;
+  margin-right: 0;
+  border-left: 3px solid #22c55e;
+}
+
+.setting-row-advanced {
+  margin-left: 0;
+  margin-right: 0;
+  border-left: 3px solid #a78bfa;
+}
+
+.setting-button-hide-advance {
+  border-top: 1px dashed var(--text-muted, #9ca3af);
+}
+
 /* ── Order label (multi-order loop header) ── */
 .order-label {
   display: flex;

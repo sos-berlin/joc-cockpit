@@ -14,7 +14,126 @@ import {OrderPipe} from "../../pipes/core.pipe";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 import {KioskService} from "../../services/kiosk.service";
-import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+
+type SettingPriority = 'critical' | 'frequent' | 'advanced';
+type SettingEntry = string | [string, SettingPriority];
+
+const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] } } = {
+  cleanup: {
+    startTime: [
+      ['time_zone', 'critical'], ['period', 'frequent'], ['period_begin', 'critical'],
+      ['period_end', 'critical'], ['force_cleanup', 'frequent']
+    ],
+    databaseConnection: [
+      ['batch_size', 'advanced'], ['max_pool_size', 'advanced']
+    ],
+    retentionPeriod: [
+      ['order_history_age', 'frequent'], ['order_history_logs_age', 'advanced'],
+      ['file_transfer_history_age', 'advanced'], ['audit_log_age', 'frequent'],
+      ['daily_plan_history_age', 'advanced'], ['monitoring_history_age', 'advanced'],
+      ['notification_history_age', 'advanced'], ['profile_age', 'advanced'],
+      ['failed_login_history_age', 'advanced'], ['reporting_age', 'advanced'],
+      ['approval_requests_age', 'advanced'], ['deployment_history_versions', 'advanced']
+    ]
+  },
+  dailyplan: {
+    dailyPlan: [
+      ['time_zone', 'critical'], ['period_begin', 'critical'], ['start_time', 'critical'],
+      ['days_ahead_plan', 'critical'], ['days_ahead_submit', 'critical'],
+      ['submit_orders_individually', 'frequent'],
+      ['age_of_plans_to_be_closed_automatically', 'frequent'],
+      ['projections_month_before', 'frequent'], ['projections_month_ahead', 'frequent']
+    ]
+  },
+  joc: {
+    auditLog: [
+      ['force_comments_for_audit_log', 'frequent'], ['comments_for_audit_log', 'frequent'],
+      ['default_profile_account', 'frequent']
+    ],
+    login: [['enable_remember_me', 'frequent']],
+    inventory: [
+      ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
+      ['restore_suffix', 'advanced'], ['restore_prefix', 'advanced'],
+      ['import_suffix', 'advanced'], ['import_prefix', 'advanced']
+    ],
+    view: [
+      ['show_view_filetransfer', 'frequent'], ['show_view_dashboard', 'frequent'],
+      ['show_view_dailyplan', 'frequent'], ['show_view_workflows', 'frequent'],
+      ['show_view_resources', 'frequent'], ['show_view_history', 'frequent'],
+      ['show_view_auditlog', 'frequent'], ['show_view_configuration', 'frequent'],
+      ['show_view_monitor', 'frequent'], ['show_view_report', 'frequent'],
+      ['display_folders_in_views', 'frequent']
+    ],
+    controller: [
+      ['controller_connection_joc_password', 'critical'],
+      ['controller_connection_history_password', 'critical']
+    ],
+    unicode: [['encoding', 'advanced']],
+    license: [['disable_warning_on_license_expiration', 'advanced']],
+    log: [
+      ['log_ext_directory', 'advanced'], ['log_ext_order_history', 'advanced'],
+      ['log_ext_order', 'advanced'], ['log_ext_task', 'advanced'],
+      ['log_maximum_display_size', 'advanced'], ['log_applicable_size', 'advanced'],
+      ['log_maximum_size', 'advanced']
+    ],
+    link: [['joc_reverse_proxy_url', 'advanced']],
+    job: [['allow_empty_arguments', 'advanced'], ['node_command_line_options', 'advanced']],
+    order: [['allow_undeclared_variables', 'advanced']],
+    tag: [
+      ['num_of_tags_displayed_as_order_id', 'frequent'],
+      ['num_of_workflow_tags_displayed', 'frequent']
+    ],
+    report: [['report_java_options', 'advanced']]
+  },
+  user: {
+    user: [['welcome_got_it', 'frequent'], ['welcome_do_not_remind_me', 'frequent']]
+  },
+  git: {
+    gitRepository: [
+      ['git_hold_workflows', 'frequent'], ['git_hold_resource_locks', 'frequent'],
+      ['git_hold_file_order_sources', 'frequent'], ['git_hold_notice_boards', 'frequent'],
+      ['git_hold_script_includes', 'frequent'], ['git_hold_job_templates', 'frequent'],
+      ['git_hold_job_resources', 'frequent'], ['git_hold_calendars', 'frequent'],
+      ['git_hold_schedules', 'frequent']
+    ]
+  },
+  lognotification: {
+    logNotificationService: [
+      ['log_server_active', 'critical'], ['log_server_port', 'frequent'],
+      ['log_server_max_messages_per_second', 'advanced']
+    ]
+  },
+  identityService: {
+    identityService: [
+      ['idle_session_timeout', 'critical'], ['initial_password', 'critical'],
+      ['minimum_password_length', 'critical']
+    ]
+  },
+  kiosk: {
+    kiosk: [
+      ['kiosk_role', 'frequent'], ['view_dashboard_duration', 'frequent'],
+      ['view_monitor_order_notification_duration', 'frequent'],
+      ['view_monitor_system_notification_duration', 'frequent'],
+      ['view_history_tasks_duration', 'frequent'], ['view_history_orders_duration', 'frequent']
+    ]
+  }
+};
+
+// Derived maps — single source of truth is SETTING_GROUPS above
+const SETTING_PRIORITY: { [key: string]: SettingPriority } = {};
+const GROUP_KEY_MAP: { [section: string]: { [settingName: string]: string } } = {};
+for (const section in SETTING_GROUPS) {
+  GROUP_KEY_MAP[section] = {};
+  for (const group in SETTING_GROUPS[section]) {
+    for (const entry of SETTING_GROUPS[section][group]) {
+      const name = Array.isArray(entry) ? entry[0] : entry;
+      GROUP_KEY_MAP[section][name] = group;
+      if (Array.isArray(entry)) {
+        SETTING_PRIORITY[`${section}.${name}`] = entry[1];
+      }
+    }
+  }
+}
 
 @Component({
   standalone: false,
@@ -34,6 +153,8 @@ export class SettingComponent {
   settingArr: any = [];
   loading: boolean;
   configId: number;
+  searchText: string = '';
+  priorityFilter: SettingPriority | '' = '';
   daysOptions = [
     {label: 'monday', value: 1},
     {label: 'tuesday', value: 2},
@@ -122,6 +243,99 @@ static generateChildStoreObject(children): any {
   return childSettings;
 }
 
+
+  get isFilterActive(): boolean {
+    return !!this.searchText.trim() || !!this.priorityFilter;
+  }
+
+  get filteredSectionCount(): number {
+    return this.settingArr.filter((s: any) => !s._hidden).length;
+  }
+
+  applyFilter(): void {
+    const term = this.searchText.trim().toLowerCase();
+    const priority = this.priorityFilter;
+    const isActive = !!term || !!priority;
+
+    for (const setting of this.settingArr) {
+      if (!isActive) {
+        setting._hidden = false;
+        for (const group of setting.groups) {
+          group._hidden = false;
+          group._searchShowAdvanced = false;
+          for (const val of group.values) { val._hidden = false; }
+        }
+        continue;
+      }
+
+      const sectionLabel = this.translate.instant('settings.section.' + setting.name).toLowerCase();
+      const sectionMatches = !term || sectionLabel.includes(term);
+      let settingHasMatch = false;
+
+      for (const group of setting.groups) {
+        group._searchShowAdvanced = false;
+        const groupLabel = group.key
+          ? this.translate.instant('settings.' + setting.name + '.group.' + group.key).toLowerCase()
+          : '';
+        const groupMatches = !term || groupLabel.includes(term);
+        let groupHasMatch = false;
+
+        for (const val of group.values) {
+          if (!val.value || val.name === 'approval_requestor_role') {
+            val._hidden = true;
+            continue;
+          }
+          const priorityOk = !priority || val.priority === priority;
+          let textOk = !term;
+          if (term) {
+            const label = this.translate.instant('settings.' + setting.name + '.label.' + val.name).toLowerCase();
+            textOk = sectionMatches || groupMatches || label.includes(term) || val.name.toLowerCase().includes(term);
+          }
+          val._hidden = !(priorityOk && textOk);
+          if (!val._hidden) {
+            groupHasMatch = true;
+            settingHasMatch = true;
+            if (val.priority === 'advanced') { group._searchShowAdvanced = true; }
+          }
+        }
+
+        group._hidden = !groupHasMatch;
+      }
+
+      setting._hidden = !settingHasMatch;
+      if (settingHasMatch) { setting.show = true; }
+    }
+  }
+
+  searchChange(): void {
+    this.priorityFilter = '';
+    this.applyFilter();
+  }
+
+  togglePriority(p: SettingPriority): void {
+    this.searchText = '';
+    this.priorityFilter = this.priorityFilter === p ? '' : p;
+    this.applyFilter();
+  }
+
+  clearFilter(): void {
+    this.searchText = '';
+    this.priorityFilter = '';
+    this.applyFilter();
+  }
+
+  getLabel(section: string, name: string): string {
+    const raw = this.translate.instant('settings.' + section + '.label.' + name);
+    return this.highlightMatch(raw);
+  }
+
+  highlightMatch(text: string): string {
+    const safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const term = this.searchText.trim();
+    if (!term) { return safe; }
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return safe.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+  }
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
@@ -421,6 +635,31 @@ static generateChildStoreObject(children): any {
           }
         }
       }
+
+      // Sort values by ordering, assign group, then build grouped structure
+      obj.value.sort((a: any, b: any) => (a.ordering || 0) - (b.ordering || 0));
+      obj.value.forEach((val: any) => {
+        if (!val.value) { return; }
+        val.group = GROUP_KEY_MAP[prop]?.[val.name] || '';
+        val.priority = SETTING_PRIORITY[`${prop}.${val.name}`] || null;
+      });
+      const groupsMap = new Map<string, any[]>();
+      const groupOrder: string[] = [];
+      obj.value.forEach((val: any) => {
+        if (!val.value) { return; }
+        const gk = val.group || '';
+        if (!groupsMap.has(gk)) { groupsMap.set(gk, []); groupOrder.push(gk); }
+        groupsMap.get(gk)!.push(val);
+      });
+      const priorityRank = (p: string | null) => p === 'critical' ? 0 : p === 'frequent' ? 1 : p === 'advanced' ? 2 : 3;
+      obj.groups = groupOrder.map((gk: string) => {
+        const vals = groupsMap.get(gk)!;
+        const topPriority = vals.reduce((best: any, v: any) =>
+          priorityRank(v.priority) < priorityRank(best) ? v.priority : best, null as any);
+        const hasAdvanced = vals.some((v: any) => v.priority === 'advanced');
+        return { key: gk, values: vals, priority: topPriority, hasAdvanced, showAdvanced: false };
+      });
+
       this.settingArr.push(obj);
     }
     this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
