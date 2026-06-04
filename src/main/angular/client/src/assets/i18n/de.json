@@ -331,7 +331,7 @@
     "section.certificate": "Zertifikat"
   },
   "auditLog": {
-    "section.customizationName": "Customization Name",
+    "section.customizationName": "Name der Personalisierung",
     "section.filter": "Filter",
     "label.auditLog": "Prüfprotokoll",
     "label.requestBody": "Inhalt des Request",
@@ -1022,9 +1022,9 @@
     "tooltip.failedTransfers": "Failed"
   },
   "dailyPlan": {
-    "section.customizationName": "Customization Name",
+    "section.customizationName": "Name der Personalisierung",
     "section.filter": "Filter",
-    "section.tags": "Tags",
+    "section.tags": "Kennzeichnungen",
     "label.createPlan": "Tagesplan anlegen",
     "label.schedules": "Zeitpläne",
     "label.workflows": "Arbeitsabläufe",
@@ -1704,7 +1704,7 @@
     "button.backToList": "Zurück zur Liste"
   },
   "fileTransfer": {
-    "section.customizationName": "Customization Name",
+    "section.customizationName": "Name der Personalisierung",
     "section.filter": "Filter",
     "label.transfer": "Übertragung",
     "label.status": "Status",
@@ -1844,9 +1844,9 @@
     "button.manageApprovals": "Autorisierungen verwalten"
   },
   "history": {
-    "section.customizationName": "Customization Name",
+    "section.customizationName": "Name der Personalisierung",
     "section.filter": "Filter",
-    "section.tags": "Tags",
+    "section.tags": "Kennzeichnungen",
     "label.all": "Alle",
     "label.ignoreList": "Ausschlussliste",
     "label.deploymentDate": "Datum des Ausrollens",
@@ -3145,7 +3145,7 @@
     },
     "approvers": {
       "section": {
-        "approverProfile": "Approver Profile"
+        "approverProfile": "Autorisiererprofil"
       },
       "label": {
         "addNewApprover": "Autorisiererprofil hinzufügen",
@@ -3657,8 +3657,8 @@
     }
   },
   "runtime": {
-    "section.period": "Period",
-    "section.frequency": "Frequency",
+    "section.period": "Periode",
+    "section.frequency": "Häufigkeit",
     "label.selectAll": "Alle auswählen",
     "label.runTime": "Startzeitregel",
     "label.calendarViewFor": "Ansicht Tagesplan für",
@@ -4649,10 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
-    "section.customizationName": "Customization Name",
+    "section.customizationName": "Name der Personalisierung",
     "section.filter": "Filter",
-    "section.tags": "Tags",
-    "section.availability": "Availability",
+    "section.tags": "Kennzeichnungen",
+    "section.availability": "Verfügbarkeit",
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Auftrag",
     "label.orderId": "Auftragskennung",
