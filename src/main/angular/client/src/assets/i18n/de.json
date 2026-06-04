@@ -331,6 +331,8 @@
     "section.certificate": "Zertifikat"
   },
   "auditLog": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.auditLog": "Prüfprotokoll",
     "label.requestBody": "Inhalt des Request",
     "label.details": "Details des Objekts",
@@ -1020,6 +1022,9 @@
     "tooltip.failedTransfers": "Failed"
   },
   "dailyPlan": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.createPlan": "Tagesplan anlegen",
     "label.schedules": "Zeitpläne",
     "label.workflows": "Arbeitsabläufe",
@@ -1699,6 +1704,8 @@
     "button.backToList": "Zurück zur Liste"
   },
   "fileTransfer": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.transfer": "Übertragung",
     "label.status": "Status",
     "label.operation": "Operation",
@@ -1837,6 +1844,9 @@
     "button.manageApprovals": "Autorisierungen verwalten"
   },
   "history": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.all": "Alle",
     "label.ignoreList": "Ausschlussliste",
     "label.deploymentDate": "Datum des Ausrollens",
@@ -3134,6 +3144,9 @@
       }
     },
     "approvers": {
+      "section": {
+        "approverProfile": "Approver Profile"
+      },
       "label": {
         "addNewApprover": "Autorisiererprofil hinzufügen",
         "firstName": "Vorname",
@@ -3644,6 +3657,8 @@
     }
   },
   "runtime": {
+    "section.period": "Period",
+    "section.frequency": "Frequency",
     "label.selectAll": "Alle auswählen",
     "label.runTime": "Startzeitregel",
     "label.calendarViewFor": "Ansicht Tagesplan für",
@@ -4634,6 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
+    "section.availability": "Availability",
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Auftrag",
     "label.orderId": "Auftragskennung",
