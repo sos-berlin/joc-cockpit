@@ -157,7 +157,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   isDownloading = false;
   isComplete = false;
   token: string | null = null;
+  /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
+  /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
+  logTimezone = false;
+  /** User's profile timezone (preferences.zone), populated from sessionStorage in ngOnInit. */
+  profileTz = '';
 
   // ── Level visibility checkboxes (display filter, not REST level) ──────────
   filters = { info: true, warn: true, error: true, debug: true, trace: true };
@@ -225,6 +230,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.commitSearch(term);
       }
     });
+
+    // Read logTimezone preference and user profile timezone from session storage.
+    if (sessionStorage['preferences']) {
+      try {
+        const prefs = JSON.parse(sessionStorage['preferences']);
+        this.logTimezone = prefs.logTimezone === true;
+        this.profileTz   = prefs.zone || '';
+      } catch { /**/ }
+    }
+    if (!this.profileTz) {
+      this.profileTz = this.coreService.getTimeZone();
+    }
 
     if (this.request?.dateFrom) {
       this.fetchLog();
@@ -482,18 +499,28 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get displayTz(): string {
-    return this.request?.timeZone || this.timeZone;
+    // Case A (logTimezone=true):  timestamps are converted to the user profile tz — show profile tz in chip.
+    // Case B (logTimezone=false): timestamps stay in the controller/agent tz — show that tz in chip.
+    if (this.logTimezone) {
+      return this.profileTz || this.timeZone;
+    }
+    return this.timeZone || this.request?.timeZone || '';
   }
 
   formatTimestamp(raw: string): string {
     if (!raw) return raw;
-    const tz = this.displayTz;
     const iso = raw.replace(',', '.');
-    if (tz) {
-      // Log timestamps are stored in UTC by Controller/Agent.
-      // Parse as UTC first, then convert to the display timezone.
-      // return moment.utc(iso, 'YYYY-MM-DDTHH:mm:ss.SSS').tz(tz).format('YYYY-MM-DD HH:mm:ss');
-      return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', tz).format('YYYY-MM-DD HH:mm:ss');
+    // Source timezone: the timezone the Controller/Agent runs in, returned in response.timeZone.
+    // Fall back to request.timeZone only before the first response arrives.
+    const sourceTz = this.timeZone || this.request?.timeZone || '';
+    if (sourceTz) {
+      if (this.logTimezone && this.profileTz) {
+        // Case A: parse as controller tz, then convert to user profile tz.
+        return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        // Case B: parse as controller tz, display in that tz with UTC offset appended.
+        return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).format('YYYY-MM-DD HH:mm:ssZ');
+      }
     }
     return iso.replace('T', ' ').slice(0, 23);
   }

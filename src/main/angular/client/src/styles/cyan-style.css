@@ -946,9 +946,9 @@ span ul li a {
 }
 
 .ant-select-multiple .ant-select-selection-item, .ant-tag {
-  background: var(--bg-box);
-  border-color: var(--bg-box);
-  color: var(--text-color);
+  background: var(--bg-box) !important;
+  border-color: var(--bg-box) !important;
+  color: var(--text-color) !important;
 }
 
 /*

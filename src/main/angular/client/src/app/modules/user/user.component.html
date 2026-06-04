@@ -74,697 +74,807 @@
                 {{ 'profile.label.preferences' | translate }}
               </ng-template>
               <div class="m-l-12 p-b-xs">
-                <div class="row">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.language' | translate">
-                      profile.label.language
-                    </span>
-                  </div>
-                  <div class="col-md-8 col-lg-9">
-                    <app-select-input (modelChange)="setLocale()" [attributeName]="'locale'" [classNames]="'w-xl'"
-                                      [listArray]="coreService.locales" [name]="'language'" [object]="preferences"
-                                      [optionLabel]="'name'" [optionValue]="'lang'"></app-select-input>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.timeZone' | translate">
-                      profile.label.timeZone
-                    </span>
-                  </div>
-                  <div class="col-md-8 col-lg-9">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
-                                      [extraLabelText]="'local '" [isSearchable]="true" [ignoreTranslate]="true"
-                                      [listArray]="zones" [name]="'timeZone'"
-                                      [object]="preferences"></app-select-input>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.dateTimeFormat' | translate">
-                      profile.label.dateTimeFormat
-                    </span>
-                  </div>
-                  <div class="col-md-8 col-lg-9">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'dateFormat'" [classNames]="'w-xl'"
-                                      [listArray]="dateTimeFormat"
-                                      [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                    <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM -
-                      month name, D / DD - day of month
-                    </div>
-                    <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss -
-                      seconds
-                    </div>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfHistoryEntries' | translate">
-                      profile.label.maxNumberOfHistoryEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration(isGroupBtnActive)" [(ngModel)]="preferences.maxRecords" [nzMin]="1" [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                    @if (isGroupBtnActive) {
-                      <i (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
-                    }
-                    @if (!isGroupBtnActive) {
-                      <a (click)="groupLimit()" class="text-hover-primary p-l-sm" translate>profile.button.groupLimit</a>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogPerObject' | translate">
-                      profile.label.maxNumberOfAuditLogEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                    <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                      <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfNotificationEntries' | translate">
-                        profile.label.maxNumberOfNotificationEntries
-                      </span>
-                    </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxNotificationRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderOverviewEntries' | translate">
-                      profile.label.maxNumberOfOverviewEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxOrderRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfDailyPlanEntries' | translate">
-                      profile.label.maxNumberOfDailyPlanEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxDailyPlanRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerWorkflow' | translate">
-                      profile.label.maxNumberOfWorkflowEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxWorkflowRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFileTransferEntries' | translate">
-                      profile.label.maxNumberOfFileTransferEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFileTransferRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerResourceLock' | translate">
-                      profile.label.maxNumberOfResourceLockEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxLockRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerNoticeBoard' | translate">
-                      profile.label.maxNumberOfNoticeBoardEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    @if (!isGroupBtnActive) {
-                      <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxBoardRecords" [nzMin]="1"
-                                       [nzStep]="5"
-                                       class="w-xl"></nz-input-number>
-                    }
-                    @if (isGroupBtnActive) {
-                      <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
-                                       nzDisabled
-                      ></nz-input-number>
-                    }
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate
-                      [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderHistoryEntriesPerWorkflow' | translate">
-                      profile.label.maxNumberOfHistoryEntriesPerOrder
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerOrder" [nzMin]="1" [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfJobHistoryEntriesPerWorkflow' | translate">
-                      profile.label.maxNumberOfHistoryEntriesPerTask
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerTask" [nzMin]="1" [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogEntriesPerObject' | translate">
-                      profile.label.maxNumberOfAuditLogPerObject
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogPerObject" [nzMin]="1"
-                                     [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFavoriteEntries' | translate">
-                      profile.label.maxNumberOfFavoriteEntries
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFavoriteEntries" [nzMin]="1"
-                                     [nzStep]="5"
-                                     class="w-xl"></nz-input-number>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
-                      profile.label.maxEntryPerPage
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
-                                      [listArray]="maxEntryPerPage"
-                                      [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
 
+                <!-- Browser related Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.browser</small>
                   </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
-                      profile.label.entryPerPage
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
-                                      [listArray]="entryPerPage"
-                                      [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.changeTheme' | translate">
-                      profile.label.theme
-                    </span>
-                  </div>
-                  <div class="col-md-6" style="display: flex">
-                    <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
-                                      [listArray]="themeArray" [object]="preferences"
-                                      [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                    <a (click)="toggleFieldsVisibility()" [appRichTooltip]="'profile.tooltip.stateColorChange' | translate" nz-icon class="p-l-sm text-md" nzType="aim" nzTheme="outline"></a>
-                  </div>
-                </div>
-
-                @if (showAdditionalFields) {
-                  <div class="b-a p-a m-t">
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.language' | translate">
+                          profile.label.language
+                        </span>
+                      </div>
+                      <div class="col-md-8 col-lg-9">
+                        <app-select-input (modelChange)="setLocale()" [attributeName]="'locale'" [classNames]="'w-xl'"
+                                          [listArray]="coreService.locales" [name]="'language'" [object]="preferences"
+                                          [optionLabel]="'name'" [optionValue]="'lang'"></app-select-input>
+                      </div>
+                    </div>
                     <div class="row m-t">
-                      <!-- Pending -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[0].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[0].color"
-                                             (ngModelChange)="updateColor('pending', orderStateColors[0].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.timeZone' | translate">
+                          profile.label.timeZone
+                        </span>
                       </div>
-
-                      <!-- Scheduled -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[1].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[1].color"
-                                             (ngModelChange)="updateColor('scheduled', orderStateColors[1].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
+                      <div class="col-md-8 col-lg-9">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
+                                          [extraLabelText]="'local '" [isSearchable]="true" [ignoreTranslate]="true"
+                                          [listArray]="zones" [name]="'timeZone'"
+                                          [object]="preferences"></app-select-input>
                       </div>
-
-                      <!-- In Progress -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[2].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[2].color"
-                                             (ngModelChange)="updateColor('inProgress', orderStateColors[2].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.dateTimeFormat' | translate">
+                          profile.label.dateTimeFormat
+                        </span>
                       </div>
-
-                      <!-- Running -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[3].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[3].color"
-                                             (ngModelChange)="updateColor('running', orderStateColors[3].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
+                      <div class="col-md-8 col-lg-9">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'dateFormat'" [classNames]="'w-xl'"
+                                          [listArray]="dateTimeFormat"
+                                          [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                        <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M / MM - month number, MMM / MMMM -
+                          month name, D / DD - day of month
                         </div>
-                      </div>
-
-                      <!-- Suspended -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[4].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[4].color"
-                                             (ngModelChange)="updateColor('suspended', orderStateColors[4].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
+                        <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss -
+                          seconds
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <!-- List related Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.list</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfHistoryEntries' | translate">
+                          profile.label.maxNumberOfHistoryEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration(isGroupBtnActive)" [(ngModel)]="preferences.maxRecords" [nzMin]="1" [nzStep]="5"
+                                         class="w-xl"></nz-input-number>
+                        @if (isGroupBtnActive) {
+                          <i (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
+                        }
+                        @if (!isGroupBtnActive) {
+                          <a (click)="groupLimit()" class="text-hover-primary p-l-sm" translate>profile.button.groupLimit</a>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogPerObject' | translate">
+                          profile.label.maxNumberOfAuditLogEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfNotificationEntries' | translate">
+                          profile.label.maxNumberOfNotificationEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxNotificationRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderOverviewEntries' | translate">
+                          profile.label.maxNumberOfOverviewEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxOrderRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfDailyPlanEntries' | translate">
+                          profile.label.maxNumberOfDailyPlanEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxDailyPlanRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerWorkflow' | translate">
+                          profile.label.maxNumberOfWorkflowEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxWorkflowRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFileTransferEntries' | translate">
+                          profile.label.maxNumberOfFileTransferEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFileTransferRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerResourceLock' | translate">
+                          profile.label.maxNumberOfResourceLockEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxLockRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerNoticeBoard' | translate">
+                          profile.label.maxNumberOfNoticeBoardEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        @if (!isGroupBtnActive) {
+                          <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxBoardRecords" [nzMin]="1"
+                                           [nzStep]="5"
+                                           class="w-xl"></nz-input-number>
+                        }
+                        @if (isGroupBtnActive) {
+                          <nz-input-number [(ngModel)]="preferences.maxRecords" class="w-xl"
+                                           nzDisabled
+                          ></nz-input-number>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Workflow View Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.workflowView</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate
+                          [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderHistoryEntriesPerWorkflow' | translate">
+                          profile.label.maxNumberOfHistoryEntriesPerOrder
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerOrder" [nzMin]="1" [nzStep]="5"
+                                         class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfJobHistoryEntriesPerWorkflow' | translate">
+                          profile.label.maxNumberOfHistoryEntriesPerTask
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerTask" [nzMin]="1" [nzStep]="5"
+                                         class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogEntriesPerObject' | translate">
+                          profile.label.maxNumberOfAuditLogPerObject
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogPerObject" [nzMin]="1"
+                                         [nzStep]="5"
+                                         class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Configuration - Inventory View Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.inventoryView</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFavoriteEntries' | translate">
+                          profile.label.maxNumberOfFavoriteEntries
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFavoriteEntries" [nzMin]="1"
+                                         [nzStep]="5"
+                                         class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pagination Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.pagination</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
+                          profile.label.maxEntryPerPage
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
+                                          [listArray]="maxEntryPerPage"
+                                          [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
+                          profile.label.entryPerPage
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
+                                          [listArray]="entryPerPage"
+                                          [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Theme Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.theme</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.changeTheme' | translate">
+                          profile.label.theme
+                        </span>
+                      </div>
+                      <div class="col-md-6" style="display: flex">
+                        <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
+                                          [listArray]="themeArray" [object]="preferences"
+                                          [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                        <a (click)="toggleFieldsVisibility()" [appRichTooltip]="'profile.tooltip.stateColorChange' | translate" nz-icon class="p-l-sm text-md" nzType="aim" nzTheme="outline"></a>
+                      </div>
+                    </div>
+
+                    @if (showAdditionalFields) {
+                      <div class="b-a p-a m-t">
+                        <div class="row m-t">
+                          <!-- Pending -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[0].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[0].color"
+                                                 (ngModelChange)="updateColor('pending', orderStateColors[0].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Scheduled -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[1].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[1].color"
+                                                 (ngModelChange)="updateColor('scheduled', orderStateColors[1].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- In Progress -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[2].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[2].color"
+                                                 (ngModelChange)="updateColor('inProgress', orderStateColors[2].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Running -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[3].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[3].color"
+                                                 (ngModelChange)="updateColor('running', orderStateColors[3].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Suspended -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[4].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[4].color"
+                                                 (ngModelChange)="updateColor('suspended', orderStateColors[4].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row m-t">
+                          <!-- Completed -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[5].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[5].color"
+                                                 (ngModelChange)="updateColor('finished', orderStateColors[5].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Prompting -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[6].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[6].color"
+                                                 (ngModelChange)="updateColor('prompting', orderStateColors[6].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Waiting -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[7].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[7].color"
+                                                 (ngModelChange)="updateColor('waiting', orderStateColors[7].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Blocked -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[8].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[8].color"
+                                                 (ngModelChange)="updateColor('blocked', orderStateColors[8].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Failed -->
+                          <div class="col-md-2 col-sm-4">
+                            <div class="row">
+                              <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
+                              <div class="col-8" style="position: relative;">
+                                <input [(ngModel)]="orderStateColors[9].color"  class="form-control w-sm color-input" type="text"
+                                       placeholder="{{'profile.label.enterColor' | translate}}">
+                                <nz-color-picker [(ngModel)]="orderStateColors[9].color"
+                                                 (ngModelChange)="updateColor('failed', orderStateColors[9].color)"
+                                                 nzSize="small" class="color-picker-circle"></nz-color-picker>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <a (click)="resetDefault()" class="text-u-l rev" translate>profile.label.resetDefault</a>
+                      </div>
+                    }
+
+                    @if (this.preferences.theme === 'light') {
+                      <div class="row m-t">
+                        <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                          <span translate [appRichTooltip]="'profile.preferences.tooltip.menuBarColor' | translate">
+                            profile.label.menuBarTheme
+                          </span>
+                        </div>
+                        <div class="col-md-6">
+                          <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'headerColor'" [classNames]="'w-xl'"
+                                            [isSearchable]="true"
+                                            [listArray]="headerColor" [object]="preferences" [optionLabel]="'name'"
+                                            [optionValue]="'value'"></app-select-input>
+                        </div>
+                      </div>
+                    }
 
                     <div class="row m-t">
-                      <!-- Completed -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[5].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[5].color"
-                                             (ngModelChange)="updateColor('finished', orderStateColors[5].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.themeTitle' | translate">
+                          profile.label.themeTitle
+                        </span>
                       </div>
-
-                      <!-- Prompting -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[6].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[6].color"
-                                             (ngModelChange)="updateColor('prompting', orderStateColors[6].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Waiting -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[7].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[7].color"
-                                             (ngModelChange)="updateColor('waiting', orderStateColors[7].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Blocked -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[8].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[8].color"
-                                             (ngModelChange)="updateColor('blocked', orderStateColors[8].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Failed -->
-                      <div class="col-md-2 col-sm-4">
-                        <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
-                          <div class="col-8" style="position: relative;">
-                            <input [(ngModel)]="orderStateColors[9].color"  class="form-control w-sm color-input" type="text"
-                                   placeholder="{{'profile.label.enterColor' | translate}}">
-                            <nz-color-picker [(ngModel)]="orderStateColors[9].color"
-                                             (ngModelChange)="updateColor('failed', orderStateColors[9].color)"
-                                             nzSize="small" class="color-picker-circle"></nz-color-picker>
-                          </div>
-                        </div>
+                      <div class="col-md-6">
+                        <input (blur)="changeConfiguration()" [(ngModel)]="preferences.themeTitle" class="form-control w-xl"
+                               type="text">
                       </div>
                     </div>
-
-                    <a (click)="resetDefault()" class="text-u-l rev" translate>profile.label.resetDefault</a>
                   </div>
-                }
+                </div>
 
-                @if (this.preferences.theme === 'light') {
-                  <div class="row m-t">
-                    <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                      <span translate [appRichTooltip]="'profile.preferences.tooltip.menuBarColor' | translate">
-                        profile.label.menuBarTheme
-                      </span>
+                <!-- Editor Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.editor</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
+                          profile.label.tabSize
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
+                               type="text">
+                      </div>
                     </div>
-                    <div class="col-md-6">
-                      <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'headerColor'" [classNames]="'w-xl'"
-                                        [isSearchable]="true"
-                                        [listArray]="headerColor" [object]="preferences" [optionLabel]="'name'"
-                                        [optionValue]="'value'"></app-select-input>
+                  </div>
+                </div>
+
+                <!-- View Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.view</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
+                          profile.label.showLogs
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                          <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                        </nz-radio-group>
+                      </div>
                     </div>
                   </div>
-                }
+                </div>
 
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.themeTitle' | translate">
-                      profile.label.themeTitle
-                    </span>
+                <!-- Configuration View Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.configView</small>
                   </div>
-                  <div class="col-md-6">
-                    <input (blur)="changeConfiguration()" [(ngModel)]="preferences.themeTitle" class="form-control w-xl"
-                           type="text">
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
-                      profile.label.tabSize
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
-                           type="text">
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
+                          <label nz-radio nzValue="both"><span
+                            translate>profile.label.subFolderAndFolderContents</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
-                      profile.label.showLogs
-                    </span>
+
+                <!-- Mixed Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.mixed</small>
                   </div>
-                  <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                      <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
-                  <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
-                  <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
-                      <label nz-radio nzValue="both"><span
-                        translate>profile.label.subFolderAndFolderContents</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showFilesImmediatelyInFileTransferView' | translate">profile.label.showFilesImmediately</div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showFiles"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableReasonsForAuditLog' | translate">profile.label.enableCommentsForAuditLog</div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
-                    ></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.useTimeZoneForLogTimestamps' | translate">profile.label.useTimezoneForLog</div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.logTimezone"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
-                    profile.label.currentController
-                  </div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.currentController"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.tooltipDelay' | translate">
-                      profile.label.tooltipDelay
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input [attributeName]="'tooltipDelay'" [classNames]="'w-xl'"
-                                      [isSearchable]="false"
-                                      [listArray]="tooltipDelayOptions" [object]="preferences"
-                                      [optionLabel]="'name'" [optionValue]="'value'"
-                                      (modelChange)="changeConfiguration()"></app-select-input>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
-                    profile.label.licenseWarningGotIt
-                  </div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
-                           (ngModelChange)="changeConfiguration()"></label>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showFilesImmediatelyInFileTransferView' | translate">profile.label.showFilesImmediately</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.showFiles"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableReasonsForAuditLog' | translate">profile.label.enableCommentsForAuditLog</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
+                        ></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.useTimeZoneForLogTimestamps' | translate">profile.label.useTimezoneForLog</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.logTimezone"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
+                        profile.label.currentController
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.currentController"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tooltipDelay' | translate">
+                          profile.label.tooltipDelay
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input [attributeName]="'tooltipDelay'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="tooltipDelayOptions" [object]="preferences"
+                                          [optionLabel]="'name'" [optionValue]="'value'"
+                                          (modelChange)="changeConfiguration()"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
+                        profile.label.licenseWarningGotIt
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showMoreOptions' | translate">
+                        profile.label.showMoreOptions
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.collapseListVariable' | translate">
+                        profile.label.listVariableCollapse
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showMoreOptions' | translate">
-                    profile.label.showMoreOptions
+
+                <!-- View Type Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.viewType</small>
                   </div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.collapseListVariable' | translate">
-                    profile.label.listVariableCollapse
-                  </div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
-                  <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
-                      <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                      <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                    </nz-radio-group>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
-                  <div class="col-md-6">
-                    <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
-                      <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                      <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                      <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
-                    </nz-radio-group>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
+                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
+                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
+                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
+                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                          <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">profile.label.showHelpPages</div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
-                           (ngModelChange)="changeConfiguration()"></label>
+
+                <!-- Features -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.features</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">profile.label.showHelpPages</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableTagging' | translate">profile.label.enableTagging</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.enableTagging"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableTagging' | translate">profile.label.enableTagging</div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.enableTagging"
-                           (ngModelChange)="changeConfiguration()"></label>
+
+                <!-- Workflow Layout Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.label.customizeWorkflowLayout</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
+                          profile.label.orientation
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="orientation" [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <!--interRankCellSpacing
+                        The minimum distance between instructions on adjacent ranks. Default 40px
+                    -->
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate
+                          [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnAdjacentLayers' | translate">
+                          profile.label.interRankCellSpacing
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <!--intraCellSpacing
+                        The minimum buffer between instructions on the same rank. Default 30px
+                    -->
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnTheSameLayer' | translate">
+                          profile.label.intraCellSpacing
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.roundEdgesForConnections' | translate">
+                          profile.label.edgeRounded
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.edgeRounded"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="row m-t b-t p-t">
-                  <div class="col-md-12">
-                    <h6>
-                      <span translate>profile.label.customizeWorkflowLayout</span>
-                    </h6>
-                  </div>
-                </div>
-                <div class="row m-t-xs">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
-                      profile.label.orientation
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
-                                      [isSearchable]="false"
-                                      [listArray]="orientation" [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                  </div>
-                </div>
-                <!--interRankCellSpacing
-                    The minimum distance between instructions on adjacent ranks. Default 40px
-                -->
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                    <span translate
-                      [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnAdjacentLayers' | translate">
-                      profile.label.interRankCellSpacing
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
-                                      [isSearchable]="false"
-                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                  </div>
-                </div>
-                <!--intraCellSpacing
-                    The minimum buffer between instructions on the same rank. Default 30px
-                -->
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnTheSameLayer' | translate">
-                      profile.label.intraCellSpacing
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
-                                      [isSearchable]="false"
-                                      [listArray]="spacing" [object]="preferences" [optionLabel]="'name'"
-                                      [optionValue]="'value'"></app-select-input>
-                  </div>
-                </div>
-                <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark">
-                    <span translate [appRichTooltip]="'profile.preferences.tooltip.roundEdgesForConnections' | translate">
-                      profile.label.edgeRounded
-                    </span>
-                  </div>
-                  <div class="col-md-6">
-                    <label nz-checkbox [(ngModel)]="preferences.edgeRounded"
-                           (ngModelChange)="changeConfiguration()"></label>
-                  </div>
-                </div>
+
               </div>
             </nz-tab>
             @if (permission.joc) {
