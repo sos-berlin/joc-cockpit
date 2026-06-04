@@ -3,160 +3,165 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
-    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
-      @if (!isSearch) {
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>deploymentService.section.customization</small>
-        </div>
-      }
-      <div [class.p-a-sm]="!isSearch">
-    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'history.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
-        @if (!isSearch) {
-          <sup class="text-danger text-sm">*</sup>
-        }
-      </label>
-      <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch"
-               autocomplete="off" class="form-control"
-               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
-               type="text">
-        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors.required) {
-              <div translate>common.message.requiredError</div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>history.section.customizationName</small>
+      </div>
+      <div class="p-a-sm">
+        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+             class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'history.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            @if (!isSearch) {
+              <sup class="text-danger text-sm">*</sup>
+            }
+          </label>
+          <div class="col-sm-6">
+            <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch"
+                   autocomplete="off" class="form-control"
+                   maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+                   type="text">
+            @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors.required) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+            @if (!isUnique) {
+              <div class="help-block text-danger">
+                <div translate>common.message.uniqueError</div>
+              </div>
             }
           </div>
-        }
-        @if (!isUnique) {
-          <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
-          </div>
-        }
+        </div>
       </div>
     </div>
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4">
-          <span [appRichTooltip]="'history.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
-        </label>
-        <div class="col-md-6 col-sm-8">
-          <nz-radio-group [(ngModel)]="filter.radio" name="date">
-            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
-          </nz-radio-group>
-        </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>history.section.filter</small>
       </div>
-    }
-    @if (filter.radio == 'current') {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'history.tooltip.from' | translate" translate>common.label.from</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
-        </div>
-      </div>
-    }
-    @if (filter.radio == 'current') {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'history.tooltip.to' | translate" translate>common.label.to</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
-        </div>
-      </div>
-    }
-    @if (filter.radio == 'planned') {
-      <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
-           class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'history.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
-        </label>
-        <div class="col-sm-6">
-          <input #processExc1="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
-                 type="text" validateReqex>
-          @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
-            <div class="help-block text-danger">
-              @if (!processExc1.valid) {
-                <div translate>message.invalid</div>
+      <div class="p-a-sm">
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4">
+              <span [appRichTooltip]="'history.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+            </label>
+            <div class="col-md-6 col-sm-8">
+              <nz-radio-group [(ngModel)]="filter.radio" name="date">
+                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'current') {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'history.tooltip.from' | translate" translate>common.label.from</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'current') {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'history.tooltip.to' | translate" translate>common.label.to</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'planned') {
+          <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
+               class="form-group row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'history.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+            </label>
+            <div class="col-sm-6">
+              <input #processExc1="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+                     type="text" validateReqex>
+              @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
+                <div class="help-block text-danger">
+                  @if (!processExc1.valid) {
+                    <div translate>message.invalid</div>
+                  }
+                </div>
               }
             </div>
-          }
+          </div>
+        }
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'history.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+            </label>
+            <div class=" col-sm-6">
+              <nz-select [(ngModel)]="filter.controllerId" name="id"
+                         nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}">
+                @for (controller of schedulerIds.controllerIds; track controller) {
+                  <nz-option [nzLabel]="controller" [nzValue]="controller"></nz-option>
+                }
+              </nz-select>
+            </div>
+          </div>
+        }
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'history.tooltip.deployType' | translate" translate>history.label.deployType</span>
+          </label>
+          <div class="col-sm-6">
+            <nz-select [(ngModel)]="filter.deployType" name="deployType" nzAllowClear
+                       nzPlaceHolder="{{'history.placeholder.selectDeployType' | translate}}">
+              @for (type of deployTypes; track type) {
+                <nz-option [nzValue]="type" nzLabel="{{type | translate}}"></nz-option>
+              }
+            </nz-select>
+          </div>
         </div>
-      </div>
-    }
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'history.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
-        </label>
-        <div class=" col-sm-6">
-          <nz-select [(ngModel)]="filter.controllerId" name="id"
-                     nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}">
-            @for (controller of schedulerIds.controllerIds; track controller) {
-              <nz-option [nzLabel]="controller" [nzValue]="controller"></nz-option>
-            }
-          </nz-select>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+            <span [appRichTooltip]="'history.tooltip.operation' | translate" translate>history.label.operation</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-radio-group [(ngModel)]="filter.operation" name="operation">
+              <label nz-radio nzValue="ALL"><span translate>history.label.all</span></label>
+              <label nz-radio nzValue="UPDATE"><span translate>history.label.update</span></label>
+              <label nz-radio nzValue="DELETE"><span translate>history.label.delete</span></label>
+            </nz-radio-group>
+          </div>
         </div>
-      </div>
-    }
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'history.tooltip.deployType' | translate" translate>history.label.deployType</span>
-      </label>
-      <div class="col-sm-6">
-        <nz-select [(ngModel)]="filter.deployType" name="deployType" nzAllowClear
-                   nzPlaceHolder="{{'history.placeholder.selectDeployType' | translate}}">
-          @for (type of deployTypes; track type) {
-            <nz-option [nzValue]="type" nzLabel="{{type | translate}}"></nz-option>
-          }
-        </nz-select>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-        <span [appRichTooltip]="'history.tooltip.operation' | translate" translate>history.label.operation</span>
-      </label>
-      <div class="col-sm-8">
-        <nz-radio-group [(ngModel)]="filter.operation" name="operation">
-          <label nz-radio nzValue="ALL"><span translate>history.label.all</span></label>
-          <label nz-radio nzValue="UPDATE"><span translate>history.label.update</span></label>
-          <label nz-radio nzValue="DELETE"><span translate>history.label.delete</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-        <span [appRichTooltip]="'history.tooltip.state' | translate" translate>history.label.state</span>
-      </label>
-      <div class="col-sm-8">
-        <nz-radio-group [(ngModel)]="filter.state" name="state">
-          <label nz-radio nzValue="ALL"><span translate>history.label.all</span></label>
-          <label nz-radio nzValue="DEPLOYED"><span translate>history.label.deployed</span></label>
-          <label nz-radio nzValue="NOT_DEPLOYED"><span translate>history.label.notDeployed</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-    @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'history.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
-        </label>
-        <div class="col-sm-6">
-          <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
+            <span [appRichTooltip]="'history.tooltip.state' | translate" translate>history.label.state</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-radio-group [(ngModel)]="filter.state" name="state">
+              <label nz-radio nzValue="ALL"><span translate>history.label.all</span></label>
+              <label nz-radio nzValue="DEPLOYED"><span translate>history.label.deployed</span></label>
+              <label nz-radio nzValue="NOT_DEPLOYED"><span translate>history.label.notDeployed</span></label>
+            </nz-radio-group>
+          </div>
         </div>
-      </div>
-    }
+        @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'history.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+            </label>
+            <div class="col-sm-6">
+              <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+            </div>
+          </div>
+        }
       </div>
     </div>
     @if (isSearch) {

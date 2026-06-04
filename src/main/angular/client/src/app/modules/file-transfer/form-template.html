@@ -3,303 +3,302 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
-    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
-      @if (!isSearch) {
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>fileTransfer.section.customization</small>
-        </div>
-      }
-      <div [class.p-a-sm]="!isSearch">
-    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
-        @if (!isSearch) {
-          <sup class="text-danger text-sm">*</sup>
-        }
-      </label>
-      <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
-               class="form-control"
-               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
-               type="text">
-        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors.required) {
-              <div translate>common.message.requiredError</div>
-            }
-          </div>
-        }
-        @if (!isUnique) {
-          <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
-          </div>
-        }
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>fileTransfer.section.customizationName</small>
       </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.profileNames' | translate" translate>fileTransfer.search.label.profileNames</span>
-      </label>
-      <div class=" col-sm-6">
-        @for (profile of filter.profiles; track $index; let i = $index) {
-          <div>
-            <input [(ngModel)]="profile.name" [ngClass]="{'m-b-sm': i != filter.profiles.length - 1}"
+      <div class="p-a-sm">
+        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+             class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            @if (!isSearch) {
+              <sup class="text-danger text-sm">*</sup>
+            }
+          </label>
+          <div class="col-sm-6">
+            <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
                    class="form-control"
-                   name="profileId{{i}}" placeholder="{{'fileTransfer.search.placeholder.enterProfileName' | translate}} {{i + 1}}">
-            @if (i != filter.profiles.length - 1) {
-              <i (click)="removeProfile(i)"
-                 class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
+                   maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+                   type="text">
+            @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors.required) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+            @if (!isUnique) {
+              <div class="help-block text-danger">
+                <div translate>common.message.uniqueError</div>
+              </div>
             }
           </div>
-        }
-        <i (click)="addProfile()" class="text-hover-primary fa fa-plus pos-abt"
-           style="margin-top: -20px;right: -10px;"></i>
+        </div>
       </div>
     </div>
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4">
-          <span [appRichTooltip]="'fileTransfer.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
-        </label>
-        <div class="col-md-6">
-          <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
-          </nz-radio-group>
-        </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>fileTransfer.section.filter</small>
       </div>
-    }
-    @if (filter.radio == 'current') {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'fileTransfer.tooltip.from' | translate" translate>common.label.from</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.profileNames' | translate" translate>fileTransfer.search.label.profileNames</span>
+          </label>
+          <div class=" col-sm-6">
+            @for (profile of filter.profiles; track $index; let i = $index) {
+              <div>
+                <input [(ngModel)]="profile.name" [ngClass]="{'m-b-sm': i != filter.profiles.length - 1}"
+                       class="form-control"
+                       name="profileId{{i}}" placeholder="{{'fileTransfer.search.placeholder.enterProfileName' | translate}} {{i + 1}}">
+                @if (i != filter.profiles.length - 1) {
+                  <i (click)="removeProfile(i)"
+                     class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
+                }
+              </div>
+            }
+            <i (click)="addProfile()" class="text-hover-primary fa fa-plus pos-abt"
+               style="margin-top: -20px;right: -10px;"></i>
+          </div>
         </div>
-      </div>
-    }
-    @if (filter.radio == 'current') {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'fileTransfer.tooltip.to' | translate" translate>common.label.to</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
-        </div>
-      </div>
-    }
-    @if (filter.radio == 'planned') {
-      <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
-           class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'fileTransfer.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
-        </label>
-        <div class=" col-sm-6">
-          <input #processExc1="ngModel" [(ngModel)]="filter.planned" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
-                 type="text" validateReqex>
-          @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
-            <div class="help-block text-danger">
-              @if (!processExc1.valid) {
-                <div translate>common.message.invalid</div>
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4">
+              <span [appRichTooltip]="'fileTransfer.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+            </label>
+            <div class="col-md-6">
+              <nz-radio-group [(ngModel)]="filter.radio" name="radio">
+                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'current') {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'fileTransfer.tooltip.from' | translate" translate>common.label.from</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'current') {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'fileTransfer.tooltip.to' | translate" translate>common.label.to</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio == 'planned') {
+          <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
+               class="form-group row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'fileTransfer.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+            </label>
+            <div class=" col-sm-6">
+              <input #processExc1="ngModel" [(ngModel)]="filter.planned" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+                     type="text" validateReqex>
+              @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
+                <div class="help-block text-danger">
+                  @if (!processExc1.valid) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
               }
             </div>
-          }
-        </div>
-      </div>
-    }
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'fileTransfer.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
-        </label>
-        <div class=" col-sm-6">
-          <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [ignoreTranslate]="true"
-                            [placeholder]="'common.label.selectController'"
-                            [listArray]="schedulerIds.controllerIds" [name]="'id'"
-                            [object]="filter"></app-select-input>
-        </div>
-      </div>
-    }
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
-      </label>
-      <div class="col-sm-6">
-        <app-multi-select [attribute]="'workflowNames'" [list]="filter" [nodes]="workflowTree"
-                          [type]="'WORKFLOW'"></app-multi-select>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-        <span [appRichTooltip]="'fileTransfer.tooltip.status' | translate" translate>fileTransfer.label.status</span>
-      </label>
-      <div class="col-sm-8">
-        <nz-checkbox-group
-          name="fileTransferStatus"
-          [(ngModel)]="selectedStates"
-          (ngModelChange)="stateChange($event)">
-          @for (option of stateOptions; track option) {
-            <label [nzValue]="option.status" nz-checkbox>
-              <span translate>common.label.{{option.text}}</span>
-            </label>
-          }
-        </nz-checkbox-group>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-        <span [appRichTooltip]="'fileTransfer.tooltip.operations' | translate" translate>fileTransfer.search.label.operations</span>
-      </label>
-      <div class="col-sm-8">
-        <nz-checkbox-group
-          name="fileTransferOperations"
-          [(ngModel)]="selectedOperations"
-          (ngModelChange)="operationChange($event)">
-          @for (option of operationOptions; track option) {
-            <label [nzValue]="option.status" nz-checkbox>
-              <span translate>fileTransfer.search.label.{{option.text}}</span>
-            </label>
-          }
-        </nz-checkbox-group>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-        <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesFrom' | translate" translate>fileTransfer.search.label.numOfFilesFrom</span>
-      </label>
-      <div class="col-sm-6">
-        <nz-input-number name="numOfFilesFrom" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesFrom' | translate"
-                         [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesFrom"></nz-input-number>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-        <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesTo' | translate" translate>fileTransfer.search.label.numOfFilesTo</span>
-      </label>
-      <div class="col-sm-6">
-        <nz-input-number name="numOfFilesTo" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesTo' | translate"
-                         [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesTo"></nz-input-number>
-      </div>
-    </div>
-      </div>
-    </div>
-    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
-      @if (!isSearch) {
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>fileTransfer.section.source</small>
-        </div>
-      }
-      <div [class.p-a-sm]="!isSearch">
-    <div class="form-group row" [class.b-t]="isSearch" [class.p-t-12]="isSearch">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.sourceFilePaths' | translate" translate>fileTransfer.search.label.sourceFilePaths</span>
-      </label>
-      <div class=" col-sm-6">
-        @for (sourceFile of filter.sourceFiles; track $index; let i = $index) {
-          <div>
-            <input [(ngModel)]="sourceFile.name" [ngClass]="{'m-b-sm': i != filter.sourceFiles.length - 1}"
-                   class="form-control"
-                   name="sourceFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.sourceFilePath' | translate}} {{i + 1}}">
-            @if (i != filter.sourceFiles.length - 1) {
-              <i (click)="removeSourcePath(i)"
-                 class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
-            }
           </div>
         }
-        <i (click)="addSourcePath()" class="text-hover-primary fa fa-plus pos-abt"
-           style="margin-top: -20px;right: -10px;"></i>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.sourceHost' | translate" translate>fileTransfer.search.label.sourceHost</span>
-      </label>
-      <div class=" col-sm-6">
-        <input [(ngModel)]="filter.sourceHost" class="form-control"
-               name="sourceHost" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.sourceProtocol' | translate" translate>fileTransfer.search.label.sourceProtocol</span>
-      </label>
-      <div class="col-sm-6">
-        <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="true"
-                          [isSearchable]="true"
-                          [listArray]="allhosts" [name]="'sourceProtocol'"
-                          [placeholder]="'fileTransfer.search.placeholder.sourceProtocol'"
-                          [object]="filter"></app-select-input>
-      </div>
-    </div>
-      </div>
-    </div>
-    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
-      @if (!isSearch) {
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>fileTransfer.section.target</small>
-        </div>
-      }
-      <div [class.p-a-sm]="!isSearch">
-    <div class="form-group row" [class.b-t]="isSearch" [class.p-t-12]="isSearch">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.targetFilePaths' | translate" translate>fileTransfer.search.label.targetFilePaths</span>
-      </label>
-      <div class=" col-sm-6">
-        @for (targetFile of filter.targetFiles; track $index; let i = $index) {
-          <div>
-            <input [(ngModel)]="targetFile.name" [ngClass]="{'m-b-sm': i != filter.targetFiles.length - 1}"
-                   class="form-control"
-                   name="targetFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.targetFilePath' | translate}} {{i + 1}}">
-            @if (i != filter.targetFiles.length - 1) {
-              <i (click)="removeTargetPath(i)"
-                 class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
-            }
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'fileTransfer.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+            </label>
+            <div class=" col-sm-6">
+              <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [ignoreTranslate]="true"
+                                [placeholder]="'common.label.selectController'"
+                                [listArray]="schedulerIds.controllerIds" [name]="'id'"
+                                [object]="filter"></app-select-input>
+            </div>
           </div>
         }
-        <i (click)="addTargetPath()" class="text-hover-primary fa fa-plus pos-abt"
-           style="margin-top: -20px;right: -10px;"></i>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.targetHost' | translate" translate>fileTransfer.search.label.targetHost</span>
-      </label>
-      <div class=" col-sm-6">
-        <input [(ngModel)]="filter.targetHost" class="form-control"
-               name="targetHost" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'fileTransfer.tooltip.targetProtocol' | translate" translate>fileTransfer.search.label.targetProtocol</span>
-      </label>
-      <div class=" col-sm-6">
-        <app-select-input [attributeName]="'targetProtocol'" [isAllowClear]="true" [isSearchable]="true"
-                          [isMultiple]="true" [placeholder]="'fileTransfer.search.placeholder.targetProtocol'"
-                          [listArray]="allhosts" [name]="'targetProtocol'"
-                          [object]="filter"></app-select-input>
-      </div>
-    </div>
-    @if (permission.joc.administration.customization.share && !isSearch) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'fileTransfer.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
-        </label>
-        <div class="col-sm-6">
-          <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+          </label>
+          <div class="col-sm-6">
+            <app-multi-select [attribute]="'workflowNames'" [list]="filter" [nodes]="workflowTree"
+                              [type]="'WORKFLOW'"></app-multi-select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
+            <span [appRichTooltip]="'fileTransfer.tooltip.status' | translate" translate>fileTransfer.label.status</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-checkbox-group
+              name="fileTransferStatus"
+              [(ngModel)]="selectedStates"
+              (ngModelChange)="stateChange($event)">
+              @for (option of stateOptions; track option) {
+                <label [nzValue]="option.status" nz-checkbox>
+                  <span translate>common.label.{{option.text}}</span>
+                </label>
+              }
+            </nz-checkbox-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
+            <span [appRichTooltip]="'fileTransfer.tooltip.operations' | translate" translate>fileTransfer.search.label.operations</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-checkbox-group
+              name="fileTransferOperations"
+              [(ngModel)]="selectedOperations"
+              (ngModelChange)="operationChange($event)">
+              @for (option of operationOptions; track option) {
+                <label [nzValue]="option.status" nz-checkbox>
+                  <span translate>fileTransfer.search.label.{{option.text}}</span>
+                </label>
+              }
+            </nz-checkbox-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
+            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesFrom' | translate" translate>fileTransfer.search.label.numOfFilesFrom</span>
+          </label>
+          <div class="col-sm-6">
+            <nz-input-number name="numOfFilesFrom" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesFrom' | translate"
+                             [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesFrom"></nz-input-number>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
+            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesTo' | translate" translate>fileTransfer.search.label.numOfFilesTo</span>
+          </label>
+          <div class="col-sm-6">
+            <nz-input-number name="numOfFilesTo" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesTo' | translate"
+                             [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesTo"></nz-input-number>
+          </div>
         </div>
       </div>
-    }
+    </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>fileTransfer.section.source</small>
+      </div>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceFilePaths' | translate" translate>fileTransfer.search.label.sourceFilePaths</span>
+          </label>
+          <div class=" col-sm-6">
+            @for (sourceFile of filter.sourceFiles; track $index; let i = $index) {
+              <div>
+                <input [(ngModel)]="sourceFile.name" [ngClass]="{'m-b-sm': i != filter.sourceFiles.length - 1}"
+                       class="form-control"
+                       name="sourceFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.sourceFilePath' | translate}} {{i + 1}}">
+                @if (i != filter.sourceFiles.length - 1) {
+                  <i (click)="removeSourcePath(i)"
+                     class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
+                }
+              </div>
+            }
+            <i (click)="addSourcePath()" class="text-hover-primary fa fa-plus pos-abt"
+               style="margin-top: -20px;right: -10px;"></i>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceHost' | translate" translate>fileTransfer.search.label.sourceHost</span>
+          </label>
+          <div class=" col-sm-6">
+            <input [(ngModel)]="filter.sourceHost" class="form-control"
+                   name="sourceHost" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceProtocol' | translate" translate>fileTransfer.search.label.sourceProtocol</span>
+          </label>
+          <div class="col-sm-6">
+            <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="true"
+                              [isSearchable]="true"
+                              [listArray]="allhosts" [name]="'sourceProtocol'"
+                              [placeholder]="'fileTransfer.search.placeholder.sourceProtocol'"
+                              [object]="filter"></app-select-input>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>fileTransfer.section.target</small>
+      </div>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetFilePaths' | translate" translate>fileTransfer.search.label.targetFilePaths</span>
+          </label>
+          <div class=" col-sm-6">
+            @for (targetFile of filter.targetFiles; track $index; let i = $index) {
+              <div>
+                <input [(ngModel)]="targetFile.name" [ngClass]="{'m-b-sm': i != filter.targetFiles.length - 1}"
+                       class="form-control"
+                       name="targetFile{{i}}" placeholder="{{'fileTransfer.search.placeholder.targetFilePath' | translate}} {{i + 1}}">
+                @if (i != filter.targetFiles.length - 1) {
+                  <i (click)="removeTargetPath(i)"
+                     class="text-hover-color fa fa-trash pos-abt" style="margin-top: -29px;right: -10px;"></i>
+                }
+              </div>
+            }
+            <i (click)="addTargetPath()" class="text-hover-primary fa fa-plus pos-abt"
+               style="margin-top: -20px;right: -10px;"></i>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetHost' | translate" translate>fileTransfer.search.label.targetHost</span>
+          </label>
+          <div class=" col-sm-6">
+            <input [(ngModel)]="filter.targetHost" class="form-control"
+                   name="targetHost" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetProtocol' | translate" translate>fileTransfer.search.label.targetProtocol</span>
+          </label>
+          <div class=" col-sm-6">
+            <app-select-input [attributeName]="'targetProtocol'" [isAllowClear]="true" [isSearchable]="true"
+                              [isMultiple]="true" [placeholder]="'fileTransfer.search.placeholder.targetProtocol'"
+                              [listArray]="allhosts" [name]="'targetProtocol'"
+                              [object]="filter"></app-select-input>
+          </div>
+        </div>
+        @if (permission.joc.administration.customization.share && !isSearch) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'fileTransfer.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+            </label>
+            <div class="col-sm-6">
+              <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+            </div>
+          </div>
+        }
       </div>
     </div>
     @if (isSearch) {

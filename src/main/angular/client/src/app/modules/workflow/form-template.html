@@ -3,216 +3,247 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
-    <div [class.b-a]="!isSearch" [class.m-b-sm]="!isSearch" [class.section-box]="!isSearch">
-      @if (!isSearch) {
-        <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.section.customization</small>
-        </div>
-      }
-      <div [class.p-a-sm]="!isSearch">
-    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'workflow.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
-        @if (!isSearch) {
-          <sup class="text-danger text-sm">*</sup>
-        }
-      </label>
-      <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
-               class="form-control"
-               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
-               type="text">
-        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors['required']) {
-              <div translate>common.message.requiredError</div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>workflow.section.customizationName</small>
+      </div>
+      <div class="p-a-sm">
+        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+             class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'workflow.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            @if (!isSearch) {
+              <sup class="text-danger text-sm">*</sup>
             }
-          </div>
-        }
-        @if (!isUnique) {
-          <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
-          </div>
-        }
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-             <span [appRichTooltip]="'workflow.tooltip.regex' | translate" translate>workflow.label.regex</span></label>
-      <div class="col-sm-6">
-        <input [(ngModel)]="filter.regex" class="form-control" name="regex"
-               placeholder="{{'common.placeholder.regex' | translate}}" type="text">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'workflow.tooltip.folders' | translate" translate>common.label.folders</span></label>
-      <div class=" col-sm-6">
-        <nz-tree-select
-          [(ngModel)]="filter.paths"
-          [nzAllowClear]="true"
-          [nzAsyncData]="true"
-          [nzDisplayWith]="displayWith"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          [nzHideUnMatched]="true"
-          [nzNodes]="folders"
-          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-          name="folders"
-          nzMultiple
-          nzShowSearch
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div (click)="selectFolder(node, $event);" class="node-wrapper w-93">
-              <div [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1"
-                   class="node-content-wrapper">
-                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-                {{node.origin.name}}
-                @if (filter.paths && filter.paths.indexOf(node.origin.path) === -1) {
-                  <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                     [appRichTooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
-                }
-                @if (filter.paths && filter.paths.indexOf(node.origin.path) > -1) {
-                  <i (click)="remove(node.origin.path);$event.stopPropagation()"
-                     [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+          </label>
+          <div class="col-sm-6">
+            <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
+                   class="form-control"
+                   maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+                   type="text">
+            @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors['required']) {
+                  <div translate>common.message.requiredError</div>
                 }
               </div>
-            </div>
-          </ng-template>
-        </nz-tree-select>
-      </div>
-    </div>
-    @if (filter.paths?.length > 0) {
-      <div class="m-b-xs row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-               <span [appRichTooltip]="'workflow.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span></label>
-        <div class="col-sm-2">
-          <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+            }
+            @if (!isUnique) {
+              <div class="help-block text-danger">
+                <div translate>common.message.uniqueError</div>
+              </div>
+            }
+          </div>
         </div>
       </div>
-    }
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'workflow.tooltip.agents' | translate" translate>deploymentService.label.agents</span></label>
-      <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
-                   nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
-                   nzShowSearch>
-          @for (item of listOfAgents; track item) {
-            @if (item.title == 'agents') {
-              @for (group of [item]; track group) {
-                <nz-option-group [nzLabel]="groupTitle">
-                  <ng-template #groupTitle>
-                    <span class="_600">
-                      {{ 'agent.label.' + group.title | translate }}
-                    </span>
-                  </ng-template>
-                  @for (agent of group.children; track agent) {
-                    <nz-option [nzLabel]="agent" [nzValue]="agent"></nz-option>
+    </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>workflow.section.filter</small>
+      </div>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'workflow.tooltip.regex' | translate" translate>workflow.label.regex</span>
+          </label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="filter.regex" class="form-control" name="regex"
+                   placeholder="{{'common.placeholder.regex' | translate}}" type="text">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'workflow.tooltip.folders' | translate" translate>common.label.folders</span>
+          </label>
+          <div class=" col-sm-6">
+            <nz-tree-select
+              [(ngModel)]="filter.paths"
+              [nzAllowClear]="true"
+              [nzAsyncData]="true"
+              [nzDisplayWith]="displayWith"
+              [nzDropdownStyle]="{ 'max-height': '300px' }"
+              [nzHideUnMatched]="true"
+              [nzNodes]="folders"
+              [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+              name="folders"
+              nzMultiple
+              nzShowSearch
+            >
+              <ng-template #nzTreeTemplate let-node>
+                <div (click)="selectFolder(node, $event);" class="node-wrapper w-93">
+                  <div [class.node-content-wrapper-active]="filter.paths && filter.paths.indexOf(node.origin.path) > -1"
+                       class="node-content-wrapper">
+                    <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                    {{node.origin.name}}
+                    @if (filter.paths && filter.paths.indexOf(node.origin.path) === -1) {
+                      <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                         [appRichTooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                    }
+                    @if (filter.paths && filter.paths.indexOf(node.origin.path) > -1) {
+                      <i (click)="remove(node.origin.path);$event.stopPropagation()"
+                         [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+                    }
+                  </div>
+                </div>
+              </ng-template>
+            </nz-tree-select>
+          </div>
+        </div>
+        @if (filter.paths?.length > 0) {
+          <div class="m-b-xs row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'workflow.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+            </label>
+            <div class="col-sm-2">
+              <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+            </div>
+          </div>
+        }
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'workflow.tooltip.agents' | translate" translate>deploymentService.label.agents</span>
+          </label>
+          <div class=" col-sm-6">
+            <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
+                       nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
+                       nzShowSearch>
+              @for (item of listOfAgents; track item) {
+                @if (item.title == 'agents') {
+                  @for (group of [item]; track group) {
+                    <nz-option-group [nzLabel]="groupTitle">
+                      <ng-template #groupTitle>
+                        <span class="_600">
+                          {{ 'agent.label.' + group.title | translate }}
+                        </span>
+                      </ng-template>
+                      @for (agent of group.children; track agent) {
+                        <nz-option [nzLabel]="agent" [nzValue]="agent"></nz-option>
+                      }
+                    </nz-option-group>
                   }
-                </nz-option-group>
-              }
-            }
-            @if (item.title == 'agentGroups') {
-              @for (group of [item]; track group) {
-                <nz-option-group [nzLabel]="groupTitle">
-                  <ng-template #groupTitle>
-                          <span class="_600">
-                            {{ 'agent.label.' + group?.title | translate }}
-                          </span>
-                  </ng-template>
-                  @for (agent of group?.children; track agent) {
-                    <nz-option [nzLabel]="agent.title" [nzValue]="agent.title">
-                    </nz-option>
+                }
+                @if (item.title == 'agentGroups') {
+                  @for (group of [item]; track group) {
+                    <nz-option-group [nzLabel]="groupTitle">
+                      <ng-template #groupTitle>
+                        <span class="_600">
+                          {{ 'agent.label.' + group?.title | translate }}
+                        </span>
+                      </ng-template>
+                      @for (agent of group?.children; track agent) {
+                        <nz-option [nzLabel]="agent.title" [nzValue]="agent.title">
+                        </nz-option>
+                      }
+                    </nz-option-group>
                   }
-                </nz-option-group>
+                }
               }
-            }
-          }
-        </nz-select>
+            </nz-select>
+          </div>
+        </div>
       </div>
     </div>
     @if (preferences.enableTagging) {
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'workflow.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span></label>
-      <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
-                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
-                   nzShowSearch>
-          @for (tag of tags; track tag) {
-            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
-          }
-        </nz-select>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"><span [appRichTooltip]="'workflow.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span></label>
-      <div class=" col-sm-6">
-        <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
-                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
-                   nzShowSearch>
-          @for (tag of orderTags; track tag) {
-            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
-          }
-        </nz-select>
-      </div>
-    </div>
-   }
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"><span [appRichTooltip]="'workflow.tooltip.workflowAvailabilityStatus' | translate" translate>inventory.search.label.workflowAvailabilityStatus</span></label>
-      <div class="col-sm-8">
-        <nz-checkbox-group
-          name="synchronizationStatus"
-          [(ngModel)]="selectedSynchronizationStatuses"
-          (ngModelChange)="synchronizationStatusChange($event)">
-          @for (option of synchronizationStatusOptions; track option) {
-            <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title" translate>workflow.section.tags</small>
+        </div>
+        <div class="p-a-sm">
+          <div class="form-group row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'workflow.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span>
             </label>
-          }
-        </nz-checkbox-group>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"></label>
-      <div class="col-sm-8">
-        <nz-checkbox-group
-          name="availabilityStatus"
-          [(ngModel)]="selectedAvailabilityStatuses"
-          (ngModelChange)="availabilityStatusChange($event)">
-          @for (option of availabilityStatusOptions; track option) {
-            <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
+            <div class=" col-sm-6">
+              <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
+                         nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                         nzShowSearch>
+                @for (tag of tags; track tag) {
+                  <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+                }
+              </nz-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'workflow.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span>
             </label>
-          }
-        </nz-checkbox-group>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"><span [appRichTooltip]="'workflow.tooltip.jobAvailabilityStatus' | translate" translate>inventory.search.label.jobAvailabilityStatus</span></label>
-      <div class="col-sm-8">
-        <nz-checkbox-group
-          name="jobAvailabilityStatus"
-          [(ngModel)]="selectedJobAvailabilityStatuses"
-          (ngModelChange)="jobAvailabilityStatusChange($event)">
-          @for (option of jobAvailabilityStatusOptions; track option) {
-            <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
-            </label>
-          }
-        </nz-checkbox-group>
-      </div>
-    </div>
-
-    @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
-      <div class="form-group row">
-        <label class="col-sm-4"><span [appRichTooltip]="'workflow.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span></label>
-        <div class="col-sm-8">
-          <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+            <div class=" col-sm-6">
+              <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
+                         nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                         nzShowSearch>
+                @for (tag of orderTags; track tag) {
+                  <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+                }
+              </nz-select>
+            </div>
+          </div>
         </div>
       </div>
     }
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>workflow.section.availability</small>
+      </div>
+      <div class="p-a-sm">
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis">
+            <span [appRichTooltip]="'workflow.tooltip.workflowAvailabilityStatus' | translate" translate>inventory.search.label.workflowAvailabilityStatus</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-checkbox-group
+              name="synchronizationStatus"
+              [(ngModel)]="selectedSynchronizationStatuses"
+              (ngModelChange)="synchronizationStatusChange($event)">
+              @for (option of synchronizationStatusOptions; track option) {
+                <label [nzValue]="option.value" nz-checkbox>
+                  <span translate>filters.button.{{option.label}}</span>
+                </label>
+              }
+            </nz-checkbox-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"></label>
+          <div class="col-sm-8">
+            <nz-checkbox-group
+              name="availabilityStatus"
+              [(ngModel)]="selectedAvailabilityStatuses"
+              (ngModelChange)="availabilityStatusChange($event)">
+              @for (option of availabilityStatusOptions; track option) {
+                <label [nzValue]="option.value" nz-checkbox>
+                  <span translate>filters.button.{{option.label}}</span>
+                </label>
+              }
+            </nz-checkbox-group>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis">
+            <span [appRichTooltip]="'workflow.tooltip.jobAvailabilityStatus' | translate" translate>inventory.search.label.jobAvailabilityStatus</span>
+          </label>
+          <div class="col-sm-8">
+            <nz-checkbox-group
+              name="jobAvailabilityStatus"
+              [(ngModel)]="selectedJobAvailabilityStatuses"
+              (ngModelChange)="jobAvailabilityStatusChange($event)">
+              @for (option of jobAvailabilityStatusOptions; track option) {
+                <label [nzValue]="option.value" nz-checkbox>
+                  <span translate>filters.button.{{option.label}}</span>
+                </label>
+              }
+            </nz-checkbox-group>
+          </div>
+        </div>
+        @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'workflow.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+            </label>
+            <div class="col-sm-8">
+              <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+            </div>
+          </div>
+        }
       </div>
     </div>
     @if (isSearch) {

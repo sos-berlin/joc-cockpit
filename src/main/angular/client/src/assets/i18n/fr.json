@@ -331,6 +331,8 @@
     "section.certificate": "Certificat"
   },
   "auditLog": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.auditLog": "Journal d'Audit",
     "label.requestBody": "Corps de la Requête",
     "label.details": "Details Objet",
@@ -1020,6 +1022,9 @@
     "tooltip.failedTransfers": "Indique le nombre d'^Ordres|order^ échoués dans la vue *TRANSFERTS DE FICHIERS*."
   },
   "dailyPlan": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.createPlan": "Créer le Plan Quotidien",
     "label.schedules": "Planifications ",
     "label.workflows": "Workflows",
@@ -1699,6 +1704,8 @@
     "button.backToList": "Retourner à la Liste"
   },
   "fileTransfer": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.transfer": "Transfert",
     "label.status": "État",
     "label.operation": "Opération",
@@ -1837,6 +1844,9 @@
     "button.manageApprovals": "Gérer les Autorisations"
   },
   "history": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.all": "Tous",
     "label.ignoreList": "Liste des Ignorés",
     "label.deploymentDate": "Date de Déploiement",
@@ -3134,6 +3144,9 @@
       }
     },
     "approvers": {
+      "section": {
+        "approverProfile": "Approver Profile"
+      },
       "label": {
         "addNewApprover": "Ajouter Profil d'Approbateur",
         "firstName": "Prénom",
@@ -3644,6 +3657,8 @@
     }
   },
   "runtime": {
+    "section.period": "Period",
+    "section.frequency": "Frequency",
     "label.selectAll": "Tout sélectionner",
     "label.runTime": "temps d'exécution",
     "label.calendarViewFor": "Vue du Plan Quotidien pour",
@@ -4634,6 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
+    "section.availability": "Availability",
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Ordre",
     "label.orderId": "ID Ordre",

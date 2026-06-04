@@ -331,6 +331,8 @@
     "section.certificate": "Certificate"
   },
   "auditLog": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.auditLog": "Audit Log",
     "label.requestBody": "Request Body",
     "label.details": "Details Object",
@@ -1020,6 +1022,9 @@
     "tooltip.failedTransfers": "Indicates the number of failed ^Order^s in the *FILE TRANSFERS* view."
   },
   "dailyPlan": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.createPlan": "Create Daily Plan",
     "label.schedules": "Schedules",
     "label.workflows": "Workflows",
@@ -1699,6 +1704,8 @@
     "button.backToList": "Back to List"
   },
   "fileTransfer": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.transfer": "Transfer",
     "label.status": "Status",
     "label.operation": "Operation",
@@ -1837,6 +1844,9 @@
     "button.manageApprovals": "Manage Approvals"
   },
   "history": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.all": "All",
     "label.ignoreList": "Ignore List",
     "label.deploymentDate": "Deployment Date",
@@ -3134,6 +3144,9 @@
       }
     },
     "approvers": {
+      "section": {
+        "approverProfile": "Approver Profile"
+      },
       "label": {
         "addNewApprover": "Add Approver Profile",
         "firstName": "First Name",
@@ -3644,6 +3657,8 @@
     }
   },
   "runtime": {
+    "section.period": "Period",
+    "section.frequency": "Frequency",
     "label.selectAll": "Select All",
     "label.runTime": "Run-time",
     "label.calendarViewFor": "Daily Plan View for",
@@ -4634,6 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
+    "section.availability": "Availability",
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Order",
     "label.orderId": "Order ID",

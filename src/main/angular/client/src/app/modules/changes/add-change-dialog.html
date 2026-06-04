@@ -316,45 +316,52 @@
     <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-      <label class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <nz-select #name="ngModel" required [(ngModel)]="selectedChange" (ngModelChange)="onChange($event)"
-                   name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-          @for (option of changes; track option.name) {
-            <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-          }
-        </nz-select>
-        @if (name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors['required']) {
-              <div translate>common.message.requiredError</div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>user.section.change</small>
+      </div>
+      <div class="p-a-sm">
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
+          <label class="col-sm-3 form-control-label">
+            <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <nz-select #name="ngModel" required [(ngModel)]="selectedChange" (ngModelChange)="onChange($event)"
+                       name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+              @for (option of changes; track option.name) {
+                <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+              }
+            </nz-select>
+            @if (name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
             }
           </div>
+        </div>
+        @if (title === 'changesFound' || INVchanges) {
+          @if (nodes.length > 0) {
+            <div class="form-group row m-b-sm">
+              <div class="col-md-3">
+                <label>
+                  <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+                </label>
+              </div>
+              <div class="col-md-9">
+                <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
+                  <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+                  <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
+                  <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+                </nz-radio-group>
+              </div>
+            </div>
+          }
         }
       </div>
     </div>
-    @if (title === 'changesFound' || INVchanges) {
-      @if (nodes.length > 0) {
-        <div class="form-group row m-b-sm">
-          <div class="col-md-3">
-            <label>
-              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
-            </label>
-          </div>
-          <div class="col-md-9">
-            <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-              <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-      }
-    }
 
     <div class="row m-b-sm">
       <div class="col-md-12">

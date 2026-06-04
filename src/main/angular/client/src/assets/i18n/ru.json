@@ -331,6 +331,8 @@
     "section.certificate":"Certificate"
   },
   "auditLog": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.auditLog": "Журнал действий",
     "label.requestBody": "Содержимое запроса",
     "label.details": "Детали объекта",
@@ -1020,6 +1022,9 @@
     "tooltip.failedTransfers": "Количество ^неуспешных|failed^ ^заданий|order^ раздела *ПЕРЕДАЧА ФАЙЛОВ*"
   },
   "dailyPlan": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.createPlan": "Создать дневной план",
     "label.schedules": "Выбрать расписания",
     "label.workflows": "Выбрать рабочие процессы",
@@ -1699,6 +1704,8 @@
     "button.backToList": "Вернуться к списку"
   },
   "fileTransfer": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.transfer": "Передача",
     "label.status": "Статус",
     "label.operation": "Операция",
@@ -1837,6 +1844,9 @@
     "button.manageApprovals": "Управление согласованиями"
   },
   "history": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.all": "Все",
     "label.ignoreList": "Список игнорирования",
     "label.deploymentDate": "Время развёртывания",
@@ -3134,6 +3144,9 @@
       }
     },
     "approvers": {
+      "section": {
+        "approverProfile": "Approver Profile"
+      },
       "label": {
         "addNewApprover": "Добавить профиль согласующего",
         "firstName": "Имя",
@@ -3644,6 +3657,8 @@
     }
   },
   "runtime": {
+    "section.period": "Period",
+    "section.frequency": "Frequency",
     "label.selectAll": "Выбрать все",
     "label.runTime": "Расписание запусков",
     "label.calendarViewFor": "Вид дневного плана для",
@@ -4634,6 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
+    "section.availability": "Availability",
     "--------COMMENT BOX BEGIN------------": "Configuration > Inventory view > Workflow",
     "label.order": "Задание",
     "label.orderId": "ID задания",

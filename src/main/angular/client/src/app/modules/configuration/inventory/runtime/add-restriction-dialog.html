@@ -13,6 +13,11 @@
         : <span class="text-muted">{{_temp.str | translate}}</span>
       </label>
     </div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>runtime.section.frequency</small>
+      </div>
+      <div class="p-a-sm">
     <div class="m-b">
       @if (isVisible) {
         <div class="form-group row">
@@ -29,7 +34,7 @@
         </div>
       }
     </div>
-    <div class="tab-content  b-t b-l b-r b-b p-a p-b-0 m-b"
+    <div class="tab-content p-a p-b-0 m-b"
          [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
       <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
         <div class="form-group row">
@@ -433,6 +438,8 @@
             </ng-container>
           }
         </nz-checkbox-group>      </div>
+    </div>
+      </div>
     </div>
     <div class="row m-b-15">
       <div class="col-sm-12 max-ht-260">

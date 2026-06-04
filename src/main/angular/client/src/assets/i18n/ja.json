@@ -331,6 +331,8 @@
     "section.certificate":"Certificate"
   },
   "auditLog": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.auditLog": "操作ログ",
     "label.requestBody": "リクエスト内容",
     "label.details": "オブジェクト詳細",
@@ -1020,6 +1022,9 @@
     "tooltip.failedTransfers": "Failed"
   },
   "dailyPlan": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.createPlan": "実行計画作成",
     "label.schedules": "スケジュール",
     "label.workflows": "ワークフロー",
@@ -1699,6 +1704,8 @@
     "button.backToList": "一覧に戻る"
   },
   "fileTransfer": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
     "label.transfer": "送信",
     "label.status": "ステータス",
     "label.operation": "操作",
@@ -1837,6 +1844,9 @@
     "button.manageApprovals": "承認管理"
   },
   "history": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
     "label.all": "全て",
     "label.ignoreList": "無視リスト",
     "label.deploymentDate": "配置日時",
@@ -3134,6 +3144,9 @@
       }
     },
     "approvers": {
+      "section": {
+        "approverProfile": "Approver Profile"
+      },
       "label": {
         "addNewApprover": "承認者追加",
         "firstName": "名",
@@ -3644,6 +3657,8 @@
     }
   },
   "runtime": {
+    "section.period": "Period",
+    "section.frequency": "Frequency",
     "label.selectAll": "全て選択",
     "label.runTime": "ランタイム",
     "label.calendarViewFor": "実行計画表示",
@@ -4634,6 +4649,10 @@
     "section.export": "Export"
   },
   "workflow": {
+    "section.customizationName": "Customization Name",
+    "section.filter": "Filter",
+    "section.tags": "Tags",
+    "section.availability": "Availability",
     "--------COMMENT BOX BEGIN------------": "ジョブ定義 > インベントリー表示 > ワークフロー",
     "label.order": "オーダー",
     "label.orderId": "オーダーID",
