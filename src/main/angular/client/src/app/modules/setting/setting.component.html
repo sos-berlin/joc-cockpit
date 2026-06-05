@@ -42,6 +42,8 @@
                         class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" type="button">
                   @if (priorityFilter) {
                     <span> {{ 'settings.filter.' + priorityFilter | translate }} </span>
+                  } @else if (changedFilter) {
+                    <span translate> settings.filter.changed </span>
                   } @else {
                     <span translate> settings.filter.all </span>
                   }
@@ -49,10 +51,15 @@
                 </button>
                 <nz-dropdown-menu #priorityMenu="nzDropdownMenu">
                   <ul nz-menu>
-                    <li (click)="togglePriority('')"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === ''}"
+                    <li (click)="clearFilter()"
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': !priorityFilter && !changedFilter}"
                         nz-menu-item>
                       <a translate>settings.filter.all</a>
+                    </li>
+                    <li (click)="toggleChanged()"
+                        [ngClass]="{'ant-select-dropdown-menu-item-active': changedFilter}"
+                        nz-menu-item>
+                      <a translate>settings.filter.changed</a>
                     </li>
                     <li (click)="togglePriority('critical')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'critical'}"

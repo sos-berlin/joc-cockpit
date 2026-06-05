@@ -3,137 +3,153 @@
     <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
   }
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
-    <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
-        @if (!isSearch) {
-          <sup class="text-danger text-sm">*</sup>
-        }
-      </label>
-      <div class="col-sm-6">
-        <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
-               class="form-control"
-               maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
-               type="text">
-        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
-          <div class="text-danger help-block">
-            @if (name.errors['required']) {
-              <div>
-                <div translate>common.message.requiredError</div>
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>history.section.customizationName</small>
+      </div>
+      <div class="p-a-sm">
+        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
+            class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'resource.agentJobExecution.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            @if (!isSearch) {
+              <sup class="text-danger text-sm">*</sup>
+            }
+          </label>
+          <div class="col-sm-6">
+            <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
+                  class="form-control"
+                  maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
+                  type="text">
+            @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+              <div class="text-danger help-block">
+                @if (name.errors['required']) {
+                  <div>
+                    <div translate>common.message.requiredError</div>
+                  </div>
+                }
+              </div>
+            }
+            @if (!isUnique) {
+              <div class="help-block text-danger">
+                <div translate>common.message.uniqueError</div>
               </div>
             }
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="b-a m-b-sm section-box">
+      <div class="section-box-header">
+        <small class="_600 section-box-title" translate>history.section.filter</small>
+      </div>
+      <div class="p-a-sm">
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+            </label>
+            <div class="col-md-6">
+              <nz-radio-group [(ngModel)]="filter.radio" name="radio">
+                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
         }
-        @if (!isUnique) {
-          <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+        @if (filter.radio === 'current') {
+          <div class="form-group row ">
+            <label class="col-sm-2 form-control-label">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.from' | translate" translate>common.label.from</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio === 'current') {
+          <div class="form-group row">
+            <label class="col-sm-2 form-control-label">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.to' | translate" translate>common.label.to</span>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
+                              [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                              [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+              ></app-date-input>
+            </div>
+          </div>
+        }
+        @if (filter.radio === 'planned') {
+          <div [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}"
+              class="form-group row">
+            <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+            </label>
+            <div class=" col-sm-6">
+              <input #processExc="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+                    type="text"
+                    validateReqex>
+              @if (processExc.errors && (processExc.dirty || processExc.touched)) {
+                <div class="help-block text-danger">
+                  @if (!processExc.valid) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (isSearch) {
+          <div class="form-group row">
+            <label class="col-md-2 col-sm-4 form-control-label">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+            </label>
+            <div class=" col-sm-6">
+              <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [placeholder]="'common.label.selectController'"
+                                [listArray]="schedulerIds.controllerIds" [name]="'id'" [ignoreTranslate]="true"
+                                [object]="filter"></app-select-input>
+            </div>
+          </div>
+        }
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentIds' | translate" translate>resource.agentJobExecution.label.agentIds</span>
+          </label>
+          <div class="col-sm-6">
+            <app-select-input [attributeName]="'agentIds' "
+                              [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="true" [isSearchable]="true"
+                              [listArray]="agentIds" [name]="'type'"
+                              [object]="filter"></app-select-input>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentUrls' | translate" translate>resource.agentJobExecution.label.agentUrls</span>
+          </label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="filter.urls" autocomplete="off" class="form-control"
+                  name="urls"
+                  placeholder="{{'resource.agentJobExecution.placeholder.enterAgentUrls' | translate}}" type="text">
+          </div>
+        </div>
+        @if (permission.joc.administration.customization.share && !isSearch) {
+          <div class="form-group row">
+            <label class="col-sm-4">
+              <span [appRichTooltip]="'resource.agentJobExecution.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+            </label>
+            <div class="col-sm-8">
+              <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
+            </div>
           </div>
         }
       </div>
     </div>
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
-        </label>
-        <div class="col-md-6">
-          <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-    }
-    @if (filter.radio === 'current') {
-      <div class="form-group row ">
-        <label class="col-sm-2 form-control-label">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.from' | translate" translate>common.label.from</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
-        </div>
-      </div>
-    }
-    @if (filter.radio === 'current') {
-      <div class="form-group row">
-        <label class="col-sm-2 form-control-label">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.to' | translate" translate>common.label.to</span>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
-                          [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
-                          [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-          ></app-date-input>
-        </div>
-      </div>
-    }
-    @if (filter.radio === 'planned') {
-      <div [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}"
-           class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
-        </label>
-        <div class=" col-sm-6">
-          <input #processExc="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
-                 type="text"
-                 validateReqex>
-          @if (processExc.errors && (processExc.dirty || processExc.touched)) {
-            <div class="help-block text-danger">
-              @if (!processExc.valid) {
-                <div translate>common.message.invalid</div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    }
-    @if (isSearch) {
-      <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
-        </label>
-        <div class=" col-sm-6">
-          <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [placeholder]="'common.label.selectController'"
-                            [listArray]="schedulerIds.controllerIds" [name]="'id'" [ignoreTranslate]="true"
-                            [object]="filter"></app-select-input>
-        </div>
-      </div>
-    }
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentIds' | translate" translate>resource.agentJobExecution.label.agentIds</span>
-      </label>
-      <div class="col-sm-6">
-        <app-select-input [attributeName]="'agentIds' "
-                          [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="true" [isSearchable]="true"
-                          [listArray]="agentIds" [name]="'type'"
-                          [object]="filter"></app-select-input>
-      </div>
-    </div>
-    <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'resource.agentJobExecution.tooltip.agentUrls' | translate" translate>resource.agentJobExecution.label.agentUrls</span>
-      </label>
-      <div class="col-sm-6">
-        <input [(ngModel)]="filter.urls" autocomplete="off" class="form-control"
-               name="urls"
-               placeholder="{{'resource.agentJobExecution.placeholder.enterAgentUrls' | translate}}" type="text">
-      </div>
-    </div>
-    @if (permission.joc.administration.customization.share && !isSearch) {
-      <div class="form-group row">
-        <label class="col-sm-4">
-          <span [appRichTooltip]="'resource.agentJobExecution.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
-        </label>
-        <div class="col-sm-8">
-          <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
-        </div>
-      </div>
-    }
+
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
         <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">

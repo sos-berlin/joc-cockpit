@@ -3010,7 +3010,10 @@
     "tooltip.reload": "**Reload Log** in log view window.",
     "tooltip.download": "**Download Log** to local file.",
     "tooltip.followTail": "**Follow Tail** will auto-scroll to latest log entries.",
-    "tooltip.timeZone": "Indicates the ^Time Zone^ of log output."
+    "tooltip.timeZone": "Indicates the ^Time Zone^ of log output.",
+    "tooltip.displayTimeZone": "Display time zone",
+    "tooltip.prevOccurrence": "Previous occurrence",
+    "tooltip.nextOccurrence": "Next occurrence"
   },
   "login": {
     "label.account": "Account",
@@ -3353,11 +3356,8 @@
     "section.inventoryView": "Inventory View Preferences",
     "section.pagination": "Pagination Preferences",
     "section.theme": "Theme Preferences",
-    "section.editor": "Job Editor Preferences",
     "section.view": "View Preferences",
-    "section.configView": "Configuration View Preferences",
     "section.mixed": "Mixed Preferences",
-    "section.viewType": "View Type Preferences",
     "section.features": "Features",
     "label.userDetails": "User Details",
     "label.roles": "Roles",
@@ -3443,6 +3443,7 @@
     "label.showHelpPages": "Enable Context Help",
     "label.enableTagging": "Enable Tagging",
     "label.enableApprovalRequests": "Enable Approval Requests",
+    "label.showVideoHelpPages": "Enable Video Context Help",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3517,7 +3518,8 @@
       "tooltip.orientation": "Offers switching display of ^Workflow^s to vertical or horizontal presentation.\n\nWorking with a wide screen using horizontal *Orientation* brings benefits when designing Workflows with a larger number of ^Job^s and other instructions.",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Specifies the spacing between vertical ^Workflow^ instructions.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Specifies the spacing between horizontal ^Workflow^ instructions.",
-      "tooltip.roundEdgesForConnections": "The setting flattens edges on display of ^Workflow^ instructions, for example of ^Job^s."
+      "tooltip.roundEdgesForConnections": "The setting flattens edges on display of ^Workflow^ instructions, for example of ^Job^s.",
+      "tooltip.showVideoContextHelp": "Enable Video Context Help"
     },
     "permission": {
       "label.order": "Order",
@@ -3995,6 +3997,7 @@
     "label.hash": "Hash",
     "label.noResults": "No settings found. Try different keywords or clear the filter.",
     "filter.all": "All settings",
+    "filter.changed": "Changed settings",
     "filter.critical": "Critical settings",
     "filter.frequent": "Frequent settings",
     "filter.advanced": "Advanced settings",
@@ -4083,12 +4086,8 @@
       "group.inventory": "Inventory",
       "group.view": "Views",
       "group.controller": "Controller",
-      "group.unicode": "Unicode",
       "group.license": "License",
       "group.log": "Logging",
-      "group.link": "Links",
-      "group.job": "Jobs",
-      "group.order": "Orders",
       "group.tag": "Tags",
       "group.report": "Reports",
       "label.force_comments_for_audit_log": "Force reasons for Audit Log",

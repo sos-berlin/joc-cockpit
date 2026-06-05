@@ -173,8 +173,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _committedSearchTerm = '';
   /** Subject that feeds the 300 ms debounce before committing a search. */
   private readonly _searchDebounce = new Subject<string>();
-  showPredefined = false;
   readonly predefined = PREDEFINED_SEARCHES;
+  predefinedOpen = false;
 
   // ── Search mode ────────────────────────────────────────────────────────────
   /** true = filtered mode (only matching lines + context), false = full log with highlights */
@@ -197,6 +197,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private readonly highlightCache = new Map<string, SafeHtml>();
   private syslogResizeHandler?: () => void;
   private readonly levelJumpIndices = new Map<string, number>();
+  /** Currently selected level for shared prev/next navigation. */
+  selectedLevel = '';
 
   constructor(
     private coreService: CoreService,
@@ -282,11 +284,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.searchTerm = value;
     this.commitSearch(value);   // bypass debounce for deliberate preset selection
     this.logSearch.setTerm(value);
-    this.showPredefined = false;
-  }
-
-  togglePredefined(): void {
-    this.showPredefined = !this.showPredefined;
   }
 
   onFilterChange(): void {
@@ -390,6 +387,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.hasWarn  = hasW;
     this.hasError = hasE;
     this.hasDebug = hasD;
+    // Auto-select default level and active line from the first log line (only once).
+    if (this.allLines.length > 0 && (!this.selectedLevel || this.activeLineIdx === null)) {
+      const firstLvl = this.allLines[0].level.toLowerCase();
+      if (!this.selectedLevel && firstLvl !== 'other') this.selectedLevel = firstLvl;
+      if (this.activeLineIdx === null) this.activeLineIdx = 0;
+    }
   }
 
   // ── Highlight ──────────────────────────────────────────────────────────────
@@ -481,21 +484,105 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   // ── Navigation ─────────────────────────────────────────────────────────────
 
-  jumpToLevel(level: string): void {
+  /**
+   * Jump to the next or previous occurrence of `level`.
+   *
+   * State is kept in `levelJumpIndices` (0-based index of the *last jumped-to*
+   * occurrence). Using `offsetTop` (not `getBoundingClientRect`) for the
+   * initial sync means the calculation is immune to in-progress smooth-scroll
+   * animations — successive rapid clicks always advance the counter correctly.
+   *
+   * First click (no stored index yet): picks the occurrence closest to the
+   * current scroll position so the user starts from where they are looking.
+   * Subsequent clicks: simply increment/decrement the stored counter with wrap.
+   */
+  /** Select a level for shared prev/next navigation. Resets jump state for a fresh start. */
+  selectLevel(level: string): void {
+    if (this.selectedLevel === level) return;
+    this.selectedLevel = level;
+    this.levelJumpIndices.clear();
+  }
+
+  jumpToLevel(level: string, direction: 'next' | 'prev' = 'next'): void {
     const el = this.logBodyRef?.nativeElement;
     if (!el) return;
     const targets = Array.from(el.querySelectorAll<HTMLElement>(`.log-line-${level}`));
     if (targets.length === 0) return;
-    const idx = (this.levelJumpIndices.get(level) ?? 0) % targets.length;
+
+    // Pre-read each target's globalIdx once (avoids repeated getAttribute calls).
+    const targetGlobalIdxs = targets.map(t => {
+      const v = t.getAttribute('data-lineidx');
+      return v !== null ? Number(v) : -1;
+    });
+
+    let idx: number;
+
+    if (this.activeLineIdx !== null) {
+      // ── Primary path: navigate relative to the currently highlighted line.
+      // Works cross-level: jumping from an ERROR line to the next WARN line, etc.
+      const anchor = this.activeLineIdx;
+      if (direction === 'next') {
+        // First target whose globalIdx is strictly after the active line.
+        const found = targetGlobalIdxs.findIndex(gi => gi > anchor);
+        idx = found !== -1 ? found : 0; // wrap to first when past the end
+      } else {
+        // Last target whose globalIdx is strictly before the active line.
+        let found = -1;
+        for (let i = targetGlobalIdxs.length - 1; i >= 0; i--) {
+          if (targetGlobalIdxs[i] < anchor) { found = i; break; }
+        }
+        idx = found !== -1 ? found : targets.length - 1; // wrap to last
+      }
+    } else {
+      // ── Fallback path: no line is active yet.
+      // First call: anchor to the nearest occurrence at the current scroll position.
+      // Subsequent calls (levelJumpIndices already set): advance the counter.
+      const storedIdx = this.levelJumpIndices.get(level);
+      if (storedIdx === undefined) {
+        const scrollMid = el.scrollTop + el.clientHeight / 2;
+        if (direction === 'next') {
+          const found = targets.findIndex(t => t.offsetTop >= scrollMid);
+          idx = found !== -1 ? found : 0;
+        } else {
+          let found = -1;
+          for (let i = targets.length - 1; i >= 0; i--) {
+            if (targets[i].offsetTop <= scrollMid) { found = i; break; }
+          }
+          idx = found !== -1 ? found : targets.length - 1;
+        }
+      } else {
+        idx = direction === 'next'
+          ? (storedIdx + 1) % targets.length
+          : (storedIdx - 1 + targets.length) % targets.length;
+      }
+    }
+
     targets[idx].scrollIntoView({ block: 'center', behavior: 'smooth' });
-    this.levelJumpIndices.set(level, idx + 1);
-    const lineIdx = targets[idx].getAttribute('data-lineidx');
-    if (lineIdx !== null) this.activeLineIdx = Number(lineIdx);
+    // Reset occurrence counters for all OTHER levels so their labels show totals only.
+    for (const k of Array.from(this.levelJumpIndices.keys())) {
+      if (k !== level) this.levelJumpIndices.delete(k);
+    }
+    this.levelJumpIndices.set(level, idx);
+    // Update activeLineIdx so the next jump (any level) starts from here.
+    if (targetGlobalIdxs[idx] !== -1) this.activeLineIdx = targetGlobalIdxs[idx];
+  }
+
+  /** Returns `"N/total"` when navigation has started for `level`, otherwise `"total"`. */
+  levelOccurrenceLabel(level: string): string {
+    const total = this.levelCounts[level] ?? 0;
+    const idx = this.levelJumpIndices.get(level);
+    if (idx === undefined) return String(total);
+    return `${idx + 1}/${total}`;
   }
 
   toggleFollowTail(): void {
     this.followTail = !this.followTail;
-    if (this.followTail) this.scrollToBottom();
+    if (this.followTail) {
+      this.scrollToBottom();
+      this.scheduleNextPoll();
+    } else {
+      this.clearPollTimer();
+    }
   }
 
   get displayTz(): string {
@@ -594,6 +681,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.isComplete = false;
     this.activeLineIdx = null;
     this.levelJumpIndices.clear();
+    this.selectedLevel = '';
     this.fetchLog();
   }
 
@@ -601,9 +689,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private scheduleNextPoll(): void {
     this.clearPollTimer();
-    if (!this.isComplete && this.token) {
+    if (this.followTail && !this.isComplete && this.token) {
       this.pollTimer = setTimeout(() => {
-        if (!this.destroyed && !this.isComplete && this.token) {
+        if (!this.destroyed && this.followTail && !this.isComplete && this.token) {
           this.loadMore();
         }
       }, this.POLL_INTERVAL_MS);

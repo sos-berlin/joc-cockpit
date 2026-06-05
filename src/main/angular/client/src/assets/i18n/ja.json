@@ -3010,7 +3010,10 @@
     "tooltip.reload": "Reload log",
     "tooltip.download": "Download log",
     "tooltip.followTail": "Follow tail: auto-scroll to latest entries",
-    "tooltip.timeZone": "Time zone"
+    "tooltip.timeZone": "Time zone",
+    "tooltip.displayTimeZone": "Display time zone",
+    "tooltip.prevOccurrence": "Previous occurrence",
+    "tooltip.nextOccurrence": "Next occurrence"
   },
   "login": {
     "label.account": "アカウント",
@@ -3353,11 +3356,8 @@
     "section.inventoryView": "Configuration - Inventory View Preferences",
     "section.pagination": "Pagination Preferences",
     "section.theme": "Theme Preferences",
-    "section.editor": "Editor Preferences",
     "section.view": "View Preferences",
-    "section.configView": "Configuration View Preferences",
     "section.mixed": "Mixed Preferences",
-    "section.viewType": "View Type Preferences",
     "section.features": "Features",
     "label.userDetails": "アカウント詳細",
     "label.roles": "ロール",
@@ -3443,6 +3443,7 @@
     "label.showHelpPages": "ヘルプページ表示",
     "label.enableTagging": "Enable Tagging",
     "label.enableApprovalRequests": "Enable Approval Requests",
+    "label.showVideoHelpPages": "Enable Video Context Help",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -3517,7 +3518,8 @@
       "tooltip.orientation":"Orientation",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers":"Spacing between instructions on adjacent layers",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer":"Spacing between instructions on the same layer",
-      "tooltip.roundEdgesForConnections":"Round Edges for Connections"
+      "tooltip.roundEdgesForConnections":"Round Edges for Connections",
+      "tooltip.showVideoContextHelp": "Enable Video Context Help"
     },
     "permission": {
       "label.order": "オーダー",
@@ -3994,6 +3996,7 @@
     "label.hash": "ハッシュ",
     "label.noResults": "No settings found. Try different keywords or clear the filter.",
     "filter.all": "All",
+    "filter.changed": "Changed",
     "filter.critical": "Critical",
     "filter.frequent": "Frequent",
     "filter.advanced": "Advanced",
@@ -4083,12 +4086,8 @@
       "group.inventory": "Inventory Settings",
       "group.view": "View Settings",
       "group.controller": "Controller Settings",
-      "group.unicode": "Unicode Settings",
       "group.license": "License Settings",
       "group.log": "Log Settings",
-      "group.link": "Link Settings",
-      "group.job": "Job Settings",
-      "group.order": "Order Settings",
       "group.tag": "Tag Settings",
       "group.report": "Report Settings",
       "label.force_comments_for_audit_log": "Force Reasons for Audit Log",

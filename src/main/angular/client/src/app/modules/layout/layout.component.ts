@@ -751,6 +751,7 @@ export class LayoutComponent {
     preferences.expandOption = 'both';
     preferences.currentController = true;
     preferences.showHelpPages = true;
+    preferences.showVideoHelpPages = true;
     preferences.showMoreOptions = false;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
@@ -867,6 +868,9 @@ export class LayoutComponent {
 
       if (data.showHelpPages === undefined) {
         data.showHelpPages = true;
+      }
+      if (data.showVideoHelpPages === undefined) {
+        data.showVideoHelpPages = true;
       }
       if (data.showMoreOptions === undefined) {
         data.showMoreOptions = true;

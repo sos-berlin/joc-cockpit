@@ -28,8 +28,8 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['batch_size', 'advanced'], ['max_pool_size', 'advanced']
     ],
     retentionPeriod: [
-      ['order_history_age', 'frequent'], ['order_history_logs_age', 'advanced'],
-      ['file_transfer_history_age', 'advanced'], ['audit_log_age', 'frequent'],
+      ['order_history_age', 'frequent'], ['order_history_logs_age', 'frequent'],
+      ['file_transfer_history_age', 'frequent'], ['audit_log_age', 'advanced'],
       ['daily_plan_history_age', 'advanced'], ['monitoring_history_age', 'advanced'],
       ['notification_history_age', 'advanced'], ['profile_age', 'advanced'],
       ['failed_login_history_age', 'advanced'], ['reporting_age', 'advanced'],
@@ -47,12 +47,12 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
   },
   joc: {
     auditLog: [
-      ['force_comments_for_audit_log', 'frequent'], ['comments_for_audit_log', 'frequent'],
-      ['default_profile_account', 'frequent']
-    ],
-    login: [['enable_remember_me', 'frequent']],
+      ['force_comments_for_audit_log', 'frequent'], ['comments_for_audit_log', 'advanced']],
+    login: [['enable_remember_me', 'critical'], ['default_profile_account', 'advanced']],
     inventory: [
-      ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
+      ['allow_empty_arguments', 'advanced'], ['node_command_line_options', 'advanced'],
+      ['allow_undeclared_variables', 'advanced'], ['joc_reverse_proxy_url', 'advanced'],
+      ['encoding', 'advanced'], ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
       ['restore_suffix', 'advanced'], ['restore_prefix', 'advanced'],
       ['import_suffix', 'advanced'], ['import_prefix', 'advanced']
     ],
@@ -65,10 +65,9 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['display_folders_in_views', 'frequent']
     ],
     controller: [
-      ['controller_connection_joc_password', 'critical'],
-      ['controller_connection_history_password', 'critical']
+      ['controller_connection_joc_password', 'advanced'],
+      ['controller_connection_history_password', 'advanced']
     ],
-    unicode: [['encoding', 'advanced']],
     license: [['disable_warning_on_license_expiration', 'advanced']],
     log: [
       ['log_ext_directory', 'advanced'], ['log_ext_order_history', 'advanced'],
@@ -76,9 +75,6 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['log_maximum_display_size', 'advanced'], ['log_applicable_size', 'advanced'],
       ['log_maximum_size', 'advanced']
     ],
-    link: [['joc_reverse_proxy_url', 'advanced']],
-    job: [['allow_empty_arguments', 'advanced'], ['node_command_line_options', 'advanced']],
-    order: [['allow_undeclared_variables', 'advanced']],
     tag: [
       ['num_of_tags_displayed_as_order_id', 'frequent'],
       ['num_of_workflow_tags_displayed', 'frequent']
@@ -86,7 +82,7 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
     report: [['report_java_options', 'advanced']]
   },
   user: {
-    user: [['welcome_got_it', 'frequent'], ['welcome_do_not_remind_me', 'frequent']]
+    user: [['welcome_got_it', 'advanced'], ['welcome_do_not_remind_me', 'advanced']]
   },
   git: {
     gitRepository: [
@@ -99,7 +95,7 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
   },
   lognotification: {
     logNotificationService: [
-      ['log_server_active', 'critical'], ['log_server_port', 'frequent'],
+      ['log_server_active', 'advanced'], ['log_server_port', 'advanced'],
       ['log_server_max_messages_per_second', 'advanced']
     ]
   },
@@ -111,10 +107,10 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
   },
   kiosk: {
     kiosk: [
-      ['kiosk_role', 'frequent'], ['view_dashboard_duration', 'frequent'],
-      ['view_monitor_order_notification_duration', 'frequent'],
-      ['view_monitor_system_notification_duration', 'frequent'],
-      ['view_history_tasks_duration', 'frequent'], ['view_history_orders_duration', 'frequent']
+      ['kiosk_role', 'advanced'], ['view_dashboard_duration', 'advanced'],
+      ['view_monitor_order_notification_duration', 'advanced'],
+      ['view_monitor_system_notification_duration', 'advanced'],
+      ['view_history_tasks_duration', 'advanced'], ['view_history_orders_duration', 'advanced']
     ]
   }
 };
@@ -154,7 +150,8 @@ export class SettingComponent {
   loading: boolean;
   configId: number;
   searchText: string = '';
-  priorityFilter: SettingPriority | '' = '';
+  priorityFilter: SettingPriority | '' = 'critical';
+  changedFilter: boolean = false;
   daysOptions = [
     {label: 'monday', value: 1},
     {label: 'tuesday', value: 2},
@@ -245,7 +242,7 @@ static generateChildStoreObject(children): any {
 
 
   get isFilterActive(): boolean {
-    return !!this.searchText.trim() || !!this.priorityFilter;
+    return !!this.searchText.trim() || !!this.priorityFilter || this.changedFilter;
   }
 
   get filteredSectionCount(): number {
@@ -255,7 +252,8 @@ static generateChildStoreObject(children): any {
   applyFilter(): void {
     const term = this.searchText.trim().toLowerCase();
     const priority = this.priorityFilter;
-    const isActive = !!term || !!priority;
+    const changed = this.changedFilter;
+    const isActive = !!term || !!priority || changed;
 
     for (const setting of this.settingArr) {
       if (!isActive) {
@@ -286,12 +284,13 @@ static generateChildStoreObject(children): any {
             continue;
           }
           const priorityOk = !priority || val.priority === priority;
+          const changedOk = !changed || this.isChanged(val);
           let textOk = !term;
           if (term) {
             const label = this.translate.instant('settings.' + setting.name + '.label.' + val.name).toLowerCase();
             textOk = sectionMatches || groupMatches || label.includes(term) || val.name.toLowerCase().includes(term);
           }
-          val._hidden = !(priorityOk && textOk);
+          val._hidden = !(priorityOk && changedOk && textOk);
           if (!val._hidden) {
             groupHasMatch = true;
             settingHasMatch = true;
@@ -309,19 +308,49 @@ static generateChildStoreObject(children): any {
 
   searchChange(): void {
     this.priorityFilter = '';
+    this.changedFilter = false;
     this.applyFilter();
   }
 
   togglePriority(p: SettingPriority): void {
     this.searchText = '';
+    this.changedFilter = false;
     this.priorityFilter = this.priorityFilter === p ? '' : p;
+    this.applyFilter();
+  }
+
+  toggleChanged(): void {
+    this.searchText = '';
+    this.priorityFilter = '';
+    this.changedFilter = !this.changedFilter;
     this.applyFilter();
   }
 
   clearFilter(): void {
     this.searchText = '';
     this.priorityFilter = '';
+    this.changedFilter = false;
     this.applyFilter();
+  }
+
+  isChanged(val: any): boolean {
+    if (!val?.value) return false;
+    if (val.value.type === 'PASSWORD') return false;
+    const current = val.value.value;
+    const def = val.value.default;
+    if (current === undefined || current === null) return false;
+    if (val.value.type === 'WEEKDAYS') {
+      const currentStr = Array.isArray(current) ? [...current].map(Number).sort().join(',') : String(current);
+      const defStr = def != null ? String(def).split(',').map(Number).sort().join(',') : '';
+      return currentStr !== defStr;
+    }
+    if (val.value.type === 'ARRAY') {
+      const currentStr = Array.isArray(current) ? current.map((i: any) => i.name || '').filter(Boolean).join(';') : String(current);
+      const defArr = Array.isArray(def) ? def : (def ? String(def).split(';') : []);
+      const defStr = defArr.filter(Boolean).join(';');
+      return currentStr !== defStr;
+    }
+    return String(current) !== String(def ?? '');
   }
 
   getLabel(section: string, name: string): string {
@@ -663,6 +692,7 @@ static generateChildStoreObject(children): any {
       this.settingArr.push(obj);
     }
     this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
+    this.applyFilter();
   }
   private mergeChildProperties(defaultChildren: any, existingChildren: any): void {
     // Convert existing children from an array to an object if needed

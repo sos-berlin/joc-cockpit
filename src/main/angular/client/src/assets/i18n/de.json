@@ -3010,7 +3010,10 @@
     "tooltip.reload": "Das Protokoll im Fenster neu laden.",
     "tooltip.download": "Protokoll in eine lokale Datei herunterladen.",
     "tooltip.followTail": "**In Echtzeit verfolgen**: blättert automatisch zu den neuesten Protokolleinträgen.",
-    "tooltip.timeZone": "Gibt die ^Zeitzone|time-zone^ der Protokollausgaben an."
+    "tooltip.timeZone": "Gibt die ^Zeitzone|time-zone^ der Protokollausgaben an.",
+    "tooltip.displayTimeZone": "Display time zone",
+    "tooltip.prevOccurrence": "Previous occurrence",
+    "tooltip.nextOccurrence": "Next occurrence"
   },
   "login": {
     "label.account": "Konto",
@@ -3353,11 +3356,8 @@
     "section.inventoryView": "Einstellungen für Ansicht Inventar",
     "section.pagination": "Einstellungen für Paginierung",
     "section.theme": "Einstellungen für Schema und Farben",
-    "section.editor": "Einstellungen für Editor",
     "section.view": "Einstellungen für Ansichten",
-    "section.configView": "Einstellungen für Ansicht Konfiguration",
     "section.mixed": "Diverse Einstellungen",
-    "section.viewType": "Einstellungen für Ansichtstyp",
     "section.features": "Funktionen",
     "label.userDetails": "Benutzerinformationen",
     "label.roles": "Rollen",
@@ -3443,6 +3443,7 @@
     "label.showHelpPages": "Kontexthilfe aktivieren",
     "label.enableTagging": "Kennzeichnungen aktivieren",
     "label.enableApprovalRequests": "Autorisierungsprozess aktivieren",
+    "label.showVideoHelpPages": "Enable Video Context Help",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3517,7 +3518,8 @@
       "tooltip.orientation": "Bietet die Möglichkeit, die Anzeige von ^Arbeitsabläufen|workflow^ auf vertikale oder horizontale Darstellung umzuschalten.\n\nDie Arbeit mit einem Breitbildschirm in horizontaler *Ausrichtung* bietet Vorteile bei der Gestaltung von Arbeitsabläufen mit einer größeren Anzahl von ^Job^s und anderen Anweisungen.",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Legt den Abstand zwischen vertikalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Legt den Abstand zwischen horizontalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
-      "tooltip.roundEdgesForConnections": "Die Einstellung glättet die Kanten bei der Anzeige von Anweisungen im ^Arbeitsablauf|workflow^, bspw. von ^Job^s."
+      "tooltip.roundEdgesForConnections": "Die Einstellung glättet die Kanten bei der Anzeige von Anweisungen im ^Arbeitsablauf|workflow^, bspw. von ^Job^s.",
+      "tooltip.showVideoContextHelp": "Enable Video Context Help"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -3995,6 +3997,7 @@
     "label.hash": "Prüfsumme",
     "label.noResults": "Keine Ergebnisse gefunden. Versuchen Sie es mit anderen Suchbegriffen oder löschen Sie den Filter.",
     "filter.all": "Alle Einstellungen",
+    "filter.changed": "Changed settings",
     "filter.critical": "Kritische Einstellungen",
     "filter.frequent": "Häufige Einstellungen",
     "filter.advanced": "Erweiterte Einstellungen",
@@ -4083,12 +4086,8 @@
       "group.inventory": "Inventar",
       "group.view": "Ansichten",
       "group.controller": "Controller",
-      "group.unicode": "Unicode",
       "group.license": "Lizenz",
       "group.log": "Protokollierung",
-      "group.link": "Links",
-      "group.job": "Jobs",
-      "group.order": "Aufträge",
       "group.tag": "Kennzeichnungen",
       "group.report": "Berichte",
       "label.force_comments_for_audit_log": "Begründungen für Prüfprotokoll aktivieren",

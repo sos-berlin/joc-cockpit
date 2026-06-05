@@ -1,47 +1,43 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    @if(!releasable && !isRemove && !isRevoke && preferences.showHelpPages) {
-      <i (click)="helpPage('configuration-inventory-operations-deploy-folder')"
-        [appRichTooltip]="'common.tooltip.help' | translate"
-        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-      <i (click)="videoPage('workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
-    }
-    @if(releasable && !isRemove && operation !== 'recall' && preferences.showHelpPages) {
-      <i (click)="helpPage('configuration-inventory-operations-release-folder')"
-        [appRichTooltip]="'common.tooltip.help' | translate"
-        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(isRevoke && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-revoke-folder')"
-        [appRichTooltip]="'common.tooltip.help' | translate"
-        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-      <i (click)="videoPage('workflows-revoke')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
-    }
-    @if(operation === 'recall' && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-recall-folder')"
-        [appRichTooltip]="'common.tooltip.help' | translate"
-        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-    }
-    @if(isRemove && preferences.showHelpPages){
-      <i (click)="helpPage('configuration-inventory-operations-remove-folder')"
-        [appRichTooltip]="'common.tooltip.help' | translate"
-        class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
-      <i (click)="videoPage('workflows-remove')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
-    }
     @if (!releasable && !isRemove && !isRevoke) {
-    <span translate>inventory.label.deploy</span>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage('configuration-inventory-operations-deploy-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
+      <span translate>inventory.label.deploy</span>
     }
     @if (isRevoke) {
-    <span translate>inventory.label.revoke</span>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage('configuration-inventory-operations-revoke-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('workflows-revoke')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
+      <span translate>inventory.label.revoke</span>
     }
     @if (releasable && !isRemove && operation !== 'recall') {
-    <span translate>inventory.label.release</span>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage('configuration-inventory-operations-release-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      <span translate>inventory.label.release</span>
     }
     @if (operation === 'recall') {
-    <span translate>inventory.label.recall</span>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage('configuration-inventory-operations-recall-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      <span translate>inventory.label.recall</span>
     }
     @if (isRemove) {
-    <span translate>inventory.label.remove</span>
+      @if (preferences.showHelpPages) {
+        <i (click)="helpPage('configuration-inventory-operations-remove-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      }
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('workflows-remove')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
+      <span translate>inventory.label.remove</span>
     }
     @if (path) {
     <span>: {{path}}</span>
@@ -250,24 +246,24 @@
         </div>
         <div class="p-a-sm">
           @if ((isRemove || isRevoke || operation === 'recall') && hasDependencies()) {
-          @if (isRemove) {
-          <div class="m-b-sm opacity-0_5">
-            <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
-                nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
-          </div>
-          }
-          @if (isRevoke) {
-          <div class="m-b-sm opacity-0_5">
-            <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
-                nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
-          </div>
-          }
-          @if (operation === 'recall') {
-          <div class="m-b-sm opacity-0_5">
-            <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
-                nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
-          </div>
-          }
+            @if (isRemove) {
+              <div class="m-b-sm opacity-0_5">
+                <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
+                    nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+              </div>
+            }
+            @if (isRevoke) {
+              <div class="m-b-sm opacity-0_5">
+                <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
+                    nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
+              </div>
+            }
+            @if (operation === 'recall') {
+              <div class="m-b-sm opacity-0_5">
+                <label><span nz-icon nzType="exclamation-circle" class="m-r-sm"
+                    nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
+              </div>
+            }
           }
           @if (nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all')) {
           <div class="form-group row">

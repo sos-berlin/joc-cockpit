@@ -3010,7 +3010,10 @@
     "tooltip.reload": "Actualiser la fenêtre d'affichage du journal.",
     "tooltip.download": "Enregistrer le journal dans un fichier local.",
     "tooltip.followTail": "**Suivre la Queue** fera défiler automatiquement l'affichage jusqu'aux dernières entrées du journal.",
-    "tooltip.timeZone": "Indique le ^fuseau horaire|time-zone^ de la sortie du journal."
+    "tooltip.timeZone": "Indique le ^fuseau horaire|time-zone^ de la sortie du journal.",
+    "tooltip.displayTimeZone": "Display time zone",
+    "tooltip.prevOccurrence": "Previous occurrence",
+    "tooltip.nextOccurrence": "Next occurrence"
   },
   "login": {
     "label.account": "Compte",
@@ -3353,11 +3356,8 @@
     "section.inventoryView": "Préférences d'affichage de l'Inventaire",
     "section.pagination": "Préférences de Pagination",
     "section.theme": "Préférences du Thème",
-    "section.editor": "Préférences de l'Éditeur Job",
     "section.view": "Préférences d'affichage",
-    "section.configView": "Préférences de l'affichage de la vue Configuration",
     "section.mixed": "Préférences mixtes",
-    "section.viewType": "Préférences de type de vue",
     "section.features": "Fonctionnalités",
     "label.userDetails": "Détails de l'utilisateur",
     "label.roles": "Rôles",
@@ -3443,6 +3443,7 @@
     "label.showHelpPages": "Activer l'Aide Contextuelle",
     "label.enableTagging": "Activer les Tags",
     "label.enableApprovalRequests": "Activer le Processus d'Approbation",
+    "label.showVideoHelpPages": "Enable Video Context Help",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -3517,7 +3518,8 @@
       "tooltip.orientation": "Permet de basculer l'affichage des ^Workflow^s en mode vertical ou horizontal.\n\nL'utilisation d'un écran large en *Orientation* horizontale présente des avantages lors de la conception de Workflows comportant un grand nombre de ^Tâches|job^ et d'autres instructions.",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Définit l'espacement entre les instructions verticales ^Workflow^.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Définit l'espacement entre les instructions horizontales ^Workflow^.",
-      "tooltip.roundEdgesForConnections": "Ce paramètre aplatit les contours lors de l'affichage des instructions du ^Workflow^, par exemple celles des ^Tâches|job^."
+      "tooltip.roundEdgesForConnections": "Ce paramètre aplatit les contours lors de l'affichage des instructions du ^Workflow^, par exemple celles des ^Tâches|job^.",
+      "tooltip.showVideoContextHelp": "Enable Video Context Help"
     },
     "permission": {
       "label.order": "Ordre",
@@ -3995,6 +3997,7 @@
     "label.hash": "Hashage",
     "label.noResults": "Aucun résultat trouvé. Essayez d'autres mots-clés ou désactivez le filtre.",
     "filter.all": "Tous les Réglages",
+    "filter.changed": "Changed settings",
     "filter.critical": "Réglages critiques",
     "filter.frequent": "Réglages fréquents",
     "filter.advanced": "Réglages avancés",
@@ -4083,12 +4086,8 @@
       "group.inventory": "Inventaire",
       "group.view": "Vues",
       "group.controller": "Contrôleur",
-      "group.unicode": "Unicode",
       "group.license": "Licence",
       "group.log": "Journalisation",
-      "group.link": "Liens",
-      "group.job": "Tâches",
-      "group.order": "Ordres",
       "group.tag": "Tags",
       "group.report": "Rapports",
       "label.force_comments_for_audit_log": "Imposer les justifications pour le Journal d'Audit",

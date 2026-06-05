@@ -38,39 +38,39 @@
       <div class="log-search-area">
 
         <!-- Predefined quick-search dropdown -->
-        <div class="log-predefined-wrap" [class.open]="showPredefined">
-          <button class="btn btn-xs btn-default log-predefined-btn"
-                  [appRichTooltip]="'logConsole.tooltip.predefined' | translate"
-                  (click)="togglePredefined()"
-                  [class.active]="showPredefined"
-                  aria-haspopup="listbox"
-                  [attr.aria-expanded]="showPredefined">
-            <i nz-icon nzType="thunderbolt" nzTheme="outline"></i>
-          </button>
-          @if (showPredefined) {
-            <ul class="log-predefined-menu" role="listbox">
-              @for (p of predefined; track p.value) {
-                <li role="option" (click)="applyPredefined(p.value)" class="log-predefined-item">
-                  {{ p.label | translate }}
-                </li>
-              }
-            </ul>
-          }
-        </div>
+        <button class="btn btn-xs btn-default"
+                nz-dropdown
+                [nzDropdownMenu]="predefinedMenu"
+                nzTrigger="click"
+                [nzPlacement]="'bottomLeft'"
+                (nzVisibleChange)="predefinedOpen = $event"
+                [appRichTooltip]="predefinedOpen ? null : ('logConsole.tooltip.predefined' | translate)">
+          <i nz-icon nzType="thunderbolt" nzTheme="outline"></i>
+        </button>
+        <nz-dropdown-menu #predefinedMenu="nzDropdownMenu">
+          <ul nz-menu>
+            @for (p of predefined; track p.value) {
+              <li nz-menu-item (click)="applyPredefined(p.value)">
+                <a>{{ p.label | translate }}</a>
+              </li>
+            }
+          </ul>
+        </nz-dropdown-menu>
 
         <!-- Keyword search input (synced globally across all log windows) -->
-        <div class="log-search-wrap" [appRichTooltip]="'logConsole.tooltip.search' | translate">
+        <div class="log-search-wrap">
           <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
           <input #searchInput
                  class="log-search-input" type="text"
                  [(ngModel)]="searchTerm"
                  (ngModelChange)="onSearchChange()"
                  [placeholder]="'logConsole.placeholder.search' | translate"
+                 [appRichTooltip]="'logConsole.tooltip.search' | translate"
                  autocomplete="off"
                  aria-label="Search">
           @if (searchTerm) {
-            <button class="log-search-clear" (click)="clearSearch()">
-              <i nz-icon nzType="close-circle" nzTheme="filled"></i>
+            <button class="log-search-clear" (click)="clearSearch()" (mousedown)="$event.preventDefault()">
+              <i nz-icon nzType="close-circle" nzTheme="outline"></i>
             </button>
           }
         </div>
@@ -110,7 +110,7 @@
           </span>
         }
         @if (displayTz) {
-          <span class="log-tz-chip">
+          <span class="log-tz-chip" [appRichTooltip]="'logConsole.tooltip.displayTimeZone' | translate">
             <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ displayTz }}
           </span>
         }
@@ -159,56 +159,84 @@
             <span class="log-badge log-badge-trace" translate>log.label.trace</span>
           </label>
         }
-        @if (allLines.length > 0) {
-          <span class="log-line-count">{{ filteredLines.length }}/{{ allLines.length }}</span>
-        }
       </div>
 
       <!-- Event summary counts -->
       @if (allLines.length > 0) {
         <div class="log-summary-inline">
+
+          <!-- Shared prev button -->
+          <button class="btn btn-xs btn-default" [disabled]="!selectedLevel"
+                  (click)="jumpToLevel(selectedLevel, 'prev')"
+                  [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+            <i nz-icon nzType="up" nzTheme="outline"></i>
+          </button>
+
+          <!-- Level badges — click to select active level -->
           @if (levelCounts['info'] > 0) {
-            <button class="log-summary-item" (click)="jumpToLevel('info')">
+            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'info'"
+                  (click)="selectLevel('info')">
               <span class="log-badge log-badge-info" translate>log.label.info</span>
-              <span class="log-summary-count">{{ levelCounts['info'] }}</span>
-            </button>
-          }
-          @if (levelCounts['warn'] > 0) {
-            <button class="log-summary-item" (click)="jumpToLevel('warn')">
-              <span class="log-badge log-badge-warn" translate>log.label.warn</span>
-              <span class="log-summary-count">{{ levelCounts['warn'] }}</span>
-            </button>
-          }
-          @if (levelCounts['error'] > 0) {
-            <button class="log-summary-item" (click)="jumpToLevel('error')">
-              <span class="log-badge log-badge-error" translate>log.label.error</span>
-              <span class="log-summary-count">{{ levelCounts['error'] }}</span>
-            </button>
-          }
-          @if (levelCounts['debug'] > 0) {
-            <button class="log-summary-item" (click)="jumpToLevel('debug')">
-              <span class="log-badge log-badge-debug" translate>log.label.debug</span>
-              <span class="log-summary-count">{{ levelCounts['debug'] }}</span>
-            </button>
-          }
-          @if (levelCounts['trace'] > 0) {
-            <button class="log-summary-item" (click)="jumpToLevel('trace')">
-              <span class="log-badge log-badge-trace" translate>log.label.trace</span>
-              <span class="log-summary-count">{{ levelCounts['trace'] }}</span>
-            </button>
-          }
-          @if (!isComplete) {
-            <span class="log-summary-note" translate>common.label.loading</span>
-          }
-          @if (filterMode && searchTerm) {
-            <span class="log-summary-note log-summary-filter-active">
-              <i nz-icon nzType="filter" nzTheme="outline"></i>
-              {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
+              <span class="log-summary-count">{{ levelOccurrenceLabel('info') }}</span>
             </span>
           }
+          @if (levelCounts['warn'] > 0) {
+            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'warn'"
+                  (click)="selectLevel('warn')">
+              <span class="log-badge log-badge-warn" translate>log.label.warn</span>
+              <span class="log-summary-count">{{ levelOccurrenceLabel('warn') }}</span>
+            </span>
+          }
+          @if (levelCounts['error'] > 0) {
+            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'error'"
+                  (click)="selectLevel('error')">
+              <span class="log-badge log-badge-error" translate>log.label.error</span>
+              <span class="log-summary-count">{{ levelOccurrenceLabel('error') }}</span>
+            </span>
+          }
+          @if (levelCounts['debug'] > 0) {
+            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'debug'"
+                  (click)="selectLevel('debug')">
+              <span class="log-badge log-badge-debug" translate>log.label.debug</span>
+              <span class="log-summary-count">{{ levelOccurrenceLabel('debug') }}</span>
+            </span>
+          }
+          @if (levelCounts['trace'] > 0) {
+            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'trace'"
+                  (click)="selectLevel('trace')">
+              <span class="log-badge log-badge-trace" translate>log.label.trace</span>
+              <span class="log-summary-count">{{ levelOccurrenceLabel('trace') }}</span>
+            </span>
+          }
+
+          <!-- Shared next button -->
+          <button class="btn btn-xs btn-default" [disabled]="!selectedLevel"
+                  (click)="jumpToLevel(selectedLevel, 'next')"
+                  [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+            <i nz-icon nzType="down" nzTheme="outline"></i>
+          </button>
+
+        </div>
+          @if (isLoading) {
+            <div class="log-summary-note">
+              <span translate>common.label.loading</span>
+            </div>
+          }
+        
+          @if (filterMode && searchTerm) {
+            <div class="log-summary-note">
+              <span class="log-summary-filter-active">
+                <i nz-icon nzType="filter" nzTheme="outline"></i>
+                {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
+              </span>
+            </div>
+          }
+        <div class="log-line-count">
+          <span>
+            {{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ allLines.length }}
+          </span>
         </div>
       }
-
     </div>
 
   </div>
@@ -290,7 +318,7 @@
       }
     }
 
-    @if (!isComplete && allLines.length > 0) {
+    @if (isLoading && allLines.length > 0) {
       <div class="log-console-more">
         <nz-spin nzSimple nzSize="small"></nz-spin>
       </div>

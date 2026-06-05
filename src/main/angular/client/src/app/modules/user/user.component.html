@@ -306,6 +306,42 @@
                   </div>
                 </div>
 
+
+                <!-- Pagination Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.pagination</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
+                          profile.label.maxEntryPerPage
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
+                                          [listArray]="maxEntryPerPage"
+                                          [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
+                          profile.label.entryPerPage
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
+                                          [listArray]="entryPerPage"
+                                          [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Workflow View Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
@@ -368,39 +404,76 @@
                                          class="w-xl"></nz-input-number>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                <!-- Pagination Preferences -->
-                <div class="b-a m-b-sm section-box">
-                  <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.pagination</small>
-                  </div>
-                  <div class="p-a-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
-                          profile.label.maxEntryPerPage
-                        </span>
-                      </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
                       <div class="col-md-6">
-                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
-                                          [listArray]="maxEntryPerPage"
-                                          [object]="preferences" [optionLabel]="'name'"
-                                          [optionValue]="'value'"></app-select-input>
+                        <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
+                          <label nz-radio nzValue="both"><span
+                            translate>profile.label.subFolderAndFolderContents</span></label>
+                        </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
-                          profile.label.entryPerPage
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
+                          profile.label.tabSize
                         </span>
                       </div>
                       <div class="col-md-6">
-                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
-                                          [listArray]="entryPerPage"
-                                          [object]="preferences" [optionLabel]="'name'"
-                                          [optionValue]="'value'"></app-select-input>
+                        <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
+                               type="text">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- View Preferences -->
+                <div class="b-a m-b-sm section-box">
+                  <div class="section-box-header">
+                    <small class="_600 section-box-title" translate>profile.section.view</small>
+                  </div>
+                  <div class="p-a-sm">
+                    <div class="row">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
+                          profile.label.showLogs
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                          <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
+                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
+                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
+                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
+                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                        </nz-radio-group>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
+                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
+                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                          <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
+                        </nz-radio-group>
                       </div>
                     </div>
                   </div>
@@ -607,77 +680,6 @@
                   </div>
                 </div>
 
-                <!-- Editor Preferences -->
-                <div class="b-a m-b-sm section-box">
-                  <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.editor</small>
-                  </div>
-                  <div class="p-a-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
-                          profile.label.tabSize
-                        </span>
-                      </div>
-                      <div class="col-md-6">
-                        <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
-                               type="text">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- View Preferences -->
-                <div class="b-a m-b-sm section-box">
-                  <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.view</small>
-                  </div>
-                  <div class="p-a-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
-                          profile.label.showLogs
-                        </span>
-                      </div>
-                      <div class="col-md-6">
-                        <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                          <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
-                        </nz-radio-group>
-                      </div>
-                    </div>
-                    <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
-                      <div class="col-md-6">
-                        <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                        </nz-radio-group>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Configuration View Preferences -->
-                <div class="b-a m-b-sm section-box">
-                  <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.configView</small>
-                  </div>
-                  <div class="p-a-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
-                      <div class="col-md-6">
-                        <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
-                          <label nz-radio nzValue="both"><span
-                            translate>profile.label.subFolderAndFolderContents</span></label>
-                        </nz-radio-group>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <!-- Mixed Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
@@ -758,34 +760,6 @@
                   </div>
                 </div>
 
-                <!-- View Type Preferences -->
-                <div class="b-a m-b-sm section-box">
-                  <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.viewType</small>
-                  </div>
-                  <div class="p-a-sm">
-                    <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
-                      <div class="col-md-6">
-                        <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
-                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                        </nz-radio-group>
-                      </div>
-                    </div>
-                    <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
-                      <div class="col-md-6">
-                        <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
-                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                          <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
-                        </nz-radio-group>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <!-- Features -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
@@ -796,6 +770,13 @@
                       <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">profile.label.showHelpPages</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showVideoContextHelp' | translate">profile.label.showVideoHelpPages</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.showVideoHelpPages"
                                (ngModelChange)="changeConfiguration()"></label>
                       </div>
                     </div>

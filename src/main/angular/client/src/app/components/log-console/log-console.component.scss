@@ -20,6 +20,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
+    padding-right: 8px;
 
     .ant-checkbox-wrapper {
       color: var(--text-color);
@@ -109,9 +110,13 @@
 }
 
 .log-line-count {
+  margin-left: auto;
   font-size: 11px;
   color: var(--text-muted);
-  padding-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 // ─── Toolbar rows ─────────────────────────────────────────────────────────
@@ -138,12 +143,12 @@
   cursor: pointer;
 
   &:hover {
-    background: rgba(var(--primary-rgb, 14, 138, 139), 0.05);
+    background: color-mix(in srgb, var(--primary) 5%, transparent);
   }
 
   &--active,
   &.log-line--active {
-    background: rgba(var(--primary-rgb, 14, 138, 139), 0.12) !important;
+    background: color-mix(in srgb, var(--primary) 12%, transparent) !important;
     border-left-color: var(--primary) !important;
   }
 
@@ -239,8 +244,7 @@
   gap: 6px;
   flex-wrap: wrap;
   font-size: 11px;
-  margin-left: 6px;
-  padding-left: 8px;
+  padding: 0 8px;
   border-left: 1px solid var(--border-color);
 }
 
@@ -259,6 +263,10 @@
 
   &:hover { background: rgba(128, 128, 128, .10); }
   &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+  &--active {
+    outline: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+    outline-offset: -1px;
+  }
 }
 
 .log-summary-count {
@@ -267,13 +275,16 @@
   min-width: 16px;
   text-align: left;
   color: var(--text-color);
+  padding: 0 8px;
+  border-left: 1px solid var(--border-color);
 }
 
 .log-summary-note {
   color: var(--text-muted);
   font-style: italic;
   font-size: 11px;
-  margin-left: 4px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border-color);
 }
 
 .log-summary-filter-active {
@@ -289,44 +300,6 @@
   flex-wrap: wrap;
   flex: 1 1 auto;
   justify-content: center;
-}
-
-// ─── Predefined quick-search dropdown ────────────────────────────────────────
-.log-predefined-wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.log-predefined-btn {
-  &.active { color: var(--primary); border-color: var(--primary); }
-}
-
-.log-predefined-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  z-index: 9999;
-  background: var(--bg-box, #fff);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
-  min-width: 180px;
-  padding: 4px 0;
-  margin: 0;
-  list-style: none;
-}
-
-.log-predefined-item {
-  padding: 5px 14px;
-  font-size: 12px;
-  color: var(--text-color);
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:hover {
-    background: rgba(var(--primary-rgb, 14,138,139), .08);
-    color: var(--primary);
-  }
 }
 
 // ─── Keyword search ─────────────────────────────────────────────────────────
@@ -366,6 +339,7 @@
   .log-search-clear {
     position: absolute;
     right: 7px;
+    z-index: 1;
     background: none;
     border: none;
     cursor: pointer;
