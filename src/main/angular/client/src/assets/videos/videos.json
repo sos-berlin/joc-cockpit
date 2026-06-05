@@ -8,33 +8,53 @@
     "playlist": "OPTIONAL — YouTube playlist ID; maps to ?list= in the embed URL"
   },
   "workflows-orders-add": {
-    "id": "hq5Kil19Ne0",
+    "id": "2XRiF7E8bjE",
     "title": "Add Order to Workflow",
-    "description": "How to add an order to a workflow?"
+    "description": "How to add an Order to a Workflow"
   },
   "workflows-deploy": {
     "id": "Fb8kQJUxy98",
     "title": "Deploy Workflow",
-    "description": "How to deploy a workflow?"
+    "description": "How to deploy a Workflow"
   },
   "workflows-remove": {
     "id": "O97w1MmDTW0",
     "title": "Remove Workflow",
-    "description": "How to remove an existing workflow?"
+    "description": "How to remove a Workflow"
   },
   "workflows-revoke": {
     "id": "SpZuG7FrBOc",
     "title": "Revoke Workflow",
-    "description": "How to revoke a workflow?"
+    "description": "How to revoke a Workflow"
   },
-  "workflows-release": {
+  "jobResources-deploy": {
+    "id": "",
+    "title": "Deploy Job Resource",
+    "description": "How to deploy a Job Resource"
+  },
+  "jobResources-remove": {
+    "id": "",
+    "title": "Remove Job Resource",
+    "description": "How to remove a Job Resource"
+  },
+  "jobResources-revoke": {
+    "id": "",
+    "title": "Revoke Job Resource",
+    "description": "How to revoke a Job Resource"
+  },
+  "schedules-release": {
     "id": "QCZ2DxWCZaM",
     "title": "Release Schedule",
-    "description": "How to release a schedule?"
+    "description": "How to release a Schedule"
   },
-  "workflows-recall": {
+  "schedules-recall": {
     "id": "Ckf4qSO08cE",
     "title": "Recall Schedule",
-    "description": "How to recall a schedule?"
+    "description": "How to recall a Schedule"
+  },
+  "schedules-remove": {
+    "id": "kupymjNEXSE",
+    "title": "Remove Schedule",
+    "description": "How to remove a Schedule"
   }
 }
