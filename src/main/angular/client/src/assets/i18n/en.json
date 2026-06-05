@@ -3010,10 +3010,10 @@
     "tooltip.reload": "**Reload Log** in log view window.",
     "tooltip.download": "**Download Log** to local file.",
     "tooltip.followTail": "**Follow Tail** will auto-scroll to latest log entries.",
-    "tooltip.timeZone": "Indicates the ^Time Zone^ of log output.",
-    "tooltip.displayTimeZone": "Display time zone",
-    "tooltip.prevOccurrence": "Previous occurrence",
-    "tooltip.nextOccurrence": "Next occurrence"
+    "tooltip.timeZone": "Indicates the ^time zone^ of log output.",
+    "tooltip.displayTimeZone": "Display ^time zone^",
+    "tooltip.prevOccurrence": "Previous hit",
+    "tooltip.nextOccurrence": "Next hit"
   },
   "login": {
     "label.account": "Account",
@@ -3443,7 +3443,7 @@
     "label.showHelpPages": "Enable Context Help",
     "label.enableTagging": "Enable Tagging",
     "label.enableApprovalRequests": "Enable Approval Requests",
-    "label.showVideoHelpPages": "Enable Video Context Help",
+    "label.showVideoHelpPages": "Enable Context Help Videos",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3512,14 +3512,14 @@
       "tooltip.collapseListVariable": "The setting applies to the [Configuration - Inventory - Workflows](context:help:configuration-inventory-workflows) view that offers specifying ^Workflow^ Variables from a number of data types.\n\nIf the *List* data type (array) is used, then it can hold a larger number of entries. Users might not want to immediately see list variables expanded when editing a Workflow.",
       "tooltip.showView": "The setting applies to a number of views that offer the related indicator from the upper-right corner of the window.\n\nThe setting specifies the view type that will be used by default. Users can change the view type on demand in any view:\n- **As Card** view type requires more space on the screen\n- **As List** view type offers a condensed layout",
       "tooltip.showOrdersOverview": "The setting is similar to the **Show View** setting but applies to the [Orders - Overview](context:help:orders-overview) view.\n\nIn addition, the view offers the *Bulk* view type that allows transitioning ^Order^s from bulk operations.",
-      "tooltip.showContextHelp": "The setting enables **Context Help** that is available from an (i) icon in the title of pages, sub-views and pop-up windows.",
+      "tooltip.showContextHelp": "The setting enables **Context Help** that is available from an (i) icon in the title of pages, sub-views and pop-up windows.\n\nContextual help is added Context Help Videos, if available for the page.",
       "tooltip.enableTagging": "Specifies if the ^Tag^ging feature is active.\n\nWhen enabled, then the navigation panel in a number of view is added a section for Tag navigation.\n\nFor details of the feature see [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging).",
       "tooltip.enableApprovalRequests": "Specifies if the *Approval Process* feature is active.\n\nWhen enabled, then user operations can be configured to require approval by a second user (4-eyes principle).\n\nFor details of the feature see [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process).",
       "tooltip.orientation": "Offers switching display of ^Workflow^s to vertical or horizontal presentation.\n\nWorking with a wide screen using horizontal *Orientation* brings benefits when designing Workflows with a larger number of ^Job^s and other instructions.",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Specifies the spacing between vertical ^Workflow^ instructions.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Specifies the spacing between horizontal ^Workflow^ instructions.",
       "tooltip.roundEdgesForConnections": "The setting flattens edges on display of ^Workflow^ instructions, for example of ^Job^s.",
-      "tooltip.showVideoContextHelp": "Enable Video Context Help"
+      "tooltip.showVideoContextHelp": "The setting enables **Context Help Videos** that are available from an icon in the title of pages, sub-views and pop-up windows.\n\nContext Help Videos provide mostly short explanations that alternatively are available for reading from Context Help."
     },
     "permission": {
       "label.order": "Order",

@@ -3011,9 +3011,9 @@
     "tooltip.download": "Protokoll in eine lokale Datei herunterladen.",
     "tooltip.followTail": "**In Echtzeit verfolgen**: blättert automatisch zu den neuesten Protokolleinträgen.",
     "tooltip.timeZone": "Gibt die ^Zeitzone|time-zone^ der Protokollausgaben an.",
-    "tooltip.displayTimeZone": "Display time zone",
-    "tooltip.prevOccurrence": "Previous occurrence",
-    "tooltip.nextOccurrence": "Next occurrence"
+    "tooltip.displayTimeZone": "^Zeitzone|time-zone^ anzeigen",
+    "tooltip.prevOccurrence": "Vorheriger Treffer",
+    "tooltip.nextOccurrence": "Nächster Treffer"
   },
   "login": {
     "label.account": "Konto",
@@ -3443,7 +3443,7 @@
     "label.showHelpPages": "Kontexthilfe aktivieren",
     "label.enableTagging": "Kennzeichnungen aktivieren",
     "label.enableApprovalRequests": "Autorisierungsprozess aktivieren",
-    "label.showVideoHelpPages": "Enable Video Context Help",
+    "label.showVideoHelpPages": "Kontexthilfe-Videos aktivieren",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3512,14 +3512,14 @@
       "tooltip.collapseListVariable": "Die Einstellung gilt für die Ansicht [Konfiguration – Inventar – Arbeitsabläufe](context:help:configuration-inventory-workflows), in der ^Arbeitsablauf|workflow^-Variablen aus einer Reihe von Datentypen festgelegt werden können.\n\nWird der Datentyp *Liste* (Array) verwendet, kann dieser eine größere Anzahl von Einträgen enthalten. Möglicherweise möchten Benutzer nicht, dass Listenvariablen bei der Bearbeitung eines Arbeitsablaufs sofort erweitert angezeigt werden.",
       "tooltip.showView": "Die Einstellung gilt für eine Reihe von Ansichten, in denen oben rechts im Fenster das entsprechende Symbol angezeigt wird.\n\nDie Einstellung legt fest, welcher Ansichtstyp standardmäßig verwendet wird. Benutzer können den Ansichtstyp in jeder Ansicht ändern:\n- **Als Karte** benötigt mehr Platz auf dem Bildschirm\n- **Als Liste** bietet ein kompakte Darstellung",
       "tooltip.showOrdersOverview": "Die Einstellung gleicht der Einstellung **Ansicht anzeigen**, gilt jedoch für die Ansicht [Auftragsübersicht](context:help:orders-overview).\n\nDarüber hinaus bietet die Ansicht den Ansichtstyp *Als Zusammenfassung* an, der es ermöglicht, ^Aufträge|order^ über Massenoperationen zu bearbeiten.",
-      "tooltip.showContextHelp": "Die Einstellung aktiviert die **Kontext-Hilfe**, die über das Symbol (i) in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.",
+      "tooltip.showContextHelp": "Die Einstellung aktiviert die **Kontext-Hilfe**, die über das Symbol (i) in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.\n\nKontext-Hilfen werden durch zusätzliche Kontext-Hilfe Videos ergänzt sofern für die Seite verfügbar.",
       "tooltip.enableTagging": "Stellt die ^Kennzeichnungsfunktion|tag^ ein.\n\nWenn diese Funktion aktiviert ist, wird dem Navigationsbereich in einigen Ansichten ein Abschnitt für die Navigation per Kennzeichnungen hinzugefügt.\n\nWeitere Informationen zu dieser Funktion finden Sie unter [JS7 – Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging).",
       "tooltip.enableApprovalRequests": "Gibt an, ob die Funktion *Autorisierungsprozess* aktiv ist.\n\nWenn diese Funktion aktiviert ist, können Benutzeraktionen so konfiguriert werden, dass sie die Autorisierung durch einen zweiten Benutzer erfordern (Vier-Augen-Prinzip).\n\nWeitere Informationen zu dieser Funktion finden Sie unter [JS7 – Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process).",
       "tooltip.orientation": "Bietet die Möglichkeit, die Anzeige von ^Arbeitsabläufen|workflow^ auf vertikale oder horizontale Darstellung umzuschalten.\n\nDie Arbeit mit einem Breitbildschirm in horizontaler *Ausrichtung* bietet Vorteile bei der Gestaltung von Arbeitsabläufen mit einer größeren Anzahl von ^Job^s und anderen Anweisungen.",
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Legt den Abstand zwischen vertikalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Legt den Abstand zwischen horizontalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
       "tooltip.roundEdgesForConnections": "Die Einstellung glättet die Kanten bei der Anzeige von Anweisungen im ^Arbeitsablauf|workflow^, bspw. von ^Job^s.",
-      "tooltip.showVideoContextHelp": "Enable Video Context Help"
+      "tooltip.showVideoContextHelp": "Die Einstellung aktiviert die **Kontext-Hilfe Videos**, die über ein Symbol in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.\n\nKontext-Hilfe Videos bieten meist kurze Erläuterungen, die alternativ per Text der Kontext-Hilfe gelesen werden können."
     },
     "permission": {
       "label.order": "Auftrag",
@@ -3997,7 +3997,7 @@
     "label.hash": "Prüfsumme",
     "label.noResults": "Keine Ergebnisse gefunden. Versuchen Sie es mit anderen Suchbegriffen oder löschen Sie den Filter.",
     "filter.all": "Alle Einstellungen",
-    "filter.changed": "Changed settings",
+    "filter.changed": "Geänderte Einstellungen",
     "filter.critical": "Kritische Einstellungen",
     "filter.frequent": "Häufige Einstellungen",
     "filter.advanced": "Erweiterte Einstellungen",
