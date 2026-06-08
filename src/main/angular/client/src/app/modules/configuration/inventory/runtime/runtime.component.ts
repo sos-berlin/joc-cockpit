@@ -8,6 +8,7 @@ import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 import * as moment from "moment/moment";
 import {NgModel} from "@angular/forms";
 import {DatePipe} from '@angular/common';
+import {TranslateService} from '@ngx-translate/core';
 
 declare const Holidays;
 declare const $;
@@ -1326,7 +1327,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   calendarReleaseStatus: Map<string, boolean> = new Map();
 
   constructor(private coreService: CoreService, public modal: NzModalService,
-              private calendarService: CalendarService, private ref: ChangeDetectorRef) {
+              private calendarService: CalendarService, private ref: ChangeDetectorRef, private translate: TranslateService) {
   }
 
   ngOnChanges(changes): void {
@@ -1392,9 +1393,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       periodStr = periodStr + '-' + period.end;
     }
     if (period.singleStart) {
-      periodStr = 'Single start: ' + period.singleStart;
+      periodStr = this.translate.instant('runtime.label.singleStart') + ': ' + period.singleStart;
     } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.coreService.getTimeInString(period.repeat);
+      periodStr = periodStr + ' ' + this.translate.instant('runtime.label.every').toLowerCase() + ' ' + this.coreService.getTimeInString(period.repeat);
     }
     return periodStr;
   }

@@ -3926,9 +3926,9 @@ private checkParentNode(lastPos, data, item, nodes): any {
       periodStr = periodStr + '-' + this.stringToDate2(period.end);
     }
     if (period.singleStart) {
-      periodStr = (skip ? '' : 'Single start: ') + this.stringToDate2(period.singleStart);
+      periodStr = (skip ? '' : this.translate.instant('runtime.label.singleStart') + ': ') + this.stringToDate2(period.singleStart);
     } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
+      periodStr = periodStr + ' ' + this.translate.instant('runtime.label.every').toLowerCase() + ' ' + this.getTimeInString(period.repeat);
     }
     return periodStr;
   }
@@ -3954,11 +3954,11 @@ private checkParentNode(lastPos, data, item, nodes): any {
   }
   getTimeInString(time: any): string {
     if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
-      return time.toString().substring(6, time.length) + ' seconds';
+      return time.toString().substring(6, time.length) + ' ' + this.translate.instant('inventory.label.seconds').toLowerCase();
     } else if (time.toString().substring(0, 2) === '00') {
-      return time.toString().substring(3, time.length) + ' minutes';
+      return time.toString().substring(3, time.length) + ' ' + this.translate.instant('inventory.label.minutes').toLowerCase();
     } else if ((time.toString().substring(0, 2) != '00' && time.length === 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) === '00'))) {
-      return time.toString().substring(0, 5) + ' hours';
+      return time.toString().substring(0, 5) + ' ' + this.translate.instant('inventory.label.hours').toLowerCase();
     } else {
       return time;
     }

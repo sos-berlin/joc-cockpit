@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {groupBy, isArray, isEmpty, toArray} from 'underscore';
 import * as moment from 'moment';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable()
 export class CalendarService {
@@ -42,7 +43,7 @@ export class CalendarService {
     {label: 'runtime.label.years', value: 'YEARLY'}
   ];
 
-  constructor(private datePipe: DatePipe) {
+  constructor(private datePipe: DatePipe, private translate: TranslateService) {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -117,7 +118,7 @@ export class CalendarService {
       days = day.toString().split(' ');
     }
     if (days.length === 7) {
-      return 'Every day';
+      return this.translate.instant('runtime.label.everyDay');
     }
     let str = '';
     days.forEach((value: number) => {
