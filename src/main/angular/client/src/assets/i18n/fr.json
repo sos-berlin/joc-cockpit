@@ -3013,7 +3013,14 @@
     "tooltip.timeZone": "Indique le ^fuseau horaire|time-zone^ de la sortie du journal.",
     "tooltip.displayTimeZone": "Affiche le ^fuseau horaire|time-zone^ des sorties du journal.\n\nSi l'option 'Utiliser le fuseau horaire pour les horodatages des journaux' est activée dans le profil utilisateur, tous les horodatages sont convertis selon le fuseau horaire du profil utilisateur.\n\nSi cette option n'est pas activée dans le profil utilisateur, les horodatages s'affichent selon le fuseau horaire dans lequel ils ont été enregistrés par le ^Contrôleur|controller^ et les ^Agent^s.",
     "tooltip.prevOccurrence": "Aller au résultat précédent.",
-    "tooltip.nextOccurrence": "Aller au résultat suivant."
+    "tooltip.nextOccurrence": "Aller au résultat suivant.",
+    "tooltip.jumpLevel": "Navigate using remembered direction (default: next).",
+    "tooltip.dateFilter": "Toggle date range filter.",
+    "tooltip.view.dateFrom": "Filter log lines from this date/time (client-side).",
+    "tooltip.view.dateTo": "Filter log lines up to this date/time (client-side).",
+    "tooltip.clearDateFilter": "Clear date range filter.",
+    "tooltip.jumpToStart": "Jump to the beginning of the log.",
+    "tooltip.jumpToEnd": "Jump to the end of the log."
   },
   "login": {
     "label.account": "Compte utilisateur",

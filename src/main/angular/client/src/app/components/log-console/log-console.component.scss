@@ -130,6 +130,17 @@
   &--filters {
     border-top: 1px solid var(--border-color);
     padding: 3px 10px;
+    flex-wrap: wrap;
+    row-gap: 3px;
+    align-items: center;
+  }
+
+  &--date {
+    border-top: 1px dashed var(--border-color);
+    padding: 3px 10px;
+    gap: 6px;
+    align-items: center;
+    background: color-mix(in srgb, var(--primary) 4%, transparent);
   }
 }
 
@@ -154,7 +165,7 @@
 
   // Highlighted match line in filter mode
   &-match {
-    background: rgba(255, 214, 0, 0.10) !important;
+    background: rgba(255, 214, 0, 0.18) !important;
     border-left-width: 3px;
   }
 }
@@ -237,48 +248,132 @@
   color: var(--text-color);
 }
 
-// ─── Event summary inline ─────────────────────────────────────────────────────
-.log-summary-inline {
+// ─── Unified level controls (Row 2) ──────────────────────────────────────────
+.log-level-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
   flex-wrap: wrap;
-  font-size: 11px;
-  padding: 0 8px;
-  border-left: 1px solid var(--border-color);
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.log-summary-item {
+// One group per level: ☑ LEVEL ↑ ↓  N/total
+.log-level-group {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 2px 5px 2px 2px;
+  gap: 2px;
+  padding: 1px 5px 1px 2px;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  color: var(--text-color);
-  line-height: 1;
-  transition: background 80ms;
+  // background: var(--bg-box);
 
-  &:hover { background: rgba(128, 128, 128, .10); }
-  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
-  &--active {
-    outline: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
-    outline-offset: -1px;
+  .log-level-checkbox {
+    margin-right: 1px;
+    // Tighten the nz-checkbox wrapper spacing.
+    .ant-checkbox-wrapper { margin-right: 0; }
   }
 }
 
-.log-summary-count {
-  font-weight: 600;
-  font-size: 12px;
-  min-width: 16px;
-  text-align: left;
-  color: var(--text-color);
-  padding: 0 8px;
-  border-left: 1px solid var(--border-color);
+// The level badge acts as a navigation button — standalone, no .btn base.
+.log-level-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 1px 2px;
+  cursor: pointer;
+  line-height: 1;
+  border-radius: 3px;
+  transition: background 80ms;
+  vertical-align: middle;
+
+  &:hover { background: rgba(128, 128, 128, .10); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+  &--active { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+
+  &-warn:hover,  &-warn.log-level-btn--active  { background: color-mix(in srgb, var(--gold)              10%, transparent); }
+  &-error:hover, &-error.log-level-btn--active { background: color-mix(in srgb, var(--red)               10%, transparent); }
+  &-debug:hover, &-debug.log-level-btn--active { background: color-mix(in srgb, var(--green)             10%, transparent); }
+  &-trace:hover, &-trace.log-level-btn--active { background: color-mix(in srgb, var(--cyan, #17a2b8)    10%, transparent); }
 }
 
+// Small ↑/↓ navigation buttons — standalone, no .btn base.
+.log-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 3px;
+  height: 18px;
+  font-size: 10px;
+  color: var(--text-muted);
+  border-radius: 2px;
+  line-height: 1;
+  transition: background 80ms, color 80ms;
+
+  &:hover { background: rgba(128, 128, 128, .12); color: var(--text-color); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+}
+
+// Occurrence counter: "3/100" or "100".
+.log-occurrence-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 22px;
+  text-align: left;
+  padding-left: 3px;
+}
+
+// ─── Client-side date range filter ───────────────────────────────────────────
+.log-date-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.log-date-filter-icon {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.log-date-sep {
+  color: var(--text-muted);
+  font-size: 11px;
+  user-select: none;
+}
+
+.log-date-input {
+  height: 22px;
+  padding: 0 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--bg-box);
+  color: var(--text-color);
+  font-size: 11px;
+  width: 148px;
+  outline: none;
+  transition: border-color 120ms;
+
+  &:focus { border-color: var(--primary); }
+  &::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+}
+
+// ─── Jump-to-start / end shortcuts ───────────────────────────────────────────
+.log-jump-shortcuts {
+  display: inline-flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+// Status notes (loading / filter-active indicator)
 .log-summary-note {
   color: var(--text-muted);
   font-style: italic;

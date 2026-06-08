@@ -153,6 +153,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   hasWarn  = false;
   hasError = false;
   hasDebug = false;
+  hasTrace = false;
   isLoading = false;
   isDownloading = false;
   isComplete = false;
@@ -195,10 +196,25 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private readonly POLL_INTERVAL_MS = 3000;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   private readonly highlightCache = new Map<string, SafeHtml>();
+  private readonly HIGHLIGHT_CACHE_MAX = 1000;
   private syslogResizeHandler?: () => void;
+  /** Per-level: 0-based index of the last jumped-to occurrence in the DOM list. */
   private readonly levelJumpIndices = new Map<string, number>();
-  /** Currently selected level for shared prev/next navigation. */
-  selectedLevel = '';
+  /** Per-level: last navigation direction. Clicking the badge reuses this (default 'next'). */
+  readonly levelLastDir = new Map<string, 'next' | 'prev'>();
+  /** Per-level counts within the currently visible (filtered) lines — denominator for occurrence labels. */
+  filteredLevelCounts: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
+  /** globalIdx set of lines matching the search term — eliminates per-line re-evaluation in template. */
+  private _matchLineSet = new Set<number>();
+  /** Per-level sorted globalIdx arrays from filteredLines — eliminates querySelectorAll during navigation. */
+  private levelLineMap = new Map<string, number[]>();
+
+  // ── Client-side date range filter ─────────────────────────────────────────
+  /** Bound to the date-picker inputs as ISO strings (YYYY-MM-DDTHH:mm). */
+  dateFilterFromStr = '';
+  dateFilterToStr   = '';
+  /** Controls visibility of the date filter row. */
+  showDateFilter = false;
 
   constructor(
     private coreService: CoreService,
@@ -290,6 +306,35 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.computeFilteredLines();
   }
 
+  onDateFilterChange(): void {
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+  }
+
+  clearDateFilter(): void {
+    this.dateFilterFromStr = '';
+    this.dateFilterToStr   = '';
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+  }
+
+  /**
+   * Toggle the date filter panel.
+   * Opening: shows the date input row.
+   * Closing: hides the row AND clears any active filter so lines are never
+   * silently hidden after the panel is dismissed.
+   */
+  toggleDateFilter(): void {
+    if (this.showDateFilter) {
+      this.showDateFilter = false;
+      if (this.dateFilterFromStr || this.dateFilterToStr) {
+        this.clearDateFilter();
+      }
+    } else {
+      this.showDateFilter = true;
+    }
+  }
+
   onContextLinesChange(): void {
     this.computeContextBlocks();
   }
@@ -308,10 +353,47 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Filtered lines (level + search) — computed into cached fields ──────────
 
   private computeFilteredLines(): void {
-    const term = this._committedSearchTerm;
-    this.filteredLines = this.allLines.filter(l =>
-      this.levelVisible(l.level) && (!term || l.rawLower.includes(term))
-    );
+    const term    = this._committedSearchTerm;
+    // Use the raw datetime-local strings directly — avoids Date→UTC conversion which would
+    // introduce a timezone offset error when the controller tz ≠ the browser's local tz.
+    // Both the user input and log timestamps are treated as controller-timezone strings,
+    // so lexicographic ISO prefix comparison is correct.
+    const fromStr = this.dateFilterFromStr; // e.g. "2026-06-10T10:00"
+    const toStr   = this.dateFilterToStr;   // e.g. "2026-06-10T12:00"
+
+    this.filteredLines = this.allLines.filter(l => {
+      if (!this.levelVisible(l.level)) return false;
+      if (term && !l.rawLower.includes(term)) return false;
+      if ((fromStr || toStr) && l.timestamp) {
+        // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
+        const ts = l.timestamp.replace(',', '.');
+        if (fromStr && ts < fromStr) return false;
+        // '\uffff' suffix ensures the whole last minute/second is included
+        // when the user's toStr has no sub-minute/sub-second precision.
+        if (toStr && ts > toStr + '\uffff') return false;
+      }
+      return true;
+    });
+
+    // ── Rebuild derived lookup structures from filteredLines ──────────────────
+    const lm = new Map<string, number[]>();
+    const fc: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
+    for (const l of this.filteredLines) {
+      const key = l.level.toLowerCase();
+      if (!lm.has(key)) lm.set(key, []);
+      lm.get(key)!.push(l.globalIdx);
+      if (key in fc) fc[key]++;
+    }
+    this.levelLineMap        = lm;
+    this.filteredLevelCounts = fc;
+
+    // ── Rebuild search-match set (eliminates per-line re-eval in template) ────
+    this._matchLineSet.clear();
+    if (term) {
+      for (const l of this.filteredLines) {
+        if (l.rawLower.includes(term)) this._matchLineSet.add(l.globalIdx);
+      }
+    }
   }
 
   private levelVisible(level: ParsedLine['level']): boolean {
@@ -364,34 +446,32 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isMatchLine(line: ParsedLine): boolean {
-    return this._committedSearchTerm.length > 0 && line.rawLower.includes(this._committedSearchTerm);
+    return this._matchLineSet.has(line.globalIdx);
   }
 
   // ── Level stats ─────────────────────────────────────────────────────────────
 
-  private refreshLevelStats(): void {
-    const c: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
-    let hasI = false, hasW = false, hasE = false, hasD = false;
-    for (const l of this.allLines) {
-      switch (l.level) {
-        case 'ERROR': c['error']++; hasE = true; break;
-        case 'WARN':  c['warn']++;  hasW = true; break;
-        case 'INFO':  c['info']++; hasI = true; break;
-        case 'DEBUG': c['debug']++; hasD = true; break;
-        case 'TRACE': c['trace']++; hasD = true; break;
+  /**
+   * Incrementally updates level stats for the newly appended chunk only.
+   * Called with the slice [prevLength, allLines.length) — avoids O(n²) full re-scans.
+   */
+  private updateLevelStats(fromIdx: number): void {
+    const c = this.levelCounts;
+    for (let i = fromIdx; i < this.allLines.length; i++) {
+      switch (this.allLines[i].level) {
+        case 'ERROR': c['error']++; this.hasError = true; break;
+        case 'WARN':  c['warn']++;  this.hasWarn  = true; break;
+        case 'INFO':  c['info']++;  this.hasInfo  = true; break;
+        case 'DEBUG': c['debug']++; this.hasDebug = true; break;
+        case 'TRACE': c['trace']++; this.hasTrace = true; break;
         default:      c['other']++; break;
       }
     }
-    this.levelCounts = c;
-    this.hasInfo  = hasI;
-    this.hasWarn  = hasW;
-    this.hasError = hasE;
-    this.hasDebug = hasD;
-    // Auto-select default level and active line from the first log line (only once).
-    if (this.allLines.length > 0 && (!this.selectedLevel || this.activeLineIdx === null)) {
-      const firstLvl = this.allLines[0].level.toLowerCase();
-      if (!this.selectedLevel && firstLvl !== 'other') this.selectedLevel = firstLvl;
-      if (this.activeLineIdx === null) this.activeLineIdx = 0;
+    // Trigger change detection by reassigning the object reference.
+    this.levelCounts = { ...c };
+    // Auto-default active line on first data arrival.
+    if (this.activeLineIdx === null && this.allLines.length > 0) {
+      this.activeLineIdx = 0;
     }
   }
 
@@ -411,6 +491,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       result = this.sanitizer.bypassSecurityTrustHtml(
         escaped.replace(new RegExp(safeRe, 'gi'), '<mark class="log-search-match">$&</mark>')
       );
+    }
+    // Evict oldest entry when cache exceeds limit to bound memory usage.
+    if (this.highlightCache.size >= this.HIGHLIGHT_CACHE_MAX) {
+      this.highlightCache.delete(this.highlightCache.keys().next().value!);
     }
     this.highlightCache.set(text, result);
     return result;
@@ -485,94 +569,102 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Navigation ─────────────────────────────────────────────────────────────
 
   /**
-   * Jump to the next or previous occurrence of `level`.
-   *
-   * State is kept in `levelJumpIndices` (0-based index of the *last jumped-to*
-   * occurrence). Using `offsetTop` (not `getBoundingClientRect`) for the
-   * initial sync means the calculation is immune to in-progress smooth-scroll
-   * animations — successive rapid clicks always advance the counter correctly.
-   *
-   * First click (no stored index yet): picks the occurrence closest to the
-   * current scroll position so the user starts from where they are looking.
-   * Subsequent clicks: simply increment/decrement the stored counter with wrap.
+   * Navigate within `level` using the given direction (or remembered direction if omitted).
+   * Auto-enables the level filter if hidden, then defers DOM work one render cycle.
    */
-  /** Select a level for shared prev/next navigation. Resets jump state for a fresh start. */
-  selectLevel(level: string): void {
-    if (this.selectedLevel === level) return;
-    this.selectedLevel = level;
-    this.levelJumpIndices.clear();
+  jumpToLevel(level: string, direction?: 'next' | 'prev'): void {
+    const dir: 'next' | 'prev' = direction ?? (this.levelLastDir.get(level) ?? 'next');
+
+    if (!this.levelVisible(level.toUpperCase() as ParsedLine['level'])) {
+      // Re-enable the filter first — Angular needs one render cycle before we can query the DOM.
+      (this.filters as any)[level] = true;
+      this.computeFilteredLines();
+      setTimeout(() => this._doJump(level, dir), 0);
+      return;
+    }
+
+    this._doJump(level, dir);
   }
 
-  jumpToLevel(level: string, direction: 'next' | 'prev' = 'next'): void {
+  /** Performs the actual scroll + state update. Split out so it can be deferred after re-render. */
+  private _doJump(level: string, dir: 'next' | 'prev'): void {
     const el = this.logBodyRef?.nativeElement;
     if (!el) return;
-    const targets = Array.from(el.querySelectorAll<HTMLElement>(`.log-line-${level}`));
-    if (targets.length === 0) return;
 
-    // Pre-read each target's globalIdx once (avoids repeated getAttribute calls).
-    const targetGlobalIdxs = targets.map(t => {
-      const v = t.getAttribute('data-lineidx');
-      return v !== null ? Number(v) : -1;
-    });
+    // Use the pre-built index (no querySelectorAll full scan) — O(log n) binary search.
+    const lineIdxs = this.levelLineMap.get(level);
+    if (!lineIdxs || lineIdxs.length === 0) return;
 
-    let idx: number;
+    let arrIdx: number;
 
     if (this.activeLineIdx !== null) {
-      // ── Primary path: navigate relative to the currently highlighted line.
-      // Works cross-level: jumping from an ERROR line to the next WARN line, etc.
+      // Primary path: navigate relative to the currently highlighted line.
       const anchor = this.activeLineIdx;
-      if (direction === 'next') {
-        // First target whose globalIdx is strictly after the active line.
-        const found = targetGlobalIdxs.findIndex(gi => gi > anchor);
-        idx = found !== -1 ? found : 0; // wrap to first when past the end
+      if (dir === 'next') {
+        const found = lineIdxs.findIndex(gi => gi > anchor);
+        arrIdx = found !== -1 ? found : 0;
       } else {
-        // Last target whose globalIdx is strictly before the active line.
         let found = -1;
-        for (let i = targetGlobalIdxs.length - 1; i >= 0; i--) {
-          if (targetGlobalIdxs[i] < anchor) { found = i; break; }
+        for (let i = lineIdxs.length - 1; i >= 0; i--) {
+          if (lineIdxs[i] < anchor) { found = i; break; }
         }
-        idx = found !== -1 ? found : targets.length - 1; // wrap to last
+        arrIdx = found !== -1 ? found : lineIdxs.length - 1;
       }
     } else {
-      // ── Fallback path: no line is active yet.
-      // First call: anchor to the nearest occurrence at the current scroll position.
-      // Subsequent calls (levelJumpIndices already set): advance the counter.
       const storedIdx = this.levelJumpIndices.get(level);
-      if (storedIdx === undefined) {
+      if (storedIdx !== undefined) {
+        // Subsequent navigation without an active line — step forward/back.
+        arrIdx = dir === 'next'
+          ? (storedIdx + 1) % lineIdxs.length
+          : (storedIdx - 1 + lineIdxs.length) % lineIdxs.length;
+      } else {
+        // First-ever navigation — anchor to viewport midpoint (DOM read once only).
+        const domTargets = Array.from(el.querySelectorAll<HTMLElement>(`.log-line-${level}`));
         const scrollMid = el.scrollTop + el.clientHeight / 2;
-        if (direction === 'next') {
-          const found = targets.findIndex(t => t.offsetTop >= scrollMid);
-          idx = found !== -1 ? found : 0;
+        if (dir === 'next') {
+          const found = domTargets.findIndex(t => t.offsetTop >= scrollMid);
+          arrIdx = found !== -1 ? found : 0;
         } else {
           let found = -1;
-          for (let i = targets.length - 1; i >= 0; i--) {
-            if (targets[i].offsetTop <= scrollMid) { found = i; break; }
+          for (let i = domTargets.length - 1; i >= 0; i--) {
+            if (domTargets[i].offsetTop <= scrollMid) { found = i; break; }
           }
-          idx = found !== -1 ? found : targets.length - 1;
+          arrIdx = found !== -1 ? found : domTargets.length - 1;
         }
-      } else {
-        idx = direction === 'next'
-          ? (storedIdx + 1) % targets.length
-          : (storedIdx - 1 + targets.length) % targets.length;
       }
     }
 
-    targets[idx].scrollIntoView({ block: 'center', behavior: 'smooth' });
-    // Reset occurrence counters for all OTHER levels so their labels show totals only.
+    // Targeted attribute selector — no full DOM traversal.
+    const targetGlobalIdx = lineIdxs[arrIdx];
+    const targetEl = el.querySelector<HTMLElement>(`[data-lineidx="${targetGlobalIdx}"]`);
+    targetEl?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+    // Reset other levels' counters so their indicators revert to totals.
     for (const k of Array.from(this.levelJumpIndices.keys())) {
       if (k !== level) this.levelJumpIndices.delete(k);
     }
-    this.levelJumpIndices.set(level, idx);
-    // Update activeLineIdx so the next jump (any level) starts from here.
-    if (targetGlobalIdxs[idx] !== -1) this.activeLineIdx = targetGlobalIdxs[idx];
+    this.levelJumpIndices.set(level, arrIdx);
+    this.levelLastDir.set(level, dir);
+    this.activeLineIdx = targetGlobalIdx;
   }
 
-  /** Returns `"N/total"` when navigation has started for `level`, otherwise `"total"`. */
+  /** Returns `"N/total"` when navigation has started for `level`, otherwise `"total"`.
+   *  Denominator uses filteredLevelCounts so it reflects only currently visible lines. */
   levelOccurrenceLabel(level: string): string {
-    const total = this.levelCounts[level] ?? 0;
+    const total = this.filteredLevelCounts[level] ?? 0;
     const idx = this.levelJumpIndices.get(level);
     if (idx === undefined) return String(total);
     return `${idx + 1}/${total}`;
+  }
+
+  scrollToTop(): void {
+    const el = this.logBodyRef?.nativeElement;
+    if (el) el.scrollTop = 0;
+  }
+
+  scrollToBottom(): void {
+    const el = this.logBodyRef?.nativeElement;
+    if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
   }
 
   toggleFollowTail(): void {
@@ -677,11 +769,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   reload(): void {
     this.clearPollTimer();
     this.allLines = [];
+    this.filteredLines = [];
+    this.contextBlocks = [];
+    this.levelCounts         = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
+    this.filteredLevelCounts = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
+    this.hasInfo = this.hasWarn = this.hasError = this.hasDebug = this.hasTrace = false;
     this.token = null;
     this.isComplete = false;
     this.activeLineIdx = null;
     this.levelJumpIndices.clear();
-    this.selectedLevel = '';
+    this.levelLastDir.clear();
+    this.levelLineMap.clear();
+    this._matchLineSet.clear();
     this.fetchLog();
   }
 
@@ -705,11 +804,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private scrollToBottom(): void {
-    const el = this.logBodyRef?.nativeElement;
-    if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
-  }
-
   private processLines(lines: string[]): void {
     const CHUNK_SIZE = 500;
     let offset = 0;
@@ -717,6 +811,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const processChunk = () => {
       if (this.destroyed) return;
       const end = Math.min(offset + CHUNK_SIZE, lines.length);
+      const prevLength = this.allLines.length;
       for (let i = offset; i < end; i++) {
         const raw = lines[i];
         const cleaned = raw.replace(/\r?\n$/, '');
@@ -733,11 +828,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       offset = end;
-      this.refreshLevelStats();
+      // Incremental stats: only scan the newly appended lines.
+      this.updateLevelStats(prevLength);
       this.computeFilteredLines();
       this.computeContextBlocks();
-      if (this.followTail) this.scrollToBottom();
-      if (offset < lines.length) {
+      const isLastChunk = offset >= lines.length;
+      // Only scroll once — on the final chunk — to avoid repeated layout reflows.
+      if (this.followTail && isLastChunk) this.scrollToBottom();
+      if (!isLastChunk) {
         setTimeout(processChunk, 0);
       }
     };

@@ -37,6 +37,14 @@
       <!-- Search + mode controls -->
       <div class="log-search-area">
 
+        <!-- Date filter toggle — leftmost, before predefined and search -->
+        <button class="btn btn-xs btn-default"
+                [class.btn-primary]="showDateFilter || dateFilterFromStr || dateFilterToStr"
+                (click)="toggleDateFilter()"
+                [appRichTooltip]="'logConsole.tooltip.dateFilter' | translate">
+          <i nz-icon nzType="calendar" nzTheme="outline"></i>
+        </button>
+
         <!-- Predefined quick-search dropdown -->
         <button class="btn btn-xs btn-default"
                 nz-dropdown
@@ -131,113 +139,180 @@
 
     </div>
 
-    <!-- Row 2: level filters · event summary -->
+    <!-- Row 2: unified level controls + status + shortcuts -->
     <div class="log-toolbar-row log-toolbar-row--filters">
 
-      <!-- Level filter checkboxes -->
-      <div class="log-console-filters">
+      <!-- Per-level unified controls: ☑ LEVEL ↑ ↓  N/total -->
+      <div class="log-level-controls">
+
         @if (hasInfo) {
-          <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()">
-            <span class="log-badge log-badge-info" translate>log.label.info</span>
-          </label>
+          <div class="log-level-group">
+            <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+            <button class="log-level-btn log-level-btn-info"
+                    [class.log-level-btn--active]="levelLastDir.get('info') !== undefined"
+                    (click)="jumpToLevel('info')"
+                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+              <span class="log-badge log-badge-info" translate>log.label.info</span>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('info', 'prev')"
+                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('info', 'next')"
+                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count">{{ levelOccurrenceLabel('info') }}</span>
+          </div>
         }
+
         @if (hasWarn) {
-          <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()">
-            <span class="log-badge log-badge-warn" translate>log.label.warn</span>
-          </label>
+          <div class="log-level-group">
+            <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+            <button class="log-level-btn log-level-btn-warn"
+                    [class.log-level-btn--active]="levelLastDir.get('warn') !== undefined"
+                    (click)="jumpToLevel('warn')"
+                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+              <span class="log-badge log-badge-warn" translate>log.label.warn</span>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('warn', 'prev')"
+                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('warn', 'next')"
+                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count">{{ levelOccurrenceLabel('warn') }}</span>
+          </div>
         }
+
         @if (hasError) {
-          <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()">
-            <span class="log-badge log-badge-error" translate>log.label.error</span>
-          </label>
+          <div class="log-level-group">
+            <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+            <button class="log-level-btn log-level-btn-error"
+                    [class.log-level-btn--active]="levelLastDir.get('error') !== undefined"
+                    (click)="jumpToLevel('error')"
+                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+              <span class="log-badge log-badge-error" translate>log.label.error</span>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('error', 'prev')"
+                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('error', 'next')"
+                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count">{{ levelOccurrenceLabel('error') }}</span>
+          </div>
         }
+
         @if (hasDebug) {
-          <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()">
-            <span class="log-badge log-badge-debug" translate>log.label.debug</span>
-          </label>
-          <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()">
-            <span class="log-badge log-badge-trace" translate>log.label.trace</span>
-          </label>
+          <div class="log-level-group">
+            <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+            <button class="log-level-btn log-level-btn-debug"
+                    [class.log-level-btn--active]="levelLastDir.get('debug') !== undefined"
+                    (click)="jumpToLevel('debug')"
+                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+              <span class="log-badge log-badge-debug" translate>log.label.debug</span>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('debug', 'prev')"
+                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('debug', 'next')"
+                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count">{{ levelOccurrenceLabel('debug') }}</span>
+          </div>
         }
+
+        @if (hasTrace) {
+          <div class="log-level-group">
+            <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+            <button class="log-level-btn log-level-btn-trace"
+                    [class.log-level-btn--active]="levelLastDir.get('trace') !== undefined"
+                    (click)="jumpToLevel('trace')"
+                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+              <span class="log-badge log-badge-trace" translate>log.label.trace</span>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('trace', 'prev')"
+                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToLevel('trace', 'next')"
+                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count">{{ levelOccurrenceLabel('trace') }}</span>
+          </div>
+        }
+
       </div>
 
-      <!-- Event summary counts -->
+      <!-- Status notes -->
       @if (allLines.length > 0) {
-        <div class="log-summary-inline">
-
-          <!-- Shared prev button -->
-          <button class="btn btn-xs btn-default" [disabled]="!selectedLevel"
-                  (click)="jumpToLevel(selectedLevel, 'prev')"
-                  [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
-            <i nz-icon nzType="up" nzTheme="outline"></i>
-          </button>
-
-          <!-- Level badges — click to select active level -->
-          @if (levelCounts['info'] > 0) {
-            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'info'"
-                  (click)="selectLevel('info')">
-              <span class="log-badge log-badge-info" translate>log.label.info</span>
-              <span class="log-summary-count">{{ levelOccurrenceLabel('info') }}</span>
+        @if (isLoading) {
+          <span class="log-summary-note"><span translate>common.label.loading</span></span>
+        }
+        @if (filterMode && searchTerm) {
+          <span class="log-summary-note">
+            <span class="log-summary-filter-active">
+              <i nz-icon nzType="filter" nzTheme="outline"></i>
+              {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
             </span>
-          }
-          @if (levelCounts['warn'] > 0) {
-            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'warn'"
-                  (click)="selectLevel('warn')">
-              <span class="log-badge log-badge-warn" translate>log.label.warn</span>
-              <span class="log-summary-count">{{ levelOccurrenceLabel('warn') }}</span>
-            </span>
-          }
-          @if (levelCounts['error'] > 0) {
-            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'error'"
-                  (click)="selectLevel('error')">
-              <span class="log-badge log-badge-error" translate>log.label.error</span>
-              <span class="log-summary-count">{{ levelOccurrenceLabel('error') }}</span>
-            </span>
-          }
-          @if (levelCounts['debug'] > 0) {
-            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'debug'"
-                  (click)="selectLevel('debug')">
-              <span class="log-badge log-badge-debug" translate>log.label.debug</span>
-              <span class="log-summary-count">{{ levelOccurrenceLabel('debug') }}</span>
-            </span>
-          }
-          @if (levelCounts['trace'] > 0) {
-            <span class="log-summary-item" [class.log-summary-item--active]="selectedLevel === 'trace'"
-                  (click)="selectLevel('trace')">
-              <span class="log-badge log-badge-trace" translate>log.label.trace</span>
-              <span class="log-summary-count">{{ levelOccurrenceLabel('trace') }}</span>
-            </span>
-          }
-
-          <!-- Shared next button -->
-          <button class="btn btn-xs btn-default" [disabled]="!selectedLevel"
-                  (click)="jumpToLevel(selectedLevel, 'next')"
-                  [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
-            <i nz-icon nzType="down" nzTheme="outline"></i>
-          </button>
-
-        </div>
-          @if (isLoading) {
-            <div class="log-summary-note">
-              <span translate>common.label.loading</span>
-            </div>
-          }
-        
-          @if (filterMode && searchTerm) {
-            <div class="log-summary-note">
-              <span class="log-summary-filter-active">
-                <i nz-icon nzType="filter" nzTheme="outline"></i>
-                {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
-              </span>
-            </div>
-          }
-        <div class="log-line-count">
-          <span>
-            {{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ allLines.length }}
           </span>
+        }
+      }
+
+      <!-- Jump to start / end + line counter (right side) -->
+      <div class="log-jump-shortcuts">
+        <button class="btn btn-xs btn-default"
+                (click)="scrollToTop()"
+                [appRichTooltip]="'logConsole.tooltip.jumpToStart' | translate">
+          <i nz-icon nzType="vertical-align-top" nzTheme="outline"></i>
+        </button>
+        <button class="btn btn-xs btn-default"
+                (click)="scrollToBottom()"
+                [appRichTooltip]="'logConsole.tooltip.jumpToEnd' | translate">
+          <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
+        </button>
+      </div>
+
+      @if (allLines.length > 0) {
+        <div class="log-line-count">
+          <span>{{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ allLines.length }}</span>
         </div>
       }
+
     </div>
+
+    <!-- Row 3: date range filter (shown only when toggled) -->
+    @if (showDateFilter) {
+      <div class="log-toolbar-row log-toolbar-row--date">
+        <i nz-icon nzType="calendar" nzTheme="outline" class="log-date-filter-icon"></i>
+        <input class="log-date-input"
+               type="datetime-local"
+               [(ngModel)]="dateFilterFromStr"
+               (ngModelChange)="onDateFilterChange()"
+               [appRichTooltip]="'logConsole.tooltip.view.dateFrom' | translate">
+        <span class="log-date-sep">–</span>
+        <input class="log-date-input"
+               type="datetime-local"
+               [(ngModel)]="dateFilterToStr"
+               (ngModelChange)="onDateFilterChange()"
+               [appRichTooltip]="'logConsole.tooltip.view.dateTo' | translate">
+        @if (dateFilterFromStr || dateFilterToStr) {
+          <button class="btn btn-xs btn-default"
+                  (click)="clearDateFilter()"
+                  [appRichTooltip]="'logConsole.tooltip.clearDateFilter' | translate">
+            <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+          </button>
+        }
+      </div>
+    }
 
   </div>
 

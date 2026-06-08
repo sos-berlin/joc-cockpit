@@ -3013,7 +3013,14 @@
     "tooltip.timeZone": "Gibt die ^Zeitzone|time-zone^ der Protokollausgaben an.",
     "tooltip.displayTimeZone": "Zeigt die ^Zeitzone|time-zone^ der Protokollausgaben an.\n\nWenn im Benutzerprofil die Einstellung 'Zeitzone für Zeitstempel der Protokolle verwenden' aktiv ist, dann werden alle Zeitstempel in die Zeitzone des Benutzerprofiles konvertiert.\n\nIst die Einstellung im Benutzerprofil nicht aktiv, dann werden Zeitstempel in der Zeitzone angezeigt, in der sie von ^Controller^ und ^Agent^en geschrieben wurden.",
     "tooltip.prevOccurrence": "Zum vorherigen Treffer springen.",
-    "tooltip.nextOccurrence": "Zum nächsten Treffer springen."
+    "tooltip.nextOccurrence": "Zum nächsten Treffer springen.",
+    "tooltip.jumpLevel": "Navigate using remembered direction (default: next).",
+    "tooltip.dateFilter": "Toggle date range filter.",
+    "tooltip.view.dateFrom": "Filter log lines from this date/time (client-side).",
+    "tooltip.view.dateTo": "Filter log lines up to this date/time (client-side).",
+    "tooltip.clearDateFilter": "Clear date range filter.",
+    "tooltip.jumpToStart": "Jump to the beginning of the log.",
+    "tooltip.jumpToEnd": "Jump to the end of the log."
   },
   "login": {
     "label.account": "Benutzerkonto",

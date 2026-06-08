@@ -3013,7 +3013,14 @@
     "tooltip.timeZone": "Time zone",
     "tooltip.displayTimeZone": "Display time zone",
     "tooltip.prevOccurrence": "Previous occurrence",
-    "tooltip.nextOccurrence": "Next occurrence"
+    "tooltip.nextOccurrence": "Next occurrence",
+    "tooltip.jumpLevel": "Navigate using remembered direction (default: next).",
+    "tooltip.dateFilter": "Toggle date range filter.",
+    "tooltip.view.dateFrom": "Filter log lines from this date/time (client-side).",
+    "tooltip.view.dateTo": "Filter log lines up to this date/time (client-side).",
+    "tooltip.clearDateFilter": "Clear date range filter.",
+    "tooltip.jumpToStart": "Jump to the beginning of the log.",
+    "tooltip.jumpToEnd": "Jump to the end of the log."
   },
   "login": {
     "label.account": "Имя пользователя",
