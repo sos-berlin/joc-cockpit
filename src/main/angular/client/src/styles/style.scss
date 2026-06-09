@@ -5950,6 +5950,16 @@ tr.disabled-row td:not(.menu):not(.chk) {
    Works inside help viewer, rich tooltips, and any other
    container that uses appGlossaryHost.
 ────────────────────────────────────────────────────────── */
+/* When showGlossary preference is disabled, glossary terms render as plain text. */
+.glossary-terms-hidden .glossary-term {
+  color: inherit !important;
+  cursor: text !important;
+  border-bottom: none !important;
+  pointer-events: none !important;
+  background: none !important;
+  outline: none !important;
+}
+
 .glossary-term {
   display: inline-flex;
   align-items: baseline;
@@ -11161,4 +11171,12 @@ li.nav-item.tab-active .tab-help-icon:hover {
   max-width: 28px;
   opacity: 0.7;
   margin-right: 4px !important;
+}
+
+// Log viewer window — global because nz-modal overlay is rendered outside the component tree.
+.log-viewer-window {
+  pointer-events: auto;
+  .ant-modal { max-width: 92vw !important; top: 40px; }
+  .ant-modal-content { resize: both; overflow: auto; min-width: 480px; min-height: 320px; max-width: 98vw; max-height: 96vh; }
+  .ant-modal-body { padding: 0; overflow: hidden; }
 }

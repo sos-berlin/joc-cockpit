@@ -15,20 +15,6 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  &-filters {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-right: 8px;
-
-    .ant-checkbox-wrapper {
-      color: var(--text-color);
-      font-size: 12px;
-      margin-right: 0;
-    }
-  }
-
   &-actions {
     display: flex;
     align-items: center;
@@ -101,12 +87,12 @@
   line-height: 16px;
   white-space: nowrap;
 
-  &-info  { color: var(--primary);              border: 1px solid var(--primary);              background: transparent; opacity: .9; }
-  &-warn  { color: var(--gold);                  border: 1px solid var(--gold);                  background: transparent; opacity: .9; }
-  &-error { color: var(--red);                   border: 1px solid var(--red);                   background: transparent; opacity: .9; }
-  &-debug { color: var(--green);                 border: 1px solid var(--green);                 background: transparent; opacity: .9; }
-  &-trace { color: var(--cyan, #17a2b8);         border: 1px solid var(--cyan, #17a2b8);         background: transparent; opacity: .85; }
-  &-other { color: var(--text-muted);            border: 1px solid var(--text-muted);            background: transparent; opacity: .8; }
+  &-info  { color: var(--blue);       border: 1px solid var(--blue);       background: transparent; opacity: .9;  }
+  &-warn  { color: var(--orange);     border: 1px solid var(--orange);     background: transparent; opacity: .9;  }
+  &-error { color: var(--red);        border: 1px solid var(--red);        background: transparent; opacity: .9;  }
+  &-debug { color: var(--mangenta);   border: 1px solid var(--mangenta);   background: transparent; opacity: .9;  }
+  &-trace { color: var(--dimgrey);    border: 1px solid var(--dimgrey);    background: transparent; opacity: .85; }
+  &-other { color: var(--text-muted); border: 1px solid var(--text-muted); background: transparent; opacity: .8;  }
 }
 
 .log-line-count {
@@ -134,14 +120,6 @@
     row-gap: 3px;
     align-items: center;
   }
-
-  &--date {
-    border-top: 1px dashed var(--border-color);
-    padding: 3px 10px;
-    gap: 6px;
-    align-items: center;
-    background: color-mix(in srgb, var(--primary) 4%, transparent);
-  }
 }
 
 // ─── Log line ─────────────────────────────────────────────────────────────
@@ -157,16 +135,20 @@
     background: color-mix(in srgb, var(--primary) 5%, transparent);
   }
 
-  &--active,
-  &.log-line--active {
+  &--active {
     background: color-mix(in srgb, var(--primary) 12%, transparent) !important;
     border-left-color: var(--primary) !important;
   }
 
-  // Highlighted match line in filter mode
+  // Highlighted match line — line contains a search hit
   &-match {
-    background: rgba(255, 214, 0, 0.18) !important;
+    background: rgba(255, 175, 30, 0.22) !important;
     border-left-width: 3px;
+
+    // Intersection: active wins on background when a match is also selected
+    &.log-line--active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent) !important;
+    }
   }
 }
 
@@ -204,12 +186,12 @@
   border-radius: 2px;
   line-height: 18px;
 
-  &-info  { color: var(--primary);          background: transparent; border: 1px solid var(--primary);          opacity: .85; }
-  &-warn  { color: var(--gold);              background: transparent; border: 1px solid var(--gold);              opacity: .85; }
-  &-error { color: var(--red);              background: transparent; border: 1px solid var(--red);              opacity: .9;  }
-  &-debug { color: var(--green);            background: transparent; border: 1px solid var(--green);            opacity: .85; }
-  &-trace { color: var(--cyan, #17a2b8);    background: transparent; border: 1px solid var(--cyan, #17a2b8);    opacity: .8;  }
-  &-other { color: var(--text-muted);       background: transparent; }
+  &-info  { color: var(--blue);     background: transparent; border: 1px solid var(--blue);     opacity: .85; }
+  &-warn  { color: var(--orange);   background: transparent; border: 1px solid var(--orange);   opacity: .85; }
+  &-error { color: var(--red);      background: transparent; border: 1px solid var(--red);      opacity: .9;  }
+  &-debug { color: var(--mangenta); background: transparent; border: 1px solid var(--mangenta); opacity: .85; }
+  &-trace { color: var(--dimgrey);  background: transparent; border: 1px solid var(--dimgrey);  opacity: .8;  }
+  &-other { color: var(--text-muted); background: transparent; }
 }
 
 .log-text {
@@ -220,8 +202,10 @@
 }
 
 // Level-specific row background tints
-.log-line-error { background: rgba(220, 53, 69, 0.05); }
-.log-line-warn  { background: rgba(255, 160,  0, 0.05); }
+.log-line-error { background: rgba(220,  53,  69, 0.05); }
+.log-line-warn  { background: rgba(255, 128,   0, 0.05); }
+.log-line-info  { background: rgba( 17, 113, 166, 0.04); }
+.log-line-debug { background: rgba(165,   0, 165, 0.04); }
 
 // ─── Log source inline heading ──────────────────────────────────────────────
 .log-source-inline {
@@ -246,260 +230,6 @@
 
 .log-source-value {
   color: var(--text-color);
-}
-
-// ─── Unified level controls (Row 2) ──────────────────────────────────────────
-.log-level-controls {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-// One group per level: ☑ LEVEL ↑ ↓  N/total
-.log-level-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 1px 5px 1px 2px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  // background: var(--bg-box);
-
-  .log-level-checkbox {
-    margin-right: 1px;
-    // Tighten the nz-checkbox wrapper spacing.
-    .ant-checkbox-wrapper { margin-right: 0; }
-  }
-}
-
-// The level badge acts as a navigation button — standalone, no .btn base.
-.log-level-btn {
-  display: inline-flex;
-  align-items: center;
-  background: none;
-  border: none;
-  padding: 1px 2px;
-  cursor: pointer;
-  line-height: 1;
-  border-radius: 3px;
-  transition: background 80ms;
-  vertical-align: middle;
-
-  &:hover { background: rgba(128, 128, 128, .10); }
-  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
-
-  &--active { background: color-mix(in srgb, var(--primary) 10%, transparent); }
-
-  &-warn:hover,  &-warn.log-level-btn--active  { background: color-mix(in srgb, var(--gold)              10%, transparent); }
-  &-error:hover, &-error.log-level-btn--active { background: color-mix(in srgb, var(--red)               10%, transparent); }
-  &-debug:hover, &-debug.log-level-btn--active { background: color-mix(in srgb, var(--green)             10%, transparent); }
-  &-trace:hover, &-trace.log-level-btn--active { background: color-mix(in srgb, var(--cyan, #17a2b8)    10%, transparent); }
-}
-
-// Small ↑/↓ navigation buttons — standalone, no .btn base.
-.log-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 1px 3px;
-  height: 18px;
-  font-size: 10px;
-  color: var(--text-muted);
-  border-radius: 2px;
-  line-height: 1;
-  transition: background 80ms, color 80ms;
-
-  &:hover { background: rgba(128, 128, 128, .12); color: var(--text-color); }
-  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
-}
-
-// Occurrence counter: "3/100" or "100".
-.log-occurrence-count {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  min-width: 22px;
-  text-align: left;
-  padding-left: 3px;
-}
-
-// ─── Client-side date range filter ───────────────────────────────────────────
-.log-date-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 8px;
-  border-left: 1px solid var(--border-color);
-  flex-shrink: 0;
-}
-
-.log-date-filter-icon {
-  font-size: 11px;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.log-date-sep {
-  color: var(--text-muted);
-  font-size: 11px;
-  user-select: none;
-}
-
-.log-date-input {
-  height: 22px;
-  padding: 0 4px;
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  background: var(--bg-box);
-  color: var(--text-color);
-  font-size: 11px;
-  width: 148px;
-  outline: none;
-  transition: border-color 120ms;
-
-  &:focus { border-color: var(--primary); }
-  &::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
-}
-
-// ─── Jump-to-start / end shortcuts ───────────────────────────────────────────
-.log-jump-shortcuts {
-  display: inline-flex;
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-// Status notes (loading / filter-active indicator)
-.log-summary-note {
-  color: var(--text-muted);
-  font-style: italic;
-  font-size: 11px;
-  padding: 0 8px;
-  border-left: 1px solid var(--border-color);
-}
-
-.log-summary-filter-active {
-  color: var(--primary);
-  font-style: normal;
-}
-
-// ─── Search area ─────────────────────────────────────────────────────────────
-.log-search-area {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-  justify-content: center;
-}
-
-// ─── Keyword search ─────────────────────────────────────────────────────────
-.log-search-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-
-  .log-search-icon {
-    position: absolute;
-    left: 8px;
-    color: var(--text-muted);
-    font-size: 11px;
-    pointer-events: none;
-  }
-
-  .log-search-input {
-    height: 24px;
-    padding: 0 24px 0 26px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-box);
-    color: var(--text-color);
-    font-size: 11px;
-    width: 180px;
-    outline: none;
-    transition: border-color 150ms, width 150ms;
-
-    &:focus {
-      border-color: var(--primary);
-      width: 260px;
-    }
-
-    &::placeholder { color: var(--text-muted); }
-  }
-
-  .log-search-clear {
-    position: absolute;
-    right: 7px;
-    z-index: 1;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    color: var(--text-muted);
-    font-size: 12px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-
-    &:hover { color: var(--text-color); }
-  }
-}
-
-// ─── Search mode toggle buttons ───────────────────────────────────────────────
-.log-mode-toggle {
-  display: inline-flex;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.log-mode-btn {
-  background: none;
-  border: none;
-  padding: 2px 7px;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 13px;
-  line-height: 1.6;
-  transition: background 100ms, color 100ms;
-
-  &:hover { background: rgba(128, 128, 128, .10); color: var(--text-color); }
-
-  &.active {
-    background: var(--primary, #0e8a8b);
-    color: #fff;
-  }
-}
-
-// ─── Context line count input ──────────────────────────────────────────────────
-.log-context-select {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.log-context-label {
-  white-space: nowrap;
-}
-
-.log-context-lines-input {
-  width: 65px;
-}
-
-// ─── Empty / no-matches state icons ───────────────────────────────────────────
-.log-state-icon {
-  font-size: 26px;
-  color: var(--text-muted);
-
-  &--sm {
-    font-size: 20px;
-  }
 }
 
 // ─── Context blocks (filter mode) ─────────────────────────────────────────────
@@ -533,11 +263,6 @@
   flex: 1;
 }
 
-.log-context-match-count {
-  color: var(--primary);
-  font-weight: 600;
-}
-
 // ─── Order ID copy feedback ───────────────────────────────────────────────────
 .log-copy-feedback {
   display: inline-flex;
@@ -557,39 +282,19 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ─── Log viewer window (non-modal, draggable, resizable) ──────────────────────
-.log-viewer-window {
-  // Allow multiple windows to overlay without a dark mask
-  pointer-events: auto;
-
-  .ant-modal {
-    // Start with a generous default size
-    max-width: 92vw !important;
-    top: 40px;
-  }
-
-  .ant-modal-content {
-    // Make the modal dialog itself resizable
-    resize: both;
-    overflow: auto;
-    min-width: 480px;
-    min-height: 320px;
-    max-width: 98vw;
-    max-height: 96vh;
-  }
-
-  .ant-modal-body {
-    padding: 0;
-    overflow: hidden;
-  }
-}
-
 // ─── Search match highlight ────────────────────────────────────────────────────
 mark.log-search-match {
-  background: rgba(255, 214, 0, 0.45);
-  color: inherit;
+  background: var(--light-orange);   // #FFA640 — high-visibility amber, distinct from line match
+  color: rgba(0, 0, 0, 0.87);
   border-radius: 2px;
-  padding: 0 1px;
+  padding: 0 2px;
   font-style: normal;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+// Keep mark legible when the matched line is also the active selection
+.log-line--active mark.log-search-match {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
 }
 

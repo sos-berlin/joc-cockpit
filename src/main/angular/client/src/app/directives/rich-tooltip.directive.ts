@@ -220,10 +220,10 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     setTimeout(() => { if (!this.insidePanel) this.closeWithAnimation(); }, 80);
   }
 
-  // ── Click (toggle) ─────────────────────────────────────
+  // ── Click (toggle) — always works regardless of tooltipDisabled ────────────
   @HostListener('click')
   onClick(): void {
-    if (!this.content || this.tooltipDisabled) return;
+    if (!this.content) return;
     if (this.hoverTimer) { clearTimeout(this.hoverTimer); this.hoverTimer = null; }
     this.overlayRef ? this.closeWithAnimation() : this.open();
   }
@@ -233,7 +233,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   onFocus(): void {
     // Only open on keyboard-triggered focus (Tab navigation), not on
     // programmatic focus (dialog init) or mouse-click focus.
-    if (!this.content || !_keyboardFocusMode) return;
+    if (!this.content || this.tooltipDisabled || !_keyboardFocusMode) return;
     this.open();
   }
 
@@ -245,7 +245,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   @HostListener('keydown.enter', ['$event'])
   @HostListener('keydown.space', ['$event'])
   onKeyActivate(e: KeyboardEvent): void {
-    if (!this.content) return;
+    if (!this.content || this.tooltipDisabled) return;
     e.preventDefault();
     this.overlayRef ? this.closeWithAnimation() : this.open();
   }

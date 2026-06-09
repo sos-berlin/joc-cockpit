@@ -753,12 +753,15 @@ export class LayoutComponent {
     preferences.showHelpPages = true;
     preferences.showVideoHelpPages = true;
     preferences.showMoreOptions = false;
+    preferences.showGlossary = true;
     preferences.logTimezone = true;
     preferences.orientation = 'north';
     preferences.interRankCellSpacing = '100';
     preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
     preferences.enableTagging = false;
+    preferences.numOfLogLines = 2500;
+    preferences.numOfNextLogLines = 250;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -877,6 +880,15 @@ export class LayoutComponent {
       }
       if (data.enableTagging === undefined) {
         data.enableTagging = false;
+      }
+      if (data.showGlossary === undefined) {
+        data.showGlossary = true;
+      }
+      if (data.numOfLogLines === undefined) {
+        data.numOfLogLines = 2500;
+      }
+      if (data.numOfNextLogLines === undefined) {
+        data.numOfNextLogLines = 250;
       }
       // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
       if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {

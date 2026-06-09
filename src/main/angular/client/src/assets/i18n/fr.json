@@ -3451,6 +3451,9 @@
     "label.enableTagging": "Activer les Tags",
     "label.enableApprovalRequests": "Activer le Processus d'Approbation",
     "label.showVideoHelpPages": "Activer les Vidéos d'Aide Contextuelle",
+    "label.showGlossary": "Enable Tooltip Glossary",
+    "label.numOfLogLines": "Number of lines in log view",
+    "label.numOfNextLogLines": "Number of lines to load on demand in log view",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -3526,7 +3529,10 @@
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Définit l'espacement entre les instructions verticales ^Workflow^.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Définit l'espacement entre les instructions horizontales ^Workflow^.",
       "tooltip.roundEdgesForConnections": "Ce paramètre aplatit les contours lors de l'affichage des instructions du ^Workflow^, par exemple celles des ^Tâches|job^.",
-      "tooltip.showVideoContextHelp": "Enable Video Context Help"
+      "tooltip.showVideoContextHelp": "Enable Video Context Help",
+      "tooltip.showGlossary": "Enable Tooltip Glossary",
+      "tooltip.numOfLogLines": "Number of lines in log view",
+      "tooltip.numOfNextLogLines": "Number of lines to load on demand in log view"
     },
     "permission": {
       "label.order": "Ordre",

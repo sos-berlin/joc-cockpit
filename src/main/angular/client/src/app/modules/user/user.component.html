@@ -731,6 +731,13 @@
                       </div>
                     </div>
                     <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showGlossary' | translate">profile.label.showGlossary</div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.showGlossary"
+                               (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
                         profile.label.licenseWarningGotIt
                       </div>
@@ -755,6 +762,28 @@
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
                                (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.numOfLogLines' | translate">
+                          profile.label.numOfLogLines
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.numOfLogLines" [nzMin]="1"
+                         [nzStep]="5" class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span translate [appRichTooltip]="'profile.preferences.tooltip.numOfNextLogLines' | translate">
+                          profile.label.numOfNextLogLines
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.numOfNextLogLines" [nzMin]="-1"
+                         [nzStep]="5" class="w-xl"></nz-input-number>
                       </div>
                     </div>
                   </div>

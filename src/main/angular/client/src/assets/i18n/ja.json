@@ -3451,6 +3451,9 @@
     "label.enableTagging": "Enable Tagging",
     "label.enableApprovalRequests": "Enable Approval Requests",
     "label.showVideoHelpPages": "Enable Video Context Help",
+    "label.showGlossary": "Enable Tooltip Glossary",
+    "label.numOfLogLines": "Number of lines in log view",
+    "label.numOfNextLogLines": "Number of lines to load on demand in log view",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -3526,7 +3529,10 @@
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers":"Spacing between instructions on adjacent layers",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer":"Spacing between instructions on the same layer",
       "tooltip.roundEdgesForConnections":"Round Edges for Connections",
-      "tooltip.showVideoContextHelp": "Enable Video Context Help"
+      "tooltip.showVideoContextHelp": "Enable Video Context Help",
+      "tooltip.showGlossary": "Enable Tooltip Glossary",
+      "tooltip.numOfLogLines": "Number of lines in log view",
+      "tooltip.numOfNextLogLines": "Number of lines to load on demand in log view"
     },
     "permission": {
       "label.order": "オーダー",

@@ -351,6 +351,30 @@ export class UpdateJobComponent {
     if (this.checkboxObjects.killAtEndOfAdmissionPeriod) {
       obj.killAtEndOfAdmissionPeriod = job.killAtEndOfAdmissionPeriod;
     }
+    if (this.checkboxObjects.types || this.checkboxObjects.mailTo ||
+        this.checkboxObjects.mailCC || this.checkboxObjects.mailBcc) {
+      if (!obj.notification) {
+        obj.notification = {};
+      }
+      if (this.checkboxObjects.types) {
+        obj.notification.types = job.notification?.types ?? [];
+      }
+      if (this.checkboxObjects.mailTo || this.checkboxObjects.mailCC || this.checkboxObjects.mailBcc) {
+        if (!obj.notification.mail) {
+          obj.notification.mail = {};
+        }
+        if (this.checkboxObjects.mailTo)  obj.notification.mail.to  = job.notification?.mail?.to  ?? '';
+        if (this.checkboxObjects.mailCC)  obj.notification.mail.cc  = job.notification?.mail?.cc  ?? '';
+        if (this.checkboxObjects.mailBcc) obj.notification.mail.bcc = job.notification?.mail?.bcc ?? '';
+      }
+      if (obj.notification?.mail && isEmpty(obj.notification.mail)) {
+        if (!obj.notification.types || obj.notification.types.length === 0) {
+          delete obj.notification;
+        } else {
+          delete obj.notification.mail;
+        }
+      }
+    }
     return obj;
   }
 
@@ -487,6 +511,13 @@ export class UpdateJobComponent {
     if (job.admissionTimeScheme && job.admissionTimeScheme.periods) {
       if (job.admissionTimeScheme.periods.length === 0) {
         delete job.admissionTimeScheme;
+      }
+    }
+    if (job.notification && isEmpty(job.notification.mail)) {
+      if (!job.notification.types || job.notification.types.length === 0) {
+        delete job.notification;
+      } else {
+        delete job.notification.mail;
       }
     }
     return job;
