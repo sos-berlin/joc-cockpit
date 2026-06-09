@@ -2720,7 +2720,7 @@ export class ShowReferenceComponent {
     if (period.singleStart) {
       periodStr = this.translate.instant('runtime.label.singleStart') + ': ' + period.singleStart;
     } else if (period.repeat) {
-      periodStr = periodStr + ' ' + this.translate.instant('runtime.label.every').toLowerCase() + ' ' + this.coreService.getTimeInString(period.repeat);
+      periodStr = periodStr + ' ' + this.translate.instant('runtime.label.every') + ' ' + this.coreService.getTimeInString(period.repeat);
     }
     return periodStr;
   }

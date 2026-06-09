@@ -1,0 +1,294 @@
+// ─── Unified level controls (Row 2) ──────────────────────────────────────────
+.log-level-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+// One group per level: ☑ LEVEL ↑ ↓  N/total
+.log-level-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 5px 1px 2px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+
+  .log-level-checkbox {
+    margin-right: 1px;
+    .ant-checkbox-wrapper { margin-right: 0; }
+  }
+}
+
+// Visually suppress a level group when its filter checkbox is unchecked
+.log-level-group--off {
+  .log-badge            { opacity: 0.3; text-decoration: line-through; }
+  .log-nav-btn          { opacity: 0.3; pointer-events: none; }
+  .log-occurrence-count { opacity: 0.3; }
+}
+
+// The level badge acts as a navigation button — standalone, no .btn base.
+.log-level-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 1px 2px;
+  cursor: pointer;
+  line-height: 1;
+  border-radius: 3px;
+  transition: background 80ms;
+  vertical-align: middle;
+
+  &:hover { background: rgba(128, 128, 128, .10); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+  &--active { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+
+  &-info:hover,  &-info.log-level-btn--active  { background: color-mix(in srgb, var(--blue)     10%, transparent); }
+  &-warn:hover,  &-warn.log-level-btn--active  { background: color-mix(in srgb, var(--orange)   10%, transparent); }
+  &-error:hover, &-error.log-level-btn--active { background: color-mix(in srgb, var(--red)      10%, transparent); }
+  &-debug:hover, &-debug.log-level-btn--active { background: color-mix(in srgb, var(--mangenta) 10%, transparent); }
+  &-trace:hover, &-trace.log-level-btn--active { background: color-mix(in srgb, var(--dimgrey)  10%, transparent); }
+}
+
+// Small ↑/↓ navigation buttons — standalone, no .btn base.
+.log-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 3px;
+  height: 18px;
+  font-size: 10px;
+  color: var(--text-muted);
+  border-radius: 2px;
+  line-height: 1;
+  transition: background 80ms, color 80ms;
+
+  &:hover { background: rgba(128, 128, 128, .12); color: var(--text-color); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+}
+
+// Occurrence counter: "3/100" or "100".
+.log-occurrence-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 22px;
+  text-align: left;
+  padding-left: 3px;
+}
+
+// ─── Client-side date range filter ───────────────────────────────────────────
+.log-date-filter-icon {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.log-date-sep {
+  color: var(--text-muted);
+  font-size: 11px;
+  user-select: none;
+}
+
+.log-date-input {
+  height: 22px;
+  padding: 0 20px 0 4px; // right padding reserves space for the per-field clear button
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--bg-box);
+  color: var(--text-color);
+  font-size: 11px;
+  width: 172px;
+  outline: none;
+  transition: border-color 120ms;
+
+  &:focus { border-color: var(--primary); }
+  &::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+}
+
+// Inline date range filter container (lives inside Row 2)
+.log-date-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+// Wraps a date input + its per-field clear button
+.log-date-field-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+// Per-field × clear button overlaid on the right of each date input
+.log-date-clear {
+  position: absolute;
+  right: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+
+  &:hover { color: var(--text-color); }
+  &:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+}
+
+.log-date-tz-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-left: 2px;
+}
+
+// ─── Jump-to-start / end shortcuts ───────────────────────────────────────────
+.log-jump-shortcuts {
+  display: inline-flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+// Status notes (loading / filter-active indicator)
+.log-summary-note {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 11px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border-color);
+}
+
+.log-summary-filter-active {
+  color: var(--primary);
+  font-style: normal;
+}
+
+// ─── Search area ─────────────────────────────────────────────────────────────
+.log-search-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+// ─── Keyword search ─────────────────────────────────────────────────────────
+.log-search-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  .log-search-icon {
+    position: absolute;
+    left: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    pointer-events: none;
+  }
+
+  .log-search-input {
+    height: 24px;
+    padding: 0 24px 0 26px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-box);
+    color: var(--text-color);
+    font-size: 11px;
+    width: 180px;
+    outline: none;
+    transition: border-color 150ms, width 150ms;
+
+    &:focus {
+      border-color: var(--primary);
+      width: 260px;
+    }
+
+    &::placeholder { color: var(--text-muted); }
+  }
+
+  .log-search-clear {
+    position: absolute;
+    right: 7px;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+
+    &:hover { color: var(--text-color); }
+  }
+}
+
+// ─── Search mode toggle buttons ───────────────────────────────────────────────
+.log-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.log-mode-btn {
+  background: none;
+  border: none;
+  padding: 2px 7px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  transition: background 100ms, color 100ms;
+
+  &:hover { background: rgba(128, 128, 128, .10); color: var(--text-color); }
+
+  &.active {
+    background: var(--primary, #0e8a8b);
+    color: #fff;
+  }
+}
+
+// ─── Context line count input ──────────────────────────────────────────────────
+.log-context-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.log-context-label {
+  white-space: nowrap;
+}
+
+.log-context-lines-input {
+  width: 65px;
+}
+
+// ─── Empty / no-matches state icons ───────────────────────────────────────────
+.log-state-icon {
+  font-size: 26px;
+  color: var(--text-muted);
+
+  &--sm { font-size: 20px; }
+}

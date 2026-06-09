@@ -3451,6 +3451,9 @@
     "label.enableTagging": "Enable Tagging",
     "label.enableApprovalRequests": "Enable Approval Requests",
     "label.showVideoHelpPages": "Enable Context Help Videos",
+    "label.showGlossary": "Enable Tooltip Glossary",
+    "label.numOfLogLines": "Number of lines in log view",
+    "label.numOfNextLogLines": "Number of lines to load on demand in log view",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3526,7 +3529,10 @@
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Specifies the spacing between vertical ^Workflow^ instructions.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Specifies the spacing between horizontal ^Workflow^ instructions.",
       "tooltip.roundEdgesForConnections": "The setting flattens edges on display of ^Workflow^ instructions, for example of ^Job^s.",
-      "tooltip.showVideoContextHelp": "The setting enables **Context Help Videos** that are available from an icon in the title of pages, sub-views and pop-up windows.\n\nContext Help Videos provide mostly short explanations that alternatively are available for reading from Context Help."
+      "tooltip.showVideoContextHelp": "The setting enables **Context Help Videos** that are available from an icon in the title of pages, sub-views and pop-up windows.\n\nContext Help Videos provide mostly short explanations that alternatively are available for reading from Context Help.",
+      "tooltip.showGlossary": "Enable Tooltip Glossary",
+      "tooltip.numOfLogLines": "Number of lines in log view",
+      "tooltip.numOfNextLogLines": "Number of lines to load on demand in log view"
     },
     "permission": {
       "label.order": "Order",

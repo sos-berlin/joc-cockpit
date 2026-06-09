@@ -3451,6 +3451,9 @@
     "label.enableTagging": "Kennzeichnungen aktivieren",
     "label.enableApprovalRequests": "Autorisierungsprozess aktivieren",
     "label.showVideoHelpPages": "Kontexthilfe Videos aktivieren",
+    "label.showGlossary": "Enable Tooltip Glossary",
+    "label.numOfLogLines": "Number of lines in log view",
+    "label.numOfNextLogLines": "Number of lines to load on demand in log view",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3526,7 +3529,10 @@
       "tooltip.spacingBetweenInstructionsOnAdjacentLayers": "Legt den Abstand zwischen vertikalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
       "tooltip.spacingBetweenInstructionsOnTheSameLayer": "Legt den Abstand zwischen horizontalen ^Arbeitsablauf|workflow^-Anweisungen fest.",
       "tooltip.roundEdgesForConnections": "Die Einstellung glättet die Kanten bei der Anzeige von Anweisungen im ^Arbeitsablauf|workflow^, bspw. von ^Job^s.",
-      "tooltip.showVideoContextHelp": "Die Einstellung aktiviert die **Kontexthilfe Videos**, die über ein Symbol in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.\n\nKontexthilfe Videos bieten meist kurze Erläuterungen, die alternativ per Text der Kontexthilfe gelesen werden können."
+      "tooltip.showVideoContextHelp": "Die Einstellung aktiviert die **Kontexthilfe Videos**, die über ein Symbol in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.\n\nKontexthilfe Videos bieten meist kurze Erläuterungen, die alternativ per Text der Kontexthilfe gelesen werden können.",
+      "tooltip.showGlossary": "Enable Tooltip Glossary",
+      "tooltip.numOfLogLines": "Number of lines in log view",
+      "tooltip.numOfNextLogLines": "Number of lines to load on demand in log view"
     },
     "permission": {
       "label.order": "Auftrag",

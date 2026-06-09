@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
 import {LogSearchService} from '../../services/log-search.service';
@@ -133,13 +133,16 @@ export interface LogConsoleRequest {
   dateTo?: string;
   timeZone?: string;
   numOfLines?: number;
+  /** Max lines per running-log poll (sent as `limit` to the running API). */
+  limit?: number;
 }
 
 @Component({
   standalone: false,
   selector: 'app-log-console',
   templateUrl: './log-console.component.html',
-  styleUrls: ['./log-console.component.scss']
+  styleUrls: ['./log-console.component.scss', './log-console.toolbar.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   @Input() request: LogConsoleRequest = { type: 'controller' };
@@ -197,6 +200,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   private readonly highlightCache = new Map<string, SafeHtml>();
   private readonly HIGHLIGHT_CACHE_MAX = 1000;
+  /** Compiled search RegExp; reused across cache-miss calls while the search term is unchanged. */
+  private _cachedHighlightRegExp: RegExp | null = null;
+  private _cachedHighlightTerm = '';
   private syslogResizeHandler?: () => void;
   /** Per-level: 0-based index of the last jumped-to occurrence in the DOM list. */
   private readonly levelJumpIndices = new Map<string, number>();
@@ -213,13 +219,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** Bound to the date-picker inputs as ISO strings (YYYY-MM-DDTHH:mm). */
   dateFilterFromStr = '';
   dateFilterToStr   = '';
-  /** Controls visibility of the date filter row. */
+  /** Controls visibility of the date filter inline section. */
   showDateFilter = false;
+  /** Debounce subject for date filter input changes (150ms). */
+  private readonly _dateFilterDebounce = new Subject<void>();
+  /** preferences.numOfNextLogLines: max lines returned per running-log poll request. */
+  private numOfNextLogLines: number | undefined;
 
   constructor(
     private coreService: CoreService,
     private sanitizer: DomSanitizer,
-    private logSearch: LogSearchService
+    private logSearch: LogSearchService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -235,6 +246,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
       this.commitSearch(term);
     });
+    // Debounced date filter — recomputes filtered lines 150ms after last input change.
+    this.debounceSub.add(
+      this._dateFilterDebounce.pipe(debounceTime(150)).subscribe(() => {
+        this.computeFilteredLines();
+        this.computeContextBlocks();
+        this.cdr.markForCheck();
+      })
+    );
 
     // Sync with global search state (apply immediately — another window already debounced).
     const current = this.logSearch.currentTerm;
@@ -255,6 +274,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         const prefs = JSON.parse(sessionStorage['preferences']);
         this.logTimezone = prefs.logTimezone === true;
         this.profileTz   = prefs.zone || '';
+        if (prefs.numOfNextLogLines) {
+          this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || undefined;
+        }
       } catch { /**/ }
     }
     if (!this.profileTz) {
@@ -278,6 +300,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.searchSub?.unsubscribe();
     this.debounceSub?.unsubscribe();
     this._searchDebounce.complete();
+    this._dateFilterDebounce.complete();
     if (this.syslogResizeHandler) {
       window.removeEventListener('resize', this.syslogResizeHandler);
     }
@@ -307,8 +330,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onDateFilterChange(): void {
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+    // Push to debounce — actual recompute happens 150ms after typing stops.
+    this._dateFilterDebounce.next();
   }
 
   clearDateFilter(): void {
@@ -316,6 +339,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.dateFilterToStr   = '';
     this.computeFilteredLines();
     this.computeContextBlocks();
+  }
+
+  clearDateFrom(): void {
+    this.dateFilterFromStr = '';
+    this._dateFilterDebounce.next();
+  }
+
+  clearDateTo(): void {
+    this.dateFilterToStr = '';
+    this._dateFilterDebounce.next();
   }
 
   /**
@@ -348,29 +381,28 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.highlightCache.clear();
     this.computeFilteredLines();
     this.computeContextBlocks();
+    this.cdr.markForCheck();
   }
 
   // ── Filtered lines (level + search) — computed into cached fields ──────────
 
   private computeFilteredLines(): void {
     const term    = this._committedSearchTerm;
-    // Use the raw datetime-local strings directly — avoids Date→UTC conversion which would
-    // introduce a timezone offset error when the controller tz ≠ the browser's local tz.
-    // Both the user input and log timestamps are treated as controller-timezone strings,
-    // so lexicographic ISO prefix comparison is correct.
-    const fromStr = this.dateFilterFromStr; // e.g. "2026-06-10T10:00"
-    const toStr   = this.dateFilterToStr;   // e.g. "2026-06-10T12:00"
+    // Convert user-entered times to controller tz for comparison.
+    // When logTimezone=true the user sees/enters profile-tz times, so we offset them back.
+    const fromCmp = this.toControllerTzStr(this.dateFilterFromStr);
+    const toCmp   = this.toControllerTzStr(this.dateFilterToStr);
 
     this.filteredLines = this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
       if (term && !l.rawLower.includes(term)) return false;
-      if ((fromStr || toStr) && l.timestamp) {
+      if ((fromCmp || toCmp) && l.timestamp) {
         // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
         const ts = l.timestamp.replace(',', '.');
-        if (fromStr && ts < fromStr) return false;
+        if (fromCmp && ts < fromCmp) return false;
         // '\uffff' suffix ensures the whole last minute/second is included
-        // when the user's toStr has no sub-minute/sub-second precision.
-        if (toStr && ts > toStr + '\uffff') return false;
+        // when the user's toCmp has no sub-minute/sub-second precision.
+        if (toCmp && ts > toCmp + '\uffff') return false;
       }
       return true;
     });
@@ -394,6 +426,38 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         if (l.rawLower.includes(term)) this._matchLineSet.add(l.globalIdx);
       }
     }
+  }
+
+  /**
+   * Converts a datetime-local input value (YYYY-MM-DDTHH:mm) from the display timezone
+   * to the controller timezone for lexicographic comparison against `l.timestamp`.
+   * When logTimezone=false the user enters controller-tz times directly — returned as-is.
+   */
+  private toControllerTzStr(inputStr: string): string {
+    if (!inputStr) return '';
+    const sourceTz = this.timeZone || this.request?.timeZone || '';
+    if (this.logTimezone && this.profileTz && sourceTz && this.profileTz !== sourceTz) {
+      return moment.tz(inputStr, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm'], this.profileTz).tz(sourceTz).format('YYYY-MM-DDTHH:mm:ss');
+    }
+    return inputStr;
+  }
+
+  /**
+   * Converts a raw log timestamp (controller tz) to a datetime-local input value
+   * (YYYY-MM-DDTHH:mm) in the same timezone the user currently sees timestamps in.
+   * Used when double-clicking a timestamp to populate the date filter.
+   */
+  private timestampToDatetimeLocal(raw: string): string {
+    const iso = raw.replace(',', '.');
+    const sourceTz = this.timeZone || this.request?.timeZone || '';
+    if (sourceTz) {
+      const m = moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz);
+      if (this.logTimezone && this.profileTz) {
+        return m.tz(this.profileTz).format('YYYY-MM-DDTHH:mm:ss');
+      }
+      return m.format('YYYY-MM-DDTHH:mm:ss');
+    }
+    return iso.slice(0, 19);
   }
 
   private levelVisible(level: ParsedLine['level']): boolean {
@@ -487,9 +551,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (!term) {
       result = this.sanitizer.bypassSecurityTrustHtml(escaped);
     } else {
-      const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (this._cachedHighlightTerm !== term || !this._cachedHighlightRegExp) {
+        const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        this._cachedHighlightRegExp = new RegExp(safeRe, 'gi');
+        this._cachedHighlightTerm = term;
+      }
       result = this.sanitizer.bypassSecurityTrustHtml(
-        escaped.replace(new RegExp(safeRe, 'gi'), '<mark class="log-search-match">$&</mark>')
+        escaped.replace(this._cachedHighlightRegExp, '<mark class="log-search-match">$&</mark>')
       );
     }
     // Evict oldest entry when cache exceeds limit to bound memory usage.
@@ -508,16 +576,40 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * Falls back to native browser selection when clicked outside an Order ID.
    */
   onLogBodyDblClick(event: MouseEvent): void {
-    // Use event.target (always an Element) to find the .log-text span.
-    // This is more reliable than walking up from a text node.
+    // ── Branch 1: timestamp double-click → populate date filter ─────────────
+    const tsEl = (event.target as Element)?.closest('.log-ts') as HTMLElement | null;
+    if (tsEl) {
+      const lineEl = tsEl.closest('[data-lineidx]') as HTMLElement | null;
+      if (lineEl) {
+        const idx = Number(lineEl.getAttribute('data-lineidx'));
+        const line = this.allLines[idx];
+        if (line?.timestamp) {
+          const inputVal = this.timestampToDatetimeLocal(line.timestamp);
+          // Assignment rule: fill first empty → fill second empty → overwrite first
+          if (!this.dateFilterFromStr) {
+            this.dateFilterFromStr = inputVal;
+          } else if (!this.dateFilterToStr) {
+            this.dateFilterToStr = inputVal;
+          } else {
+            this.dateFilterFromStr = inputVal;
+          }
+          this.showDateFilter = true;
+          this._dateFilterDebounce.next();
+        }
+      }
+      return;
+    }
+
+    // ── Branch 2: Order ID double-click in .log-text ──────────────────────
+    // All log lines now use [innerHTML] binding, so event.target reliably
+    // lands on .log-text (or a <mark> inside it) in every mode.
     const textEl = (event.target as Element)?.closest('.log-text') as HTMLElement | null;
-    if (!textEl) return;  // clicked on timestamp, level badge, or padding — ignore
+    if (!textEl) return;  // clicked on level badge, timestamp, or line padding — ignore
 
     const fullText = textEl.textContent || '';
     if (!fullText.includes('#')) return;  // no Order IDs possible in this line
 
     // The browser already applied its word-selection by the time dblclick fires.
-    // Read its start position as our cursor index within .log-text.
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0) return;
 
@@ -563,7 +655,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private showCopyFeedback(id: string): void {
     this.copiedOrderId = id;
     if (this.copyFeedbackTimer) clearTimeout(this.copyFeedbackTimer);
-    this.copyFeedbackTimer = setTimeout(() => { this.copiedOrderId = null; }, 2000);
+    this.copyFeedbackTimer = setTimeout(() => { this.copiedOrderId = null; this.cdr.markForCheck(); }, 2000);
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────
@@ -704,14 +796,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     return iso.replace('T', ' ').slice(0, 23);
   }
 
+  private static readonly LEVEL_BORDER: Partial<Record<ParsedLine['level'], string>> = {
+    INFO:  'var(--blue)',
+    WARN:  'var(--orange)',
+    ERROR: 'var(--red)',
+    DEBUG: 'var(--mangenta)',
+    TRACE: 'var(--dimgrey)',
+  };
+
   lineBorderColor(level: ParsedLine['level']): string {
-    switch (level) {
-      case 'ERROR': return 'var(--red)';
-      case 'WARN':  return 'var(--gold)';
-      case 'DEBUG': return 'var(--green)';
-      case 'TRACE': return 'var(--cyan, #17a2b8)';
-      default:      return 'transparent';
-    }
+    return LogConsoleComponent.LEVEL_BORDER[level] ?? 'transparent';
   }
 
   // ── HTTP ───────────────────────────────────────────────────────────────────
@@ -730,9 +824,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -741,7 +837,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.token || this.isLoading) return;
     this.isLoading = true;
     const apiUrl = this.getRunningApiUrl();
-    this.coreService.post(apiUrl, { logToken: this.token }).subscribe({
+    const body: any = { logToken: this.token };
+    const limit = this.request.limit ?? this.numOfNextLogLines;
+    if (limit) body.limit = limit;
+    this.coreService.post(apiUrl, body).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
         this.processLines(res.logLines || []);
@@ -750,9 +849,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -763,6 +864,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const downloadUrl = this.getDownloadApiUrl();
     this.coreService.download(downloadUrl, this.buildRequest(), '', () => {
       this.isDownloading = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -828,16 +930,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
       offset = end;
+      const isLastChunk = offset >= lines.length;
       // Incremental stats: only scan the newly appended lines.
       this.updateLevelStats(prevLength);
       this.computeFilteredLines();
-      this.computeContextBlocks();
-      const isLastChunk = offset >= lines.length;
-      // Only scroll once — on the final chunk — to avoid repeated layout reflows.
-      if (this.followTail && isLastChunk) this.scrollToBottom();
-      if (!isLastChunk) {
+      // Context blocks are O(n) full scan — only recompute on the final chunk.
+      if (isLastChunk) {
+        this.computeContextBlocks();
+        // Only scroll once — on the final chunk — to avoid repeated layout reflows.
+        if (this.followTail) this.scrollToBottom();
+      } else {
         setTimeout(processChunk, 0);
       }
+      this.cdr.markForCheck();
     };
 
     processChunk();
@@ -884,6 +989,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (r.dateTo)     req.dateTo     = r.dateTo;
     if (r.timeZone)   req.timeZone   = r.timeZone;
     if (r.numOfLines) req.numOfLines = r.numOfLines;
+    if (r.limit)      req.limit      = r.limit;
     return req;
   }
 }
@@ -913,7 +1019,8 @@ export class LogConsoleModalComponent implements OnInit {
     dateToDate:      null as Date | null,
     dateToTime:      null as Date | null,
     timeZone:        '',
-    numOfLines:      null
+    numOfLines:      null,
+    limit:           null
   };
 
   logRequest: LogConsoleRequest | null = null;
@@ -936,6 +1043,8 @@ export class LogConsoleModalComponent implements OnInit {
       try {
         const prefs = JSON.parse(sessionStorage['preferences']);
         this.preferencesTz = prefs.zone || '';
+        if (prefs.numOfLogLines)     this.form.numOfLines = Number(prefs.numOfLogLines)     || null;
+        if (prefs.numOfNextLogLines) this.form.limit      = Number(prefs.numOfNextLogLines) || null;
       } catch { /**/ }
     }
     if (!this.preferencesTz) {
@@ -968,6 +1077,7 @@ export class LogConsoleModalComponent implements OnInit {
         if (s.dateFrom !== undefined)   this.form.dateFrom   = s.dateFrom;
         if (s.dateTo !== undefined)     this.form.dateTo     = s.dateTo;
         if (s.numOfLines !== undefined) this.form.numOfLines = s.numOfLines;
+        if (s.limit      !== undefined) this.form.limit      = s.limit;
         if (s.timeZone)                 this.form.timeZone   = s.timeZone;
         if (s.dateFromDate) this.form.dateFromDate = new Date(s.dateFromDate);
         if (s.dateFromTime) this.form.dateFromTime = new Date(s.dateFromTime);
@@ -1023,6 +1133,7 @@ export class LogConsoleModalComponent implements OnInit {
     if (req.dateTo)       params.set('dateTo',       req.dateTo);
     if (req.timeZone)     params.set('timeZone',     req.timeZone);
     if (req.numOfLines)   params.set('numOfLines',   String(req.numOfLines));
+    if (req.limit)         params.set('limit',         String(req.limit));
     this.activeModal.destroy();
     const savedW = window.localStorage['syslog_window_wt'];
     const savedH = window.localStorage['syslog_window_ht'];
@@ -1056,6 +1167,7 @@ export class LogConsoleModalComponent implements OnInit {
       dateFrom:   this.form.dateFrom,
       dateTo:     this.form.dateTo,
       numOfLines: this.form.numOfLines,
+      limit:      this.form.limit,
       timeZone:   this.form.timeZone
     };
     if (this.form.dateFromDate instanceof Date) toSave.dateFromDate = this.form.dateFromDate.toISOString();
@@ -1105,7 +1217,8 @@ export class LogConsoleModalComponent implements OnInit {
       // Always send timeZone so the API interprets dateFrom/dateTo in the correct
       // timezone and so that displayTz is populated for timestamp rendering.
       timeZone:     this.effectiveTz || undefined,
-      numOfLines:   this.form.numOfLines ? Number(this.form.numOfLines) : undefined
+      numOfLines:   this.form.numOfLines ? Number(this.form.numOfLines) : undefined,
+      limit:        this.form.limit      ? Number(this.form.limit)      : undefined
     };
   }
 

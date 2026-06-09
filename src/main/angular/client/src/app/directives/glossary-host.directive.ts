@@ -2,6 +2,7 @@ import {
   ComponentRef,
   Directive,
   ElementRef,
+  HostBinding,
   inject,
   OnDestroy,
   ViewContainerRef,
@@ -91,6 +92,7 @@ export class GlossaryHostDirective implements OnDestroy {
     const host: HTMLElement = this.el.nativeElement;
 
     host.addEventListener('mouseover', (e: MouseEvent) => {
+      if (!this.isGlossaryEnabled) return;
       const span = (e.target as HTMLElement).closest('.glossary-term[data-glossary-key]') as HTMLElement | null;
       if (!span) return;
       const key = span.getAttribute('data-glossary-key');
@@ -123,6 +125,7 @@ export class GlossaryHostDirective implements OnDestroy {
 
     // Mobile / keyboard fallback: click toggles the popover.
     host.addEventListener('click', (e: MouseEvent) => {
+      if (!this.isGlossaryEnabled) return;
       const span = (e.target as HTMLElement).closest('.glossary-term[data-glossary-key]') as HTMLElement | null;
       if (!span) return;
       const key = span.getAttribute('data-glossary-key');
@@ -138,6 +141,7 @@ export class GlossaryHostDirective implements OnDestroy {
 
     // Keyboard: Enter/Space on a focused glossary term.
     host.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (!this.isGlossaryEnabled) return;
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const span = (e.target as HTMLElement).closest('.glossary-term[data-glossary-key]') as HTMLElement | null;
       if (!span) return;
@@ -150,6 +154,18 @@ export class GlossaryHostDirective implements OnDestroy {
         this.openFor(span, key);
       }
     });
+  }
+
+  @HostBinding('class.glossary-terms-hidden')
+  get glossaryHidden(): boolean {
+    return !this.isGlossaryEnabled;
+  }
+
+  private get isGlossaryEnabled(): boolean {
+    try {
+      const prefs = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      return prefs.showGlossary !== false;
+    } catch { return true; }
   }
 
   private get hoverDelay(): number {

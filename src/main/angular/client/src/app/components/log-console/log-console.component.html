@@ -146,8 +146,8 @@
       <div class="log-level-controls">
 
         @if (hasInfo) {
-          <div class="log-level-group">
-            <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+          <div class="log-level-group" [class.log-level-group--off]="!filters.info">
+            <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show INFO"></label>
             <button class="log-level-btn log-level-btn-info"
                     [class.log-level-btn--active]="levelLastDir.get('info') !== undefined"
                     (click)="jumpToLevel('info')"
@@ -167,8 +167,8 @@
         }
 
         @if (hasWarn) {
-          <div class="log-level-group">
-            <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+          <div class="log-level-group" [class.log-level-group--off]="!filters.warn">
+            <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show WARN"></label>
             <button class="log-level-btn log-level-btn-warn"
                     [class.log-level-btn--active]="levelLastDir.get('warn') !== undefined"
                     (click)="jumpToLevel('warn')"
@@ -188,8 +188,8 @@
         }
 
         @if (hasError) {
-          <div class="log-level-group">
-            <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+          <div class="log-level-group" [class.log-level-group--off]="!filters.error">
+            <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show ERROR"></label>
             <button class="log-level-btn log-level-btn-error"
                     [class.log-level-btn--active]="levelLastDir.get('error') !== undefined"
                     (click)="jumpToLevel('error')"
@@ -209,8 +209,8 @@
         }
 
         @if (hasDebug) {
-          <div class="log-level-group">
-            <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+          <div class="log-level-group" [class.log-level-group--off]="!filters.debug">
+            <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show DEBUG"></label>
             <button class="log-level-btn log-level-btn-debug"
                     [class.log-level-btn--active]="levelLastDir.get('debug') !== undefined"
                     (click)="jumpToLevel('debug')"
@@ -230,8 +230,8 @@
         }
 
         @if (hasTrace) {
-          <div class="log-level-group">
-            <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()" class="log-level-checkbox"></label>
+          <div class="log-level-group" [class.log-level-group--off]="!filters.trace">
+            <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show TRACE"></label>
             <button class="log-level-btn log-level-btn-trace"
                     [class.log-level-btn--active]="levelLastDir.get('trace') !== undefined"
                     (click)="jumpToLevel('trace')"
@@ -251,6 +251,44 @@
         }
 
       </div>
+
+      <!-- Inline date range filter (reuses Row 2 space, shown when active) -->
+      @if (showDateFilter) {
+        <div class="log-date-inline">
+          <div class="log-date-field-wrap">
+            <input class="log-date-input"
+                   type="datetime-local"
+                   step="1"
+                   [(ngModel)]="dateFilterFromStr"
+                   (ngModelChange)="onDateFilterChange()"
+                   [appRichTooltip]="'logConsole.tooltip.view.dateFrom' | translate">
+            @if (dateFilterFromStr) {
+              <button class="log-date-clear" (click)="clearDateFrom()" (mousedown)="$event.preventDefault()"
+                      [appRichTooltip]="null">
+                <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </button>
+            }
+          </div>
+          <span class="log-date-sep">–</span>
+          <div class="log-date-field-wrap">
+            <input class="log-date-input"
+                   type="datetime-local"
+                   step="1"
+                   [(ngModel)]="dateFilterToStr"
+                   (ngModelChange)="onDateFilterChange()"
+                   [appRichTooltip]="'logConsole.tooltip.view.dateTo' | translate">
+            @if (dateFilterToStr) {
+              <button class="log-date-clear" (click)="clearDateTo()" (mousedown)="$event.preventDefault()"
+                      [appRichTooltip]="null">
+                <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </button>
+            }
+          </div>
+          @if (displayTz) {
+            <span class="log-date-tz-hint">{{ displayTz }}</span>
+          }
+        </div>
+      }
 
       <!-- Status notes -->
       @if (allLines.length > 0) {
@@ -288,31 +326,6 @@
       }
 
     </div>
-
-    <!-- Row 3: date range filter (shown only when toggled) -->
-    @if (showDateFilter) {
-      <div class="log-toolbar-row log-toolbar-row--date">
-        <i nz-icon nzType="calendar" nzTheme="outline" class="log-date-filter-icon"></i>
-        <input class="log-date-input"
-               type="datetime-local"
-               [(ngModel)]="dateFilterFromStr"
-               (ngModelChange)="onDateFilterChange()"
-               [appRichTooltip]="'logConsole.tooltip.view.dateFrom' | translate">
-        <span class="log-date-sep">–</span>
-        <input class="log-date-input"
-               type="datetime-local"
-               [(ngModel)]="dateFilterToStr"
-               (ngModelChange)="onDateFilterChange()"
-               [appRichTooltip]="'logConsole.tooltip.view.dateTo' | translate">
-        @if (dateFilterFromStr || dateFilterToStr) {
-          <button class="btn btn-xs btn-default"
-                  (click)="clearDateFilter()"
-                  [appRichTooltip]="'logConsole.tooltip.clearDateFilter' | translate">
-            <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-          </button>
-        }
-      </div>
-    }
 
   </div>
 
@@ -373,7 +386,7 @@
     } @else {
 
       <!-- ── HIGHLIGHT MODE (default) ──────────────────────────────── -->
-      @for (line of filteredLines; track $index) {
+      @for (line of filteredLines; track line.globalIdx) {
         <div class="log-line log-line-{{line.level.toLowerCase()}}"
              [class.log-line-match]="isMatchLine(line)"
              [class.log-line--active]="activeLineIdx === line.globalIdx"
@@ -384,11 +397,7 @@
             <span class="log-ts">{{ formatTimestamp(line.timestamp) }}</span>
             <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.level }}</span>
           }
-          @if (searchTerm) {
-            <span class="log-text" [innerHTML]="highlightText(line.text)"></span>
-          } @else {
-            <span class="log-text">{{ line.text }}</span>
-          }
+          <span class="log-text" [innerHTML]="highlightText(line.text)"></span>
         </div>
       }
     }
