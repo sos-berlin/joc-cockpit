@@ -95,16 +95,6 @@
   &-other { color: var(--text-muted); border: 1px solid var(--text-muted); background: transparent; opacity: .8;  }
 }
 
-.log-line-count {
-  margin-left: auto;
-  font-size: 11px;
-  color: var(--text-muted);
-  padding-left: 8px;
-  border-left: 1px solid var(--border-color);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 // ─── Toolbar rows ─────────────────────────────────────────────────────────
 .log-toolbar-row {
   display: flex;
@@ -263,15 +253,68 @@
   flex: 1;
 }
 
+// ─── Timezone toggle chip ─────────────────────────────────────────────────────
+.log-tz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  height: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms, color 120ms;
+  flex-shrink: 0;
+
+  [nz-icon] { font-size: 11px; }
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 6%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  // Original tz mode — visually distinct so it's obvious the mode is active
+  &--original {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: color-mix(in srgb, var(--orange) 8%, transparent);
+
+    &:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: color-mix(in srgb, var(--orange) 14%, transparent);
+    }
+  }
+}
+
 // ─── Order ID copy feedback ───────────────────────────────────────────────────
 .log-copy-feedback {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: var(--green);
+  color: var(--text-color);
   white-space: nowrap;
   animation: log-copy-fadein 200ms ease;
+  position: absolute;
+  top: 6%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  padding: 5px;
+  background: #fff;
+  border: 1px solid;
+  border-radius: 18px;
 
   // Icon inherits color from parent; no inline style needed
   [nz-icon] { color: inherit; }
@@ -283,18 +326,27 @@
 }
 
 // ─── Search match highlight ────────────────────────────────────────────────────
-mark.log-search-match {
-  background: var(--light-orange);   // #FFA640 — high-visibility amber, distinct from line match
-  color: rgba(0, 0, 0, 0.87);
-  border-radius: 2px;
-  padding: 0 2px;
-  font-style: normal;
-  font-weight: 700;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
-}
+:host ::ng-deep {
+  mark.log-search-match {
+    background: var(--gold);   // #FFA640 — high-visibility amber
+    color: rgba(0, 0, 0, 0.87);
+    border-radius: 2px;
+    padding: 0 2px;
+    font-style: normal;
+    font-weight: 700;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
 
-// Keep mark legible when the matched line is also the active selection
-.log-line--active mark.log-search-match {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  // Keep mark legible when the line is also the active selection
+  .log-line--active mark.log-search-match {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+
+  // The single mark navigated to via prev/next — stands out from all passive marks
+  mark.log-search-match--focused {
+    background: var(--orange);
+    box-shadow: 0 0 0 1px var(--orange), 0 0 0 1px rgba(0, 0, 0, 0.35);
+    border-radius: 2px;
+  }
 }
 

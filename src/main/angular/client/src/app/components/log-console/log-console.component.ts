@@ -167,6 +167,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   logTimezone = false;
   /** User's profile timezone (preferences.zone), populated from sessionStorage in ngOnInit. */
   profileTz = '';
+  /**
+   * Per-window display mode override (Option A toggle).
+   * null   = follow global `logTimezone` preference
+   * 'profile'  = always convert to user profile tz (regardless of preference)
+   * 'original' = show timestamps exactly in the Controller/Agent tz (no conversion)
+   */
+  _tzOverride: 'profile' | 'original' | null = null;
 
   // ── Level visibility checkboxes (display filter, not REST level) ──────────
   filters = { info: true, warn: true, error: true, debug: true, trace: true };
@@ -198,11 +205,28 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private pollTimer?: ReturnType<typeof setTimeout>;
   private readonly POLL_INTERVAL_MS = 3000;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
+  // Cache key = `${committedTerm}\x00${text}` so changing the search term naturally
+  // invalidates all prior entries without a manual clear, and the same text+term pair
+  // always returns the same SafeHtml reference — preventing unnecessary innerHTML rewrites.
   private readonly highlightCache = new Map<string, SafeHtml>();
-  private readonly HIGHLIGHT_CACHE_MAX = 1000;
+  private readonly HIGHLIGHT_CACHE_MAX = 3000;
   /** Compiled search RegExp; reused across cache-miss calls while the search term is unchanged. */
   private _cachedHighlightRegExp: RegExp | null = null;
   private _cachedHighlightTerm = '';
+  /** true = treat search term as a JavaScript regular expression. */
+  regexMode = false;
+  /** Validation error message when regexMode is on and the pattern is invalid; '' when valid. */
+  regexError = '';
+  private _committedRegexMode = false;
+  /** Non-global RegExp for .test() checks in line filtering (regex mode only). */
+  private _compiledSearchRegExp: RegExp | null = null;
+  /** Sorted globalIdx array of lines matching the current search term — for prev/next navigation. */
+  _searchMatchIdxs: number[] = [];
+  /** 0-based index into _searchMatchIdxs for the currently active navigation position. */
+  _searchJumpIdx: number | null = null;
+  /** Per-occurrence navigation list — one entry per match token across all matching lines.
+   *  Multiple entries share the same globalIdx when a term appears more than once in a line. */
+  _searchMatchPositions: Array<{globalIdx: number; occurrenceInLine: number}> = [];
   private syslogResizeHandler?: () => void;
   /** Per-level: 0-based index of the last jumped-to occurrence in the DOM list. */
   private readonly levelJumpIndices = new Map<string, number>();
@@ -214,6 +238,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _matchLineSet = new Set<number>();
   /** Per-level sorted globalIdx arrays from filteredLines — eliminates querySelectorAll during navigation. */
   private levelLineMap = new Map<string, number[]>();
+  /** True while the user has a live text selection inside the log body — used to suppress
+   *  DOM-destructive operations (markForCheck, followTail polls) that would clear the selection. */
+  private _userSelecting = false;
+  private _selectionChangeHandler?: () => void;
 
   // ── Client-side date range filter ─────────────────────────────────────────
   /** Bound to the date-picker inputs as ISO strings (YYYY-MM-DDTHH:mm). */
@@ -241,6 +269,21 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     };
     window.addEventListener('resize', this.syslogResizeHandler);
     this.syslogResizeHandler(); // save initial size immediately
+
+    // Track whether the user has an active text selection inside this log window.
+    // Used to suppress DOM-destructive operations that would clear the selection.
+    this._selectionChangeHandler = () => {
+      const sel = window.getSelection();
+      const body = this.logBodyRef?.nativeElement;
+      if (!sel || sel.isCollapsed || !body) {
+        this._userSelecting = false;
+        return;
+      }
+      // Check if the selection anchor is inside our log body.
+      const anchor = sel.anchorNode;
+      this._userSelecting = anchor ? body.contains(anchor) : false;
+    };
+    document.addEventListener('selectionchange', this._selectionChangeHandler);
 
     // Debounced search commitment — only recalculates filtered data 300ms after typing stops.
     this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
@@ -303,6 +346,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this._dateFilterDebounce.complete();
     if (this.syslogResizeHandler) {
       window.removeEventListener('resize', this.syslogResizeHandler);
+    }
+    if (this._selectionChangeHandler) {
+      document.removeEventListener('selectionchange', this._selectionChangeHandler);
     }
   }
 
@@ -375,16 +421,73 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Search commitment & cache management ──────────────────────────────────
 
   private commitSearch(raw: string): void {
-    const term = raw.trim().toLowerCase();
-    if (this._committedSearchTerm === term) return;
+    const trimmed = raw.trim();
+    const term = this.regexMode ? trimmed : trimmed.toLowerCase();
+
+    // Validate regex pattern before committing — guard against SyntaxError.
+    if (this.regexMode && trimmed) {
+      try {
+        new RegExp(trimmed);
+        this.regexError = '';
+      } catch (e) {
+        this.regexError = (e as Error).message;
+        this.cdr.markForCheck();
+        return; // Do not commit invalid pattern
+      }
+    } else {
+      this.regexError = '';
+    }
+
+    if (this._committedSearchTerm === term && this._committedRegexMode === this.regexMode) return;
     this._committedSearchTerm = term;
-    this.highlightCache.clear();
+    this._committedRegexMode  = this.regexMode;
+    this._searchJumpIdx       = null;
+    // Build compiled RegExp for .test() in filtering — non-global to avoid lastIndex mutation.
+    this._compiledSearchRegExp = (this.regexMode && term) ? new RegExp(term, 'i') : null;
+    // Force highlight RegExp to be rebuilt in highlightText().
+    // NOTE: highlightCache is now keyed by term+text, so no manual clear is needed —
+    // the new term naturally produces new cache entries while old ones age out.
+    this._cachedHighlightTerm = '';
     this.computeFilteredLines();
     this.computeContextBlocks();
-    this.cdr.markForCheck();
+    // Use _safeMarkForCheck: the data update above is safe, but the resulting DOM
+    // render (innerHTML rewrites) must not destroy an active text selection.
+    this._safeMarkForCheck();
+  }
+
+  /** Called when the regex mode toggle is clicked — forces recommit with the new mode. */
+  onRegexModeChange(): void {
+    this._committedSearchTerm = ''; // force recommit even if term is unchanged
+    // No manual cache clear needed — keyed by term+text, old entries age out naturally.
+    this._searchJumpIdx = null;
+    this.commitSearch(this.searchTerm);
   }
 
   // ── Filtered lines (level + search) — computed into cached fields ──────────
+
+  /** Returns true when line `l` matches the current committed search term or regex. */
+  private lineMatchesSearch(l: ParsedLine): boolean {
+    const term = this._committedSearchTerm;
+    if (!term) return true;
+    if (this._committedRegexMode) {
+      return this._compiledSearchRegExp?.test(l.raw) ?? false;
+    }
+    return l.rawLower.includes(term);
+  }
+
+  /** Counts non-overlapping occurrences of the committed search term inside line `l`. */
+  private _countOccurrences(l: ParsedLine): number {
+    const term = this._committedSearchTerm;
+    if (!term) return 0;
+    if (this._committedRegexMode && this._compiledSearchRegExp) {
+      return (l.raw.match(new RegExp(this._compiledSearchRegExp.source, 'gi')) ?? []).length;
+    }
+    let count = 0, pos = 0;
+    const hay = l.rawLower;
+    const len = term.length || 1;
+    while ((pos = hay.indexOf(term, pos)) !== -1) { count++; pos += len; }
+    return count;
+  }
 
   private computeFilteredLines(): void {
     const term    = this._committedSearchTerm;
@@ -395,7 +498,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
     this.filteredLines = this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
-      if (term && !l.rawLower.includes(term)) return false;
+      if (term && !this.lineMatchesSearch(l)) return false;
       if ((fromCmp || toCmp) && l.timestamp) {
         // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
         const ts = l.timestamp.replace(',', '.');
@@ -423,7 +526,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this._matchLineSet.clear();
     if (term) {
       for (const l of this.filteredLines) {
-        if (l.rawLower.includes(term)) this._matchLineSet.add(l.globalIdx);
+        if (this.lineMatchesSearch(l)) this._matchLineSet.add(l.globalIdx);
+      }
+    }
+    // Build sorted navigation index for prev/next search match.
+    this._searchMatchIdxs = Array.from(this._matchLineSet).sort((a, b) => a - b);
+
+    // Build per-occurrence positions so navigation jumps between individual tokens,
+    // not whole lines. If "order" appears twice in one line, that line contributes two entries.
+    this._searchMatchPositions = [];
+    if (term) {
+      for (const gi of this._searchMatchIdxs) {
+        const l = this.allLines[gi];
+        if (!l) continue;
+        const cnt = this._countOccurrences(l);
+        for (let i = 0; i < cnt; i++) {
+          this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+        }
       }
     }
   }
@@ -436,7 +555,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private toControllerTzStr(inputStr: string): string {
     if (!inputStr) return '';
     const sourceTz = this.timeZone || this.request?.timeZone || '';
-    if (this.logTimezone && this.profileTz && sourceTz && this.profileTz !== sourceTz) {
+    if (this._useProfileTz && this.profileTz && sourceTz && this.profileTz !== sourceTz) {
       return moment.tz(inputStr, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm'], this.profileTz).tz(sourceTz).format('YYYY-MM-DDTHH:mm:ss');
     }
     return inputStr;
@@ -452,7 +571,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
       const m = moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz);
-      if (this.logTimezone && this.profileTz) {
+      if (this._useProfileTz && this.profileTz) {
         return m.tz(this.profileTz).format('YYYY-MM-DDTHH:mm:ss');
       }
       return m.format('YYYY-MM-DDTHH:mm:ss');
@@ -482,16 +601,32 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const term = this._committedSearchTerm;
     if (!term) { this.contextBlocks = []; return; }
 
-    const matchIdxSet = new Set<number>();
-    for (let i = 0; i < this.allLines.length; i++) {
-      if (this.allLines[i].rawLower.includes(term)) matchIdxSet.add(i);
+    // Build the pool: level + date filtered, but NOT search-filtered.
+    // We need non-matching lines to be present so they can appear as context
+    // around matching lines. filteredLines already strips non-matches, so
+    // using it would leave only match lines → all consecutive → one giant block.
+    const fromCmp = this.toControllerTzStr(this.dateFilterFromStr);
+    const toCmp   = this.toControllerTzStr(this.dateFilterToStr);
+    const pool = this.allLines.filter(l => {
+      if (!this.levelVisible(l.level)) return false;
+      if ((fromCmp || toCmp) && l.timestamp) {
+        const ts = l.timestamp.replace(',', '.');
+        if (fromCmp && ts < fromCmp) return false;
+        if (toCmp && ts > toCmp + '\uffff') return false;
+      }
+      return true;
+    });
+
+    const matchPositions: number[] = [];
+    for (let i = 0; i < pool.length; i++) {
+      if (this.lineMatchesSearch(pool[i])) matchPositions.push(i);
     }
-    if (matchIdxSet.size === 0) { this.contextBlocks = []; return; }
+    if (matchPositions.length === 0) { this.contextBlocks = []; return; }
 
     const windows: [number, number][] = [];
-    for (const idx of Array.from(matchIdxSet).sort((a, b) => a - b)) {
+    for (const idx of matchPositions) {
       const start = Math.max(0, idx - this.contextLines);
-      const end   = Math.min(this.allLines.length - 1, idx + this.contextLines);
+      const end   = Math.min(pool.length - 1, idx + this.contextLines);
       if (windows.length > 0 && start <= windows[windows.length - 1][1] + 1) {
         windows[windows.length - 1][1] = Math.max(windows[windows.length - 1][1], end);
       } else {
@@ -500,10 +635,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.contextBlocks = windows.map(([start, end]) => ({
-      startIdx: start,
+      startIdx: pool[start].globalIdx,
       lines: Array.from({ length: end - start + 1 }, (_, i) => ({
-        line: this.allLines[start + i],
-        globalIdx: start + i,
+        line: pool[start + i],
+        globalIdx: pool[start + i].globalIdx,
       })),
       collapsed: false,
     }));
@@ -542,7 +677,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Highlight ──────────────────────────────────────────────────────────────
 
   highlightText(text: string): SafeHtml {
-    const cached = this.highlightCache.get(text);
+    const cacheKey = this._committedSearchTerm + '\x00' + text;
+    const cached = this.highlightCache.get(cacheKey);
     if (cached !== undefined) return cached;
 
     const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -552,8 +688,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       result = this.sanitizer.bypassSecurityTrustHtml(escaped);
     } else {
       if (this._cachedHighlightTerm !== term || !this._cachedHighlightRegExp) {
-        const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        this._cachedHighlightRegExp = new RegExp(safeRe, 'gi');
+        if (this._committedRegexMode) {
+          // Use the user's regex directly (already validated in commitSearch).
+          this._cachedHighlightRegExp = new RegExp(term, 'gi');
+        } else {
+          const safeRe = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          this._cachedHighlightRegExp = new RegExp(safeRe, 'gi');
+        }
         this._cachedHighlightTerm = term;
       }
       result = this.sanitizer.bypassSecurityTrustHtml(
@@ -564,7 +705,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this.highlightCache.size >= this.HIGHLIGHT_CACHE_MAX) {
       this.highlightCache.delete(this.highlightCache.keys().next().value!);
     }
-    this.highlightCache.set(text, result);
+    this.highlightCache.set(cacheKey, result);
     return result;
   }
 
@@ -576,6 +717,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * Falls back to native browser selection when clicked outside an Order ID.
    */
   onLogBodyDblClick(event: MouseEvent): void {
+    // Cancel any pending single-click activeLineIdx update so the DOM is not
+    // re-rendered between the two clicks of the double-click gesture.
+    clearTimeout(this._lineClickTimer);
     // ── Branch 1: timestamp double-click → populate date filter ─────────────
     const tsEl = (event.target as Element)?.closest('.log-ts') as HTMLElement | null;
     if (tsEl) {
@@ -609,14 +753,42 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const fullText = textEl.textContent || '';
     if (!fullText.includes('#')) return;  // no Order IDs possible in this line
 
-    // The browser already applied its word-selection by the time dblclick fires.
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
+    // Resolve the caret position using the click coordinates against the CURRENT
+    // live DOM. This is more reliable than sel.getRangeAt(0) whose startContainer
+    // may reference a stale (detached) text node if Angular re-rendered the line
+    // (via the 250ms onLineClick timer) between the first click and the dblclick.
+    let charOffset = 0;
+    try {
+      let container: Node | null = null;
+      let nodeOffset = 0;
+      if ((document as any).caretRangeFromPoint) {
+        // Chromium / Safari / Edge
+        const cr: Range = (document as any).caretRangeFromPoint(event.clientX, event.clientY);
+        if (cr) { container = cr.startContainer; nodeOffset = cr.startOffset; }
+      } else if ((document as any).caretPositionFromPoint) {
+        // Firefox
+        const cp = (document as any).caretPositionFromPoint(event.clientX, event.clientY);
+        if (cp) { container = cp.offsetNode; nodeOffset = cp.offset; }
+      }
+      if (container && textEl.contains(container)) {
+        const preRange = document.createRange();
+        preRange.setStart(textEl, 0);
+        preRange.setEnd(container, nodeOffset);
+        charOffset = preRange.toString().length;
+      } else {
+        // Fallback: use the browser word-selection range (may be stale in rare cases)
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const r = sel.getRangeAt(0);
+        const preRange = document.createRange();
+        preRange.setStart(textEl, 0);
+        preRange.setEnd(r.startContainer, r.startOffset);
+        charOffset = preRange.toString().length;
+      }
+    } catch {
+      return;
+    }
 
-    const r = sel.getRangeAt(0);
-    if (r.startContainer.nodeType !== Node.TEXT_NODE) return;
-
-    const charOffset = getCharOffsetInElement(textEl, r.startContainer, r.startOffset);
     const match = extractOrderId(fullText, charOffset);
 
     // Not inside an Order ID — leave browser word selection as-is
@@ -624,7 +796,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
     // Override browser selection with the full Order ID span
     const domRange = buildRangeInElement(textEl, match.start, match.end);
-    if (domRange) {
+    const sel = window.getSelection();
+    if (domRange && sel) {
       sel.removeAllRanges();
       sel.addRange(domRange);
     }
@@ -651,6 +824,33 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   copiedOrderId: string | null = null;
   activeLineIdx: number | null = null;
   private copyFeedbackTimer?: ReturnType<typeof setTimeout>;
+  private _lineClickTimer?: ReturnType<typeof setTimeout>;
+
+  /**
+   * Deferred single-click handler for log lines.
+   * The 250ms delay lets the browser fire `dblclick` first so we can cancel
+   * the activeLineIdx update — preventing a mid-gesture re-render that would
+   * destroy the text nodes the browser needs for its word-selection.
+   */
+  onLineClick(idx: number): void {
+    clearTimeout(this._lineClickTimer);
+    this._lineClickTimer = setTimeout(() => {
+      this.activeLineIdx = idx;
+      // Only trigger full change detection when the user has no active text selection.
+      // If there is a selection, update the active class directly via DOM to avoid
+      // re-evaluating [innerHTML] bindings which would recreate text nodes and clear it.
+      const sel = window.getSelection();
+      if (sel && sel.toString().length > 0) {
+        const body = this.logBodyRef?.nativeElement;
+        if (body) {
+          body.querySelectorAll('.log-line--active').forEach(el => el.classList.remove('log-line--active'));
+          body.querySelector(`[data-lineidx="${idx}"]`)?.classList.add('log-line--active');
+        }
+      } else {
+        this.cdr.markForCheck();
+      }
+    }, 250);
+  }
 
   private showCopyFeedback(id: string): void {
     this.copiedOrderId = id;
@@ -738,6 +938,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.levelJumpIndices.set(level, arrIdx);
     this.levelLastDir.set(level, dir);
     this.activeLineIdx = targetGlobalIdx;
+    this._safeMarkForCheck();
   }
 
   /** Returns `"N/total"` when navigation has started for `level`, otherwise `"total"`.
@@ -747,6 +948,87 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const idx = this.levelJumpIndices.get(level);
     if (idx === undefined) return String(total);
     return `${idx + 1}/${total}`;
+  }
+
+  /** Returns the search match navigation label: "3/47" when navigating, "47" otherwise.
+   *  The denominator counts individual match tokens (not lines). */
+  get searchMatchLabel(): string {
+    const total = this._searchMatchPositions.length;
+    if (total === 0) return '0';
+    if (this._searchJumpIdx === null) return String(total);
+    return `${this._searchJumpIdx + 1}/${total}`;
+  }
+
+  /** Total number of individual search-term occurrences across all matching lines. */
+  get searchMatchCount(): number { return this._searchMatchPositions.length; }
+
+  /** Navigate to the next or previous individual search-term occurrence.
+   *  A single line that contains the term twice counts as two separate stops. */
+  jumpToSearchMatch(dir: 'next' | 'prev'): void {
+    const el = this.logBodyRef?.nativeElement;
+    const positions = this._searchMatchPositions;
+    if (!el || positions.length === 0) return;
+
+    let posIdx: number;
+    // Determine whether the previous jump position still corresponds to the currently
+    // active line. If the user clicked a different line since the last navigation,
+    // activeLineIdx will differ from positions[_searchJumpIdx].globalIdx, so we
+    // must re-anchor from activeLineIdx rather than blindly stepping from _searchJumpIdx.
+    const jumpStillMatchesActiveLine =
+      this._searchJumpIdx !== null &&
+      positions[this._searchJumpIdx]?.globalIdx === this.activeLineIdx;
+
+    if (jumpStillMatchesActiveLine) {
+      // Continue stepping from where we left off.
+      posIdx = dir === 'next'
+        ? (this._searchJumpIdx! + 1) % positions.length
+        : (this._searchJumpIdx! - 1 + positions.length) % positions.length;
+    } else if (this.activeLineIdx !== null) {
+      // First navigation, or user clicked a different line — re-anchor.
+      const anchor = this.activeLineIdx;
+      if (dir === 'next') {
+        const found = positions.findIndex(p => p.globalIdx >= anchor);
+        posIdx = found !== -1 ? found : 0;
+      } else {
+        let found = -1;
+        for (let i = positions.length - 1; i >= 0; i--) {
+          if (positions[i].globalIdx <= anchor) { found = i; break; }
+        }
+        posIdx = found !== -1 ? found : positions.length - 1;
+      }
+    } else {
+      posIdx = dir === 'next' ? 0 : positions.length - 1;
+    }
+
+    const { globalIdx: targetGlobalIdx, occurrenceInLine } = positions[posIdx];
+
+    // In filter mode: ensure the block containing this match is expanded.
+    if (this.filterMode && this._committedSearchTerm) {
+      for (const block of this.contextBlocks) {
+        if (block.collapsed && block.lines.some(e => e.globalIdx === targetGlobalIdx)) {
+          block.collapsed = false;
+          break;
+        }
+      }
+    }
+
+    this._searchJumpIdx = posIdx;
+    this.activeLineIdx  = targetGlobalIdx;
+    this._safeMarkForCheck();
+    // After Angular renders any newly-expanded blocks, focus the exact <mark> occurrence.
+    setTimeout(() => {
+      el.querySelectorAll<HTMLElement>('mark.log-search-match--focused')
+        .forEach(m => m.classList.remove('log-search-match--focused'));
+      const lineEl = el.querySelector<HTMLElement>(`[data-lineidx="${targetGlobalIdx}"]`);
+      const marks  = lineEl?.querySelectorAll<HTMLElement>('mark.log-search-match');
+      const markEl = marks?.[occurrenceInLine];
+      if (markEl) {
+        markEl.classList.add('log-search-match--focused');
+        markEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else {
+        lineEl?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }, 0);
   }
 
   scrollToTop(): void {
@@ -769,13 +1051,39 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  get displayTz(): string {
-    // Case A (logTimezone=true):  timestamps are converted to the user profile tz — show profile tz in chip.
-    // Case B (logTimezone=false): timestamps stay in the controller/agent tz — show that tz in chip.
-    if (this.logTimezone) {
-      return this.profileTz || this.timeZone;
+  /** True when timestamps should be converted to the user profile tz; false = stay in Controller tz.
+   *  Respects the per-window _tzOverride before falling back to the global logTimezone preference. */
+  private get _useProfileTz(): boolean {
+    if (this._tzOverride === 'profile')  return true;
+    if (this._tzOverride === 'original') return false;
+    return this.logTimezone;
+  }
+
+  /** Toggle between profile tz and original (Controller/Agent) tz for this window. */
+  toggleTzMode(): void {
+    if (this._useProfileTz) {
+      // Currently showing profile tz → switch to original
+      this._tzOverride = 'original';
+    } else {
+      // Currently showing original tz → switch to profile (or preference-driven if profile is set)
+      this._tzOverride = this.profileTz ? 'profile' : null;
     }
-    return this.timeZone || this.request?.timeZone || '';
+    // Recompute date filter comparisons in case user has an active filter.
+    this._dateFilterDebounce.next();
+    this.cdr.markForCheck();
+  }
+
+  get displayTz(): string {
+    const controllerTz = this.timeZone || this.request?.timeZone || '';
+    if (this._useProfileTz) {
+      return this.profileTz || controllerTz;
+    }
+    return controllerTz;
+  }
+
+  /** True when this window is currently showing timestamps in the original Controller/Agent tz. */
+  get isOriginalTzMode(): boolean {
+    return !this._useProfileTz;
   }
 
   formatTimestamp(raw: string): string {
@@ -785,11 +1093,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     // Fall back to request.timeZone only before the first response arrives.
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
-      if (this.logTimezone && this.profileTz) {
-        // Case A: parse as controller tz, then convert to user profile tz.
+      if (this._useProfileTz && this.profileTz) {
+        // Profile tz mode: parse as Controller tz, then convert to user profile tz.
         return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
       } else {
-        // Case B: parse as controller tz, display in that tz with UTC offset appended.
+        // Original tz mode: display in Controller tz with UTC offset appended.
         return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).format('YYYY-MM-DD HH:mm:ssZ');
       }
     }
@@ -824,11 +1132,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
-        this.cdr.markForCheck();
+        this._safeMarkForCheck();
       },
       error: () => {
         this.isLoading = false;
-        this.cdr.markForCheck();
+        this._safeMarkForCheck();
       }
     });
   }
@@ -849,11 +1157,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
-        this.cdr.markForCheck();
+        this._safeMarkForCheck();
       },
       error: () => {
         this.isLoading = false;
-        this.cdr.markForCheck();
+        this._safeMarkForCheck();
       }
     });
   }
@@ -883,15 +1191,36 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.levelLastDir.clear();
     this.levelLineMap.clear();
     this._matchLineSet.clear();
+    this._searchMatchIdxs = [];
+    this._searchMatchPositions = [];
+    this._searchJumpIdx = null;
     this.fetchLog();
   }
 
   // ── Private helpers ────────────────────────────────────────────────────────
 
+  /** Calls markForCheck() immediately when no selection is active; otherwise defers
+   *  using requestAnimationFrame to avoid destroying innerHTML text nodes mid-drag. */
+  private _safeMarkForCheck(): void {
+    if (this._userSelecting) {
+      requestAnimationFrame(() => {
+        if (!this.destroyed) this.cdr.markForCheck();
+      });
+    } else {
+      this.cdr.markForCheck();
+    }
+  }
+
   private scheduleNextPoll(): void {
     this.clearPollTimer();
     if (this.followTail && !this.isComplete && this.token) {
       this.pollTimer = setTimeout(() => {
+        // Do not poll while the user has an active text selection — the response
+        // would trigger markForCheck() which destroys innerHTML text nodes.
+        if (this._userSelecting) {
+          this.scheduleNextPoll(); // reschedule and try again after another interval
+          return;
+        }
         if (!this.destroyed && this.followTail && !this.isComplete && this.token) {
           this.loadMore();
         }
@@ -942,7 +1271,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         setTimeout(processChunk, 0);
       }
-      this.cdr.markForCheck();
+      this._safeMarkForCheck();
     };
 
     processChunk();
