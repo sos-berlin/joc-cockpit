@@ -65,22 +65,39 @@
           </ul>
         </nz-dropdown-menu>
 
-        <!-- Keyword search input (synced globally across all log windows) -->
-        <div class="log-search-wrap">
-          <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
-          <input #searchInput
-                 class="log-search-input" type="text"
-                 [(ngModel)]="searchTerm"
-                 (ngModelChange)="onSearchChange()"
-                 [placeholder]="'logConsole.placeholder.search' | translate"
-                 [appRichTooltip]="'logConsole.tooltip.search' | translate"
-                 autocomplete="off"
-                 aria-label="Search">
-          @if (searchTerm) {
-            <button class="log-search-clear" (click)="clearSearch()" (mousedown)="$event.preventDefault()">
-              <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-            </button>
-          }
+        <!-- Regex checkbox + search input — grouped as one compound control -->
+        <div class="log-search-group" [class.log-search-group--error]="!!regexError">
+
+          <button class="log-regex-checkbox"
+                  [class.active]="regexMode"
+                  (click)="regexMode = !regexMode; onRegexModeChange()"
+                  (mousedown)="$event.preventDefault()"
+                  [appRichTooltip]="'logConsole.tooltip.regularExp' | translate"
+                  [attr.aria-label]="'logConsole.tooltip.regularExp' | translate"
+                  type="button"><span class="log-regex-label">.*</span></button>
+
+          <div class="log-search-wrap">
+            <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
+            <input #searchInput
+                   class="log-search-input" type="text"
+                   [(ngModel)]="searchTerm"
+                   (ngModelChange)="onSearchChange()"
+                   [placeholder]="'logConsole.placeholder.search' | translate"
+                   [appRichTooltip]="'logConsole.tooltip.search' | translate"
+                   autocomplete="off"
+                   [attr.aria-label]="'logConsole.tooltip.search' | translate">
+            @if (regexError) {
+              <span class="log-regex-error-icon" [appRichTooltip]="regexError">
+                <i nz-icon nzType="warning" nzTheme="outline"></i>
+              </span>
+            }
+            @if (searchTerm) {
+              <button class="log-search-clear" (click)="clearSearch()" (mousedown)="$event.preventDefault()">
+                <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </button>
+            }
+          </div>
+
         </div>
 
         <!-- Mode toggle: highlight ↔ filter -->
@@ -107,20 +124,44 @@
           </div>
         }
 
+        <!-- Search navigation: prev / next match + occurrence counter -->
+        @if (searchMatchCount > 0) {
+          <div class="log-search-nav">
+            <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')" [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
+              <i nz-icon nzType="up" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="jumpToSearchMatch('next')" [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
+              <i nz-icon nzType="down" nzTheme="outline"></i>
+            </button>
+            <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
+          </div>
+        }
+
       </div>
 
       <!-- Toolbar actions -->
       <div class="log-console-actions">
         @if (copiedOrderId) {
           <span class="log-copy-feedback">
-            <i nz-icon nzType="check-circle" nzTheme="filled"></i>
+            <i nz-icon nzType="check-circle" nzTheme="outline"></i>
             {{ 'logConsole.message.copied' | translate }}: {{ copiedOrderId }}
           </span>
         }
-        @if (displayTz) {
-          <span class="log-tz-chip" [appRichTooltip]="'logConsole.tooltip.displayTimeZone' | translate">
-            <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ displayTz }}
-          </span>
+        @if (displayTz || (timeZone || request?.timeZone)) {
+          <button class="log-tz-chip"
+                  [class.log-tz-chip--original]="isOriginalTzMode"
+                  (click)="toggleTzMode()"
+                  [attr.aria-pressed]="isOriginalTzMode"
+                  [attr.aria-label]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate"
+                  [appRichTooltip]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate"
+                  type="button">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            @if (isOriginalTzMode) {
+              <span translate>logConsole.label.tzOriginal</span>
+            } @else {
+              {{ displayTz }}
+            }
+          </button>
         }
         <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading"
                 [appRichTooltip]="'logConsole.tooltip.reload' | translate">
@@ -147,106 +188,101 @@
 
         @if (hasInfo) {
           <div class="log-level-group" [class.log-level-group--off]="!filters.info">
-            <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show INFO"></label>
+            <label nz-checkbox [(ngModel)]="filters.info" (ngModelChange)="onFilterChange()" class="log-level-checkbox" [attr.aria-label]="'log.label.info' | translate"></label>
             <button class="log-level-btn log-level-btn-info"
                     [class.log-level-btn--active]="levelLastDir.get('info') !== undefined"
-                    (click)="jumpToLevel('info')"
-                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+                    (click)="jumpToLevel('info')">
               <span class="log-badge log-badge-info" translate>log.label.info</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('info', 'prev')"
-                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
               <i nz-icon nzType="up" nzTheme="outline"></i>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('info', 'next')"
-                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
               <i nz-icon nzType="down" nzTheme="outline"></i>
             </button>
-            <span class="log-occurrence-count">{{ levelOccurrenceLabel('info') }}</span>
+            <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('info') }}</span>
           </div>
         }
 
         @if (hasWarn) {
           <div class="log-level-group" [class.log-level-group--off]="!filters.warn">
-            <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show WARN"></label>
+            <label nz-checkbox [(ngModel)]="filters.warn" (ngModelChange)="onFilterChange()" class="log-level-checkbox" [attr.aria-label]="'log.label.warn' | translate"></label>
             <button class="log-level-btn log-level-btn-warn"
                     [class.log-level-btn--active]="levelLastDir.get('warn') !== undefined"
-                    (click)="jumpToLevel('warn')"
-                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+                    (click)="jumpToLevel('warn')">
               <span class="log-badge log-badge-warn" translate>log.label.warn</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('warn', 'prev')"
-                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
               <i nz-icon nzType="up" nzTheme="outline"></i>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('warn', 'next')"
-                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
               <i nz-icon nzType="down" nzTheme="outline"></i>
             </button>
-            <span class="log-occurrence-count">{{ levelOccurrenceLabel('warn') }}</span>
+            <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('warn') }}</span>
           </div>
         }
 
         @if (hasError) {
           <div class="log-level-group" [class.log-level-group--off]="!filters.error">
-            <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show ERROR"></label>
+            <label nz-checkbox [(ngModel)]="filters.error" (ngModelChange)="onFilterChange()" class="log-level-checkbox" [attr.aria-label]="'log.label.error' | translate"></label>
             <button class="log-level-btn log-level-btn-error"
                     [class.log-level-btn--active]="levelLastDir.get('error') !== undefined"
-                    (click)="jumpToLevel('error')"
-                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+                    (click)="jumpToLevel('error')">
               <span class="log-badge log-badge-error" translate>log.label.error</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('error', 'prev')"
-                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
               <i nz-icon nzType="up" nzTheme="outline"></i>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('error', 'next')"
-                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
               <i nz-icon nzType="down" nzTheme="outline"></i>
             </button>
-            <span class="log-occurrence-count">{{ levelOccurrenceLabel('error') }}</span>
+            <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('error') }}</span>
           </div>
         }
 
         @if (hasDebug) {
           <div class="log-level-group" [class.log-level-group--off]="!filters.debug">
-            <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show DEBUG"></label>
+            <label nz-checkbox [(ngModel)]="filters.debug" (ngModelChange)="onFilterChange()" class="log-level-checkbox" [attr.aria-label]="'log.label.debug' | translate"></label>
             <button class="log-level-btn log-level-btn-debug"
                     [class.log-level-btn--active]="levelLastDir.get('debug') !== undefined"
-                    (click)="jumpToLevel('debug')"
-                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+                    (click)="jumpToLevel('debug')">
               <span class="log-badge log-badge-debug" translate>log.label.debug</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('debug', 'prev')"
-                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
               <i nz-icon nzType="up" nzTheme="outline"></i>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('debug', 'next')"
-                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
               <i nz-icon nzType="down" nzTheme="outline"></i>
             </button>
-            <span class="log-occurrence-count">{{ levelOccurrenceLabel('debug') }}</span>
+            <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('debug') }}</span>
           </div>
         }
 
         @if (hasTrace) {
           <div class="log-level-group" [class.log-level-group--off]="!filters.trace">
-            <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()" class="log-level-checkbox" aria-label="Show TRACE"></label>
+            <label nz-checkbox [(ngModel)]="filters.trace" (ngModelChange)="onFilterChange()" class="log-level-checkbox" [attr.aria-label]="'log.label.trace' | translate"></label>
             <button class="log-level-btn log-level-btn-trace"
                     [class.log-level-btn--active]="levelLastDir.get('trace') !== undefined"
-                    (click)="jumpToLevel('trace')"
-                    [appRichTooltip]="'logConsole.tooltip.jumpLevel' | translate">
+                    (click)="jumpToLevel('trace')">
               <span class="log-badge log-badge-trace" translate>log.label.trace</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('trace', 'prev')"
-                    [appRichTooltip]="'logConsole.tooltip.prevOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
               <i nz-icon nzType="up" nzTheme="outline"></i>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('trace', 'next')"
-                    [appRichTooltip]="'logConsole.tooltip.nextOccurrence' | translate">
+                    [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
               <i nz-icon nzType="down" nzTheme="outline"></i>
             </button>
-            <span class="log-occurrence-count">{{ levelOccurrenceLabel('trace') }}</span>
+            <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('trace') }}</span>
           </div>
         }
 
@@ -284,9 +320,6 @@
               </button>
             }
           </div>
-          @if (displayTz) {
-            <span class="log-date-tz-hint">{{ displayTz }}</span>
-          }
         </div>
       }
 
@@ -305,25 +338,22 @@
         }
       }
 
-      <!-- Jump to start / end + line counter (right side) -->
-      <div class="log-jump-shortcuts">
-        <button class="btn btn-xs btn-default"
+      <!-- Jump to start / end + line counter (right side, merged) -->
+      <div class="log-jump-group">
+        @if (allLines.length > 0) {
+          <span class="log-jump-line-count">{{ activeLineIdx !== null ? activeLineIdx + 1 : '\u2013' }}/{{ allLines.length }}</span>
+        }
+        <button class="log-nav-btn"
                 (click)="scrollToTop()"
                 [appRichTooltip]="'logConsole.tooltip.jumpToStart' | translate">
           <i nz-icon nzType="vertical-align-top" nzTheme="outline"></i>
         </button>
-        <button class="btn btn-xs btn-default"
+        <button class="log-nav-btn"
                 (click)="scrollToBottom()"
                 [appRichTooltip]="'logConsole.tooltip.jumpToEnd' | translate">
           <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
         </button>
       </div>
-
-      @if (allLines.length > 0) {
-        <div class="log-line-count">
-          <span>{{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ allLines.length }}</span>
-        </div>
-      }
 
     </div>
 
@@ -360,7 +390,7 @@
             <i nz-icon [nzType]="block.collapsed ? 'right' : 'down'" nzTheme="outline"
                class="log-context-chevron"></i>
             <span class="log-context-label-text">
-              {{ 'logConsole.label.contextLines' | translate: { from: block.startIdx + 1, to: block.startIdx + block.lines.length } }}
+              {{ 'logConsole.label.contextLines' | translate: { from: block.startIdx + 1, to: block.lines[block.lines.length - 1].globalIdx + 1 } }}
             </span>
           </div>
           @if (!block.collapsed) {
@@ -370,7 +400,7 @@
                    [class.log-line--active]="activeLineIdx === entry.line.globalIdx"
                    [attr.data-lineidx]="entry.line.globalIdx"
                    [style.border-left-color]="lineBorderColor(entry.line.level)"
-                   (click)="activeLineIdx = entry.line.globalIdx">
+                   (click)="onLineClick(entry.line.globalIdx)">
                 <span class="log-ts-small text-muted">{{ entry.globalIdx + 1 }}</span>
                 @if (entry.line.timestamp) {
                   <span class="log-ts">{{ formatTimestamp(entry.line.timestamp) }}</span>
@@ -392,7 +422,7 @@
              [class.log-line--active]="activeLineIdx === line.globalIdx"
              [attr.data-lineidx]="line.globalIdx"
              [style.border-left-color]="lineBorderColor(line.level)"
-             (click)="activeLineIdx = line.globalIdx">
+             (click)="onLineClick(line.globalIdx)">
           @if (line.timestamp) {
             <span class="log-ts">{{ formatTimestamp(line.timestamp) }}</span>
             <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.level }}</span>

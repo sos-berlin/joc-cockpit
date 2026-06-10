@@ -80,7 +80,7 @@
   font-weight: 600;
   color: var(--text-muted);
   min-width: 22px;
-  text-align: left;
+  text-align: right;
   padding-left: 3px;
 }
 
@@ -160,10 +160,24 @@
 }
 
 // ─── Jump-to-start / end shortcuts ───────────────────────────────────────────
-.log-jump-shortcuts {
+// Jump shortcuts + line counter — merged, pinned to right
+.log-jump-group {
   display: inline-flex;
+  align-items: center;
   gap: 2px;
+  margin-left: auto;
   flex-shrink: 0;
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+}
+
+.log-jump-line-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-right: 5px;
+  border-right: 1px solid var(--border-color);
+  margin-right: 5px;
 }
 
 // Status notes (loading / filter-active indicator)
@@ -190,7 +204,57 @@
   justify-content: center;
 }
 
-// ─── Keyword search ─────────────────────────────────────────────────────────
+// ─── Regex + search compound control ───────────────────────────────────────────────
+// Groups the .* checkbox and the search input as a single visual unit.
+.log-search-group {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-box);
+  transition: border-color 150ms;
+
+  &:focus-within     { border-color: var(--primary); }
+  &--error           { border-color: var(--red); }
+}
+
+// ─── Regex mode checkbox ─────────────────────────────────────────────────────────
+// Sits on the left edge of .log-search-group, separated by a thin divider.
+.log-regex-checkbox {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px 0 10px;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  border-radius: 12px 0 0 12px;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 80ms;
+  user-select: none;
+
+  &:hover { background: rgba(128, 128, 128, .06); }
+
+  &.active {
+    background: var(--primary, #0e8a8b);
+    color: #fff;
+  }
+
+  .log-regex-label {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: monospace;
+    color: var(--text-muted);
+    line-height: 1;
+    transition: color 120ms;
+  }
+
+  &:hover .log-regex-label  { color: var(--text-color); }
+  &.active .log-regex-label { color: #fff }
+}
+
+// ─── Keyword search ─────────────────────────────────────────────────────────────
+// The search input portion of .log-search-group — no own border (group owns it).
 .log-search-wrap {
   position: relative;
   display: inline-flex;
@@ -206,21 +270,17 @@
 
   .log-search-input {
     height: 24px;
-    padding: 0 24px 0 26px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-box);
+    padding: 0 44px 0 26px;
+    border: none;
+    border-radius: 0 12px 12px 0;
+    background: transparent;
     color: var(--text-color);
     font-size: 11px;
     width: 180px;
     outline: none;
-    transition: border-color 150ms, width 150ms;
+    transition: width 150ms;
 
-    &:focus {
-      border-color: var(--primary);
-      width: 260px;
-    }
-
+    &:focus  { width: 260px; }
     &::placeholder { color: var(--text-muted); }
   }
 
@@ -239,6 +299,18 @@
     align-items: center;
 
     &:hover { color: var(--text-color); }
+  }
+
+  // Warning icon when regex pattern is invalid
+  .log-regex-error-icon {
+    position: absolute;
+    right: 26px;
+    z-index: 1;
+    color: var(--red);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    cursor: default;
   }
 }
 
@@ -284,7 +356,21 @@
 .log-context-lines-input {
   width: 65px;
 }
+// ─── Search prev / next navigation ──────────────────────────────────────
+.log-search-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 5px 1px 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
 
+.log-search-match-count {
+  color: var(--primary);
+  min-width: 28px;
+}
 // ─── Empty / no-matches state icons ───────────────────────────────────────────
 .log-state-icon {
   font-size: 26px;
