@@ -329,7 +329,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.fork.joinIfFailed' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
-                         title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
+                         translate>workflow.label.joinIfFailed</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.joinIfFailed" name="joinIfFailed" nz-checkbox></label>
                   </div>
@@ -474,7 +474,7 @@
                       </div>
                       <div class="form-group row">
                         <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.childToId' | translate"
-                               class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.childToId' | translate}}"
+                               class="col-md-4 col-lg-3 form-control-label"
                                translate>workflow.label.childToId</label>
                         <div class="col-md-8 col-lg-9">
                           <nz-select [(ngModel)]="selectedNode.obj.childToId" name="childToId" nzAllowClear>
@@ -575,7 +575,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.forkList.joinIfFailed' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
-                         title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
+                         translate>workflow.label.joinIfFailed</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.joinIfFailed" name="joinIfFailed" nz-checkbox></label>
                   </div>
@@ -736,7 +736,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.board.boardNames' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
-                         title="{{'workflow.label.boardNames' | translate}}" translate>workflow.label.boardNames
+                         translate>workflow.label.boardNames
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-md-8 col-lg-9">
@@ -753,14 +753,14 @@
                   @if (selectedNode.type === 'ExpectNotices') {
                     <label [appRichTooltip]="'inventory.tooltips.workflow.board.expectBoardExpression' | translate"
                            class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.expectBoardExpression' | translate}}" translate>workflow.label.expectBoardExpression
+                           translate>workflow.label.expectBoardExpression
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                   }
                   @if (selectedNode.type === 'ConsumeNotices') {
                     <label [appRichTooltip]="'inventory.tooltips.workflow.board.consumeBoardExpression' | translate"
                            class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.consumeBoardExpression' | translate}}" translate>workflow.label.consumeBoardExpression
+                           translate>workflow.label.consumeBoardExpression
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                   }
@@ -797,7 +797,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.board.whenNotAnnounced' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
-                         title="{{'workflow.label.whenNotAnnounced' | translate}}" translate>workflow.label.whenNotAnnounced
+                         translate>workflow.label.whenNotAnnounced
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-md-8 col-lg-9">
@@ -1232,7 +1232,7 @@
                 <div class="form-group row" [hidden]="!blockPositions || blockPositions?.size == 0">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.blockPosition' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
-                         title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
+                         translate>workflow.label.blockPosition</label>
                   @if (positions) {
                     <div class="col-md-8 col-lg-9">
                       <app-node-position [obj]="selectedNode.obj" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" (onBlur)="getNewPositions($event)"
@@ -1244,7 +1244,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.startPosition' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
-                         title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
+                         translate>workflow.label.startPosition</label>
                   @if (positions) {
                     <div class="col-md-8 col-lg-9">
                       <app-node-position [obj]="selectedNode.obj" [newPositions]="newPositions" [positions]="positions"
@@ -1256,7 +1256,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.endPositions' | translate"
                          class="col-md-4 col-lg-3 form-control-label"
-                         title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
+                         translate>workflow.label.endPositions</label>
                   @if (positions) {
                     <div class="col-md-8 col-lg-9">
                       <app-node-position (onBlur)="updateEndNode(selectedNode.obj)" [newPositions]="newPositions" [obj]="selectedNode.obj" [position]="selectedNode.obj.startPosition"
@@ -1269,7 +1269,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
-                         title="{{'order.label.ignoreAdmissionTimes' | translate}}" translate>order.label.ignoreAdmissionTimes</label>
+                         translate>order.label.ignoreAdmissionTimes</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox></label>
                   </div>
@@ -1278,7 +1278,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate"
                          class="col-md-4 col-lg-3 block-ellipsis-job"
-                         title="{{'workflow.label.remainWhenTerminated' | translate}}" translate>workflow.label.remainWhenTerminated</label>
+                         translate>workflow.label.remainWhenTerminated</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.remainWhenTerminated" name="remainWhenTerminated"
                            nz-checkbox></label>
@@ -1722,7 +1722,7 @@
               <div [ngClass]="{'hide': fullScreen}" class="form-group row">
                 <label [appRichTooltip]="'inventory.tooltips.workflow.documentation' | translate"
                        class="col-md-4 col-lg-3 form-control-label"
-                       title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
+                       translate>inventory.label.documentation</label>
                 <div class="col-md-8 col-lg-9">
                   <app-select-document (funcCall)="updateOtherProperties('documentation')" [data]="extraConfiguration"
                                        [documentationTree]="documentationTree"></app-select-document>
@@ -1732,7 +1732,7 @@
             <div [ngClass]="{'hide': fullScreen}" class="form-group row">
               <label [appRichTooltip]="'inventory.tooltips.workflow.jobResourceNames' | translate"
                      class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
+                     translate>workflow.label.jobResourceNames</label>
               <div class="col-md-8 col-lg-9">
                 <app-multi-select (funcCall)="updateOtherProperties('jobResourceNames')" [attribute]="'jobResourceNames'" [list]="extraConfiguration"
                                   [nodes]="jobResourcesTree"
@@ -1742,7 +1742,7 @@
             <div [ngClass]="{'hide': fullScreen}" class="form-group row">
               <div [appRichTooltip]="'inventory.tooltips.workflow.timeZone' | translate"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
+                   translate>workflow.label.timeZone
               </div>
               <div class="col-md-8 col-lg-9">
                 <nz-select [(ngModel)]="extraConfiguration.timeZone" name="timeZone" (ngModelChange)="updateOtherProperties('timeZone')"
@@ -1755,7 +1755,7 @@
             </div>
             @if (allowUndeclaredVariables || variableDeclarations.allowUndeclared) {
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [appRichTooltip]="'inventory.tooltips.workflow.allowUndeclared' | translate"
+                <label class="col-md-4 col-lg-3 block-ellipsis-job" [appRichTooltip]="'inventory.tooltips.workflow.allowUndeclared' | translate"
                        translate>workflow.label.allowUndeclared</label>
                 <div class="col-md-8 col-lg-9">
                   <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('allowUndeclared')"

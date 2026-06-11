@@ -18,6 +18,12 @@
     @if (operation === 'update' && category !== 'LOCAL') {
       <span translate>inventory.label.updateFromRollout</span>
     }
+    @if (link === 'link') {
+      <span translate>inventory.label.linkToGitRepository</span>
+    }
+    @if (link === 'unlink') {
+      <span translate>inventory.label.unLinkFromGitRepository</span>
+    }
     @if (path) {
       <span>: {{path}}</span>
     }

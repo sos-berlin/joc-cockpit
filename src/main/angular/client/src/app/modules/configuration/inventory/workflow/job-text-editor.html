@@ -152,7 +152,6 @@
             <div [hidden]="fullScreen" class="form-group row doc-in-workflow">
               <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'inventory.label.documentation' | translate}}"
                      translate>inventory.label.documentation</label>
               <div [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name), 'col-md-8 col-lg-9': !isModal}"
                    class="col-md-6 col-lg-8">
@@ -247,7 +246,6 @@
           <div [hidden]="fullScreen" class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.jobResourceNames' | translate}}"
                    translate>workflow.label.jobResourceNames</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
               <app-multi-select [isDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" (onSelectCall)="onChangeJobResource()" (onChange)="toggleCheckbox('jobResourceNames', $event)" [attribute]="'list'" [list]="jobresources"
@@ -313,7 +311,6 @@
           <div [hidden]="fullScreen" class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.onWarning' | translate}}"
                    translate>
               workflow.label.onWarning
             </label>
@@ -984,7 +981,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
-               title="{{'workflow.label.parallelism' | translate}}"
                translate>workflow.label.parallelism</label>
         <div [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid), 'col-md-8 col-lg-9': !isModal}"
              class="col-md-6 col-lg-8">
@@ -1008,7 +1004,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
-               title="{{'workflow.label.timeout' | translate}}"
                translate>workflow.label.timeout</label>
         <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid), 'col-md-8 col-lg-9': !isModal}"
              class="col-md-6 col-lg-8">
@@ -1029,7 +1024,6 @@
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.graceTimeout' | translate}}"
                  translate>workflow.label.graceTimeout</label>
           <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
@@ -1050,7 +1044,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
-               title="{{'workflow.label.warnIfShorter' | translate}}"
                translate>workflow.label.warnIfShorter</label>
         <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid), 'col-md-8 col-lg-9': !isModal}"
              class="col-md-6 col-lg-8">
@@ -1070,7 +1063,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
-               title="{{'workflow.label.warnIfLonger' | translate}}"
                translate>workflow.label.warnIfLonger</label>
         <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid), 'col-md-8 col-lg-9': !isModal}"
              class="col-md-6 col-lg-8">
@@ -1091,7 +1083,6 @@
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <nz-select [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="toggleCheckbox('v1Compatible', $event)" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
@@ -1109,7 +1100,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
                class="col-md-4 col-lg-3 form-control-label"
-               title="{{'workflow.label.criticality' | translate}}"
                translate>workflow.label.criticality</label>
         <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
           <nz-select [(ngModel)]="selectedNode.job.criticality" (ngModelChange)="toggleCheckbox('criticality', $event)"
@@ -1132,7 +1122,6 @@
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobNotRestartable' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
-                 title="{{'workflow.label.jobNotRestartable' | translate}}"
                  translate>workflow.label.jobNotRestartable</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
@@ -1153,7 +1142,6 @@
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.credentialKey' | translate}}"
                  translate>workflow.label.credentialKey
             @if (selectedNode.job.executable.login.withUserProfile) {
               <sup class="text-danger text-sm">*</sup>
@@ -1180,7 +1168,6 @@
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
-                 title="{{'workflow.label.loadUserProfile' | translate}}"
                  translate>workflow.label.loadUserProfile</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label [(ngModel)]="selectedNode.job.executable.login.withUserProfile" (ngModelChange)="toggleCheckbox('withUserProfile', $event)"   [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
@@ -1197,7 +1184,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
-               title="{{'workflow.label.failOnOutputErr' | translate}}"
                translate>workflow.label.failOnOutputErr</label>
         <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
           <label [(ngModel)]="selectedNode.job.failOnErrWritten" (ngModelChange)="toggleCheckbox('failOnErrWritten', $event)"
@@ -1212,7 +1198,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
-               title="{{'workflow.label.warnOnOutputErr' | translate}}"
                translate>workflow.label.warnOnOutputErr</label>
         <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
           <label [(ngModel)]="selectedNode.job.warnOnErrWritten" (ngModelChange)="toggleCheckbox('warnOnErrWritten', $event)"
@@ -1227,7 +1212,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
-               title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
         <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
           <label [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay" (ngModelChange)="toggleCheckbox('skipIfNoAdmissionForOrderDay', $event)" name="skipIfNoAdmissionForOrderDay"
@@ -1243,7 +1227,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
-               title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
                translate>workflow.label.killAtEndOfAdmissionPeriod</label>
         <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
           <label [(ngModel)]="selectedNode.job.killAtEndOfAdmissionPeriod" (ngModelChange)="toggleCheckbox('killAtEndOfAdmissionPeriod', $event)" name="killAtEndOfAdmissionPeriod"
@@ -1259,7 +1242,6 @@
       <div class="form-group row">
         <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
                class="col-md-4 col-lg-3 block-ellipsis-job"
-               title="{{'workflow.label.admissionTime' | translate}}"
                translate>workflow.label.admissionTime</label>
         <div class="col-md-8 col-lg-9">
           <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
@@ -1453,7 +1435,6 @@
           <div class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.mailOn' | translate}}"
                    translate>workflow.label.mailOn</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
               <nz-select [(ngModel)]="selectedNode.job.notification.types" (ngModelChange)="toggleCheckbox('types', $event)" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate" class="w-full"
@@ -1473,7 +1454,6 @@
           <div class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.mailTo' | translate}}"
                    translate>workflow.label.mailTo</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
               <label class="w-full">
@@ -1491,7 +1471,6 @@
           <div class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.mailCC' | translate}}"
                    translate>workflow.label.mailCC</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
               <label class="w-full">
@@ -1509,7 +1488,6 @@
           <div class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
-                   title="{{'workflow.label.mailBcc' | translate}}"
                    translate>workflow.label.mailBcc</label>
             <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
               <label class="w-full">

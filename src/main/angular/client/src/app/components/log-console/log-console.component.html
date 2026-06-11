@@ -38,11 +38,15 @@
       <div class="log-search-area">
 
         <!-- Date filter toggle — leftmost, before predefined and search -->
-        <button class="btn btn-xs btn-default"
-                [class.btn-primary]="showDateFilter || dateFilterFromStr || dateFilterToStr"
+        <button class="btn btn-xs"
+                [ngClass]="showDateFilter || dateFilterFromStr || dateFilterToStr ? 'btn-primary' : 'btn-default'"
                 (click)="toggleDateFilter()"
                 [appRichTooltip]="'logConsole.tooltip.dateFilter' | translate">
-          <i nz-icon nzType="calendar" nzTheme="outline"></i>
+                @if (showDateFilter || dateFilterFromStr || dateFilterToStr) {
+                  <i class="fa fa-calendar"></i>
+                } @else {
+                  <i class="fa fa-calendar-o"></i>
+                }
         </button>
 
         <!-- Predefined quick-search dropdown -->
@@ -65,77 +69,79 @@
           </ul>
         </nz-dropdown-menu>
 
-        <!-- Regex checkbox + search input — grouped as one compound control -->
-        <div class="log-search-group" [class.log-search-group--error]="!!regexError">
+        <!-- Unified compound control: [mode▾] [⊘ reverse] [.* regex] [input] -->
+        <div class="log-search-group log-search-group--unified" [class.log-search-group--filter]="inputMode === 'filter'" [class.log-search-group--error]="!!unifiedRegexError">
 
-          <button class="log-regex-checkbox"
-                  [class.active]="regexMode"
-                  (click)="regexMode = !regexMode; onRegexModeChange()"
+          <!-- Mode selector dropdown (leftmost) -->
+          <button class="log-search-mode-btn"
+                  nz-dropdown
+                  [nzDropdownMenu]="inputModeMenu"
+                  nzTrigger="click"
+                  [nzPlacement]="'bottomLeft'"
+                  (nzVisibleChange)="inputModeOpen = $event"
+                  (mousedown)="$event.preventDefault()"
+                  [appRichTooltip]="inputModeOpen ? null : ((inputMode === 'filter' ? 'logConsole.tooltip.inputModeFilter' : 'logConsole.tooltip.inputModeSearch') | translate)"
+                  [attr.aria-label]="(inputMode === 'filter' ? 'logConsole.label.inputModeFilter' : 'logConsole.label.inputModeSearch') | translate"
+                  type="button">
+            <i nz-icon [nzType]="inputMode === 'filter' ? 'filter' : 'highlight'" nzTheme="outline"></i>
+            <i nz-icon nzType="down" nzTheme="outline" class="log-search-mode-caret"></i>
+          </button>
+          <nz-dropdown-menu #inputModeMenu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item [nzSelected]="inputMode === 'search'" (click)="setInputMode('search')">
+                <i nz-icon nzType="highlight" nzTheme="outline"></i>
+                {{ 'logConsole.label.inputModeSearch' | translate }}
+              </li>
+              <li nz-menu-item [nzSelected]="inputMode === 'filter'" (click)="setInputMode('filter')">
+                <i nz-icon nzType="filter" nzTheme="outline"></i>
+                {{ 'logConsole.label.inputModeFilter' | translate }}
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+
+          <!-- Reverse toggle -->
+          <button class="log-regex-checkbox log-regex-checkbox--mid"
+                  [class.active]="unifiedReverse"
+                  (click)="toggleUnifiedReverse()"
+                  (mousedown)="$event.preventDefault()"
+                  [appRichTooltip]="(inputMode === 'filter' ? 'logConsole.tooltip.reverseFilter' : 'logConsole.tooltip.reverseSearch') | translate"
+                  [attr.aria-label]="(inputMode === 'filter' ? 'logConsole.tooltip.reverseFilter' : 'logConsole.tooltip.reverseSearch') | translate"
+                  [attr.aria-pressed]="unifiedReverse"
+                  type="button"><i nz-icon nzType="swap" nzTheme="outline"></i></button>
+
+          <!-- Regex toggle -->
+          <button class="log-regex-checkbox log-regex-checkbox--mid"
+                  [class.active]="unifiedRegexMode"
+                  (click)="onUnifiedRegexModeChange()"
                   (mousedown)="$event.preventDefault()"
                   [appRichTooltip]="'logConsole.tooltip.regularExp' | translate"
                   [attr.aria-label]="'logConsole.tooltip.regularExp' | translate"
                   type="button"><span class="log-regex-label">.*</span></button>
 
+          <!-- Input -->
           <div class="log-search-wrap">
-            <i nz-icon nzType="search" nzTheme="outline" class="log-search-icon"></i>
+            <i nz-icon [nzType]="inputMode === 'filter' ? 'filter' : 'highlight'" nzTheme="outline" class="log-search-icon"></i>
             <input #searchInput
                    class="log-search-input" type="text"
-                   [(ngModel)]="searchTerm"
-                   (ngModelChange)="onSearchChange()"
-                   [placeholder]="'logConsole.placeholder.search' | translate"
-                   [appRichTooltip]="'logConsole.tooltip.search' | translate"
+                   [(ngModel)]="unifiedTerm"
+                   (ngModelChange)="onUnifiedTermChange()"
+                   [placeholder]="(inputMode === 'filter' ? 'logConsole.placeholder.filter' : 'logConsole.placeholder.searchInVisible') | translate"
+                   [appRichTooltip]="(inputMode === 'filter' ? 'logConsole.tooltip.filter' : 'logConsole.tooltip.searchInVisible') | translate"
                    autocomplete="off"
-                   [attr.aria-label]="'logConsole.tooltip.search' | translate">
-            @if (regexError) {
-              <span class="log-regex-error-icon" [appRichTooltip]="regexError">
+                   [attr.aria-label]="(inputMode === 'filter' ? 'logConsole.placeholder.filter' : 'logConsole.placeholder.searchInVisible') | translate">
+            @if (unifiedRegexError) {
+              <span class="log-regex-error-icon" [appRichTooltip]="unifiedRegexError">
                 <i nz-icon nzType="warning" nzTheme="outline"></i>
               </span>
             }
-            @if (searchTerm) {
-              <button class="log-search-clear" (click)="clearSearch()" (mousedown)="$event.preventDefault()">
+            @if (unifiedTerm) {
+              <button class="log-search-clear" (click)="clearUnifiedInput()" (mousedown)="$event.preventDefault()">
                 <i nz-icon nzType="close-circle" nzTheme="outline"></i>
               </button>
             }
           </div>
 
         </div>
-
-        <!-- Mode toggle: highlight ↔ filter -->
-        <div class="log-mode-toggle">
-          <button class="log-mode-btn" [class.active]="!filterMode" (click)="filterMode = false" [attr.aria-pressed]="!filterMode"
-                  [appRichTooltip]="'logConsole.tooltip.highlightMode' | translate">
-            <i nz-icon nzType="highlight" nzTheme="outline"></i>
-          </button>
-          <button class="log-mode-btn" [class.active]="filterMode" (click)="filterMode = true" [attr.aria-pressed]="filterMode"
-                  [appRichTooltip]="'logConsole.tooltip.filterMode' | translate">
-            <i nz-icon nzType="filter" nzTheme="outline"></i>
-          </button>
-        </div>
-
-        <!-- Context lines selector (filter mode only) -->
-        @if (filterMode && searchTerm) {
-          <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
-            <span class="log-context-label">{{ 'logConsole.label.context' | translate }}:</span>
-            <nz-input-number [(ngModel)]="contextLines"
-                             (ngModelChange)="onContextLinesChange()"
-                             [nzMin]="0" [nzMax]="200" [nzStep]="1"
-                             nzSize="small" class="log-context-lines-input">
-            </nz-input-number>
-          </div>
-        }
-
-        <!-- Search navigation: prev / next match + occurrence counter -->
-        @if (searchMatchCount > 0) {
-          <div class="log-search-nav">
-            <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')" [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
-              <i nz-icon nzType="up" nzTheme="outline"></i>
-            </button>
-            <button class="log-nav-btn" (click)="jumpToSearchMatch('next')" [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
-              <i nz-icon nzType="down" nzTheme="outline"></i>
-            </button>
-            <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
-          </div>
-        }
 
       </div>
 
@@ -147,21 +153,19 @@
             {{ 'logConsole.message.copied' | translate }}: {{ copiedOrderId }}
           </span>
         }
-        @if (displayTz || (timeZone || request?.timeZone)) {
-          <button class="log-tz-chip"
-                  [class.log-tz-chip--original]="isOriginalTzMode"
-                  (click)="toggleTzMode()"
-                  [attr.aria-pressed]="isOriginalTzMode"
-                  [attr.aria-label]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate"
-                  [appRichTooltip]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate"
-                  type="button">
+        @if (showTzToggle) {
+          <span class="log-tz-toggle"
+                [appRichTooltip]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate">
+            <nz-switch
+              nzSize="small"
+              [ngModel]="isOriginalTzMode"
+              (ngModelChange)="toggleTzMode()"
+              [attr.aria-pressed]="isOriginalTzMode"
+              [attr.aria-label]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate">
+            </nz-switch>
             <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
-            @if (isOriginalTzMode) {
-              <span translate>logConsole.label.tzOriginal</span>
-            } @else {
-              {{ displayTz }}
-            }
-          </button>
+            <span class="log-tz-label" [class.log-tz-label--original]="isOriginalTzMode">{{ displayTz }}</span>
+          </span>
         }
         <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading"
                 [appRichTooltip]="'logConsole.tooltip.reload' | translate">
@@ -328,13 +332,34 @@
         @if (isLoading) {
           <span class="log-summary-note"><span translate>common.label.loading</span></span>
         }
-        @if (filterMode && searchTerm) {
-          <span class="log-summary-note">
+        @if (inputMode === 'filter' && filterTerm) {
+          <div class="log-status-mode-block log-status-mode-block--filter">
+            <i nz-icon nzType="filter" nzTheme="outline" class="log-status-mode-icon"></i>
             <span class="log-summary-filter-active">
-              <i nz-icon nzType="filter" nzTheme="outline"></i>
               {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
             </span>
-          </span>
+            <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
+              <span class="log-context-label">{{ 'logConsole.label.context' | translate }}:</span>
+              <nz-input-number [(ngModel)]="contextLines"
+                               (ngModelChange)="onContextLinesChange()"
+                               [nzMin]="0" [nzMax]="200" [nzStep]="1"
+                               nzSize="small" class="log-context-lines-input">
+              </nz-input-number>
+            </div>
+          </div>
+        } @else if (inputMode === 'search' && searchMatchCount > 0) {
+          <div class="log-status-mode-block log-status-mode-block--search">
+            <i nz-icon nzType="highlight" nzTheme="outline" class="log-status-mode-icon"></i>
+            <div class="log-search-nav">
+              <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')" [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
+                <i nz-icon nzType="up" nzTheme="outline"></i>
+              </button>
+              <button class="log-nav-btn" (click)="jumpToSearchMatch('next')" [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
+                <i nz-icon nzType="down" nzTheme="outline"></i>
+              </button>
+              <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
+            </div>
+          </div>
         }
       }
 
@@ -377,11 +402,11 @@
     }
 
     <!-- ── FILTER MODE ────────────────────────────────────────────────── -->
-    @if (filterMode && searchTerm) {
+    @if (filterMode && filterTerm) {
       @if (contextBlocks.length === 0 && allLines.length > 0) {
         <div class="log-console-empty">
           <i nz-icon nzType="search" nzTheme="outline" class="log-state-icon log-state-icon--sm"></i>
-          <span>{{ 'logConsole.message.noMatches' | translate: { term: searchTerm } }}</span>
+          <span>{{ 'logConsole.message.noMatches' | translate: { term: filterTerm } }}</span>
         </div>
       }
       @for (block of contextBlocks; track block.startIdx) {

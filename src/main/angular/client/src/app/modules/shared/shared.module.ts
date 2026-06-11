@@ -14,6 +14,7 @@ import {NzMentionModule} from "ng-zorro-antd/mention";
 import {NzRadioModule} from 'ng-zorro-antd/radio';
 import {NzTagModule} from "ng-zorro-antd/tag";
 import {NzTimePickerModule} from 'ng-zorro-antd/time-picker';
+import {NzSwitchModule} from 'ng-zorro-antd/switch';
 import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {OverlayModule} from '@angular/cdk/overlay';
@@ -97,7 +98,7 @@ import {NzResizableDirective} from "ng-zorro-antd/resizable";
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzMentionModule, NzTagModule, NzSelectModule,
   NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule, CodeMirrorModule,
-  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
+  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule, NzSwitchModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent, VideoViewerComponent, LogConsoleModalComponent, LogConsoleViewerComponent, LogConsoleComponent];
