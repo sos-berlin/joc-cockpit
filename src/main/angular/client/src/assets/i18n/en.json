@@ -554,7 +554,7 @@
     "tooltip.manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Required** options, objects can be unselected.",
     "tooltip.showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time.",
     "tooltip.change": "Selects the ^Change^ from which\n- objects in *Controller* folders will be ^deployed|deployment^.\n- objects in *Automation* folders will be ^released|releasing^.\n\nChanges consider object dependencies from a single operation, for example, they will deploy a ^Workflow^ to a ^Controller^ and will release a related ^Schedule^ for use with the ^Daily Plan^.",
-    "tooltip.removeChange": "Remove change"
+    "tooltip.removeChange": "Selects the ^Change^ from which ^Inventory^ objects will be dissociated.\n\nThis will not remove objects but their assignment to the selected Change."
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used by multiple pages",
   "common": {
