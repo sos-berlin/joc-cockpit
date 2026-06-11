@@ -187,6 +187,44 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   readonly predefined = PREDEFINED_SEARCHES;
   predefinedOpen = false;
 
+  // ── Filter term (controls which lines are visible) ─────────────────────────
+  filterTerm = '';
+  private _committedFilterTerm = '';
+  private readonly _filterDebounce = new Subject<string>();
+  filterRegexMode = false;
+  filterRegexError = '';
+  private _committedFilterRegexMode = false;
+  private _compiledFilterRegExp: RegExp | null = null;
+  /** When true, lines that MATCH the filter term are hidden; non-matching lines are shown. */
+  reverseFilter = false;
+
+  // ── Search term (highlights / navigates within visible lines) ─────────────────
+  /** When true, lines that do NOT match the search term are highlighted and navigated. */
+  reverseSearch = false;
+
+  // ── Unified single input (routes to search or filter pipeline based on mode) ──────────
+  /** 'search' = highlight/navigate visible lines; 'filter' = hide non-matching lines. */
+  inputMode: 'search' | 'filter' = 'search';
+  /** Bound to the single visible input element. Routed to the active pipeline. */
+  unifiedTerm = '';
+  /** Controls the mode-selector dropdown open state. */
+  inputModeOpen = false;
+
+  /** Active regex mode for the current input pipeline. */
+  get unifiedRegexMode(): boolean {
+    return this.inputMode === 'search' ? this.regexMode : this.filterRegexMode;
+  }
+
+  /** Active reverse flag for the current input pipeline. */
+  get unifiedReverse(): boolean {
+    return this.inputMode === 'search' ? this.reverseSearch : this.reverseFilter;
+  }
+
+  /** Active regex error for the current input pipeline. */
+  get unifiedRegexError(): string {
+    return this.inputMode === 'search' ? this.regexError : this.filterRegexError;
+  }
+
   // ── Search mode ────────────────────────────────────────────────────────────
   /** true = filtered mode (only matching lines + context), false = full log with highlights */
   filterMode = false;
@@ -285,10 +323,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     };
     document.addEventListener('selectionchange', this._selectionChangeHandler);
 
-    // Debounced search commitment — only recalculates filtered data 300ms after typing stops.
+    // Debounced search commitment — only recomputes search highlights/navigation 300ms after typing stops.
     this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
       this.commitSearch(term);
     });
+    // Debounced filter commitment — recomputes visible lines 300ms after typing stops.
+    this.debounceSub.add(
+      this._filterDebounce.pipe(debounceTime(300)).subscribe(term => {
+        this.commitFilter(term);
+      })
+    );
     // Debounced date filter — recomputes filtered lines 150ms after last input change.
     this.debounceSub.add(
       this._dateFilterDebounce.pipe(debounceTime(150)).subscribe(() => {
@@ -302,11 +346,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const current = this.logSearch.currentTerm;
     if (current) {
       this.searchTerm = current;
+      this.unifiedTerm = current;
       this.commitSearch(current);
     }
     this.searchSub = this.logSearch.searchTerm$.subscribe(term => {
       if (this.searchTerm !== term) {
         this.searchTerm = term;
+        this.unifiedTerm = term;
         this.commitSearch(term);
       }
     });
@@ -343,6 +389,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.searchSub?.unsubscribe();
     this.debounceSub?.unsubscribe();
     this._searchDebounce.complete();
+    this._filterDebounce.complete();
     this._dateFilterDebounce.complete();
     if (this.syslogResizeHandler) {
       window.removeEventListener('resize', this.syslogResizeHandler);
@@ -366,13 +413,121 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   applyPredefined(value: string): void {
-    this.searchTerm = value;
-    this.commitSearch(value);   // bypass debounce for deliberate preset selection
-    this.logSearch.setTerm(value);
+    this.unifiedTerm = value;
+    if (this.inputMode === 'filter') {
+      this.filterTerm = value;
+      this.commitFilter(value);
+    } else {
+      this.searchTerm = value;
+      this.commitSearch(value);
+      this.logSearch.setTerm(value);
+    }
+  }
+
+  // ── Unified input handlers ──────────────────────────────────────────────────────────
+
+  onUnifiedTermChange(): void {
+    if (this.inputMode === 'filter') {
+      this.filterTerm = this.unifiedTerm;
+      this._filterDebounce.next(this.unifiedTerm);
+    } else {
+      this.searchTerm = this.unifiedTerm;
+      this._searchDebounce.next(this.unifiedTerm);
+    }
+  }
+
+  clearUnifiedInput(): void {
+    this.unifiedTerm = '';
+    if (this.inputMode === 'filter') {
+      this.filterTerm = '';
+      this.commitFilter('');
+    } else {
+      this.searchTerm = '';
+      this.commitSearch('');
+      this.logSearch.clearTerm();
+    }
+  }
+
+  onUnifiedRegexModeChange(): void {
+    if (this.inputMode === 'filter') {
+      this.filterRegexMode = !this.filterRegexMode;
+      this.onFilterRegexModeChange();
+    } else {
+      this.regexMode = !this.regexMode;
+      this.onRegexModeChange();
+    }
+  }
+
+  toggleUnifiedReverse(): void {
+    if (this.inputMode === 'filter') {
+      this.toggleReverseFilter();
+    } else {
+      this.toggleReverseSearch();
+    }
+  }
+
+  /**
+   * Switches the input mode between 'search' and 'filter'.
+   * Clears the previous pipeline's term and routes the current typed value
+   * (unifiedTerm) to the new pipeline.
+   */
+  setInputMode(mode: 'search' | 'filter'): void {
+    if (this.inputMode === mode) return;
+    // Clear the pipeline we are leaving
+    if (this.inputMode === 'filter') {
+      this.filterTerm = '';
+      this.commitFilter('');
+    } else {
+      this.searchTerm = '';
+      this.commitSearch('');
+      this.logSearch.clearTerm();
+    }
+    this.inputMode  = mode;
+    // Search mode = highlight (all lines visible), Filter mode = context-block view.
+    this.filterMode = (mode === 'filter');
+    // Route any already-typed text to the new pipeline
+    if (this.unifiedTerm) {
+      if (mode === 'filter') {
+        this.filterTerm = this.unifiedTerm;
+        this.commitFilter(this.unifiedTerm);
+      } else {
+        this.searchTerm = this.unifiedTerm;
+        this.commitSearch(this.unifiedTerm);
+      }
+    }
   }
 
   onFilterChange(): void {
     this.computeFilteredLines();
+    this.computeContextBlocks();
+  }
+
+  onFilterTermChange(): void {
+    this._filterDebounce.next(this.filterTerm);
+  }
+
+  clearFilterTerm(): void {
+    this.filterTerm = '';
+    this.commitFilter('');
+  }
+
+  onFilterRegexModeChange(): void {
+    this._committedFilterTerm = ''; // force recommit even if term is unchanged
+    this._searchJumpIdx = null;
+    this.commitFilter(this.filterTerm);
+  }
+
+  toggleReverseFilter(): void {
+    this.reverseFilter = !this.reverseFilter;
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+    this.cdr.markForCheck();
+  }
+
+  toggleReverseSearch(): void {
+    this.reverseSearch = !this.reverseSearch;
+    this.computeSearchMatches();
+    this._safeMarkForCheck();
   }
 
   onDateFilterChange(): void {
@@ -418,6 +573,35 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.computeContextBlocks();
   }
 
+  // ── Filter commitment ────────────────────────────────────────────────────
+
+  private commitFilter(raw: string): void {
+    const trimmed = raw.trim();
+    const term = this.filterRegexMode ? trimmed : trimmed.toLowerCase();
+
+    if (this.filterRegexMode && trimmed) {
+      try {
+        new RegExp(trimmed);
+        this.filterRegexError = '';
+      } catch (e) {
+        this.filterRegexError = (e as Error).message;
+        this.cdr.markForCheck();
+        return;
+      }
+    } else {
+      this.filterRegexError = '';
+    }
+
+    if (this._committedFilterTerm === term && this._committedFilterRegexMode === this.filterRegexMode) return;
+    this._committedFilterTerm      = term;
+    this._committedFilterRegexMode = this.filterRegexMode;
+    this._compiledFilterRegExp     = (this.filterRegexMode && term) ? new RegExp(term, 'i') : null;
+    this._searchJumpIdx            = null;
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+    this._safeMarkForCheck();
+  }
+
   // ── Search commitment & cache management ──────────────────────────────────
 
   private commitSearch(raw: string): void {
@@ -448,8 +632,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     // NOTE: highlightCache is now keyed by term+text, so no manual clear is needed —
     // the new term naturally produces new cache entries while old ones age out.
     this._cachedHighlightTerm = '';
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+    this.computeSearchMatches();
     // Use _safeMarkForCheck: the data update above is safe, but the resulting DOM
     // render (innerHTML rewrites) must not destroy an active text selection.
     this._safeMarkForCheck();
@@ -463,7 +646,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.commitSearch(this.searchTerm);
   }
 
-  // ── Filtered lines (level + search) — computed into cached fields ──────────
+  // ── Filtered lines (level + filter + search) — computed into cached fields ──
+
+  /** Returns true when line `l` matches the current committed filter term or regex. */
+  private lineMatchesFilter(l: ParsedLine): boolean {
+    const term = this._committedFilterTerm;
+    if (!term) return true;
+    if (this._committedFilterRegexMode) {
+      return this._compiledFilterRegExp?.test(l.raw) ?? false;
+    }
+    return l.rawLower.includes(term);
+  }
 
   /** Returns true when line `l` matches the current committed search term or regex. */
   private lineMatchesSearch(l: ParsedLine): boolean {
@@ -490,15 +683,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private computeFilteredLines(): void {
-    const term    = this._committedSearchTerm;
     // Convert user-entered times to controller tz for comparison.
     // When logTimezone=true the user sees/enters profile-tz times, so we offset them back.
-    const fromCmp = this.toControllerTzStr(this.dateFilterFromStr);
-    const toCmp   = this.toControllerTzStr(this.dateFilterToStr);
+    const fromCmp   = this.toControllerTzStr(this.dateFilterFromStr);
+    const toCmp     = this.toControllerTzStr(this.dateFilterToStr);
+    const hasFilter = !!this._committedFilterTerm;
 
     this.filteredLines = this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
-      if (term && !this.lineMatchesSearch(l)) return false;
+      if (hasFilter) {
+        const matches = this.lineMatchesFilter(l);
+        // reverseFilter: keep lines that do NOT match the filter term
+        if (this.reverseFilter ? matches : !matches) return false;
+      }
       if ((fromCmp || toCmp) && l.timestamp) {
         // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
         const ts = l.timestamp.replace(',', '.');
@@ -522,26 +719,42 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.levelLineMap        = lm;
     this.filteredLevelCounts = fc;
 
-    // ── Rebuild search-match set (eliminates per-line re-eval in template) ────
+    // Rebuild search matches against the updated visible line set.
+    this.computeSearchMatches();
+  }
+
+  /** Rebuilds the search-match set and prev/next navigation arrays from the current filteredLines.
+   *  Called by computeFilteredLines() and directly by commitSearch() (when filteredLines is unchanged). */
+  private computeSearchMatches(): void {
     this._matchLineSet.clear();
+    const term = this._committedSearchTerm;
     if (term) {
       for (const l of this.filteredLines) {
-        if (this.lineMatchesSearch(l)) this._matchLineSet.add(l.globalIdx);
+        const matches = this.lineMatchesSearch(l);
+        // reverseSearch: navigate/highlight lines that do NOT contain the search term
+        if (this.reverseSearch ? !matches : matches) {
+          this._matchLineSet.add(l.globalIdx);
+        }
       }
     }
     // Build sorted navigation index for prev/next search match.
     this._searchMatchIdxs = Array.from(this._matchLineSet).sort((a, b) => a - b);
 
-    // Build per-occurrence positions so navigation jumps between individual tokens,
-    // not whole lines. If "order" appears twice in one line, that line contributes two entries.
+    // Build per-occurrence positions for navigation.
+    // In reverse mode non-matching lines have no occurrences, so one stop per line.
+    // In normal mode a term appearing N times in a line contributes N stops.
     this._searchMatchPositions = [];
     if (term) {
       for (const gi of this._searchMatchIdxs) {
         const l = this.allLines[gi];
         if (!l) continue;
-        const cnt = this._countOccurrences(l);
-        for (let i = 0; i < cnt; i++) {
-          this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+        if (this.reverseSearch) {
+          this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
+        } else {
+          const cnt = this._countOccurrences(l);
+          for (let i = 0; i < cnt; i++) {
+            this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+          }
         }
       }
     }
@@ -598,10 +811,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * are merged so the DOM stays small.
    */
   private computeContextBlocks(): void {
-    const term = this._committedSearchTerm;
+    const term = this._committedFilterTerm;
     if (!term) { this.contextBlocks = []; return; }
 
-    // Build the pool: level + date filtered, but NOT search-filtered.
+    // Build the pool: level + date filtered, but NOT filter-text filtered.
     // We need non-matching lines to be present so they can appear as context
     // around matching lines. filteredLines already strips non-matches, so
     // using it would leave only match lines → all consecutive → one giant block.
@@ -619,7 +832,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
     const matchPositions: number[] = [];
     for (let i = 0; i < pool.length; i++) {
-      if (this.lineMatchesSearch(pool[i])) matchPositions.push(i);
+      const matches = this.lineMatchesFilter(pool[i]);
+      // reverseFilter: context blocks center on lines that do NOT match the filter term
+      if (this.reverseFilter ? !matches : matches) matchPositions.push(i);
     }
     if (matchPositions.length === 0) { this.contextBlocks = []; return; }
 
@@ -817,6 +1032,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
     // Push into global search
     this.searchTerm = match.id;
+    this.unifiedTerm = match.id;
+    this.inputMode = 'search';
     this.commitSearch(match.id);
     this.logSearch.setTerm(match.id);
   }
@@ -1003,7 +1220,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const { globalIdx: targetGlobalIdx, occurrenceInLine } = positions[posIdx];
 
     // In filter mode: ensure the block containing this match is expanded.
-    if (this.filterMode && this._committedSearchTerm) {
+    if (this.filterMode && this._committedFilterTerm) {
       for (const block of this.contextBlocks) {
         if (block.collapsed && block.lines.some(e => e.globalIdx === targetGlobalIdx)) {
           block.collapsed = false;
@@ -1084,6 +1301,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** True when this window is currently showing timestamps in the original Controller/Agent tz. */
   get isOriginalTzMode(): boolean {
     return !this._useProfileTz;
+  }
+
+  /** True only when profile TZ and controller TZ are both set and differ — the toggle has no effect otherwise. */
+  get showTzToggle(): boolean {
+    const controllerTz = this.timeZone || this.request?.timeZone || '';
+    return !!(controllerTz && this.profileTz && this.profileTz !== controllerTz);
   }
 
   formatTimestamp(raw: string): string {
@@ -1354,7 +1577,6 @@ export class LogConsoleModalComponent implements OnInit {
 
   logRequest: LogConsoleRequest | null = null;
   isDownloading = false;
-  zones: string[] = [];
   preferencesTz = '';
 
   readonly levelOptions = [
@@ -1379,11 +1601,6 @@ export class LogConsoleModalComponent implements OnInit {
     if (!this.preferencesTz) {
       this.preferencesTz = this.coreService.getTimeZone();
     }
-
-    // Load timezone list for the selector
-    this.coreService.getTimeZoneList((timezones: string[]) => {
-      this.zones = timezones;
-    });
 
     // Apply context-specific fields from the modal caller
     const data = this.modalData || {};
@@ -1431,8 +1648,6 @@ export class LogConsoleModalComponent implements OnInit {
   get isTimezoneModified(): boolean {
     return !!(this.form.timeZone && this.form.timeZone !== this.preferencesTz);
   }
-
-  onTimezoneChange(): void {}
 
   get isShowDisabled(): boolean {
     const dateFromOk = this.form.dateMode === 'relative'

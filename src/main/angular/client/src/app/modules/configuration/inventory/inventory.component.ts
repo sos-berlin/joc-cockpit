@@ -11093,10 +11093,11 @@ export class ChangeModalComponent {
   changes(): void {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
-        this.changeObj = res.changes
+        this.changeObj = res.changes;
+        this.loading = false;
       },
       error: () => {
-        this.loading = true;
+        this.loading = false;
       }
     });
   }
@@ -11486,9 +11487,10 @@ export class PublishChangeModalComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes;
+        this.loading = false;
       },
       error: () => {
-        this.loading = true;
+        this.loading = false;
       }
     });
   }
@@ -11512,9 +11514,10 @@ export class PublishChangeModalComponent {
             this.nodes = [...this.nodes];
           }
         }
+        this.loading = false;
       },
       error: () => {
-        this.loading = true;
+        this.loading = false;
       }
     });
   }

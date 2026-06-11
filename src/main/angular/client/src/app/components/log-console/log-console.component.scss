@@ -39,10 +39,9 @@
     &::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
   }
 
-  // ─── Loading / empty / error state ───────────────────────────────────────
+  // ─── Loading / empty state ────────────────────────────────────────────────
   &-loading,
-  &-empty,
-  &-error {
+  &-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -51,13 +50,6 @@
     color: var(--text-muted);
     font-size: 12px;
     gap: 8px;
-  }
-
-  &-error {
-    color: var(--red);
-    padding: 8px 16px;
-    text-align: center;
-    word-break: break-word;
   }
 
   &-more {
@@ -87,12 +79,11 @@
   line-height: 16px;
   white-space: nowrap;
 
-  &-info  { color: var(--blue);       border: 1px solid var(--blue);       background: transparent; opacity: .9;  }
-  &-warn  { color: var(--orange);     border: 1px solid var(--orange);     background: transparent; opacity: .9;  }
-  &-error { color: var(--red);        border: 1px solid var(--red);        background: transparent; opacity: .9;  }
-  &-debug { color: var(--mangenta);   border: 1px solid var(--mangenta);   background: transparent; opacity: .9;  }
-  &-trace { color: var(--dimgrey);    border: 1px solid var(--dimgrey);    background: transparent; opacity: .85; }
-  &-other { color: var(--text-muted); border: 1px solid var(--text-muted); background: transparent; opacity: .8;  }
+  &-info  { color: var(--blue);     border: 1px solid var(--blue);     background: transparent; opacity: .9;  }
+  &-warn  { color: var(--orange);   border: 1px solid var(--orange);   background: transparent; opacity: .9;  }
+  &-error { color: var(--red);      border: 1px solid var(--red);      background: transparent; opacity: .9;  }
+  &-debug { color: var(--mangenta); border: 1px solid var(--mangenta); background: transparent; opacity: .9;  }
+  &-trace { color: var(--dimgrey);  border: 1px solid var(--dimgrey);  background: transparent; opacity: .85; }
 }
 
 // ─── Toolbar rows ─────────────────────────────────────────────────────────
@@ -100,7 +91,7 @@
   display: flex;
   align-items: center;
   padding: 5px 10px;
-  gap: 6px;
+  gap: 12px;
   width: 100%;
 
   &--filters {
@@ -181,7 +172,6 @@
   &-error { color: var(--red);      background: transparent; border: 1px solid var(--red);      opacity: .9;  }
   &-debug { color: var(--mangenta); background: transparent; border: 1px solid var(--mangenta); opacity: .85; }
   &-trace { color: var(--dimgrey);  background: transparent; border: 1px solid var(--dimgrey);  opacity: .8;  }
-  &-other { color: var(--text-muted); background: transparent; }
 }
 
 .log-text {
@@ -253,49 +243,23 @@
   flex: 1;
 }
 
-// ─── Timezone toggle chip ─────────────────────────────────────────────────────
-.log-tz-chip {
+// ─── Timezone toggle ──────────────────────────────────────────────────────────
+.log-tz-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 1px 8px;
-  height: 22px;
-  border: 1px solid var(--border-color);
-  border-radius: 11px;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-family: inherit;
+  gap: 5px;
   white-space: nowrap;
-  cursor: pointer;
-  transition: border-color 120ms, background 120ms, color 120ms;
   flex-shrink: 0;
+  cursor: pointer;
 
-  [nz-icon] { font-size: 11px; }
+  [nz-icon] { font-size: 11px; color: var(--text-muted); }
+}
 
-  &:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    background: color-mix(in srgb, var(--primary) 6%, transparent);
-  }
+.log-tz-label {
+  font-size: 11px;
+  color: var(--text-muted);
 
-  &:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-  }
-
-  // Original tz mode — visually distinct so it's obvious the mode is active
-  &--original {
-    border-color: var(--orange);
-    color: var(--orange);
-    background: color-mix(in srgb, var(--orange) 8%, transparent);
-
-    &:hover {
-      border-color: var(--orange);
-      color: var(--orange);
-      background: color-mix(in srgb, var(--orange) 14%, transparent);
-    }
-  }
+  &--original { color: var(--orange); }
 }
 
 // ─── Order ID copy feedback ───────────────────────────────────────────────────

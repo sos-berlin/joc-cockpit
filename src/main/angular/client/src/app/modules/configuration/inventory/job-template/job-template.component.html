@@ -128,7 +128,7 @@
             </div>
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label" title="{{'inventory.label.documentation' | translate}}">
+                <label class="col-md-4 col-lg-3 form-control-label">
                   <span [appRichTooltip]="'inventory.tooltips.workflow.documentation' | translate" translate>inventory.label.documentation</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -138,7 +138,7 @@
               </div>
             }
             <div class="form-group row">
-              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" title="{{'workflow.label.jobResourceNames' | translate}}">
+              <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
                 <span [appRichTooltip]="'inventory.tooltips.workflow.jobResourceNames' | translate" translate>workflow.label.jobResourceNames</span>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -147,7 +147,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.description' | translate}}">
+              <label class="col-md-4 col-lg-3 form-control-label">
                 <span [appRichTooltip]="'inventory.tooltips.workflow.job.description' | translate" translate>workflow.label.description</span>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -197,7 +197,7 @@
               </div>
             }
             <div class="form-group row">
-              <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.onWarning' | translate}}">
+              <label class="col-md-4 col-lg-3 form-control-label">
                 <span [appRichTooltip]="'inventory.tooltips.workflow.job.onWarning' | translate" translate>workflow.label.onWarning</span>
               </label>
               <div [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}"
@@ -679,7 +679,7 @@
                   <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
                     <div class="job-property-editor">
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.parallelism' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.parallelism' | translate" translate>workflow.label.parallelism</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -697,7 +697,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.timeout' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.timeout' | translate" translate>workflow.label.timeout</span>
                         </label>
                         <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
@@ -712,7 +712,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.graceTimeout' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.graceTimeout' | translate" translate>workflow.label.graceTimeout</span>
                         </label>
                         <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}"
@@ -727,7 +727,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfShorter' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.warnIfShorter' | translate" translate>workflow.label.warnIfShorter</span>
                         </label>
                         <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}"
@@ -743,7 +743,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.warnIfLonger' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.warnIfLonger' | translate" translate>workflow.label.warnIfLonger</span>
                         </label>
                         <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}"
@@ -759,7 +759,7 @@
                       </div>
                       @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && (showMoreAdvanceOptions)) {
                         <div class="form-group row">
-                          <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.compatibleMode' | translate}}">
+                          <label class="col-md-4 col-lg-3 form-control-label">
                             <span [appRichTooltip]="'inventory.tooltips.workflow.job.compatibleMode' | translate" translate>workflow.label.compatibleMode</span>
                           </label>
                           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -771,7 +771,7 @@
                         </div>
                       }
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.criticality' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.criticality' | translate" translate>workflow.label.criticality</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -788,7 +788,7 @@
                       </div>
                       @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && showMoreAdvanceOptions) {
                         <div class="form-group row">
-                          <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.jobNotRestartable' | translate}}">
+                          <label class="col-md-4 col-lg-3 block-ellipsis-job">
                             <span [appRichTooltip]="'inventory.tooltips.workflow.job.jobNotRestartable' | translate" translate>workflow.label.jobNotRestartable</span>
                           </label>
                           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -802,7 +802,7 @@
                         </div>
                       }
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.credentialKey' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.credentialKey' | translate" translate>workflow.label.credentialKey</span>
                           @if (job.configuration.executable.login.withUserProfile) {
                             <sup class="text-danger text-sm">*</sup>
@@ -820,7 +820,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.loadUserProfile' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.loadUserProfile' | translate" translate>workflow.label.loadUserProfile</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -830,7 +830,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.failOnOutputErr' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.failOnOutputErr' | translate" translate>workflow.label.failOnOutputErr</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -840,7 +840,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.warnOnOutputErr' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.warnOnOutputErr' | translate" translate>workflow.label.warnOnOutputErr</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -850,7 +850,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate" translate>workflow.label.skipIfNoAdmissionForOrderDay</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -860,7 +860,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate" translate>workflow.label.killAtEndOfAdmissionPeriod</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -870,7 +870,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.admissionTime' | translate}}">
+                        <label class="col-md-4 col-lg-3 block-ellipsis-job">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.admissionTime' | translate" translate>workflow.label.admissionTime</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -882,7 +882,7 @@
                   <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
                     <div class="job-property-editor">
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailOn' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.mailOn' | translate" translate>workflow.label.mailOn</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -896,7 +896,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailTo' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.mailTo' | translate" translate>workflow.label.mailTo</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -909,7 +909,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailCC' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.mailCC' | translate" translate>workflow.label.mailCC</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -922,7 +922,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.mailBcc' | translate}}">
+                        <label class="col-md-4 col-lg-3 form-control-label">
                           <span [appRichTooltip]="'inventory.tooltips.workflow.job.mailBcc' | translate" translate>workflow.label.mailBcc</span>
                         </label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
