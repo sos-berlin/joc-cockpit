@@ -2168,7 +2168,7 @@
     "label.referencedObjects": "Objets référencés",
     "label.filteredAffectedItems": "Objets connexes",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
-    "label.keepOrders": "Keep Orders",
+    "label.keepOrders": "Conserver les Ordres dans le Plan Quotidien",
     "label.changes": "Changements",
     "label.workflowTags": "Tags Workflow",
     "label.jobTags": "Tags Tâche",
@@ -3024,9 +3024,9 @@
     "tooltip.view.dateTo": "Définit le filtre pour afficher les lignes antérieures à la date et à l'heure indiquées.",
     "tooltip.jumpToStart": "Permet d'accéder au début de l'affichage du journal.",
     "tooltip.jumpToEnd": "Permet d'accéder à la fin de la sortie du journal.",
-    "tooltip.contextMode": "Toggle context lines around matched filter results",
-    "tooltip.copyCriteria": "**Copy Criteria** copies the current search and filter settings so they can be applied to another open log window.",
-    "tooltip.pasteCriteria": "**Paste Criteria** applies search and filter settings that were previously copied from another log window.\n\nBecomes available once criteria have been copied."
+    "tooltip.contextMode": "Affiche ou masque les lignes de contexte correspondant au critère de recherche du filtre.",
+    "tooltip.copyCriteria": "**Copie Critères** pour la recherche et le filtrage, afin de les rendre applicables à d'autres fenêtres de journal.",
+    "tooltip.pasteCriteria": "**Ajouter des critères** : cette option applique ces critères à la recherche et aux filtres."
   },
   "login": {
     "label.account": "Compte utilisateur",

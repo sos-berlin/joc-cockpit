@@ -2168,7 +2168,7 @@
     "label.referencedObjects": "Referenced Objects",
     "label.filteredAffectedItems": "Related Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
-    "label.keepOrders": "Keep Orders",
+    "label.keepOrders": "Keep Orders in Daily Plan",
     "label.changes": "Changes",
     "label.workflowTags": "Workflow Tags",
     "label.jobTags": "Job Tags",
@@ -3024,8 +3024,8 @@
     "tooltip.view.dateTo": "Sets filter to log lines earlier than the given date and time.",
     "tooltip.jumpToStart": "Navigates to the begin of log output.",
     "tooltip.jumpToEnd": "Navigates to the end of log output.",
-    "tooltip.contextMode": "Toggle context lines around matched filter results",
-    "tooltip.copyCriteria": "**Copy Criteria** copies the current search and filter settings so they can be applied to another open log window.",
+    "tooltip.contextMode": "Displays or hides context lines for lines matching the filter search term.",
+    "tooltip.copyCriteria": "**Copy Criteria** for search and filter settings so they can be applied to another open log window.",
     "tooltip.pasteCriteria": "**Paste Criteria** applies search and filter settings that were previously copied from another log window.\n\nBecomes available once criteria have been copied."
   },
   "login": {

@@ -2168,7 +2168,7 @@
     "label.referencedObjects": "Referenzierte Objekte",
     "label.filteredAffectedItems": "Verbundene Objekte",
     "label.includeTodaysLateOrders": "Heutige, verspätete Aufträge einschließen",
-    "label.keepOrders": "Keep Orders",
+    "label.keepOrders": "Aufträge im Tagesplan behalten",
     "label.changes": "Änderungen",
     "label.workflowTags": "Kennz. Arbeitsabläufe",
     "label.jobTags": "Kennz. Jobs",
@@ -3024,9 +3024,9 @@
     "tooltip.view.dateTo": "Stellt den Filter so ein, dass Zeilen angezeigt werden, die vor dem angegebenen Datum und der angegebenen Uhrzeit liegen.",
     "tooltip.jumpToStart": "Navigiert zum Beginn der Protokollausgabe.",
     "tooltip.jumpToEnd": "Navigiert zum Ende der Protokollausgabe.",
-    "tooltip.contextMode": "Toggle context lines around matched filter results",
-    "tooltip.copyCriteria": "**Copy Criteria** copies the current search and filter settings so they can be applied to another open log window.",
-    "tooltip.pasteCriteria": "**Paste Criteria** applies search and filter settings that were previously copied from another log window.\n\nBecomes available once criteria have been copied."
+    "tooltip.contextMode": "Blendet Kontextzeilen für Protkollzeilen ein oder aus, die dem Suchbegriff des Filters entsprechen.",
+    "tooltip.copyCriteria": "**Kriterien kopieren** für die Suche und Filterung, damit diese auch in anderen Protokollfenstern verwendet werden können.",
+    "tooltip.pasteCriteria": "**Kriterien einfügen** wendet diese auf die Suche und Filter an."
   },
   "login": {
     "label.account": "Benutzerkonto",
