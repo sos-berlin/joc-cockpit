@@ -1,49 +1,49 @@
-# Configuration - Inventory - Operations - Rename Object
+# Configuración - Inventario - Operaciones - Renombrar Objeto
 
-Inventory objects can be renamed or relocated. This applies to objects, user folders or both. For renaming user folders see [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder). 
+Los objetos del Inventario pueden renombrarse o reubicarse. Esto aplica a objetos, carpetas de usuario o ambos. Para renombrar carpetas de usuario ver [Configuración - Inventario - Operaciones - Renombrar Carpeta](/configuration-inventory-operations-rename-folder).
 
-When renaming objects, [Object Naming Rules](/object-naming-rules) apply.
+Al renombrar objetos, se aplican las [Reglas de Nomenclatura de Objetos](/object-naming-rules).
 
-The *Rename* operation is available from the *Navigation* panel and is offered for objects and user folders from their related 3-dots action menu.
+La operación *Renombrar* está disponible en el panel de *Navegación* y se ofrece para objetos y carpetas de usuario desde su menú de acción de tres puntos.
 
 <img src="rename-object.png" alt="Rename Object" width="400" height="125" />
 
-## Renaming Object
+## Renombrar Objeto
 
-Users can modify the location and the name of an object. The following assumes an object located in the **/Test/Users** folder with the name **myWorkflow**:
+Los usuarios pueden modificar la ubicación y el nombre de un objeto. A continuación se asume un objeto ubicado en la carpeta **/Test/Users** con el nombre **myWorkflow**:
 
-- If the object name is changed, the object remains in the given folder and is set to draft status.
-- For the new name users can specify a different folder hierarchy and object name from an absolute path with a leading slash such as **/Test/Workflows/yourWorkflow**:
-  - if the **/Test/Workflows** folder does not exist, it will be created.
-  - the Workflow is renamed from **myWorkflow** to **yourWorkflow**.
-- A relative path can be specified as in **Workflows/yourWorkflow**:
-  - the **Workflows** folder will be created in the current folder.
-  - the object will be renamed and will be located in **/Test/Users/Workflows/yourWorkflow**.
-- If the object folder is changed but not the object name, then the object remains in deployed/released status.
+- Si se cambia el nombre del objeto, este permanece en la carpeta dada y se establece en estado de borrador.
+- Para el nuevo nombre, los usuarios pueden especificar una jerarquía de carpetas diferente y un nombre de objeto desde una ruta absoluta con barra inicial como **/Test/Workflows/yourWorkflow**:
+  - si la carpeta **/Test/Workflows** no existe, será creada.
+  - el Workflow se renombra de **myWorkflow** a **yourWorkflow**.
+- Se puede especificar una ruta relativa como **Workflows/yourWorkflow**:
+  - la carpeta **Workflows** será creada en la carpeta actual.
+  - el objeto será renombrado y se ubicará en **/Test/Users/Workflows/yourWorkflow**.
+- Si se cambia la carpeta del objeto pero no su nombre, el objeto permanece en estado desplegado/liberado.
 
-## Dependencies
+## Dependencias
 
-Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
+Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
-When renaming objects, consistency is considered and referencing objects are updated and set to draft status, for example:
+Al renombrar objetos, se considera la consistencia y los objetos que los referencian son actualizados y establecidos en estado de borrador, por ejemplo:
 
-- If a Job Resource is renamed that is referenced by a Workflow, then 
-  - the Workflow will be updated to reflect the changed name,
-  - the Workflow will be set to draft status,
-  - a later *Deploy* operation will enforce common deployment of both objects.
-- If a Workflow is renamed that is referenced by a Schedule, then
-  - the Schedule will be updated to reflect the changed name,
-  - the Schedule will be set to draft status,
-  - a later *Deploy* operation on the Workflow will include a *Release* operation on the Schedule and vice versa.
+- Si se renombra un Recurso de Job que es referenciado por un Workflow, entonces
+  - el Workflow será actualizado para reflejar el nombre cambiado,
+  - el Workflow será establecido en estado de borrador,
+  - una operación *Desplegar* posterior aplicará el despliegue conjunto de ambos objetos.
+- Si se renombra un Workflow que es referenciado por una Planificación, entonces
+  - la Planificación será actualizada para reflejar el nombre cambiado,
+  - la Planificación será establecida en estado de borrador,
+  - una operación *Desplegar* posterior sobre el Workflow incluirá una operación *Liberar* sobre la Planificación y viceversa.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder)
-- [Dependency Matrix](/dependencies-matrix)
-- [Object Naming Rules](/object-naming-rules)
+- [Configuración - Inventario - Operaciones - Renombrar Carpeta](/configuration-inventory-operations-rename-folder)
+- [Matriz de Dependencias](/dependencies-matrix)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

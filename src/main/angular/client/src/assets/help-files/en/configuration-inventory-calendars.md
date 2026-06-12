@@ -1,99 +1,99 @@
-# Configuration - Inventory - Calendars
+# Configuración - Inventario - Calendarios
 
-The *Calendar Panel* offers specifying rule-based Calendars that are used by [Configuration - Inventory - Schedules](/configuration-inventory-schedules) for creating Orders from the [Daily Plan](/daily-plan). For details see [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+El *Panel de Calendarios* ofrece la especificación de Calendarios basados en reglas que son utilizados por las [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules) para crear Órdenes desde el [Plan Diario](/daily-plan). Para más detalles véase [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
-- Calendars specify the days for which Workflows will be executed.
-  - **Working Day Calendars** specify days for Workflow execution.
-  - **Non-working Day Calendars** specify days for which Workflows will not be executed.
-- Schedules 
-  - hold references to any number of Working Day Calendars and Non-working Day Calendars that are merged to receive the list of resulting days.
-  - determine the point in time when Orders for Workflow execution will start. 
+- Los Calendarios especifican los días para los cuales se ejecutarán los Workflows.
+  - Los **Calendarios de Días Laborables** especifican los días para la ejecución del Workflow.
+  - Los **Calendarios de Días No Laborables** especifican los días en que los Workflows no se ejecutarán.
+- Las Planificaciones
+  - contienen referencias a cualquier número de Calendarios de Días Laborables y Calendarios de Días No Laborables que se combinan para obtener la lista de días resultantes.
+  - determinan el momento en que comenzarán las Órdenes para la ejecución del Workflow.
 
-Calendars are managed from the following panels:
+Los Calendarios se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Calendars. In addition, the panel offers operations on Calendars.
-- The *Calendar Panel* on the right side of the window holds details for Calendar configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Calendarios. Además, el panel ofrece operaciones sobre los Calendarios.
+- El *Panel de Calendarios* en el lado derecho de la ventana contiene los detalles de configuración del Calendario.
 
-## Calendar Panel
+## Panel de Calendarios
 
-For a Calendar the following inputs are available:
+Para un Calendario están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Calendar, see [Object Naming Rules](/object-naming-rules).
-- **Title** holds an optional explanation of the Calendar's purpose.
-- **Type** is one of Working Day Calendar or Non-working Day Calendar.
-- **Valid from**, **Valid to** optionally specify the validity period of a Calendar. Before and past validity a Calendar will not return resulting days. If no validity period is specified, the Calendar will be valid for an unlimited period.
+- **Nombre** es el identificador único de un Calendario, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito del Calendario.
+- **Tipo** es uno de Calendario de Días Laborables o Calendario de Días No Laborables.
+- **Válido desde**, **Válido hasta** especifican opcionalmente el período de validez de un Calendario. Antes y después de la vigencia, un Calendario no devolverá días resultantes. Si no se especifica ningún período de validez, el Calendario será válido por tiempo indefinido.
 
-### Frequencies
+### Frecuencias
 
-Frequencies come in two flavors that can be combined:
+Las Frecuencias vienen en dos variantes que pueden combinarse:
 
-- **Included Frequencies** specify positive days.
-- **Excluded Frequencies** specify days that will be removed from the list of resulting days.
+- Las **Frecuencias Incluidas** especifican días positivos.
+- Las **Frecuencias Excluidas** especifican días que serán eliminados de la lista de días resultantes.
 
-The implication about *Excluded Frequencies* is that they deny use of the dates specified and overrule *Included Frequencies* on matching days.
+La implicación de las *Frecuencias Excluidas* es que deniegan el uso de las fechas especificadas y prevalecen sobre las *Frecuencias Incluidas* en los días coincidentes.
 
-Consider the example of a Working Day Calendar:
+Considere el siguiente ejemplo de un Calendario de Días Laborables:
 
-- Assume an *Included Frequency* from Mon-Fri.
-- Assume an *Excluded Frequency* for National Holidays such as January 1st, May 1st.
-- When used with Schedules specifying the **On Non-working Day** property with the value
-  - **before non-working day** 
-    - if January 1st is a Monday, then the Order will be created for previous Sunday which is not part of the *Included Frequencies* and not part of the *Excluded Frequencies*. 
-    - if January 1st is a Saturday, then no Order will be created as the previous non-working day is Friday for which an Order is created from the *Included Frequencies*.
-  - **after non-working day**
-    - if January 1st is a Saturday, then the Order will be created for next Sunday which is not part of the *Included Frequencies* and not part of the *Excluded Frequencies*. 
-    - if January 1st is a Sunday, then no Order will be created as the next non-working day is Monday for which an Order is created from the *Included Frequencies*.
+- Suponga una *Frecuencia Incluida* de Lun-Vie.
+- Suponga una *Frecuencia Excluida* para Feriados Nacionales como el 1 de enero y el 1 de mayo.
+- Cuando se usa con Planificaciones que especifican la propiedad **En Día No Laborable** con el valor:
+  - **antes del día no laborable**
+    - si el 1 de enero es lunes, la Orden se creará para el domingo anterior, que no forma parte de las *Frecuencias Incluidas* ni de las *Frecuencias Excluidas*.
+    - si el 1 de enero es sábado, no se creará ninguna Orden ya que el día no laborable anterior es el viernes, para el cual se crea una Orden desde las *Frecuencias Incluidas*.
+  - **después del día no laborable**
+    - si el 1 de enero es sábado, la Orden se creará para el domingo siguiente, que no forma parte de las *Frecuencias Incluidas* ni de las *Frecuencias Excluidas*.
+    - si el 1 de enero es domingo, no se creará ninguna Orden ya que el siguiente día no laborable es el lunes, para el cual se crea una Orden desde las *Frecuencias Incluidas*.
 
-For use with Non-working Day Calendars corresponding rules apply: *Included Frequencies* specify non-working days, *Excluded Frequencies* specify working days.
+Para uso con Calendarios de Días No Laborables se aplican reglas correspondientes: las *Frecuencias Incluidas* especifican días no laborables y las *Frecuencias Excluidas* especifican días laborables.
 
-A Calendar can hold any number of *Frequencies* that will be merged. The *Add Frequency* button is offered for each of *Included Frequencies* and *Excluded Frequencies*.
+Un Calendario puede contener cualquier número de *Frecuencias* que serán combinadas. El botón *Agregar Frecuencia* se ofrece tanto para *Frecuencias Incluidas* como para *Frecuencias Excluidas*.
 
-#### Frequency Types
+#### Tipos de Frecuencia
 
-When adding *Frequencies* a number of types can be selected:
+Al agregar *Frecuencias*, se pueden seleccionar varios tipos:
 
-  - **Weekdays** specify the day of week.
-  - **Specific Weekdays** specify relative weekdays such as the first or last Monday of a month.
-  - **Specific Days** specify days of year.
-  - **Month Days** specify relative days in a month, for example the first or last day of month.
-  - **Every** specifies recurring periods, for example every 2nd day, every 1st week, every 3rd month. This requires specifying the *Valid From* date starting from which days will be counted.
-  - **National Holidays** specify known public holidays. Resulting days are not authoritative and might differ from local legislation.
-  - **Non-working Day Calendars** exclude related days from Non-working Day Calendars for the current Calendar.
+  - **Días de la Semana** especifican el día de la semana.
+  - **Días de la Semana Específicos** especifican días de la semana relativos, como el primer o último lunes de un mes.
+  - **Días Específicos** especifican días del año.
+  - **Días del Mes** especifican días relativos dentro de un mes, por ejemplo el primero o el último día del mes.
+  - **Cada** especifica períodos recurrentes, por ejemplo cada 2do día, cada 1ra semana, cada 3er mes. Esto requiere especificar la fecha de *Válido Desde* a partir de la cual se contarán los días.
+  - **Feriados Nacionales** especifican feriados públicos conocidos. Los días resultantes no son definitivos y pueden diferir de la legislación local.
+  - **Calendarios de Días No Laborables** excluyen los días relacionados de los Calendarios de Días No Laborables para el Calendario actual.
 
-*Frequency Types* can be combined by repeatedly applying the same or different *Frequency Type*.
+Los *Tipos de Frecuencia* pueden combinarse aplicando repetidamente el mismo o diferentes *Tipos de Frecuencia*.
 
-#### Example
+#### Ejemplo
 
-Assume the example of a Calendar that should return every 2nd business day:
+Suponga el ejemplo de un Calendario que debe devolver cada 2do día hábil:
 
-- Assume Mon-Fri being business days, Sat-Sun being non-working days.
-- Assume National Holidays for January 1st, May 1st.
+- Suponga que Lun-Vie son días hábiles y Sáb-Dom son días no laborables.
+- Suponga Feriados Nacionales para el 1 de enero y el 1 de mayo.
 
-Counting every 2nd business day should exclude weekends and National Holidays:
+El conteo de cada 2do día hábil debe excluir los fines de semana y los Feriados Nacionales:
 
-- Create a Working Day Calendar using
-  - *Included Frequencies*: Add the **Weekdays** *Frequency Type* and select *Every Day*. The result will hold all days of year.
-  - *Excluded Frequencies*: Add the **Every** *Frequency Type* and select *2* for the interval and *Days* for the unit. Specify the *Valid From* date. This halves resulting days.
-  - *Excluded Frequencies*: Add the **National Holidays** *Frequency Type* and select your *Country* and *Year*. This further limits resulting days.
+- Cree un Calendario de Días Laborables usando:
+  - *Frecuencias Incluidas*: Agregue el *Tipo de Frecuencia* **Días de la Semana** y seleccione *Todos los Días*. El resultado contendrá todos los días del año.
+  - *Frecuencias Excluidas*: Agregue el *Tipo de Frecuencia* **Cada** y seleccione *2* para el intervalo y *Días* para la unidad. Especifique la fecha *Válido Desde*. Esto reduce a la mitad los días resultantes.
+  - *Frecuencias Excluidas*: Agregue el *Tipo de Frecuencia* **Feriados Nacionales** y seleccione su *País* y *Año*. Esto limita aún más los días resultantes.
 
-Check results from the *Show Preview* button that should give you every 2nd business day excluding weekends and National Holidays.
+Verifique los resultados con el botón *Mostrar Vista Previa*, que debería mostrar cada 2do día hábil excluyendo fines de semana y Feriados Nacionales.
 
-An alternative solution includes to specify the **Every** *Frequency Type* from the *Restriction* of a Schedule.
+Una solución alternativa incluye especificar el *Tipo de Frecuencia* **Cada** desde la *Restricción* de una Planificación.
 
-## Operations on Calendars
+## Operaciones sobre Calendarios
 
-For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones disponibles véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Daily Plan](/daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
+- [Configuración - Inventario - Planificaciones - Tiempo de Ejecución](/configuration-inventory-schedules-run-time)
+- [Plan Diario](/daily-plan)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)

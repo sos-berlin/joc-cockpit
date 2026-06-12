@@ -1,89 +1,89 @@
-# Configuration - Inventory - Script Includes
+# Configuración - Inventario - Scripts Incluidos
 
-The *Script Include Panel* offers specifying code snippets for use with Jobs. For details see [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
+El *Panel de Scripts Incluidos* permite especificar fragmentos de código para su uso con Jobs. Para más detalles ver [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
 
-Shell Jobs can be used for a number of scripting languages such as Bash, Python, PowerShell etc.
+Los Jobs de Shell pueden utilizarse con varios lenguajes de scripting como Bash, Python, PowerShell, etc.
 
-- Users frequently re-use code snippets across a number of Jobs, for example re-usable functions that are called in a number of *Job Scripts*.
-- This applies to Shell Jobs using Bash etc. and it applies to use of any scripting language with a Job.
-- Script Includes are expanded in *Job Scripts* when the Workflow is deployed. This implies that changes to Script Includes require deploying the related Workflow. The JS7 keeps track of dependencies and offers deploying related Workflows when releasing the Script Include.
+- Los usuarios frecuentemente reutilizan fragmentos de código en varios Jobs, por ejemplo funciones reutilizables que se llaman en varios *Scripts de Job*.
+- Esto aplica tanto a Jobs de Shell que usan Bash, etc., como al uso de cualquier lenguaje de scripting con un Job.
+- Los Scripts Incluidos se expanden en los *Scripts de Job* cuando el Workflow es desplegado. Esto implica que los cambios en los Scripts Incluidos requieren desplegar el Workflow relacionado. JS7 realiza un seguimiento de las dependencias y ofrece desplegar los Workflows relacionados al liberar el Script Incluido.
 
-Script Includes are managed from the following panels:
+Los Scripts Incluidos se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Script Includes. In addition, the panel offers operations on Script Includes.
-- The *Script Include Panel* on the right side of the window holds details for Script Include configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Scripts Incluidos. Además, el panel ofrece operaciones sobre Scripts Incluidos.
+- El *Panel de Scripts Incluidos* en el lado derecho de la ventana contiene los detalles de configuración del Script Incluido.
 
-## Script Include Panel
+## Panel de Scripts Incluidos
 
-For a Script Include the following inputs are available:
+Para un Script Incluido están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Script Include, see [Object Naming Rules](/object-naming-rules).
-- **Title** holds an optional explanation of the Script Include's purpose.
-- **Script Include** holds the code snippet.
+- **Nombre** es el identificador único de un Script Incluido, ver [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito del Script Incluido.
+- **Script Incluido** contiene el fragmento de código.
 
-## Operations on Script Includes
+## Operaciones sobre Scripts Incluidos
 
-For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones disponibles ver [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation).
 
-## Use with Jobs
+## Uso con Jobs
 
-Jobs reference Script Includes from the *Job Script* property using one of the following syntax flavors:
+Los Jobs referencian Scripts Incluidos desde la propiedad *Script de Job* usando una de las siguientes sintaxis:
 
-- **\#\#!include *script-include-name***
-- **::!include *script-include-name***
-- **//!include *script-include-name***
+- **\#\#!include *nombre-script-incluido***
+- **::!include *nombre-script-incluido***
+- **//!include *nombre-script-incluido***
 
-The *script-include-name* specifies the identifier of the Script Include. Users can type the above input into the *Job Script* and they can invoke Quick Search.
+El *nombre-script-incluido* especifica el identificador del Script Incluido. Los usuarios pueden escribir la entrada anterior en el *Script de Job* y pueden invocar la Búsqueda Rápida.
 
-### Quick Search
+### Búsqueda Rápida
 
-Hitting the CTRL+Space keyboard shortcut while the cursor is in the *Job Script* will invoke the Quick Search for Script Includes:
+Al presionar el atajo de teclado CTRL+Espacio mientras el cursor está en el *Script de Job* se invocará la Búsqueda Rápida de Scripts Incluidos:
 
-- Quick Search offers 
-  - navigation from inventory folders,
-  - selecting Script Includes by name when typing one or more characters.
-- Quick Search is case-insensitive and is right-truncated. For left-truncated input users can apply the \* meta character that is a placeholder for any number of characters.
-- After selecting a Script Include, the related input is added to the line that holds the cursor.
+- La Búsqueda Rápida ofrece:
+  - navegación desde carpetas del inventario,
+  - selección de Scripts Incluidos por nombre al escribir uno o más caracteres.
+- La Búsqueda Rápida no distingue entre mayúsculas y minúsculas y aplica truncamiento por la derecha. Para la búsqueda con truncamiento por la izquierda, los usuarios pueden aplicar el metacarácter \* que es un comodín para cualquier número de caracteres.
+- Tras seleccionar un Script Incluido, la entrada relacionada se agrega a la línea donde se encuentra el cursor.
 
-### Parameterization
+### Parametrización
 
-Script Includes can be parameterized like this:
+Los Scripts Incluidos pueden parametrizarse de la siguiente manera:
 
-- **\#\#!include *script-include-name* --replace="search-literal","replacement-literal"**
-- **::!include *script-include-name* --replace="search-literal","replacement-literal"**
-- **//!include *script-include-name* --replace="search-literal","replacement-literal"**
+- **\#\#!include *nombre-script-incluido* --replace="literal-buscar","literal-reemplazar"**
+- **::!include *nombre-script-incluido* --replace="literal-buscar","literal-reemplazar"**
+- **//!include *nombre-script-incluido* --replace="literal-buscar","literal-reemplazar"**
 
-The *search-literal* will be looked up in the Script Include and will be replaced by the *replacement-literal* when the Workflow holding the related Job will be deployed.
+El *literal-buscar* se buscará en el Script Incluido y será reemplazado por el *literal-reemplazar* cuando el Workflow que contiene el Job relacionado sea desplegado.
 
-### Examples
+### Ejemplos
 
-#### PowerShell for Unix
+#### PowerShell para Unix
 
-For use with PowerShell on Unix platforms the following shebang is suggested for a Script Include:
+Para su uso con PowerShell en plataformas Unix se sugiere el siguiente shebang para un Script Incluido:
 
 <pre>
 #!/usr/bin/env pwsh
 </pre>
 
-#### PowerShell for Windows
+#### PowerShell para Windows
 
-For use with PowerShell on Windows platforms the following shebang is suggested for a Script Include:
+Para su uso con PowerShell en plataformas Windows se sugiere el siguiente shebang para un Script Incluido:
 
 <pre>
 @@setlocal enabledelayedexpansion & for /f %%a in ('bitsadmin /rawreturn /create guid') do set g=%%a& set g=!g:~0,-1!& set f=%~n0.!g!.ps1 & @@findstr/v "^@@[fs].*&" "%~f0" > !f! & powershell.exe -NonInteractive -File !f! & set e=!errorlevel! & del /q !f! & exit !e!/b&
 </pre>
 
-The Script Include will write the contents of the *Job Script* to a temporary file that will be executed with the *powershell.exe* binary. Users should switch to using the *pwsh.exe* binary if later PowerShell versions are in use. Script errors will be considered by the JS7 Agent and log output will be stripped from escape characters for colouring. 
+El Script Incluido escribirá el contenido del *Script de Job* en un archivo temporal que será ejecutado con el binario *powershell.exe*. Los usuarios deben cambiar al binario *pwsh.exe* si se utilizan versiones más recientes de PowerShell. Los errores del script serán considerados por el Agente de JS7 y la salida del Log se limpiará de caracteres de escape para coloración.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Object Naming Rules](/object-naming-rules)
+- [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation)
+- [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - How to run PowerShell scripts from jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+run+PowerShell+scripts+from+jobs)
 - [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)

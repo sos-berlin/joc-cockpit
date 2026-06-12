@@ -1,167 +1,167 @@
 # Workflows
 
-The *Workflows* view offers monitoring and control of Workflows.
+La vista *Workflows* ofrece monitoreo y control de Workflows.
 
-- Users can identify Orders being processed for specific Workflows.
-- Users can add Orders to Workflows on demand. Such Orders are not added to the [Daily Plan](/daily-plan), but are added ad hoc.
+- Los usuarios pueden identificar las Órdenes que se procesan para Workflows específicos.
+- Los usuarios pueden agregar Órdenes a Workflows bajo demanda. Dichas Órdenes no se agregan al [Plan Diario](/daily-plan), sino que se agregan de forma ad hoc.
 
-## Navigation Panel
+## Panel de Navegación
 
-The left panel is organized in tabs that allow navigation from folders and filtering by Tags for Workflows and Orders.
+El panel izquierdo está organizado en pestañas que permiten la navegación por carpetas y el filtrado por Etiquetas para Workflows y Órdenes.
 
-- **Folder** navigation offers the chevron-down icon when hovering over a folder name. This will display Workflows from the current folder and from any sub-folders. Use of the chevron-up icon resets the selection to the current folder.
-- Tag filtering is offered from the following tabs:
-  - **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-  - **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
+- La navegación por **Carpetas** ofrece el ícono chevron-down al pasar el cursor sobre el nombre de una carpeta. Esto mostrará Workflows de la carpeta actual y de cualquier subcarpeta. El uso del ícono chevron-up restablece la selección a la carpeta actual.
+- El filtrado por Etiquetas se ofrece desde las siguientes pestañas:
+  - Las **Etiquetas de Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+  - Las **Etiquetas de Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
 
-Tags are selected from + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Las Etiquetas se seleccionan con los íconos + y - y pueden buscarse usando el ícono de Búsqueda Rápida. La visualización de Etiquetas debe activarse desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-## Workflow Panel
+## Panel de Workflows
 
-### Order Summary
+### Resumen de Órdenes
 
-The top of the window holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a pop-up window that will display the list of Orders.
+La parte superior de la ventana contiene el resumen de Órdenes similar al [Panel de Control - Órdenes](/dashboard-orders). Los usuarios pueden hacer clic en el número indicado de Órdenes para un estado dado para abrir una ventana emergente que mostrará la lista de Órdenes.
 
-The Order summary is indicated for Orders related to the Workflows displayed for selected folders or Tags.
+El resumen de Órdenes se indica para las Órdenes relacionadas con los Workflows mostrados para las carpetas o Etiquetas seleccionadas.
 
-### Display of Workflows
+### Visualización de Workflows
 
-- **Workflow Name** is the unique name assigned a Workflow.
-  - Clicking the *Workflow Name* will bring up the *History* panel in the lower part of the window that displays the recent execution history of the Workflow.
-  - Clicking the large arrow-down icon will display all Jobs and Workflow Instructions.
-  - Clicking the small arrow-down icon will display top-level Jobs and Workflow Instructions.
-  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-  - Clicking the + icon brings up a pop-up window to [Add Orders](/workflows-orders-add).
-- **Tabular View**, **Graphical View** icons are available to display Workflows
-  - in tabular format that is focused on concise structure and saves space on the window.
-  - in graphical format that is more speaking to a number of users.
-- **Deployment Date** indicates the date the Workflow was deployed.
-- **Deployment Status** indicates if the Workflow is deployed to the Controller and Agents.
-  - **Synchronized** Workflows are deployed and are available with the Controller and Agents.
-  - **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory only.
-  - **Suspended** Workflows are frozen, they accept Orders but will not allow Orders starting until Workflows will be resumed.
-  - **Outstanding** Workflows wait for confirmation by one or more Agents that the Workflow is suspended or resumed.
-- **No. of Orders** indicates the number of Orders assigned the Workflow. 
-  - Up to three Orders are displayed directly with the Workflow. They offer an action menu for Order operations.
-    - Users can click the indicated Order ID to display the Order's log output from the [Order Log View](/order-log). The log includes output created by any Jobs executed with the Workflow.
-  - Clicking the *No. of Orders* brings up a pop-up window that displays all related Orders and that offers operations on individual Orders and bulk operations on selected Orders.
+- **Nombre del Workflow** es el nombre único asignado a un Workflow.
+  - Hacer clic en el *Nombre del Workflow* mostrará el panel de *Historial* en la parte inferior de la ventana que muestra el historial de ejecución reciente del Workflow.
+  - Hacer clic en el ícono grande de flecha hacia abajo mostrará todos los Jobs e Instrucciones de Workflow.
+  - Hacer clic en el ícono pequeño de flecha hacia abajo mostrará los Jobs e Instrucciones de Workflow de nivel superior.
+  - Hacer clic en el ícono de lápiz navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+  - Hacer clic en el ícono + abre una ventana emergente para [Agregar Órdenes](/workflows-orders-add).
+- Los íconos **Vista Tabular**, **Vista Gráfica** están disponibles para mostrar Workflows
+  - en formato tabular, que se centra en la estructura concisa y ahorra espacio en la ventana.
+  - en formato gráfico, que es más ilustrativo para muchos usuarios.
+- **Fecha de Despliegue** indica la fecha en que se desplegó el Workflow.
+- **Estado de Despliegue** indica si el Workflow está desplegado en el Controlador y los Agentes.
+  - Los Workflows **Sincronizados** están desplegados y disponibles en el Controlador y los Agentes.
+  - Los Workflows **No Sincronizados** no están desplegados en el Controlador y los Agentes, sino que solo están disponibles desde el inventario.
+  - Los Workflows **Suspendidos** están congelados; aceptan Órdenes pero no permitirán que las Órdenes inicien hasta que los Workflows sean reanudados.
+  - Los Workflows **Pendientes** esperan la confirmación de uno o más Agentes de que el Workflow está suspendido o reanudado.
+- **N.° de Órdenes** indica el número de Órdenes asignadas al Workflow.
+  - Hasta tres Órdenes se muestran directamente con el Workflow. Ofrecen un menú de acción para operaciones sobre Órdenes.
+    - Los usuarios pueden hacer clic en el ID de Orden indicado para mostrar la salida de log de la Orden desde la [Vista de Log de Orden](/order-log). El log incluye la salida creada por cualquier Job ejecutado con el Workflow.
+  - Hacer clic en el *N.° de Órdenes* abre una ventana emergente que muestra todas las Órdenes relacionadas y ofrece operaciones sobre Órdenes individuales y operaciones masivas sobre Órdenes seleccionadas.
 
-### Display of Jobs and Workflow Instructions
+### Visualización de Jobs e Instrucciones de Workflow
 
-When a Workflow is expanded using the arrow-down icon available for a Workflow, then its Jobs and Workflow Instructions will be displayed.
+Cuando se expande un Workflow usando el ícono de flecha hacia abajo disponible para un Workflow, se mostrarán sus Jobs e Instrucciones de Workflow.
 
-## History Panel
+## Panel de Historial
 
-The panel is displayed at the lower part of the window when users click the name of the Workflow or add an Order.
+El panel se muestra en la parte inferior de la ventana cuando los usuarios hacen clic en el nombre del Workflow o agregan una Orden.
 
-### Order History
+### Historial de Órdenes
 
-- **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order variables and the Jobs passed by the Order. 
-- **Label** indicates the latest position of an Order in the Workflow. Users can assign *Labels* to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
-- **History Status** indicates the latest outcome in the Order's life.
-  - If Orders are completed, then the *History Status* will be *successful* or *failed*.
-  - If Orders are not completed, the *History Status* will be *in progress*.
-- **Order State** indicates the Order's latest state, see [Order States](/order-states).
-  - If Orders are completed, then the *Order State* will be *successful* or *failed*.
-  - If Orders are not completed, the *Order State* will be *processing*.
+- **ID de Orden** es el identificador único asignado a una Orden. Hacer clic en el ícono de flecha hacia abajo mostrará las variables de la Orden y los Jobs por los que pasó la Orden.
+- **Etiqueta** indica la última posición de una Orden en el Workflow. Los usuarios pueden asignar *Etiquetas* a las Instrucciones de Workflow que se mostrarán; de lo contrario se indica la posición técnica.
+- **Estado del Historial** indica el último resultado en la vida de la Orden.
+  - Si las Órdenes están completadas, el *Estado del Historial* será *exitoso* o *fallido*.
+  - Si las Órdenes no están completadas, el *Estado del Historial* será *en progreso*.
+- **Estado de la Orden** indica el último estado de la Orden; véase [Estados de Órdenes](/order-states).
+  - Si las Órdenes están completadas, el *Estado de la Orden* será *exitoso* o *fallido*.
+  - Si las Órdenes no están completadas, el *Estado de la Orden* será *procesando*.
 
-For access to log output the following options are available:
+Para acceder a la salida de log están disponibles las siguientes opciones:
 
-- **Order ID**: clicking the *Order ID* will display the Order's log output from the [Order Log View](/order-log). The log includes output created by all Jobs executed with the Workflow.
-- **Download Icon**: clicking the icon will download the Order's log to a file.
+- **ID de Orden**: hacer clic en el *ID de Orden* mostrará la salida de log de la Orden desde la [Vista de Log de Orden](/order-log). El log incluye la salida creada por todos los Jobs ejecutados con el Workflow.
+- **Ícono de Descarga**: hacer clic en el ícono descargará el log de la Orden a un archivo.
 
-By default display of Order logs is limited to 10 MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+De forma predeterminada, la visualización de logs de Órdenes está limitada a 10 MB de tamaño de log; de lo contrario, los logs se descargan a archivos. Los usuarios pueden ajustar el límite desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-### Task History
+### Historial de Tareas
 
-- **Job** indicates the name of the Job.
-- **Label** indicates the position of the Job in the Workflow.
-- **Status** is the outcome of Job execution indicated by *in progress*, *successful* or *failed*.
-- **Start Time**, **End Time** indicate the beginning and end of Job execution.
-- **Criticality** is specified with [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options) and indicates the relevance of a Job:
-  - *Minor*
+- **Job** indica el nombre del Job.
+- **Etiqueta** indica la posición del Job en el Workflow.
+- **Estado** es el resultado de la ejecución del Job, indicado por *en progreso*, *exitoso* o *fallido*.
+- **Hora de Inicio**, **Hora de Fin** indican el inicio y fin de la ejecución del Job.
+- **Criticidad** se especifica en [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflow-job-options) e indica la relevancia de un Job:
+  - *Menor*
   - *Normal*
-  - *Major*
-  - *Critical*
-- **Return Code** is the exit code of a Shell Job or the return code of a JVM Job. The [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) panel offers configuring return codes for successful and failed execution of Jobs.
+  - *Mayor*
+  - *Crítica*
+- **Código de Retorno** es el código de salida de un Job de Shell o el código de retorno de un Job de JVM. El panel [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties) ofrece la configuración de códigos de retorno para la ejecución exitosa y fallida de Jobs.
 
-For access to log output the following action is available:
+Para acceder a la salida de log está disponible la siguiente acción:
 
-- **Job**: clicking the *Job Name* will display the Job's log output from the [Task Log View](/task-log). 
+- **Job**: hacer clic en el *Nombre del Job* mostrará la salida de log del Job desde la [Vista de Log de Tarea](/task-log).
 
-By default display of Task logs is limited to 10 MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+De forma predeterminada, la visualización de logs de Tareas está limitada a 10 MB de tamaño de log; de lo contrario, los logs se descargan a archivos. Los usuarios pueden ajustar el límite desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-### Audit Log
+### Registro de Auditoría
 
-The panel displays the same information as the [Audit Log](/audit-log) focused on the current Workflow.
+El panel muestra la misma información que el [Registro de Auditoría](/audit-log) centrada en el Workflow actual.
 
-The number of Audit Log entries displayed can be modified from the *Max. number of Audit Log entries per object* setting in the user's [Profile - Preferences](/profile-preferences).
+El número de entradas del Registro de Auditoría mostradas puede modificarse desde la configuración *Número máximo de entradas del Registro de Auditoría por objeto* en las [Preferencias del Perfil](/profile-preferences) del usuario.
 
-## Operations
+## Operaciones
 
-### Operations on Workflows
+### Operaciones sobre Workflows
 
-At the top of the window the following buttons are offered for Workflow operations:
+En la parte superior de la ventana se ofrecen los siguientes botones para operaciones sobre Workflows:
 
-- **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows regardless of the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unless the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
-- **Resume All** resumes all suspended Workflows regardless of the currently displayed selection of Workflows.
+- **Suspender Todos** actúa como una *Parada de Emergencia* y suspenderá todos los Workflows independientemente de la selección de Workflows mostrada actualmente. Los Workflows suspendidos están congelados; aceptan Órdenes pero no iniciarán Órdenes a menos que el Workflow sea reanudado. Las Órdenes en ejecución completan el Job actual u otra instrucción antes de ser suspendidas.
+- **Reanudar Todos** reanuda todos los Workflows suspendidos independientemente de la selección de Workflows mostrada actualmente.
 
-### Operations on Jobs and Workflow Instructions
+### Operaciones sobre Jobs e Instrucciones de Workflow
 
-The following operations are available for Jobs from their related action menu:
+Las siguientes operaciones están disponibles para Jobs desde su menú de acción relacionado:
 
-- **Skip Job** prevents an Order from executing the related Job and makes it proceed with the next Workflow Instruction.
-- **Unskip Job** reverts a previously skipped Job.
-- **Stop Job** will suspend Orders arriving at the Job. Orders can be continued from a *Resume* operation that allows to continue processing from a different Workflow node or to force processing of the stopped Job.
-- **Unstop Job** reverts a previously stopped Job.
+- **Omitir Job** evita que una Orden ejecute el Job relacionado y hace que continúe con la siguiente Instrucción de Workflow.
+- **Dejar de Omitir Job** revierte un Job previamente omitido.
+- **Detener Job** suspenderá las Órdenes que lleguen al Job. Las Órdenes pueden continuarse desde una operación *Reanudar* que permite continuar el procesamiento desde un nodo diferente del Workflow o forzar el procesamiento del Job detenido.
+- **Dejar de Detener Job** revierte un Job previamente detenido.
 
-### Operations on Orders
+### Operaciones sobre Órdenes
 
-Users find an action menu per Order that offers the following operations:
+Los usuarios encuentran un menú de acción por Orden que ofrece las siguientes operaciones:
 
-- **Cancel** will terminate the Order. *Running* Orders will complete the current Job or Workflow Instruction and will leave the Workflow with a *failed* *History Status*.
-- **Cancel/terminate task** will forcibly terminate Orders running a Job. Orders will leave the Workflow with a *failed* *History Status*.
-- **Suspend** will suspend the Order. Running Orders will be suspended after they completed the current Job or Workflow Instruction.
-- **Suspend/terminate task** will forcibly terminate *running* Orders and will suspend the Orders.
-- **Suspend/reset** will immediately reset the current Workflow Instruction and will put the Order to the *suspended* state. The option can be combined with forcibly terminating tasks for *running* Orders.
-- **Resume** will continue a *suspended* or *failed* resumable Order.
+- **Cancelar** terminará la Orden. Las Órdenes *en ejecución* completarán el Job o Instrucción de Workflow actual y abandonarán el Workflow con un *Estado del Historial* *fallido*.
+- **Cancelar/terminar tarea** terminará forzosamente las Órdenes que ejecutan un Job. Las Órdenes abandonarán el Workflow con un *Estado del Historial* *fallido*.
+- **Suspender** suspenderá la Orden. Las Órdenes en ejecución se suspenderán después de completar el Job o Instrucción de Workflow actual.
+- **Suspender/terminar tarea** terminará forzosamente las Órdenes *en ejecución* y las suspenderá.
+- **Suspender/restablecer** restablecerá inmediatamente la Instrucción de Workflow actual y pondrá la Orden en estado *suspendido*. La opción puede combinarse con la terminación forzosa de tareas para Órdenes *en ejecución*.
+- **Reanudar** continuará una Orden *suspendida* o *fallida* reanudable.
 
-Additional operations can be available that are specific for the Order state.
+Pueden estar disponibles operaciones adicionales específicas para el estado de la Orden.
 
-## Filters
+## Filtros
 
-Users can apply filters to limit display of Workflows. Filter buttons are available at the top of the window:
+Los usuarios pueden aplicar filtros para limitar la visualización de Workflows. Los botones de filtro están disponibles en la parte superior de la ventana:
 
-- **Agents** offers filtering Workflows holding Jobs that are assigned one or more selected Agents.
-- **Synchronized** Workflows are deployed and are available with the Controller and Agents.
-- **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory only.
-- **Suspended** Workflows are frozen, they accept Orders but will not allow Orders starting until Workflows will be resumed.
-- **Outstanding** Workflows wait for confirmation by one or more Agents that the Workflow is suspended.
-- **Order Filter** offers specifying the date range for which *scheduled* Orders will be displayed for selected Workflows.
+- **Agentes** ofrece filtrar Workflows que contienen Jobs asignados a uno o más Agentes seleccionados.
+- Los Workflows **Sincronizados** están desplegados y disponibles en el Controlador y los Agentes.
+- Los Workflows **No Sincronizados** no están desplegados en el Controlador y los Agentes, sino que solo están disponibles desde el inventario.
+- Los Workflows **Suspendidos** están congelados; aceptan Órdenes pero no permitirán que las Órdenes inicien hasta que los Workflows sean reanudados.
+- Los Workflows **Pendientes** esperan la confirmación de uno o más Agentes de que el Workflow está suspendido.
+- El **Filtro de Órdenes** ofrece especificar el rango de fechas para el cual se mostrarán las Órdenes *planificadas* para los Workflows seleccionados.
 
-The *Advanced Filter* offers more detailed criteria for filtering of Workflows.
+El *Filtro Avanzado* ofrece criterios más detallados para el filtrado de Workflows.
 
-## Search
+## Búsqueda
 
-The [Workflows - Search](/workflows-search) offers criteria for looking up Workflows from dependencies, for example searching for Workflows including a specific Job name, or using specific Notice Boards.
+La [Búsqueda de Workflows](/workflows-search) ofrece criterios para buscar Workflows por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico o que usen Tableros de Avisos específicos.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options)
-- [Daily Plan](/daily-plan)
-- [Order Log View](/order-log)
-- [Order States](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Workflows - Add Orders](/workflows-orders-add)
-- [Workflows - Search](/workflows-search)
+- [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+  - [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties)
+  - [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Plan Diario](/daily-plan)
+- [Vista de Log de Orden](/order-log)
+- [Estados de Órdenes](/order-states)
+- [Preferencias del Perfil](/profile-preferences)
+- [Configuración - JOC Cockpit](/settings-joc)
+- [Workflows - Agregar Órdenes](/workflows-orders-add)
+- [Búsqueda de Workflows](/workflows-search)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

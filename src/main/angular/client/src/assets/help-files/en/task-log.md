@@ -1,34 +1,34 @@
-# Task Log View
+# Vista de Log de Tarea
 
-The *Task Log View* offers a running log that is updated every 2-3s. This allows following output of Jobs in near real-time.
+La *Vista de Log de Tarea* ofrece un log en ejecución que se actualiza cada 2-3 segundos. Esto permite seguir la salida de Jobs en tiempo casi real.
 
-## Filter
+## Filtro
 
-The *Task Log View* offers filtering from a number of criteria available from the top of the window:
+La *Vista de Log de Tarea* ofrece filtrado a partir de varios criterios disponibles en la parte superior de la ventana:
 
-- **Main** specifies that details about Job start and the parameterization on Job start will be displayed. Such output is indicated from the [MAIN] qualifier.
-- **stdout** specifies if output written by the Job to the stdout channel will be displayed using the [STDOUT] qualifier.
-- **Debug** applies to JVM Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
+- **Main** especifica que se mostrarán detalles sobre el inicio del Job y la parametrización en el inicio del Job. Dicha salida se indica con el calificador [MAIN].
+- **stdout** especifica si la salida escrita por el Job al canal stdout se mostrará usando el calificador [STDOUT].
+- **Debug** aplica a Jobs de JVM que hacen uso de la [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). A dichos Jobs se les puede agregar el argumento *log_level* con el valor *debug* o *trace*. Si hay salida de depuración disponible de un Job, se mostrará usando el calificador [DEBUG].
 
-Log output written by Jobs to the stderr channel is not subject to filtering and wil be displayed from the [STDERR] qualifier.
+La salida de log escrita por los Jobs al canal stderr no está sujeta a filtrado y se mostrará con el calificador [STDERR].
 
-## Log Panel
+## Panel de Log
 
-Log output is displayed in historic ordering of arrival.
+La salida de log se muestra en orden histórico de llegada.
 
-### Timestamps
+### Marcas de Tiempo
 
-Log output indicates timestamps from different sources:
+La salida de log indica marcas de tiempo de diferentes fuentes:
 
-- **Agent's time**: Events such as *Start* and *End* are created by the Agent and reflect the Agent's real-time clock.
-- **Job's time**: Output of Jobs makes use of the time zone of the server on which the Job will be executed or the time zone specified from the Job's implementation.
+- **Hora del Agente**: Los eventos como *Inicio* y *Fin* son creados por el Agente y reflejan el reloj en tiempo real del Agente.
+- **Hora del Job**: La salida de los Jobs utiliza la zona horaria del servidor en el que se ejecutará el Job o la zona horaria especificada por la implementación del Job.
 
-The *Task Log View* converts timestamps to the user's time zone, if the related setting in the [Profile - Preferences](/profile-preferences) is active. Other than that, the Agent's time zone will be used.
+La *Vista de Log de Tarea* convierte las marcas de tiempo a la zona horaria del usuario, si la configuración correspondiente en las [Preferencias del Perfil](/profile-preferences) está activa. De lo contrario, se utilizará la zona horaria del Agente.
 
-If the Agent's real-time clock is not synchronized, this can result in inaccurate timestamps from log output.
+Si el reloj en tiempo real del Agente no está sincronizado, esto puede resultar en marcas de tiempo inexactas en la salida del log.
 
-## References
+## Referencias
 
-- [Profile - Preferences](/profile-preferences)
+- [Preferencias del Perfil](/profile-preferences)
 - [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API)
 - [JS7 - Log Levels and Debug Options](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Levels+and+Debug+Options)

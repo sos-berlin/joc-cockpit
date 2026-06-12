@@ -1,45 +1,45 @@
-# Configuration - Inventory - Operations - Recall Object
+# Configuración - Inventario - Operaciones - Recuperar Objeto
 
-Recalling objects deactivates them, for example, for use with the [Daily Plan](/daily-plan). This applies to objects such as Schedules and Calendars available from the *Automation* system folder.
+La recuperación de objetos los desactiva, por ejemplo, para su uso con el [Plan Diario](/daily-plan). Esto aplica a objetos como Planificaciones y Calendarios disponibles en la carpeta del sistema *Automatización*.
 
-The *Configuration->Inventory* view offers recalling a single object and recalling objects from folders, see [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder).
+La vista *Configuración->Inventario* permite recuperar un objeto individual y recuperar objetos desde carpetas, ver [Configuración - Inventario - Operaciones - Recuperar Carpeta](/configuration-inventory-operations-recall-folder).
 
-When recalling a single object from the *Recall* operation available from the object's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
+Al recuperar un objeto individual desde la operación *Recuperar* disponible en el menú de acción de tres puntos del objeto en el panel de navegación, se mostrará una ventana emergente como la siguiente:
 
 <img src="recall-schedule.png" alt="Recall Schedule" width="600" height="300" />
 
-## Updating the Daily Plan
+## Actualización del Plan Diario
 
-Recalling objects such as Schedules and Calendars impacts the [Daily Plan](/daily-plan). 
+La recuperación de objetos como Planificaciones y Calendarios impacta el [Plan Diario](/daily-plan).
 
-Existing Orders for Workflows referenced by related Schedules will be recalled from the Controller and will be removed from the Daily Plan.
+Las Órdenes existentes para Workflows referenciados por Planificaciones relacionadas serán recuperadas del Controlador y eliminadas del Plan Diario.
 
-## Including Dependencies
+## Inclusión de Dependencias
 
-Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
+Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
-When recalling objects, consistency is considered, for example:
+Al recuperar objetos se considera la consistencia, por ejemplo:
 
-- If a Schedule is created and references a newly created Calendar, then releasing the Schedule includes releasing the Calendar too. This further includes deployment of a draft Workflow referenced by the Schedule.
-- If a Calendar is referenced by a released Schedule and should be recalled or removed, then the Schedule must be recalled or removed too. This includes to revoke or remove the Workflow referenced by the Schedule.
+- Si se crea una Planificación y referencia un Calendario recién creado, entonces liberar la Planificación incluye liberar el Calendario también. Esto además incluye el despliegue de un Workflow en borrador referenciado por la Planificación.
+- Si un Calendario es referenciado por una Planificación liberada y debe ser recuperado o eliminado, entonces la Planificación también debe ser recuperada o eliminada. Esto incluye revocar o eliminar el Workflow referenciado por la Planificación.
 
-Users control consistent deployment from the following options:
+Los usuarios controlan el despliegue consistente desde las siguientes opciones:
 
-- **Include Dependencies**
-  - when checked, this will include both referencing and referenced objects.
-    - If related objects are in deployed/released status, then common recalling is offered. It will be enforced, if required by object relationships.
-    - If related objects are in draft status, then common recalling is optional. Users can select related objects for common recalling.
-  - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
+- **Incluir Dependencias**
+  - cuando está marcado, incluirá tanto objetos que referencian como objetos referenciados.
+    - Si los objetos relacionados están en estado desplegado/liberado, se ofrecerá la recuperación conjunta. Se aplicará de forma obligatoria si es requerida por las relaciones entre objetos.
+    - Si los objetos relacionados están en estado de borrador, la recuperación conjunta es opcional. Los usuarios pueden seleccionar objetos relacionados para la recuperación conjunta.
+  - cuando no está marcado, no se considerarán las dependencias. Los usuarios deben verificar que los objetos relacionados sean válidos y estén desplegados/liberados. El Controlador generará mensajes de error en caso de objetos faltantes debido a un despliegue inconsistente.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Configuración - Inventario - Operaciones - Recuperar Carpeta](/configuration-inventory-operations-recall-folder)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Plan Diario](/daily-plan)
+- [Matriz de Dependencias](/dependencies-matrix)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

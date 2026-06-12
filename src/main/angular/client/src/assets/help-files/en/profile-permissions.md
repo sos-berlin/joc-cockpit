@@ -1,28 +1,28 @@
-# Profile - Permissions
+# Perfil - Permisos del Perfil
 
-The *Profile - Permissions* page reports resulting permissions of roles assigned a user account.
+La página *Perfil - Permisos del Perfil* reporta los permisos resultantes de los roles asignados a una cuenta de usuario.
 
 ## Roles
 
-The roles assigned the user account are displayed. Resulting permissions are merged from role assignments.
+Se muestran los roles asignados a la cuenta de usuario. Los permisos resultantes se combinan desde las asignaciones de roles.
 
-## Permissions
+## Permisos
 
-### JOC Cockpit Permissions
+### Permisos de JOC Cockpit
 
-Permissions are indicated for all JOC Cockpit instances.
- 
-### Controller Permissions
+Los permisos se indican para todas las instancias de JOC Cockpit.
 
-Permissions are indicated per Controller instance. The *default* Controller permissions apply if no specific permissions are configured for the related Controller.
+### Permisos del Controlador
 
-## References
+Los permisos se indican por instancia de Controlador. Los permisos del Controlador *predeterminado* se aplican si no se configuran permisos específicos para el Controlador relacionado.
 
-### Context Help
+## Referencias
 
-- [Profile](/profile)
+### Ayuda de Contexto
 
-### Product Knowledge Base
+- [Perfil](/profile)
+
+### Base de Conocimiento del Producto
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Management of User Accounts, Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+User+Accounts%2C+Roles+and+Permissions)

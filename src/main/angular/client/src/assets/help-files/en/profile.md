@@ -1,50 +1,50 @@
-# Profile
+# Perfil
 
-The *Profile* holds settings relevant for a user's interaction with JOC Cockpit.
+El *Perfil* contiene la configuración relevante para la interacción de un usuario con JOC Cockpit.
 
-A *Base Profile* is available, typically from the *root* account that is used
+Un *Perfil Base* está disponible, típicamente desde la cuenta *root*, que se usa
 
-- to populate *User Profiles* of user accounts on first login,
-- to provide settings relevant to all user accounts if JOC Cockpit is operated in *low* Security Level.
+- para poblar los *Perfiles de Usuario* de las cuentas de usuario en el primer inicio de sesión,
+- para proporcionar configuraciones relevantes para todas las cuentas de usuario si JOC Cockpit opera con el Nivel de Seguridad *bajo*.
 
-Users can switch the *Base Profile* to a different account from the [Settings - JOC Cockpit](/settings-joc) page.
+Los usuarios pueden cambiar el *Perfil Base* a una cuenta diferente desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-Users should be aware that inactive profiles are subject to purge by the [Cleanup Service](/service-cleanup).
+Los usuarios deben tener en cuenta que los perfiles inactivos están sujetos a depuración por el [Servicio de Limpieza](/service-cleanup).
 
-The *User Profile* allows managing preferences and settings that are applicable to the current user.
+El *Perfil de Usuario* permite gestionar preferencias y configuraciones aplicables al usuario actual.
 
-For details see [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles).
+Para más detalles, consulte [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles).
 
-## Change Password
+## Cambiar Contraseña
 
-Clicking the related link, users can change their password if active [Identity Services](/identity-services) include a service of type *JOC* that was used for the current login.
+Haciendo clic en el enlace correspondiente, los usuarios pueden cambiar su contraseña si los [Servicios de Identidad](/identity-services) activos incluyen un servicio de tipo *JOC* que fue usado para el inicio de sesión actual.
 
-- **Old Password** expects the currently used password being specified.
-- **New Password** expects the new password being specified.
-    - A minimum password length is required as configured with [Settings - Identity Service](/settings-identity-service).
-    - The *Old Password* and *New Password* must be different.
-- **Confirm Password** expects the new password being specified.
+- **Contraseña Anterior** espera que se especifique la contraseña actualmente en uso.
+- **Nueva Contraseña** espera que se especifique la nueva contraseña.
+    - Se requiere una longitud mínima de contraseña según la configuración en [Configuración - Servicio de Identidad](/settings-identity-service).
+    - La *Contraseña Anterior* y la *Nueva Contraseña* deben ser diferentes.
+- **Confirmar Contraseña** espera que se especifique nuevamente la nueva contraseña.
 
-## Profile Sections
+## Secciones del Perfil
 
-Settings for *User Profiles* are available from the following sections:
+La configuración de los *Perfiles de Usuario* está disponible desde las siguientes secciones:
 
-- [Profile - Preferences](/profile-preferences)
-- [Profile - Permissions](/profile-permissions)
-- [Profile - Signature Key Management](/profile-signature-key-management)
-- [Profile - SSL Key Management](/profile-ssl-key-management)
-- [Profile - Git Management](/profile-git-management)
-- [Profile - Favorite Management](/profile-favorite-management)
+- [Perfil - Preferencias](/profile-preferences)
+- [Perfil - Permisos del Perfil](/profile-permissions)
+- [Perfil - Gestión de Claves de Firma](/profile-signature-key-management)
+- [Perfil - Gestión de Claves SSL](/profile-ssl-key-management)
+- [Perfil - Gestión de Git](/profile-git-management)
+- [Perfil - Gestión de Favoritos](/profile-favorite-management)
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Cleanup Service](/service-cleanup)
-- [Identity Services](/identity-services)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Settings - Identity Service](/settings-identity-service)
+- [Servicio de Limpieza](/service-cleanup)
+- [Servicios de Identidad](/identity-services)
+- [Configuración - JOC Cockpit](/settings-joc)
+- [Configuración - Servicio de Identidad](/settings-identity-service)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)

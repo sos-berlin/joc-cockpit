@@ -1,11 +1,11 @@
-# Dashboard - Agent Running Jobs
+# Dashboard - Jobs en Ejecución por Agente
 
-The *Agent Running Jobs* panel displays the number of running Jobs per Agent.
+El panel *Jobs en Ejecución por Agente* muestra la cantidad de Jobs en ejecución por cada Agente.
 
-<img src="dashboard-agent-running-jobs.png" alt="Agent Running Jobs" width="350" height="140" />
+<img src="dashboard-agent-running-jobs.png" alt="Jobs en Ejecución por Agente" width="350" height="140" />
 
-## Running Jobs
+## Jobs en Ejecución
 
-The information is dynamic and can change every 2-3s. The sorting of Agents is adjusted from the highest to the lowest number of Jobs.
+La información es dinámica y puede actualizarse cada 2-3 segundos. El ordenamiento de los Agentes se ajusta de mayor a menor cantidad de Jobs.
 
-The panel counts running Jobs only, Orders passing other workflow instructions are not counted. For failed Jobs see [Dashboard - Orders](/dashboard-orders).
+El panel contabiliza únicamente los Jobs en ejecución; las Órdenes que pasan por otras instrucciones del Workflow no son contabilizadas. Para Jobs fallidos, consulte [Dashboard - Órdenes](/dashboard-orders).

@@ -1,37 +1,37 @@
-# Profile - SSL Key Management
+# Perfil - Gestión de Claves SSL
 
-The *Profile - SSL Key Management* tab offers the built-in Certificate Authority (CA) that allows creating Server Authentication Certificates and Client Authentication Certificates for TLS/SSL connections to JS7 products.
+La pestaña *Perfil - Gestión de Claves SSL* ofrece la Autoridad de Certificación (CA) integrada que permite crear Certificados de Autenticación de Servidor y Certificados de Autenticación de Cliente para conexiones TLS/SSL con los productos JS7.
 
-For details see [JS7 - Profiles - SSL Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+SSL+Key+Management).
+Para más detalles, consulte [JS7 - Profiles - SSL Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+SSL+Key+Management).
 
-<img src="profile-ssl-key-management.png" alt="SSL Key Management" width="800" height="75" />
+<img src="profile-ssl-key-management.png" alt="Gestión de Claves SSL" width="800" height="75" />
 
-## SSL CA Certificate
+## Certificado de CA SSL
 
-JS7 ships with a default SSL CA Certificate. Users should consider the validity period of the Certificate. Newer Certificates ship with JS7 versions approx. six months before certificate expiration. Instead of updating JS7, users can upload a newer Certificate.
+JS7 incluye un Certificado de CA SSL predeterminado. Los usuarios deben considerar el período de validez del Certificado. Los Certificados más nuevos se incluyen con las versiones de JS7 aproximadamente seis meses antes del vencimiento del certificado. En lugar de actualizar JS7, los usuarios pueden cargar un Certificado más nuevo.
 
-Users can create their own SSL CA Certificate:
+Los usuarios pueden crear su propio Certificado de CA SSL:
 
-- from a Private Certificate Authority (CA) or Public CA. Use of a Private CA is explained from [JS7 - How to create X.509 SSL TLS Certificates](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+SSL+TLS+Certificates).
-- from the built-in SSL CA that ships with JOC Cockpit.
+- desde una Autoridad de Certificación (CA) Privada o CA Pública. El uso de una CA Privada se explica en [JS7 - How to create X.509 SSL TLS Certificates](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+SSL+TLS+Certificates).
+- desde la CA SSL integrada que se incluye con JOC Cockpit.
 
-## Operations on SSL CA Certificate
+## Operaciones sobre el Certificado de CA SSL
 
-The following operations are offered:
+Se ofrecen las siguientes operaciones:
 
-- **Show** is available when clicking the icon right to the validity period. This will display the Private Key and SSL CA Certificate.
-- **Update** invokes a pop-up window that allows to paste an updated Private Key and SSL CA Certificate.
-- **Import** invokes a pop-up window that offers to upload the Private Key and SSL CA Certificate.
-- **Generate** invokes a pop-up window to generate the Private Key and self-issued SSL CA Certificate.
+- **Mostrar** está disponible al hacer clic en el icono a la derecha del período de validez. Esto mostrará la Clave Privada y el Certificado de CA SSL.
+- **Actualizar** invoca una ventana emergente que permite pegar una Clave Privada y Certificado de CA SSL actualizados.
+- **Importar** invoca una ventana emergente que ofrece cargar la Clave Privada y el Certificado de CA SSL.
+- **Generar** invoca una ventana emergente para generar la Clave Privada y el Certificado de CA SSL autoemitido.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Profile](/profile)
-- [Profile - SSL Key Management](/profile-ssl-key-management)
+- [Perfil](/profile)
+- [Perfil - Gestión de Claves SSL](/profile-ssl-key-management)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Certificate Authority](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Authority)
   - [JS7 - Certificate Authority - Manage Certificates with JOC Cockpit](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Authority+-+Manage+Certificates+with+JOC+Cockpit)

@@ -1,18 +1,18 @@
-# Dashboard - Inventory
+# Dashboard - Inventario
 
-The *Inventory* panel provides information about the number of objects in use.
+El panel *Inventario* proporciona información sobre la cantidad de objetos en uso.
 
-<img src="dashboard-inventory.png" alt="Inventory" width="330" height="80" />
+<img src="dashboard-inventory.png" alt="Inventario" width="330" height="80" />
 
-## Inventory Objects
+## Objetos del Inventario
 
-The inventory summary counts deployed and released objects. It does not count draft objects that have not been deployed or released.
+El resumen del inventario contabiliza los objetos desplegados y liberados. No contabiliza los objetos en borrador que no han sido desplegados ni liberados.
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
-- [Configuration - Inventory - Resource Locks](/configuration-inventory-resource-locks)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Configuración - Inventario - Propiedades de Job en Workflow](/configuration-inventory-workflow-job-properties)
+- [Configuración - Inventario - Recursos de Lock](/configuration-inventory-resource-locks)
+- [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules)
 
-## References
+## Referencias
 
 - [JS7 - Inventory](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory)

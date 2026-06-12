@@ -1,155 +1,155 @@
-# Orders Overview
+# Vista General de Órdenes
 
-The *Orders Overview* view offers monitoring and control of Orders for Workflows.
+La vista *Vista General de Órdenes* ofrece monitoreo y control de Órdenes para Workflows.
 
-- Users can identify Orders being processed per [Order State](/order-states).
-- Users can transition Orders, for example, by cancelling *running* Orders.
-- The view holds Orders that are added by the [Daily Plan](/daily-plan) and Orders that have been added on demand.
+- Los usuarios pueden identificar las Órdenes que se están procesando por [Estado de Orden](/order-states).
+- Los usuarios pueden hacer transiciones de Órdenes, por ejemplo, cancelando Órdenes *en ejecución*.
+- La vista contiene Órdenes agregadas por el [Plan Diario](/daily-plan) y Órdenes que han sido agregadas bajo demanda.
 
-## Order State Selection Panel
+## Panel de Selección de Estado de Orden
 
-The left panel indicates the number of Orders available per state. Clicking the related state or number displays related Orders in the Order panel.
+El panel izquierdo indica el número de Órdenes disponibles por estado. Hacer clic en el estado o número relacionado muestra las Órdenes correspondientes en el panel de Órdenes.
 
-## Tag Panel
+## Panel de Etiquetas
 
-The middle panel is organized in tabs that allow filtering of Orders by Tags.
+El panel central está organizado en pestañas que permiten filtrar Órdenes por Etiquetas.
 
-- **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
+- Las **Etiquetas de Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- Las **Etiquetas de Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
 
-Tags are selected from + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Las Etiquetas se seleccionan con los iconos + y - y pueden buscarse usando el icono de Búsqueda Rápida. La visualización de Etiquetas debe activarse desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-## Order Panel
+## Panel de Órdenes
 
-The panel offers the list of Orders for the given state:
+El panel ofrece la lista de Órdenes para el estado dado:
 
-- **Order ID** is the unique identifier assigned an Order.
-  - Clicking the arrow-down icon will display variables carried by the Order.
-- **Workflow Name** is the unique name assigned a Workflow.
-  - Clicking the *Workflow Name* navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Label** indicates the Order's position from the label of the Workflow instruction. In absence of labels the technical position is indicated.
-- **State** indicates the [Order State](/order-states).
-  - Hovering the mouse over the state indicator displays details if available. For example, *waiting* Orders indicate reasons such as *waiting for process*, *waiting for Notice Board* etc.
-- **Scheduled For** indicates the start date of the Order.
+- **Order ID** es el identificador único asignado a una Orden.
+  - Hacer clic en el icono de flecha hacia abajo mostrará las variables que lleva la Orden.
+- **Nombre del Workflow** es el nombre único asignado a un Workflow.
+  - Hacer clic en el *Nombre del Workflow* navega a la vista [Workflows](/workflows).
+  - Hacer clic en el icono de lápiz navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- **Etiqueta** indica la posición de la Orden por la etiqueta de la instrucción de Workflow. En ausencia de etiquetas, se indica la posición técnica.
+- **Estado** indica el [Estado de Orden](/order-states).
+  - Al pasar el ratón sobre el indicador de estado, se muestran detalles si están disponibles. Por ejemplo, las Órdenes en estado *esperando* indican razones como *esperando proceso*, *esperando Tablero de Avisos*, etc.
+- **Programada Para** indica la fecha de inicio de la Orden.
 
-## History Panel
+## Panel de Historial
 
-The panel is displayed in the lower part of the window when users click the Order ID. The panel holds sub-tabs for the *Order History* and *Audit Log*.
+El panel se muestra en la parte inferior de la ventana cuando los usuarios hacen clic en el Order ID. El panel contiene subpestañas para el *Historial de Órdenes* y el *Registro de Auditoría*.
 
-### Order History
+### Historial de Órdenes
 
-- **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order Variables.
-- **Label** indicates the latest position of an Order in the Workflow. Users can assign *Labels* to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
-- **History Status** indicates the latest outcome in the Order's life.
-  - If Orders are completed, then the *History Status* will be *successful* or *failed*.
-  - If Orders are not completed, the *History Status* will be *in progress*.
-- **Planned Time** indicates the original date and time the Order was scheduled for.
-- **Start Time** indicates the effective date and time the Order started.
-- **End Time** indicates the date and time the Order completed.
+- **Order ID** es el identificador único asignado a una Orden. Hacer clic en el icono de flecha hacia abajo mostrará las Variables de la Orden.
+- **Etiqueta** indica la última posición de una Orden en el Workflow. Los usuarios pueden asignar *Etiquetas* a instrucciones de Workflow que se mostrarán; de lo contrario, se indicará la posición técnica.
+- **Estado del Historial** indica el último resultado en la vida de la Orden.
+  - Si las Órdenes están completadas, el *Estado del Historial* será *exitoso* o *fallido*.
+  - Si las Órdenes no están completadas, el *Estado del Historial* será *en progreso*.
+- **Hora Planificada** indica la fecha y hora original para la que estaba programada la Orden.
+- **Hora de Inicio** indica la fecha y hora efectiva en que inició la Orden.
+- **Hora de Fin** indica la fecha y hora en que completó la Orden.
 
-#### Access to Log Output
+#### Acceso a la Salida del Log
 
-- **Order ID**: Clicking the *Order ID* in the *History* panel will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any Jobs executed with the Workflow.
-- **Download Icon**: clicking the icon will download the Order's log to a file.
+- **Order ID**: Hacer clic en el *Order ID* en el panel de *Historial* mostrará la salida del log de la Orden desde la [Vista del Log de Orden](/order-log). El log incluye la salida creada por cualquier Job ejecutado con el Workflow.
+- **Icono de Descarga**: hacer clic en el icono descargará el log de la Orden a un archivo.
 
-By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+Por defecto, la visualización de logs de Órdenes está limitada a 10 MB de tamaño de log; de lo contrario, los logs se descargan a archivos. Los usuarios pueden ajustar el límite desde la página [Configuración - JOC Cockpit](/settings-joc).
 
-### Audit Log
+### Registro de Auditoría
 
-The *Audit Log* indicates modifying operations performed on the Order.
+El *Registro de Auditoría* indica las operaciones de modificación realizadas sobre la Orden.
 
-- **Created** indicates the date the operation was performed.
-- **Account** indicates the user account that performed the operation.
-- **Request** indicates the REST API endpoint that was called.
-- **Category** specifies the classification of the operation such as CONTROLLER when cancelling Orders or DAILYPLAN when creating Orders from the [Daily Plan](/daily-plan).
-- **Reason** explains why an Order was modified. The JOC Cockpit can be configured to enforce specifying reasons when modifying objects.
-  - The setting is available from [Profile - Preferences](/profile-preferences).
-  - The setting can be enforced from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Time Spent** similar to specifying *Reasons* the time spent on an operation can be added when modifying Orders.
-- **Ticket Link** similar to specifying *Reasons* a reference to a ticket system can be added when modifying Orders.
+- **Creado** indica la fecha en que se realizó la operación.
+- **Cuenta** indica la cuenta de usuario que realizó la operación.
+- **Solicitud** indica el endpoint de la API REST que fue llamado.
+- **Categoría** especifica la clasificación de la operación, como CONTROLLER al cancelar Órdenes o DAILYPLAN al crear Órdenes desde el [Plan Diario](/daily-plan).
+- **Motivo** explica por qué se modificó una Orden. El JOC Cockpit puede configurarse para exigir la especificación de motivos al modificar objetos.
+  - El ajuste está disponible en [Perfil - Preferencias](/profile-preferences).
+  - El ajuste puede imponerse desde la página [Configuración - JOC Cockpit](/settings-joc).
+- **Tiempo Invertido** similar a especificar *Motivos*, el tiempo invertido en una operación puede agregarse al modificar Órdenes.
+- **Enlace de Ticket** similar a especificar *Motivos*, se puede agregar una referencia a un sistema de tickets al modificar Órdenes.
 
-## Operations
+## Operaciones
 
-### Operations on Orders
+### Operaciones sobre Órdenes
 
-Users find an action menu per Order that offers operations available for the given Order state.
+Los usuarios encuentran un menú de acción por Orden que ofrece las operaciones disponibles para el estado dado de la Orden.
 
-For Orders in the *pending*, *scheduled*, *in progress*, *running*, *suspended*, *prompting*, *waiting*, *failed* state the following operations are offered:
+Para Órdenes en estado *pendiente*, *planificada*, *en progreso*, *ejecutando*, *suspendida*, *a confirmar*, *esperando*, *fallida*, se ofrecen las siguientes operaciones:
 
-- **Modify Priority** 
-  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
-  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
-    - **Low**: -20000
-    - **Below Normal**: -10000
+- **Modificar Prioridad**
+  - Si una Orden encontrará una instrucción de *Recurso de Lock* en el Workflow que limita el paralelismo, su *Prioridad* determina la posición en la cola de Órdenes *en espera*.
+  - Las *Prioridades* se especifican con enteros negativos, cero y positivos, o con los atajos ofrecidos. Una *Prioridad* más alta tiene precedencia. Los atajos ofrecen los siguientes valores:
+    - **Baja**: -20000
+    - **Por Debajo de la Normal**: -10000
     - **Normal**: 0
-    - **Above Normal**: 10000
-    - **High**: 20000
-- **Cancel** will terminate the Order. Running Orders will complete the current Job or Workflow Instruction and will leave the Workflow with a failed history status.
-- **Cancel/terminate task** will forcibly terminate Orders running a Job. Orders will leave the Workflow with a failed history status.
-- **Cancel/reset** will forcibly terminate Orders running a Job. Orders will leave the Workflow with a failed history status.
-- **Suspend** will suspend the Order. Running Orders will be suspended after they completed the current Job or Workflow Instruction.
-- **Suspend/terminate task** will forcibly terminate running Orders and will suspend the Orders.
-- **Suspend/reset** will immediately reset the current Workflow Instruction and will put the Order to the *suspended* state. The option can be combined with forcibly terminating tasks for *running* Orders.
-- **Resume** will continue a *suspended* or *failed* resumable Order.
+    - **Por Encima de la Normal**: 10000
+    - **Alta**: 20000
+- **Cancelar** terminará la Orden. Las Órdenes en ejecución completarán el Job o instrucción de Workflow actual y saldrán del Workflow con un estado del historial fallido.
+- **Cancelar/terminar tarea** terminará forzosamente las Órdenes que ejecutan un Job. Las Órdenes saldrán del Workflow con un estado del historial fallido.
+- **Cancelar/reiniciar** terminará forzosamente las Órdenes que ejecutan un Job. Las Órdenes saldrán del Workflow con un estado del historial fallido.
+- **Suspender** suspenderá la Orden. Las Órdenes en ejecución serán suspendidas después de completar el Job o instrucción de Workflow actual.
+- **Suspender/terminar tarea** terminará forzosamente las Órdenes en ejecución y las suspenderá.
+- **Suspender/reiniciar** reiniciará inmediatamente la instrucción de Workflow actual y pondrá la Orden en estado *suspendida*. La opción puede combinarse con la terminación forzosa de tareas para Órdenes *en ejecución*.
+- **Reanudar** continuará una Orden *suspendida* o *fallida* reanudable.
 
-For Orders holding the *completed* state and for disrupted Orders in the *failed* state the following operations are offered:
+Para Órdenes en estado *completada* y para Órdenes interrumpidas en estado *fallida* se ofrecen las siguientes operaciones:
 
-- **Leave Workflow** will terminate the Order. 
-  - *Completed* Orders will leave the Workflow with a *successful* history status.
-  - *Failed/disrupted* Orders will leave the Workflow with a *failed* history status.
+- **Salir del Workflow** terminará la Orden.
+  - Las Órdenes *Completadas* saldrán del Workflow con un estado del historial *exitoso*.
+  - Las Órdenes *Fallidas/interrumpidas* saldrán del Workflow con un estado del historial *fallido*.
 
-Additional operations can be available that are specific for the Order state.
+Pueden estar disponibles operaciones adicionales específicas para el estado de la Orden.
 
-### Bulk Operations
+### Operaciones en Bloque
 
-Bulk operations are available when selecting Orders from related checkboxes. They offer the same operations as for individual Orders.
+Las operaciones en bloque están disponibles al seleccionar Órdenes desde las casillas de verificación correspondientes. Ofrecen las mismas operaciones que para Órdenes individuales.
 
-When selecting Orders, then related buttons for bulk operations become visible in the upper part of the window holding captions similar to the above explained operations.
+Al seleccionar Órdenes, los botones relacionados para operaciones en bloque se vuelven visibles en la parte superior de la ventana con títulos similares a las operaciones explicadas anteriormente.
 
-## Filters
+## Filtros
 
-Users can apply filters to limit display of Orders. Filter buttons are available at top of the window.
+Los usuarios pueden aplicar filtros para limitar la visualización de Órdenes. Los botones de filtro están disponibles en la parte superior de la ventana.
 
-### Date Range Filter Button
+### Botón de Filtro por Rango de Fechas
 
-The drop-down button offers selecting Orders from a date range:
+El botón desplegable ofrece la selección de Órdenes por rango de fechas:
 
-- **All** specifies Orders scheduled for any past and future date being displayed.
-- **Today** Orders are related to the current day which is calculated from the time zone in the [Profile - Preferences](/profile-preferences).
-- **Next hour** includes Orders that should start within the next hour.
-- **Next 12 hours** includes Orders that should start within the next 12 hours.
-- **Next 24 hours** includes Orders that should start within the next 24 hours.
-- **Next day** includes Orders that should start until end of the next day.
-- **Next 7 days** includes Orders that should start within the next 7 days.
+- **Todas** especifica que se muestren Órdenes programadas para cualquier fecha pasada y futura.
+- **Hoy** las Órdenes están relacionadas con el día actual, calculado desde la zona horaria en [Perfil - Preferencias](/profile-preferences).
+- **Próxima hora** incluye Órdenes que deben iniciarse dentro de la próxima hora.
+- **Próximas 12 horas** incluye Órdenes que deben iniciarse dentro de las próximas 12 horas.
+- **Próximas 24 horas** incluye Órdenes que deben iniciarse dentro de las próximas 24 horas.
+- **Próximo día** incluye Órdenes que deben iniciarse hasta el final del día siguiente.
+- **Próximos 7 días** incluye Órdenes que deben iniciarse dentro de los próximos 7 días.
 
-### State Filter Buttons
+### Botones de Filtro por Estado
 
-Similar to the *Order State Selection Panel* a filter button is available per Order state to filter display of Orders.
+Similar al *Panel de Selección de Estado de Orden*, hay un botón de filtro disponible por estado de Orden para filtrar la visualización de Órdenes.
 
-### From .. To Date Input Filter
+### Filtro de Entrada de Fecha De..Hasta
 
-For Orders in the *in progress*, *running*, *failed*, *completed* state input fields are available to specify the date and time for which an Order holds the related state.
+Para Órdenes en estado *en progreso*, *ejecutando*, *fallida*, *completada*, hay campos de entrada disponibles para especificar la fecha y hora en que una Orden tiene el estado relacionado.
 
-Users can specify absolute or relative dates and times.
+Los usuarios pueden especificar fechas y horas absolutas o relativas.
 
-### Results Filter
+### Filtro de Resultados
 
-The filter limits display to matching *Order IDs* and *Workflow Names*. The filter is applied to visible Orders and works case-insensitive.
+El filtro limita la visualización a *Order IDs* y *Nombres de Workflow* coincidentes. El filtro se aplica a las Órdenes visibles y funciona sin distinción de mayúsculas y minúsculas.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Order Log View](/order-log)
-- [Order State](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Workflows - Add Orders](/workflows-orders-add)
+- [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Plan Diario](/daily-plan)
+- [Vista del Log de Orden](/order-log)
+- [Estado de Orden](/order-states)
+- [Perfil - Preferencias](/profile-preferences)
+- [Configuración - JOC Cockpit](/settings-joc)
+- [Workflows - Agregar Órdenes](/workflows-orders-add)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)

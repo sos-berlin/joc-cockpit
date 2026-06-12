@@ -1,44 +1,44 @@
-# Initial Operation - Register Subagent Cluster
+# Operación Inicial - Registrar Clúster de Subagentes
 
-Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit. Registration of a Subagent Cluster occurs after [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster) is completed.
+La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit. El registro de un Clúster de Subagentes ocurre después de completar la [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
 
-## Architecture
+## Arquitectura
 
-### Agents
+### Agentes
 
-- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
-- **Agent Cluster**
-  - **Director Agents** orchestrate *Subagents* in an Agent Cluster. They are operated from two instances in active-passive clustering and are managed by the Controller.
-  - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.
+- Los **Agentes Autónomos** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Se operan individualmente y son gestionados por el Controlador.
+- **Clúster de Agentes**
+  - Los **Agentes Directores** orquestan los *Subagentes* en un Clúster de Agentes. Se operan desde dos instancias en clúster activo-pasivo y son gestionados por el Controlador.
+  - Los **Subagentes** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Pueden considerarse nodos trabajadores en un Clúster de Agentes y son gestionados por los *Agentes Directores*.
 
-### Connections
+### Conexiones
 
-- **Standalone Agent**, **Director Agent** connections are established by the Controller. 
-- **Subagent** connections in an Agent Cluster are established by *Director Agents*.
+- Las conexiones del **Agente Autónomo** y del **Agente Director** son establecidas por el Controlador.
+- Las conexiones de **Subagente** en un Clúster de Agentes son establecidas por los *Agentes Directores*.
 
-## Register Subagent Cluster
+## Registrar Clúster de Subagentes
 
-Registration of a Subagent Cluster includes registering
+El registro de un Clúster de Subagentes incluye registrar
 
-- the *Selection* of Director Agents and Subagents in an Agent Cluster
-- the *Sequence* in which Subagents will be operated
-  - *active-active*: each next Job will be executed with the next Subagent. This means that all selected Subagents are involved. For details see - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
-  - *active-passive*: only the first Subagent will be used for job execution. If it is unavailable, then the next Subagent will be used. For details see [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
-  - *metrics-based*: based on rules such as CPU and memory consumption, the next Subagent will be selected for job execution. For details see [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
+- la *Selección* de Agentes Directores y Subagentes en un Clúster de Agentes
+- la *Secuencia* en la que operarán los Subagentes
+  - *activo-activo*: cada Job siguiente se ejecutará con el siguiente Subagente. Esto significa que todos los Subagentes seleccionados están involucrados. Para más detalles, consulte [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
+  - *activo-pasivo*: solo se utilizará el primer Subagente para la ejecución de Jobs. Si no está disponible, se utilizará el siguiente. Para más detalles, consulte [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
+  - *basado en métricas*: basándose en reglas como el consumo de CPU y memoria, se seleccionará el siguiente Subagente para la ejecución de Jobs. Para más detalles, consulte [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
-For details see [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
+Para más detalles, consulte [Operación Inicial - Clúster de Subagentes](/initial-operation-agent-subagent-cluster)
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Dashboard - Product Status](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
-- [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
-- [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
+- [Panel de Control - Estado del Producto](/dashboard-product-status)
+- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
+- [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
+- [Operación Inicial - Registrar Subagente](/initial-operation-register-agent-subagent)
+- [Operación Inicial - Clúster de Subagentes](/initial-operation-agent-subagent-cluster)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
   - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster)

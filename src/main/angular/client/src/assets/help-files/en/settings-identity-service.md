@@ -1,42 +1,42 @@
-# Settings - Identity Service
+# Configuración - Servicio de Identidad
 
-The following settings are applied to any [Identity Services](/identity-services). Changes become effective immediately.
+Las siguientes configuraciones se aplican a cualquier [Servicio de Identidad](/identity-services). Los cambios tienen efecto inmediato.
 
-The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 
-## Identity Service Settings
+## Configuración del Servicio de Identidad
 
-### Setting: *idle\_session\_timeout*, Default: *30*m
+### Configuración: *idle\_session\_timeout*, Predeterminado: *30*m
 
-Specifies the maximum duration in minutes of an idle session in JOC Cockpit.
+Especifica la duración máxima en minutos de una sesión inactiva en el JOC Cockpit.
 
-- If users are inactive for the given number of minutes, then the user session expires and is terminated. Users can specify credentials and login to create a new user session.
-- Should the lifetime of an access token provided by an external Identity Service be different from the maximum idle-timeout, then the JOC Cockpit will try to renew the access token with the Identity Service. Renewing an access token does not require the user to re-enter their login credentials.
-- Identity Services can restrict the lifetime of access tokens (time to live) and they can limit renewal of access tokens (maximum time to live). If an access token cannot be renewed, then the user session is terminated and the user is required to perform login.
+- Si los usuarios están inactivos durante el número de minutos indicado, la sesión de usuario expira y se termina. Los usuarios pueden especificar credenciales e iniciar sesión para crear una nueva sesión de usuario.
+- Si la vigencia de un token de acceso proporcionado por un Servicio de Identidad externo es diferente al tiempo máximo de inactividad, el JOC Cockpit intentará renovar el token de acceso con el Servicio de Identidad. Renovar un token de acceso no requiere que el usuario vuelva a ingresar sus credenciales de inicio de sesión.
+- Los Servicios de Identidad pueden restringir la vigencia de los tokens de acceso (tiempo de vida) y pueden limitar la renovación de tokens de acceso (tiempo de vida máximo). Si un token de acceso no puede renovarse, la sesión de usuario se termina y el usuario debe realizar el inicio de sesión.
 
-### Setting: *initial\_password*, Default: *initial*
+### Configuración: *initial\_password*, Predeterminado: *initial*
 
-Specifies the initial password used when creating new accounts or when resetting passwords in the [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
+Especifica la contraseña inicial utilizada al crear nuevas cuentas o al restablecer contraseñas en el [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
 
-- If an administrator adds user accounts with the JOC Cockpit and does not specify a password then the Initial Password will be used. As a general rule the JOC Cockpit does not allow use of empty passwords but populates them from the *initial\_password*. Administrators can apply the initial password and they can specify an individual password for the given account.
-- When resetting a user account's password, then an existing password will be replaced by the *initial\_password*.
-- Independently from the fact if the *initial\_password* or an individual password is assigned a user account, the password must be changed by the user on first login. This ensures that users cannot use the initial password except for initial login.
+- Si un administrador agrega cuentas de usuario con el JOC Cockpit y no especifica una contraseña, se utilizará la Contraseña Inicial. Como regla general, el JOC Cockpit no permite el uso de contraseñas vacías sino que las rellena desde la *initial\_password*. Los administradores pueden aplicar la contraseña inicial y pueden especificar una contraseña individual para la cuenta dada.
+- Al restablecer la contraseña de una cuenta de usuario, la contraseña existente será reemplazada por la *initial\_password*.
+- Independientemente de si se asigna la *initial\_password* o una contraseña individual a una cuenta de usuario, la contraseña debe ser cambiada por el usuario en el primer inicio de sesión. Esto garantiza que los usuarios no puedan usar la contraseña inicial excepto para el inicio de sesión inicial.
 
-### Setting: *minimum\_password\_length*, Default: *1*
+### Configuración: *minimum\_password\_length*, Predeterminado: *1*
 
-Specifies the minimum length for passwords in the JOC Identity Service.
+Especifica la longitud mínima para contraseñas en el Servicio de Identidad JOC.
 
-For any passwords specified - including the *initial\_password* - the minimum length is indicated.
-Note that the number of characters and arbitrariness of character selection are key factors for secure passwords. Password complexity requiring for example digits and special characters to be used do not substantially add to password security except in case of short passwords.
+Para cualquier contraseña especificada, incluida la *initial\_password*, se indica la longitud mínima.
+Tenga en cuenta que el número de caracteres y la arbitrariedad en la selección de caracteres son factores clave para contraseñas seguras. La complejidad de contraseñas que requiere, por ejemplo, el uso de dígitos y caracteres especiales no agrega sustancialmente a la seguridad de la contraseña, excepto en el caso de contraseñas cortas.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Identity Services](/identity-services)
-- [Settings](/settings)
+- [Servicios de Identidad](/identity-services)
+- [Configuración](/settings)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service)
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)

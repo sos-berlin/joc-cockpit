@@ -1,44 +1,44 @@
-# Approval Requests
+# Solicitudes de Aprobación
 
-The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) is offered for situations in which users intend performing operations such as adding or cancelling Orders that require approval by a second user. This can include any operation that modifies a scheduling object.
+El [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) se ofrece para situaciones en las que los usuarios tienen la intención de realizar operaciones tales como agregar o cancelar Órdenes que requieren la aprobación de un segundo usuario. Esto puede incluir cualquier operación que modifique un objeto de planificación.
 
-The Approval Process involves the following roles:
+El Proceso de Aprobación involucra los siguientes roles:
 
-- A *Requestor* requests to perform an intervention that requires approval.
-- An *Approver* confirms or denies the Approval Request.
+- Un *Solicitante* solicita realizar una intervención que requiere aprobación.
+- Un *Aprobador* confirma o rechaza la Solicitud de Aprobación.
 
-The basic functionality of the Approval Process includes:
+La funcionalidad básica del Proceso de Aprobación incluye:
 
-- to implement the 4-eyes principle: an *Approver* must confirm the intervention of a *Requestor* before the intervention can be executed in the scope of the *Requestor's* account, roles and permissions. 
-- to keep track of pending Approval Requests.
-- to offer fallback to a number of *Approvers*.
+- implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
+- llevar un seguimiento de las Solicitudes de Aprobación pendientes.
+- ofrecer alternativa a un grupo de *Aprobadores*.
 
-## List of Approval Requests
+## Lista de Solicitudes de Aprobación
 
-Approval Requests are added by users requesting confirmation for an intervention, see [Approval Request](/approval-request).
+Las Solicitudes de Aprobación son generadas por usuarios que solicitan confirmación para una intervención, véase [Solicitud de Aprobación](/approval-request).
 
-The list of Approval Requests is offered with the following properties:
+La lista de Solicitudes de Aprobación se ofrece con las siguientes propiedades:
 
-- **Request Status Date** is the point in time the [Approval Request](/approval-request) was added.
-- **Title** is specified by the *Requestor* when adding the Approval Request.
-- **Requestor** indicates the user account that raised the Approval Request.
-- **Request Status** is one of *requested*, *approved*, *withdrawn*, *executed*.
-- **Approver** is the *First Name* and *Last Name* of the preferred *Approver*.
-- **Approval Status** is one of *pending*, *approved*, *rejected*
-- **Approval Status Date** is the most recent point in time the *Approver* was acting on the Approval Request, for example by approving or rejecting the request.
-- **Request URL** is the [REST Web Service API](/rest-api) endpoint the *Requestor* wishes to use.
-- **Category** indicates the scope of the request, for example being targeted to a Controller, to the Daily Plan etc.
-- **Reason** indicates the explanation provided by the *Requestor* about the purpose of the Approval Request.
+- **Fecha del Estado de la Solicitud** es el momento en que se agregó la [Solicitud de Aprobación](/approval-request).
+- **Título** es especificado por el *Solicitante* al agregar la Solicitud de Aprobación.
+- **Solicitante** indica la cuenta de usuario que generó la Solicitud de Aprobación.
+- **Estado de la Solicitud** es uno de *solicitado*, *aprobado*, *retirado*, *ejecutado*.
+- **Aprobador** es el *Nombre* y *Apellido* del *Aprobador* preferente.
+- **Estado de Aprobación** es uno de *pendiente*, *aprobado*, *rechazado*.
+- **Fecha del Estado de Aprobación** es el momento más reciente en que el *Aprobador* actuó sobre la Solicitud de Aprobación, por ejemplo al aprobarla o rechazarla.
+- **URL de la Solicitud** es el endpoint de la [API de Servicios Web REST](/rest-api) que el *Solicitante* desea utilizar.
+- **Categoría** indica el ámbito de la solicitud, por ejemplo si está dirigida a un Controlador, al Plan Diario, etc.
+- **Motivo** indica la explicación proporcionada por el *Solicitante* sobre el propósito de la Solicitud de Aprobación.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approver Profiles](/approval-profiles)
-- [Approval Request](/approval-request)
-- [REST Web Service API](/rest-api)
+- [Configuración de Notificaciones de Aprobación](/approval-notification-settings)
+- [Perfiles de Aprobadores](/approval-profiles)
+- [Solicitud de Aprobación](/approval-request)
+- [API de Servicios Web REST](/rest-api)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)

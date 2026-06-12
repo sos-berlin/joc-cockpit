@@ -1,71 +1,71 @@
-# Daily Plan Dependencies
+# Plan Diario - Dependencias
 
-Workflow dependencies can be enforced for all days and for specific Daily Plan dates, for example:
+Las dependencias de Workflow pueden aplicarse para todos los días y para fechas específicas del Plan Diario; por ejemplo:
 
-- Workflow 1 runs Mon-Fri.
-- Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
-- During weekends Workflow 1 will not start. To allow Workflow 2 starting on weekends, the dependency is mapped to the Daily Plan by use of *Schedulable Notice Boards*: if no Order is announced for Workflow 1, then the dependency will be ignored.
+- El Workflow 1 se ejecuta de lunes a viernes.
+- El Workflow 2 se ejecuta de lunes a domingo y depende de la ejecución previa del Workflow 1.
+- Durante los fines de semana el Workflow 1 no se iniciará. Para permitir que el Workflow 2 se inicie los fines de semana, la dependencia se mapea al Plan Diario mediante el uso de *Tableros de Avisos Planificables*: si no se ha anunciado ninguna Orden para el Workflow 1, la dependencia se ignorará.
 
-## Calendar
+## Calendario
 
-The calendar widget offers selecting a Daily Plan date for which dependencies will be displayed.
+El widget de calendario ofrece la selección de una fecha del Plan Diario para la que se mostrarán las dependencias.
 
-- **Light Red Color**: Past plan dates that are closed and that will not allow adding Orders.
-- **Green Color**: Past and future plan dates that are open and that will allow adding Orders.
+- **Color Rojo Claro**: Fechas de plan pasadas que están cerradas y que no permitirán agregar Órdenes.
+- **Color Verde**: Fechas de plan pasadas y futuras que están abiertas y que permitirán agregar Órdenes.
 
-Operations on plan dates include:
+Las operaciones sobre fechas de plan incluyen:
 
-- **Open Plan**: This happens automatically if new Orders are added for a plan date. Users can re-open a closed plan.
-- **Close Plan**: An open plan is closed and will not allow adding Orders. This happens automatically for past plan dates with a delay of one day. Users can adjust the related setting from the [Settings - Daily Plan](/settings-daily-plan) page. Users can close an open plan earlier to prevent further Orders from being added.
+- **Open Plan**: Esto ocurre automáticamente si se agregan nuevas Órdenes para una fecha de plan. Los usuarios pueden reabrir un plan cerrado.
+- **Close Plan**: Un plan abierto se cierra y no permitirá agregar Órdenes. Esto ocurre automáticamente para las fechas de plan pasadas con un retraso de un día. Los usuarios pueden ajustar la configuración relacionada desde la página [Configuración - Plan Diario](/settings-daily-plan). Los usuarios pueden cerrar un plan abierto antes de tiempo para evitar que se agreguen más Órdenes.
 
-## Display of Dependencies
+## Visualización de Dependencias
 
-The following objects are displayed:
+Se muestran los siguientes objetos:
 
-- **Posting Workflow**: On the left side the Workflow is displayed that posts Notices.
-- **Notice**: In the middle section the name of the Notice Board is displayed that creates the Notice.
-- **Receiving Workflow**: On the right side the Workflow is displayed that expects or consumes the Notice.
+- **Posting Workflow**: En el lado izquierdo se muestra el Workflow que publica Avisos.
+- **Notice**: En la sección central se muestra el nombre del Tablero de Avisos que crea el Aviso.
+- **Receiving Workflow**: En el lado derecho se muestra el Workflow que espera o consume el Aviso.
 
-The following relationships are indicated:
+Se indican las siguientes relaciones:
 
-- **Posting Workflow**: Creates one or more Notices that are expected/consumed by one or more *Receiving Workflows*.
-- **Receiving Workflow**: Expects/consumes one or more Notices from the same or different *Posting Workflows*.
+- **Posting Workflow**: Crea uno o más Avisos que son esperados/consumidos por uno o más *Receiving Workflows*.
+- **Receiving Workflow**: Espera/consume uno o más Avisos del mismo o de diferentes *Posting Workflows*.
 
-The fulfilment status of dependencies is indicated by lines:
+El estado de cumplimiento de las dependencias se indica mediante líneas:
 
-- **Line in Blue Color**: A Notice is announced for a future point in time when the *Posting Workflow's* Order will start and will create the Notice.
-- **Line in Greenish Color**: The dependency is unresolved, a Notice has been posted but is not yet processed by all *Receiving Workflows*.
-  - **Receiving Workflow in Greenish Color**: The *Receiving Workflow*'s Order is started but did not proceed to the Workflow instruction that checks Notices.
-  - **Receiving Workflow in Blue Color**: The *Receiving Workflow*'s Order is scheduled to start at a later point in time during the day.
-- **Line in Grey Color**: The dependency is resolved, the Notice has been posted and has been consumed by a *Receiving Workflow*.
+- **Línea en Color Azul**: Se ha anunciado un Aviso para un momento futuro en que la Orden del *Posting Workflow* se iniciará y creará el Aviso.
+- **Línea en Color Verdoso**: La dependencia no está resuelta; se ha publicado un Aviso pero no ha sido procesado aún por todos los *Receiving Workflows*.
+  - **Receiving Workflow en Color Verdoso**: La Orden del *Receiving Workflow* se ha iniciado pero no ha llegado a la instrucción del Workflow que verifica los Avisos.
+  - **Receiving Workflow en Color Azul**: La Orden del *Receiving Workflow* está programada para iniciarse en un momento posterior durante el día.
+- **Línea en Color Gris**: La dependencia está resuelta; el Aviso ha sido publicado y consumido por un *Receiving Workflow*.
 
-## Filters
+## Filtros
 
-Filters allow limiting the display of Workflows and dependencies:
+Los filtros permiten limitar la visualización de Workflows y dependencias:
 
-- **Notices Announced**: Displays Workflows for which Notices are announced, i.e. Orders are scheduled but did not yet start and did not yet post the Notice. When a Notice is posted, its announcement is dropped.
-- **Notices Present**: Displays Workflows for which Notices have been posted and can be processed. If a Notice is consumed by a Workflow, then it will be dropped and will no longer be present.
+- **Notices Announced**: Muestra los Workflows para los que se han anunciado Avisos, es decir, las Órdenes están planificadas pero aún no se han iniciado y aún no han publicado el Aviso. Cuando se publica un Aviso, su anuncio se elimina.
+- **Notices Present**: Muestra los Workflows para los que se han publicado Avisos y pueden ser procesados. Si un Aviso es consumido por un Workflow, se eliminará y ya no estará presente.
 
-If both filter buttons are active, then this includes announced and posted Notices but excludes dependencies that have been resolved and for which Notices have been consumed and are no longer present.
+Si ambos botones de filtro están activos, esto incluye los Avisos anunciados y publicados, pero excluye las dependencias que han sido resueltas y cuyos Avisos han sido consumidos y ya no están presentes.
 
-If both filter buttons are inactive then all Workflows and dependencies will be displayed including Notices that have been announced, that are present or that have been consumed.
+Si ambos botones de filtro están inactivos, se mostrarán todos los Workflows y dependencias, incluyendo los Avisos que han sido anunciados, que están presentes o que han sido consumidos.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
-- [Daily Plan](/daily-plan)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Configuración - Inventario - Tableros de Avisos](/configuration-inventory-notice-boards)
+- [Plan Diario](/daily-plan)
+- [Recursos - Tableros de Avisos](/resources-notice-boards)
+- [Configuración - Plan Diario](/settings-daily-plan)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
   - [JS7 - Global Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Global+Notice+Boards)
   - [JS7 - Schedulable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedulable+Notice+Boards)
-- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)  
+- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
   - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)

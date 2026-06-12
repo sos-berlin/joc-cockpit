@@ -1,60 +1,60 @@
-# Daily Plan Projections
+# Plan Diario - Proyecciones
 
-The Daily Plan holds Orders that are submitted to the Controller and Agents a few days in advance for resilience purposes. In addition, it offers projections of future Order start times that are calculated for the next six months.
+El Plan Diario contiene Órdenes que se envían al Controlador y a los Agentes con varios días de anticipación por motivos de resiliencia. Además, ofrece proyecciones de los tiempos de inicio futuros de las Órdenes que se calculan para los próximos seis meses.
 
-Users who wish to have a longer projection period can modify the related setting on the [Settings - Daily Plan](/settings-daily-plan) page.
+Los usuarios que deseen un período de proyección más largo pueden modificar la configuración relacionada en la página [Configuración - Plan Diario](/settings-daily-plan).
 
-### Dates, Periods and Time Zones
+### Fechas, Períodos y Zonas Horarias
 
-Projections are related to Daily Plan dates, not calendar dates. 
+Las proyecciones están relacionadas con las fechas del Plan Diario, no con las fechas del calendario.
 
-- Periods
-  - If the Daily Plan's 24-hour period starts at midnight, it will match the calendar day.
-  - For Daily Plan periods starting during the day, the 24 hours' period will overlap with two calendar days.
-- Time Zones
-  - If Schedules use time zones different from the Daily Plan, Order start times can overlap with the previous or next day. Such Orders are displayed with the related Daily Plan date but indicate start times for a different date.
-  - Use of time zones can result in start times of -14 hours and +12 hours in addition to the 24 hours' Daily Plan period. Most surprisingly for some users, a day is not 24 hours long, but can span up to 50 hours. The period of a day is always 24 hours long, as it depends on Earth's rotation. However, for a given time zone there is a 50 hours' coverage to include all possible times around the planet.
+- Períodos
+  - Si el período de 24 horas del Plan Diario comienza a medianoche, coincidirá con el día del calendario.
+  - Para los períodos del Plan Diario que comienzan durante el día, el período de 24 horas se superpondrá con dos días del calendario.
+- Zonas Horarias
+  - Si las Planificaciones usan zonas horarias diferentes a las del Plan Diario, los tiempos de inicio de las Órdenes pueden superponerse con el día anterior o posterior. Tales Órdenes se muestran con la fecha del Plan Diario correspondiente, pero indican tiempos de inicio para una fecha diferente.
+  - El uso de zonas horarias puede resultar en tiempos de inicio de -14 horas y +12 horas adicionales al período de 24 horas del Plan Diario. Sorprendentemente para algunos usuarios, un día no dura 24 horas, sino que puede abarcar hasta 50 horas. El período de un día siempre es de 24 horas, ya que depende de la rotación de la Tierra. Sin embargo, para una zona horaria determinada existe una cobertura de 50 horas para incluir todos los tiempos posibles alrededor del planeta.
 
-Any dates and times are displayed in the time zone specified by the user's profile.
+Todas las fechas y horas se muestran en la zona horaria especificada en el perfil del usuario.
 
-### Display Options
+### Opciones de Visualización
 
-Users can switch between the *Monthly* and *Yearly* views of projected Orders using the related links in the upper-left corner of the window.
+Los usuarios pueden alternar entre las vistas *Monthly* (mensual) y *Yearly* (anual) de las Órdenes proyectadas usando los enlaces correspondientes en la esquina superior izquierda de la ventana.
 
-For each day the number of the day in month and the number of projected Orders are displayed:
+Para cada día se muestran el número del día en el mes y el número de Órdenes proyectadas:
 
-- **Green Orders**: They represent Orders that have been submitted to the Controller and Agents.
-- **Orange Orders**: They indicate projected Orders that are calculated based on start time rules.
-- **Inverted Projection**:
-  - *Unchecked*: The projection indicates the days for which Orders are calculated and the number of Orders. Users can click an individual day to identify Order start times.
-  - *Checked*: When inverting the projection, then days are highlighted for which Schedules exist that will not create Orders. When clicking the related day then Schedules without Orders will be displayed.
+- **Órdenes en Verde**: Representan Órdenes que han sido enviadas al Controlador y a los Agentes.
+- **Órdenes en Naranja**: Indican Órdenes proyectadas que se calculan en base a reglas de tiempo de inicio.
+- **Proyección Invertida**:
+  - *Sin marcar*: La proyección indica los días para los que se calculan Órdenes y el número de Órdenes. Los usuarios pueden hacer clic en un día individual para identificar los tiempos de inicio de las Órdenes.
+  - *Marcado*: Al invertir la proyección, se resaltan los días para los que existen Planificaciones que no crearán Órdenes. Al hacer clic en el día correspondiente, se mostrarán las Planificaciones sin Órdenes.
 
-### Advanced Filter
+### Filtro Avanzado
 
-The filter offers to limit display of Orders to certain folders holding Workflows or Schedules.
+El filtro permite limitar la visualización de Órdenes a ciertas carpetas que contienen Workflows o Planificaciones.
 
-## Operations on Projections
+## Operaciones en Proyecciones
 
-### Creating Projections
+### Crear Proyecciones
 
-- Projections are calculated by the Daily Plan Service during its daily run. Later changes to the Daily Plan during the day are not reflected.
-- Users can re-create projections on demand from the related button.
-- The *Survey Date* indicates the creation date of the current Daily Plan projection.
+- Las proyecciones son calculadas por el Servicio del Plan Diario durante su ejecución diaria. Los cambios posteriores al Plan Diario durante el día no se reflejan.
+- Los usuarios pueden recrear las proyecciones bajo demanda desde el botón correspondiente.
+- La *Survey Date* indica la fecha de creación de la proyección actual del Plan Diario.
 
-### Exporting Projections
+### Exportar Proyecciones
 
-Projections can be exported to a .xlsx file with the Daily Plan date on the x-axis and the Workflow and Schedule on the y-axis.
+Las proyecciones pueden exportarse a un archivo .xlsx con la fecha del Plan Diario en el eje X y el Workflow y la Planificación en el eje Y.
 
-- The *Export* shortcut will export Orders visible from the window. 
-- The *Export* button offers to select Orders for export:
-  - **Start Date**, **End Date**: First and last Daily Plan date for which Orders will be exported.
-  - **Workflows**, **Schedules**: Users can limit export to certain Schedules and Workflows, optionally limited by folders.
-  - **Inverted Projection**: 
-    - *Unchecked*: Exports dates for which Orders are calculated.
-    - *Checked*: Exports dates for which no Orders are calculated. This can be used to check if non-working days are considered.
+- El acceso directo *Export* exportará las Órdenes visibles en la ventana.
+- El botón *Export* ofrece seleccionar las Órdenes para exportar:
+  - **Start Date**, **End Date**: Primera y última fecha del Plan Diario para las que se exportarán las Órdenes.
+  - **Workflows**, **Schedules**: Los usuarios pueden limitar la exportación a ciertas Planificaciones y Workflows, opcionalmente limitados por carpetas.
+  - **Inverted Projection**:
+    - *Sin marcar*: Exporta las fechas para las que se calculan Órdenes.
+    - *Marcado*: Exporta las fechas para las que no se calculan Órdenes. Esto puede usarse para verificar si se consideran los días no laborables.
 
-## References
+## Referencias
 
-- [Daily Plan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Plan Diario](/daily-plan)
+- [Configuración - Plan Diario](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

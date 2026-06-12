@@ -1,22 +1,22 @@
-# Settings
+# Configuración
 
-JOC Cockpit offers run-time [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) that can be modified using the GUI and which are applied immediately without restarting JOC Cockpit.
+El JOC Cockpit ofrece [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) en tiempo de ejecución que pueden modificarse mediante la interfaz gráfica y que se aplican de inmediato sin necesidad de reiniciar el JOC Cockpit.
 
-The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Settings - Cleanup Service](/settings-cleanup)
-- [Settings - Identity Service](/settings-identity-service)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Settings - User](/settings-user)
-- [Settings - Log Notification](/settings-log-notification)
-- [Settings - Git](/settings-git)
-- [Settings - Kiosk](/settings-kiosk)
+- [Configuración - Plan Diario](/settings-daily-plan)
+- [Configuración - Servicio de Limpieza](/settings-cleanup)
+- [Configuración - Servicio de Identidad](/settings-identity-service)
+- [Configuración - JOC Cockpit](/settings-joc)
+- [Configuración - Usuario](/settings-user)
+- [Configuración - Notificación de Logs](/settings-log-notification)
+- [Configuración - Git](/settings-git)
+- [Configuración - Kiosco](/settings-kiosk)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

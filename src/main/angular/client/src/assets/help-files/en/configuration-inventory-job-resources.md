@@ -1,53 +1,53 @@
-# Configuration - Inventory - Job Resources
+# Configuración - Inventario - Recursos de Job
 
-The *Job Resource Panel* offers specifying Job Resources for use with Workflows and Jobs.
+El *Panel de Recursos de Job* ofrece la especificación de Recursos de Job para su uso con Workflows y Jobs.
 
-Job Resources hold variables from key/value pairs that are used for the following purposes:
+Los Recursos de Job contienen variables en pares clave/valor que se utilizan para los siguientes propósitos:
 
-- For JVM Jobs running in the Agent's Java Virtual Machine variables are specified from *Arguments*. When a Job Resource is assigned a Job, then matching Job arguments will be populated.
-- For Shell Jobs variables are specified from *Environment Variables*. When a Job Resource is assigned a Job, then Environment Variables will be created automatically.
+- Para Jobs JVM que se ejecutan en la Máquina Virtual Java del Agente, las variables se especifican mediante *Argumentos*. Cuando un Recurso de Job se asigna a un Job, los argumentos del Job coincidentes serán completados automáticamente.
+- Para Jobs de Shell, las variables se especifican mediante *Variables de Entorno*. Cuando un Recurso de Job se asigna a un Job, las Variables de Entorno se crearán automáticamente.
 
-Job Resources are assigned a Workflow or Job from the related object property, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). When assigned at Workflow level, then Job Resource variables are available to all Jobs in the Workflow.
+Los Recursos de Job se asignan a un Workflow o a un Job desde la propiedad del objeto relacionado, véase [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options). Cuando se asignan a nivel de Workflow, las variables del Recurso de Job estarán disponibles para todos los Jobs del Workflow.
 
-Job Resources are managed from the following panels:
+Los Recursos de Job se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Resources. In addition, the panel offers operations on Job Resources.
-- The *Job Resource Panel* on the right side of the window holds details for Job Resource configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Recursos de Job. Además, el panel ofrece operaciones sobre los Recursos de Job.
+- El *Panel de Recursos de Job* en el lado derecho de la ventana contiene los detalles de configuración del Recurso de Job.
 
-## Job Resource Panel
+## Panel de Recursos de Job
 
-For a Job Resource the following inputs are available:
+Para un Recurso de Job están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Job Resource, see [Object Naming Rules](/object-naming-rules).
-- **Title** holds an optional explanation of the Job Resource's purpose.
+- **Nombre** es el identificador único de un Recurso de Job, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito del Recurso de Job.
 
-The panel offers configuration of Job Resource variables from the following tabs:
+El panel ofrece la configuración de variables del Recurso de Job desde las siguientes pestañas:
 
-- **Arguments** are used by JVM Jobs created from Java, JavaScript etc.
-- **Environment Variables** are used by Shell Jobs.
+- **Argumentos** son utilizados por Jobs JVM creados en Java, JavaScript, etc.
+- **Variables de Entorno** son utilizadas por Jobs de Shell.
 
-Job Resource variables are configured for each tab from the following inputs:
+Las variables del Recurso de Job se configuran en cada pestaña mediante los siguientes campos de entrada:
 
-- **Name** can be freely chosen within [Object Naming Rules](/object-naming-rules).
-  - For *Arguments* Java limits apply. Spelling of *Argument* names is case-sensitive.
-  - For *Environment Variables* operating system limits apply, for example excluding dashes and spaces. A frequent naming convention includes uppercase spelling. On Unix the names of Environment Variables are considered case-sensitive, on Windows they are considered case-insensitive.
-- **Value** can be direct input from strings, numbers or expressions, see [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
+- **Nombre** puede elegirse libremente dentro de las [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+  - Para *Argumentos* se aplican las limitaciones de Java. La escritura de los nombres de *Argumento* distingue entre mayúsculas y minúsculas.
+  - Para *Variables de Entorno* se aplican las limitaciones del sistema operativo, por ejemplo, se excluyen guiones y espacios. Una convención de nomenclatura frecuente incluye el uso de mayúsculas. En Unix los nombres de Variables de Entorno distinguen entre mayúsculas y minúsculas; en Windows se consideran sin distinción de mayúsculas y minúsculas.
+- **Valor** puede ser una entrada directa de cadenas de texto, números o expresiones, véase [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
 
-Should the same variable be made available for both *Arguments* and *Environment Variables*, then the value of the Environment Variable can reference the *Argument* name like this: *$argument*
+Si la misma variable debe estar disponible tanto para *Argumentos* como para *Variables de Entorno*, el valor de la Variable de Entorno puede referenciar el nombre del *Argumento* de la siguiente manera: *$argument*
 
-### Operations on Job Resources
+### Operaciones sobre Recursos de Job
 
-For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones disponibles véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Object Naming Rules](/object-naming-rules)
+- [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)

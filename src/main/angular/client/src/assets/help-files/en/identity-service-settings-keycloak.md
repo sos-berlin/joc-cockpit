@@ -1,42 +1,42 @@
-# Identity Service - Keycloak Settings
+# Servicio de Identidad - Configuración de Keycloak
 
-Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
+Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
 
-Identity Services are specified from the following configuration:
+Los Servicios de Identidad se especifican desde la siguiente configuración:
 
-- **General Configuration** that holds properties available to all Identity Services, see [Identity Service - Configuration](/identity-service-configuration).
-- **Settings** that are specific for the Keycloak Identity Service Type.
+- **Configuración General** que contiene las propiedades disponibles para todos los Servicios de Identidad, consulte [Servicio de Identidad - Configuración](/identity-service-configuration).
+- **Configuración** específica para el Tipo de Servicio de Identidad Keycloak.
 
-## Settings
+## Configuración
 
-- **Keycloak URL** is the base URL for which the Keycloak REST API is available
-- **Keycloak Administrative Account** is a Keycloak account with an administrative role that is assigned the *realm-management.view-clients* and *realm-management.view-users* roles in Keycloak. The administrative account is used to retrieve the roles for a Keycloak account and for renewing access tokens.
-- **Keycloak Administrative Password** is password for the *Keycloak Administration Account*.
-- **Keycloak Truststore Path** specifies the location of a truststore should the Keycloak Server be configured for HTTPS connections. The indicated truststore must include an X.509 certificate specified for the Extended Key Usage of Server Authentication.
-  - The truststore can include a Private CA-signed Certificate or a Public CA-signed Certificate. Typically the Root CA Certificate is used as otherwise the complete certificate chain involved in signing the Server Authentication Certificate has to be available with the truststore.
-  - If the Keycloak Server is operated for HTTPS connections and this setting is not specified, then the JOC Cockpit will use the truststore that is configured with the *JETTY_BASE/resources/joc/joc.properties* configuration file. This includes use of settings for the truststore password and truststore type.
-- The path to the truststore is specified relative to the *JETTY_BASE/resources/joc* directory. If the truststore is located in this directory, then only the file name is specified, typically with a .p12 extension. Other relative locations can be specified using, for example *../../joc-truststore.p12* if the truststore is located in the *JETTY_BASE* directory. An absolute path cannot be specified and a path cannot be specified that is located before the *JETTY_BASE* directory in the file system hierarchy.
-- **Keycloak Truststore Password** specifies the password that protects the truststore if the Keycloak Server is configured for HTTPS connections.
-- **Keycloak Truststore Type**  s one of *PKCS12* or *JKS*  (deprecated). The setting is used if the Keycloak Server is configured for HTTPS connections.
-- Keycloak Clients are entities that request Keycloak to authenticate a user account. For example, an application such as JOC Cockpit acts as a Client to the Keycloak Server. Clients use Keycloak to authenticate and to provide a single sign-on solution.
-  - **Keycloak Client ID** and *Keycloak Client Secret* are used for
-    - requesting an access token
-      - for user authentication,
-      - for administrative access,
-    - validating an existing access token,
-    - renewing an existing access token.
-  - **Keycloak Client Secret** is owned by the Client and needs to be known by both the Keycloak Server and the JOC Cockpit.
-- **Keycloak Realm** manages a set of users, credentials, roles, and groups. A user belongs to a realm and performs a login to a realm. Realms are isolated from each other, they manage and authenticate exclusively user accounts that they control.
-- **Keycloak Version 16 or earlier** is a compatibility switch for earlier Keycloak releases.
+- **URL de Keycloak** es la URL base para la que está disponible la API REST de Keycloak.
+- **Cuenta Administrativa de Keycloak** es una cuenta de Keycloak con un rol administrativo que tiene asignados los roles *realm-management.view-clients* y *realm-management.view-users* en Keycloak. La cuenta administrativa se utiliza para recuperar los roles de una cuenta de Keycloak y para renovar los tokens de acceso.
+- **Contraseña Administrativa de Keycloak** es la contraseña para la *Cuenta Administrativa de Keycloak*.
+- **Ruta del Almacén de Confianza de Keycloak** especifica la ubicación de un almacén de confianza en caso de que el servidor Keycloak esté configurado para conexiones HTTPS. El almacén de confianza indicado debe incluir un certificado X.509 especificado para el Uso Extendido de Clave de Autenticación de Servidor.
+  - El almacén de confianza puede incluir un Certificado firmado por una CA privada o un Certificado firmado por una CA pública. Normalmente se utiliza el Certificado de CA Raíz, ya que de lo contrario la cadena completa de certificados implicada en la firma del Certificado de Autenticación de Servidor debe estar disponible en el almacén de confianza.
+  - Si el servidor Keycloak opera con conexiones HTTPS y esta configuración no se especifica, JOC Cockpit utilizará el almacén de confianza configurado en el archivo de configuración *JETTY_BASE/resources/joc/joc.properties*. Esto incluye el uso de las configuraciones para la contraseña y el tipo del almacén de confianza.
+- La ruta al almacén de confianza se especifica en relación con el directorio *JETTY_BASE/resources/joc*. Si el almacén de confianza se encuentra en este directorio, solo se especifica el nombre del archivo, normalmente con extensión .p12. Se pueden especificar otras ubicaciones relativas usando, por ejemplo, *../../joc-truststore.p12* si el almacén de confianza se encuentra en el directorio *JETTY_BASE*. No se puede especificar una ruta absoluta ni una ruta que se encuentre antes del directorio *JETTY_BASE* en la jerarquía del sistema de archivos.
+- **Contraseña del Almacén de Confianza de Keycloak** especifica la contraseña que protege el almacén de confianza si el servidor Keycloak está configurado para conexiones HTTPS.
+- **Tipo de Almacén de Confianza de Keycloak** es uno de *PKCS12* o *JKS* (obsoleto). Esta configuración se utiliza si el servidor Keycloak está configurado para conexiones HTTPS.
+- Los Clientes de Keycloak son entidades que solicitan a Keycloak autenticar una cuenta de usuario. Por ejemplo, una aplicación como JOC Cockpit actúa como Cliente ante el servidor Keycloak. Los Clientes utilizan Keycloak para autenticarse y proporcionar una solución de inicio de sesión único.
+  - El **ID de Cliente de Keycloak** y el *Secreto de Cliente de Keycloak* se utilizan para:
+    - solicitar un token de acceso
+      - para la autenticación de usuarios,
+      - para el acceso administrativo,
+    - validar un token de acceso existente,
+    - renovar un token de acceso existente.
+  - El **Secreto de Cliente de Keycloak** es propiedad del Cliente y debe ser conocido tanto por el servidor Keycloak como por JOC Cockpit.
+- **Realm de Keycloak** gestiona un conjunto de usuarios, credenciales, roles y grupos. Un usuario pertenece a un realm e inicia sesión en un realm. Los realms están aislados entre sí; gestionan y autentican exclusivamente las cuentas de usuario que controlan.
+- **Keycloak versión 16 o anterior** es un interruptor de compatibilidad para versiones anteriores de Keycloak.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Services](/identity-services)
+- [Servicio de Identidad - Configuración](/identity-service-configuration)
+- [Servicios de Identidad](/identity-services)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 - [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service)

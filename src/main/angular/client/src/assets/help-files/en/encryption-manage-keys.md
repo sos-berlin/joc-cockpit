@@ -1,54 +1,54 @@
-# Manage Encryption Keys
+# Gestión de Claves de Cifrado
 
-The [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) offers a secure way of handling secrets used in Jobs. Users can encrypt and decrypt sensitive data such as passwords by use of asymmetric keys.
+El [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) ofrece una forma segura de manejar secretos utilizados en los Jobs. Los usuarios pueden cifrar y descifrar datos sensibles como contraseñas mediante el uso de claves asimétricas.
 
-Encryption and Decryption make use of asymmetric X.509 Private Keys and Certificates. This includes the following roles:
+El Cifrado y el Descifrado hacen uso de Claves Privadas y Certificados X.509 asimétricos. Esto incluye los siguientes roles:
 
-- Sender: has access to the receiver's Certificate or Public Key and encrypts a secret based on the receiver's Public Key that is directly available or that can be calculated from a Certificate.
-- Receiver: has access to the Private Key that allows decryption of the encrypted secret.
+- Emisor: tiene acceso al Certificado o Clave Pública del receptor y cifra un secreto basándose en la Clave Pública del receptor, que está disponible directamente o que puede calcularse a partir de un Certificado.
+- Receptor: tiene acceso a la Clave Privada que permite el descifrado del secreto cifrado.
 
-For creation of Encryption Keys see [JS7 - How to create X.509 Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+Encryption+Keys).
+Para la creación de Claves de Cifrado consulte [JS7 - How to create X.509 Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+Encryption+Keys).
 
-For management of Encryption Keys see [JS7 - Encryption - Management of Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Management+of+Encryption+Keys).
+Para la gestión de Claves de Cifrado consulte [JS7 - Encryption - Management of Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Management+of+Encryption+Keys).
 
-The process of encryption works like this:
+El proceso de cifrado funciona de la siguiente manera:
 
 <img src="encryption-process.png" alt="Encryption Process" width="750" height="240" />
 
-The process of decryption works like this:
+El proceso de descifrado funciona de la siguiente manera:
 
 <img src="decryption-process.png" alt="Decryption Process" width="880" height="210" />
 
-The *Manage Encryption Keys* page is used for managing Certificates and specifying properties of the Certificate.
+La página *Gestión de Claves de Cifrado* se utiliza para gestionar Certificados y especificar las propiedades del Certificado.
 
-## List of Certificates
+## Lista de Certificados
 
-Existing Encryption Certificates are displayed from a list:
+Los Certificados de Cifrado existentes se muestran en una lista:
 
-- **Action Menu** offers to update and to delete the Certificate entry.
-- **Certificate Alias** is the unique name that users assign a Certificate.
-- **Display Icon** allows to click the icon to display the related Certificate.
-- **Path to Private Key file** specifies the location of the Private Key with related Agents.
+- **Menú de Acciones** ofrece actualizar y eliminar la entrada del Certificado.
+- **Alias del Certificado** es el nombre único que los usuarios asignan a un Certificado.
+- **Icono de Visualización** permite hacer clic en el icono para mostrar el Certificado correspondiente.
+- **Ruta al archivo de Clave Privada** especifica la ubicación de la Clave Privada en los Agentes correspondientes.
 
-## Operations on Certificates
+## Operaciones sobre los Certificados
 
-From the top of the screen the following buttons are available:
+Desde la parte superior de la pantalla están disponibles los siguientes botones:
 
-- **Add Certificate** offers adding a Certificate from copying/pasting. Find details from [Manage Encryption Certificate](/encryption-manage-certificate).
-- **Import Certificate** offers uploading a Certificate file.
+- **Agregar Certificado** ofrece la posibilidad de agregar un Certificado mediante copia/pegado. Encuentre más detalles en [Gestión del Certificado de Cifrado](/encryption-manage-certificate).
+- **Importar Certificado** ofrece la posibilidad de cargar un archivo de Certificado.
 
-From the *List of Certificates* the following operations are offered with the related 3-dots action menu:
+Desde la *Lista de Certificados* se ofrecen las siguientes operaciones con el menú de acción de 3 puntos:
 
-- **Update Certificate** allows modifying the Certificate entry. Find details from [Manage Encryption Certificate](/encryption-manage-certificate).
-- **Delete Certificate** will remove the Certificate entry.
+- **Actualizar Certificado** permite modificar la entrada del Certificado. Encuentre más detalles en [Gestión del Certificado de Cifrado](/encryption-manage-certificate).
+- **Eliminar Certificado** eliminará la entrada del Certificado.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Manage Encryption Certificate](/encryption-manage-certificate)
+- [Gestión del Certificado de Cifrado](/encryption-manage-certificate)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption)
   - [JS7 - Encryption - Management of Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Management+of+Encryption+Keys)

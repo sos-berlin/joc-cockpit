@@ -1,74 +1,74 @@
-# Monitor - System Notifications
+# Monitor - Notificaciones del Sistema
 
-The view displays Notifications raised from JS7 products.
+La vista muestra Notificaciones generadas por los productos JS7.
 
-- System Notifications require setting up the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
-- In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products. For details see [Configuration - Notification ](/configuration-notification).
+- Las Notificaciones del Sistema requieren configurar el *Servicio de Notificación de Logs* desde la sección [Configuración](/settings) de la página [Configuración - Notificación de Log](/settings-log-notification). Si se configura, el JOC Cockpit actúa como servicio syslog que recibe advertencias y errores de Controladores y Agentes registrados con JOC Cockpit.
+- Además de mostrar las Notificaciones en esta vista, pueden ser reenviadas por correo electrónico y desde la línea de comandos, por ejemplo, a productos de Monitor de Sistema de terceros. Para más detalles, consulte [Configuración - Notificación](/configuration-notification).
 
-Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
+Los usuarios deben tener en cuenta que las Notificaciones están sujetas a depuración por el [Servicio de Limpieza](/service-cleanup). Por defecto, las Notificaciones se depuran si tienen más de un día de antigüedad.
 
-## Display of Notifications
+## Visualización de Notificaciones
 
-Notifications are displayed from the following information items:
+Las Notificaciones se muestran con los siguientes elementos de información:
 
-- **JOC Cockpit ID** specifies the unique identifier of the JOC Cockpit instance. 
-  - **Prefix** typically is *joc* for a JOC Cockpit instance that offers GUI access.
-  - **Serial No.** the number assigned to the JOC Cockpit instance during installation.
-- **Category** indicates the JS7 product that raised the Notification which is one of *JOC*, *CONTROLLER*, *AGENT*.
-- **Source** specifies the 
-  - **LogNotification** indicates that the message was received from the syslog interface.
-  - **Deployment** indicates a deployment operation in the current JOC Cockpit instance.
-- **Notifier** is one of
-  - **<*Controller-ID*>** indicates the unique identifier of a Controller if the CONTROLLER *Category* is specified.
-  - **<*Agent-Name*>(<*Director-Agent*>)** indicates the Agent name if the AGENT *Category* is specified.
-  - **<*Java-class*>** indicates the name of the Java class that did raise the notification.
-- **Type** is one of
-  - **WARNING** which indicates a warning in the JS7 product's log.
-  - **ERROR** which indicates an error in the JS7 product's log.
-- **Message** holds the error message or warning.
-- **Exception** indicates the exception that raised the Notification.
-- **Created** indicates the date the Notification was raised.
+- **JOC Cockpit ID** especifica el identificador único de la instancia de JOC Cockpit.
+  - **Prefijo** típicamente es *joc* para una instancia de JOC Cockpit que ofrece acceso a la GUI.
+  - **Número de Serie** el número asignado a la instancia de JOC Cockpit durante la instalación.
+- **Categoría** indica el producto JS7 que generó la Notificación, que es uno de *JOC*, *CONTROLLER*, *AGENT*.
+- **Fuente** especifica:
+  - **LogNotification** indica que el mensaje fue recibido desde la interfaz syslog.
+  - **Deployment** indica una operación de despliegue en la instancia actual de JOC Cockpit.
+- **Notificador** es uno de los siguientes:
+  - **<*Controller-ID*>** indica el identificador único de un Controlador si se especifica la *Categoría* CONTROLLER.
+  - **<*Agent-Name*>(<*Director-Agent*>)** indica el nombre del Agente si se especifica la *Categoría* AGENT.
+  - **<*Java-class*>** indica el nombre de la clase Java que generó la notificación.
+- **Tipo** es uno de los siguientes:
+  - **WARNING** que indica una advertencia en el log del producto JS7.
+  - **ERROR** que indica un error en el log del producto JS7.
+- **Mensaje** contiene el mensaje de error o advertencia.
+- **Excepción** indica la excepción que generó la Notificación.
+- **Creado** indica la fecha en que se generó la Notificación.
 
-A warning or error can raise a number of Notifications depending on the related configuration, for example displaying the Notification with this view and forwarding the Notification by mail. 
+Una advertencia o error puede generar varias Notificaciones dependiendo de la configuración relacionada, por ejemplo, mostrando la Notificación en esta vista y reenviándola por correo electrónico.
 
-For each channel configured for the Notification a separate entry is displayed. Entries for Notifications by mail or from the command line offer an *arrow down* icon that shows details about successful/unsuccessful use of the related channel.
+Por cada canal configurado para la Notificación se muestra una entrada separada. Las entradas para Notificaciones por correo electrónico o desde la línea de comandos ofrecen un icono de *flecha hacia abajo* que muestra detalles sobre el uso exitoso/no exitoso del canal relacionado.
 
-## Operations on Notifications
+## Operaciones sobre Notificaciones
 
-For each error Notification the 3-dots action menu is offered with the following operation:
+Para cada Notificación de error se ofrece el menú de acción de 3 puntos con la siguiente operación:
 
-- **Acknowledge** specifies that the user is aware of the Notification and is taking measures. The operation brings forward a pop-up window that allows specifying a comment about the handling of the Notification. <br/><br/>Acknowledged Notifications by default are excluded from display. They can be made visible by selecting the *Acknowledged* filter button.
+- **Reconocer** especifica que el usuario conoce la Notificación y está tomando medidas. La operación abre una ventana emergente que permite especificar un comentario sobre el manejo de la Notificación. <br/><br/>Las Notificaciones reconocidas se excluyen de la visualización por defecto. Pueden hacerse visibles seleccionando el botón de filtro *Reconocidas*.
 
-## Filters
+## Filtros
 
-The top of the page offers a number of filter buttons that can be applied individually or in combination.
+La parte superior de la página ofrece varios botones de filtro que pueden aplicarse individualmente o en combinación.
 
-The following buttons filter the source of Notifications:
+Los siguientes botones filtran la fuente de las Notificaciones:
 
-- **All** displays Notifications from all JS7 products.
-- **System** filters Notifications to OS related problems.
-- **JOC** limits display of Notifications to problems identified by JOC Cockpit. 
-- **Controller** limits display of Notifications to problems raised with the Controller.
-- **Agent** limits display of Notifications to problems raised with Agents.
+- **Todas** muestra Notificaciones de todos los productos JS7.
+- **Sistema** filtra las Notificaciones relacionadas con problemas del sistema operativo.
+- **JOC** limita la visualización de Notificaciones a problemas identificados por JOC Cockpit.
+- **Controlador** limita la visualización de Notificaciones a problemas generados con el Controlador.
+- **Agente** limita la visualización de Notificaciones a problemas generados con los Agentes.
 
-The following buttons filter the type of Notifications:
+Los siguientes botones filtran el tipo de Notificaciones:
 
-- **Error** specifies that Notifications of *Type* ERROR should be displayed.
-- **Warning** specifies that Notifications of *Type* WARNING should be displayed.
-- **Acknowledged** limits display to Notifications that previously have been acknowledged from the related operation.
+- **Error** especifica que se deben mostrar las Notificaciones de *Tipo* ERROR.
+- **Advertencia** especifica que se deben mostrar las Notificaciones de *Tipo* WARNING.
+- **Reconocidas** limita la visualización a Notificaciones que han sido reconocidas previamente desde la operación relacionada.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Notification](/configuration-notification)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Settings](/settings)
-- [Settings - Log Notification](/settings-log-notification)
+- [Servicio de Limpieza](/service-cleanup)
+- [Configuración - Notificación](/configuration-notification)
+- [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)
+- [Configuración](/settings)
+- [Configuración - Notificación de Log](/settings-log-notification)
 - [Workflows](/workflows)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications)

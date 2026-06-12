@@ -1,29 +1,29 @@
-# Identity Service - Failed Logins
+# Servicio de Identidad - Inicios de Sesión Fallidos
 
-Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
+Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
 
-User accounts that fail to login are recorded with the *Failed Logins* sub-view.
+Las cuentas de usuario que fallan al iniciar sesión quedan registradas en la sub-vista *Inicios de Sesión Fallidos*.
 
-- The list of Failed Logins includes entries for any Identity Services that were triggered unsuccessfully. If a number of optional Identity Services are used, then login is considered successful if one of the Identity Services was triggered successfully. In this situation no Failed Login is reported.
-- JOC Cockpit implements delays for repeatedly failed logins to prevent analysis of response times and to prevent brute force attacks.
-- Note that a number of Identity Providers, for example LDAP being used for Active Directory access, might not accept repeatedly failed login attempts and might block the relevant user account.
+- La lista de Inicios de Sesión Fallidos incluye entradas para cualquier Servicio de Identidad que fue activado sin éxito. Si se usan varios Servicios de Identidad opcionales, el inicio de sesión se considera exitoso si uno de los Servicios de Identidad fue activado con éxito. En esta situación no se registra ningún Inicio de Sesión Fallido.
+- JOC Cockpit implementa retrasos para inicios de sesión repetidamente fallidos para evitar el análisis de los tiempos de respuesta y para prevenir ataques de fuerza bruta.
+- Tenga en cuenta que varios Proveedores de Identidad, por ejemplo LDAP utilizado para el acceso a Active Directory, pueden no aceptar intentos de inicio de sesión repetidamente fallidos y pueden bloquear la cuenta de usuario relevante.
 
-Users should be aware that historic data for Failed Logins are subject to purge by the [Cleanup Service](/service-cleanup).
+Los usuarios deben tener en cuenta que los datos históricos de Inicios de Sesión Fallidos están sujetos a depuración por el [Servicio de Limpieza](/service-cleanup).
 
-## Operations on Failed Logins
+## Operaciones sobre los Inicios de Sesión Fallidos
 
-Users find the following operations on Failed Logins:
+Los usuarios encuentran las siguientes operaciones sobre los Inicios de Sesión Fallidos:
 
-- **Add to Blocklist** will add the related account to the [Identity Service - Blocklist](/identity-service-blocklist) which denies future login. The operation is available if an account is indicated. For logins performed without account the *\*none* placeholder is indicated.
+- **Agregar a Lista de Bloqueo** agregará la cuenta correspondiente a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist), lo que deniega futuros inicios de sesión. La operación está disponible si se indica una cuenta. Para los inicios de sesión realizados sin cuenta se indica el marcador *\*none*.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Cleanup Service](/service-cleanup)
-- [Identity Service - Blocklist](/identity-service-blocklist)
-- [Identity Services](/identity-services)
+- [Servicio de Limpieza](/service-cleanup)
+- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
+- [Servicios de Identidad](/identity-services)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

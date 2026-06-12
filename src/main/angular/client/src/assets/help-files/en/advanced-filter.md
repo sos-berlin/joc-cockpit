@@ -1,22 +1,22 @@
-# Advanced Filter
+# Filtro Avanzado
 
-Advanced Filters offer limiting search results in a number of views.
+Los Filtros Avanzados permiten limitar los resultados de búsqueda en diversas vistas.
 
-## Customization
+## Personalización
 
-- Users can specify the name of a Customization to which the filter will be stored for later reuse.
-- Customizations are available in most views and can be activated from a drop-down button below the main menu.
+- Los usuarios pueden especificar el nombre de una Personalización en la cual se almacenará el filtro para su reutilización posterior.
+- Las Personalizaciones están disponibles en la mayoría de las vistas y pueden activarse desde un botón desplegable ubicado debajo del menú principal.
 
-## Search Criteria
+## Criterios de Búsqueda
 
-Search criteria are additive and will add entries to results that match all criteria specified.
+Los criterios de búsqueda son acumulativos y agregarán a los resultados las entradas que coincidan con todos los criterios especificados.
 
-Search from input fields is performed case-insensitive and partially qualified, for example
+La búsqueda en los campos de entrada se realiza sin distinción entre mayúsculas y minúsculas y de forma parcialmente calificada, por ejemplo:
 
-- **rest** will find objects with the name "pdfNon**Rest**artable" and "**REST**-RunningTaskLog"
-- **re?t** will find objects with the name "ActivePassiveDi**rect**or" and "JITL-JS7**REST**ClientJob"
-- **re\*t** will find objects with the name "pdSQLExecuto**rExt**ractJSON" and "pdu**Reset**Subagent"
+- **rest** encontrará objetos con el nombre "pdfNon**Rest**artable" y "**REST**-RunningTaskLog"
+- **re?t** encontrará objetos con el nombre "ActivePassiveDi**rect**or" y "JITL-JS7**REST**ClientJob"
+- **re\*t** encontrará objetos con el nombre "pdSQLExecuto**rExt**ractJSON" y "pdu**Reset**Subagent"
 
-### Search Results
+### Resultados de Búsqueda
 
-Search results are offered for bulk operations as available from the related page.
+Los resultados de búsqueda se ofrecen para operaciones masivas disponibles desde la página relacionada.

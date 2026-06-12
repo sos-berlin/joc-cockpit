@@ -1,131 +1,131 @@
-# Configuration - Notification
+# Configuración - Notificación
 
-JS7 provides Notifications in case of warnings and errors of JS7 products and in the event of failed jobs and workflows. Notifications can also be sent in case of successful execution of Jobs and Workflows.
+JS7 proporciona Notificaciones en caso de advertencias y errores de los productos JS7, y ante fallos de Jobs y Workflows. Las Notificaciones también pueden enviarse en caso de ejecución exitosa de Jobs y Workflows.
 
-- Notifications are based on ongoing monitoring by the JOC Cockpit from the [Monitor Service](/service-monitor) and are visualized in the [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor) view. This includes:
-  - monitoring availability of Controller and Agents,
-  - monitoring execution of Workflows and Jobs.
-- Notifications are forwarded by one of the following means:
-  - by e-mail, for details see [JS7 - Notifications - Configuration Element MailFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+MailFragment) and [JS7 - How to set up e-mail notification for jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+jobs).
-  - by using a CLI tool such as a System Monitor Agent for [JS7 - Passive Checks with a System Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Passive+Checks+with+a+System+Monitor), for details see [JS7 - Notifications - Configuration Element CommandFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+CommandFragment).
+- Las Notificaciones se basan en el monitoreo continuo realizado por JOC Cockpit a través del [Servicio de Monitor](/service-monitor) y se visualizan en la vista [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor). Esto incluye:
+  - monitoreo de disponibilidad de Controladores y Agentes,
+  - monitoreo de ejecución de Workflows y Jobs.
+- Las Notificaciones se reenvían por uno de los siguientes medios:
+  - por correo electrónico; para más detalles, consulte [JS7 - Notifications - Configuration Element MailFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+MailFragment) y [JS7 - How to set up e-mail notification for jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+jobs).
+  - mediante el uso de una herramienta CLI como un Agente de Monitor de Sistema para [JS7 - Passive Checks with a System Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Passive+Checks+with+a+System+Monitor); para más detalles, consulte [JS7 - Notifications - Configuration Element CommandFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+CommandFragment).
 
-Notifications are managed from the Configuration->Notification sub-view in the JOC Cockpit. The configuration is stored in XML format and is validated against the *Assigned XSD Schema* indicated at top of the page.
+Las Notificaciones se gestionan desde la subvista Configuración->Notificación en JOC Cockpit. La configuración se almacena en formato XML y se valida contra el *Esquema XSD Asignado* indicado en la parte superior de la página.
 
-The page is split into the *Navigation Panel* on the left and the *Details Panel* on the right. 
+La página está dividida en el *Panel de Navegación* a la izquierda y el *Panel de Detalles* a la derecha.
 
-- The *Details Panel* offers input fields and related documentation per element.
-- When entering configuration details, they will be stored automatically within 30s and when leaving the page.
+- El *Panel de Detalles* ofrece campos de entrada y documentación relacionada por elemento.
+- Al ingresar los detalles de configuración, estos se almacenarán automáticamente dentro de 30 segundos y al salir de la página.
 
-The typical lifecycle when changing Notifications includes
+El ciclo de vida típico al cambiar Notificaciones incluye:
 
-- entering configuration details,
-- hitting the *Validate* button to verify that the configuration is consistent,
-- hitting the *Release* button to activate the configuration.
+- ingresar los detalles de configuración,
+- hacer clic en el botón *Validate* para verificar que la configuración sea consistente,
+- hacer clic en el botón *Release* para activar la configuración.
 
-## Navigation Panel
+## Panel de Navegación
 
-Configuration is offered from navigation by elements. Clicking an element name will open the element and will display available sub-elements. The arrow indicator left to the element name tells if sub-elements are available.
+La configuración se ofrece desde la navegación por elementos. Al hacer clic en el nombre de un elemento, se abre el elemento y se muestran los sub-elementos disponibles. El indicador de flecha a la izquierda del nombre del elemento indica si hay sub-elementos disponibles.
 
-An element's 3-dots action menu offers the following operations:
+El menú de acción de 3 puntos de un elemento ofrece las siguientes operaciones:
 
-- **Add Child Node** offers adding nodes to the current element. Available node types are indicated.
-- **Show all Child Nodes of selected Node** brings forward a pop-up window that displays possible child nodes. This includes traversing child nodes and looking up child nodes by name.
-- **Copy/Paste** offers copying a node including child nodes. Pasting is available from the parent node's action menu.
-- **Remove** will remove the node and any child nodes.
+- **Add Child Node** ofrece agregar nodos al elemento actual. Se indican los tipos de nodos disponibles.
+- **Show all Child Nodes of selected Node** abre una ventana emergente que muestra los nodos hijos posibles. Esto incluye recorrer los nodos hijos y buscar nodos hijos por nombre.
+- **Copy/Paste** ofrece copiar un nodo incluyendo los nodos hijos. El pegado está disponible desde el menú de acción del nodo padre.
+- **Remove** eliminará el nodo y cualquier nodo hijo.
 
-### Fragments
+### Fragmentos
 
 #### MessageFragments
 
 - **Message**
-  - A *Message* defines the content which is sent, for example, by e-mail to a user or which is used to parameterize a command line utility, such as content to be forwarded to a System Monitor.
-    - *Messages* for use with E-Mail represent the e-mail body used from plain text or from HTML.
-    - Messages for use with the Command Line represent a string that can be used with the *CommandFragmentRef* element, see below.
-    - *Message* elements can include Monitor Variables that are placeholders for values, e.g. for the Workflow Path, Order ID etc.
-    - Any number of *Message* elements can be added.
+  - Un *Message* define el contenido que se envía, por ejemplo, por correo electrónico a un usuario o que se usa para parametrizar una utilidad de línea de comandos, como el contenido que se reenvía a un Monitor de Sistema.
+    - Los *Messages* para uso con Correo Electrónico representan el cuerpo del correo electrónico en texto plano o en HTML.
+    - Los Messages para uso con la Línea de Comandos representan una cadena de texto que puede usarse con el elemento *CommandFragmentRef*, véase más adelante.
+    - Los elementos *Message* pueden incluir Variables de Monitor que son marcadores de posición para valores, por ejemplo, la Ruta del Workflow, el ID de la Orden, etc.
+    - Se puede agregar cualquier número de elementos *Message*.
 
 #### MonitorFragments
 
-The fragments come in a number of flavors for the following Notification types.
+Los fragmentos se presentan en varias variantes para los siguientes tipos de Notificación.
 
 - **MailFragment**
-  - The following elements are required to send mail:
-    - **MessageRef**: Specifies the reference to a Message element that provides the e-mail body.
-    - **Subject**: Specifies the e-mail subject and can include Monitor Variables.
-    - **To**: Specifies the e-mail address of the recipient. Multiple recipients can be separated by comma.
-  - The following elements are optional to send mail:
-    - **CC**: The recipient of carbon copies. Multiple recipients can be separated by comma.
-    - **BCC**: The recipient of blind carbon copies. Multiple recipients can be separated by comma.
-    - **From**: The e-mail address of the account that is used to send mail. Consider that your mail server configuration determines whether a specific or an arbitrary account can be used.
+  - Los siguientes elementos son obligatorios para enviar correo:
+    - **MessageRef**: Especifica la referencia a un elemento Message que proporciona el cuerpo del correo electrónico.
+    - **Subject**: Especifica el asunto del correo electrónico y puede incluir Variables de Monitor.
+    - **To**: Especifica la dirección de correo electrónico del destinatario. Varios destinatarios pueden separarse por coma.
+  - Los siguientes elementos son opcionales para enviar correo:
+    - **CC**: El destinatario de copias. Varios destinatarios pueden separarse por coma.
+    - **BCC**: El destinatario de copias ocultas. Varios destinatarios pueden separarse por coma.
+    - **From**: La dirección de correo electrónico de la cuenta que se usa para enviar el correo. Tenga en cuenta que la configuración de su servidor de correo determina si se puede usar una cuenta específica o arbitraria.
 - **CommandFragment**
-  - **MessageRef**: Specifies the reference to a *Message* element which provides the content that will be forwarded with the Command element. The message content is available from the *$\{MESSAGE\}* Monitor Variable for use with later elements.
-  - **Command**: Specifies the shell command for Linux/Windows which is used to forward Notifications, for example to a System Monitor utility.
-    - For example, the following shell command can be used:
+  - **MessageRef**: Especifica la referencia a un elemento *Message* que proporciona el contenido que se reenviará con el elemento Command. El contenido del mensaje está disponible desde la Variable de Monitor *$\{MESSAGE\}* para uso con elementos posteriores.
+  - **Command**: Especifica el comando de shell para Linux/Windows que se usa para reenviar Notificaciones, por ejemplo, a una utilidad de Monitor de Sistema.
+    - Por ejemplo, se puede usar el siguiente comando de shell:
       - *echo "$\{MESSAGE\}" >> /tmp/notification.log*
-      - The *echo* shell command appends the content of the *$\{MESSAGE\}* Monitor Variable to a file in the */tmp* directory.
+      - El comando de shell *echo* añade el contenido de la Variable de Monitor *$\{MESSAGE\}* a un archivo en el directorio */tmp*.
 - **JMSFragment**
-  - The fragment type is used to integrate a Java Message Queue product which implements the JMS API. The values of the attributes are specific to the JMS product being used.
+  - El tipo de fragmento se usa para integrar un producto de Cola de Mensajes Java que implementa la API JMS. Los valores de los atributos son específicos del producto JMS que se usa.
 
-#### ObjectFragments 
+#### ObjectFragments
 
-- **Workflows**: Any umber of Workflow configurations can be added and are distinguished by a unique name that is assigned the element.
-  - **Workflow**: A Workflow can be specified by its name. The *Path* attribute allows a regular expression specifying a part of the Workflow path.
-    - **WorkflowJob**: The element can be used to limit Notifications to specific Jobs in a Workflow.
-      - This includes the option of specifying the *Job Name* attribute and/or its *Label* attribute. For both attributes constant values and regular expressions can be used, for example *.\** to specify e-mail being sent for any Jobs.
-      - For releases earlier to 2.7.1:
-        - It is required that the criticality, which is one of *ALL*, *NORMAL* or *CRITICAL*, is specified when using the element.
-      - For releases starting from 2.7.1:
-        - The criticality can be one or more of *MINOR*, *NORMAL*, *MAJOR*, *CRITICAL*.
-        - The *ALL* criticality is deprecated.
-      - The **return_code_from** and **return_code_to** attributes can optionally be used to further limit Notifications to Jobs which complete with the given return code. The return code for Shell Jobs corresponds to the OS exit code.
-    - Empty: If no *WorkflowJob* element is specified, then the Notification applies to any [JS7 - Workflow Instructions](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions) including the [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction), otherwise it will be applied to occurrences of the [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
+- **Workflows**: Se puede agregar cualquier número de configuraciones de Workflow, distinguidas por un nombre único asignado al elemento.
+  - **Workflow**: Un Workflow puede especificarse por su nombre. El atributo *Path* permite una expresión regular que especifica una parte de la ruta del Workflow.
+    - **WorkflowJob**: El elemento puede usarse para limitar las Notificaciones a Jobs específicos en un Workflow.
+      - Esto incluye la opción de especificar el atributo *Job Name* y/o su atributo *Label*. Para ambos atributos se pueden usar valores constantes y expresiones regulares, por ejemplo *.\** para especificar que se envíe correo electrónico para cualquier Job.
+      - Para versiones anteriores a 2.7.1:
+        - Es obligatorio especificar la criticidad, que puede ser *ALL*, *NORMAL* o *CRITICAL*, cuando se usa el elemento.
+      - Para versiones a partir de 2.7.1:
+        - La criticidad puede ser uno o más de *MINOR*, *NORMAL*, *MAJOR*, *CRITICAL*.
+        - La criticidad *ALL* está obsoleta.
+      - Los atributos **return_code_from** y **return_code_to** pueden usarse opcionalmente para limitar aún más las Notificaciones a Jobs que finalizan con el código de retorno especificado. El código de retorno para Jobs de Shell corresponde al código de salida del sistema operativo.
+    - Vacío: Si no se especifica ningún elemento *WorkflowJob*, la Notificación se aplica a cualquier [JS7 - Workflow Instructions](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions), incluyendo la [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction); de lo contrario, se aplicará a las apariciones de la [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
 
-### Notifications
+### Notificaciones
 
-They activate the effective Notifications by references to the *Fragment* elements described above.
+Activan las Notificaciones efectivas mediante referencias a los elementos *Fragment* descritos anteriormente.
 
 #### SystemNotification
 
-- **SystemNotification**: Selects one or more of the above *MonitorFragments*. It is possible to select a number of *Fragments* of the same fragment type.
-  - Notifications are created from system errors and warnings that are identified from JS7 product log files, see [Log Notification Service](/service-log-notification).
-  - The element is used to populate the [Monitor - System Notifications](/monitor-notifications-system) sub-view of JOC Cockpit.
+- **SystemNotification**: Selecciona uno o más de los *MonitorFragments* anteriores. Es posible seleccionar varios *Fragmentos* del mismo tipo de fragmento.
+  - Las Notificaciones se crean a partir de errores y advertencias del sistema que se identifican en los archivos de Log de los productos JS7, consulte [Servicio de Notificación de Log](/service-log-notification).
+  - El elemento se usa para poblar la subvista [Monitor - Notificaciones del Sistema](/monitor-notifications-system) de JOC Cockpit.
 
 #### Notification
 
-- **Notification**: Any number of Notifications can be added with each Notification being distinguished by a unique name. A Notification is assigned a type which can be any of *SUCCESS*, *WARNING* or *ERROR*. This allows Notifications being sent, for example in the event of Job errors and warnings. This similarly allows Notifications being specified for successful Workflow execution. Note that successful execution includes both the absence of Job errors and optionally the presence of Job warnings.
-  - **NotificationMonitors**: Selects one or more of the above *MonitorFragments*. It is possible to select multiple fragments of the same fragment type.
-    - **CommandFragmentRef**: Selects the *CommandFragment* used.
-      - **MessageRef**: Selects the *Message* element used with the *Command*.
-    - **MailFragmentRef**: Selects the *MailFragment* used in order to send Notifications by e-mail. If multiple *MailFragment* elements are referenced, then different types of e-mail can be used, for example for different recipients or with different content and layout of the e-mail body.
-    - **JMSFragmentRef**: Selects the *JMSFragment* used to send Notifications to a Java Message Queue compatible product.
-  - **NotificationObjects**: Selects the Workflows for which Notifications are created.
-    - **WorkflowRef**: Selects a *Workflows* element that limits Notifications to related Workflows. Any number of Workflow references can be added.
+- **Notification**: Se puede agregar cualquier número de Notificaciones, distinguidas cada una por un nombre único. Una Notificación recibe un tipo que puede ser *SUCCESS*, *WARNING* o *ERROR*. Esto permite que se envíen Notificaciones, por ejemplo, ante errores y advertencias de Jobs. De forma similar, se pueden especificar Notificaciones para la ejecución exitosa de Workflows. Tenga en cuenta que la ejecución exitosa incluye tanto la ausencia de errores de Jobs como opcionalmente la presencia de advertencias de Jobs.
+  - **NotificationMonitors**: Selecciona uno o más de los *MonitorFragments* anteriores. Es posible seleccionar varios fragmentos del mismo tipo de fragmento.
+    - **CommandFragmentRef**: Selecciona el *CommandFragment* utilizado.
+      - **MessageRef**: Selecciona el elemento *Message* usado con el *Command*.
+    - **MailFragmentRef**: Selecciona el *MailFragment* usado para enviar Notificaciones por correo electrónico. Si se referencian varios elementos *MailFragment*, se pueden usar diferentes tipos de correo electrónico, por ejemplo para diferentes destinatarios o con diferente contenido y diseño del cuerpo del correo.
+    - **JMSFragmentRef**: Selecciona el *JMSFragment* usado para enviar Notificaciones a un producto compatible con Cola de Mensajes Java.
+  - **NotificationObjects**: Selecciona los Workflows para los que se crean Notificaciones.
+    - **WorkflowRef**: Selecciona un elemento *Workflows* que limita las Notificaciones a los Workflows relacionados. Se puede agregar cualquier número de referencias de Workflow.
 
-## Operations on Notifications
+## Operaciones en Notificaciones
 
-The Notification page offers the following operations from related buttons at top of the page:
+La página de Notificación ofrece las siguientes operaciones desde los botones relacionados en la parte superior de la página:
 
-- **New**: starts from an empty configuration.
-- **Remove**: deletes the current configuration.
-- **Revert Draft**: creates a new draft from the most recently released version. Current changes will be lost.
-- **Upload**: allows uploading an XML file holding the configuration.
-- **Download**: offers downloading the configuration to an XML file.
-- **Edit XML**: offers direct editing of the configuration in XML format.
-- **Validate**: validates the configuration against an XSD Schema. This guarantees that the XML configuration is well-formed and formally correct.
-- **Release**: publishes the configuration to JOC Cockpit. Changes become effective immediately.
+- **New**: comienza desde una configuración vacía.
+- **Remove**: elimina la configuración actual.
+- **Revert Draft**: crea un nuevo Borrador a partir de la versión liberada más recientemente. Los cambios actuales se perderán.
+- **Upload**: permite cargar un archivo XML que contiene la configuración.
+- **Download**: ofrece descargar la configuración a un archivo XML.
+- **Edit XML**: ofrece la edición directa de la configuración en formato XML.
+- **Validate**: valida la configuración contra un Esquema XSD. Esto garantiza que la configuración XML esté bien formada y sea formalmente correcta.
+- **Release**: publica la configuración en JOC Cockpit. Los cambios surten efecto inmediatamente.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Log Notification Service](/service-log-notification)
-- [Monitor - Agent Availability](/monitor-availability-agent)
-- [Monitor - Controller Availability](/monitor-availability-controller)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
-- [Monitor Service](/service-monitor)
+- [Servicio de Notificación de Log](/service-log-notification)
+- [Monitor - Disponibilidad de Agente](/monitor-availability-agent)
+- [Monitor - Disponibilidad de Controlador](/monitor-availability-controller)
+- [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)
+- [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
+- [Servicio de Monitor](/service-monitor)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - How to set up e-mail notification for jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+jobs)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

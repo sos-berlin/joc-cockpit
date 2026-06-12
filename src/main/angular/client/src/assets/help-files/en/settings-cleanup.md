@@ -1,122 +1,122 @@
-# Settings - Cleanup
+# Configuración - Limpieza
 
-The following settings are applied to the [Cleanup Service](/service-cleanup). Changes become effective immediately.
+Las siguientes configuraciones se aplican al [Servicio de Limpieza](/service-cleanup). Los cambios tienen efecto inmediato.
 
-The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 
-## Start Time Settings
+## Configuración de Hora de Inicio
 
-### Setting: *time\_zone*, Default: *UTC*
+### Configuración: *time\_zone*, Predeterminado: *UTC*
 
-Specifies the time zone that is applied to the start time and period of the Cleanup Service.
+Especifica la zona horaria que se aplica a la hora de inicio y al período del Servicio de Limpieza.
 
-### Setting: *period*
+### Configuración: *period*
 
-Specifies weekdays on which the Cleanup Service is performed. The first day of week is assumed being Monday. When initially installing JS7, then default values specify: 1,2,3,4,5,6,7 for daily clean-up. If no weekdays are specified, the Cleanup Service will not start.
+Especifica los días de la semana en que se realiza el Servicio de Limpieza. Se asume que el primer día de la semana es el lunes. Al instalar JS7 inicialmente, los valores predeterminados especifican: 1,2,3,4,5,6,7 para limpieza diaria. Si no se especifican días de la semana, el Servicio de Limpieza no se iniciará.
 
-In most cases it is recommended to run the Cleanup Service on a daily basis, as this keeps the number of records to be purged low. There can be exceptions if daily job execution is very dense for 24 hours and if off-peak periods for example are available on weekends.
+En la mayoría de los casos se recomienda ejecutar el Servicio de Limpieza diariamente, ya que esto mantiene bajo el número de registros a depurar. Pueden existir excepciones si la ejecución de Jobs diaria es muy densa durante las 24 horas y si hay períodos de baja actividad disponibles, por ejemplo, los fines de semana.
 
-### Setting: *period\_begin*, Default: *01:00:00*
+### Configuración: *period\_begin*, Predeterminado: *01:00:00*
 
-Specifies the start time of the Cleanup Service in the related *Time Zone*.
+Especifica la hora de inicio del Servicio de Limpieza en la *Zona Horaria* correspondiente.
 
-### Setting: *period\_end*, Default: *04:00:00*
+### Configuración: *period\_end*, Predeterminado: *04:00:00*
 
-Specifies the end of the period for which the Cleanup Service is allowed to run in the related *Time Zone*. The Cleanup Service most probably will complete purge of the database before the indicated time. However, if it detects activity from the *History Service*, then the Cleanup Service will stop and will restart later on. The Cleanup Service will not continue to run beyond the indicated *Period End*.
+Especifica el fin del período durante el cual se permite ejecutar el Servicio de Limpieza en la *Zona Horaria* correspondiente. El Servicio de Limpieza muy probablemente completará la depuración de la base de datos antes del tiempo indicado. Sin embargo, si detecta actividad del *Servicio de Historial*, el Servicio de Limpieza se detendrá y reiniciará más tarde. El Servicio de Limpieza no continuará ejecutándose más allá del *Fin de Período* indicado.
 
-### Setting: *force\_cleanup*, Default: *false*
+### Configuración: *force\_cleanup*, Predeterminado: *false*
 
-If set to *true*, specifies that the Cleanup Service will be forcibly executed at the given *Period Begin*. By default the Cleanup Service will stop if it detects activity of the History Service. The setting allows the Cleanup Service to pause the History Service for a configurable duration.
+Si se establece en *true*, especifica que el Servicio de Limpieza se ejecutará forzosamente en el *Inicio de Período* indicado. De forma predeterminada, el Servicio de Limpieza se detendrá si detecta actividad del Servicio de Historial. Esta configuración permite al Servicio de Limpieza pausar el Servicio de Historial durante una duración configurable.
 
-If set to *true*, the following settings are considered:
+Si se establece en *true*, se consideran las siguientes configuraciones:
 
-- **history\_pause\_duration**: period for which the History Service will be paused.
-- **history\_pause\_delay**: delay after the History Service is resumed from a pause and for which the Cleanup Service will wait until it restarts.
+- **history\_pause\_duration**: período durante el cual se pausará el Servicio de Historial.
+- **history\_pause\_delay**: retraso tras la reanudación del Servicio de Historial desde una pausa y durante el cual el Servicio de Limpieza esperará antes de reiniciarse.
 
-Users who run Jobs 24/7 without sufficient idle time of the History Service allowing the Cleanup Service to become active, should activate the setting to force execution of the Cleanup Service. Missing purge of the database will result in reduced performance and growing resource consumption of the database.
+Los usuarios que ejecutan Jobs 24/7 sin suficiente tiempo inactivo del Servicio de Historial que permita que el Servicio de Limpieza se active, deben activar esta configuración para forzar la ejecución del Servicio de Limpieza. La falta de depuración de la base de datos resultará en rendimiento reducido y creciente consumo de recursos de la base de datos.
 
-### Setting: *history\_pause\_duration*, Default: *60*s
+### Configuración: *history\_pause\_duration*, Predeterminado: *60*s
 
-If the *force\_cleanup* setting is set to *true*, then the History Service will be paused for the indicated duration or for completion of clean-up whichever occurs first. While the History Service is paused, no new history entries referring to execution of Orders and tasks are made available in JOC Cockpit. On completion of the History Service pause, any pending history entries will be processed.
+Si la configuración *force\_cleanup* está establecida en *true*, el Servicio de Historial se pausará durante la duración indicada o hasta la finalización de la limpieza, lo que ocurra primero. Mientras el Servicio de Historial está pausado, no se pondrán a disposición en el JOC Cockpit nuevas entradas de historial referentes a la ejecución de Órdenes y tareas. Al completar la pausa del Servicio de Historial, cualquier entrada de historial pendiente será procesada.
 
-### Setting: *history\_pause\_delay*, Default: *30*s
+### Configuración: *history\_pause\_delay*, Predeterminado: *30*s
 
-If the *force\_cleanup* setting is set to *true* and the History Service pause is completed, then the Cleanup Service will wait for the indicated delay and will restart if further purge of the database is required.
+Si la configuración *force\_cleanup* está establecida en *true* y la pausa del Servicio de Historial se ha completado, el Servicio de Limpieza esperará el retraso indicado y se reiniciará si se requiere más depuración de la base de datos.
 
-## Database Connection Settings
+## Configuración de Conexión de Base de Datos
 
-### Setting: *batch\_size*, Default: *1000*
+### Configuración: *batch\_size*, Predeterminado: *1000*
 
-Specifies the number of records that are purged within a single transaction. Increasing this value can improve performance - at the same time it will increase the risk of conflicts with concurrent transactions if Services are operating on the database in parallel.
+Especifica el número de registros que se depuran dentro de una única transacción. Aumentar este valor puede mejorar el rendimiento; al mismo tiempo, aumentará el riesgo de conflictos con transacciones concurrentes si los Servicios operan sobre la base de datos en paralelo.
 
-### Setting: *max\_pool\_size*, Default: *8*
+### Configuración: *max\_pool\_size*, Predeterminado: *8*
 
-Specifies the maximum number of parallel database connections used by the service.
+Especifica el número máximo de conexiones de base de datos paralelas utilizadas por el servicio.
 
-## Retention Period Settings
+## Configuración del Período de Retención
 
-### Setting: *order\_history\_age*, Default: *90*d
+### Configuración: *order\_history\_age*, Predeterminado: *90*d
 
-Specifies the retention period for the [Order History](/history-orders) and [Task History](/history-tasks). Any history entries older than the value specified will be purged.
+Especifica el período de retención para el [Historial de Órdenes](/history-orders) y el [Historial de Tareas](/history-tasks). Cualquier entrada de historial más antigua que el valor especificado será purgada.
 
-### Setting: *order\_history\_logs\_age*, Default: *90*d
+### Configuración: *order\_history\_logs\_age*, Predeterminado: *90*d
 
-Specifies the retention period for Orders and task logs. Any logs older than the value specified will be purged. Note that this value should not exceed the value of the *cleanup\_order\_history\_age* setting as otherwise navigation to logs cannot be provided by the JOC Cockpit GUI.
+Especifica el período de retención para los logs de Órdenes y tareas. Cualquier log más antiguo que el valor especificado será purgado. Tenga en cuenta que este valor no debe superar el valor de la configuración *cleanup\_order\_history\_age*, de lo contrario el JOC Cockpit no podrá proporcionar navegación hacia los logs.
 
-### Setting: *file\_transfer\_history\_age*, Default: *90*d
+### Configuración: *file\_transfer\_history\_age*, Predeterminado: *90*d
 
-Specifies the retention period for [File Transfer History](/history-file-transfers). Any entries older than the value specified will be purged.
+Especifica el período de retención para el [Historial de Transferencia de Archivos](/history-file-transfers). Cualquier entrada más antigua que el valor especificado será purgada.
 
-### Setting: *audit\_log\_age*, Default: *90*d
+### Configuración: *audit\_log\_age*, Predeterminado: *90*d
 
-Specifies the retention period for the [Audit Log](/audit-log). Any Audit Log entries older than the value specified will be purged.
+Especifica el período de retención para el [Registro de Auditoría](/audit-log). Cualquier entrada del Registro de Auditoría más antigua que el valor especificado será purgada.
 
-### Setting: *daily\_plan\_history\_age*, Default: *30*d
+### Configuración: *daily\_plan\_history\_age*, Predeterminado: *30*d
 
-Specifies the retention period for the history of submissions with the [Daily Plan](/daily-plan). Any history entries older than the value specified will be purged.
+Especifica el período de retención para el historial de envíos con el [Plan Diario](/daily-plan). Cualquier entrada de historial más antigua que el valor especificado será purgada.
 
-### Setting: *monitoring\_history\_age*, Default: *1*d
+### Configuración: *monitoring\_history\_age*, Predeterminado: *1*d
 
-Specifies the retention period for entries in the *Monitor* view. As this suggests to be a tactical view, longer retention periods are not recommended.
+Especifica el período de retención para las entradas en la vista *Monitor*. Como esto sugiere ser una vista táctica, no se recomiendan períodos de retención más largos.
 
-### Setting: *notification\_history\_age*, Default: *1*d
+### Configuración: *notification\_history\_age*, Predeterminado: *1*d
 
-Specifies the retention period for notifications, for example about job errors and warnings. As notifications are typically handled on the same day, longer retention periods are not recommended.
+Especifica el período de retención para notificaciones, por ejemplo sobre errores y advertencias de Jobs. Como las notificaciones normalmente se gestionan el mismo día, no se recomiendan períodos de retención más largos.
 
-### Setting: *profile\_age*, Default: *365*d
+### Configuración: *profile\_age*, Predeterminado: *365*d
 
-Specifies the retention period for unused [Profiles](/profile), i.e. profiles of user accounts that did not login for the given period.
+Especifica el período de retención para [Perfiles](/profile) no utilizados, es decir, perfiles de cuentas de usuario que no iniciaron sesión durante el período dado.
 
-### Setting: *failed\_login\_history\_age*, Default: *90*d
+### Configuración: *failed\_login\_history\_age*, Predeterminado: *90*d
 
-Specifies the retention period for the history of failed logins. Unsuccessful logins that occurred before the given period will be purged.
+Especifica el período de retención para el historial de inicios de sesión fallidos. Los inicios de sesión fallidos que ocurrieron antes del período dado serán purgados.
 
-### Setting: *reporting\_age*, Default: *365*d
+### Configuración: *reporting\_age*, Predeterminado: *365*d
 
-Specifies the retention period for [Reports](/reports).
+Especifica el período de retención para [Reportes](/reports).
 
-### Setting: *approval\_requests\_age*, Default: *7*d
+### Configuración: *approval\_requests\_age*, Predeterminado: *7*d
 
-Specifies the retention period for [Approval Requests](/approval-requests).
+Especifica el período de retención para [Solicitudes de Aprobación](/approval-requests).
 
-### Setting: *deployment\_history\_versions*, Default: *10*
+### Configuración: *deployment\_history\_versions*, Predeterminado: *10*
 
-Specifies the number of versions per deployed object that should be retained. Versions can be used to re-deploy an object from an earlier state. Any earlier deployed versions of deployed objects are removed.
+Especifica el número de versiones por objeto desplegado que deben conservarse. Las versiones pueden usarse para volver a desplegar un objeto desde un estado anterior. Cualquier versión desplegada anteriormente de los objetos desplegados es eliminada.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Approval Requests](/approval-requests)
-- [Audit Log](/audit-log)
-- [Daily Plan](/daily-plan)
-- [Daily Plan - Projections](/daily-plan-projections)
-- [Profile](/profile)
-- [Reports](/reports)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Cleanup Service](/service-cleanup)
-- [Settings](/settings)
+- [Solicitudes de Aprobación](/approval-requests)
+- [Registro de Auditoría](/audit-log)
+- [Plan Diario](/daily-plan)
+- [Plan Diario - Proyecciones](/daily-plan-projections)
+- [Perfil](/profile)
+- [Reportes](/reports)
+- [Recursos - Tableros de Avisos](/resources-notice-boards)
+- [Servicio de Limpieza](/service-cleanup)
+- [Configuración](/settings)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

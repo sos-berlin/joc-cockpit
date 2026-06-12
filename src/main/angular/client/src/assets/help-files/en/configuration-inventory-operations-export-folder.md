@@ -1,71 +1,71 @@
-# Configuration - Inventory - Operations - Export Folder
+# Configuración - Inventario - Operaciones - Exportar Carpeta
 
-Exporting objects includes adding them to a .zip or .tar.gz archive file that is offered for download. This applies to objects from the *Controller* and *Automation* system folders and to objects in user folders. Archive files can be used for later import to the same or to a different JOC Cockpit instance.
+La exportación de objetos incluye agregarlos a un archivo comprimido .zip o .tar.gz que se ofrece para descargar. Esto aplica a objetos de las carpetas del sistema *Controlador* y *Automatización*, así como a objetos en carpetas de usuario. Los archivos comprimidos pueden usarse para su posterior importación en la misma instancia de JOC Cockpit o en una diferente.
 
-When exporting objects from folders using the related *Export* operation from the folder's 3-dots action menu, a pop-up window will be displayed that offers 
+Al exportar objetos desde carpetas utilizando la operación *Exportar* disponible en el menú de acción de tres puntos de la carpeta, se mostrará una ventana emergente que ofrece:
 
-- **File Name** specifies the name of the archive file.
-- **File Format** specifies either .zip or .tar.gz for the compression type.
-- **Export Type** is one of
-  - export of *Individual Objects*
-  - export of *Folders*
-  - export of *Changes*
-- **Filer Type**
-  - **Controller** considers objects such as Workflows and Job Resources stored in *Controller* system folders.
-  - **Automation** considers objects such as Schedules and Calendars stored in *Automation* system folders.
-- **Filter**
-  - **valid only** limits export to valid objects.
-  - **Draft** includes objects in draft status.
-  - **Deployed** includes objects such as Workflows and Job Resources in deployed status.
-  - **Released** includes objects such as Schedules and Calendars in released status. 
-  - **Use relative Path** specifies whether the export file will include the folder hierarchy from an absolute path or from a relative path indicated by the latest folder in the hierarchy for which export is performed.
-- **Include Sub-folders** allows adding objects from sub-folders recursively to the export archive.
+- **Nombre de Archivo** especifica el nombre del archivo comprimido.
+- **Formato de Archivo** especifica .zip o .tar.gz como tipo de compresión.
+- **Tipo de Exportación** es uno de:
+  - exportación de *Objetos Individuales*
+  - exportación de *Carpetas*
+  - exportación de *Cambios*
+- **Tipo de Filtro**
+  - **Controlador** considera objetos como Workflows y Recursos de Job almacenados en carpetas del sistema *Controlador*.
+  - **Automatización** considera objetos como Planificaciones y Calendarios almacenados en carpetas del sistema *Automatización*.
+- **Filtro**
+  - **solo válidos** limita la exportación a objetos válidos.
+  - **Borrador** incluye objetos en estado de borrador.
+  - **Desplegado** incluye objetos como Workflows y Recursos de Job en estado desplegado.
+  - **Liberado** incluye objetos como Planificaciones y Calendarios en estado liberado.
+  - **Usar Ruta Relativa** especifica si el archivo de exportación incluirá la jerarquía de carpetas desde una ruta absoluta o desde una ruta relativa indicada por la última carpeta en la jerarquía para la cual se realiza la exportación.
+- **Incluir Subcarpetas** permite agregar objetos de subcarpetas de forma recursiva al archivo de exportación.
 
-## Export Types
+## Tipos de Exportación
 
-The **Export Type** allows selecting individual objects, objects from folders and objects from changes.
+El **Tipo de Exportación** permite seleccionar objetos individuales, objetos de carpetas y objetos de cambios.
 
-### Exporting Individual Objects
+### Exportación de Objetos Individuales
 
-The *Export Type* allows selecting individual objects from the list of objects displayed.
+El *Tipo de Exportación* permite seleccionar objetos individuales de la lista de objetos mostrada.
 
 <img src="export-object.png" alt="Export Object" width="600" height="580" />
 
-### Exporting Objects from Folders
+### Exportación de Objetos desde Carpetas
 
-The *Export Type* offers limiting export to certain scheduling object types such as Workflows or Schedules. Users can select the desired object types that will be added to the export archive file.
+El *Tipo de Exportación* permite limitar la exportación a ciertos tipos de objetos de planificación, como Workflows o Planificaciones. Los usuarios pueden seleccionar los tipos de objetos deseados que se agregarán al archivo de exportación.
 
 <img src="export-folder.png" alt="Export Folder" width="600" height="580" />
 
-### Exporting Objects from Changes
+### Exportación de Objetos desde Cambios
 
-The *Export Type* offers selecting a Change from the list of [Changes](/changes). Export will be limited to objects related to the Change.
+El *Tipo de Exportación* permite seleccionar un Cambio de la lista de [Cambios](/changes). La exportación se limitará a los objetos relacionados con el Cambio.
 
 <img src="export-change.png" alt="Export Change" width="600" height="320" />
 
-## Including Dependencies
+## Inclusión de Dependencias
 
-Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
+Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
-When exporting objects, consistency is considered, for example:
+Al exportar objetos se considera la consistencia, por ejemplo:
 
-- If a Workflow references a Job Resource, then both the Workflow and the Job Resource can be exported, even in case they are stored in folders unrelated to the selected folder.
-- If a Schedule references a Calendar and should be exported, then both the Schedule and the Calendar can be exported.
+- Si un Workflow referencia un Recurso de Job, entonces tanto el Workflow como el Recurso de Job pueden exportarse, incluso si están almacenados en carpetas no relacionadas con la carpeta seleccionada.
+- Si una Planificación referencia un Calendario y debe exportarse, entonces tanto la Planificación como el Calendario pueden exportarse.
 
-Users control consistent export from the following options:
+Los usuarios controlan la exportación consistente desde las siguientes opciones:
 
-- **Include Dependencies**
-  - when checked, this will include both referencing and referenced objects located in any folder.
-  - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
-  
-## References
+- **Incluir Dependencias**
+  - cuando está marcado, incluirá tanto objetos que referencian como objetos referenciados ubicados en cualquier carpeta.
+  - cuando no está marcado, no se considerarán las dependencias. Los usuarios deben verificar que los objetos relacionados sean válidos y estén desplegados/liberados. El Controlador generará mensajes de error en caso de objetos faltantes debido a un despliegue inconsistente.
 
-### Context Help
+## Referencias
 
-- [Changes](/changes)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Dependency Matrix](/dependencies-matrix)
+### Ayuda Contextual
 
-### Product Knowledge Base
+- [Cambios](/changes)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Matriz de Dependencias](/dependencies-matrix)
+
+### Base de Conocimiento del Producto
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

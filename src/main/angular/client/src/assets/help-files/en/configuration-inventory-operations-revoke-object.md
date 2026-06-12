@@ -1,51 +1,51 @@
-# Configuration - Inventory - Operations - Revoke Object
+# Configuración - Inventario - Operaciones - Revocar Objeto
 
-Revoking objects includes to delete them from the Controller and to keep objects in draft status in the inventory. This applies to objects such as Workflows and Job Resources available from the *Controller* system folder.
+Revocar objetos incluye eliminarlos del Controlador y mantenerlos en estado de borrador en el inventario. Esto aplica a objetos como Workflows y Recursos de Job disponibles en la carpeta del sistema *Controlador*.
 
-The *Configuration->Inventory* view offers revoking a single object and revoking objects from folders, see [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder).
+La vista *Configuración->Inventario* permite revocar un objeto individual y revocar objetos desde carpetas, ver [Configuración - Inventario - Operaciones - Revocar Carpeta](/configuration-inventory-operations-revoke-folder).
 
-When revoking a single object from the *Revoke* operation available from the object's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
+Al revocar un objeto individual desde la operación *Revocar* disponible en el menú de acción de tres puntos del objeto en el panel de navegación, se mostrará una ventana emergente como la siguiente:
 
 <img src="revoke-workflow.png" alt="Revoke Workflow" width="600" height="460" />
 
-## Revoking Object from Controllers
+## Revocación de Objeto de los Controladores
 
-The input field accepts one or more Controllers from which the object will be revoked.
+El campo de entrada acepta uno o más Controladores de los cuales se revocará el objeto.
 
-By default the currently selected Controller will be indicated.
+Por defecto se indicará el Controlador actualmente seleccionado.
 
-## Updating the Daily Plan
+## Actualización del Plan Diario
 
-Revocation of objects such as Workflows and Job Resources impacts the [Daily Plan](/daily-plan). 
+La revocación de objetos como Workflows y Recursos de Job impacta el [Plan Diario](/daily-plan).
 
-Existing Orders for related Workflows will be recalled from the Controller and will be removed from the Daily Plan.
+Las Órdenes existentes para Workflows relacionados serán recuperadas del Controlador y eliminadas del Plan Diario.
 
-## Including Dependencies
+## Inclusión de Dependencias
 
-Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
+Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
-When revoking objects, consistency is considered, for example:
+Al revocar objetos se considera la consistencia, por ejemplo:
 
-- If a Job Resource is referenced by a Workflow, then revocation of the Job Resource includes revoking the Workflow too.
-- If a Workflow is revoked, then a Schedule referencing the Workflow will be recalled and related Orders will be recalled and removed from the Daily Plan.
+- Si un Recurso de Job es referenciado por un Workflow, entonces la revocación del Recurso de Job incluye también revocar el Workflow.
+- Si se revoca un Workflow, entonces una Planificación que lo referencia será recuperada y las Órdenes relacionadas serán recuperadas y eliminadas del Plan Diario.
 
-Users control consistent revocation of objects from the following options:
+Los usuarios controlan la revocación consistente de objetos desde las siguientes opciones:
 
-- **Include Dependencies**
-  - when checked, this will include both referencing and referenced objects.
-    - If related objects have previously been deployed or released, then common revocation is offered. It will be enforced, if required by object relationships.
-    - This similarly applies to objects in draft status that have previously been deployed or released.
-  - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent revocation.
+- **Incluir Dependencias**
+  - cuando está marcado, incluirá tanto objetos que referencian como objetos referenciados.
+    - Si los objetos relacionados han sido desplegados o liberados previamente, se ofrecerá la revocación conjunta. Se aplicará de forma obligatoria si es requerida por las relaciones entre objetos.
+    - Lo mismo aplica a los objetos en estado de borrador que hayan sido desplegados o liberados previamente.
+  - cuando no está marcado, no se considerarán las dependencias. Los usuarios deben verificar que los objetos relacionados sean válidos y estén desplegados/liberados. El Controlador generará mensajes de error en caso de objetos faltantes debido a una revocación inconsistente.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Configuración - Inventario - Operaciones - Revocar Carpeta](/configuration-inventory-operations-revoke-folder)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Plan Diario](/daily-plan)
+- [Matriz de Dependencias](/dependencies-matrix)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

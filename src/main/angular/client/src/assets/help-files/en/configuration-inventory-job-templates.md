@@ -1,98 +1,98 @@
-# Configuration - Inventory - Job Templates
+# Configuración - Inventario - Plantillas de Job
 
-The *Job Template* panel offers specifying centrally managed templates for Jobs used in Workflows. They are applied if the same Job implementation is used for a number of Jobs.
+El panel *Plantillas de Job* ofrece la especificación de plantillas gestionadas de forma centralizada para los Jobs utilizados en Workflows. Se aplican cuando la misma implementación de Job se usa en varios Jobs.
 
-- Jobs hold a reference to a Job Template that is applied when the Job is created. 
-- Jobs can be updated when Job Templates are changed.
-- Job Templates can be created for any Job class such as Shell Jobs and JVM Jobs running in the Agent's Java Virtual Machine.
+- Los Jobs contienen una referencia a una Plantilla de Job que se aplica cuando el Job es creado.
+- Los Jobs pueden actualizarse cuando las Plantillas de Job son modificadas.
+- Las Plantillas de Job pueden crearse para cualquier clase de Job, como Jobs de Shell y Jobs JVM que se ejecutan en la Máquina Virtual Java del Agente.
 
-Job Templates are managed from the following panels:
+Las Plantillas de Job se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Templates. In addition, the panel offers operations on Job Templates.
-- The *Job Template Panel* on the right side of the window holds details for Job Template configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Plantillas de Job. Además, el panel ofrece operaciones sobre las Plantillas de Job.
+- El *Panel de Plantillas de Job* en el lado derecho de la ventana contiene los detalles de configuración de la Plantilla de Job.
 
-## Job Template Panel
+## Panel de Plantillas de Job
 
-For a Job Template the following inputs are available:
+Para una Plantilla de Job están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Job Template, see [Object Naming Rules](/object-naming-rules).
-- Other inputs correspond to inputs of a Job:
-  - [Job Properties](/configuration-inventory-workflow-job-properties)
-  - [Job Options](/configuration-inventory-workflow-job-options)
-  - [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
-  - [Job Notifications](/configuration-inventory-workflow-job-notifications)
-  - [Job Tags](/configuration-inventory-workflow-job-tags)
-- **Arguments** are used for JVM Jobs. 
-  - **Required** specifies if the argument is required or can be removed when used in a Job.
-  - **Description** adds an explanation to the argument that can include HTML tags.
+- **Nombre** es el identificador único de una Plantilla de Job, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- Los demás campos de entrada corresponden a los de un Job:
+  - [Propiedades del Job](/configuration-inventory-workflow-job-properties)
+  - [Opciones del Job](/configuration-inventory-workflow-job-options)
+  - [Propiedades del Nodo del Job](/configuration-inventory-workflow-job-node-properties)
+  - [Notificaciones del Job](/configuration-inventory-workflow-job-notifications)
+  - [Etiquetas del Job](/configuration-inventory-workflow-job-tags)
+- **Argumentos** se usan para Jobs JVM.
+  - **Requerido** especifica si el argumento es obligatorio o puede omitirse al usarse en un Job.
+  - **Descripción** agrega una explicación al argumento que puede incluir etiquetas HTML.
 
-## Operations on Job Templates
+## Operaciones sobre Plantillas de Job
 
-For general operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones generales véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
-Job Templates offer the following operations to update Jobs:
+Las Plantillas de Job ofrecen las siguientes operaciones para actualizar Jobs:
 
-- **Apply Template to Jobs** button is available when a Job Template is released.
-  - A pop-up window is displayed that indicates the Workflows and Jobs that use the Job Template.
-  - Users can select Workflows and Jobs that should be updated.
-  - **Filter** allows limiting updates to Workflows in *Draft* status and/or in *Deployed* status.
-  - **Update Notification** specifies that Job Notification settings should be updated from the Job Template.
-  - **Update Admission Times** specifies that Job Admission Times should be updated from the Job Template.
-  - **Update from required arguments** specifies that Job Template arguments that are qualified being required should be updated in selected Jobs.
-  - **Update from optional arguments** specifies that Job Template arguments that are qualified being optional should be updated in selected Jobs.
-- **Update Jobs from Templates** is available from the *Navigation Panel* and will update Jobs in Workflows located in the selected *Inventory Folder* from Job Templates located in any folder.
-- **Apply Template to Jobs** is available from the *Navigation Panel* and will update Jobs in Workflows located in any folder that holds references to Job Templates included with the selected *Inventory Folder* or any sub-folder.
+- El botón **Aplicar Plantilla a Jobs** está disponible cuando una Plantilla de Job está liberada.
+  - Se muestra una ventana emergente que indica los Workflows y Jobs que utilizan la Plantilla de Job.
+  - Los usuarios pueden seleccionar los Workflows y Jobs que deben actualizarse.
+  - **Filtro** permite limitar las actualizaciones a Workflows en estado *Borrador* y/o en estado *Desplegado*.
+  - **Actualizar Notificación** especifica que la configuración de Notificaciones del Job debe actualizarse desde la Plantilla de Job.
+  - **Actualizar Tiempos de Admisión** especifica que los Tiempos de Admisión del Job deben actualizarse desde la Plantilla de Job.
+  - **Actualizar desde argumentos requeridos** especifica que los argumentos de la Plantilla de Job calificados como requeridos deben actualizarse en los Jobs seleccionados.
+  - **Actualizar desde argumentos opcionales** especifica que los argumentos de la Plantilla de Job calificados como opcionales deben actualizarse en los Jobs seleccionados.
+- **Actualizar Jobs desde Plantillas** está disponible desde el *Panel de Navegación* y actualizará los Jobs de los Workflows ubicados en la *Carpeta de Inventario* seleccionada a partir de las Plantillas de Job ubicadas en cualquier carpeta.
+- **Aplicar Plantilla a Jobs** está disponible desde el *Panel de Navegación* y actualizará los Jobs de los Workflows ubicados en cualquier carpeta que tengan referencias a las Plantillas de Job incluidas en la *Carpeta de Inventario* seleccionada o en cualquier subcarpeta.
 
-After updating Jobs from Job Templates, the related Workflows will be set to *Draft* status and should be deployed to make changes effective.
+Después de actualizar los Jobs desde las Plantillas de Job, los Workflows relacionados se establecerán en estado *Borrador* y deben ser desplegados para que los cambios tengan efecto.
 
-## Use with Jobs
+## Uso con Jobs
 
-Job Templates can be created from existing Jobs. In the *Configuration->Inventory* view for a given Workflow users can click the related Job to find its action menu offering the *Make Job Template* operation.
+Las Plantillas de Job pueden crearse a partir de Jobs existentes. En la vista *Configuración->Inventario*, para un Workflow dado, los usuarios pueden hacer clic en el Job relacionado para encontrar en su menú de acciones la operación *Crear Plantilla de Job*.
 
-To assign a Job a Job Template users can proceed as follows:
+Para asignar una Plantilla de Job a un Job, los usuarios pueden proceder de la siguiente manera:
 
-- In the upper-right corner of the window invoke the Wizard.
-- This brings up a pop-up window that allows choosing the *User Job Templates* tab.
-  - Navigate to the desired Job Template or type parts of its name.
-  - Select the Job Template and optionally add arguments if provided by the Job Template.
-  
-When a Job Template is assigned a Job, this is indicated in the upper-right corner of the window:
+- En la esquina superior derecha de la ventana, invocar el Asistente.
+- Esto abrirá una ventana emergente que permite seleccionar la pestaña *Plantillas de Job del Usuario*.
+  - Navegar hasta la Plantilla de Job deseada o escribir parte de su nombre.
+  - Seleccionar la Plantilla de Job y opcionalmente agregar argumentos si la Plantilla de Job los proporciona.
 
-- Users find the *Job Template Reference*,
-- followed by an icon for the *Synchronization Status Indicator*: 
-  - green color indicates that the Job and Job Template are in sync. 
-  - orange color indicates that the Job Template was changed and that the Job is not in sync.
-- Clicking the orange *Synchronization Status Indicator* will update the Job from its Job Template.
+Cuando se asigna una Plantilla de Job a un Job, esto se indica en la esquina superior derecha de la ventana:
 
-To remove a Job Template reference from a Job, users can click the trash icon in the upper-right corner following the Job Template name. The operation will leave Job properties untouched and will release the link to the Job Template. 
+- Los usuarios encontrarán la *Referencia de Plantilla de Job*,
+- seguida de un ícono para el *Indicador de Estado de Sincronía*:
+  - el color verde indica que el Job y la Plantilla de Job están sincronizados.
+  - el color naranja indica que la Plantilla de Job fue modificada y que el Job no está sincronizado.
+- Al hacer clic en el *Indicador de Estado de Sincronía* naranja se actualizará el Job desde su Plantilla de Job.
 
-Jobs that reference Job Templates do not allow major parts of the Job being changed. Instead, changes have to be applied to the Job Template. This does not apply to the following inputs that can be freely chosen:
+Para eliminar la referencia a una Plantilla de Job de un Job, los usuarios pueden hacer clic en el ícono de papelera ubicado en la esquina superior derecha junto al nombre de la Plantilla de Job. La operación dejará las propiedades del Job intactas y liberará el vínculo con la Plantilla de Job.
 
-- **Job Name**
-- **Label**
-- **Agent**
-- **Job Admission Times**
-- **Job Notification**
+Los Jobs que referencian Plantillas de Job no permiten modificar la mayor parte del Job. En su lugar, los cambios deben aplicarse a la Plantilla de Job. Esto no aplica a los siguientes campos de entrada que pueden elegirse libremente:
 
-To dynamically assign values to **Arguments for JVM Jobs** or **Environment Variables for Shell Jobs** users can proceed as follows:
+- **Nombre del Job**
+- **Etiqueta**
+- **Agente**
+- **Tiempos de Admisión del Job**
+- **Notificación del Job**
 
-- The Job Template makes use of a Workflow Variable for the value assigned the *Argument* or *Environment Variable*.
-- The Workflow holding the Job that references the Job Template declares the Workflow Variable that can be populated from a default value and from incoming Orders.
+Para asignar valores dinámicamente a los **Argumentos para Jobs JVM** o a las **Variables de Entorno para Jobs de Shell**, los usuarios pueden proceder de la siguiente manera:
 
-## References
+- La Plantilla de Job hace uso de una Variable de Workflow para el valor asignado al *Argumento* o a la *Variable de Entorno*.
+- El Workflow que contiene el Job que referencia la Plantilla de Job declara la Variable de Workflow que puede completarse desde un valor predeterminado y desde Órdenes entrantes.
 
-### Context Help
+## Referencias
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
-- [Job Notifications](/configuration-inventory-workflow-job-notifications)
-- [Job Options](/configuration-inventory-workflow-job-options)
-- [Job Properties](/configuration-inventory-workflow-job-properties)
-- [Job Tags](/configuration-inventory-workflow-job-tags)
-- [Object Naming Rules](/object-naming-rules)
+### Ayuda Contextual
 
-### Product Knowledge Base
+- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
+- [Propiedades del Nodo del Job](/configuration-inventory-workflow-job-node-properties)
+- [Notificaciones del Job](/configuration-inventory-workflow-job-notifications)
+- [Opciones del Job](/configuration-inventory-workflow-job-options)
+- [Propiedades del Job](/configuration-inventory-workflow-job-properties)
+- [Etiquetas del Job](/configuration-inventory-workflow-job-tags)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
+
+### Base de Conocimiento del Producto
 
 - [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates)
-  - [JS7 - JITL Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+Integration+Job+Templates)
+  - [JS7 - JITL Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+Integration+Job+Templates)
   - [JS7 - User Defined Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Defined+Job+Templates)

@@ -1,132 +1,132 @@
-# Profile - Preferences
+# Perfil - Preferencias
 
-The *Profile - Preferences* page holds settings for a user account.
+La página *Perfil - Preferencias* contiene la configuración de una cuenta de usuario.
 
-When a user connects to JOC Cockpit for the first time, then the *Default User Account's* preferences are copied to the user's preferences. The *Default User Account* is specified from the [Settings - JOC Cockpit](/settings-joc) page.
+Cuando un usuario se conecta a JOC Cockpit por primera vez, las preferencias de la *Cuenta de Usuario Predeterminada* se copian a las preferencias del usuario. La *Cuenta de Usuario Predeterminada* se especifica desde la página [Configuración - JOC Cockpit](/settings-joc).
 
 ## Roles
 
-The roles assigned the user account are displayed. Resulting permissions are merged from role assignments and are available from the [Profile - Permissions](/profile-permissions) tab.
+Se muestran los roles asignados a la cuenta de usuario. Los permisos resultantes se combinan desde las asignaciones de roles y están disponibles desde la pestaña [Perfil - Permisos del Perfil](/profile-permissions).
 
-## Preferences
+## Preferencias
 
-Users can modify Preferences at their will.
+Los usuarios pueden modificar las Preferencias a su criterio.
 
-### Browser related Preferences
+### Preferencias relacionadas con el Navegador
 
-Preferences in this section use default values of the browser in use:
+Las preferencias en esta sección utilizan los valores predeterminados del navegador en uso:
 
-- **Language** is the interface language of JOC Cockpit that is available for English, French, German, Japanese.
-- **Time Zone** specifies the time zone to which any dates displayed in JOC Cockpit will be converted.
-- **Date Time Format** offers selecting from a list of available formats.
+- **Idioma** es el idioma de la interfaz del JOC Cockpit, disponible en inglés, francés, alemán y japonés.
+- **Zona Horaria** especifica la zona horaria a la que se convertirán todas las fechas mostradas en JOC Cockpit.
+- **Formato de Fecha y Hora** ofrece la selección de una lista de formatos disponibles.
 
-### List related Preferences
+### Preferencias relacionadas con Listas
 
-Preferences apply to display of lists in JOC Cockpit. The following implications should be considered when increasing values:
+Las preferencias aplican a la visualización de listas en JOC Cockpit. Se deben considerar las siguientes implicaciones al aumentar los valores:
 
-- Reading more data from JOC Cockpit will not improve responsiveness of the GUI.
-- Longer lists will increase the browser's memory & CPU consumption for rendering.
+- Leer más datos desde JOC Cockpit no mejorará la capacidad de respuesta de la GUI.
+- Las listas más largas aumentarán el consumo de memoria y CPU del navegador para la representación.
 
-Find the following settings that can be managed for common values from the *Group Limit* link:
+Encuentre los siguientes ajustes que pueden gestionarse con valores comunes desde el enlace *Límite de Grupo*:
 
-- **Max. number of History entries** applies to the [History - Orders](/history-orders) view.
-- **Max. number of Audit Log entries** applies to the [Audit Log](/audit-log) view.
-- **Max. number of Notification entries** applies to the [Monitor - Order Notifications](/monitor-notifications-order) and [Monitor - System Notifications](/monitor-notifications-system) views.
-- **Max. number of Order Overview entries** applies to the [Orders - Overview](/orders-overview) view.
-- **Max. number of Daily Plan entries** applies to the [Daily Plan](/daily-plan) view.
-- **Max. number of orders per Workflow** limits the number of Orders available with the [Workflows](/workflows) view.
-- **Max. number of File Transfer entries** applies to the [History - File Transfers](/history-file-transfers) view.
-- **Max. number of orders per Resource Lock** limits the number of Orders displayed with the [Resources - Resource Locks](/resources-resource-locks) view.
-- **Max. number of orders per Notice Board** limits the number of Orders displayed with the [Resources - Notice Boards](/resources-notice-boards) view.
+- **Núm. máx. de entradas del Historial** aplica a la vista [Historial - Órdenes](/history-orders).
+- **Núm. máx. de entradas del Registro de Auditoría** aplica a la vista [Registro de Auditoría](/audit-log).
+- **Núm. máx. de entradas de Notificación** aplica a las vistas [Monitor - Notificaciones de Órdenes](/monitor-notifications-order) y [Monitor - Notificaciones del Sistema](/monitor-notifications-system).
+- **Núm. máx. de entradas de Vista General de Órdenes** aplica a la vista [Vista General de Órdenes](/orders-overview).
+- **Núm. máx. de entradas del Plan Diario** aplica a la vista [Plan Diario](/daily-plan).
+- **Núm. máx. de Órdenes por Workflow** limita el número de Órdenes disponibles en la vista [Workflows](/workflows).
+- **Núm. máx. de entradas de Transferencia de Archivos** aplica a la vista [Historial - Transferencias de Archivos](/history-file-transfers).
+- **Núm. máx. de Órdenes por Recurso de Lock** limita el número de Órdenes mostradas en la vista [Recursos - Recursos de Lock](/resources-resource-locks).
+- **Núm. máx. de Órdenes por Tablero de Avisos** limita el número de Órdenes mostradas en la vista [Recursos - Tableros de Avisos](/resources-notice-boards).
 
-### Workflow View Preferences
+### Preferencias de la Vista de Workflows
 
-Preferences apply to the [Workflows](/workflows) view:
+Las preferencias aplican a la vista [Workflows](/workflows):
 
-- **Max. number of Order History entries per Workflow** limits the number of entries in the *Order History* panel.
-- **Max. number of Job History entries per Workflow** limits the number of entries in the *Task History* panel .
-- **Max. number of Audit Log entries per object** limits the number of entries in the *Audit Log* panel.
+- **Núm. máx. de entradas del Historial de Órdenes por Workflow** limita el número de entradas en el panel *Historial de Órdenes*.
+- **Núm. máx. de entradas del Historial de Jobs por Workflow** limita el número de entradas en el panel *Historial de Tareas*.
+- **Núm. máx. de entradas del Registro de Auditoría por objeto** limita el número de entradas en el panel *Registro de Auditoría*.
 
-### Configuration - Inventory View Preferences
+### Preferencias de la Vista de Configuración - Inventario
 
-- **Max. number of Favorite entries** limits display of favorites for example when assigning a Job an Agent.
+- **Núm. máx. de entradas de Favoritos** limita la visualización de favoritos, por ejemplo, al asignar un Agente a un Job.
 
-### Pagination Preferences
+### Preferencias de Paginación
 
-Preferences apply to pagination on any page:
+Las preferencias aplican a la paginación en cualquier página:
 
-- **Max. number of entries per page** limits the number of entries visible on a single page.
-- **Default number of entries per page** specifies the default value that can be one of 10, 25, 50, 100, 1000.
+- **Núm. máx. de entradas por página** limita el número de entradas visibles en una sola página.
+- **Núm. predeterminado de entradas por página** especifica el valor predeterminado que puede ser uno de 10, 25, 50, 100, 1000.
 
-### Theme Preferences
+### Preferencias de Tema
 
-- **Change Theme** offers switching between themes. Some themes are provided for higher contrast that can be more suitable for users with visual impairments.
-  - **Change Color of order states** is available from an icon right to *Change Theme* and offers changing default colors for [Order States](/order-states). It might look confusing changing colors that are differently represented in the JS7 documentation. However, users with visual impairments might consider this helpful: users can specify RGB values for each color used for an Order state.
-- **Menu Bar Color** is available if the *Light* theme is used. This allows changing the background color of the menu bar. The setting can be applied for example, if users work with separate JS7 environments for dev, test, prod: using different background colors helps identifying the related JS7 environment.
-- **Theme Title** is displayed just below the menu bar. Similarly to the *Menu Bar Color* this can be used to identify the related JS7 environment.
+- **Cambiar Tema** ofrece cambiar entre temas. Algunos temas se proporcionan para mayor contraste, lo que puede ser más adecuado para usuarios con discapacidades visuales.
+  - **Cambiar Color de estados de Órdenes** está disponible desde un icono a la derecha de *Cambiar Tema* y ofrece cambiar los colores predeterminados para los [Estados de Órdenes](/order-states). Puede resultar confuso cambiar colores que se representan de forma diferente en la documentación de JS7. Sin embargo, los usuarios con discapacidades visuales pueden considerar esto útil: los usuarios pueden especificar valores RGB para cada color utilizado para un estado de Orden.
+- **Color de la Barra de Menú** está disponible si se usa el tema *Claro*. Esto permite cambiar el color de fondo de la barra de menú. El ajuste puede aplicarse, por ejemplo, si los usuarios trabajan con entornos JS7 separados para dev, test, prod: usar diferentes colores de fondo ayuda a identificar el entorno JS7 relacionado.
+- **Título del Tema** se muestra justo debajo de la barra de menú. De manera similar al *Color de la Barra de Menú*, esto puede usarse para identificar el entorno JS7 relacionado.
 
-### Editor Preferences
+### Preferencias del Editor
 
-- **Tab Size** is used in the [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties) tab when editing the *Job Script*. The setting specifies the number of spaces that correspond to the size when hitting the TAB key.
+- **Tamaño de Tabulación** se usa en la pestaña [Configuración - Inventario - Workflow - Propiedades del Job](/configuration-inventory-workflow-job-properties) al editar el *Script del Job*. El ajuste especifica el número de espacios que corresponden al tamaño al presionar la tecla TAB.
 
-### View Preferences
+### Preferencias de Vista
 
-- **Show Logs** specifies display of the [Order Log View](/order-log) and [Task Log View](/task-log). Both log views offer display and download of logs.
-- **Show Documentations** specifies display of user documentation for Workflows and Jobs.
+- **Mostrar Logs** especifica la visualización de la [Vista del Log de Orden](/order-log) y la [Vista del Log de Tarea](/task-log). Ambas vistas de log ofrecen visualización y descarga de logs.
+- **Mostrar Documentaciones** especifica la visualización de documentación de usuario para Workflows y Jobs.
 
-### Configuration View Preferences
+### Preferencias de Vista de Configuración
 
-- **Show sub-folders and folder contents** rules the behavior when clicking a folder in the *Navigation Panel* of the *Configuration->Inventory* view to either display available objects only or to display available objects and sub-folders.
+- **Mostrar subcarpetas y contenido de carpetas** rige el comportamiento al hacer clic en una carpeta en el *Panel de Navegación* de la vista *Configuración->Inventario* para mostrar solo los objetos disponibles o para mostrar los objetos disponibles y las subcarpetas.
 
-### Mixed Preferences
+### Preferencias Mixtas
 
-- **Show Files immediately in File Transfer view** is useful if each file transfer includes a foreseeable number of files. For single transfers that can include thousands of files it might be preferable to disable the setting.
-- **Enable Reasons for Audit Log** will force the user to specify a reason when modifying objects such as adding or cancelling Orders, suspending Workflows etc. The user setting can be overruled from the related [Settings - JOC Cockpit](/settings-joc).
-- **Use time zone for log timestamps** is applicable when Agents run on servers in different time zones or different from the Controller server's time zone. In this situation an Order log that holds log output of a number of Jobs executed with possibly different Agents might look confusing. The setting converts log timestamps to the *Time Zone* specified with the user's profile.
-- **Current Controller** applies when more than one Controller is connected to JOC Cockpit. The option that is offered in a number of views, for example the [History - Orders](/history-orders) view. When checked it limits display to Orders submitted to the currently selected Controller and otherwise will display Orders of any connected Controller. The setting determines the default value for related *Current Controller* options in JOC Cockpit views.
-- **Suppress tooltips for Inventory objects** relates to the *Configuration->Inventory* view that offers tooltips, for example for [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties). Tooltips will pop up if the mouse is moved to the label of an input field to assist users by explaining possible input. While this is useful for users who are not too familiar with JS7, tooltips might not be needed for experienced users.
-- **License Warning acknowledged** refers to use of subscription licences that are typically limited to one year. Before license expiration related warnings will be displayed by JOC Cockpit. User can opt to suppress related license expiration warnings. For details see [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
-- **Show more options** activates the related slider button in the *Configuration->Inventory* view. It offers more detailed options for job configuration, for example with the [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options) tab.
-- **Collapse list variable** applies to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view that offers specifying Workflow Variables from a number of data types. If the *List* data type (array) is used then it can hold a larger number of entries. Users might not want to immediately see list variables expanded when editing a Workflow.
+- **Mostrar Archivos inmediatamente en la vista de Transferencia de Archivos** es útil si cada transferencia de archivos incluye un número previsible de archivos. Para transferencias individuales que pueden incluir miles de archivos, podría ser preferible deshabilitar el ajuste.
+- **Habilitar Motivos para el Registro de Auditoría** obligará al usuario a especificar un motivo al modificar objetos como agregar o cancelar Órdenes, suspender Workflows, etc. El ajuste del usuario puede ser anulado por la [Configuración - JOC Cockpit](/settings-joc) relacionada.
+- **Usar zona horaria para marcas de tiempo del log** es aplicable cuando los Agentes se ejecutan en servidores en diferentes zonas horarias o diferentes a la zona horaria del servidor del Controlador. En esta situación, un log de Orden que contiene salida de log de varios Jobs ejecutados posiblemente con diferentes Agentes puede resultar confuso. El ajuste convierte las marcas de tiempo del log a la *Zona Horaria* especificada en el perfil del usuario.
+- **Controlador Actual** aplica cuando más de un Controlador está conectado a JOC Cockpit. La opción se ofrece en varias vistas, por ejemplo, la vista [Historial - Órdenes](/history-orders). Cuando está marcado, limita la visualización a Órdenes enviadas al Controlador seleccionado actualmente; de lo contrario, mostrará Órdenes de cualquier Controlador conectado. El ajuste determina el valor predeterminado para las opciones *Controlador Actual* relacionadas en las vistas de JOC Cockpit.
+- **Suprimir tooltips para objetos del Inventario** se relaciona con la vista *Configuración->Inventario* que ofrece tooltips, por ejemplo, para [Configuración - Inventario - Workflow - Propiedades del Job](/configuration-inventory-workflow-job-properties). Los tooltips aparecerán si el ratón se mueve a la etiqueta de un campo de entrada para asistir a los usuarios explicando la entrada posible. Si bien esto es útil para usuarios que no están muy familiarizados con JS7, los tooltips pueden no ser necesarios para usuarios con experiencia.
+- **Advertencia de Licencia reconocida** se refiere al uso de licencias de suscripción que típicamente están limitadas a un año. Antes del vencimiento de la licencia, el JOC Cockpit mostrará advertencias relacionadas. Los usuarios pueden optar por suprimir las advertencias de vencimiento de licencia relacionadas. Para más detalles, consulte [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
+- **Mostrar más opciones** activa el botón deslizante relacionado en la vista *Configuración->Inventario*. Ofrece opciones más detalladas para la configuración de Jobs, por ejemplo, en la pestaña [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options).
+- **Contraer variable de lista** aplica a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows) que ofrece la especificación de Variables de Workflow desde varios tipos de datos. Si se usa el tipo de datos *Lista* (array), puede contener una mayor cantidad de entradas. Es posible que los usuarios no quieran ver las variables de lista expandidas de inmediato al editar un Workflow.
 
-### View Type Preferences
+### Preferencias de Tipo de Vista
 
-- **Show View** applies to a number of views that offer the related indicator from the upper-right corner of the window. The setting specifies the view type that will be used by default. Users can change the view type on demand in any view. The *Card* view type requires more space on the screen than the *List* view type. However, some users might prefer visibility from cards.
-- **Show Orders Overview** is similar to the *Show View* setting but applies to the [Orders - Overview](/orders-overview) view. In addition, the view offers the *Bulk* view type that allows transitioning Orders from bulk operations.
+- **Mostrar Vista** aplica a varias vistas que ofrecen el indicador relacionado desde la esquina superior derecha de la ventana. El ajuste especifica el tipo de vista que se usará por defecto. Los usuarios pueden cambiar el tipo de vista bajo demanda en cualquier vista. El tipo de vista *Tarjeta* requiere más espacio en la pantalla que el tipo de vista *Lista*. Sin embargo, algunos usuarios pueden preferir la visibilidad de las tarjetas.
+- **Mostrar Vista General de Órdenes** es similar al ajuste *Mostrar Vista* pero aplica a la vista [Vista General de Órdenes](/orders-overview). Además, la vista ofrece el tipo de vista *Bloque* que permite hacer transiciones de Órdenes desde operaciones en bloque.
 
-### Workflow Layout Preferences
+### Preferencias de Diseño de Workflow
 
-Preferences apply to display of Workflow Instructions with the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view:
+Las preferencias aplican a la visualización de instrucciones de Workflow en la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows):
 
-- **Orientation** offers switching display of Workflows to vertical or horizontal presentation. Working with a wide screen using horizontal *Orientation* brings benefits when designing Workflows with a larger number of Jobs and other Workflow Instructions.
-- **Spacing between Instructions on adjacent layers** offers modifying the spacing between vertical Workflow Instructions.
-- **Spacing between Instructions on the same layer** offers modifying the spacing between horizontal Workflow Instructions.
-- **Round Edges for Connections** will flatten edges on display of Workflow Instructions, for example of Jobs.
+- **Orientación** ofrece cambiar la visualización de Workflows a presentación vertical u horizontal. Trabajar con una pantalla ancha usando *Orientación* horizontal aporta beneficios al diseñar Workflows con un mayor número de Jobs y otras instrucciones de Workflow.
+- **Espaciado entre Instrucciones en capas adyacentes** ofrece modificar el espaciado entre instrucciones de Workflow verticales.
+- **Espaciado entre Instrucciones en la misma capa** ofrece modificar el espaciado entre instrucciones de Workflow horizontales.
+- **Bordes Redondeados para Conexiones** aplanará los bordes en la visualización de instrucciones de Workflow, por ejemplo, de Jobs.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Audit Log](/audit-log)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-  - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
-- [Daily Plan](/daily-plan)
-- [History - File Transfers](/history-file-transfers)
-- [History - Orders](/history-orders)
-- [Order Log View](/order-log)
-- [Order States](/order-states)
-- [Orders - Overview](/orders-overview)
-- [Profile](/profile)
-   - [Profile - Permissions](/profile-permissions)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Resources - Resource Locks](/resources-resource-locks)
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Task Log View](/task-log)
+- [Registro de Auditoría](/audit-log)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+  - [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options)
+  - [Configuración - Inventario - Workflow - Propiedades del Job](/configuration-inventory-workflow-job-properties)
+- [Plan Diario](/daily-plan)
+- [Historial - Transferencias de Archivos](/history-file-transfers)
+- [Historial - Órdenes](/history-orders)
+- [Vista del Log de Orden](/order-log)
+- [Estados de Órdenes](/order-states)
+- [Vista General de Órdenes](/orders-overview)
+- [Perfil](/profile)
+   - [Perfil - Permisos del Perfil](/profile-permissions)
+- [Recursos - Tableros de Avisos](/resources-notice-boards)
+- [Recursos - Recursos de Lock](/resources-resource-locks)
+- [Configuración - Plan Diario](/settings-daily-plan)
+- [Configuración - JOC Cockpit](/settings-joc)
+- [Vista del Log de Tarea](/task-log)
 - [Workflows](/workflows)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

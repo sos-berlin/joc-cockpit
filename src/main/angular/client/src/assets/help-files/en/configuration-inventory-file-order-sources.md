@@ -1,60 +1,60 @@
-# Configuration - Inventory - File Order Sources
+# Configuración - Inventario - Órdenes Disparadas por Archivo
 
-The *File Order Source Panel* offers specifying sources for [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) with Workflows:
+El *Panel de Órdenes Disparada por Archivo* ofrece la especificación de orígenes para la [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) con Workflows:
 
-- A directory is monitored by an Agent for incoming files.
-- For each incoming file an Order is created that represents the file. 
-  - If the file is moved or removed by a Job before completion of the Workflow, then the Order will continue the Workflow and will leave it on completion.
-  - If the file remains in place on completion of the Workflow, then the Order will remain available with the *completed* state. To make the Order leave the Workflow, the incoming file has to be moved or removed.
-- Orders hold the *file* variable that carries the path to the incoming file. The *file* variable must be declared by the Workflow and can be used by Jobs.
+- Un Agente monitorea un directorio en busca de archivos entrantes.
+- Por cada archivo entrante se crea una Orden que representa el archivo.
+  - Si el archivo es movido o eliminado por un Job antes de que el Workflow finalice, la Orden continuará el Workflow y lo abandonará al completarse.
+  - Si el archivo permanece en su lugar al finalizar el Workflow, la Orden quedará disponible con el estado *completado*. Para que la Orden abandone el Workflow, el archivo entrante debe ser movido o eliminado.
+- Las Órdenes contienen la variable *file* que almacena la ruta al archivo entrante. La variable *file* debe ser declarada por el Workflow y puede ser utilizada por los Jobs.
 
-File Order Sources are assigned a Workflow to which they will add an Order per incoming file.
+Las Órdenes Disparadas por Archivo se asignan a un Workflow al que agregarán una Orden por cada archivo entrante.
 
-File Order Sources are managed from the following panels:
+Las Órdenes Disparadas por Archivo se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding File Order Sources. In addition, the panel offers operations on File Order Sources.
-- The *File Order Source Panel* on the right side of the window holds details for File Order Source configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Órdenes Disparadas por Archivo. Además, el panel ofrece operaciones sobre las Órdenes Disparadas por Archivo.
+- El *Panel de Órdenes Disparadas por Archivo* en el lado derecho de la ventana contiene los detalles de configuración de la Orden Disparada por Archivo.
 
-## File Order Source Panel
+## Panel de Órdenes Disparadas por Archivo
 
-For a File Order Source the following inputs are available:
+Para una Orden Disparada por Archivo están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a File Order Source, see [Object Naming Rules](/object-naming-rules).
-- **Title** holds an optional explanation of the File Order Source's purpose.
-- **Tag Name** offers specifying a number of Tags that will be assigned the Orders created for incoming files.
-- **Workflow Name** specifies the name of a Workflow to which Orders will be added for incoming files.
-- **Agent** specifies the Agent that will monitor the incoming directory.  If an Agent Cluster is used, then File Watching is performed by Director Agents for high-availability: in case of switch-over or fail-over, the Standby Director Agent will be assigned the active role of monitoring directories.
-- **Directory** specifies the directory that is watched for incoming files. The Agent's run-time account must be assigned permissions to read and to write (move, remove) incoming files from the *Directory*.
-- **Pattern** specifies a Java [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression) to match the names of the incoming files. Regular Expressions are different from use of wildcards. For example, 
-  - **.\*** matches any file name,
-  - **.\*\\.csv$** matches file names with the extension .csv.
-- **Time Zone** specifies the applicable time zone to assign Orders from incoming files to the related Daily Plan date, see [Daily Plan](/daily-plan). For input, time zone identifiers are accepted such as *UTC*, *Europe/London* etc. For a full list of time zone identifiers see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-- **Delay** specifies the number of seconds the Agent will wait until the incoming file is considered stable.
-  - On Unix files can be written at the same time as the Agent will read them. This does not apply to Windows environments that by default do not allow reading and writing files at the same point in time.
-  - In a first step the Agent will check the file size and modification timestamp. In a second step the Agent will wait for the *Delay* and will repeat the check. If file size and modification timestamp are unchanged, then the Agent will create the Order and otherwise will repeat the second step.
-- **Priority**
-  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
-  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
-    - **Low**: -20000
-    - **Below Normal**: -10000
+- **Nombre** es el identificador único de una Orden Disparada por Archivo, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito de la Orden Disparada por Archivo.
+- **Nombre de Etiqueta** permite especificar un número de Etiquetas que serán asignadas a las Órdenes creadas para los archivos entrantes.
+- **Nombre del Workflow** especifica el nombre del Workflow al que se agregarán Órdenes para los archivos entrantes.
+- **Agente** especifica el Agente que monitoreará el directorio de entrada. Si se utiliza un Clúster de Agentes, la vigilancia de archivos es realizada por los Agentes Directores para alta disponibilidad: en caso de conmutación o conmutación por error, el Agente Director en Espera asumirá el rol activo de monitoreo de directorios.
+- **Directorio** especifica el directorio que se vigila en busca de archivos entrantes. La cuenta de ejecución del Agente debe tener permisos de lectura y escritura (mover, eliminar) sobre los archivos entrantes del *Directorio*.
+- **Patrón** especifica una [Expresión Regular](https://en.wikipedia.org/wiki/Regular_expression) de Java para coincidir con los nombres de los archivos entrantes. Las Expresiones Regulares son diferentes del uso de comodines. Por ejemplo:
+  - **.\*** coincide con cualquier nombre de archivo,
+  - **.\*\\.csv$** coincide con nombres de archivo que tengan la extensión .csv.
+- **Zona Horaria** especifica la zona horaria aplicable para asignar las Órdenes de los archivos entrantes a la fecha del Plan Diario correspondiente, véase [Plan Diario](/daily-plan). Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria véase [Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- **Retraso** especifica el número de segundos que el Agente esperará hasta que el archivo entrante se considere estable.
+  - En Unix los archivos pueden escribirse al mismo tiempo que el Agente los lee. Esto no aplica a entornos Windows que por defecto no permiten leer y escribir archivos al mismo tiempo.
+  - En un primer paso el Agente verificará el tamaño del archivo y la marca de tiempo de modificación. En un segundo paso el Agente esperará el *Retraso* y repetirá la verificación. Si el tamaño del archivo y la marca de tiempo de modificación no han cambiado, el Agente creará la Orden; de lo contrario repetirá el segundo paso.
+- **Prioridad**
+  - Si una Orden encuentra una instrucción de *Recurso de Lock* en el Workflow que limita el paralelismo, su *Prioridad* determina la posición en la cola de Órdenes *en espera*.
+  - Las *Prioridades* se especifican mediante enteros negativos, cero y positivos, o mediante los accesos directos disponibles. Una *Prioridad* más alta tiene precedencia. Los accesos directos ofrecen los siguientes valores:
+    - **Baja**: -20000
+    - **Inferior a lo Normal**: -10000
     - **Normal**: 0
-    - **Above Normal**: 10000
-    - **High**: 20000
+    - **Superior a lo Normal**: 10000
+    - **Alta**: 20000
 
-### Operations on File Order Sources
+### Operaciones sobre Órdenes Disparadas por Archivo
 
-For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones disponibles véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Daily Plan](/daily-plan)
-- [Object Naming Rules](/object-naming-rules)
-- [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression)
+- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
+- [Plan Diario](/daily-plan)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
+- [Expresión Regular](https://en.wikipedia.org/wiki/Regular_expression)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching)
-- [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+- [Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)

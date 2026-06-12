@@ -1,37 +1,37 @@
-# Identity Service - Blocklist
+# Servicio de Identidad - Lista de Bloqueo
 
-Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
+Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
 
-Administrative user accounts can add accounts from any Identity Service to a blocklist:
+Las cuentas de usuario administrativas pueden añadir cuentas de cualquier Servicio de Identidad a una lista de bloqueo:
 
-- Blocked accounts are denied access to JOC Cockpit, they are not blocked with the Identity Service Provider such as LDAP, OIDC etc.
-- Blocked accounts remain in the blocklist until they will be removed from the list.
+- Las cuentas bloqueadas tienen denegado el acceso a JOC Cockpit; no están bloqueadas con el Proveedor del Servicio de Identidad como LDAP, OIDC, etc.
+- Las cuentas bloqueadas permanecen en la lista de bloqueo hasta que sean eliminadas de la lista.
 
-## Adding Accounts to the Blocklist
+## Agregar Cuentas a la Lista de Bloqueo
 
-The *Blocklist* sub-view offers adding accounts to the blocklist from the related button in the upper-right corner of the view.
+La sub-vista *Lista de Bloqueo* ofrece agregar cuentas a la lista de bloqueo desde el botón correspondiente en la esquina superior derecha de la vista.
 
-User accounts can be added to the blocklist from the following sub-views:
+Las cuentas de usuario pueden agregarse a la lista de bloqueo desde las siguientes sub-vistas:
 
-- [Audit Log - Failed Logins](/identity-service-faíled-logins): if accounts are identified raising frequently failed logins then this can indicate an attack. Such accounts can be added to the blocklist.
-- [Identity Service - Active Sessions](/identity-service-active-sessions): if accounts in active sessions are identified being unwanted, then they can be added to the blocklist.
+- [Registro de Auditoría - Inicios de Sesión Fallidos](/identity-service-faíled-logins): si se identifica que cuentas generan inicios de sesión fallidos con frecuencia, esto puede indicar un ataque. Dichas cuentas pueden ser añadidas a la lista de bloqueo.
+- [Servicio de Identidad - Sesiones Activas](/identity-service-active-sessions): si se identifica que las cuentas en sesiones activas son no deseadas, pueden ser añadidas a la lista de bloqueo.
 
-Both sub-views offer adding single accounts to the blocklist and adding selected accounts from a bulk operation.
+Ambas sub-vistas ofrecen la posibilidad de agregar cuentas individuales a la lista de bloqueo y de agregar cuentas seleccionadas mediante una operación masiva.
 
-### Removing Accounts from the Blocklist
+### Eliminar Cuentas de la Lista de Bloqueo
 
-In the *Blocklist* sub-view per account displayed the action menu item is offered to *Remove from Blocklist*.
+En la sub-vista *Lista de Bloqueo*, por cada cuenta mostrada se ofrece el elemento de menú de acción *Eliminar de la Lista de Bloqueo*.
 
-A bulk operation is offered from using the *Remove from Blocklist* button in the upper-right corner of the sub-view for selected accounts.
+Se ofrece una operación masiva usando el botón *Eliminar de la Lista de Bloqueo* en la esquina superior derecha de la sub-vista para las cuentas seleccionadas.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Audit Log - Failed Logins](/identity-service-faíled-logins)
-- [Identity Service - Active Sessions](/identity-service-active-sessions)
-- [Identity Services](/identity-services)
+- [Registro de Auditoría - Inicios de Sesión Fallidos](/identity-service-faíled-logins)
+- [Servicio de Identidad - Sesiones Activas](/identity-service-active-sessions)
+- [Servicios de Identidad](/identity-services)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

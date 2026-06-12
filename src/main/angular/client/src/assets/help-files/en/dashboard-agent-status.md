@@ -1,38 +1,38 @@
-# Dashboard - Agent Status
+# Dashboard - Estado de Agentes
 
-The *Agent Status* panel summarizes the connection status of registered Agents.
+El panel *Estado de Agentes* resume el estado de conexión de los Agentes registrados.
 
-<img src="dashboard-agent-status.png" alt="Agent Status" width="332" height="135" />
+<img src="dashboard-agent-status.png" alt="Estado de Agentes" width="332" height="135" />
 
-## Architecture
+## Arquitectura
 
-### Agents
+### Agentes
 
-- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
-- **Agent Cluster**
-  - **Director Agents** orchestrate *Subagents* in an Agent Cluster. They are operated from two instances in active-passive clustering and are managed by the Controller.
-  - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.
+- **Agentes Autónomos**: ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Operan de forma individual y son gestionados por el Controlador.
+- **Clúster de Agentes**
+  - **Agentes Director**: orquestan los *Subagentes* en un Clúster de Agentes. Operan en dos instancias en modo activo-pasivo y son gestionados por el Controlador.
+  - **Subagentes**: ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Pueden considerarse nodos de trabajo en un Clúster de Agentes y son gestionados por los *Agentes Director*.
 
-### Connections
+### Conexiones
 
-- **Standalone Agent**, **Director Agent** connections are established by the Controller. 
-- **Subagent** connections in an Agent Cluster are established by *Director Agents*.
+- Las conexiones de los **Agentes Autónomos** y los **Agentes Director** son establecidas por el Controlador.
+- Las conexiones de los **Subagentes** en un Clúster de Agentes son establecidas por los *Agentes Director*.
 
-## Connection Status
+## Estado de Conexión
 
-Agent status display makes use of the following color indicators:
+El estado de los Agentes se indica mediante los siguientes colores:
 
-- **Green Color** indicates healthy Agent connections.
-- **Yellow Color** indicates Agents that are currently resetting, this means they are initializing their journal and are restarting.
-- **Red Color** indicates failed connections to Agent's if the Agent cannot be reached.
-- **Grey Color** indicates an *unknown* connection status, for example if a Director Agent cannot be reached, then for Subagents the status is *unknown*.
+- **Color Verde**: indica conexiones saludables de Agentes.
+- **Color Amarillo**: indica Agentes que están reiniciando, es decir, están inicializando su journal y reiniciando.
+- **Color Rojo**: indica conexiones fallidas a Agentes que no pueden ser alcanzados.
+- **Color Gris**: indica un estado de conexión *desconocido*, por ejemplo, si un Agente Director no puede ser alcanzado, el estado de sus Subagentes será *desconocido*.
 
-Users should consider the following implications:
+Los usuarios deben considerar las siguientes implicancias:
 
-- If an Agent connection is considered failed, then this does not confirm that the Agent is down. There can be network issues that prevent the connection.
-- The JOC Cockpit receives information about the Agent connection status from the Controller. If the Controller is not available then this information is not present. This does not mean that Agents are down, but it means that Agents will be indicated from an *unknown* status.
-- The Controller reports connections to *Standalone Agents* and to *Director Agents*. Failed connections to *Director Agents* suggest that the Controller does not know the status of *Subagents* in the Agent Cluster that is accordingly indicated being *unknown*.
+- Si una conexión a un Agente se considera fallida, eso no confirma que el Agente esté caído. Pueden existir problemas de red que impidan la conexión.
+- El JOC Cockpit recibe información sobre el estado de conexión de los Agentes desde el Controlador. Si el Controlador no está disponible, esta información no estará presente. Esto no significa que los Agentes estén caídos, sino que serán indicados con estado *desconocido*.
+- El Controlador reporta las conexiones hacia los *Agentes Autónomos* y los *Agentes Director*. Las conexiones fallidas a *Agentes Director* sugieren que el Controlador desconoce el estado de los *Subagentes* del Clúster de Agentes correspondiente, los cuales se muestran con estado *desconocido*.
 
-## References
+## Referencias
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)

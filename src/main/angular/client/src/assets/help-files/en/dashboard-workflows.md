@@ -1,21 +1,21 @@
 # Workflows
 
-The *Workflows* panel provides information about the status of Workflows.
+El panel *Workflows* proporciona información sobre el estado de los Workflows.
 
 <img src="dashboard-workflows.png" alt="Workflows" width="330" height="80" />
 
-## Workflow Status
+## Estado de los Workflows
 
-Workflows are displayed from the following status:
+Los Workflows se muestran con los siguientes estados:
 
-- **Synchronized** Workflows are deployed and are available with the Controller and Agents.
-- **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory only.
-- **Suspended** Workflows are frozen, they accept Orders but will not allow Orders starting until Workflows will be resumed.
-- **Outstanding** Workflows wait for confirmation by one or more Agents that the Workflow is suspended.
+- Los Workflows **Sincronizados** están desplegados y disponibles en el Controlador y los Agentes.
+- Los Workflows **No Sincronizados** no están desplegados en el Controlador ni en los Agentes, sino que están disponibles únicamente desde el inventario.
+- Los Workflows **Suspendidos** están congelados: aceptan Órdenes pero no permitirán que las Órdenes comiencen hasta que los Workflows sean reanudados.
+- Los Workflows **Pendientes** esperan la confirmación de uno o más Agentes de que el Workflow está suspendido.
 
-Clicking the indicated number of Workflows navigates to the *Workflows* view that displays Workflows using the related filter.
+Al hacer clic en la cantidad indicada de Workflows, se navega a la vista *Workflows* que muestra los Workflows con el filtro correspondiente.
 
-## References
+## Referencias
 
 - [Workflows](/workflows)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

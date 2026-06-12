@@ -1,76 +1,76 @@
-# Submission History
+# Historial de Envíos
 
-The *Submission History* keeps track of Orders submitted from the [Daily Plan](/daily-plan).
+El *Historial de Envíos* registra las Órdenes enviadas desde el [Plan Diario](/daily-plan).
 
-Orders are created by the Daily Plan in two steps: first they are *planned*, next they are *submitted* to Controller and Agents. Submission includes that Orders will start autonomously with Agents.
+Las Órdenes son creadas por el Plan Diario en dos pasos: primero son *planificadas*, luego son *enviadas* al Controlador y a los Agentes. El envío implica que las Órdenes se iniciarán de forma autónoma con los Agentes.
 
-The *Submission History* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
+El *Historial de Envíos* está sujeto a la depuración de la base de datos realizada por el [Servicio de Limpieza](/service-cleanup).
 
-## History Panel
+## Panel de Historial
 
-Display is grouped in blocks per Daily Plan date, per Submission and Orders included.
+La visualización se agrupa en bloques por fecha del Plan Diario, por Envío y por las Órdenes incluidas.
 
-Display is limited to a maximum of 5000 entries if not otherwise specified from [Profile - Preferences](/profile-preferences).
+La visualización está limitada a un máximo de 5000 entradas salvo que se especifique lo contrario desde [Perfil - Preferencias](/profile-preferences).
 
-### History of Daily Plan
+### Historial del Plan Diario
 
-The following information is displayed per Daily Plan date.
+Se muestra la siguiente información por fecha del Plan Diario:
 
-- **Daily Plan Date** indicates the day for which Orders are scheduled.
-- **Total Count** indicates the number of Orders subject to all Submissions for the given date.
-- **Submission Count** indicates the number of successfully submitted Orders.
-  - If the number corresponds to the *Total Count*, then all Orders are successfully submitted.
-  - If the number is above zero but below the *Total Count* then
-    - the setting to submit Orders individually is in place, see [Settings - Daily Plan](/settings-daily-plan) and
-    - a number of Orders could not be submitted.
-  - If the number is zero, then this indicates
-    - the setting to submit Orders individually not being in place, see [Settings - Daily Plan](/settings-daily-plan), and/or
-    - failure to submit all Orders.
+- **Fecha del Plan Diario** indica el día para el que están programadas las Órdenes.
+- **Total** indica la cantidad de Órdenes sujetas a todos los Envíos para la fecha indicada.
+- **Cantidad de Envíos** indica la cantidad de Órdenes enviadas exitosamente.
+  - Si la cantidad corresponde al *Total*, entonces todas las Órdenes fueron enviadas exitosamente.
+  - Si la cantidad es mayor que cero pero menor que el *Total*, entonces
+    - la configuración para enviar Órdenes individualmente está vigente, consulte [Configuración - Plan Diario](/settings-daily-plan), y
+    - un número de Órdenes no pudo ser enviado.
+  - Si la cantidad es cero, esto indica
+    - que la configuración para enviar Órdenes individualmente no está vigente, consulte [Configuración - Plan Diario](/settings-daily-plan), y/o
+    - que falló el envío de todas las Órdenes.
 
-### History of Submissions
+### Historial de Envíos
 
-There can be any number of Submissions for a given Daily Plan date. When users deploy changes to inventory objects such as Workflows and Schedules, and choose the option to update the Daily Plan, then a Submission is added for the given objects.
+Puede haber cualquier número de Envíos para una fecha determinada del Plan Diario. Cuando los usuarios despliegan cambios en los objetos del inventario, como Workflows y Planificaciones, y eligen la opción de actualizar el Plan Diario, se agrega un Envío para los objetos indicados.
 
-When clicking the arrow-down icon from the *Daily Plan Date*, details per Submission will be displayed:
+Al hacer clic en el icono de flecha hacia abajo desde la *Fecha del Plan Diario*, se mostrarán los detalles por Envío:
 
-- **Total Submission Count** indicates the number of Orders subject to the given Submissions.
-- **Submission Count** indicates the number of Orders successfully submitted in scope of the given Submission.
-  - If the number corresponds to the *Total Submission Count*, then all Orders are successfully submitted.
-  - If the number is zero or above zero, then previous explanations about Submissions per Daily Plan date apply.
+- **Total del Envío** indica la cantidad de Órdenes sujetas al Envío indicado.
+- **Cantidad de Envíos** indica la cantidad de Órdenes enviadas exitosamente en el ámbito del Envío indicado.
+  - Si la cantidad corresponde al *Total del Envío*, entonces todas las Órdenes fueron enviadas exitosamente.
+  - Si la cantidad es cero o mayor que cero, se aplican las explicaciones anteriores sobre los Envíos por fecha del Plan Diario.
 
-### History of Submissions per Order
+### Historial de Envíos por Orden
 
-When clicking the arrow-down icon from the *Submission Date*, details per Order will be displayed:
+Al hacer clic en el icono de flecha hacia abajo desde la *Fecha de Envío*, se mostrarán los detalles por Orden:
 
-- **Message** can indicate an error message in case of failed Submission.
-- **Order ID** is the unique identifier assigned an Order.
-- **Workflow** indicates the Workflow passed by the Order.
-  - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Scheduled For** indicates the date and time for which the Order is expected to start.
-- **Status** is one of *Submitted* or *Not Submitted*.
-  - *Submitted* indicates that the Order is available with an Agent.
-  - *Not Submitted* indicates a failed Submission.
+- **Mensaje** puede indicar un mensaje de error en caso de Envío fallido.
+- **ID de Orden** es el identificador único asignado a una Orden.
+- **Workflow** indica el Workflow por el que pasó la Orden.
+  - Al hacer clic en el nombre del Workflow se navega a la vista [Workflows](/workflows).
+  - Al hacer clic en el icono del lápiz se navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- **Programado Para** indica la fecha y hora para la que se espera que comience la Orden.
+- **Estado** es uno de *Enviado* o *No Enviado*.
+  - *Enviado* indica que la Orden está disponible con un Agente.
+  - *No Enviado* indica un Envío fallido.
 
-## Filters
+## Filtros
 
-User's can apply filters available on top of the window to limit display of Daily Plan dates and of Submissions.
+Los usuarios pueden aplicar los filtros disponibles en la parte superior de la ventana para limitar la visualización de fechas del Plan Diario y de Envíos.
 
-- **Submitted**, **Not Submitted** filter buttons limit display to Submissions holding the related status.
-- **Date Range** filter buttons offer choosing the date range for display of Submissions.
-- **Current Controller** checkbox limits Submissions to the currently selected Controller.
+- Los botones de filtro **Enviado**, **No Enviado** limitan la visualización a los Envíos con el estado correspondiente.
+- Los botones de filtro **Rango de Fechas** ofrecen la posibilidad de elegir el rango de fechas para la visualización de Envíos.
+- La casilla de verificación **Controlador Actual** limita los Envíos al Controlador seleccionado actualmente.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Servicio de Limpieza](/service-cleanup)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Plan Diario](/daily-plan)
+- [Perfil - Preferencias](/profile-preferences)
+- [Configuración - Plan Diario](/settings-daily-plan)
 - [Workflows](/workflows)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

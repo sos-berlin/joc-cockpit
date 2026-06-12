@@ -1,56 +1,56 @@
-# Manage Controller and Agents
+# Gestionar Controladores y Agentes
 
-The *Manage Controller/Agents* page is used 
+La página *Gestionar Controladores/Agentes* se utiliza
 
-- to register Standalone Controllers and Controller Clusters,
-- to register Standalone Agents with Controllers,
-- to register Cluster Agents with Controllers,
-  - specifying a Cluster of *Director Agents*
-  - specifying any number of *Subagents* that act as worker nodes.
-  - specifying any number of *Subagent Clusters* that rule use of Agents and that can be assigned Jobs in Workflows.
+- para registrar Controladores Autónomos y Clústeres de Controladores,
+- para registrar Agentes Autónomos con Controladores,
+- para registrar Clústeres de Agentes con Controladores,
+  - especificando un Clúster de *Agentes Directores*
+  - especificando cualquier número de *Subagentes* que actúan como nodos trabajadores.
+  - especificando cualquier número de *Clústeres de Subagentes* que gobiernan el uso de Agentes y que pueden asignarse a Jobs en Workflows.
 
-Operation of a Controller Cluster or Agent Cluster is subject to the agreements of the [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
+El uso de un Clúster de Controladores o Clúster de Agentes está sujeto a los acuerdos de la [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
-## Register Controller
+## Registrar Controlador
 
-The operation to register a Controller is available from the *New Controller* button. During initial operation when JOC Cockpit is used for the first time, the pop-up window to register a Controller is automatically displayed.
+La operación para registrar un Controlador está disponible desde el botón *Nuevo Controlador*. Durante la Operación Inicial, cuando JOC Cockpit se usa por primera vez, la ventana emergente para registrar un Controlador se muestra automáticamente.
 
-For explanations see [Initial Operation - Register Controller](/initial-operation-register-controller).
+Para más explicaciones, consulte [Operación Inicial - Registrar Controlador](/initial-operation-register-controller).
 
-## Operations on Controllers
+## Operaciones sobre Controladores
 
-For an existing Controller the following operations are offered from its 3-dots action menu:
+Para un Controlador existente, las siguientes operaciones se ofrecen desde su menú de acción de 3 puntos:
 
-- **Edit** allows modifying a Controller's properties including the URLs of Controller instances.
-- **Add Standalone Agent** offers registering an autonomous Agent.
-  - For explanations see [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
-- **Add Cluster Agent** offers registering a Cluster of Agents. 
-  - The operation includes specifying *Director Agents* and *Subagents*.
-  - For explanations see [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
-- **Create one-time token** 
-- **Export Agent Configuration** offers for download an export file in JSON format holding Agent configurations of the selected Controller.
-- **Import Agent Configuration** offers uploading an export file in JSON format holding previously exported Agent configurations. Related Agents will be registered with the Controller.
-- **Delete** allows deleting the Controller configuration including all Agent configurations. This will not wipe the Controller and Agents from disk but drops the configuration in JOC Cockpit.
+- **Editar** permite modificar las propiedades de un Controlador, incluidas las URLs de las instancias del Controlador.
+- **Agregar Agente Autónomo** ofrece registrar un Agente autónomo.
+  - Para más explicaciones, consulte [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone).
+- **Agregar Clúster de Agentes** ofrece registrar un Clúster de Agentes.
+  - La operación incluye especificar *Agentes Directores* y *Subagentes*.
+  - Para más explicaciones, consulte [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
+- **Crear Token de un solo uso**
+- **Exportar Configuración de Agentes** ofrece para descarga un archivo de exportación en formato JSON con las configuraciones de Agentes del Controlador seleccionado.
+- **Importar Configuración de Agentes** ofrece cargar un archivo de exportación en formato JSON con configuraciones de Agentes previamente exportadas. Los Agentes relacionados serán registrados con el Controlador.
+- **Eliminar** permite eliminar la configuración del Controlador, incluidas todas las configuraciones de Agentes. Esto no eliminará el Controlador y los Agentes del disco, sino que descarta la configuración en JOC Cockpit.
 
-## Filters
+## Filtros
 
-The following filter buttons for Agents are available from the top of the screen:
+Los siguientes botones de filtro para Agentes están disponibles en la parte superior de la pantalla:
 
-- **All Agents** displays all Agent configurations independently from their deployment status.
-- **Synchronized** displays Agent configurations that have been deployed to a Controller.
-- **Not Synchronized** displays Agent configurations for which changes have not been deployed to a Controller.
-- **Not Deployed** displays Agent configurations that have not been initially deployed to a Controller.
-- **Unknown** displays Agent configurations in an unknown status, for example after a Controller is reinitialised. Users should deploy the Agent configuration.
+- **Todos los Agentes** muestra todas las configuraciones de Agentes independientemente de su estado de despliegue.
+- **Sincronizados** muestra las configuraciones de Agentes que han sido desplegadas a un Controlador.
+- **No Sincronizados** muestra las configuraciones de Agentes cuyos cambios no han sido desplegados a un Controlador.
+- **No Desplegados** muestra las configuraciones de Agentes que no han sido inicialmente desplegadas a un Controlador.
+- **Desconocido** muestra las configuraciones de Agentes en estado desconocido, por ejemplo, después de que un Controlador es reinicializado. Los usuarios deben desplegar la configuración del Agente.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster)
-- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
+- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
+- [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone)
+- [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - How to troubleshoot Controller Cluster Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Controller+Cluster+Initial+Operation)
 - [JS7 - Initial Operation for Controller Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Initial+Operation+for+Controller+Cluster)

@@ -1,66 +1,66 @@
-# Configuration - Inventory - Reports
+# Configuración - Inventario - Reportes
 
-The *Report Panel* offers specifying Reports about execution of Workflows and Jobs:
+El *Panel de Reportes* permite especificar Reportes sobre la ejecución de Workflows y Jobs:
 
-- Report configurations are managed from the inventory available with the JOC Cockpit *Configuration* view. They include specifying:
-  - **Report Template** indicating the report type, for example reporting the top 10 failed workflows, the top 100 failed jobs etc. For the full list see [Report Templates](/report-templates).
-  - **Report Period** is a date range for which items are reported. Date ranges can be absolute or relative, for example last 2 months, last quarter, last year.
-  - **Report Frequency** divides the *Report Period* into equal units of time, for example by week or month.
-- Report runs and visualization of Reports are available from JOC Cockpit's *Reports* view.
+- Las configuraciones de Reportes se gestionan desde el inventario disponible en la vista *Configuración* de JOC Cockpit. Incluyen la especificación de:
+  - **Plantilla de Reporte** que indica el tipo de reporte, por ejemplo los 10 workflows con más fallos, los 100 jobs con más fallos, etc. Para la lista completa ver [Plantillas de Reporte](/report-templates).
+  - **Período del Reporte** es un rango de fechas para el cual se reportan los elementos. Los rangos de fechas pueden ser absolutos o relativos, por ejemplo los últimos 2 meses, el último trimestre, el último año.
+  - **Frecuencia del Reporte** divide el *Período del Reporte* en unidades de tiempo iguales, por ejemplo por semana o por mes.
+- La ejecución de Reportes y la visualización de Reportes están disponibles en la vista *Reportes* de JOC Cockpit.
 
-Reports are managed from the following panels:
+Los Reportes se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Reports. In addition, the panel offers operations on Reports.
-- The *Report Panel* on the right side of the window holds details for Report configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Reportes. Además, el panel ofrece operaciones sobre Reportes.
+- El *Panel de Reportes* en el lado derecho de la ventana contiene los detalles de configuración del Reporte.
 
-## Report Panel
+## Panel de Reportes
 
-For a Report the following inputs are available:
+Para un Reporte están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Report, see [Object Naming Rules](/object-naming-rules).
-- **Title** explains the purpose of the Report. 
-- **Report Template** specifies the [Report Template](/report-templates) in use.
-- **Report Period** specifies the date range which is one of:
-  - **from .. to**
-    - *Month From*, *Month To* specifies the number of past months from which the *Report Period* will start and by which it will end, for example from *1m*  to *1m* for the last month.
-  - **calculated**
-    - *Unit* is one of *Year*, *Month*, *Quarter*
-    - *From* specifies the number of past units from which the *Report Period* will start, for example *3 Months* ago.
-    - *Count* specifies the number of past units by which the *Report Period* will end.
-  - **preset** offers selecting from a number of predefined date ranges such as *Last Month*, *This Quarter*, *Last Quarter*, *This Year*, *Last Year*
-- **Sort**
-  - **Highest**: The Report will return the top n highest values.
-  - **Lowest**: The Report will return the top n lowest values.
-- **Report Frequency** specifies the *Report Period's* division into equal units of time:
-  - *weekly*
-  - *every 2 weeks*
-  - *monthly*
-  - *every 3 months*
-  - *every 6 months*
-  - *yearly*
+- **Nombre** es el identificador único de un Reporte, ver [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** explica el propósito del Reporte.
+- **Plantilla de Reporte** especifica la [Plantilla de Reporte](/report-templates) en uso.
+- **Período del Reporte** especifica el rango de fechas, que puede ser uno de:
+  - **desde .. hasta**
+    - *Mes Desde*, *Mes Hasta* especifica el número de meses pasados desde el cual comenzará y terminará el *Período del Reporte*, por ejemplo desde *1m* hasta *1m* para el último mes.
+  - **calculado**
+    - *Unidad* es uno de *Año*, *Mes*, *Trimestre*
+    - *Desde* especifica el número de unidades pasadas desde el cual comenzará el *Período del Reporte*, por ejemplo *3 Meses* atrás.
+    - *Cantidad* especifica el número de unidades pasadas hasta el cual terminará el *Período del Reporte*.
+  - **predefinido** ofrece la selección de un conjunto de rangos de fechas predefinidos como *Último Mes*, *Este Trimestre*, *Último Trimestre*, *Este Año*, *Último Año*
+- **Ordenar**
+  - **Mayor**: El Reporte devolverá los n valores más altos.
+  - **Menor**: El Reporte devolverá los n valores más bajos.
+- **Frecuencia del Reporte** especifica la división del *Período del Reporte* en unidades de tiempo iguales:
+  - *semanal*
+  - *cada 2 semanas*
+  - *mensual*
+  - *cada 3 meses*
+  - *cada 6 meses*
+  - *anual*
 
-## Operations on Reports
+## Operaciones sobre Reportes
 
-For general operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para operaciones generales ver [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation).
 
-Operations on Reports are available from the following views:
+Las operaciones sobre Reportes están disponibles desde las siguientes vistas:
 
-- Reports are created from the [Report - Creation](/report-creation) view.
-- Report runs are available from [Report - Run History](/report-run-history) view.
-- Reports are visualized from the [Reports](/reports) view.
+- Los Reportes se crean desde la vista [Reporte - Creación](/report-creation).
+- Las ejecuciones de Reportes están disponibles desde la vista [Reporte - Historial de Ejecución](/report-run-history).
+- Los Reportes se visualizan desde la vista [Reportes](/reports).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Object Naming Rules](/object-naming-rules)
-- [Reports](/reports)
-- [Report - Creation](/report-creation)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
+- [Reportes](/reports)
+- [Reporte - Creación](/report-creation)
+- [Reporte - Historial de Ejecución](/report-run-history)
+- [Plantillas de Reporte](/report-templates)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)

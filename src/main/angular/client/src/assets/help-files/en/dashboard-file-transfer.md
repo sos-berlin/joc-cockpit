@@ -1,28 +1,28 @@
-# Dashboard - File Transfer
+# Dashboard - Transferencia de Archivos
 
-The *File Transfer* panel provides the summary of past transfers using the YADE Managed File Transfer.
+El panel *Transferencia de Archivos* proporciona el resumen de las transferencias pasadas mediante la Transferencia Gestionada de Archivos YADE.
 
-<img src="dashboard-file-transfer.png" alt="File Transfer" width="320" height="90" />
+<img src="dashboard-file-transfer.png" alt="Transferencia de Archivos" width="320" height="90" />
 
-## File Transfer History
+## Historial de Transferencia de Archivos
 
-The history summary counts successful and failed transfers.
+El resumen del historial contabiliza las transferencias exitosas y fallidas.
 
-- **Successful** transfers include successful jobs and failed jobs that recovered for example by retrying.
-- **Failed** transfers indicate jobs that failed permanently.
+- Las transferencias **Exitosas** incluyen Jobs exitosos y Jobs fallidos que se recuperaron, por ejemplo, mediante reintentos.
+- Las transferencias **Fallidas** indican Jobs que fallaron de forma permanente.
 
-Clicking the indicated number navigates to the *File Transfer History* view that displays transfers in detail.
+Al hacer clic en la cantidad indicada, se navega a la vista *Historial de Transferencia de Archivos* que muestra las transferencias en detalle.
 
-## Filters
+## Filtros
 
-The drop-down button in the upper-right corner of the panel offers selecting past transfer jobs from a date range:
+El botón desplegable en la esquina superior derecha del panel permite seleccionar Jobs de transferencia pasados de un rango de fechas:
 
-- **Today** Jobs are related to the current day which is calculated from the time zone in the user's profile.
-- **Last Hour** includes Jobs that completed during the last hour.
-- **Last 12 Hours** includes Jobs that completed during the last 12 hours.
-- **Last 24 Hours** includes Jobs that completed during the last 24 hours.
-- **Last 7 Days** includes Jobs that completed during the last 7 days.
+- **Hoy**: los Jobs corresponden al día actual, calculado a partir de la zona horaria del perfil del usuario.
+- **Última Hora**: incluye Jobs completados durante la última hora.
+- **Últimas 12 Horas**: incluye Jobs completados durante las últimas 12 horas.
+- **Últimas 24 Horas**: incluye Jobs completados durante las últimas 24 horas.
+- **Últimos 7 Días**: incluye Jobs completados durante los últimos 7 días.
 
-## References
+## Referencias
 
 - [JS7 - File Transfer](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Transfer)

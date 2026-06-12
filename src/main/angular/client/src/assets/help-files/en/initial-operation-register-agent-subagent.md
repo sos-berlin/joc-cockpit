@@ -1,49 +1,49 @@
-# Initial Operation - Register Subagent
+# Operación Inicial - Registrar Subagente
 
-Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit. Subagent registration occurs after [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster) is completed.
+La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit. El registro del Subagente ocurre después de completar la [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
 
-## Architecture
+## Arquitectura
 
-### Agents
+### Agentes
 
-- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
-- **Agent Cluster**
-  - **Director Agents** orchestrate *Subagents* in an Agent Cluster. They are operated from two instances in active-passive clustering and are managed by the Controller.
-  - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.
+- Los **Agentes Autónomos** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Se operan individualmente y son gestionados por el Controlador.
+- **Clúster de Agentes**
+  - Los **Agentes Directores** orquestan los *Subagentes* en un Clúster de Agentes. Se operan desde dos instancias en clúster activo-pasivo y son gestionados por el Controlador.
+  - Los **Subagentes** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Pueden considerarse nodos trabajadores en un Clúster de Agentes y son gestionados por los *Agentes Directores*.
 
-### Connections
+### Conexiones
 
-- **Standalone Agent**, **Director Agent** connections are established by the Controller. 
-- **Subagent** connections in an Agent Cluster are established by *Director Agents*.
+- Las conexiones del **Agente Autónomo** y del **Agente Director** son establecidas por el Controlador.
+- Las conexiones de **Subagente** en un Clúster de Agentes son establecidas por los *Agentes Directores*.
 
-## Register Subagent
+## Registrar Subagente
 
-Users should verify that network connections from the Director Agents' servers to the Subagent's server are available and that firewall rules allow connections to the Subagent's port.
+Los usuarios deben verificar que las conexiones de red desde los servidores de los Agentes Directores al servidor del Subagente estén disponibles y que las reglas de firewall permitan conexiones al puerto del Subagente.
 
-The *Manage Controllers/Agents* page is available from the wheel icon in the main menu bar and offers the *Add Subagent* operation from the Agent Cluster's action menu. This brings up the pop-up window for registration of a Subagent.
+La página *Gestionar Controladores/Agentes* está disponible desde el icono de rueda dentada en la barra de menú principal y ofrece la operación *Agregar Subagente* desde el menú de acción del Clúster de Agentes. Esto abre la ventana emergente para el registro de un Subagente.
 
-Users provide the following inputs:
+Los usuarios proporcionan los siguientes datos:
 
-- **Subagent ID** is the unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
-  - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
-- **Title** is a description that can be added for a Subagent.
-- **URL** expects the URL from protocol, host and port used by Director Agents to connect to the Subagent, for example http://localhost:4445.
-  - The URL starts from the *http* protocol if the Subagent makes use of plain HTTP. The *https* protocol is used, if the Subagent is configured for HTTPS.
-  - The hostname can be *localhost* if the Subagent is installed on the same machine as the Director Agents. Otherwise the FQDN of the Subagent's host should be specified.
-  - The Subagent's *port* is determined during installation. 
-  - **As own Subagent Cluster** optionally creates a Subagent Cluster for the Subagent, see [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster).
+- **Subagent ID** es el identificador único de un Subagente que no puede modificarse durante la vida útil del Subagente. El *Subagent ID* no es visible en Jobs y Workflows.
+  - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
+- **Título** es una descripción que puede agregarse para un Subagente.
+- **URL** espera la URL compuesta por protocolo, host y puerto que usan los Agentes Directores para conectarse al Subagente, por ejemplo http://localhost:4445.
+  - La URL comienza con el protocolo *http* si el Subagente usa HTTP simple. Se usa el protocolo *https* si el Subagente está configurado para HTTPS.
+  - El nombre de host puede ser *localhost* si el Subagente está instalado en la misma máquina que los Agentes Directores. De lo contrario, se debe especificar el FQDN del host del Subagente.
+  - El *puerto* del Subagente se determina durante la instalación.
+  - **Como Clúster de Subagentes propio** crea opcionalmente un Clúster de Subagentes para el Subagente; consulte [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster).
 
-After successful registration the Subagent will be displayed from the [Resources - Agents](/resources-agents) view.
+Tras el registro exitoso, el Subagente se mostrará en la vista [Recursos - Agentes](/resources-agents).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
-- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)
+- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
+- [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
+- [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
 - [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)

@@ -1,32 +1,32 @@
-# Configuration - Inventory - Workflow - Job Tags
+# Configuración - Inventario - Workflow - Etiquetas de Job
 
-The *Workflow* panel offers designing Workflows from a sequence of instructions. Users can drag & drop the *Job Instruction* from the *Toolbar* to a position in the Workflow.
+El panel *Workflow* ofrece el diseño de Workflows a partir de una secuencia de instrucciones. Los usuarios pueden arrastrar y soltar la *Instrucción de Job* desde la *Barra de Herramientas* a una posición en el Workflow.
 
-The GUI offers a number of tabs for specifying Job details. The third tab is offered for *Job Tags*.
+La interfaz gráfica ofrece una serie de pestañas para especificar los detalles del Job. La tercera pestaña corresponde a las *Etiquetas de Job*.
 
-## Tags
+## Etiquetas
 
-A Job can be added any number of Tags. They are displayed with the [Workflows](/workflows) view and are optionally included with Notifications. For details see [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
+A un Job se le puede agregar cualquier número de Etiquetas. Se muestran en la vista [Workflows](/workflows) y se incluyen opcionalmente en las Notificaciones. Para más detalles, consulte [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
 
-- **Tags** allows adding or deleting Tags. They can be selected from the list of existing Tags. Typing a Tag name will create the Tag.
+- **Tags** permite agregar o eliminar Etiquetas. Pueden seleccionarse de la lista de Etiquetas existentes. Escribir el nombre de una Etiqueta la creará.
 
-## Tag Groups
+## Grupos de Etiquetas
 
-Tag Groups can be used to organize Tags that should share a common group. For example, a Job should be assigned one of the ticket priorities P1, P2, P3, P4 depending on the Job's criticality. Users can enter the Tag Group and Tag separated by colon as in *TicketPriority:P1*, *TicketPriority:P2* etc. The ticket priority of a Job becomes available when Notifications are created in case of failure and can be used to feed a ticket system.
+Los Grupos de Etiquetas pueden usarse para organizar Etiquetas que deben compartir un grupo común. Por ejemplo, a un Job se le debería asignar una de las prioridades de ticket P1, P2, P3, P4 según la criticidad del Job. Los usuarios pueden ingresar el Grupo de Etiquetas y la Etiqueta separados por dos puntos, como en *TicketPriority:P1*, *TicketPriority:P2*, etc. La prioridad de ticket de un Job queda disponible cuando se crean Notificaciones en caso de fallo y puede usarse para alimentar un sistema de tickets.
 
-- **Tag-Group:Tag** allows adding or deleting the related Tag in the Tag Group specified. The Tag Group will be created if it does not exist.
+- **Tag-Group:Tag** permite agregar o eliminar la Etiqueta relacionada en el Grupo de Etiquetas especificado. El Grupo de Etiquetas se creará si no existe.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
-  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
-  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+  - [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflows-job-options)
+  - [Configuración - Inventario - Workflows - Propiedades de Job](/configuration-inventory-workflows-job-properties)
+  - [Configuración - Inventario - Workflows - Propiedades de Nodo de Job](/configuration-inventory-workflows-job-node-properties)
+  - [Configuración - Inventario - Workflows - Notificaciones de Job](/configuration-inventory-workflows-job-notifications)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
   - [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs)

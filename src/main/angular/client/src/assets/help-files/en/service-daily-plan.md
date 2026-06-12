@@ -1,27 +1,27 @@
-# Daily Plan Service
+# Servicio de Plan Diario
 
-The [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) is used to create and to submit Orders for the [Daily Plan](/daily-plan) to Controllers. The service is operated in background and acts on a daily basis to plan and to submit Orders a few days ahead.
+El [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) se utiliza para crear y enviar Órdenes del [Plan Diario](/daily-plan) a los Controladores. El servicio opera en segundo plano y actúa diariamente para planificar y enviar Órdenes con varios días de anticipación.
 
-The Daily Plan Service runs existing [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) and generates Orders for the given start times. This applies to both Schedules which specify a single start time for an order and Schedules which specify cyclic start times. An individual Order is created for each start time in a cycle. In a subsequent step these Orders are submitted to related Controllers.
+El Servicio de Plan Diario ejecuta las [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) existentes y genera Órdenes para los tiempos de inicio indicados. Esto aplica tanto a las Planificaciones que especifican un único tiempo de inicio para una Orden como a las Planificaciones que especifican tiempos de inicio cíclicos. Se crea una Orden individual para cada tiempo de inicio dentro de un ciclo. En un paso posterior, estas Órdenes se envían a los Controladores correspondientes.
 
-A similar functionality is available in the Daily Plan view for operation by users. However, the Daily Plan Service performs this task automatically.
+Una funcionalidad similar está disponible en la vista del Plan Diario para operación por parte de los usuarios. Sin embargo, el Servicio de Plan Diario realiza esta tarea de forma automática.
 
-The Daily Plan Service is started based on its settings and it can be started in the Dashboard view from the active JOC Cockpit instances' rectangle offering the *Run Service - Daily Plan Service* operation. There is no harm from starting the Daily Plan Service a number of times per day.
+El Servicio de Plan Diario se inicia según su configuración y puede iniciarse en la vista del Panel de Control desde el recuadro de la instancia activa del JOC Cockpit que ofrece la operación *Ejecutar Servicio - Servicio de Plan Diario*. No hay inconveniente en iniciar el Servicio de Plan Diario varias veces al día.
 
-<img src="dashboard-run-daily-plan-service.png" alt="Run Daily Plan Service" width="750" height="280" />
+<img src="dashboard-run-daily-plan-service.png" alt="Ejecutar Servicio de Plan Diario" width="750" height="280" />
 
-## Daily Plan Service Settings
+## Configuración del Servicio de Plan Diario
 
-For settings of the Daily Plan Service see [Settings - Daily Plan](/settings-daily-plan).
+Para la configuración del Servicio de Plan Diario, véase [Configuración - Plan Diario](/settings-daily-plan).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Daily Plan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Plan Diario](/daily-plan)
+- [Configuración - Plan Diario](/settings-daily-plan)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service)

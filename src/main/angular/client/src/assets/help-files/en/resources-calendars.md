@@ -1,46 +1,46 @@
-# Calendars
+# Calendarios
 
-The *Calendars* view displays information about use of Calendars.
+La vista *Calendarios* muestra información sobre el uso de Calendarios.
 
-- **Working Day Calendars** specify days for which Orders should be created from the *Daily Plan*.
-- **Non-working Day Calendars** specify days for which no Orders should be created. the dependency can be ignored.
+- Los **Calendarios de Días Laborables** especifican los días para los cuales se deben crear Órdenes desde el *Plan Diario*.
+- Los **Calendarios de Días No Laborables** especifican los días para los cuales no se deben crear Órdenes. La dependencia puede ignorarse.
 
-Calendars are referenced by Schedules that are used by the Daily Plan to create Orders.
+Los Calendarios son referenciados por Planificaciones que son utilizadas por el Plan Diario para crear Órdenes.
 
-## Navigation Panel
+## Panel de Navegación
 
-The left panel displays the tree of inventory folders that hold Calendars.
+El panel izquierdo muestra el árbol de carpetas del inventario que contienen Calendarios.
 
-- Clicking the folder displays Calendars from that folder.
-- Clicking the chevron-down icon available when hovering on a folder displays Calendars from the folder and any sub-folders.
+- Hacer clic en la carpeta muestra los Calendarios de esa carpeta.
+- Hacer clic en el ícono chevron-down disponible al pasar el cursor sobre una carpeta muestra los Calendarios de la carpeta y de cualquier subcarpeta.
 
-The Quick Search icon offers looking up Calendars based on user input:
+El ícono de Búsqueda Rápida ofrece la posibilidad de buscar Calendarios basándose en la entrada del usuario:
 
-- Typing **Test** will display Calendars with names such as *test-calendar-1* and *TEST-calendar-2*. 
-- Typing **\*Test** will display Calendars with names such as *test-calendar-1* and *my-TEST-calendar-2*
+- Escribir **Test** mostrará Calendarios con nombres como *test-calendar-1* y *TEST-calendar-2*.
+- Escribir **\*Test** mostrará Calendarios con nombres como *test-calendar-1* y *my-TEST-calendar-2*.
 
-## Calendar Panel
+## Panel de Calendarios
 
-### Display of Calendars
+### Visualización de Calendarios
 
-The following information is displayed:
+Se muestra la siguiente información:
 
-- **Name** is the unique name of the Calendar.
-- **Type** is one of *Working day calendar* or *Non-working day calendar*.
-- **Validity From**, **Validity To** optionally indicates the validity period. Calendars without validity period are valid for an unlimited period.
+- **Nombre** es el nombre único del Calendario.
+- **Tipo** es uno de *Calendario de día laborable* o *Calendario de día no laborable*.
+- **Válido Desde**, **Válido Hasta** indica opcionalmente el período de validez. Los Calendarios sin período de validez son válidos por un período ilimitado.
 
-### Operations on Calendars
+### Operaciones sobre Calendarios
 
-The following operations are available:
+Las siguientes operaciones están disponibles:
 
-- **Show Preview** will display the dates returned by the Calendar.
+- **Mostrar Vista Previa** mostrará las fechas devueltas por el Calendario.
 
-## Search
+## Búsqueda
 
-The [Resources - Calendars - Search](/resources-calendars-search) offers criteria for looking up Calendars from dependencies, for example by searching for Workflows including a specific Job name, the Calendars used by Schedules for the Workflow will be returned.
+La [Búsqueda de Calendarios](/resources-calendars-search) ofrece criterios para buscar Calendarios por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Calendarios utilizados por las Planificaciones para el Workflow.
 
-## References
+## Referencias
 
-- [Resources - Calendars - Search](/resources-calendars-search)
-- [Daily Plan](/daily-plan)
+- [Búsqueda de Calendarios](/resources-calendars-search)
+- [Plan Diario](/daily-plan)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

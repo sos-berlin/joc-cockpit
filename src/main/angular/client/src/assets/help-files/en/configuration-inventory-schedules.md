@@ -1,95 +1,95 @@
-# Configuration - Inventory - Schedules
+# Configuración - Inventario - Planificaciones
 
-The *Schedule Panel* offers specifying rules for creating Orders from the [Daily Plan](/daily-plan). For details see [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
+El *Panel de Planificaciones* permite especificar reglas para crear Órdenes desde el [Plan Diario](/daily-plan). Para más detalles ver [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
-- Schedules determine the point in time when Orders for Workflow execution will start. They are assigned one or more Workflows and optionally variables that are used by Jobs in the given Workflows.
-  - **Start dates** are specified by [Configuration - Inventory - Calendars](/configuration-inventory-calendars) and limit the days for execution of Workflows.
-  - **Start times** are specified by Schedules indicating one or more times during a day. They can further limit the days for Workflow execution.
-- Schedules create Orders on a daily basis
-  - for one-time execution of Workflows. This includes Workflows starting at a number of points in time per day.
-  - for cyclic execution of Workflows. This specifies repeated execution of Workflows based on configurable intervals.
-- Schedules are applied by the [Daily Plan](/daily-plan) to create Orders for the resulting dates and times.
-  - Schedules can be manually applied from the Daily Plan view.
-  - Schedules are automatically applied by the [Daily Plan Service](/service-daily-plan).
+- Las Planificaciones determinan el momento en que las Órdenes para la ejecución de Workflows comenzarán. Se asignan a uno o más Workflows y, opcionalmente, a variables que usan los Jobs en dichos Workflows.
+  - Las **fechas de inicio** se especifican mediante [Configuración - Inventario - Calendarios](/configuration-inventory-calendars) y limitan los días de ejecución de los Workflows.
+  - Los **horarios de inicio** se especifican en las Planificaciones indicando uno o más horarios durante el día. Pueden además limitar los días de ejecución de los Workflows.
+- Las Planificaciones crean Órdenes diariamente
+  - para la ejecución única de Workflows. Esto incluye Workflows que comienzan en varios momentos del día.
+  - para la ejecución cíclica de Workflows. Esto especifica la ejecución repetida de Workflows basada en intervalos configurables.
+- Las Planificaciones son aplicadas por el [Plan Diario](/daily-plan) para crear Órdenes para las fechas y horarios resultantes.
+  - Las Planificaciones pueden aplicarse manualmente desde la vista del Plan Diario.
+  - Las Planificaciones son aplicadas automáticamente por el [Servicio de Plan Diario](/service-daily-plan).
 
-Schedules are managed from the following panels:
+Las Planificaciones se gestionan desde los siguientes paneles:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Schedules. In addition, the panel offers operations on Schedules.
-- The *Schedule Panel* on the right side of the window holds details for Schedule configuration.
+- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Planificaciones. Además, el panel ofrece operaciones sobre Planificaciones.
+- El *Panel de Planificaciones* en el lado derecho de la ventana contiene los detalles de configuración de la Planificación.
 
-## Schedule Panel
+## Panel de Planificaciones
 
-For a Schedule the following inputs are available:
+Para una Planificación están disponibles los siguientes campos de entrada:
 
-- **Name** is the unique identifier of a Schedule, see [Object Naming Rules](/object-naming-rules).
-- **Title** holds an optional explanation of the Schedule's purpose.
-- **Workflow Names** holds the list of Workflows that should be started.
-- **Plan Order automatically** specifies that the Schedule will be considered by the [Daily Plan Service](/service-daily-plan).
-- **Submit Order to Controller when planned** specifies that Orders will be submitted immediately to a Controller when being planned. Without this option, the Daily Plan Service will submit *planned* Orders based on [Settings - Daily Plan](/settings-daily-plan).
+- **Nombre** es el identificador único de una Planificación, ver [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito de la Planificación.
+- **Nombres de Workflow** contiene la lista de Workflows que deben iniciarse.
+- **Planificar Orden automáticamente** especifica que la Planificación será considerada por el [Servicio de Plan Diario](/service-daily-plan).
+- **Enviar Orden al Controlador cuando se planifique** especifica que las Órdenes serán enviadas inmediatamente a un Controlador cuando sean planificadas. Sin esta opción, el Servicio de Plan Diario enviará las Órdenes *planificadas* según lo establecido en [Configuración - Plan Diario](/settings-daily-plan).
 
-### Order Parameterization
+### Parametrización de Órdenes
 
-- **Order Name**: An optional name that can be used to filter Orders in a number of views.
-- **Tag Name**: Any number of Tags can be specified that will be added to the Order. Order Tags are displayed in a number of views if specified from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Ignore Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. This similarly applies to use of the *AdmissionTimes Instruction*. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs and other instructions to start independently from such limitations.
+- **Nombre de Orden**: Un nombre opcional que puede usarse para filtrar Órdenes en varias vistas.
+- **Nombre de Etiqueta**: Se puede especificar cualquier número de Etiquetas que se agregarán a la Orden. Las Etiquetas de Órdenes se muestran en varias vistas si se especifican desde la página [Configuración - JOC Cockpit](/settings-joc).
+- **Ignorar Tiempos de Admisión**: Los Jobs pueden limitarse a ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Esto también aplica al uso de la *Instrucción AdmissionTimes*. Las Órdenes que llegan fuera de un intervalo de tiempo deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs y otras instrucciones a iniciar independientemente de dichas limitaciones.
 
-### Order Position
+### Posición de la Orden
 
-If an Order should not start from the first node in the Workflow, then a position can be specified.
+Si una Orden no debe comenzar desde el primer nodo del Workflow, se puede especificar una posición.
 
-- **Block Position**: For Workflows holding block instructions such as Try/Catch, Lock, Fork/Join, Cycle the related instruction can be selected. The Order will leave the workflow when reaching the end of the block instruction.
-- **Start Position**: If no *Start Position* is specified, then the Order will start from the first node.
-  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
-  - If a *Block Position* is specified, then the *Start Position* is a same-level node inside the block.
-- **End Positions**:
-  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
-  - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
-  - More than one *End Position* can be specified.
-- **Priority**:
-  - If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
-  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
-    - **Low**: -20000
-    - **Below Normal**: -10000
+- **Posición de Bloque**: Para Workflows que contienen instrucciones de bloque como Try/Catch, Lock, Fork/Join, Cycle se puede seleccionar la instrucción relacionada.
+- **Posición de Inicio**: Si no se especifica una *Posición de Inicio*, la Orden comenzará desde el primer nodo.
+  - Si no se especifica una *Posición de Bloque*, se puede seleccionar cualquier instrucción de nivel superior en el Workflow desde la cual comenzará la Orden.
+  - Si se especifica una *Posición de Bloque*, la *Posición de Inicio* es un nodo del mismo nivel dentro del bloque.
+- **Posiciones de Fin**:
+  - Si no se especifica una *Posición de Bloque*, se puede seleccionar cualquier instrucción de nivel superior en el Workflow antes de la cual terminará la Orden.
+  - Si se especifica una *Posición de Bloque*, se puede especificar cualquier nodo del mismo nivel dentro del bloque antes del cual terminará la Orden.
+  - Se puede especificar más de una *Posición de Fin*.
+- **Prioridad**:
+  - Si la Orden encuentra una instrucción de Recurso de Lock en el Workflow que limita el paralelismo, su *Prioridad* determina la posición en la cola de Órdenes *esperando*.
+  - Las *Prioridades* se especifican mediante enteros negativos, cero o positivos, o mediante los accesos directos ofrecidos. Una *Prioridad* más alta tiene precedencia. Los accesos directos ofrecen los siguientes valores:
+    - **Baja**: -20000
+    - **Por Debajo de Normal**: -10000
     - **Normal**: 0
-    - **Above Normal**: 10000
-    - **High**: 20000
+    - **Por Encima de Normal**: 10000
+    - **Alta**: 20000
 
-### Order Variables
+### Variables de Órdenes
 
-Order Variables are specified if a Workflow declares variables to parameterize execution of Jobs:
+Las Variables de Órdenes se especifican si un Workflow declara variables para parametrizar la ejecución de Jobs:
 
-- Required variables are declared by a Workflow without default value. They are made available automatically to the Schedule and must be assigned related values.
-- Optional variables are declared by a Workflow with a default value. They can be called up using the following links:
-  - **Modify Variable** allows selecting specific variables from the list of Workflow Variables. The variables are populated from their default value.
-  - **Modify Variables** adds inputs for all Workflow Variables. The variables are populated from their default value.
+- Las variables requeridas son declaradas por un Workflow sin valor predeterminado. Se ponen automáticamente a disposición de la Planificación y deben asignárseles los valores correspondientes.
+- Las variables opcionales son declaradas por un Workflow con un valor predeterminado. Se pueden invocar usando los siguientes enlaces:
+  - **Modificar Variable** permite seleccionar variables específicas de la lista de Variables del Workflow. Las variables se rellenan con su valor predeterminado.
+  - **Modificar Variables** agrega campos de entrada para todas las Variables del Workflow. Las variables se rellenan con su valor predeterminado.
 
-Assignment of values to variables includes specifying strings and numbers. An empty string can be assigned from two single quotes.
+La asignación de valores a variables incluye especificar cadenas de texto y números. Se puede asignar una cadena vacía usando dos comillas simples.
 
-## Run-time
+## Tiempo de Ejecución
 
-The *Run-time* button offers specifying start times for Orders from a pop-up window. For details see [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time).
+El botón *Tiempo de Ejecución* permite especificar los horarios de inicio de las Órdenes desde una ventana emergente. Para más detalles ver [Configuración - Inventario - Planificaciones - Tiempo de Ejecución](/configuration-inventory-schedules-run-time).
 
-## Operations on Schedules
+## Operaciones sobre Planificaciones
 
-For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Para las operaciones disponibles ver [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation).
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Daily Plan Service](/service-daily-plan)
-- [Object Naming Rules](/object-naming-rules)
-- [Order History](/history-orders)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Task History](/history-tasks)
+- [Configuración - Inventario - Calendarios](/configuration-inventory-calendars)
+- [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation)
+- [Configuración - Inventario - Planificaciones - Tiempo de Ejecución](/configuration-inventory-schedules-run-time)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Plan Diario](/daily-plan)
+- [Servicio de Plan Diario](/service-daily-plan)
+- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
+- [Historial de Órdenes](/history-orders)
+- [Perfil - Preferencias](/profile-preferences)
+- [Configuración - Plan Diario](/settings-daily-plan)
+- [Historial de Tareas](/history-tasks)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

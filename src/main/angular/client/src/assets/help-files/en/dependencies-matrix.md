@@ -1,37 +1,37 @@
-# Dependency Matrix
+# Matriz de Dependencias
 
-JS7 inventory objects  are related by dependencies. For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
+Los objetos del Inventario de JS7 están relacionados por dependencias. Por ejemplo, un Workflow referencia un Recurso de Job y un Recurso de Lock; una Planificación referencia un Calendario y uno o más Workflows.
 
-When deploying objects, consistency is considered, for example:
+Al desplegar objetos, se considera la consistencia; por ejemplo:
 
-- If a Job Resource is created and is referenced by a newly created Workflow, then deployment of the Workflow includes deploying the Job Resource.
-- If a Job Resource is referenced by a deployed Workflow and should be revoked or removed, then the Workflow must be revoked or removed too.
+- Si se crea un Recurso de Job y es referenciado por un Workflow recién creado, el despliegue del Workflow incluye el despliegue del Recurso de Job.
+- Si un Recurso de Job es referenciado por un Workflow desplegado y debe ser revocado o eliminado, el Workflow también debe ser revocado o eliminado.
 
-For details see [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies).
+Para más detalles, consulte [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies).
 
-The Dependency Matrix of inventory objects looks like this:
+La Matriz de Dependencias de los objetos del Inventario es la siguiente:
 
-| Area |Object Type | Incoming References	 |     | Outgoing References |      |       |       |       |       |
+| Área | Tipo de Objeto | Referencias Entrantes | | Referencias Salientes | | | | | |
 | ----- | ----- | ----- | ----- |
-| Controller |
-|      | Workflow | Workflow | Schedule | Workflow | Job Resource | Notice Board | Resource Lock | Job Template | Script Include |
-|      | File Order Source |      |      | Workflow |
-|      | Job Resource | Workflow |
-|      | Notice Board | Workflow |
-|      | Resource Lock | Workflow |
-| Automation |
-|      | Schedule |      |      | Workflow | Calendar |
-|      | Calendar | Schedule |
-|      | Job Template | Workflow |
-|      | Script Include | Workflow |
+| Controlador |
+| | Workflow | Workflow | Planificación | Workflow | Recurso de Job | Tablero de Avisos | Recurso de Lock | Plantilla de Job | Script Incluido |
+| | Orden Disparada por Archivo | | | Workflow |
+| | Recurso de Job | Workflow |
+| | Tablero de Avisos | Workflow |
+| | Recurso de Lock | Workflow |
+| Automatización |
+| | Planificación | | | Workflow | Calendario |
+| | Calendario | Planificación |
+| | Plantilla de Job | Workflow |
+| | Script Incluido | Workflow |
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder)
-- [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object)
+- [Configuración - Inventario - Operaciones - Desplegar Carpeta](/configuration-inventory-operations-deploy-folder)
+- [Configuración - Inventario - Operaciones - Desplegar Objeto](/configuration-inventory-operations-deploy-object)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

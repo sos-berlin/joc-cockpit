@@ -1,63 +1,63 @@
-# Monitor - Order Notifications
+# Monitor - Notificaciones de Órdenes
 
-The view displays Notifications raised from Workflows.
+La vista muestra Notificaciones generadas por los Workflows.
 
-Notifications are configured from the [Configuration - Notification](/configuration-notification) page and can be raised in case of success, warnings or errors of Order execution or Job execution.
+Las Notificaciones se configuran desde la página [Configuración - Notificación](/configuration-notification) y pueden generarse en caso de éxito, advertencias o errores en la ejecución de Órdenes o Jobs.
 
-- The *notify_on_failure_gui* fragment specifies if Notifications become visible in this view.
-- In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products. For details see [Configuration - Notification ](/configuration-notification).
+- El fragmento *notify_on_failure_gui* especifica si las Notificaciones serán visibles en esta vista.
+- Además de mostrar las Notificaciones en esta vista, pueden ser reenviadas por correo electrónico y desde la línea de comandos, por ejemplo, a productos de Monitor de Sistema de terceros. Para más detalles, consulte [Configuración - Notificación](/configuration-notification).
 
-Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
+Los usuarios deben tener en cuenta que las Notificaciones están sujetas a depuración por el [Servicio de Limpieza](/service-cleanup). Por defecto, las Notificaciones se depuran si tienen más de un día de antigüedad.
 
-## Display of Notifications
+## Visualización de Notificaciones
 
-Notifications are displayed from the following information items:
+Las Notificaciones se muestran con los siguientes elementos de información:
 
-- **Workflow** specifies the name of a Workflow. 
-  - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon left to the Workflow name navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Order ID** specifies the unique identifier of an Order.
-- **Job** is indicated if the warning or error was caused by a Job.
-- **Type** is one of
-  - **SUCCESS** which indicates successful Order execution, provided that Notifications are configured to report this status.
-  - **WARNING** which is raised from Shell Jobs for which specific return codes that are configured being *Warnings* that will not affect an Order's flow but will raise the related Notification.
-  - **ERROR** which can be raised by Jobs or other Workflow Instructions. The Notification is triggered independently from the fact that a Workflow might apply error handling as from the *Try/Catch* or *Retry Instruction* that will allow an Order to proceed in the Workflow.
-  - **RECOVERED** which indicates that a previously *failed* Order did recover and did successfully proceed in the Workflow.
-- **Return Code** indicates the exit code of Shell Jobs or the return code of JVM Jobs that raised the Notification.
-- **Message** holds the error message or warning.
-- **Created** indicates the date the Notification was raised.
+- **Workflow** especifica el nombre de un Workflow.
+  - Hacer clic en el nombre del Workflow navega a la vista [Workflows](/workflows).
+  - Hacer clic en el icono de lápiz a la izquierda del nombre del Workflow navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- **Order ID** especifica el identificador único de una Orden.
+- **Job** se indica si la advertencia o el error fue causado por un Job.
+- **Tipo** es uno de los siguientes:
+  - **SUCCESS** que indica la ejecución exitosa de una Orden, siempre que las Notificaciones estén configuradas para reportar este estado.
+  - **WARNING** que se genera desde Jobs de Shell para los cuales se configuran códigos de retorno específicos como *Advertencias* que no afectan el flujo de una Orden pero generarán la Notificación relacionada.
+  - **ERROR** que puede ser generado por Jobs u otras instrucciones de Workflow. La Notificación se activa independientemente de si el Workflow aplica manejo de errores como desde la *instrucción Try/Catch* o *Retry* que permitirá que una Orden continúe en el Workflow.
+  - **RECOVERED** que indica que una Orden previamente *fallida* se recuperó y continuó exitosamente en el Workflow.
+- **Código de Retorno** indica el código de salida de Jobs de Shell o el código de retorno de Jobs JVM que generaron la Notificación.
+- **Mensaje** contiene el mensaje de error o advertencia.
+- **Creado** indica la fecha en que se generó la Notificación.
 
-A warning or error can raise a number of Notifications depending on the related configuration, for example displaying the Notification with this view and forwarding the Notification by mail. 
+Una advertencia o error puede generar varias Notificaciones dependiendo de la configuración relacionada, por ejemplo, mostrando la Notificación en esta vista y reenviándola por correo electrónico.
 
-For each channel configured for the Notification a separate entry is displayed. Entries for Notifications by mail or from the command line offer an *arrow down* icon that shows details about successful/unsuccessful use of the related channel.
+Por cada canal configurado para la Notificación se muestra una entrada separada. Las entradas para Notificaciones por correo electrónico o desde la línea de comandos ofrecen un icono de *flecha hacia abajo* que muestra detalles sobre el uso exitoso/no exitoso del canal relacionado.
 
-## Operations on Notifications
+## Operaciones sobre Notificaciones
 
-For each warning and error Notification the 3-dots action menu is offered for the following operation:
+Para cada Notificación de advertencia y error se ofrece el menú de acción de 3 puntos con la siguiente operación:
 
-- **Acknowledge** specifies that the user is aware of the Notification and is taking measures. The operation brings forward a pop-up window that allows specifying a comment about the handling of the Notification. <br/><br/>Acknowledged Notifications by default are excluded from display. They can be made visible by selecting the *Acknowledged* filter button.
+- **Reconocer** especifica que el usuario conoce la Notificación y está tomando medidas. La operación abre una ventana emergente que permite especificar un comentario sobre el manejo de la Notificación. <br/><br/>Las Notificaciones reconocidas se excluyen de la visualización por defecto. Pueden hacerse visibles seleccionando el botón de filtro *Reconocidas*.
 
-## Filters
+## Filtros
 
-The top of the page offers a number of filter buttons that can be applied individually or in combination:
+La parte superior de la página ofrece varios botones de filtro que pueden aplicarse individualmente o en combinación:
 
-- **Successful** limits the display to Notifications about successful Order execution.
-- **Failed** limits the display of Notifications to Orders that *failed*.
-- **Warning** limits the display of Notifications to Orders that caused warnings.
-- **Recovered** limits the display of Notifications to Orders that first failed and then recovered by successfully proceeding in the Workflow.
-- **Acknowledged** limits the display to Notifications that previously have been acknowledged from the related operation.
+- **Exitoso** limita la visualización a Notificaciones sobre ejecución exitosa de Órdenes.
+- **Fallido** limita la visualización de Notificaciones a Órdenes que *fallaron*.
+- **Advertencia** limita la visualización de Notificaciones a Órdenes que causaron advertencias.
+- **Recuperado** limita la visualización de Notificaciones a Órdenes que primero fallaron y luego se recuperaron continuando exitosamente en el Workflow.
+- **Reconocidas** limita la visualización a Notificaciones que han sido reconocidas previamente desde la operación relacionada.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda de Contexto
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Notification](/configuration-notification)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Servicio de Limpieza](/service-cleanup)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Configuración - Notificación](/configuration-notification)
+- [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
 - [Workflows](/workflows)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications)

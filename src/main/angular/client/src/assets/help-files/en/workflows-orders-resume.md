@@ -1,92 +1,92 @@
-# Resume Orders
+# Reanudar Órdenes
 
-The *Resume Orders* pop-up window is displayed for *suspended* and *failed* Orders that should be resumed. A number of sections are offered for user input depending on resumption being performed for a single Order or from a bulk operation on Orders.
+La ventana emergente *Reanudar Órdenes* se muestra para Órdenes *suspendidas* y *fallidas* que deben ser reanudadas. Se ofrecen varias secciones para la entrada del usuario según si la reanudación se realiza para una Orden individual o desde una operación masiva sobre Órdenes.
 
-- **Variables** are displayed with values that are historically specific before the current Workflow position. For example, if a failed job did modify a *Dynamic Variable*, then the variable will be displayed from its historic value before executing the job.
-- **Options** allow changing the behavior of resumed Orders.
-- **Positions** allow resuming Orders from an earlier or later position in the Workflow.
+- **Variables** se muestran con los valores que son históricamente específicos antes de la posición actual en el Workflow. Por ejemplo, si un Job fallido modificó una *Variable Dinámica*, la variable se mostrará con su valor histórico anterior a la ejecución del Job.
+- **Opciones** permiten cambiar el comportamiento de las Órdenes reanudadas.
+- **Posiciones** permiten reanudar Órdenes desde una posición anterior o posterior en el Workflow.
 
-## Operations on single Orders
+## Operaciones sobre Órdenes individuales
 
-### Variables with constant values
+### Variables con valores constantes
 
-The section displays *Workflow Variables* with their effective values carried by the Order.
+La sección muestra las *Variables de Workflow* con sus valores efectivos que lleva la Orden.
 
-Such variables hold constant values that cannot be modified.
+Estas variables contienen valores constantes que no pueden modificarse.
 
-### Variables with modifiable values
+### Variables con valores modificables
 
-The section displays *Dynamic Variables* not declared with the workflow. Such variables are dynamically created by jobs executed by the Order.
+La sección muestra las *Variables Dinámicas* no declaradas en el Workflow. Estas variables son creadas dinámicamente por los Jobs ejecutados por la Orden.
 
-Users can modify the values of *Dynamic Variables*. 
+Los usuarios pueden modificar los valores de las *Variables Dinámicas*.
 
-- **Operations**
-  - **Keep Value**: the variable is passed to the subsequent Workflow instruction with its current value.
-  - **Change Value**: the changed value of the variable will be used, provided that the related checkbox is in *checked* state.
-  - **Remove Variable**: the original value of the variable will be used that was in place with the respective job from which the Order will be resumed.
-  - **Add Variable**: offers adding the name and value of a new *Dynamic Variable*.
+- **Operaciones**
+  - **Mantener Valor**: la variable se pasa a la instrucción siguiente del Workflow con su valor actual.
+  - **Cambiar Valor**: se utilizará el valor modificado de la variable, siempre que la casilla de verificación correspondiente esté *marcada*.
+  - **Eliminar Variable**: se utilizará el valor original de la variable que estaba vigente en el Job respectivo desde el cual se reanudará la Orden.
+  - **Agregar Variable**: permite agregar el nombre y el valor de una nueva *Variable Dinámica*.
 - **Variables**
-  - **returnCode**: is a built-in variable that holds the numeric outcome of the previous Workflow instruction. By default, a zero value indicates success, non-zero values indicate failure.
+  - **returnCode**: es una variable incorporada que contiene el resultado numérico de la instrucción anterior del Workflow. Por defecto, un valor cero indica éxito; los valores distintos de cero indican fallo.
 
-The subsequent Workflow instruction is the same or the one to which a users will drag&drop the Order which includes instructions earlier or later to the Order's current position.
+La instrucción siguiente del Workflow es la misma o aquella a la cual el usuario arrastrará y soltará la Orden, lo que incluye instrucciones anteriores o posteriores a la posición actual de la Orden.
 
-### Options
+### Opciones
 
-#### Forcing jobs to be restarted
+#### Forzar el reinicio de Jobs
 
-The **Force Resumption** checkbox affects jobs that are configured being *not restartable*, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). Such jobs will not be executed once again in case that they have been terminated by the Agent or by the operating system. The option does not affect *suspended* Order or Orders that *failed* due to job errors.
+La casilla de verificación **Forzar Reanudación** afecta a los Jobs configurados como *no reiniciables*, véase [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options). Estos Jobs no se ejecutarán nuevamente en caso de haber sido terminados por el Agente o por el sistema operativo. La opción no afecta a Órdenes *suspendidas* ni a Órdenes *fallidas* por errores del Job.
 
-The intention is to prevent jobs not designed for restart capabilities from being automatically resumed after forceful termination. Instead, users have to hit the related checkbox. Typical use cases include for example, jobs performing financial transactions for which the outcome should be checked before causing a restart.
+La intención es evitar que Jobs no diseñados para ser reiniciados sean reanudados automáticamente tras una terminación forzada. En su lugar, los usuarios deben marcar la casilla correspondiente. Los casos de uso típicos incluyen, por ejemplo, Jobs que realizan transacciones financieras para los cuales el resultado debe verificarse antes de provocar un reinicio.
 
-#### Specifying the Cycle End Time
+#### Especificar la Hora de Fin del Ciclo
 
-The **Cycle End Time** input field is available for Orders that started a minimum of one cycle in a *Cycle Instruction*.
+El campo de entrada **Hora de Fin del Ciclo** está disponible para Órdenes que iniciaron al menos un ciclo en una *Instrucción Cycle*.
 
-A period shorter or longer than configured with the *Cycle Instruction* can be specified.
-Periods are specified by *seconds* or *hours:minutes:seconds*. Specifying a value *0* for the period will cause the Order
+Se puede especificar un período más corto o más largo que el configurado en la *Instrucción Cycle*.
+Los períodos se especifican en *segundos* o en *horas:minutos:segundos*. Especificar el valor *0* para el período hará que la Orden:
 
-- to continue from the resumed position in the Workflow,
-- to execute subsequent jobs,
-- to leave the cycle next time it meets the *Cycle Instruction*.
+- continúe desde la posición reanudada en el Workflow,
+- ejecute los Jobs siguientes,
+- salga del ciclo la próxima vez que encuentre la *Instrucción Cycle*.
 
-### Positions for dragging & dropping Orders
+### Posiciones para arrastrar y soltar Órdenes
 
-Orders can be resumed from a previous or later position in the Workflow.
-Users can drag&drop the Order to the Workflow instruction from which it should be resumed.
+Las Órdenes pueden reanudarse desde una posición anterior o posterior en el Workflow.
+Los usuarios pueden arrastrar y soltar la Orden hacia la instrucción del Workflow desde la cual debe reanudarse.
 
-- **Allowed Positions**
-  - Orders can be resumed from later Workflow instructions at the same block level as the current Workflow position.
-  - Orders can be resumed from a position in the *true* branch or *false* branch of an *If Instruction*.
-  - Orders can be resumed from a position inside the *ConsumeNotices* instruction, therefore skipping the check for existence of related Notices.
-- **Denied Positions**
-  - Orders cannot be moved to a position inside the branch of a *Fork Instruction*. The reason being that the *Parent Order* remains with the *Fork Instruction* while *Child Orders* are created per branch.
-    - *Child Orders* cannot be moved between branches of a *Fork Instruction*. Resuming a *Child Order* from a position within its branch is accepted.
-    - Orders can be resumed directly from a *Fork Instruction*.
-  - Orders cannot be moved to a position inside *Lock Instructions*. The operation is denied as it affects the condition of a *Resource Lock* being acquired. Resuming an Order from the block begin of the *Lock Instruction* is accepted.
+- **Posiciones Permitidas**
+  - Las Órdenes pueden reanudarse desde instrucciones posteriores del Workflow al mismo nivel de bloque que la posición actual.
+  - Las Órdenes pueden reanudarse desde una posición en la rama *verdadera* o *falsa* de una *Instrucción If*.
+  - Las Órdenes pueden reanudarse desde una posición dentro de la instrucción ConsumeNotices, omitiendo así la verificación de existencia de los Avisos relacionados.
+- **Posiciones No Permitidas**
+  - Las Órdenes no pueden moverse a una posición dentro de una rama de una *Instrucción Fork*. El motivo es que la *Orden Padre* permanece con la *Instrucción Fork* mientras se crean *Órdenes Hijas* por rama.
+    - Las *Órdenes Hijas* no pueden moverse entre ramas de una *Instrucción Fork*. Se acepta reanudar una *Orden Hija* desde una posición dentro de su propia rama.
+    - Las Órdenes pueden reanudarse directamente desde una *Instrucción Fork*.
+  - Las Órdenes no pueden moverse a una posición dentro de *Instrucciones Lock*. La operación no está permitida ya que afecta la condición de adquisición de un *Recurso de Lock*. Se acepta reanudar una Orden desde el inicio del bloque de la *Instrucción Lock*.
 
-The above similarly applies to nested Workflow instructions, for example an inner *Fork Instruction* inside the branch of an outer *Fork Instruction*.
+Lo anterior aplica de igual forma a instrucciones de Workflow anidadas, por ejemplo una *Instrucción Fork* interna dentro de una rama de una *Instrucción Fork* externa.
 
-When unchanged, the Order will be resumed from its current Workflow position.
+Cuando no se modifica, la Orden se reanudará desde su posición actual en el Workflow.
 
-## Bulk Operations on Orders
+## Operaciones Masivas sobre Órdenes
 
-The bulk operation is available from the [Orders Overview](/orders-overview) view which allows selecting a number of Orders from the same or different Workflows.
+La operación masiva está disponible desde la vista [Vista General de Órdenes](/orders-overview), que permite seleccionar varias Órdenes del mismo o de diferentes Workflows.
 
-- **Resume from same Position** allows resumption from the current Workflow instruction at which the Order is *suspended* or *failed*.
-- **Resume from current Block** offers resumption from the begin of the current block instruction. For example,
-  - if an Order is sitting with some instruction inside a *Lock Instruction*, then it will be resumed from begin of the *Lock Instruction*.
-  - if an Order is sitting with some instruction inside a branch of the *Fork Instruction*, then it will be resumed from begin of the branch.
-- **Resume from Label** allows specifying the name of a *Label* that is common to all Workflows for which Orders should be resumed. Resumption of Orders will be effected from the Workflow position indicated by the *Label*. If the *Label* does not exist in a Workflow, then the Order is resumed from its current position.
+- **Reanudar desde la misma Posición** permite la reanudación desde la instrucción actual del Workflow en la que la Orden está *suspendida* o *fallida*.
+- **Reanudar desde el Bloque Actual** permite la reanudación desde el inicio de la instrucción de bloque actual. Por ejemplo:
+  - si una Orden está en alguna instrucción dentro de una *Instrucción Lock*, se reanudará desde el inicio de la *Instrucción Lock*.
+  - si una Orden está en alguna instrucción dentro de una rama de la *Instrucción Fork*, se reanudará desde el inicio de la rama.
+- **Reanudar desde Etiqueta** permite especificar el nombre de una *Etiqueta* que sea común a todos los Workflows para los cuales deben reanudarse Órdenes. La reanudación de las Órdenes se efectuará desde la posición del Workflow indicada por la *Etiqueta*. Si la *Etiqueta* no existe en un Workflow, la Orden se reanuda desde su posición actual.
 
-## References
+## Referencias
 
-### Context Help
+### Ayuda Contextual
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Orders Overview](/orders-overview)
+- [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
+- [Vista General de Órdenes](/orders-overview)
 - [Workflows](/workflows)
 
-### Product Knowledge Base
+### Base de Conocimiento del Producto
 
 - [JS7 - Workflows - Status Operations on Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows+-+Status+Operations+on+Orders)

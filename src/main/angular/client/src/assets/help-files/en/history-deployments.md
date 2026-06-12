@@ -1,40 +1,40 @@
-# Deployment History
+# Historial de Despliegues
 
-The *Deployment History* view summarizes deployments of inventory objects.
+La vista *Historial de Despliegues* resume los despliegues de objetos del inventario.
 
-JS7 implements a distributed architecture that allows running Jobs of the same Workflow on different Agents and platforms. Successful deployment includes each Agent's confirmation of new and updated objects which arrives asynchronously.
+JS7 implementa una arquitectura distribuida que permite ejecutar Jobs del mismo Workflow en diferentes Agentes y plataformas. Un despliegue exitoso incluye la confirmación de cada Agente sobre los objetos nuevos y actualizados, que llega de forma asíncrona.
 
-When using the *deploy* operation in the *Configuration* view, then confirmation will arrive depending on Agent availability. For example, a shutdown Agent will confirm  deployment when it is restarted which might happen some time later.
+Al usar la operación *desplegar* en la vista *Configuración*, la confirmación llegará dependiendo de la disponibilidad del Agente. Por ejemplo, un Agente apagado confirmará el despliegue cuando se reinicie, lo que podría ocurrir algún tiempo después.
 
-The *Deployment History* is updated asynchronously to reflect the deployment status of inventory objects.
+El *Historial de Despliegues* se actualiza de forma asíncrona para reflejar el estado de despliegue de los objetos del inventario.
 
-## History Panel
+## Panel de Historial
 
-### History of Deployments
+### Historial de Despliegues
 
-Display is grouped in one block per deployment and in blocks per inventory object.
+La visualización se agrupa en un bloque por despliegue y en bloques por objeto del inventario.
 
-- **Deployment Date** indicates the point in time of deployment.
-- **Account** indicates the JOC Cockpit user account that performed the deployment operation.
-- **Status** indicates if deployment was successful or failed.
-  - *Deployed* indicates that all inventory objects were successfully deployed.
-  - *Not Deployed* indicates that one or more inventory objects could not be deployed.
-- **Number of Items** indicates the number of inventory objects such as Workflows, Job Resources etc. in scope of deployment.
+- **Fecha de Despliegue** indica el momento en que se realizó el despliegue.
+- **Cuenta** indica la cuenta de usuario de JOC Cockpit que realizó la operación de despliegue.
+- **Estado** indica si el despliegue fue exitoso o fallido.
+  - *Desplegado* indica que todos los objetos del inventario fueron desplegados exitosamente.
+  - *No Desplegado* indica que uno o más objetos del inventario no pudieron ser desplegados.
+- **Número de Elementos** indica la cantidad de objetos del inventario como Workflows, Recursos de Job, etc. incluidos en el despliegue.
 
-### History of Deployments per Inventory Object
+### Historial de Despliegues por Objeto del Inventario
 
-When clicking the arrow-down icon from the *Deployment Date* then details per inventory object will be displayed:
+Al hacer clic en el icono de flecha hacia abajo desde la *Fecha de Despliegue*, se mostrarán los detalles por objeto del inventario:
 
-- **Message** indicates an error message in case of failed deployment.
-- **Object Type** indicates the inventory object type such as *Workflow*, *Job Resource* etc.
-- **Path** indicates the inventory folder and object name. For Workflow objects
-  - clicking the Workflow name navigates to the [Workflows](/workflows) view,
-  - clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Operation** is one of *store* or *delete*. Updated objects occur with both operations.
-- **Date** indicates the point in time of the deployment operation.
+- **Mensaje** indica un mensaje de error en caso de despliegue fallido.
+- **Tipo de Objeto** indica el tipo de objeto del inventario, como *Workflow*, *Recurso de Job*, etc.
+- **Ruta** indica la carpeta del inventario y el nombre del objeto. Para los objetos Workflow:
+  - al hacer clic en el nombre del Workflow se navega a la vista [Workflows](/workflows),
+  - al hacer clic en el icono del lápiz se navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- **Operación** es una de *store* o *delete*. Los objetos actualizados aparecen con ambas operaciones.
+- **Fecha** indica el momento en que se realizó la operación de despliegue.
 
-## References
+## Referencias
 
-- [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
+- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Workflows](/workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)
