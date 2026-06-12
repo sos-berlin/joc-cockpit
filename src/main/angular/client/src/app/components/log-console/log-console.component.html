@@ -125,6 +125,7 @@
                    class="log-search-input" type="text"
                    [(ngModel)]="unifiedTerm"
                    (ngModelChange)="onUnifiedTermChange()"
+                   (keydown.enter)="onSearchEnter()"
                    [placeholder]="(inputMode === 'filter' ? 'logConsole.placeholder.filter' : 'logConsole.placeholder.searchInVisible') | translate"
                    [appRichTooltip]="(inputMode === 'filter' ? 'logConsole.tooltip.filter' : 'logConsole.tooltip.searchInVisible') | translate"
                    autocomplete="off"
@@ -142,6 +143,44 @@
           </div>
 
         </div>
+
+        <!-- Inline search navigation (search mode only — stays on the same row as the input) -->
+        @if (inputMode === 'search' && searchMatchCount > 0) {
+          <div class="log-status-mode-block log-status-mode-block--search">
+            <i nz-icon nzType="highlight" nzTheme="outline" class="log-status-mode-icon"></i>
+            <div class="log-search-nav">
+              <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')" [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
+                <i nz-icon nzType="up" nzTheme="outline"></i>
+              </button>
+              <button class="log-nav-btn" (click)="jumpToSearchMatch('next')" [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
+                <i nz-icon nzType="down" nzTheme="outline"></i>
+              </button>
+              <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Filter mode status (filter mode only — same row as the input) -->
+        @if (filterMode && filterTerm) {
+          <div class="log-status-mode-block log-status-mode-block--filter">
+            <i nz-icon nzType="filter" nzTheme="outline" class="log-status-mode-icon"></i>
+            <span class="log-summary-filter-active">{{ filteredLines.length }}</span>
+            <label class="log-context-toggle"
+                   [appRichTooltip]="'logConsole.tooltip.contextMode' | translate">
+              <nz-switch nzSize="small" [ngModel]="contextMode" (ngModelChange)="toggleContextMode()"></nz-switch>
+              <span class="log-context-label" translate>logConsole.label.context</span>
+            </label>
+            @if (contextMode) {
+              <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
+                <nz-input-number [(ngModel)]="contextLines"
+                                 (ngModelChange)="onContextLinesChange()"
+                                 [nzMin]="0" [nzMax]="200" [nzStep]="1"
+                                 nzSize="small" class="log-context-lines-input">
+                </nz-input-number>
+              </div>
+            }
+          </div>
+        }
 
       </div>
 
@@ -167,6 +206,14 @@
             <span class="log-tz-label" [class.log-tz-label--original]="isOriginalTzMode">{{ displayTz }}</span>
           </span>
         }
+        <button class="btn btn-xs btn-default" (click)="copyCriteria()"
+                [appRichTooltip]="'logConsole.tooltip.copyCriteria' | translate">
+          <i nz-icon nzType="copy" nzTheme="outline"></i>
+        </button>
+        <button class="btn btn-xs btn-default" (click)="pasteCriteria()" [disabled]="!hasCopiedCriteria"
+                [appRichTooltip]="'logConsole.tooltip.pasteCriteria' | translate">
+          <i nz-icon nzType="snippets" nzTheme="outline"></i>
+        </button>
         <button class="btn btn-xs btn-default" (click)="reload()" [disabled]="isLoading"
                 [appRichTooltip]="'logConsole.tooltip.reload' | translate">
           <i nz-icon nzType="reload" nzTheme="outline"></i>
@@ -328,39 +375,8 @@
       }
 
       <!-- Status notes -->
-      @if (allLines.length > 0) {
-        @if (isLoading) {
-          <span class="log-summary-note"><span translate>common.label.loading</span></span>
-        }
-        @if (inputMode === 'filter' && filterTerm) {
-          <div class="log-status-mode-block log-status-mode-block--filter">
-            <i nz-icon nzType="filter" nzTheme="outline" class="log-status-mode-icon"></i>
-            <span class="log-summary-filter-active">
-              {{ 'logConsole.label.matchBlocks' | translate: { count: contextBlocks.length } }}
-            </span>
-            <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
-              <span class="log-context-label">{{ 'logConsole.label.context' | translate }}:</span>
-              <nz-input-number [(ngModel)]="contextLines"
-                               (ngModelChange)="onContextLinesChange()"
-                               [nzMin]="0" [nzMax]="200" [nzStep]="1"
-                               nzSize="small" class="log-context-lines-input">
-              </nz-input-number>
-            </div>
-          </div>
-        } @else if (inputMode === 'search' && searchMatchCount > 0) {
-          <div class="log-status-mode-block log-status-mode-block--search">
-            <i nz-icon nzType="highlight" nzTheme="outline" class="log-status-mode-icon"></i>
-            <div class="log-search-nav">
-              <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')" [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
-                <i nz-icon nzType="up" nzTheme="outline"></i>
-              </button>
-              <button class="log-nav-btn" (click)="jumpToSearchMatch('next')" [attr.aria-label]="'logConsole.tooltip.nextOccurrence' | translate">
-                <i nz-icon nzType="down" nzTheme="outline"></i>
-              </button>
-              <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
-            </div>
-          </div>
-        }
+      @if (isLoading && allLines.length > 0) {
+        <span class="log-summary-note"><span translate>common.label.loading</span></span>
       }
 
       <!-- Jump to start / end + line counter (right side, merged) -->
@@ -401,8 +417,8 @@
       </div>
     }
 
-    <!-- ── FILTER MODE ────────────────────────────────────────────────── -->
-    @if (filterMode && filterTerm) {
+    <!-- ── FILTER MODE with context lines ──────────────────────────────── -->
+    @if (filterMode && filterTerm && contextMode) {
       @if (contextBlocks.length === 0 && allLines.length > 0) {
         <div class="log-console-empty">
           <i nz-icon nzType="search" nzTheme="outline" class="log-state-icon log-state-icon--sm"></i>
@@ -440,7 +456,13 @@
 
     } @else {
 
-      <!-- ── HIGHLIGHT MODE (default) ──────────────────────────────── -->
+      <!-- ── HIGHLIGHT/FILTER (no context) MODE ───────────────────── -->
+      @if (filterMode && filterTerm && filteredLines.length === 0 && allLines.length > 0) {
+        <div class="log-console-empty">
+          <i nz-icon nzType="search" nzTheme="outline" class="log-state-icon log-state-icon--sm"></i>
+          <span>{{ 'logConsole.message.noMatches' | translate: { term: filterTerm } }}</span>
+        </div>
+      }
       @for (line of filteredLines; track line.globalIdx) {
         <div class="log-line log-line-{{line.level.toLowerCase()}}"
              [class.log-line-match]="isMatchLine(line)"

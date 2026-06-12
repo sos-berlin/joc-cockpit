@@ -6745,6 +6745,7 @@ export class WorkflowComponent {
       e.stopPropagation();  // prevent bubbling to ancestor [appRichTooltip] directives
       cancelClose();        // cancel any pending close (e.g. from mouseleave during click)
       if (openTimer) { clearTimeout(openTimer); openTimer = null; }
+      if (!e.isTrusted) return;
       if (overlayRef) { doClose(); } else { open(); }
     });
   }

@@ -243,6 +243,20 @@
   flex: 1;
 }
 
+// ─── Context mode toggle (filter status bar) ──────────────────────────────────
+.log-context-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  margin: 0;
+  flex-shrink: 0;
+}
+
 // ─── Timezone toggle ──────────────────────────────────────────────────────────
 .log-tz-toggle {
   display: inline-flex;
