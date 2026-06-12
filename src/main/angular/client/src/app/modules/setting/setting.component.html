@@ -672,7 +672,7 @@
                           </div>
                                   }
                                 }
-                                @if (group.hasAdvanced) {
+                                @if (group.hasAdvanced && !priorityFilter && !changedFilter && searchText === '') {
                                   <div class="m-t-xs p-t-xs setting-button-hide-advance">
                                     <a class="text-muted cursor" (click)="group.showAdvanced = !group.showAdvanced">
                                       <i class="fa m-r-xs" [ngClass]="group.showAdvanced ? 'fa-angle-up' : 'fa-angle-down'" aria-hidden="true"></i>

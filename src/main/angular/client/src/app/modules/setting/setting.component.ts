@@ -50,9 +50,9 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['force_comments_for_audit_log', 'frequent'], ['comments_for_audit_log', 'advanced']],
     login: [['enable_remember_me', 'critical'], ['default_profile_account', 'advanced']],
     inventory: [
-      ['allow_empty_arguments', 'advanced'], ['node_command_line_options', 'advanced'],
-      ['allow_undeclared_variables', 'advanced'], ['joc_reverse_proxy_url', 'advanced'],
-      ['encoding', 'advanced'], ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
+      ['allow_empty_arguments', 'advanced'], ['allow_undeclared_variables', 'advanced'],
+      ['joc_reverse_proxy_url', 'advanced'], ['encoding', 'advanced'],
+      ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
       ['restore_suffix', 'advanced'], ['restore_prefix', 'advanced'],
       ['import_suffix', 'advanced'], ['import_prefix', 'advanced']
     ],

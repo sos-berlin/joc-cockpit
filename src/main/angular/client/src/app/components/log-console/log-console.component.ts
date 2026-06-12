@@ -230,6 +230,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   filterMode = false;
   /** Number of context lines shown above/below each match in filter mode. */
   contextLines = 5;
+  /** true = show contextLines lines around each match; false = show only exact match lines */
+  contextMode = false;
   readonly contextOptions = CONTEXT_OPTIONS;
 
   followTail = false;
@@ -270,6 +272,15 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private readonly levelJumpIndices = new Map<string, number>();
   /** Per-level: last navigation direction. Clicking the badge reuses this (default 'next'). */
   readonly levelLastDir = new Map<string, 'next' | 'prev'>();
+  /** Last direction used for search navigation — Enter key repeats it. */
+  _lastSearchDir: 'next' | 'prev' = 'next';
+  /** True when there is criteria in localStorage available to paste. */
+  hasCopiedCriteria = false;
+  private _storageHandler?: (e: StorageEvent) => void;
+  /** Tracks how many LogConsoleComponent instances are alive in this window. */
+  private static _openWindowCount = 0;
+  /** True once the single beforeunload handler has been registered for this window. */
+  private static _beforeUnloadRegistered = false;
   /** Per-level counts within the currently visible (filtered) lines — denominator for occurrence labels. */
   filteredLevelCounts: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
   /** globalIdx set of lines matching the search term — eliminates per-line re-evaluation in template. */
@@ -300,6 +311,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    LogConsoleComponent._openWindowCount++;
+    // Popup windows closed via the browser ✕ button bypass Angular's ngOnDestroy.
+    // Register a single beforeunload handler per window so criteria is always cleared
+    // when the browser window itself is closed.
+    if (!LogConsoleComponent._beforeUnloadRegistered) {
+      LogConsoleComponent._beforeUnloadRegistered = true;
+      window.addEventListener('beforeunload', () => {
+        localStorage.removeItem('log-console-criteria');
+      });
+    }
     // Persist window size so the next system-log popup opens at the same size.
     this.syslogResizeHandler = () => {
       window.localStorage['syslog_window_wt'] = String(window.innerWidth);
@@ -307,6 +328,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     };
     window.addEventListener('resize', this.syslogResizeHandler);
     this.syslogResizeHandler(); // save initial size immediately
+
+    // Enable paste button if criteria were copied in a previous session or another window.
+    this.hasCopiedCriteria = !!localStorage.getItem('log-console-criteria');
+    // Cross-window sync: storage event fires in every window EXCEPT the one that wrote.
+    this._storageHandler = (e: StorageEvent) => {
+      if (e.key === 'log-console-criteria' && e.newValue) {
+        this.hasCopiedCriteria = true;
+        this.cdr.markForCheck();
+      }
+    };
+    window.addEventListener('storage', this._storageHandler);
 
     // Track whether the user has an active text selection inside this log window.
     // Used to suppress DOM-destructive operations that would clear the selection.
@@ -341,7 +373,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.cdr.markForCheck();
       })
     );
-
     // Sync with global search state (apply immediately — another window already debounced).
     const current = this.logSearch.currentTerm;
     if (current) {
@@ -397,6 +428,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this._selectionChangeHandler) {
       document.removeEventListener('selectionchange', this._selectionChangeHandler);
     }
+    if (this._storageHandler) {
+      window.removeEventListener('storage', this._storageHandler);
+    }
+    if (--LogConsoleComponent._openWindowCount === 0) {
+      localStorage.removeItem('log-console-criteria');
+    }
   }
 
   // ── Search ─────────────────────────────────────────────────────────────────
@@ -422,6 +459,95 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       this.commitSearch(value);
       this.logSearch.setTerm(value);
     }
+  }
+
+  // ── Copy / paste criteria across windows ──────────────────────────────────
+
+  copyCriteria(): void {
+    const criteria = {
+      inputMode: this.inputMode,
+      term: this.unifiedTerm,
+      searchRegexMode: this.regexMode,
+      searchReverse: this.reverseSearch,
+      filterRegexMode: this.filterRegexMode,
+      filterReverse: this.reverseFilter,
+      filters: { ...this.filters },
+      contextMode: this.contextMode,
+      contextLines: this.contextLines,
+      dateFilterFromStr: this.dateFilterFromStr,
+      dateFilterToStr: this.dateFilterToStr,
+    };
+    localStorage.setItem('log-console-criteria', JSON.stringify(criteria));
+    this.hasCopiedCriteria = true;
+  }
+
+  pasteCriteria(): void {
+    const raw = localStorage.getItem('log-console-criteria');
+    if (!raw) return;
+    try {
+      const c = JSON.parse(raw);
+      const mode: 'search' | 'filter' = c.inputMode === 'filter' ? 'filter' : 'search';
+      const term: string = typeof c.term === 'string' ? c.term : '';
+
+      // Restore both pipeline settings so switching modes later works correctly.
+      this.regexMode       = !!c.searchRegexMode;
+      this.reverseSearch   = !!c.searchReverse;
+      this.filterRegexMode = !!c.filterRegexMode;
+      this.reverseFilter   = !!c.filterReverse;
+
+      // Restore level visibility checkboxes.
+      if (c.filters) {
+        this.filters = {
+          info:  c.filters.info  !== false,
+          warn:  c.filters.warn  !== false,
+          error: c.filters.error !== false,
+          debug: c.filters.debug !== false,
+          trace: c.filters.trace !== false,
+        };
+      }
+
+      // Restore context settings.
+      this.contextMode  = !!c.contextMode;
+      this.contextLines = typeof c.contextLines === 'number' ? c.contextLines : 5;
+
+      // Restore date range filter.
+      this.dateFilterFromStr = typeof c.dateFilterFromStr === 'string' ? c.dateFilterFromStr : '';
+      this.dateFilterToStr   = typeof c.dateFilterToStr   === 'string' ? c.dateFilterToStr   : '';
+      if (this.dateFilterFromStr || this.dateFilterToStr) {
+        this.showDateFilter = true;
+      }
+
+      // Switch to saved mode and apply term.
+      this.inputMode   = mode;
+      this.filterMode  = mode === 'filter';
+      this.unifiedTerm = term;
+
+      // Reset committed guards so the early-return checks inside commitFilter /
+      // commitSearch always fail — otherwise changed date range, level filters,
+      // reverse mode, or context settings would be silently ignored when the
+      // term itself hasn't changed.
+      this._committedFilterTerm      = '';
+      this._committedFilterRegexMode = !this.filterRegexMode;
+      this._committedSearchTerm      = '';
+      this._committedRegexMode       = !this.regexMode;
+
+      if (mode === 'filter') {
+        this.filterTerm = term;
+        this.searchTerm = '';
+        // commitFilter → computeFilteredLines + computeContextBlocks + markForCheck
+        this.commitFilter(term);
+      } else {
+        this.searchTerm = term;
+        this.filterTerm = '';
+        // Rebuild filteredLines with new level + date filters BEFORE searching within them.
+        this.computeFilteredLines();
+        this.computeContextBlocks();
+        // commitSearch → computeSearchMatches on the fresh filteredLines + markForCheck
+        this.commitSearch(term);
+        if (term) { this.logSearch.setTerm(term); } else { this.logSearch.clearTerm(); }
+      }
+      this.cdr.markForCheck();
+    } catch { /**/ }
   }
 
   // ── Unified input handlers ──────────────────────────────────────────────────────────
@@ -1030,12 +1156,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       this.showCopyFeedback(match.id);
     });
 
-    // Push into global search
-    this.searchTerm = match.id;
+    // Push the order ID into the active pipeline without changing inputMode
     this.unifiedTerm = match.id;
-    this.inputMode = 'search';
-    this.commitSearch(match.id);
-    this.logSearch.setTerm(match.id);
+    if (this.inputMode === 'filter') {
+      this.filterTerm = match.id;
+      this.commitFilter(match.id);
+    } else {
+      this.searchTerm = match.id;
+      this.commitSearch(match.id);
+      this.logSearch.setTerm(match.id);
+    }
   }
 
   copiedOrderId: string | null = null;
@@ -1182,6 +1312,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** Navigate to the next or previous individual search-term occurrence.
    *  A single line that contains the term twice counts as two separate stops. */
   jumpToSearchMatch(dir: 'next' | 'prev'): void {
+    this._lastSearchDir = dir;
     const el = this.logBodyRef?.nativeElement;
     const positions = this._searchMatchPositions;
     if (!el || positions.length === 0) return;
@@ -1307,6 +1438,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   get showTzToggle(): boolean {
     const controllerTz = this.timeZone || this.request?.timeZone || '';
     return !!(controllerTz && this.profileTz && this.profileTz !== controllerTz);
+  }
+
+  /** Repeat the last used search direction on Enter — default is 'next'. */
+  onSearchEnter(): void {
+    if (this.inputMode === 'search' && this.searchMatchCount > 0) {
+      this.jumpToSearchMatch(this._lastSearchDir);
+    }
+  }
+
+  /** Toggle context-lines display on/off for filter mode. */
+  toggleContextMode(): void {
+    this.contextMode = !this.contextMode;
+    this.cdr.markForCheck();
   }
 
   formatTimestamp(raw: string): string {
