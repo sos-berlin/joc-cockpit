@@ -71,7 +71,7 @@
             </div>
           </div>
         }
-        @if (!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) {
+        @if (!isRemoved && !isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) {
           <div class="form-group row">
             <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
             <div class="col-md-9">
@@ -110,19 +110,28 @@
           </div>
         }
 
+        @if (operation === 'recall') {
           <div class="form-group row">
-            <div class="col-md-3">
-              <label translate>inventory.label.includeDependencies</label>
-            </div>
+            <div class="col-md-3" translate>inventory.label.keepOrders</div>
             <div class="col-md-9">
-              <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-                <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-                <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-
-              </nz-radio-group>
+              <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
             </div>
           </div>
+        }
+
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.includeDependencies</label>
+          </div>
+          <div class="col-md-9">
+            <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
+              <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
+              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+
+            </nz-radio-group>
+          </div>
+        </div>
 
         @if (dependencyMode !== 'none') {
           <div class="form-group row">

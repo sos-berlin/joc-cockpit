@@ -477,6 +477,7 @@ export class SingleDeployComponent {
   comments: any = {radio: 'predefined'};
   dateFormat: any = {};
   includeLate: boolean = false;
+  keepOrders: boolean = false;
   operation: any
   object: any = {
     store: {draftConfigurations: [], deployConfigurations: []},
@@ -969,7 +970,9 @@ export class SingleDeployComponent {
     };
 
 
-    if ((this.releasable && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) || this.shouldAddOrdersDateFrom()) {
+    if (recall) {
+      obj.keepOrders = this.keepOrders;
+    } else if ((this.releasable && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) || this.shouldAddOrdersDateFrom()) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -2092,6 +2095,7 @@ export class DeployComponent {
   dateFormat: any = '';
   dateObj: any = {};
   includeLate: boolean = false;
+  keepOrders: boolean = false;
   changeObj: any;
   selectedChange: any;
   changesNodes: any = [];
@@ -3353,6 +3357,7 @@ export class DeployComponent {
     };
     if (recall) {
       obj.releasables = [];
+      obj.keepOrders = false;
     } else {
       obj.update = [];
     }
@@ -4293,7 +4298,9 @@ export class DeployComponent {
       includeLate: this.includeLate,
     };
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-    if (this.releasable || this.shouldAddOrdersDateFrom()) {
+    if (this.operation === 'recall') {
+      obj.keepOrders = this.keepOrders;
+    } else if (this.releasable || this.shouldAddOrdersDateFrom()) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {

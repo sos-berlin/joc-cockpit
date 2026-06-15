@@ -65,7 +65,7 @@
         </div>
       }
 
-      @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))) {
+      @if (operation != 'recall' && !isRevoke && !isRemove && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))) {
         <div class="form-group row">
           <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
           <div class="col-md-9">
@@ -106,6 +106,14 @@
           <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+          </div>
+        </div>
+      }
+      @if (operation === 'recall') {
+        <div class="form-group row">
+          <div class="col-md-3" translate>inventory.label.keepOrders</div>
+          <div class="col-md-9">
+            <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
           </div>
         </div>
       }
