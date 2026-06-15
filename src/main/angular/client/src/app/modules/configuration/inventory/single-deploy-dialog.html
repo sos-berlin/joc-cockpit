@@ -104,14 +104,14 @@
           </div>
         }
         <!-- ── Section 2: Scheduling ── -->
-        @if (operation === 'recall' || ((!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
+        @if (operation === 'recall' || (!isRemoved && !isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
              (!isRevoke && !isRemoved && operation != 'recall' && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR') && (showMoreAdvanceOptions || includeLate))) {
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
               <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
             </div>
             <div class="p-a-sm">
-              @if (operation !== 'recall') {
+              @if (operation !== 'recall' && !isRemoved) {
                 <div class="form-group row">
                   <div [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemoved ? 'remove' : releasable ? 'release' : 'deploy') + '.updateDailyPlan') | translate" class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
                   <div class="col-md-9">

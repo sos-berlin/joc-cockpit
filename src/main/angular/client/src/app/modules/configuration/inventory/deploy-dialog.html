@@ -98,63 +98,63 @@
       <!-- ── Section 2: Scheduling ── -->
       @if (nodes.length > 0 && (
       operation === 'recall' ||
-      (!isRevoke && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
+      (!isRevoke && !isRemove && (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) ||
       (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)))) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
           <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
         </div>
         <div class="p-a-sm">
-          @if (operation != 'recall' && !isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object &&
+          @if (operation != 'recall' && !isRevoke && !isRemove && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object &&
           !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' ||
           data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType ==
           'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan)) &&
           (showMoreAdvanceOptions || dailyPlanDate.addOrdersDateFrom !== 'now')) {
-          <div class="form-group row">
-            <div
-              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.updateDailyPlan') | translate"
-              class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
-            <div class="col-md-9">
-              <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-                <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
-                <label nz-radio nzValue="startingFrom"><span
-                    translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-                <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
-              </nz-radio-group>
+            <div class="form-group row">
+              <div
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.updateDailyPlan') | translate"
+                class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+              <div class="col-md-9">
+                <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
+                  <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+                  <label nz-radio nzValue="startingFrom"><span
+                      translate>inventory.addOrdersDateFrom.startingFrom</span></label>
+                  <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+                </nz-radio-group>
+              </div>
             </div>
-          </div>
-          }
-          @if (operation === 'recall') {
-          <div class="form-group row">
-            <div class="col-md-3" translate>inventory.label.keepOrders</div>
-            <div class="col-md-9">
-              <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
-            </div>
-          </div>
           }
           @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-          <div class="form-group row">
-            <label class="col-md-3 form-control-label"
-              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.specificDate') | translate"
-              translate>common.label.specificDate
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-md-6">
-              <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true" [name]="'from'"
-                [dateFormat]="dateFormat" [isAllowClear]="true"
-                [placeholder]="( dateFormat | uppercase )"></app-date-input>
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label"
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.specificDate') | translate"
+                translate>common.label.specificDate
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-md-6">
+                <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true" [name]="'from'"
+                  [dateFormat]="dateFormat" [isAllowClear]="true"
+                  [placeholder]="( dateFormat | uppercase )"></app-date-input>
+              </div>
             </div>
-          </div>
           }
           @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)) {
-          <div class="form-group row">
-            <label
-              [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
-              class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
-            <div class="col-md-6">
-              <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+            <div class="form-group row">
+              <label
+                [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
+                class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+              <div class="col-md-6">
+                <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+              </div>
             </div>
-          </div>
+          }
+          @if (operation === 'recall') {
+            <div class="form-group row">
+              <div class="col-md-3" translate>inventory.label.keepOrders</div>
+              <div class="col-md-9">
+                <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
+              </div>
+            </div>
           }
         </div>
       </div>
