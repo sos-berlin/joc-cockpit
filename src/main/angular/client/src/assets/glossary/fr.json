@@ -1,5 +1,5 @@
 {
-  "_note": "Glossary file for JOC Cockpit — English. Each key is lowercase with hyphens (e.g. 'daily-plan'). Values support markdown including nested ^glossary terms^.",
+  "_note": "Glossary file for JOC Cockpit — French. Each key is lowercase with hyphens (e.g. 'daily-plan'). Values support markdown including nested ^glossary terms^.",
   "glossary": {
     "--------INFRASTRUCTURE------------": "Used by multiple pages",
     "joc-cockpit": "Le **JOC Cockpit** est l'interface utilisateur et le serveur API REST de JS7.\n\nIl sert à gérer l'^Inventaire|inventory^ des ^Workflow^s et des ^Tâches|job^, ainsi qu'à surveiller et contrôler l'exécution des Tâches.\n\nLe JOC Cockpit permet d'accéder à l'Historique des Tâches et aux journaux.\n\nJOC Cockpit peut être utilisé à partir d'une instance autonome ou d'un ^Cluster JOC Cockpit|joc-cockpit-cluster^.",
