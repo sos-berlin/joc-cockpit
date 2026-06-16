@@ -59,7 +59,7 @@
   "PLANNED": "planned",
   "REMOVED": "removed",
   "RUNNING": "running",
-  "PROCESSING":"processing",
+  "PROCESSING": "processing",
   "SETBACK": "setback",
   "SINGLE_AGENT": "standalone_agent",
   "SKIPPED": "skipped",
@@ -515,8 +515,8 @@
     "label.sortBy": "Sort By",
     "label.deleteAllDocument": "Delete all Documentations",
     "label.deleteAllReport": "Delete all Reports",
-    "label.requestApproval" : "Request Approval",
-    "label.approver" : "Approver",
+    "label.requestApproval": "Request Approval",
+    "label.approver": "Approver",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Date Range",
     "label.to": "To",
@@ -839,11 +839,11 @@
     "label.scheduledLate": "Late",
     "label.apiServerStatus": "API Server Status",
     "label.JS7ServerInstanceId": "Instance ID",
-    "label.notSynchronized":"Not synchronized",
-    "label.synchronized":"Synchronized",
-    "label.outstanding":"Outstanding",
-    "label.suspended":"Suspended",
-    "label.productStatus":"Product Status",
+    "label.notSynchronized": "Not synchronized",
+    "label.synchronized": "Synchronized",
+    "label.outstanding": "Outstanding",
+    "label.suspended": "Suspended",
+    "label.productStatus": "Product Status",
     "button.editLayout": "Edit Layout",
     "button.resetLayout": "Reset Layout",
     "button.widget": "Add Widget",
@@ -2675,10 +2675,10 @@
     },
     "approvers": {
       "label": {
-       "addNewApprover": "Add Approver Profile",
-       "firstName": "First Name",
-       "lastName": "Last Name",
-       "email": "E-Mail",
+        "addNewApprover": "Add Approver Profile",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "E-Mail",
         "approversFound": "Approver Profile entries found",
         "approverFound": "Approver Profile entry found"
       },
@@ -3266,7 +3266,7 @@
       "last6Months": "Last 6 Months",
       "lastYear": "Last Year"
     },
-    "button" : {
+    "button": {
       "runReport": "Run Reports",
       "run": "Run",
       "showReport": "Show Report",
@@ -4310,11 +4310,61 @@
     "message.jobResourceNotFound": "Job Resource does not exist any longer"
   },
   "calendar": {
-    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    "daysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "daysMin": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    "monthsShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "days": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "daysShort": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "daysMin": [
+      "Su",
+      "Mo",
+      "Tu",
+      "We",
+      "Th",
+      "Fr",
+      "Sa"
+    ],
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "monthsShort": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ],
     "weekShort": "W",
     "weekStart": 1
   },
