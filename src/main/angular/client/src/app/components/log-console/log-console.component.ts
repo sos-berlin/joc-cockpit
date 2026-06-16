@@ -1936,24 +1936,3 @@ export class LogConsoleModalComponent implements OnInit {
     }
   }
 }
-
-// ─── Viewer modal: wrapper opened after the filter form ─────────────────────
-@Component({
-  standalone: false,
-  selector: 'app-log-console-viewer',
-  templateUrl: './log-console-viewer.component.html'
-})
-export class LogConsoleViewerComponent implements OnInit {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-
-  request!: LogConsoleRequest;
-  title = '';
-
-  constructor(public activeModal: NzModalRef, private translate: TranslateService) {}
-
-  ngOnInit(): void {
-    const data = this.modalData || {};
-    this.request = data.request;
-    this.title   = data.title || this.translate.instant('logConsole.label.systemLogs');
-  }
-}

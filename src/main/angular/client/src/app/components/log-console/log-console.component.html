@@ -6,34 +6,6 @@
     <!-- Row 1: source heading · search · actions -->
     <div class="log-toolbar-row">
 
-      <!-- Source heading -->
-      <div class="log-source-inline">
-        @if (request.type === 'controller') {
-          <span class="log-source-type" translate>logConsole.label.controller</span>
-          @if (request.controllerId) {
-            <span class="log-source-sep">—</span>
-            <span class="log-source-value">{{ request.controllerId }}</span>
-          }
-          @if (request.role) {
-            <span class="log-source-sep">—</span>
-            <span class="log-source-value">{{ request.role }}</span>
-          }
-        }
-        @if (request.type === 'agent') {
-          <span class="log-source-type" translate>logConsole.label.agent</span>
-          @if (request.subagentId) {
-            <span class="log-source-sep">—</span>
-            <span class="log-source-value">{{ request.subagentId }}</span>
-          } @else if (request.agentId) {
-            <span class="log-source-sep">—</span>
-            <span class="log-source-value">{{ request.agentId }}</span>
-          }
-        }
-        @if (request.type === 'joc') {
-          <span class="log-source-type" translate>logConsole.label.joc</span>
-        }
-      </div>
-
       <!-- Search + mode controls -->
       <div class="log-search-area">
 
