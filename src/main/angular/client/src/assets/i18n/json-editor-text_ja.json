@@ -2,9 +2,9 @@
   "array": "Array",
   "auto": "Auto",
   "appendText": "付加",
-  "appendTitle": "このフィールドの後に新規フィールドを\"auto\"型で付加(Ctrl+Shift+Ins)",
+  "appendTitle": "このフィールドの後に新規フィールドを'auto'型で付加(Ctrl+Shift+Ins)",
   "appendSubmenuTitle": "付加するフィールド型を選択",
-  "appendTitleAuto": "新規フィールドを\"auto\"型で付加(Ctrl+Shift+Ins)",
+  "appendTitleAuto": "新規フィールドを'auto'型で付加(Ctrl+Shift+Ins)",
   "ascending": "昇順",
   "actionsMenu": "アクションメニュー表示(Ctrl+M)",
   "collapseAll": "フィールドを畳む",
@@ -16,7 +16,7 @@
   "duplicateField": "このフィールドが重複(Ctrl+D)",
   "empty": "空",
   "expandAll": "フィールドをひらく",
-  "expandTitle": "クリックでこのフィールド畳む/ひらく (Ctrl+E). \n Ctrl+クリックで全フィールド畳む/ひらく",
+  "expandTitle": "クリックでこのフィールド畳む/ひらく (Ctrl+E).\n Ctrl+クリックで全フィールド畳む/ひらく",
   "insert": "挿入",
   "insertTitle": "このフィールドの前に新規フィールドを\"auto\"型で付加 (Ctrl+Ins)",
   "insertSub": "挿入するフィールド型を選択",
@@ -36,8 +36,8 @@
   "openUrl": "Ctrl+Click or Ctrl+Enter 新規ウィンドウでurlをひらく",
   "undo": "取り消し(Ctrl+Z)",
   "validationCannotMove": "フィールドを自分の子に移動できません",
-  "autoType": "\"auto\"型. フィールド型は値からstring, number, boolean, or nullに自動的に決定されます。 ",
-  "objectType": "\"object\"型. オブジェクト型は順序付けのないキー・バリューペアのセットです。",
-  "arrayType": "\"array\"型. 配列は、順序付けられた値の集まりです。",
-  "stringType": "\"string\"型. 値から判断せず、常に文字列として返されます。"
+  "autoType": "'auto'型. フィールド型は値からstring, number, boolean, or nullに自動的に決定されます。 ",
+  "objectType": "'object'型. オブジェクト型は順序付けのないキー・バリューペアのセットです。",
+  "arrayType": "'array'型. 配列は、順序付けられた値の集まりです。",
+  "stringType": "'string'型. 値から判断せず、常に文字列として返されます。"
 }
