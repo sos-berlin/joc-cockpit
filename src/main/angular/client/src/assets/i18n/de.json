@@ -1927,6 +1927,7 @@
     "label.referencedObjects": "Referenzierte Objekte",
     "label.filteredAffectedItems": "Verbundene Objekte",
     "label.includeTodaysLateOrders": "Heutige verspätete Aufträge einschließen",
+    "label.keepOrders": "Aufträge im Tagesplan behalten",
     "label.changes": "Änderungen",
     "label.workflowTags": "Kennz. Arbeitsabläufe",
     "label.jobTags": "Kennz. Jobs",

@@ -1927,6 +1927,7 @@
     "label.referencedObjects": "Objetos referenciados",
     "label.filteredAffectedItems": "Objetos relacionados",
     "label.includeTodaysLateOrders": "Incluir órdenes atrasadas de hoy",
+    "label.keepOrders": "Keep Orders in Daily Plan",
     "label.changes": "Cambios",
     "label.workflowTags": "Etiquetas del Workflow",
     "label.jobTags": "Etiquetas de Job",

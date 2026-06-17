@@ -1927,6 +1927,7 @@
     "label.impactedWorkflows": "影響するワークフロー",
     "label.filteredAffectedItems": "関連するオブジェクト",
     "label.includeTodaysLateOrders": "本日の最新オーダーを含む",
+    "label.keepOrders": "Keep Orders in Daily Plan",
     "label.changes": "変更",
     "label.workflowTags": "ワークフロータグ",
     "label.jobTags": "ジョブタグ",

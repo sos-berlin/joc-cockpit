@@ -1927,6 +1927,7 @@
     "label.referencedObjects": "Objets référencés",
     "label.filteredAffectedItems": "Objets connexes",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
+    "label.keepOrders": "Conserver les Ordres dans le Plan Quotidien",
     "label.changes": "Changements",
     "label.workflowTags": "Tags Workflow",
     "label.jobTags": "Tags Tâche",

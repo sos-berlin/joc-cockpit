@@ -1927,6 +1927,7 @@
     "label.referencedObjects": "Referenced Objects",
     "label.filteredAffectedItems": "Related Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
+    "label.keepOrders": "Keep Orders in Daily Plan",
     "label.changes": "Changes",
     "label.workflowTags": "Workflow Tags",
     "label.jobTags": "Job Tags",
