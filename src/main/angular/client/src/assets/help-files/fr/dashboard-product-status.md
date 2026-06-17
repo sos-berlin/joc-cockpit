@@ -1,6 +1,6 @@
-# Tableau de Bord - État du Produit
+# Tableau de Bord - Statut du Produit
 
-L'affichage *État du Produit* fournit des informations sur les composants JS7 suivants :
+L'affichage *Statu du Produit* fournit des informations sur les composants JS7 suivants :
 
 - **JOC Cockpit** est utilisé pour surveiller et contrôler l'environnement de scheduling et pour gérer l'inventaire des tâches.
 - **Contrôleur** orchestre les Agents et gère le déploiement des Ordres, des Workflows et des Jobs.
@@ -8,20 +8,20 @@ L'affichage *État du Produit* fournit des informations sur les composants JS7 s
 
 Les composants JS7 peuvent être exploités de manière autonome et dans le cadre d'un Clustering actif-passif.
 
-## État des composants et état des connexions
+## Statut des composants et statut des connexions
 
 ### JOC Cockpit
 
 Le JOC Cockpit se connecte à la base de données et aux instances du Contrôleur.
 
-- État du composant
-  - L'état du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du JOC Cockpit.
+- Statut du composant
+  - Le statut du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du JOC Cockpit.
   - **Une tuile de couleur verte** indique que l'instance du JOC Cockpit est en bonne santé.
-  - **Une tuile de couleur rouge** indique un état inconnu. 
-- État de la connexion à la base de données
+  - **Une tuile de couleur rouge** indique un statut inconnu. 
+- Statut de la connexion à la base de données
   - **Une ligne de couleur verte** indique que la connexion est saine.
   - **Une ligne de couleur jaune** indique des problèmes de connexion, par exemple si JOC Cockpit ne reçoit pas de battements de cœur de la base de données.
-- État de la connexion du Contrôleur
+- Statut de la connexion du Contrôleur
   - **Une ligne de couleur verte** indique que la connexion avec le Contrôleur est saine.
   - **Une ligne de couleur rouge** indique un échec de la connexion au Contrôleur.
 
@@ -29,12 +29,12 @@ Le JOC Cockpit se connecte à la base de données et aux instances du Contrôleu
 
 Le Contrôleur se connecte aux instances d'Agents. Dans un Cluster de Contrôleurs, ses membres ont des connexions bidirectionnelles.
 
-- État du composant
-  - L'état du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du Contrôleur.
+- Statut du composant
+  - Le statut du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du Contrôleur.
   - **Une tuile de couleur verte** indique que l'instance du Contrôleur est en bonne santé.
   - **Une tuile de couleur jaune** indique une instance de Contrôleur en cours d'exécution, qui n'est pas en bonne santé, par exemple en cas de défaillance du couplage dans une grappe. 
-  - **La tuile de couleur rouge** indique un état *inconnu*. 
-- État de la connexion à la grappe
+  - **La tuile de couleur rouge** indique un statut *inconnu*. 
+- Statut de la connexion à la grappe
   - **Une ligne de couleur verte** indique que la grappe est en bonne santé et que la synchronisation entre les instances de Contrôleur est active.
   - **Ligne de couleur jaune** indique une connexion à l'instance de Contrôleur d'appariement sans couplage réussi.
   - **La ligne en couleur rouge** indique une connexion défaillante entre les instances de Contrôleur.
