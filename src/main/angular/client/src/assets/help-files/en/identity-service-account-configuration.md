@@ -1,33 +1,33 @@
-# Servicio de Identidad - Configuración de Cuenta
+# Identity Service - Account Configuration
 
-Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
+Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
-Para algunos Servicios de Identidad están disponibles las operaciones para agregar, actualizar y eliminar cuentas, por ejemplo para el [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
+For a number of Identity Services the operations to add, update and delete accounts are available, for example for the [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
 
-## Configuración de Cuenta
+## Account Configuration
 
-Para una cuenta están disponibles las siguientes propiedades:
+For an account the following properties are available:
 
-- **Cuenta** especifica la cuenta que se utiliza para iniciar sesión.
-- **Contraseña** está disponible para el Tipo de Servicio de Identidad *JOC*. La *Contraseña* se aplicará un hash antes de almacenarse en la base de datos. Al iniciar sesión se realiza una operación de hash similar para comparar las contraseñas.
-  - Se puede especificar una *Contraseña* individual. Si se deja vacío, se utilizará la *initial_password* especificada en la página [Configuración - Servicio de Identidad](/settings-identity-service). La *Contraseña* debe cumplir el requisito de *minimum_password_length* de la misma página de Configuración.
-  - Independientemente de la fuente utilizada para la *Contraseña*, en el próximo inicio de sesión el usuario deberá cambiar la *Contraseña* de la cuenta.
-- **Confirmar Contraseña** se utiliza para repetir una *Contraseña* especificada individualmente. Si la propiedad *Contraseña* está vacía, entonces la propiedad *Confirmar Contraseña* también debe estar vacía.
-- **Roles** especifica la lista de [Servicio de Identidad - Roles](/identity-service-roles) asignados a la cuenta.
-- **Forzar Cambio de Contraseña** indica si en el próximo inicio de sesión la cuenta de usuario debe cambiar su *Contraseña*. El cambio de contraseña se impone para evitar el uso continuado de la *Contraseña* especificada individualmente y de la *Contraseña* inicial.
-- Las propiedades disponibles para cuentas existentes incluyen:
-  - **Bloqueado** especifica que la cuenta debe ser añadida a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist) y se le denegará el acceso.
-  - **Deshabilitado** especifica que la cuenta está inactiva y se le denegará el acceso.
+- **Account** specifies the account that is used to login.
+- **Password** is available for the *JOC* Identity Service Type. The *Password* will be hashed before being stored to the database. On login a similar hash operation is performed to compare passwords. 
+  - An individual *Password* can be specified. If left empty, then the *initial_password* specified with the [Settings - Identity Service](/settings-identity-service) page will be used. The *Password* has to match the *minimum_password_length* requirement from the same Settings page.
+  - Whichever source is used for the *Password*, on next login the user has to change the account's *Password*.
+- **Confirm Password** is used to repeat an individually specified *Password*. If the *Password* property is empty, then the *Confirm Password* property must be empty too.
+- **Roles** specifies the list of [Identity Service - Roles](/identity-service-roles) that are assigned the account.
+- **Force Password Change** indicates if on next login the user account must change its *Password*. Password change is enforced to prevent ongoing use of the individually specified *Password* and of the initial *Password*.
+- Properties available for existing accounts include:
+  - **Blocked** specifies that the account should be added to the [Identity Service - Blocklist](/identity-service-blocklist) and will be denied access.
+  - **Disabled** specifies that the account is inactive and is denied access.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
-- [Servicio de Identidad - Roles](/identity-service-roles)
-- [Servicios de Identidad](/identity-services)
-- [Configuración - Servicio de Identidad](/settings-identity-service)
+- [Identity Service - Blocklist](/identity-service-blocklist)
+- [Identity Service - Roles](/identity-service-roles) 
+- [Identity Services](/identity-services)
+- [Settings - Identity Service](/settings-identity-service)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

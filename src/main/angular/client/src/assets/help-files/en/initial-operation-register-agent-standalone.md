@@ -1,38 +1,38 @@
-# Operación Inicial - Registrar Agente Autónomo
+# Initial Operation - Register Standalone Agent
 
-La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit. El registro del Agente ocurre después de completar la [Operación Inicial - Registrar Controlador](/initial-operation-register-controller).
+Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit. Agent registration occurs after [Initial Operation - Register Controller](/initial-operation-register-controller) is completed.
 
-## Registrar Agente Autónomo
+## Register Standalone Agent
 
-Los usuarios deben verificar que las conexiones de red desde el servidor del Controlador al servidor del Agente estén disponibles y que las reglas de firewall permitan conexiones al puerto del Agente.
+Users should verify that network connections from the Controller's server to the Agent's server are available and that firewall rules allow connections to the Agent's port.
 
-La página *Gestionar Controladores/Agentes* está disponible desde el icono de rueda dentada en la barra de menú principal y ofrece la operación *Agregar Agente Autónomo* desde el menú de acción del Controlador. Esto abre la ventana emergente para el registro de un Agente Autónomo.
+The *Manage Controllers/Agents* page is available from the wheel icon in the main menu bar and offers the *Add Standalone Agent* operation from the Controller's action menu. This brings up the pop-up window for registration of a Standalone Agent.
 
-Los usuarios proporcionan los siguientes datos:
+Users provide the following inputs:
 
-- **Agent ID** es el identificador único de un Agente que no puede modificarse durante la vida útil del Agente. El *Agent ID* no es visible en Jobs y Workflows.
-  - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Agente.
-- **Nombre del Agente** es el nombre único de un Agente. Al asignar un Agente a un Job, se utiliza el *Nombre del Agente*.
-  - Sugerencia: Si usa entornos separados para producción y no producción, debería usar el mismo *Nombre del Agente* para ambos. Por eso, ingrese un nombre descriptivo, por ejemplo, para un proceso de negocio como *Facturación*, *Contabilidad*, *Reportes*, etc.
-  - Sugerencia: Cambiar el *Nombre del Agente* posteriormente permite continuar usando el *Nombre del Agente* anterior como *Nombre Alternativo*.
-- **Título** es una descripción que puede agregarse para un Agente.
-- **Nombres Alternativos** son nombres alternativos para el mismo Agente. Al asignar un Agente a un Job, también se ofrecerán los *Nombres Alternativos*. Los *Nombres Alternativos* pueden usarse, por ejemplo, si un entorno de pruebas incluye menos Agentes que el entorno de producción: para mantener las asignaciones de Agentes sin cambios entre entornos, los Agentes faltantes se mapean desde los *Nombres Alternativos* del mismo Agente.
-- **URL** espera la URL compuesta por protocolo, host y puerto que usa el Controlador para conectarse al Agente, por ejemplo http://localhost:4445.
-  - La URL comienza con el protocolo *http* si el Agente usa HTTP simple. Se usa el protocolo *https* si el Agente está configurado para HTTPS.
-  - El nombre de host puede ser *localhost* si el Agente está instalado en la misma máquina que el Controlador. De lo contrario, se debe especificar el FQDN del host del Agente.
-  - El *puerto* del Agente se determina durante la instalación.
+- **Agent ID** is the unique identifier of an Agent that cannot be changed during the Agent's lifetime. The *Agent ID* is not visible with Jobs and Workflows.
+  - Hint: Use a unique name such as the FQDN of the host and the port of the Agent.
+- **Agent Name** is the unique name of an Agent. When assigning a Job an Agent then the *Agent Name* is used.
+  - Hint: If you use separate environments for production and non-production, you should use the same *Agent Name* for both. Therefore, enter a descriptive name, e.g., for a business process such as *Invoicing*, *Accounting*, *Reporting*, etc.
+  - Hint: Changing the *Agent Name* later on offers continuing use of the previous *Agent Name* from an *Alias Name*.
+- **Title** is a description that can be added for an Agent.
+- **Alias Names** are alternative names for the same Agent. When assigning a Job an Agent, then *Alias Names* will be offered too. *Alias Names* can be used for example, if a test environment includes fewer Agents than the production environment: to keep Agent assignments unchanged between environments, the missing Agents are mapped from *Alias Names* of the same Agent.
+- **URL** expects the URL from protocol, host and port used by the Controller to connect to the Agent, for example http://localhost:4445.
+  - The URL starts from the *http* protocol if the Agent makes use of plain HTTP. The *https* protocol is used, if the Agent is configured for HTTPS.
+  - The hostname can be *localhost* if the Agent is installed on the same machine as the Controller. Otherwise the FQDN of the Agent's host should be specified.
+  - The Agent's *port* is determined during installation. 
 
-Tras el registro exitoso, el Agente se mostrará en la vista [Recursos - Agentes](/resources-agents).
+After successful registration the Agent will be displayed from the [Resources - Agents](/resources-agents) view.
 
-## Referencias
+## References
 
-### Ayuda de Contexto
+### Context Help
 
-- [Panel de Control - Estado del Producto](/dashboard-product-status)
-- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
-- [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
+- [Dashboard - Product Status](/dashboard-product-status)
+- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
+- [Initial Operation - Register Controller](/initial-operation-register-controller)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - How to troubleshoot Agent Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Agent+Initial+Operation)
 - [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)

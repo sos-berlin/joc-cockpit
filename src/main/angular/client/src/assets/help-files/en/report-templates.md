@@ -1,92 +1,92 @@
-# Plantillas de Reportes
+# Report Templates
 
-## Plantilla de Reporte: Los n Workflows con mayor/menor número de ejecuciones fallidas
+## Report Template: Top n Workflows with highest/lowest number of failed executions
 
-La Plantilla de Reporte cuenta las ejecuciones fallidas de Workflows:
+The Report Template counts failed Workflow executions:
 
-- Una ejecución de Workflow se considera fallida si la Orden abandona el Workflow con un resultado no exitoso, por ejemplo si una Orden es cancelada o si se usa una [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction) indicando un resultado no exitoso.
-- Una ejecución de Workflow no se considera fallida solo porque algún Job haya fallado, por ejemplo si se usa una [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction) y un reintento posterior del Job tiene éxito. En cambio, se considera el estado del historial resultante de una Orden.
+- A Workflow execution is considered being failed if the Order leaves the Workflow with an unsuccessful outcome, for example if an Order is cancelled or if a [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction) is used indicating unsuccessful outcome.
+- A Workflow execution is not considered being failed just because some Job failed, for example if a [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction) is used a later retry of a Job can be successful. Instead, the resulting history status of an Order is considered.
 
-## Plantilla de Reporte: Los n Jobs con mayor/menor número de ejecuciones fallidas
+## Report Template: Top n Jobs with highest/lowest number of failed executions
 
-La Plantilla de Reporte cuenta las ejecuciones fallidas de Jobs.
+The Report Template counts failed Job executions.
 
-- La ejecución de un Job de Shell se considera fallida basándose en el código de salida del Job y opcionalmente en la salida al canal stderr.
-- La ejecución de un Job de JVM se considera fallida basándose en el resultado del Job, que puede contener excepciones.
+- Shell Job execution is considered being failed based on a Job's exit code and optionally output to the stderr channel.
+- JVM Job execution is considered being failed based on the Job's outcome that can hold exceptions.
 
-## Plantilla de Reporte: Los n Agentes con mayor/menor número de ejecuciones paralelas de Jobs
+## Report Template: Top n Agents with highest/lowest number of parallel Job execution
 
-La Plantilla de Reporte cuenta las ejecuciones paralelas de Jobs con Agentes. Un Job1 se considera paralelo al Job2 si
+The Report Template counts parallel Job executions with Agents. A Job1 is considered in parallel to Job2 if
 
-- Job1 inicia después de que Job2 ha iniciado y antes de que Job2 finalice, o
-- Job1 finaliza después de que Job2 ha iniciado y antes de que Job2 finalice.
+- Job1 starts after Job2 has started and before Job2 will end or
+- Job1 ends after Job2 is started and before Job2 will end.
 
-## Plantilla de Reporte: Los n Jobs de alta criticidad con mayor/menor número de ejecuciones fallidas
+## Report Template: Top n high criticality Jobs with highest/lowest number of failed executions
 
-La Plantilla de Reporte cuenta las ejecuciones fallidas de Jobs con criticidad crítica. La criticidad es un atributo del Job, véase JS7 - Job Instruction.
+The Report Template counts failed executions of Jobs with criticality critical. The criticality is a Job attribute, see JS7 - Job Instruction.
 
-El conteo se realiza de manera similar a la Plantilla de Reporte: Los n Jobs con mayor/menor número de ejecuciones fallidas.
+Counting is performed similar to Report Template: Top n Jobs with highest/lowest number of failed executions.
 
-## Plantilla de Reporte: Los n Workflows con mayor/menor número de ejecuciones fallidas por Órdenes canceladas
+## Report Template: top n Workflows with highest/lowest number of failed executions for cancelled Orders
 
-La Plantilla de Reporte cuenta las ejecuciones fallidas de Workflows debidas a Órdenes que han sido canceladas.
+The Report Template counts failed Workflow executions due to Orders that have been cancelled.
 
-La operación *cancelar* es aplicada a una Orden por intervención del usuario.
+The *cancel* operation is applied to an Order by user intervention .
 
-## Plantilla de Reporte: Los n Workflows con mayor/menor necesidad de tiempo de ejecución
+## Report Template: Top n Workflows with highest/lowest need for execution time
 
-La Plantilla de Reporte considera la duración de las ejecuciones exitosas de Workflows. Las ejecuciones fallidas de Workflows no se consideran.
+The Report Template considers the duration of successful Workflow executions. Failed Workflow executions will not be considered.
 
-## Plantilla de Reporte: Los n Jobs con mayor/menor necesidad de tiempo de ejecución
+## Report Template: Top n Jobs with highest/lowest need for execution time
 
-La Plantilla de Reporte considera la duración de las ejecuciones exitosas de Jobs. Las ejecuciones fallidas de Jobs no se consideran.
+The Report Template considers the duration of successful Job executions. Failed Job executions will not be considered.
 
-## Plantilla de Reporte: Los n períodos con mayor/menor número de ejecuciones de Jobs
+## Report Template: Top n periods with highest/lowest number of Job executions
 
-La Plantilla de Reporte divide el Período de Reporte en pasos. La duración de un paso está determinada por la configuración *Duración del Paso* en la [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). El inicio del siguiente paso está determinado por la configuración "Superposición del Paso" en la Configuración de Reporte.
+The Report Template divides the Reporting Period into steps. The duration of a step is determined by the *Step Duration* setting in the [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). The start of the next step is determined by the "Step Overlap" setting in the Report Configuration.
 
-Ejemplo:
+Example: 
 
-- Duración del Paso: 5m
-- Superposición del Paso: 2m
+- Step Duration: 5m
+- Step Overlap: 2m
   - 00:00-00:05
   - 00:02-00:07
   - 00:04-00:09
 
-El número de Jobs en ejecución se cuenta por paso.
+The number of Jobs in execution is counted per step.
 
-## Plantilla de Reporte: Los n períodos con mayor/menor número de ejecuciones de Workflows
+## Report Template: Top n periods with highest/lowest number of Workflows executions
 
-La Plantilla de Reporte divide el *Período de Reporte* en pasos. La duración de un paso está determinada por la configuración *Duración del Paso* en la [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). El inicio del siguiente paso está determinado por la configuración *Superposición del Paso* en la Configuración de Reporte.
+The Report Template divides the *Reporting Period *into steps. The duration of a step is determined by the *Step Duration* setting in the [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). The start of the next step is determined by the *Step Overlap* setting in the Report Configuration.
 
-El número de Órdenes en ejecución se cuenta por paso.
+The number of Orders in execution is counted per step.
 
-## Plantilla de Reporte: Los n Jobs con mayor/menor número de ejecuciones exitosas
+## Report Template: Top n Jobs with highest/lowest number of successful executions
 
-La Plantilla de Reporte cuenta los Jobs que se completaron exitosamente. Los Jobs fallidos no se consideran.
+The Report Template counts Jobs that completed successfully. Failed Jobs are not considered.
 
-Para posibles causas de falla de Jobs, véase Plantilla de Reporte: Los n Jobs con mayor/menor número de ejecuciones fallidas.
+For possible reasons of Job failure see Report Template: Top n Jobs with highest/lowest number of failed executions.
 
-## Plantilla de Reporte: Los n Workflows con mayor/menor número de ejecuciones exitosas
+## Report Template: Top n Workflows with highest/lowest number of successful executions
 
-La Plantilla de Reporte cuenta los Workflows que se completaron exitosamente. Las ejecuciones fallidas de Workflows no se consideran.
+The Report Template counts Workflows that completed successfully. Failed Workflow executions are not considered.
 
-Para causas de falla de Workflows, véase *Plantilla de Reporte: Los n Workflows con mayor/menor número de ejecuciones fallidas*.
+For reasons of Workflow failure see *Report Template: Top n Workflows with highest/lowest number of failed executions*.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Reportes](/configuration-inventory-reports)
-- [Reportes](/reports)
-- [Reporte - Creación](/report-creation)
-- [Reporte - Historial de Ejecución](/report-run-history)
+- [Configuration - Inventory - Reports](/configuration-inventory-reports)
+- [Reports](/reports)
+- [Report - Creation](/report-creation)
+- [Report - Run History](/report-run-history)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
-- Reportes
+- Reports
   - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)
   - [JS7 - Reports - Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Templates)
-- Instrucciones de Workflow
+- Workflow Instructions
   - [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction)
   - [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction)

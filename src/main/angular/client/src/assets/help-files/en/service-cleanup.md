@@ -1,40 +1,40 @@
-# Servicio de Limpieza
+# Cleanup Service
 
-El Servicio de Limpieza depurará la [JS7 - Database](https://kb.sos-berlin.com/display/JS7/JS7+-+Database) de registros desactualizados.
+The Cleanup Service will purge the [JS7 - Database](https://kb.sos-berlin.com/display/JS7/JS7+-+Database) from outdated records.
 
-Esto incluye datos de las siguientes fuentes:
+This includes data from the following sources:
 
-- [Historial de Órdenes](/history-orders)
-- [Historial de Tareas](/history-tasks)
-- [Historial de Transferencia de Archivos](/history-file-transfers)
-- [Plan Diario](/daily-plan)
-- [Registro de Auditoría](/audit-log)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
+- [File Transfer History](/history-file-transfers)
+- [Daily Plan](/daily-plan)
+- [Audit Log](/audit-log)
 
-Por cada Job ejecutado durante el día se creará una entrada en el *Historial de Tareas*, de manera similar para el *Historial de Órdenes*. Dependiendo del número de Jobs diarios, esto puede acumularse en grandes cantidades.
+For each Job executed during the day an entry in the *Task History* will be created, similarly for the *Order History*. Depending on the number of daily Jobs this can add up to huge numbers.
 
-- Los usuarios deben considerar las políticas de retención de logs aplicables, es decir, el período durante el cual el historial de ejecución de Jobs y los logs deben mantenerse por requisitos legales y de cumplimiento.
-- Una base de datos no puede crecer indefinidamente. El uso de un DBMS de alto rendimiento puede permitir tener 100 millones de registros en una tabla de *Historial de Tareas*. Sin embargo, esto tiende a ser perjudicial para el rendimiento y puede no ser necesario. Depurar la base de datos es una medida razonable para un funcionamiento fluido. Las medidas adicionales para el mantenimiento de la base de datos, como la recreación de índices, son responsabilidad del usuario.
+- Users should consider applicable log retention policies, i.e. the period for which the job execution history and logs must be maintained by legal requirements and by compliance requirements.
+- A database cannot grow indefinitely. Using a performant DBMS might allow having 100 million records in a *Task History* table. However, this tends to be detrimental for performance and might not be required. Purging the database is a reasonable measure for smooth operations. Additional measures for database maintenance such as recreating indexes are the responsibility of the user.
 
-El Servicio de Limpieza se inicia según su configuración y puede iniciarse en la vista del Panel de Control desde el recuadro de la instancia activa del JOC Cockpit que ofrece la operación *Ejecutar Servicio - Servicio de Limpieza*.
+The Cleanup Service is started based on its settings and it can be started in the Dashboard view from the active JOC Cockpit instances' rectangle offering the *Run Service - Cleanup Service* operation.
 
-<img src="dashboard-run-cleanup-service.png" alt="Ejecutar Servicio de Limpieza" width="750" height="280" />
+<img src="dashboard-run-cleanup-service.png" alt="Run Cleanup Service" width="750" height="280" />
 
-## Configuración del Servicio de Limpieza
+## Cleanup Service Settings
 
-Para detalles de configuración del Servicio de Limpieza, véase [Configuración - Limpieza](/settings-cleanup).
+For Cleanup Service configuration details see [Settings - Cleanup](/settings-cleanup).
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Registro de Auditoría](/audit-log)
-- [Plan Diario](/daily-plan)
-- [Historial de Transferencia de Archivos](/history-file-transfers)
-- [Historial de Órdenes](/history-orders)
-- [Historial de Tareas](/history-tasks)
-- [Configuración - Limpieza](/settings-cleanup)
+- [Audit Log](/audit-log)
+- [Daily Plan](/daily-plan)
+- [File Transfer History](/history-file-transfers)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
+- [Settings - Cleanup](/settings-cleanup)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Cleanup Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Cleanup+Service)
 - [JS7 - Database](https://kb.sos-berlin.com/display/JS7/JS7+-+Database)

@@ -1,77 +1,77 @@
-# Operación Inicial - Registrar Controlador
+# Initial Operation - Register Controller
 
-La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit.
+Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit.
 
-El uso de un Clúster de Controladores está sujeto a los acuerdos de la [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
+Operation of a Controller Cluster is subject to the agreements of the [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
-- Uso del Controlador Autónomo:
-  - disponible para titulares de licencia Open Source y para titulares de licencia comercial.
-- Uso del Clúster de Controladores:
-  - disponible para titulares de licencia comercial,
-  - para más detalles, consulte [JS7 - Management of Controller Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Controller+Clusters)
+- Use of Standalone Controller:
+  - available to Open Source License holders and to commercial license holders.
+- Use of Controller Cluster:
+  - available to commercial license holders,
+  - for details see [JS7 - Management of Controller Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Controller+Clusters)
 
-Para un Controlador Autónomo, la Operación Inicial incluye
+For a Standalone Controller initial operation includes
 
-- registrar un Controlador Autónomo,
-- registrar Agentes; consulte [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone) y [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
+- registering a Standalone Controller,
+- registering Agents, see [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone) and [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
 
-Para un Clúster de Controladores, la Operación Inicial incluye
+For a Controller Cluster initial operation includes
 
-- registrar un Clúster de Controladores,
-- registrar Agentes Autónomos o Clústeres de Agentes.
+- registering a Controller Cluster,
+- registering Standalone Agents or Cluster Agents.
 
-## Registrar Controlador
+## Register Controller
 
-Tras el primer inicio de sesión, se muestra una ventana emergente que ofrece registrar un Controlador. La ventana emergente también está disponible desde el icono de rueda dentada en la barra de menú principal seleccionando la página *Gestionar Controladores/Agentes*.
+After first login a pop-up window is displayed that offers registering a Controller. The pop-up window similarly is available from the wheel icon in the main menu bar selecting the *Manage Controllers/Agents* page.
 
-La ventana emergente ofrece el registro de un Controlador Autónomo. El registro de un Clúster de Controladores se ofrece si hay una clave de licencia JS7 vigente para JOC Cockpit. Haciendo clic en el logo de JS7 en la esquina superior izquierda de la GUI del JOC Cockpit se mostrará el tipo de licencia en uso.
+The pop-up window offers registration of a Standalone Controller. Registration of a Controller Cluster is offered if a JS7 license key is in place for JOC Cockpit. Clicking the JS7 logo in the upper-left corner of the JOC Cockpit GUI will display the license type in use.
 
-Los usuarios deben verificar que las conexiones de red desde el servidor del JOC Cockpit al servidor del Controlador estén disponibles y que las reglas de firewall permitan las conexiones.
+Users should verify that network connections from JOC Cockpit's server to the Controller's server are available and that firewall rules allow connections.
 
-Tras el registro exitoso, las instancias del Controlador se mostrarán en la vista del *Panel de Control*.
+After successful registration Controller instances will be displayed from the *Dashboard* view.
 
-### Registrar Controlador Autónomo
+### Register Standalone Controller
 
-Los usuarios proporcionan los siguientes datos:
+Users provide the following inputs:
 
-- **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
-- **Conexión de JOC Cockpit al Controlador** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador, por ejemplo http://localhost:4444.
-  - La URL comienza con el protocolo *http* si el Controlador usa HTTP simple. Se usa el protocolo *https* si el Controlador está configurado para HTTPS.
-  - El nombre de host puede ser *localhost* si el Controlador está instalado en la misma máquina que JOC Cockpit. De lo contrario, se debe especificar el FQDN del host del Controlador.
-  - El *puerto* del Controlador se determina durante la instalación.
+- **Caption** is the title of the Controller that will be displayed with the Controller's rectangle in the [Dashboard - Product Status](/dashboard-product-status) panel.
+- **JOC Cockpit Connection to Controller** expects the URL from protocol, host and port used by JOC Cockpit to connect to the Controller, for example http://localhost:4444.
+  - The URL starts from the *http* protocol if the Controller makes use of plain HTTP. The *https* protocol is used, if the Controller is configured for HTTPS.
+  - The hostname can be *localhost* if the Controller is installed on the same machine as JOC Cockpit. Otherwise the FQDN of the Controller's host should be specified.
+  - The Controller's *port* is determined during installation. 
 
-Cuando se envía la información de registro, JOC Cockpit establecerá una conexión con el Controlador Autónomo.
+When the registration information is submitted, JOC Cockpit will establish a connection to the Standalone Controller.
 
-### Registrar Clúster de Controladores
+### Register Controller Cluster
 
-Los prerequisitos antes de la instalación incluyen:
+Prerequisites before installation include:
 
-- JOC Cockpit y todas las instancias del Controlador deben estar equipados con una clave de licencia JS7 válida.
-- El Controlador Secundario debe tener en su archivo ./config/controller.conf la configuración: *js7.journal.cluster.node.is-backup = yes*
-- Ambas instancias del Controlador Primario y Secundario deben estar activas y en funcionamiento.
+- JOC Cockpit and all Controller instances must be equipped with a valid JS7 license key.
+- The Secondary Controller must hold in its ./config/controller.conf file the setting: *js7.journal.cluster.node.is-backup = yes*
+- Both Primary and Secondary Controller instances must be up and running.
 
-Los usuarios proporcionan los siguientes datos:
+Users provide the following inputs:
 
-- **Controlador Primario** es la instancia del Controlador que inicialmente tendrá asignado el rol activo. El rol activo puede cambiarse posteriormente.
-  - **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
-  - **Conexión de JOC Cockpit al Controlador Primario** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador Primario, por ejemplo http://primary-server:4444.
-  - **Conexión del Controlador Secundario al Controlador Primario** en la mayoría de las situaciones es la misma que la *Conexión de JOC Cockpit al Controlador Primario*. Se aplica una URL diferente si se opera un Servidor Proxy entre el Controlador Primario y el Secundario. Esta URL es usada por el Controlador Secundario para conectarse al Controlador Primario.
-- **Controlador Secundario** es la instancia del Controlador que inicialmente tendrá asignado el rol En espera.
-  - **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
-  - **Conexión de JOC Cockpit al Controlador Secundario** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador Secundario, por ejemplo http://secondary-server:4444.
-  - **Conexión del Controlador Primario al Controlador Secundario** en la mayoría de las situaciones es la misma que la *Conexión de JOC Cockpit al Controlador Secundario*. Se aplica una URL diferente si se opera un Servidor Proxy entre el Controlador Primario y el Secundario. Esta URL es usada por el Controlador Primario para conectarse al Controlador Secundario.
+- **Primary Controller** is the Controller instance that initially will be assigned the active role. The active role can be switched later on.
+  - **Caption** is the title of the Controller that will be displayed with the Controller's rectangle in the [Dashboard - Product Status](/dashboard-product-status) panel.
+  - **JOC Cockpit Connection to Primary Controller** expects the URL from protocol, host and port used by JOC Cockpit to connect to the Primary Controller, for example http://primary-server:4444.
+  - **Secondary Controller connection to Primary Controller** in most situations is the same as *JOC Cockpit Connection to Primary Controller*. A different URL is applied if a Proxy Server is operated between Primary and Secondary Controller. The URL is used by the Secondary Controller to connect to the Primary Controller.
+- **Secondary Controller** is the Controller instance that initially will be assigned the standby role.
+  - **Caption** is the title of the Controller that will be displayed with the Controller's rectangle in the [Dashboard - Product Status](/dashboard-product-status) panel.
+  - **JOC Cockpit Connection to Secondary Controller** expects the URL from protocol, host and port used by JOC Cockpit to connect to the Secondary Controller, for example http://secondary-server:4444.
+  - **Primary Controller connection to Secondary Controller** in most situations is the same as *JOC Cockpit Connection to Secondary Controller*. A different URL is applied if a Proxy Server is operated between Primary and Secondary Controller. The URL is used by the Primary Controller to connect to the Secondary Controller.
 
-Cuando se envía la información de registro, JOC Cockpit establecerá una conexión con ambas instancias, la del Controlador Primario y la del Controlador Secundario.
+When the registration information is submitted, JOC Cockpit will establish a connection to both Primary and Secondary Controller instances.
 
-## Referencias
+## References
 
-### Ayuda de Contexto
+### Context Help
 
-- [Panel de Control - Estado del Producto](/dashboard-product-status)
-- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
-- [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone)
+- [Dashboard - Product Status](/dashboard-product-status)
+- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster)
+- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - How to troubleshoot Controller Cluster Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Controller+Cluster+Initial+Operation)
 - [JS7 - Initial Operation for Controller Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Initial+Operation+for+Controller+Cluster)

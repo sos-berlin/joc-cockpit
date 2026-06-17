@@ -1,53 +1,53 @@
-# Creación de Reportes
+# Report Creation
 
-Los [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) ofrecen información sobre la ejecución pasada de Workflows y Jobs:
+The [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offer insight from past execution of Workflows and Jobs:
 
-- Los Reportes se crean a partir de [Plantillas de Reportes](/report-templates) predefinidas que se parametrizan desde [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- Los usuarios ejecutan Reportes desde la vista *Creación de Reportes* o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecución](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
-- Los Reportes se visualizan en la vista [Reportes](/reports).
+- Reports are created from predefined [Report Templates](/report-templates) that are parameterized from [Configuration - Inventory - Reports](/configuration-inventory-reports).
+- Users run Reports from the *Report Creation* view or by [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). The  [Report - Run History](/report-run-history) view provides evidence about past Report runs.
+- Reports are visualized in the [Reports](/reports) view.
 
-## Visualización de Configuraciones de Reportes
+## Display of Report Configurations
 
-Los Reportes se configuran con la vista [Configuración - Inventario - Reportes](/configuration-inventory-reports).
+Reports are configured with the [Configuration - Inventory - Reports](/configuration-inventory-reports) view.
 
-Las Configuraciones de Reportes están disponibles
+Reports Configurations are available 
 
-- desde el *Panel de Carpetas* que ofrece navegación hacia las Configuraciones de Reportes.
-- desde el *Panel de Configuración de Reporte* que muestra los detalles de la Configuración de Reporte seleccionada.
+- from the *Folder Panel* that offers navigation to Report Configurations.
+- from the *Report Configuration Panel* that shows details of the selected Report Configuration.
 
-### Panel de Carpetas
+### Folder Panel
 
-El panel ofrece navegación a través de las carpetas del inventario que contienen Configuraciones de Reportes:
+The panel offers navigation through inventory folders that hold Report Configurations:
 
-- Seleccionar una carpeta muestra las Configuraciones de Reportes disponibles en el *Panel de Configuración de Reporte*.
-- Hacer clic en el ícono *chevron-down* de una carpeta determinada mostrará las Configuraciones de Reportes en la carpeta actual y en las subcarpetas de forma recursiva.
-- Hacer clic en el ícono *chevron-up* contraerá la carpeta actual.
+- Selecting a folder displays available Report Configurations in the *Report Configuration Panel*.
+- Clicking the *chevron-down* icon for a given folder will display Report Configurations in the current folder and sub-folders recursively.
+- Clicking the *chevron-up* icon will collapse the current folder.
 
-### Panel de Configuración de Reporte
+### Report Configuration Panel
 
-El panel muestra las Configuraciones de Reportes disponibles en la carpeta actualmente seleccionada. Las Configuraciones de Reportes se muestran con las siguientes propiedades:
+The panel displays Report Configurations available from the currently selected folder. Report Configurations are displayed with the following properties:
 
-- **Nombre** indica el nombre único de una Configuración de Reporte tal como se especificó desde la vista [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- **Plantilla de Reporte** indica la [Plantilla de Reporte](/report-templates) en uso.
-- **Frecuencias** indica las *Frecuencias del Reporte* que dividen el *Período del Reporte* en unidades iguales.
-- **Mes Desde**, **Mes Hasta** indica el inicio y el fin del *Período del Reporte*.
+- **Name** indicates the unique name of a Report Configuration as specified from the [Configuration - Inventory - Reports](/configuration-inventory-reports) view.
+- **Report Template** indicates the [Report Template](/report-templates) in use.
+- **Frequencies** indicates the *Report Frequencies* that divide the *Report Period* into equal units.
+- **Month From**, **Month To** indicates begin and end of the *Report Period*.
 
-## Crear Reportes
+## Creating Reports
 
-Los Reportes pueden crearse desde el menú de acción de 3 puntos de una Configuración de Reporte usando la operación *Ejecutar Reportes*.
+Reports can be created from a Report Configuration's 3-dots action menu using the *Run Reports* operation.
 
-Los usuarios pueden seleccionar varias Configuraciones de Reportes y aplicar la operación masiva *Ejecutar Reportes* disponible desde un botón en la esquina superior derecha de la pantalla.
+Users can select a number of Report Configurations and apply the *Run Reports* bulk operation available from a button in the upper-right corner of the screen.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Reportes](/configuration-inventory-reports)
-- [Reportes](/reports)
-- [Reporte - Historial de Ejecución](/report-run-history)
-- [Plantillas de Reportes](/report-templates)
+- [Configuration - Inventory - Reports](/configuration-inventory-reports)
+- [Reports](/reports)
+- [Report - Run History](/report-run-history)
+- [Report Templates](/report-templates)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)

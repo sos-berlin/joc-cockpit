@@ -1,69 +1,69 @@
-# Operación Inicial - Clúster de Subagentes
+# Initial Operation - Subagent Cluster
 
-La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit. El registro de un Clúster de Subagentes ocurre después de completar la [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
+Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit. Registration of a Subagent Cluster occurs after [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster) is completed.
 
-## Clúster de Subagentes
+## Subagent Cluster
 
-La configuración de un Clúster de Subagentes incluye
+Configuration of a Subagent Cluster includes
 
-- la *Selección* de Agentes Directores y Subagentes en un Clúster de Agentes
-- la *Secuencia* en la que operarán los Subagentes
-  - *activo-pasivo*: solo se utilizará el primer Subagente para la ejecución de Jobs. Si el Subagente no está disponible, se utilizará el siguiente. Para más detalles, consulte [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
-  - *activo-activo*: cada Job siguiente se ejecutará con el siguiente Subagente. Esto significa que todos los Subagentes seleccionados están involucrados. Para más detalles, consulte [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
-  - *basado en métricas*: basándose en reglas como el consumo de CPU y memoria, se seleccionará el siguiente Subagente para la ejecución de Jobs. Para más detalles, consulte [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
+- the *Selection* of Director Agents and Subagents in an Agent Cluster
+- the *Sequence* in which Subagents will be operated
+  - *active-passive*: only the first Subagent will be used for job execution. If the Subagent is unavailable, then the next Subagent will be used. For details see [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
+  - *active-active*: each next Job will be executed with the next Subagent. This means that all selected Subagents are involved. For details see - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
+  - *metrics-based*: based on rules such as CPU and memory consumption, the next Subagent will be selected for job execution. For details see [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
-### Selección de Agentes
+### Selection of Agents
 
-En el panel izquierdo, los usuarios encuentran la lista de Subagentes, incluidos los Agentes Directores, disponibles para selección.
+In the left panel users find the list of Subagents including Director Agents that are available for selection.
 
-Los Subagentes pueden arrastrarse y soltarse al panel derecho en el área de arrastre correspondiente. Para deseleccionar un Subagente, puede arrastrarse y soltarse en el panel derecho al área de arrastre indicada como *Soltar aquí para eliminar Subagente*.
+Subagents can be dragged & dropped to the right panel into the related drag area. To unselect a Subagent, it can be dragged & dropped in the right panel to the drag area indicated *Drop here to remove Subagent*.
 
-### Secuencia de Agentes
+### Sequence of Agents
 
-La secuencia de Subagentes determina el tipo de clúster:
+The sequence of Subagents determines the type of cluster:
 
-#### Clúster de Subagentes Activo-Pasivo
+#### Active-passive Subagent Cluster
 
-Los Subagentes se arrastran y sueltan en la *misma columna*:
+Subagents are dragged & dropped to the *same column*:
 
-- Los Subagentes en la misma columna especifican un clúster activo-pasivo (prioridad fija) en el que el primer Subagente se utilizará para cualquier Job mientras esté disponible. Solo cuando el primer Subagente no esté disponible, se utilizará el siguiente.
-- Para más detalles, consulte [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
+- Subagents in the same column specify an active-passive cluster (fixed-priority) in which the first Subagent will be used for any jobs as long as it is available. Only when the first Subagent is unavailable, then the next Subagent will be used.
+- For details see [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
 
-#### Clúster de Subagentes Activo-Activo
+#### Active-active Subagent Cluster
 
-Los Subagentes se arrastran y sueltan en la *misma fila*:
+Subagents are dragged & dropped to the *same row*:
 
-- Los Subagentes en la misma fila especifican un clúster activo-activo (Round-robin) en el que cada Job siguiente se ejecutará con el siguiente Subagente.
-- Para más detalles, consulte [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
+- Subagents in the same row specify an active-active cluster (round-robin) in which each next job will be executed with the next Subagent.
+- For details see [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
 
-#### Clúster de Subagentes Basado en Métricas
+#### Metrics-based Subagent Cluster
 
-Los Subagentes se arrastran y sueltan en la *misma fila* y se les asigna una *Prioridad Basada en Métricas*:
+Subagents are dragged & dropped to the *same row* and are assigned a *Metrics-based Priority*:
 
-- Los Subagentes en la misma fila especifican una prioridad basada en métricas:
-    - Al pasar el ratón sobre el recuadro del Subagente, se muestra su menú de acción de 3 puntos: la acción *Prioridad Basada en Métricas* permite especificar la prioridad mediante una expresión.
-- Para más detalles, consulte [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
+- Subagents in the same row specify a metrics based priority:
+    - Hovering the mouse on the Subagent's rectangle offers its 3-dots action menu: the *Metrics-based Priority* action allows specifying the priority from an expression.
+- For details see [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
-Expresiones para prioridades basadas en métricas:
+Expressions for metric-based priorities:
 
-| Variable Indicadora | Métrica |
+| Indicator Variable | Metric |
 | ----- | ----- |
-| $js7SubagentProcessCount | Número de procesos ejecutándose con el Subagente. |
-| $js7ClusterSubagentProcessCount | Número de procesos para el Clúster de Subagentes dado que se ejecutan con el Subagente. |
-|      | Los siguientes indicadores están disponibles según se explica en https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html |
-| $js7CpuLoad | Devuelve el "uso reciente de CPU" para el entorno operativo. Este valor es un double en el intervalo [0.0,1.0]. Un valor de 0.0 significa que todas las CPUs estuvieron inactivas durante el período reciente observado, mientras que un valor de 1.0 significa que todas las CPUs estuvieron activamente al 100% del tiempo durante el período reciente observado. Todos los valores entre 0.0 y 1.0 son posibles dependiendo de las actividades en curso. Si el uso reciente de CPU no está disponible, el método devuelve un valor negativo. Un valor negativo se reporta como faltante. La carga de CPU no está disponible para MacOS y se reporta como faltante. |
-| $js7CommittedVirtualMemorySize | Devuelve la cantidad de memoria virtual que se garantiza estar disponible para el proceso en ejecución en bytes, o -1 si esta operación no es compatible. Un valor negativo se reporta como faltante. |
-| $js7FreeMemorySize | Devuelve la cantidad de memoria libre en bytes. |
-| $js7TotalMemorySize | Devuelve la cantidad total de memoria en bytes. |
+| $js7SubagentProcessCount | Number of processes running with the Subagent. |
+| $js7ClusterSubagentProcessCount | Number of processes for the given Subagent Cluster running with the Subagent. |
+|      | The following indicators are available as explained with https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html |
+| $js7CpuLoad | Returns the "recent cpu usage" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value. A negative value is reported as missing. CPU load is not available for MacOS and is reported as missing. |
+| $js7CommittedVirtualMemorySize | Returns the amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this operation is not supported. A negative value is reported as missing. |
+| $js7FreeMemorySize | Returns the amount of free memory in bytes. Returns the amount of free memory. |
+| $js7TotalMemorySize | Returns the total amount of memory in bytes. Returns the total amount of memory |
 
-## Referencias
+## References
 
-### Ayuda de Contexto
+### Context Help
 
-- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
-- [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster)
+- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
+- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
   - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster)

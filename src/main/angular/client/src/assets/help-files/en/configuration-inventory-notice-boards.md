@@ -1,92 +1,92 @@
-# Configuración - Inventario - Tableros de Avisos
+# Configuration - Inventory - Notice Boards
 
-El *Panel de Tableros de Avisos* ofrece la especificación de Tableros de Avisos para su uso con Workflows. Para más detalles véase [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
+The *Notice Board Panel* offers specifying Notice Boards for use with Workflows. For details see [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
 
-Los Tableros de Avisos implementan dependencias entre Workflows:
+Notice Boards implement dependencies between Workflows:
 
-- Los Tableros de Avisos permiten agregar Avisos:
-  - mediante intervención del usuario, véase [Recursos - Tableros de Avisos](/resources-notice-boards).
-  - mediante la *Instrucción PostNotices* en un Workflow, véase [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
-- Los Workflows pueden configurarse para que las Órdenes esperen Avisos mediante las siguientes instrucciones:
-  - La *Instrucción ExpectNotices* se usa para verificar si hay Avisos disponibles en uno o más Tableros de Avisos que hayan sido agregados por una *Instrucción PostNotices* o por el usuario. Si el Aviso no existe, por defecto la Orden permanecerá en estado *esperando* con la instrucción. Un Workflow puede incluir cualquier número de *Instrucciones ExpectNotices* para esperar Avisos del mismo o de diferentes Tableros de Avisos. Para más detalles véase [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
-  - La *Instrucción ConsumeNotices* se usa para hacer que las Órdenes esperen uno o más Avisos de los Tableros de Avisos que hayan sido agregados por una *Instrucción PostNotices* o por el usuario. La *Instrucción ConsumeNotices* es una instrucción de bloque que puede incluir cualquier otra instrucción y que eliminará los Avisos que se hayan esperado cuando una Orden llegue al final del bloque de instrucciones. Para más detalles véase [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
+- Notice Boards allow adding Notices 
+  - from user intervention, see [Resources - Notice Boards](/resources-notice-boards).
+  - from the *PostNotices Instruction* in a Workflow, see [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
+- Workflows can be configured to make Orders expect Notices from the following instructions:
+  - *ExpectNotices Instruction* is used to check if Notices are available from one or more Notice Boards that are added by a *PostNotices Instruction* or by the user. If the Notice does not exist, then by default the Order will remain in the *waiting* state with the instruction. A Workflow can include any number of *ExpectNotices Instructions* to expect Notices from the same or from different Notice Boards. For details see [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
+  - *ConsumeNotices Instruction* is used to make Orders expect one or more Notices from Notice Boards that are added by a *PostNotices Instruction* or by the user. The *ConsumeNotices Instruction* is a block instruction that can include any other instructions and that will delete the Notices that have been expected when an Order reaches the end of the instruction block. For details see [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
 
-Las siguientes variantes están disponibles para los Tableros de Avisos:
+The following flavors are available for Notice Boards:
 
-- Los **Tableros de Avisos Globales** implementan Avisos en ámbito global, lo que hace que el mismo Aviso esté disponible para cualquier Workflow en cualquier momento.
-- Los **Tableros de Avisos Planificables** implementan Avisos en el ámbito del [Plan Diario](/daily-plan). Un Aviso existe en el ámbito de una fecha del *Plan Diario*, por ejemplo:
-  - El Workflow 1 se ejecuta de Lun-Vie.
-  - El Workflow 2 se ejecuta de Lun-Dom y depende de la ejecución previa del Workflow 1.
-  - Durante los fines de semana el Workflow 1 no se iniciará. Para permitir que el Workflow 2 se inicie los fines de semana, la dependencia se mapea al Plan Diario mediante el uso de *Tableros de Avisos Planificables*: para los días en que no se anuncia ninguna Orden para el Workflow 1, la dependencia se ignora.
+- **Global Notice Boards** implement Notices at global scope which makes the same Notice available for any Workflow at any time.
+- **Schedulable Notice Boards** implement Notices in scope of the [Daily Plan](/daily-plan). A Notice exists in scope of a *Daily Plan* date, for example
+  - Workflow 1 runs Mon-Fri.
+  - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
+  - During weekends Workflow 1 will not start. To allow Workflow 2 starting on weekends, the dependency is mapped to the Daily Plan by use of *Schedulable Notice Boards*: for days on which no Order is announced for Workflow 1, the dependency is ignored.
 
-Los Tableros de Avisos se gestionan desde los siguientes paneles:
+Notice Boards are managed from the following panels:
 
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Tableros de Avisos. Además, el panel ofrece operaciones sobre los Tableros de Avisos.
-- El *Panel de Tableros de Avisos* en el lado derecho de la ventana contiene los detalles de configuración del Tablero de Avisos.
+- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Notice Boards. In addition, the panel offers operations on Notice Boards.
+- The *Notice Board Panel* on the right side of the window holds details for Notice Board configuration.
 
-## Panel de Tableros de Avisos
+## Notice Board Panel
 
-Para un Tablero de Avisos están disponibles los siguientes campos de entrada:
+For a Notice Board the following inputs are available:
 
-- **Nombre** es el identificador único de un Tablero de Avisos, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
-- **Título** contiene una explicación opcional del propósito del Tablero de Avisos.
-- **Tipo de Tablero de Avisos** es uno de *Tablero de Avisos Global* o *Tablero de Avisos Planificable*.
+- **Name** is the unique identifier of a Notice Board, see [Object Naming Rules](/object-naming-rules).
+- **Title** holds an optional explanation of the Notice Board's purpose.
+- **Notice Board Type** is one of *Global Notice Board* or *Schedulable Notice Board*
 
-### Tableros de Avisos Globales
+### Global Notice Boards
 
-- **ID de Aviso para Orden Publicadora** contiene un valor constante o una expresión derivada de la Orden publicadora:
-  - Se puede usar un valor vacío y se puede usar una cadena de texto que especifique un valor constante.
-  - Se puede usar una Expresión Regular:
-    - *Coincidencia con Fecha del Plan Diario* extrae la fecha del Plan Diario del ID de la Orden usando la expresión: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')*
-    - *Coincidencia con Fecha del Plan Diario y Nombre de Orden* extrae la fecha del Plan Diario y el nombre de la Orden del ID de la Orden usando la expresión: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')*
-    - *Coincidencia con Nombre de Orden* extrae el nombre de la Orden usando la expresión: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')*
-- **ID de Aviso para Orden Esperante** debe contener la misma expresión que el *ID de Aviso para Orden Publicadora*.
+- **Notice ID for Posting Order** holds a constant value or an expression derived from the posting Order:
+  - An empty value can be used and a string can be used specifying a constant value.
+  - A Regular Expression can be used:
+    - *Matching Daily Plan Date* extracts the Daily Plan date from the Order ID using the expression: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')*
+    - *Matching Daily Plan Date and Order Name* extracts the Daily Plan date and Order name from the Order ID using the expression: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')*
+    - *Matching Order Name* extracts the Order name using the expression: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')*
+- **Notice ID for Expecting Order** should hold the same expression as the *Notice ID for Posting Order*.
 
-### Tableros de Avisos Planificables
+### Schedulable Notice Boards
 
-- **ID de Aviso para Orden Publicadora** contiene un valor constante o una expresión derivada de la Orden publicadora:
-  - Se puede usar un valor vacío y se puede usar una cadena de texto que especifique un valor constante.
-  - Se puede usar una Expresión Regular:
-    - *Coincidencia con Nombre de Orden* extrae el nombre de la Orden usando la expresión: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]\*)(?::[^|]*)?([|].*)?$', '$1$2')*
+- **Notice ID for Posting Order** holds a constant value or an expression derived from the posting Order:
+  - An empty value can be used and a string can be used specifying a constant value.
+  - A Regular Expression can be used:
+    - *Matching Order Name* extracts the Order name using the expression: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]\*)(?::[^|]*)?([|].*)?$', '$1$2')*
 
-### Operaciones sobre Tableros de Avisos
+### Operations on Notice Boards
 
-Para las operaciones disponibles véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
+For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
-## Uso con Instrucciones de Workflow
+## Use with Workflow Instructions
 
-Las Instrucciones de Workflow para Tableros de Avisos ofrecen las siguientes opciones:
+Workflow Instructions for Notice Boards offer the following options:
 
-- La **Instrucción PostNotices** contiene la lista de Tableros de Avisos para los que se publican Avisos. La instrucción no requiere opciones adicionales.
-- La **Instrucción ExpectNotices** y la **Instrucción ConsumeNotices** contienen los siguientes campos de entrada:
-  - **Expresión** especifica condiciones de uno o más Tableros de Avisos que evalúan a *verdadero* o *falso*:
-    - **&&** como condición "y"
-    - **||** como condición "o"
-    - **()** los paréntesis especifican la precedencia con la que se evalúan las condiciones.
-    - Los nombres de los Tableros de Avisos en las expresiones deben ir entre comillas.
-    - Ejemplos:
-      - **'NB1' && 'NB2'**: espera que estén presentes Avisos de ambos Tableros de Avisos *NB1* y *NB2* para evaluar a *verdadero*.
-      - **( 'NB1' && 'NB2' ) || 'NB3'**: espera que estén presentes Avisos de *NB1* y *NB2*. Alternativamente, si hay un Aviso de *NB3* presente, la expresión evalúa a *verdadero*.
-  - **Cuando no está anunciado** especifica el comportamiento en caso de que un Aviso no haya sido anunciado. Esto aplica a los días para los que no hay ninguna Orden disponible de un Workflow publicador.
-    - **Esperar** es el valor predeterminado y hace que las Órdenes esperen la presencia de Avisos independientemente de si han sido anunciados o no.
-    - **Omitir** hace que las Órdenes omitan la instrucción si el Aviso no está anunciado.
-    - **Procesar** está disponible para la *Instrucción ConsumeNotices* y hace que una Orden entre en el bloque de instrucciones en caso de que el Aviso no esté anunciado.
+- **PostNotices Instruction** holds the list of Notice Boards for which Notices are posted. The instruction does not require options.
+- **ExpectNotices Instruction**, **ConsumeNotices Instruction** hold the following inputs:
+  - **Expression** specifies conditions from one or more Notice Boards that evaluate to *true* or *false*:
+    - **&&** as an "and" condition
+    - **||** as an "or" condition
+    - **()** parantheses specify the precedence by which conditions are evaluated.
+    - Notice Board names in expressions must be quoted.
+    - Examples:
+      - **'NB1' && 'NB2'**: expects Notices from both Notice Boards *NB1* and *NB2* being present to evaluate to *true*.
+      - **( 'NB1' && 'NB2' ) || 'NB3'**: expects Notices being present from *NB1* and *NB2*. Alternatively, if a Notice from *NB3* is present, the expression evaluates to *true*.
+  - **When not announced** specifies the behavior in case that a Notice was not announced. This applies to days for which no Order is available from a posting Workflow.
+    - **Wait** is the default and causes Orders to wait for Notices being present independently from the fact that they have been announced or not.
+    - **Skip** causes Orders to skip the instruction if the Notice is not announced.
+    - **Process** is available for the *ConsumeNotices Instruction* and makes an Order enter the block instruction in case that the Notice is not announced.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
-- [Plan Diario - Dependencias](/daily-plan-dependencies)
-- [Reglas de Nomenclatura de Objetos](/object-naming-rules)
-- [Recursos - Tableros de Avisos](/resources-notice-boards)
+- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Daily Plan - Dependencies](/daily-plan-dependencies)
+- [Object Naming Rules](/object-naming-rules)
+- [Resources - Notice Boards](/resources-notice-boards)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
   - [JS7 - Global Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Global+Notice+Boards)
   - [JS7 - Schedulable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedulable+Notice+Boards)
-- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)
+- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)  
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
   - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)

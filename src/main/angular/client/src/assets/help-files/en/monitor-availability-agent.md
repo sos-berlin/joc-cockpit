@@ -1,39 +1,39 @@
-# Monitor - Disponibilidad del Agente
+# Monitor - Agent Availability
 
-La vista muestra indicadores de disponibilidad de las instancias de Agente.
+The view displays indicators for availability of Agent instances.
 
-Si se usa un Clúster de Agentes, se considera la disponibilidad del clúster. Por ejemplo, si una instancia de Agente en un clúster se apaga por motivos de mantenimiento y la instancia restante asume la carga, esto no reduce la disponibilidad.
+If an Agent Cluster is used then cluster availability is considered. For example, if an Agent instance in a cluster is shut down for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
 
-La esquina superior derecha de la pantalla ofrece la casilla *Controlador Actual*: cuando no está marcada, se mostrará la disponibilidad de Agentes de todos los Controladores conectados; de lo contrario, la información se muestra para los Agentes registrados únicamente con el Controlador seleccionado actualmente.
+The right-upper corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for Agents from all connected Controllers and otherwise the information is displayed for Agents registered with the currently selected Controller only.
 
-Los usuarios deben tener en cuenta que los datos históricos de disponibilidad del Agente están sujetos a depuración por el [Servicio de Limpieza](/service-cleanup).
+Users should be aware that historic data for Agent availability are subject to purge by the [Cleanup Service](/service-cleanup).
 
-## Filtros de Fecha
+## Date Filters
 
-La esquina superior derecha del panel ofrece la selección de un rango de fechas para mostrar la disponibilidad:
+The upper-right corner of the panel offers selecting a date range for display of availability:
 
-- **Semana** hace que el control deslizante de fechas cambie a un período de una semana.
-- **Mes** hace que el control deslizante de fechas cambie a un período de un mes.
-- **Rango** ofrece especificar la fecha de inicio y la fecha de fin.
+- **Week** makes the date slider switch for a week's period.
+- **Month** makes the date slider switch for a month's period.
+- **Range** offers specifying the start date and end date.
 
-## Tiempo de Ejecución
+## Running Time
 
-Indica el porcentaje de tiempo durante el cual se confirma que los Agentes estuvieron disponibles en el período dado.
+Gives the percentage for which Agents are confirmed being available in the given period.
 
-## Estadísticas
+## Statistics
 
-Muestra la disponibilidad mediante un gráfico de barras en base diaria para el período dado. Cada Agente se indica individualmente por día.
+Shows availability from a bar chart on a daily basis in the given period. Each Agent is indicated individually per day. 
 
-## Vista General
+## Overview
 
-Muestra la disponibilidad por Agente y día en el período dado.
+Shows availability per Agent and day in the given period.
 
-- El gráfico indica en color verde las horas en las que se confirma la disponibilidad del Agente.
-- El color rojo indica no disponibilidad.
-- El color gris indica datos faltantes.
+- The chart indicates hours in green color for which Agent availability is confirmed. 
+- The red color indicates unavailability.
+- The grey color indicates missing data.
 
-## Referencias
+## References
 
-- [Servicio de Limpieza](/service-cleanup)
-- [Monitor - Disponibilidad - Controlador](/monitor-availability-controller)
+- [Cleanup Service](/service-cleanup)
+- [Monitor - Availability - Controller](/monitor-availability-controller)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

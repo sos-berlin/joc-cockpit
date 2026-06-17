@@ -1,47 +1,47 @@
-# Administrar Cambios
+# Manage Changes
 
-JOC Cockpit ofrece la gestión de [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) sobre objetos como Workflows. Un Cambio se considera una lista de objetos de inventario que están sujetos a operaciones de despliegue conjunto:
+JOC Cockpit offers managing [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) to objects such as Workflows. A Change is considered a list of inventory objects that are subject to joint deployment operations
 
-- para despliegue en Controladores,
-- para distribución mediante [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
-- para distribución mediante la [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
+- for deployment to Controllers,
+- for rollout using [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
+- for rollout using [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
 
-Los Cambios incluyen objetos de inventario como Workflows, Planificaciones, etc., y también incluyen objetos referenciados, por ejemplo un Recurso de Job referenciado por un Workflow.
+Changes include inventory objects such as Workflows, Schedules etc. and they include referenced objects, for example a Job Resource referenced by a Workflow.
 
-- Los usuarios pueden agregar objetos de inventario directamente a un Cambio.
-- Los objetos referenciados se asocian automáticamente a un Cambio.
+- Users can add inventory objects directly to a Change.
+- Referenced objects are automatically associated with a Change.
 
-La página *Administrar Cambios* se utiliza para agregar, actualizar y eliminar Cambios.
+The *Manage Changes* page is used for adding, updating and deleting Changes.
 
-## Lista de Cambios
+## List of Changes
 
-Los Cambios existentes se muestran en una lista:
+Existing Changes are displayed from a list:
 
-- **Menú de Acciones** ofrece actualizar y eliminar la entrada del Cambio.
-- **Nombre** es el nombre único que los usuarios asignan a un Cambio.
-- **Título** explica el propósito del Cambio.
-- **Estado** es uno de *Abierto* o *Cerrado*. Los Cambios cerrados no se ofrecen para operaciones de despliegue o exportación.
-- **Propietario** indica la cuenta que es dueña del Cambio.
-- **Objetos** ofrece un ícono para mostrar los objetos sujetos al Cambio.
+- **Action Menu** offers to update and to delete the Change entry.
+- **Name** is the unique name that users assign a Change.
+- **Title** explains the purpose of the Change.
+- **Status** is one of *Open* or *Closed*. Closed changes are not offered for deployment or export operations.
+- **Owner** indicates the account that owns the Change.
+- **Objects** offers an icon to display objects subject to the Change.
 
-## Operaciones sobre Cambios
+## Operations on Changes
 
-Desde la parte superior de la pantalla están disponibles los siguientes botones:
+From the top of the screen the following buttons are available:
 
-- **Agregar Cambio** ofrece la posibilidad de agregar un Cambio. Consulte los detalles en [Cambios - Propiedades](/changes-properties).
+- **Add Change** offers adding a Change. Find details from [Changes - Properties](/changes-properties).
 
-Desde la *Lista de Cambios*, las siguientes operaciones están disponibles mediante el menú de acciones de 3 puntos:
+From the *List of Changes* the following operations are offered with the related 3-dots action menu:
 
-- **Editar** permite actualizar las propiedades del Cambio. Consulte los detalles en [Cambios - Propiedades](/changes-properties).
-- **Eliminar** eliminará la entrada del Cambio.
+- **Edit** allows updating the properties of the Change. Find details from [Changes - Properties](/changes-properties).
+- **Delete** will remove the Change entry.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Cambios - Propiedades](/changes-properties)
+- [Changes - Properties](/changes-properties)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
 - [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import)

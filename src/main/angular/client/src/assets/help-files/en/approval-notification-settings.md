@@ -1,53 +1,53 @@
-# Configuración de Notificaciones de Aprobación
+# Approval Notification Settings
 
-El [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) se ofrece para situaciones en las que los usuarios tienen la intención de realizar operaciones tales como agregar o cancelar Órdenes que requieren la aprobación de un segundo usuario. Esto puede incluir cualquier operación que modifique un objeto de planificación.
+The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) is offered for situations in which users intend performing operations such as adding or cancelling Orders that require approval by a second user. This can include any operation that modifies a scheduling object.
 
-El Proceso de Aprobación involucra los siguientes roles:
+The Approval Process involves the following roles:
 
-- Un *Solicitante* solicita realizar una intervención que requiere aprobación.
-- Un *Aprobador* confirma o rechaza la Solicitud de Aprobación.
+- A *Requestor* requests performing an intervention that requires approval.
+- An *Approver* confirms or denies the Approval Request.
 
-La funcionalidad básica del Proceso de Aprobación incluye:
+The basic functionality of the Approval Process includes:
 
-- implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
-- llevar un seguimiento de las Solicitudes de Aprobación pendientes.
-- ofrecer alternativa a un grupo de *Aprobadores*.
+- to implement the 4-eyes principle: an *Approver* must confirm the intervention of a *Requestor* before the intervention can be executed in the scope of the *Requestor's* account, roles and permissions. 
+- to keep track of pending Approval Requests.
+- to offer fallback to a number of *Approvers*.
 
-## Configuración de Notificaciones de Aprobación
+## Approval Notification Settings
 
-La Configuración de Notificaciones incluye propiedades para el envío de correos electrónicos a los *Aprobadores* en caso de recibir [Solicitudes de Aprobación](/approval-requests):
+Notification Settings include properties for sending mail to *Approvers* in case of incoming [Approval Requests](/approval-requests):
 
-- **Recurso de Job** contiene la configuración para la conexión al servidor de correo. Para más detalles véase [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
-- **Tipo de Contenido**, **Conjunto de Caracteres**, **Codificación** son comunes a cualquier sistema de envío de correo.
-- **Correo de Solicitud de Aprobación**
-  - **Cc**, **Bcc** indican opcionalmente los destinatarios de copias y copias carbón de la notificación.
-  - El **Asunto** y el **Cuerpo** del correo pueden incluir marcadores de posición que serán sustituidos al momento del envío. Los marcadores de posición se especifican con el formato $\{placeholder\}.
-    - Los siguientes marcadores de posición están disponibles:
-      - $\{RequestStatusDate\}: Fecha del Estado de la Solicitud
-      - $\{ApprovalStatusDate\}: Fecha del Estado de Aprobación
-      - $\{Title\}: Título de la Solicitud
-      - $\{Requestor\}: Cuenta del Solicitante
-      - $\{RequestStatus\}: Estado de la Solicitud, uno de REQUESTED (solicitado), EXECUTED (ejecutado), WITHDRAWN (retirado)
-      - $\{Approver\}: Cuenta del Aprobador
-      - $\{ApprovalStatus\}: Estado de Aprobación, uno de APPROVED (aprobado), REJECTED (rechazado)
-      - $\{RequestURI\}: URI de la Solicitud
-      - $\{RequestBody\}: Cuerpo de la solicitud con los detalles de la petición a la API REST
-      - $\{Category\}: Categoría
-      - $\{Reason\}: Motivo
-    - Adicionalmente, los siguientes marcadores de posición pueden usarse si se especifican desde un Recurso de Job como *eMailDefault*.
-      - $\{jocURL\}: URL desde la cual JOC Cockpit es accesible.
-      - $\{jocURLReverseProxy\}: misma funcionalidad que *jocURL*, pero especifica la URL disponible desde un Proxy Inverso.
+- **Job Resource** holds settings for the connection to the mail server. For details see [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
+- **Content Type**, **Charset**, **Encoding** are common to any system sending mail.
+- **Approval Request E-Mail**
+  - **Cc**, **Bcc** optionally indicate recipients of copies and carbon copies of the notification.
+  - **Subject**, **Body** of mail can include placeholders that will be substituted when sending mail. Placeholders are specified using the format $\{placeholder\}.
+    - The following placeholders are available:
+      - $\{RequestStatusDate\}: Request Status Date
+      - $\{ApprovalStatusDate\}: Approval Status Date
+      - $\{Title\}: Request Title
+      - $\{Requestor\}: Requestor account
+      - $\{RequestStatus\}: Request Status, one of REQUESTED, EXECUTED, WITHDRAWN
+      - $\{Approver\}: Approver account
+      - $\{ApprovalStatus\}: Approval Status, one of APPROVED, REJECTED
+      - $\{RequestURI\}: Request URI
+      - $\{RequestBody\}: Request body holding the details of the REST API request
+      - $\{Category\}: Category
+      - $\{Reason\}: Reason
+    - In addition, the following placeholders can be used if specified from a Job Resource such as *eMailDefault*.
+      - $\{jocURL\}: URL from which JOC Cockpit is accessible.
+      - $\{jocURLReverseProxy\}: same functionality as *jocURL*, but specifies the URL as available from a Reverse Proxy
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración de Notificaciones de Aprobación](/approval-notification-settings)
-- [Solicitud de Aprobación](/approval-request)
-- [Solicitudes de Aprobación](/approval-requests)
-- [Perfiles de Aprobadores](/approval-profiles)
+- [Approval Notification Settings](/approval-notification-settings)
+- [Approval Request](/approval-request)
+- [Approval Requests](/approval-requests)
+- [Approver Profiles](/approval-profiles)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
 - [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource)

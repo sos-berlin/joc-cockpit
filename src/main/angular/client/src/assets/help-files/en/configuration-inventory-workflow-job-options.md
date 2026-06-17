@@ -1,94 +1,94 @@
-# Configuración - Inventario - Workflow - Opciones de Job
+# Configuration - Inventory - Workflow - Job Options
 
-El panel *Workflow* ofrece el diseño de Workflows a partir de una secuencia de instrucciones. Los usuarios pueden arrastrar y soltar la *Instrucción de Job* desde la *Barra de Herramientas* a una posición en el Workflow.
+The *Workflow* panel offers designing Workflows from a sequence of instructions. Users can drag & drop the *Job Instruction* from the *Toolbar* to a position in the Workflow.
 
-La interfaz gráfica ofrece una serie de pestañas para especificar los detalles del Job. La segunda pestaña corresponde a las *Opciones de Job*.
+The GUI offers a number of tabs for specifying Job details. The second tab is offered for *Job Options*.
 
-## Opciones de Job de Uso Frecuente
+## Frequently used Job Options
 
-- **Parallelism** especifica el número de instancias paralelas en las que el Job puede ejecutarse. Si más de una Orden está procesando el Workflow, pueden ejecutar el Job en paralelo. Además del *Paralelismo*, se aplica el límite de procesos que imponen los Agentes Autónomos y los Clústeres de Agentes.
-- **Criticality** especifica la relevancia de los fallos del Job. La *Criticidad* está disponible con las Notificaciones sobre fallos de Job.
+- **Parallelism** specifies the number of parallel instances for which the Job can be executed. If more than one Order is processing the Workflow, then they can execute the Job in parallel. In addition to *Parallelism* the process limit applies that is enforced by Standalone Agents and Agent Clusters.
+- **Criticality** specifies the relevance of failures of the Job. The *Criticality* is available with Notifications about Job failures.
 
-### Períodos de Ejecución de Job
+### Job Execution Periods
 
-- **Timeout** especifica el período de ejecución máximo que se permite al Job consumir. Si el Job supera el *Timeout*, el Agente lo cancelará teniendo en cuenta el *Grace Timeout* del Job. La entrada puede especificarse en los siguientes formatos:
-  - *1* o *1s*: un número o un número seguido de *s* especifica el *Timeout* en segundos.
-  - *1m 2d 3h*: especifica 1 mes, 2 días y 3 horas como período de ejecución máximo.
-  - *01:02:03*: especifica 1 hora, 2 minutos y 3 segundos como período de ejecución máximo.
-- **Warn on shorter execution period** genera una advertencia y la Notificación correspondiente si el Job termina antes del período especificado. Los formatos de entrada incluyen:
-  - *1* o *1s*: un número o un número seguido de *s* especifica el período de ejecución en segundos.
-  - *01:02:03*: especifica 1 hora, 2 minutos y 3 segundos para el período de ejecución.
-  - *30%*: especifica un período de ejecución un 30% más corto que el promedio de ejecuciones anteriores del Job. El cálculo utiliza el [Historial de Tareas](/history-tasks) que está sujeto a depuración por el [Servicio de Limpieza](/service-cleanup).
-- **Warn on longer execution period** genera una advertencia y la Notificación correspondiente si el Job supera el período especificado. Los formatos de entrada incluyen:
-  - *1* o *1s*: un número o un número seguido de *s* especifica el período de ejecución en segundos.
-  - *01:02:03*: especifica 1 hora, 2 minutos y 3 segundos para el período de ejecución.
-  - *30%*: especifica un período de ejecución un 30% más largo que el promedio de ejecuciones anteriores del Job. El cálculo utiliza el [Historial de Tareas](/history-tasks) que está sujeto a depuración por el [Servicio de Limpieza](/service-cleanup).
+- **Timeout** specifies the maximum execution period the Job is allowed to consume. If the Job exceeds the *Timeout*, it will be cancelled by the Agent considering the Job's *Grace Timeout*. Input can be specified in the following formats:
+  - *1* or *1s*: either a number or a number followed by *s* specifies the *Timeout* in seconds.
+  - *1m 2d 3h*: specifies 1 month, 2 days and 3 hours as the max. execution period.
+  - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the max. execution period.
+- **Warn on shorter execution period** raises a warning and related Notification, if the Job will terminate earlier than the period specified. Input formats include:
+  - *1* or *1s*: either a number or a number followed by *s* specifies the execution period in seconds.
+  - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the execution period.
+  - *30%*: specifies a 30% shorter execution period than the average of previous executions of the job. The calculation makes use of the [Task History](/history-tasks) that is subject to purge by the [Cleanup Service](/service-cleanup).
+- **Warn on longer execution period** raises a warning and related Notification, if the Job will exceed the period specified. Input formats include:
+  - *1* or *1s*: either a number or a number followed by *s* specifies the execution period in seconds.
+  - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the execution period.
+  - *30%*: specifies a 30% longer execution period than the average of previous executions of the job. The calculation makes use of the [Task History](/history-tasks) that is subject to purge by the [Cleanup Service](/service-cleanup).
 
-### Salida de Log del Job
+### Job Log Output
 
-- **Fail on output to stderr** especifica que el Agente fallará el Job si este escribe en el canal stderr. Esta comprobación se suma a la verificación del *Valor de Retorno* (para Jobs de Shell: código de salida) de un Job.
-- **Warn on output to stderr** especifica que se realiza la misma comprobación que para *Fail on output to stderr*. Sin embargo, el Job no fallará, sino que se generará una advertencia y se creará una Notificación.
+- **Fail on output to stderr** specifies that the Agent will fail the Job, if it writes output to the stderr channel. This check comes in addition to checking the *Return Value* (for Shell Jobs: Exit Code) of a Job.
+- **Warn on output to stderr** specifies that the same check is performed as for *Fail on output to stderr*. However, the Job will not be failed but a warning will be raised and a Notification will be created.
 
-### Tiempos de Admisión de Job
+### Job Admission Times
 
-Los *Tiempos de Admisión* determinan cuándo puede iniciarse o debe omitirse un Job, y el período absoluto durante el cual puede ejecutarse. Para más detalles, consulte [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
+*Admission Times* rule when a Job can be started or should be skipped, and the absolute period for which a Job can be executed. For details see [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 
-- **Skip Job if no admission for Order's date** especifica que el Job se omitirá si su *Tiempo de Admisión* no coincide con la fecha de la Orden. Por ejemplo, el *Tiempo de Admisión* del Job puede excluir los fines de semana, lo que hace que el Job se ejecute de lunes a viernes y sea omitido por Órdenes planificadas para sábado y domingo. Los usuarios deben considerar que lo relevante es la fecha para la que está planificada la Orden, no la fecha de llegada de la Orden al Job. Si la fecha planificada de la Orden coincide con el *Tiempo de Admisión*, pero la Orden llega en un momento posterior fuera del *Tiempo de Admisión*, el Job no se omitirá y la Orden esperará al próximo *Tiempo de Admisión*.
-- **Terminate Job at end of period** especifica que el Agente cancelará el Job si supera el punto en el tiempo especificado con el período del *Tiempo de Admisión*.
-- **Admission Time** ofrece la posibilidad de especificar los días y horas en que los Jobs pueden ejecutarse desde el enlace *Show Periods*.
+- **Skip Job if no admission for Order's date** specifies that the Job will be skipped if its *Admission Time* does not match the Order's date. For example, the Job's *Admission Time* can exclude weekends which results in the fact that the Job will be executed Mon-Fri and will be skipped by Orders scheduled for Sat-Sun. Users should consider that the date for which the Order is scheduled is relevant, not the Order's arrival date at the Job. If the Order's scheduled date matches the *Admission Time* but the Order arrives at a later point in time outside of the *Admission Time*, then the Job will not be skipped and the Order will wait for the next *Admission Time*.
+- **Terminate Job at end of period** specifies that the Agent will cancel the Job if it exceeds the point in time specified with the *Admission Time* period.
+- **Admission Time** offers to specify days and hours when Jobs can run from the *Show Periods* link.
 
-#### Tipos de Admisión
+#### Admission Types
 
-Los *Tipos de Admisión* permiten especificar los días en que puede iniciarse el Job. Además, se pueden especificar rangos de meses que limitan el *Tipo de Admisión* a ciertos meses.
+*Admission Types* allow specifying days on which the Job can start. In addition, month ranges can be specified limiting the *Admission Type* to certain months.
 
-- **Weekdays** especifica los días de la semana en que puede iniciarse el Job.
-- **Specific Weekdays** especifica días de la semana relativos, como el primer o último lunes del mes.
-- **Specific Days** especifica días del año.
-- **Month Days** especifica días relativos del mes; por ejemplo, el primer o último día del mes.
+- **Weekdays** specify the days of week on which the Job can start.
+- **Specific Weekdays** specify relative weekdays such as the first or last Monday of a month.
+- **Specific Days** specify days of year.
+- **Month Days** specify relative days in a month, for example the first or last day of month.
 
-#### Período de Ejecución
+#### Execution Period
 
-El *Período de Ejecución* se especifica a partir de su *inicio* y *duración*:
+The *Execution Period* is specified from its *begin* and *duration*:
 
-- **Begin** se especifica mediante una hora en formato HH:MM:SS; por ejemplo, 10:15:00 para las 10:15 de la mañana.
-- **Duration** se especifica usando los siguientes formatos:
-  - *1* o *1s*: un número o un número seguido de *s* especifica la *Duración* en segundos.
-  - *1m 2d 3h*: especifica 1 mes, 2 días y 3 horas para la *Duración*.
-  - *01:02:03*: especifica 1 hora, 2 minutos y 3 segundos para la *Duración*.
+- **Begin** is specified by a time in the format HH:MM:SS, for example 10:15:00 for a quarter past 10am.
+- **Duration** is specified by use of the following formats:
+  - *1* or *1s*: either a number or a number followed by *s* specifies the *Duration* in seconds.
+  - *1m 2d 3h*: specifies 1 month, 2 days and 3 hours for the *Duration*.
+  - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the *Duration*.
 
-## Opciones de Job disponibles desde *More Options*
+## Job Options available from *More Options*
 
-La vista *Configuración - Inventario* ofrece el control deslizante *More Options* en la parte superior de la ventana, que está inactivo por defecto. El uso del control deslizante hace disponibles opciones adicionales.
+The *Configuration - Inventory* view offers the *More Options* slider on top of the window which is inactive by default. Use of the slider makes additional options available.
 
-- **Grace Timeout** se aplica a Jobs en Unix a los que se envía una señal SIGTERM cuando superan su *Timeout* o cuando son terminados forzosamente por intervención del usuario. Si el Job no finaliza en respuesta a SIGTERM, transcurrido el *Grace Timeout* el Agente enviará una señal SIGKILL para forzar la terminación del Job. Para más detalles consulte [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) y [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
-- **Compatibility** ofrece el nivel de compatibilidad *v1* para usuarios de la rama 1.x de JobScheduler. En modo de compatibilidad se modifica el siguiente comportamiento:
-  - Las *Variables de Entorno* no tienen que especificarse, sino que se crean automáticamente para todas las Variables de Workflow. Los nombres de las Variables de Entorno tienen el prefijo *SCHEDULER_PARAM_* usando únicamente letras mayúsculas.
-  - Para el uso de argumentos de Job, el modo de compatibilidad ofrece una pestaña correspondiente.
+- **Grace Timeout** is applied to Jobs with Unix that are sent a SIGTERM signal when exceeding their *Timeout* or when forcibly terminated by user intervention. If the Job does not terminate in response to SIGTERM, then after the *Grace Timeout* the Agent will send a SIGKILL signal to forcibly terminate the Job. For details see [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) and [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
+- **Compatibility** offers the *v1* compatibility level for users of branch 1.x of JobScheduler. In compatibility mode the following behavior is changed:
+  - *Environment Variables* do not have to be specified but are automatically created for all Workflow Variables. The names of Environment Variables are prefixed from *SCHEDULER_PARAM_* using uppercase letters only.
+  - For use of Job arguments the compatibility mode offers a corresponding tab.
 
-### Reinicio de Jobs
+### Restarting Jobs
 
-- **Job not restartable** se aplica a Jobs que han sido terminados forzosamente por el Agente o por su proceso de vigilancia al detener o cancelar el Agente. Por defecto los Jobs se consideran reiniciables y se reiniciarán cuando el Agente se reinicie. Los usuarios pueden impedir este comportamiento activando la casilla de verificación.
+- **Job not restartable** applies to Jobs that have been forcibly terminated by the Agent or by its watchdog when stopping or cancelling the Agent. By default Jobs are considered restartable and will be restarted when the Agent is restarted. Users can prevent this behavior by activating the checkbox.
 
-### Ejecución de Jobs en Windows con Diferentes Cuentas de Usuario
+### Running Jobs for Windows using different User Accounts
 
-Las siguientes opciones especifican para Jobs ejecutados con Agentes para Windows que el Job debe cambiar el contexto de usuario; consulte [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User).
+The following options specify for Jobs executed with Agents for Windows that the Job should switch user context, see [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User).
 
-- **Credential Key** especifica la clave de la entrada en el Administrador de Credenciales de Windows que contiene las credenciales de la cuenta de usuario de destino.
-- **Load User Profile** especifica si el perfil de la cuenta de usuario de destino, incluidas las entradas del registro, debe cargarse al iniciar el Job.
+- **Credential Key** specifies the key of the entry in the Windows Credential Manager that holds the target user account's credentials.
+- **Load User Profile** specifies if the target user account's profile including registry entries should be loaded on Job start.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Limpieza](/service-cleanup)
-- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-  - [Configuración - Inventario - Workflows - Propiedades de Job](/configuration-inventory-workflows-job-properties)
-  - [Configuración - Inventario - Workflows - Propiedades de Nodo de Job](/configuration-inventory-workflows-job-node-properties)
-  - [Configuración - Inventario - Workflows - Notificaciones de Job](/configuration-inventory-workflows-job-notifications)
-  - [Configuración - Inventario - Workflows - Etiquetas de Job](/configuration-inventory-workflows-job-tags)
-- [Historial de Tareas](/history-tasks)
+- [Cleanup Service](/service-cleanup)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
+- [Task History](/history-tasks)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 - [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation)

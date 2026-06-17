@@ -1,34 +1,34 @@
-# Servicio de Identidad - Sesiones Activas
+# Identity Service - Active Sessions
 
-Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
+Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
-Los usuarios pueden identificar las cuentas con sesiones activas al invocar la vista *Gestión de Servicios de Identidad* desde el icono de rueda en la barra de menú.
+Users can identify accounts holding active sessions when invoking the *Manage Identity Services* view from the wheel icon in the menu bar.
 
-Las sesiones activas se muestran desde la cuenta en uso, desde el Servicio de Identidad utilizado para el inicio de sesión y desde el tiempo restante de la sesión.
+Active sessions are displayed from the account in use, from the Identity Service used for login and from the remaining session time.
 
-- JOC Cockpit no limita el número de sesiones por cuenta.
-- El tiempo restante de la sesión está limitado por los siguientes factores:
-  - El parámetro *session_idle_timeout* configurado en la página [Configuración - Servicio de Identidad](/settings-identity-service) limita la duración máxima que una sesión puede permanecer activa sin actividad del usuario.
-  - Los Proveedores de Servicio de Identidad, como OIDC y Keycloak, pueden limitar la duración máxima de una sesión de usuario.
+- JOC Cockpit does not limit the number of sessions per account.
+- The remaining session time is limited by the following factors:
+  - The *session_idle_timeout* setting configured with the [Settings - Identity Service](/settings-identity-service) page limits the maximum duration a session can remain active without user activity.
+  - Identity Service Providers such as OIDC and Keycloak can limit the maximum duration of a user session.
 
-## Operaciones sobre las Sesiones Activas
+## Operations on Active Sessions
 
-Los usuarios encuentran las siguientes operaciones sobre las Sesiones Activas:
+Users find the following operations on Active Sessions:
 
-- **Agregar a Lista de Bloqueo** agregará la cuenta correspondiente a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist), lo que deniega futuros inicios de sesión. La operación no terminará la sesión actual de la cuenta.
-- **Cancelar Sesión** terminará forzosamente la sesión actual de la cuenta. Esto no impedirá que la cuenta realice una nueva operación de inicio de sesión.
-- **Cancelar todas las Sesiones de la Cuenta** de manera similar a *Cancelar Sesión*, terminará todas las sesiones de la cuenta indicada.
+- **Add to Blocklist** will add the related account to the [Identity Service - Blocklist](/identity-service-blocklist) which denies future login. The operation will not terminate the account's current session.
+- **Cancel Session** will forcibly terminate the account's current session. This will not prevent the account from performing a new login operation.
+- **Cancel all Sessions for Account** similarly to *Cancel Session* will terminate all sessions of the given account.
 
-Al seleccionar una o más sesiones, la operación *Cancelar Sesión* está disponible como operación masiva con el botón correspondiente en la esquina superior derecha de la sub-vista.
+When selecting one or more sessions, then the *Cancel Session* operation is available from a bulk operation with the related button in the upper-right corner of the sub-view.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
-- [Servicios de Identidad](/identity-services)
-- [Configuración - Servicio de Identidad](/settings-identity-service)
+- [Identity Service - Blocklist](/identity-service-blocklist)
+- [Identity Services](/identity-services)
+- [Settings - Identity Service](/settings-identity-service)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

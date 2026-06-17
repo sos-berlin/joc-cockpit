@@ -1,63 +1,63 @@
-# Dashboard - Órdenes
+# Dashboard - Orders
 
-El panel *Órdenes* proporciona información sobre las Órdenes de las siguientes fuentes:
+The *Orders* panel provides information about Orders from the following sources:
 
-- Órdenes agregadas por el [Plan Diario](/daily-plan)
-- Órdenes agregadas a demanda por usuarios desde la vista [Workflows](/workflows)
-- Órdenes agregadas desde [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources) que monitorean directorios en busca de archivos entrantes
+- Orders added by the [Daily Plan](/daily-plan)
+- Orders added on demand by users from the [Workflows](/workflows) view
+- Orders added from [File Order Sources](/configuration-inventory-file-order-sources) that watch directories for incoming files
 
-<img src="dashboard-orders.png" alt="Órdenes" width="330" height="140" />
+<img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
 
-## Estados de las Órdenes
+## Order States
 
-El panel *Órdenes* proporciona información sobre el estado actual de las Órdenes. El panel se actualiza cuando cambia el estado de las Órdenes.
+The *Orders* panel provides information about the current state of Orders. The panel is updated when Orders' state changes.
 
-- Las Órdenes **Pendientes** han sido agregadas a Workflows sin especificar una hora de inicio; posteriormente pueden asignárseles una hora de inicio.
-- Las Órdenes **Planificadas** han sido agregadas a Workflows y están programadas para ejecutarse en una fecha y hora posterior.
-- Las Órdenes **En Progreso** están siendo procesadas por Instrucciones del Workflow pero no están ejecutando un Job.
-- Las Órdenes **Ejecutando** están en ejecución de un Job.
-- Las Órdenes **Suspendidas** han sido detenidas por intervención del usuario y pueden ser reanudadas.
-- Las Órdenes **Completadas** han finalizado un Workflow pero no han sido eliminadas, por ejemplo, si se utiliza una Orden Disparada por Archivo para monitoreo de archivos y el Workflow no mueve ni elimina los archivos entrantes. En esta situación la Orden permanecerá en su lugar mientras el archivo exista en el directorio de entrada.
-- Las Órdenes **A Confirmar** han sido puestas en espera por la *Instrucción Prompt* en un Workflow y requieren confirmación del usuario para continuar la ejecución del Workflow.
-- Las Órdenes **Esperando** aguardan un recurso como un *Recurso de Lock*, un *Aviso*, un intervalo de  *Reintento* o *Ciclo*, o un proceso cuando el Agente en uso especifica un límite de procesos que ha sido superado.
-- Las Órdenes **Bloqueadas** no pueden iniciarse, por ejemplo, si el Agente no es alcanzable desde que se agregó la Orden.
-- Las Órdenes **Fallidas** indican que un Job falló o que una *Instrucción Fail* impide que la Orden continúe.
+- **Pending** Orders have been added to Workflows without specifying a start time, they can later on be assigned a start time.
+- **Scheduled** Orders have been added to Workflows and are scheduled for execution at a later date and time.
+- **In Progress** Orders are processed by Workflow Instructions but are not running a Job. 
+- **Running** Orders are in execution of a Job. 
+- **Suspended** Orders have been halted by user intervention and can be resumed.
+- **Completed** Orders did finish a Workflow but have not been removed, for example if a File Order Source is used for file watching and the Workflow would not (re)move incoming files. In this situation the Order will remain in place as long as the file exists in the incoming directory.
+- **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
+- **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.
+- **Blocked** Orders cannot start, for example if the Agent is not reachable since the Order was added.
+- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from proceeding. 
 
-Al hacer clic en la cantidad indicada de Órdenes, se navega a la [Vista General de Órdenes](/orders-overview) que muestra las Órdenes en detalle.
+Clicking the indicated number of Orders navigates to the [Orders Overview](/orders-overview) that displays Orders in detail.
 
-## Filtros
+## Filters
 
-El botón desplegable en la esquina superior derecha del panel permite seleccionar Órdenes de un rango de fechas:
+The drop-down button in the upper-right corner of the panel offers selecting Orders from a date range:
 
-- **Todas**: muestra todas las Órdenes disponibles en el Controlador y los Agentes.
-- **Hoy**: las Órdenes corresponden al día actual, calculado a partir de la zona horaria del [Perfil - Preferencias](/profile-preferences) del usuario.
-  - Órdenes **Pendientes** sin hora de inicio,
-  - Órdenes **Planificadas** con hora de inicio para el día actual,
-  - Órdenes **En Progreso** de cualquier fecha anterior,
-  - Órdenes **Ejecutando** de cualquier fecha anterior,
-  - Órdenes **Suspendidas** de cualquier fecha anterior,
-  - Órdenes **Completadas** de cualquier fecha anterior,
-  - Órdenes **A Confirmar** de cualquier fecha anterior,
-  - Órdenes **Esperando** de cualquier fecha anterior,
-  - Órdenes **Bloqueadas** de cualquier fecha anterior,
-  - Órdenes **Fallidas** de cualquier fecha anterior.
-- **Próxima Hora**: incluye Órdenes *Planificadas* para la próxima hora.
-- **Próximas 12 Horas**: incluye Órdenes *Planificadas* para las próximas 12 horas.
-- **Próximas 24 Horas**: incluye Órdenes *Planificadas* para las próximas 24 horas.
-- **Día Siguiente**: incluye Órdenes *Planificadas* hasta el final del día siguiente.
-- **Próximos 7 Días**: incluye Órdenes *Planificadas* hasta el final de los próximos 7 días.
+- **All** displays all Orders available with the Controller and the Agents.
+- **Today** Orders are related to the current day which is calculated from the time zone in the user's [Profile - Preferences](/profile-preferences).
+  - **Pending** Orders without start time,
+  - **Scheduled** Orders holding a start time for the current day,
+  - **In Progress** Orders from any past date,
+  - **Running** Orders from any past date,
+  - **Suspended** Orders from any past date,
+  - **Completed** Orders from any past date,
+  - **Prompting** Orders from any past date,
+  - **Waiting** Orders from any past date,
+  - **Blocked** Orders from any past date,
+  - **Failed** Orders from any past date.
+- **Next Hour** includes Orders *Scheduled* for the next hour.
+- **Next 12 Hours** includes Orders *Scheduled* for the next 12 hours.
+- **Next 24 Hours** includes Orders *Scheduled* for the next 24 hours.
+- **Next Day** includes Orders *Scheduled* until end of the next day.
+- **Next 7 Days** includes Orders *Scheduled* until end of the next 7 days.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Plan Diario](/daily-plan)
-- [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources)
-- [Vista General de Órdenes](/orders-overview)
-- [Perfil - Preferencias](/profile-preferences)
+- [Daily Plan](/daily-plan)
+- [File Order Sources](/configuration-inventory-file-order-sources)
+- [Orders Overview](/orders-overview)
+- [Profile - Preferences](/profile-preferences)
 - [Workflows](/workflows)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)

@@ -1,17 +1,17 @@
-# Gestión del Certificado de Cifrado
+# Manage Encryption Certificate
 
-El [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) ofrece una forma segura de manejar secretos utilizados en los Jobs. Los usuarios pueden cifrar y descifrar datos sensibles como contraseñas mediante el uso de claves asimétricas.
+The [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) offers a secure way of handling secrets used in Jobs. Users can encrypt and decrypt sensitive data such as passwords by use of asymmetric keys.
 
-Para más detalles, consulte [Gestión de Claves de Cifrado](/encryption-manage-keys).
+For details see [Manage Encryption Keys](/encryption-manage-keys).
 
-La página *Gestión del Certificado de Cifrado* se utiliza para especificar las propiedades del Certificado.
+The *Manage Encryption Certificate* page is used for specifying properties of the Certificate.
 
-## Certificado
+## Certificate
 
-Las siguientes propiedades se especifican para un Certificado:
+The following properties are specified for a Certificate:
 
-- **Alias del Certificado** es el nombre único que los usuarios asignan a un Certificado. Los usuarios pueden elegir libremente el nombre. El Certificado y sus propiedades se almacenarán en un Recurso de Job con el nombre indicado.
-- **Certificado** permite copiar/pegar un Certificado en formato PEM. Un Certificado puede verse así:
+- **Certificate Alias** is the unique name that users assign a Certificate. Users are free to choose the name. The Certificate and properties will be stored with a Job Resource using the indicated name.
+- **Certificate** allows copying/pasting a Certificate in PEM format. A Certificate can look like this:
 
 <pre>
 -----BEGIN CERTIFICATE-----
@@ -29,26 +29,26 @@ SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ==
 -----END CERTIFICATE-----
 </pre>
 
-- **Ruta al archivo de Clave Privada** especifica la ubicación de la Clave Privada en los Agentes correspondientes.
-- **Carpeta del Recurso de Job** especifica la carpeta del inventario en la que se almacenará el Recurso de Job que contiene el Certificado. Se puede especificar una jerarquía de carpetas utilizando barras diagonales, como en /a/b/c. Las carpetas inexistentes serán creadas.
+- **Path to Private Key file** specifies the location of the Private Key with related Agents.
+- **Job Resource Folder** specifies the inventory folder in which the Job Resource holding the Certificate will be stored. A folder hierarchy can be specified using forward slashes as in /a/b/c. Non-existing folders will be created.
 
-## Operaciones sobre el Certificado
+## Operations on Certificate
 
-Las siguientes operaciones están disponibles desde los enlaces:
+The following operations are available from links:
 
-- **Uso del Certificado por Agentes** muestra el *Nombre del Agente* y la URL de los Agentes a los que se ha asignado el Certificado.
-- **Asignar Certificado a Agentes** ofrece la posibilidad de seleccionar Agentes Autónomos y Agentes en Clúster a los que se asignará el Certificado. Los usuarios deben asegurarse de que el Agente correspondiente tenga el archivo de Clave Privada en la ubicación especificada en la propiedad *Ruta al archivo de Clave Privada*. Los usuarios pueden seleccionar Agentes que conozcan la Clave Privada.
-- **Prueba de Cifrado** permite realizar una prueba de cifrado:
-  - Al hacer clic en el enlace se abre el campo de entrada *Texto plano* al que se puede añadir una cadena como *secreto*.
-  - A la derecha del campo de entrada se ofrece el icono de cifrado. Al hacer clic en el icono se muestra la etiqueta *Resultado del Cifrado* con el resultado correspondiente.
+- **Use of Certificate by Agents** displays the *Agent Name* and URL of Agents assigned the Certificate. 
+- **Assign Certificate to Agents** offers selecting Standalone Agents and Cluster Agents that are assigned the Certificate. Users have to take care that the related Agent holds the Private Key file in the location specified with the *Path to Private Key file* property. Users can select Agents that know the Private Key.
+- **Encryption Test** allows to perform a test encryption:
+  - Clicking the link opens the *Plain Text* input field to which a string such as *secret* can be added.
+  - Right to the input field the encryption icon is offered. Clicking the icon displays the *Encryption Result* label with the related result.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Gestión de Claves de Cifrado](/encryption-manage-keys)
+- [Manage Encryption Keys](/encryption-manage-keys)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption)
   - [JS7 - Encryption - Management of Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Management+of+Encryption+Keys)

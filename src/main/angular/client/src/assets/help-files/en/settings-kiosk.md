@@ -1,71 +1,71 @@
-# Configuración - Kiosco
+# Settings - Kiosk
 
-El JOC Cockpit puede operarse en [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode), que incluye:
+JOC Cockpit can be operated in [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode) which includes
 
-- operación desatendida,
-- visualización de varias páginas, cada una durante un período predefinido,
-- actualización de páginas cuando llegan nuevos eventos, como la finalización de Jobs.
+- unattended operation,
+- display of a number of pages each for a predefined period,
+- updating pages when new events arrive such as completion of jobs.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-## Configuración del modo kiosco
+## Kiosk Settings
 
-### Configuración: *kiosk\_role*, Predeterminado: *kiosk*
+### Setting: *kiosk\_role*, Default: *kiosk*
 
-Especifica el nombre del Rol que se asigna a una cuenta utilizada para operar en modo kiosco:
+Specifies the name of the role that is assigned an account used for operation in kiosk mode:
 
-- El Rol debe ser creado por el usuario.
-- El Rol debe incluir permisos de solo lectura.
-- El Rol es el único asignado a la cuenta.
+- The role must be created by the user.
+- The role should include read-only permissions.
+- The role is the only one assigned the account.
 
-### Configuración: *view\_dashboard\_duration*, Predeterminado: *20*
+### Setting: *view\_dashboard\_duration*, Default: *20*
 
-Especifica la duración en segundos durante la cual se mostrará el Panel de Control.
+Specifies the duration in seconds for which the Dashboard will be displayed.
 
-Los usuarios pueden modificar el diseño del Panel de Control para la cuenta utilizada en modo kiosco.
+Users can modify the dashboard layout for the account used for kiosk mode.
 
-- Un valor 0 especifica que la vista no se mostrará.
-- Un valor >10 especifica la duración deseada.
+- A value 0 specifies that the view will not be displayed.
+- A value >10 specifies the desired duration.
 
-### Configuración: *view\_monitor\_order\_notification\_duration*, Predeterminado: *15*
+### Setting: *view\_monitor\_order\_notification\_duration*, Default: *15*
 
-Especifica la duración en segundos durante la cual se mostrará la vista [Monitor - Notificaciones de Órdenes](/monitor-notifications-order).
+Specifies the duration in seconds for which the [Monitor - Order Notifications](/monitor-notifications-order) view will be displayed.
 
-- Un valor 0 especifica que la vista no se mostrará.
-- Un valor >10 especifica la duración deseada.
+- A value 0 specifies that the view will not be displayed.
+- A value >10 specifies the desired duration.
 
-### Configuración: *view\_monitor\_system\_notification\_duration*, Predeterminado: *15*
+### Setting: *view\_monitor\_system\_notification\_duration*, Default: *15*
 
-Especifica la duración en segundos durante la cual se mostrará la vista [Monitor - Notificaciones del Sistema](/monitor-notifications-system).
+Specifies the duration in seconds for which the [Monitor - System Notifications](/monitor-notifications-system) view will be displayed.
 
-- Un valor 0 especifica que la vista no se mostrará.
-- Un valor >10 especifica la duración deseada.
+- A value 0 specifies that the view will not be displayed.
+- A value >10 specifies the desired duration.
 
-### Configuración: *view\_history\_tasks\_duration*, Predeterminado: *30*
+### Setting: *view\_history\_tasks\_duration*, Default: *30*
 
-Especifica la duración en segundos durante la cual se mostrará la vista [Historial de Tareas](/history-tasks).
+Specifies the duration in seconds for which the [Task History](/history-tasks) view will be displayed.
 
-- Un valor 0 especifica que la vista no se mostrará.
-- Un valor >10 especifica la duración deseada.
+- A value 0 specifies that the view will not be displayed.
+- A value >10 specifies the desired duration.
 
-### Configuración: *view\_history\_orders\_duration*, Predeterminado: *0*
+### Setting: *view\_history\_orders\_duration*, Default: *0*
 
-Especifica la duración en segundos durante la cual se mostrará la vista [Historial de Órdenes](/history-orders).
+Specifies the duration in seconds for which the [Order History](/history-orders) view will be displayed.
 
-Un valor 0 especifica que la vista no se mostrará.
-Un valor >10 especifica la duración deseada.
+A value 0 specifies that the view will not be displayed.
+A value >10 specifies the desired duration.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)
-- [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
-- [Historial de Órdenes](/history-orders)
-- [Historial de Tareas](/history-tasks)
-- [Configuración](/settings)
+- [Monitor - Order Notifications](/monitor-notifications-order)
+- [Monitor - System Notifications](/monitor-notifications-system)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
+- [Settings](/settings)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

@@ -1,36 +1,36 @@
-# Configuración - Servicio de Notificación de Logs
+# Settings - Log Notification Service
 
-El [Servicio de Notificación de Logs](/service-log-notification) implementa un servidor syslog que recibe advertencias y errores de los productos JS7 como Controladores y Agentes. El servicio puede configurarse para enviar notificaciones, por ejemplo, por correo electrónico.
+The [Log Notification Service](/service-log-notification) implements a syslog server that receives warnings and errors from JS7 products such as Controllers and Agents. The service can be configured to send notifications, for example, by e-mail.
 
-Las notificaciones se muestran desde la página [Monitor - Notificaciones del Sistema](/monitor-notifications-system).
+Notifications are displayed from the [Monitor - System Notifications](/monitor-notifications-system) page.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-Las siguientes configuraciones se aplican al Servicio de Notificación de Logs. Los cambios tienen efecto inmediato.
+The following settings are applied to the Log Notification Service. Changes become effective immediately.
 
-## Configuración del Servicio de Notificación de Logs
+## Log Notification Service Settings
 
-### Configuración: *log\_server\_active*, Predeterminado: *false*
+### Setting: *log\_server\_active*, Default: *false*
 
-Especifica que el Servicio de Notificación de Logs se inicia con el JOC Cockpit.
+Specifies that the Log Notification Service is started with JOC Cockpit.
 
-### Configuración: *log\_server\_port*, Predeterminado: *4245*
+### Setting: *log\_server\_port*, Default: *4245*
 
-Especifica el puerto UDP en el que escuchará el Servicio de Notificación de Logs.
+Specifies the UDP port on which the Log Notification Service will listen.
 
-### Configuración: *log\_server\_max\_messages\_per\_second*, Predeterminado: *1000*
+### Setting: *log\_server\_max\_messages\_per\_second*, Default: *1000*
 
-Especifica el número máximo de mensajes por segundo que procesará el Servicio de Notificación de Logs.
+Specifies the max. number of messages per second that the Log Notification Service will process.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Notificación de Logs](/service-log-notification)
-- [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
-- [Configuración](/settings)
+- [Log Notification Service](/service-log-notification)
+- [Monitor - System Notifications](/monitor-notifications-system)
+- [Settings](/settings)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

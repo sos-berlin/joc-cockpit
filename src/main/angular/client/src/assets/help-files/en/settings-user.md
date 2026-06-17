@@ -1,22 +1,22 @@
-# Configuración - Usuario
+# Settings - User
 
-Los usuarios reciben una ventana emergente de bienvenida al conectarse al JOC Cockpit por primera vez.
+Users receive a welcome pop-up window when connecting to JOC Cockpit for the first time.
 
-La ventana emergente de bienvenida proporciona enlaces para descargar valores predeterminados para Recursos de Jobs y ejemplos de Workflows y objetos relacionados.
+The welcome pop-up window provides links for downloading defaults for Job Resources and examples for Workflows and related objects.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-## Configuración de Usuario
+## User Settings
 
-### Configuración: *welcome\_got\_it*, Predeterminado: *false*
+### Setting: *welcome\_got\_it*, Default: *false*
 
-Especifica si el mensaje de bienvenida ha sido aceptado e impide que aparezcan más recordatorios.
+Specifies if the welcome message is acceptance and prevents further reminders from occurring.
 
-### Configuración: *welcome\_do\_not\_remind\_me*, Predeterminado: *false*
+### Setting: *welcome\_do\_not\_remind\_me*, Default: *false*
 
-Especifica si deben aparecer más recordatorios.
+Specifies if further reminders should occur.
 
-## Referencias
+## References
 
-- [Configuración](/settings)
+- [Settings](/settings)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

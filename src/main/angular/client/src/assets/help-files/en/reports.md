@@ -1,55 +1,55 @@
-# Reportes
+# Reports
 
-Los [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) ofrecen información sobre la ejecución pasada de Workflows y Jobs:
+The [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offer insight from past execution of Workflows and Jobs:
 
-- Los Reportes se crean a partir de [Plantillas de Reportes](/report-templates) predefinidas que se parametrizan desde [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- Los usuarios ejecutan Reportes desde la vista [Reporte - Creación](/report-creation) o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecución](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
-- Los Reportes se visualizan en la vista *Reportes*.
+- Reports are created from predefined [Report Templates](/report-templates) that are parameterized from [Configuration - Inventory - Reports](/configuration-inventory-reports).
+- Users run Reports from the [Report - Creation](/report-creation) view or by [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). The  [Report - Run History](/report-run-history) view provides evidence about past Report runs.
+- Reports are visualized in the *Reports* view.
 
-Los Reportes y el [Reporte - Historial de Ejecución](/report-run-history) están sujetos a la depuración de la base de datos realizada por el [Servicio de Limpieza](/service-cleanup).
+Reports and the [Report - Run History](/report-run-history) are subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-Para ejecutar Reportes, véase [Reporte - Creación](/report-creation). Para verificar ejecuciones de Reportes, véase [Reporte - Historial de Ejecución](/report-run-history).
+For running Reports see [Report - Creation](/report-creation). For checking Report runs see [Report - Run History](/report-run-history).
 
-## Lista de Reportes
+## List of Reports
 
-Los Reportes mostrados se agrupan por [Plantillas de Reportes](/report-templates) y por ordenamiento *mayor*, *menor*.
+Reports displayed are grouped by [Report Templates](/report-templates) and by *highest*, *lowest* sorting. 
 
-- Expandir la *Plantilla de Reporte* permite seleccionar entre ordenamiento *mayor*, *menor*.
-- Expandir el ordenamiento muestra los Reportes disponibles.
+- Expanding the *Report Template* offers to select from *highest*, *lowest* sorting.
+- Expanding the sorting displays available Reports.
 
-## Operaciones sobre Reportes
+## Operations on Reports
 
-Los Reportes pueden visualizarse haciendo clic en el Reporte correspondiente.
+Reports can be displayed by clicking the related Report.
 
-El menú de acción de 3 puntos de un Reporte ofrece las siguientes operaciones:
+The 3-dots action menu of a Report offers the following operations:
 
-- **Mostrar Reporte** muestra el Reporte relacionado.
-- **Eliminar** elimina el Reporte relacionado.
+- **Show Report** displays the related Report.
+- **Delete** removes the related Report.
 
-Al seleccionar varios Reportes, la operación masiva para eliminar Reportes queda disponible desde un botón en la esquina superior derecha de la pantalla.
+When selecting a number of Reports the bulk operation to delete Reports becomes available from a button in the right upper corner of the screen.
 
-## Visualización de Reportes
+## Display of Reports
 
-Al hacer clic en un Reporte, se mostrará para las *Frecuencias del Reporte* en el *Período del Reporte* dado de la siguiente manera:
+When clicking a Report it will be displayed for the *Report Frequencies* in the given *Report Period* like this:
 
-<img src="assets/help-files/images/report-samples.png" alt="Ejemplos de Reportes" width="727" height="357" />
+<img src="assets/help-files/images/report-samples.png" alt="Report Samples" width="727" height="357" />
 
-Los usuarios disponen de las siguientes operaciones sobre Reportes:
+Users are offered the following operations on Reports:
 
-- **Filtrar por** ofrece filtrado por tipo de frecuencia, como *semanal*.
-- **Gestionar Tarjetas** permite seleccionar *Frecuencias del Reporte*.
-- **Exportar** permite exportar los datos del Reporte a un archivo Excel en formato .xls.
+- **Filter by** offers filtering by frequency type such as *weekly*.
+- **Manage Cards** offers selecting *Report Frequencies*.
+- **Export** allows to export Report data to a Excel file in .xls format.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Reportes](/configuration-inventory-reports)
-- [Reporte - Creación](/report-creation)
-- [Reporte - Historial de Ejecución](/report-run-history)
-- [Plantillas de Reportes](/report-templates)
+- [Configuration - Inventory - Reports](/configuration-inventory-reports)
+- [Report - Creation](/report-creation)
+- [Report - Run History](/report-run-history)
+- [Report Templates](/report-templates)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation)

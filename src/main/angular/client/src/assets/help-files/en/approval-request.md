@@ -1,41 +1,41 @@
-# Solicitud de Aprobación
+# Approval Request
 
-El [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) se ofrece para situaciones en las que los usuarios tienen la intención de realizar operaciones tales como agregar o cancelar Órdenes que requieren la aprobación de un segundo usuario. Esto puede incluir cualquier operación que modifique un objeto de planificación.
+The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) is offered for situations in which users intend performing operations such as adding or cancelling Orders that require approval by a second user. This can include any operation that modifies a scheduling object.
 
-El Proceso de Aprobación involucra los siguientes roles:
+The Approval Process involves the following roles:
 
-- Un *Solicitante* solicita realizar una intervención que requiere aprobación.
-- Un *Aprobador* confirma o rechaza la Solicitud de Aprobación.
+- A *Requestor* requests performing an intervention that requires approval.
+- An *Approver* confirms or denies the Approval Request.
 
-La funcionalidad básica del Proceso de Aprobación incluye:
+The basic functionality of the Approval Process includes:
 
-- implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
-- llevar un seguimiento de las Solicitudes de Aprobación pendientes.
-- ofrecer alternativa a un grupo de *Aprobadores*.
+- to implement the 4-eyes principle: an *Approver* must confirm the intervention of a *Requestor* before the intervention can be executed in the scope of the *Requestor's* account, roles and permissions. 
+- to keep track of pending Approval Requests.
+- to offer fallback to a number of *Approvers*.
 
-## Solicitud de Aprobación
+## Approval Request
 
-Las Solicitudes de Aprobación se generan cuando un usuario intenta realizar una operación que está sujeta a aprobación. Los requisitos previos incluyen:
+Approval Requests are added when a user tries to perform an operation that is subject to approval. Prerequisites include:
 
-- El usuario tiene asignado el *Rol de Solicitante*. Para el nombre del rol véase [Configuración - JOC Cockpit](/settings-joc).
-- La operación actual está indicada con los permisos del *Rol de Solicitante*.
+- The user is assigned the *Requestor Role*. For the role's name see [Settings - JOC Cockpit](/settings-joc).
+- The current operation is indicated with the permissions of the *Requestor Role*.
 
-Por ejemplo, si el *Rol de Solicitante* especifica permisos para Órdenes y el usuario intenta agregar una Orden a un Workflow, se mostrará una ventana emergente que solicitará especificar la siguiente información:
+For example, if the *Requestor Role* specifies permissions for Orders and the user is trying to add an Order to a Workflow, then a pop-up window will be displayed that asks specifying the following information items:
 
-- **Título** es el identificador de la Solicitud de Aprobación. Los usuarios pueden especificar el *Título* libremente.
-- **Aprobador** se selecciona de la lista de [Perfiles de Aprobadores](/approval-profiles). El *Aprobador* indicado será notificado de manera preferente. Sin embargo, cualquier *Aprobador* puede aprobar o rechazar la Solicitud de Aprobación.
-- **Motivo** proporciona una explicación al *Aprobador* sobre la necesidad de la intervención.
+- **Title** is the indicator of the Approval Request. Users can freely specify the *Title*.
+- **Approver** is selected from the list of [Approver Profiles](/approval-profiles). The indicated*Approver* will be preferably notified. However, any *Approver* can approve or reject the Approval Request.
+- **Reason** provides an explanation to the *Approver* about the need for the intervention.
 
-Cuando la Solicitud de Aprobación es enviada, será visible en la vista de [Solicitudes de Aprobación](/approval-requests). El *Aprobador* indicado recibirá una notificación por correo electrónico.
+When the Approval Request is submitted, then it will become visible in the [Approval Requests](/approval-requests) view. The related *Approver* will receive notification by e-mail.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración de Notificaciones de Aprobación](/approval-notification-settings)
-- [Perfiles de Aprobadores](/approval-profiles)
-- [Solicitudes de Aprobación](/approval-requests)
+- [Approval Notification Settings](/approval-notification-settings)
+- [Approver Profiles](/approval-profiles)
+- [Approval Requests](/approval-requests)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)

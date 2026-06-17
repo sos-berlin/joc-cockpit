@@ -1,50 +1,50 @@
-# Recursos de Lock
+# Resource Locks
 
-La vista *Recursos de Lock* muestra información en tiempo real sobre el uso de Recursos de Lock.
+The *Resource Locks* view displays live information about use of Resource Locks.
 
-Los Recursos de Lock se utilizan para limitar el paralelismo de Jobs e Instrucciones de Workflow entre Workflows.
-Los Recursos de Lock son instrucciones de bloque que pueden abarcar varios Jobs e Instrucciones de Workflow en el mismo Workflow.
+Resource Locks are used to limit parallelism of Jobs and Workflow Instructions across Workflows.
+Resource Locks are block instructions that can span a number of Jobs and Workflow Instructions in the same Workflow.
 
-- Los **Locks Exclusivos** pueden ser utilizados por un único Job. El acceso exclusivo se configura desde el Recurso de Lock o desde su uso en el Workflow.
-- Los **Locks Compartidos** pueden ser utilizados por un número configurable de Jobs.
-  - Al Recurso de Lock se le asigna una *capacidad*, por ejemplo 6.
-  - Cada uso del Recurso de Lock por un conjunto de Jobs tiene asignado un *peso*, por ejemplo 3 y 4 para su uso en los Workflows A y B. Esto permite que 2 Órdenes del Workflow A se ejecuten en paralelo y deniega la ejecución paralela de Órdenes de los Workflows A y B.
+- **Exclusive Locks** can be used by a single Job. Exclusive access is configured either from the Resource Lock or from use in the Workflow.
+- **Shared Locks** can be used by a configurable number of Jobs.
+  - The Resource Lock is assigned a *capacity*, for example 6.
+  - Each use of the Resource Lock by a set of Jobs is assigned a *weight*, for example 3 and 4 for use in Workflows A and B. This allows 2 Orders for Workflow A to be executed in parallel and it denies parallel execution of Orders for Workflows A and B.
 
-## Panel de Navegación
+## Navigation Panel
 
-El panel izquierdo muestra el árbol de carpetas del inventario que contienen Recursos de Lock.
+The left panel displays the tree of inventory folders that hold Resource Locks.
 
-- Hacer clic en la carpeta muestra los Recursos de Lock de esa carpeta.
-- Hacer clic en el ícono chevron-down disponible al pasar el cursor sobre una carpeta muestra los Recursos de Lock de la carpeta y de cualquier subcarpeta.
+- Clicking the folder displays Resource Locks from that folder.
+- Clicking the chevron-down icon available when hovering on a folder displays Resource Locks from the folder and any sub-folders.
 
-El ícono de Búsqueda Rápida ofrece la posibilidad de buscar Recursos de Lock basándose en la entrada del usuario:
+The Quick Search icon offers looking up Resource Locks based on user input:
 
-- Escribir **Test** mostrará Recursos de Lock con nombres como *test-lock-1* y *TEST-lock-2*.
-- Escribir **\*Test** mostrará Recursos de Lock con nombres como *test-lock-1* y *my-TEST-lock-2*.
+- Typing **Test** will display Resource Locks with names such as *test-lock-1* and *TEST-lock-2*. 
+- Typing **\*Test** will display Resource Locks with names such as *test-lock-1* and *my-TEST-lock-2*
 
-## Panel de Recursos de Lock
+## Resource Lock Panel
 
-### Visualización de Recursos de Lock
+### Display of Resource Locks
 
-Se muestra la siguiente información:
+The following information is displayed:
 
-- **Nombre** es el nombre único de un Recurso de Lock.
-- **Fecha de Despliegue** es la fecha en que se desplegó el Recurso de Lock.
-- **Estado** es uno de *Sincronizado* y *No Sincronizado* si el Recurso de Lock no ha sido desplegado al Controlador.
-- **Peso Adquirido** indica el *peso* acumulativo de las Órdenes paralelas que adquirieron el lock.
-- **Órdenes en Posesión** indica el número de Órdenes que adquirieron el lock.
-- **Órdenes en Espera** indica el número de Órdenes que están esperando adquirir el lock.
-- **Capacidad** indica la *capacidad* disponible del lock. Los *Locks Exclusivos* tienen una *capacidad* de 1; los *Locks Compartidos* tienen una *capacidad* individual.
+- **Name** is the unique name of a Resource Lock.
+- **Deployment Date** is the date on which the Resource Lock was deployed.
+- **Status** is one of *Synchronized* and *Not Synchronized* if the Resource Lock has not been deployed to the Controller.
+- **Acquired Weight** indicates the cumulative *weight* by parallel Orders that acquired the lock.
+- **Holding Orders** indicates the number of Orders that acquired the lock.
+- **Waiting Orders** indicates the number of Orders that are waiting to acquire the lock.
+- **Capacity** indicates the *capacity* available from the lock. *Exclusive Locks* hold a *capacity* of 1, *Shared Locks* hold an individual *capacity*.
 
-### Visualización de Órdenes
+### Display of Orders
 
-Hacer clic en el ícono de flecha hacia abajo expandirá el Recurso de Lock y mostrará información detallada sobre las Órdenes en posesión que adquirieron el Recurso de Lock y las Órdenes que están esperando para adquirirlo.
+Clicking the arrow-down icon will expand the Resource Lock and will display detailed information about holding Orders that acquired the Resource Lock and Orders that are waiting for the Resource Lock.
 
-## Búsqueda
+## Search
 
-La *Búsqueda* ofrece criterios para buscar Recursos de Lock por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Recursos de Lock utilizados por el Workflow.
+The *Search* offers criteria for looking up Resource Locks from dependencies, for example by searching for Workflows including a specific Job name, the Resource Locks used by the Workflow will be returned.
 
-## Referencias
+## References
 
-- [Búsqueda de Recursos de Lock](/resources-resource-locks-search)
+- [Resources - Resource Locks - Search](/resources-resource-locks-search)
 - [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks)

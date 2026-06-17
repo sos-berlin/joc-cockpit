@@ -1,48 +1,48 @@
-# Documentaciones
+# Documentations
 
-La vista *Documentaciones* muestra información sobre el uso de Documentaciones y permite su gestión.
+The *Documentations* view displays information about use of Documentations and allows management of Documentations.
 
-Las Documentaciones son referenciadas por Workflows y Jobs, y se muestran en la vista [Workflows](/workflows).
+Documentations are referenced by Workflows and Jobs, and are displayed with the [Workflows](/workflows) view.
 
-## Panel de Navegación
+## Navigation Panel
 
-El panel izquierdo muestra el árbol de carpetas del inventario que contienen Documentaciones.
+The left panel displays the tree of inventory folders that hold Documentations.
 
-- Hacer clic en la carpeta muestra las Documentaciones de esa carpeta.
-- Hacer clic en el ícono chevron-down disponible al pasar el cursor sobre una carpeta muestra las Documentaciones de la carpeta y de cualquier subcarpeta.
+- Clicking the folder displays Documentations from that folder.
+- Clicking the chevron-down icon available when hovering on a folder displays Documentations from the folder and any sub-folders.
 
-El ícono de Búsqueda Rápida ofrece la posibilidad de buscar Documentaciones basándose en la entrada del usuario:
+The Quick Search icon offers looking up Documentations based on user input:
 
-- Escribir **Test** mostrará Documentaciones con nombres como *test-documentation-1* y *TEST-documentation-2*.
-- Escribir **\*Test** mostrará Documentaciones con nombres como *test-documentation-1* y *my-TEST-documentation-2*.
+- Typing **Test** will display Documentations with names such as *test-documentation-1* and *TEST-documentation-2*. 
+- Typing **\*Test** will display Documentations with names such as *test-documentation-1* and *my-TEST-documentation-2*
 
-## Panel de Documentaciones
+## Documentation Panel
 
-### Visualización de Documentaciones
+### Display of Documentations
 
-Se muestra la siguiente información:
+The following information is displayed:
 
-- **Nombre** es el nombre único de la Documentación.
-- **Referencia** indica el nombre del archivo de documentación que fue cargado.
-- **Tipo** es uno de los tipos soportados *Text*, *Markdown*, *HTML*, *XML*, *PDF*, etc.
-- **Modificado** fecha de última modificación.
+- **Name** is the unique name of the Documentation.
+- **Reference** indicates the name of the documentation file that was uploaded.
+- **Type** is one of the supported types *Text*, *Markdown*, *HTML*, *XML*, *PDF* etc.
+- **Modified** last modification date.
 
-### Operaciones sobre Documentaciones
+### Operations on Documentations
 
-Las siguientes operaciones están disponibles desde el menú de acción de una Documentación:
+The following operations are available from a Documentation's action menu:
 
-- **Editar Documentación** ofrece la modificación del archivo referenciado.
-- **Vista Previa de Documentación** abrirá la aplicación asignada al tipo mime relacionado para mostrar la Documentación.
-- **Exportar** exportará la Documentación a un archivo .zip.
-- **Eliminar** eliminará la Documentación.
-- **Mostrar Uso** mostrará los Workflows que tienen referencias a la Documentación.
+- **Edit Documentation** offers modification of the referenced file.
+- **Preview Documentation** will open the application assigned the related mime-type for display of the Documentation.
+- **Export** will export the Documentation to a .zip archive file.
+- **Delete** will delete the Documentation.
+- **Show Usage** will display Workflows that hold references to the Documentation.
 
-En la parte superior de la ventana se ofrece el botón *Agregar Documentación*:
+On top of the window the *Add Documentation* button is offered:
 
-- **Cargar Documentación** permite seleccionar un archivo que será cargado.
-- **Ruta** especifica la carpeta y el nombre de la Documentación en el inventario.
+- **upload of Documentation** allows to select a file that will be uploaded.
+- **path** specifies the folder and name of the Documentation in the inventory.
 
-## Referencias
+## References
 
 - [Workflows](/workflows)
 - [JS7 - User Documentation](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Documentation)

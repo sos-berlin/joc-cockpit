@@ -1,39 +1,39 @@
-# Recursos - Búsqueda de Tableros de Avisos
+# Ressources - Notice Board Search
 
-La *Búsqueda de Tableros de Avisos* se utiliza para buscar Tableros de Avisos basándose en criterios como:
+*Notice Board Search* is used to look up Notice Boards based on criteria such as
 
-- **Entrada del Usuario** que coincida con un nombre o título determinado, opcionalmente limitado por carpetas.
+- **User Input** matching a given name or title, optionally limited by folders.
 
-## Metacaracteres
+## Meta Characters
 
-- El metacarácter **?** reemplazará cualquier carácter individual.
-- El metacarácter **\*** reemplazará cero o más caracteres.
+- **?** meta character will replace any single character.
+- **\*** meta character will replace zero or more characters.
 
-La búsqueda se realiza sin distinción de mayúsculas y minúsculas y de forma parcialmente calificada, por ejemplo:
+Search is performed case-insensitive and partially qualified, for example
 
-- **test** encontrará Tableros de Avisos con el nombre "My-**Test**-Board-1" y "**TEST**-Board-2"
-- **te?t** encontrará Tableros de Avisos con el nombre "Global-**Test**-Board-1" y "**TEXT**-Board-2"
-- **te\*t** encontrará Tableros de Avisos con el nombre "My-**tExt**-Board-1" y "My-**Terminat**ing-Board-2"
+- **test** will find Notice Boards with the name "My-**Test**-Board-1" and "**TEST**-Board-2"
+- **te?t** will find Notice Boards with the name "Global-**Test**-Board-1" and "**TEXT**-Board-2"
+- **te\*t** will find Notice Boards with the name "My-**tExt**-Board-1" and "My-**Terminat**ing-Board-2"
 
-## Búsqueda Avanzada
+## Advanced Search
 
-La función está disponible haciendo clic en el enlace:<br/>**> Avanzado**
+The feature is available when clicking the link:<br/>**> Advanced**
 
-### Búsqueda por Atributos
+### Attribute Search
 
-La Búsqueda Avanzada permite buscar por atributos de objetos:
+Advanced Search allows searching by object attributes:
 
-- **Nombre del Agente** devolverá Tableros de Avisos para Workflows que incluyan Jobs ejecutados con el Agente especificado.
-- **Contar Jobs** devolverá Tableros de Avisos para Workflows que utilicen el número mínimo de Jobs especificado con el término **Desde**. Si se usa con el término **Hasta**, se devolverán Workflows que incluyan un número de Jobs en el rango entre *Desde* y *Hasta*. Si solo se usa el término *Hasta*, se devolverán Workflows que no incluyan un número de Jobs que supere el término *Hasta*.
-- **Nombre del Job** devolverá Tableros de Avisos para Workflows que incluyan Jobs que coincidan con el nombre dado. Al usar la casilla de verificación *Coincidencia Exacta* para **Nombre del Job**, el término de búsqueda ingresado debe coincidir completamente con el nombre de un Job, incluyendo distinción de mayúsculas y minúsculas.
+- **Agent Name** will return Notice Boards for Workflows that include Jobs executed with the specified Agent.
+- **Count Jobs** will return Notice Boards for Workflows that use the minimum number of Jobs specified with the **From** term. If used with the **To** term, then Workflows will be returned that include a number of Jobs in the range between *From* and *To*. If the *To* term is used only, then Workflows will be returned that do not include a number of Jobs exceeding the *To* term.
+- **Job Name** will return Notice Boards for Workflows that include Jobs matching the given name. When using the *Exact Match* checkbox for **Job Name**, then the search term entered has to fully match a job name including case-sensitive spelling.
 
-### Búsqueda por Dependencias
+### Dependency Search
 
-El metacarácter de búsqueda **\*** se utiliza para especificar que se buscan dependencias, por ejemplo con un Recurso de Lock sin importar el nombre que use:
+The search meta character **\*** is used to specify that dependencies are looked up, for example to a Resource Lock whichever name it might use:
 
-- El metacarácter **\*** para **Recursos de Lock** devolverá Tableros de Avisos para Workflows que utilicen un Recurso de Lock.
-- El metacarácter **\*** para **Órdenes Disparadas por Archivo** devolverá Tableros de Avisos para Workflows referenciados por una Orden Disparada por Archivo.
+- **\*** meta character for **Resource Locks** will return Notice Boards for Workflows using a Resource Lock,
+- **\*** meta character for **File Order Sources** will return Notice Boards for Workflows referenced by a File Order Source.
 
-## Referencias
+## References
 
-- [Recursos - Tableros de Avisos](/resources-notice-boards)
+- [Resources - Notice Boards](/resources-notice-boards)

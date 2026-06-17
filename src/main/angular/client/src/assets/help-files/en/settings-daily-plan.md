@@ -1,57 +1,58 @@
-# Configuración - Plan Diario
+# Settings - Daily Plan
 
-Las siguientes configuraciones se aplican al [Plan Diario](/daily-plan). Los cambios tienen efecto inmediato.
+The following settings are applied to the [Daily Plan](/daily-plan). Changes become effective immediately.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-## Configuración del Plan Diario
+## Daily Plan Settings
 
-### Configuración: *time\_zone*, Predeterminado: *UTC*
+### Setting: *time\_zone*, Default: *UTC*
 
-Especifica la zona horaria que se aplica a la hora de inicio del [Servicio de Plan Diario](/service-daily-plan) y al período del Plan Diario.
+Specifies the time zone that is applied to the start time of the [Daily Plan Service](/service-daily-plan) and period of the Daily Plan.
 
-### Configuración: *period\_begin*, Predeterminado: *00:00*
+### Setting: *period\_begin*, Default: *00:00*
 
-Especifica el inicio del período de 24 horas del Plan Diario en la zona horaria indicada.
+Specifies the beginning of the 24-hour Daily Plan period in the indicated time zone.
 
-### Configuración: *start\_time*, Predeterminado: *30 minutos antes de period\_begin*
+### Setting: *start\_time*, Default: *30 minutes before period\_begin*
 
-Especifica la hora de inicio para ejecutar el Plan Diario diariamente con la zona horaria indicada. Sin esta configuración, el Plan Diario se ejecutará 30 minutos antes del momento especificado por la configuración *period\_begin*. Esta configuración acepta un valor de hora, por ejemplo 23:00:00.
+Specifies the start time for running the Daily Plan on a daily basis with the indicated time zone. Without this setting the Daily Plan will run 30 minutes before the point in time specified by the *period\_begin* setting. This setting accepts a time value, for example 23:00:00.
 
-### Configuración: *days\_ahead\_plan*, Predeterminado: *7*
+### Setting: *days\_ahead\_plan*, Default: *7*
 
-Especifica el número de días de anticipación para los cuales se generan Órdenes y se ponen a disposición con el estado *planificado*. Un valor *0* indica que no se deben generar Órdenes y deshabilita la funcionalidad.
+Specifies the number of days in advance for which Orders are generated and made available with the *planned* status. A *0* value indicates that no Orders should be generated and disables the functionality.
 
-### Configuración: *days\_ahead\_submit*, Predeterminado: *3*
+### Setting: *days\_ahead\_submit*, Default: *3*
 
-Especifica el número de días de anticipación para los cuales las Órdenes *planificadas* se envían a los Controladores y se ponen a disposición con el estado *enviado*. Un valor *0* indica que no se deben enviar Órdenes y deshabilita la funcionalidad.
+Specifies the number of days in advance for which *planned* Orders are submitted to Controllers and are made available with the *submitted* state. A *0* value indicates that no Orders should be submitted and disables the functionality.
 
-### Configuración: *submit\_orders\_individually*, Predeterminado: *false*
+### Setting: *submit\_orders\_individually*, Default: *false*
 
-El Servicio de Plan Diario envía Órdenes de forma predeterminada desde una única transacción que se revierte si el envío de una Orden falla. Con esta configuración habilitada, las Órdenes se envían individualmente e independientemente de cualquier fallo al enviar otras Órdenes. El Servicio de Plan Diario requerirá más tiempo para enviar Órdenes individualmente.
+The Daily Plan Service by default submits Orders from a single transaction that is rolled back if submission of an Order fails. With this setting enabled, Orders are submitted individually and independently of any failures to submit other Orders. The Daily Plan Service will require more time to submit Orders individually.
 
-### Configuración: *age\_of\_plans\_to\_be\_closed\_automatically*, Predeterminado: *1*
+### Setting: *age\_of\_plans\_to\_be\_closed\_automatically*, Default: *1*
 
-Especifica el número de días después de los cuales el Plan Diario se cerrará y no permitirá agregar Órdenes que resuelvan dependencias para [Recursos - Tableros de Avisos](/resources-notice-boards) de la fecha original.
+Specifies the number of days after which the Daily Plan will be closed and will not allow adding Orders that resolve dependencies for [Resources - Notice Boards](/resources-notice-boards) for the original date.
 
-### Configuración: *projections\_month\_before*, Predeterminado: *2*
+### Setting: *projections\_month\_before*, Default: *2*
 
-Especifica el número de meses anteriores a la fecha actual para los cuales se calculan las [Proyecciones del Plan Diario](/daily-plan-projections) que indican la ejecución de Órdenes. Esto permite a los usuarios comparar fechas pasadas del Plan Diario con proyecciones basadas en cambios actuales a las Planificaciones.
+Specifies the number of months before the current date for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate Order execution. This allows users to compare past Daily Plan dates to projections based on current changes to schedules.
 
-### Configuración: *projections\_month\_ahead*, Predeterminado: *6*
+### Setting: *projections\_month\_ahead*, Default: *6*
 
-Especifica el número de meses de anticipación para los cuales se calculan las [Proyecciones del Plan Diario](/daily-plan-projections) que indican la futura ejecución de Órdenes.
+Specifies the number of months in advance for which [Daily Plan - Projections](/daily-plan-projections) are calculated that indicate future Order execution.
 
-## Referencias
 
-### Ayuda Contextual
+## References
 
-- [Plan Diario](/daily-plan)
-- [Proyecciones del Plan Diario](/daily-plan-projections)
-- [Servicio de Plan Diario](/service-daily-plan)
-- [Recursos - Tableros de Avisos](/resources-notice-boards)
-- [Configuración](/settings)
+### Context Help
 
-### Base de Conocimiento del Producto
+- [Daily Plan](/daily-plan)
+- [Daily Plan - Projections](/daily-plan-projections)
+- [Daily Plan Service](/service-daily-plan)
+- [Resources - Notice Boards](/resources-notice-boards)
+- [Settings](/settings)
+
+### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

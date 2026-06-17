@@ -1,63 +1,63 @@
-# Historial de Transferencia de Archivos
+# File Transfer History
 
-La vista *Historial de Transferencia de Archivos* resume el historial de ejecución de Órdenes para Jobs de Transferencia de Archivos Gestionada YADE.
+The *File Transfer History* view summarizes the execution history of Orders for YADE Managed File Transfer Jobs.
 
-Para la salida de log creada por los Jobs de Transferencia de Archivos, consulte [Historial de Tareas](/history-tasks). Para el historial de Órdenes, consulte [Historial de Órdenes](/history-orders).
+For log output created from File Transfer Jobs see [Task History](/history-tasks). For the history of Orders see [Order History](/history-orders).
 
-## Panel de Historial
+## History Panel
 
-### Historial de Transferencias
+### History of Transfers
 
-La visualización se agrupa en un bloque para la operación de transferencia y bloques para la transferencia de archivos individuales:
+Display is grouped in a block for the transfer operation and blocks for transfer of individual files:
 
-- **Estado del Historial** indica si una transferencia fue *exitosa* o *fallida*.
-  - *Exitosa* indica que todos los archivos de la transferencia fueron procesados correctamente.
-  - *Fallida* indica que uno o más archivos de la transferencia fueron procesados con errores.
-- **Nombre del Perfil** es el identificador único de un perfil de transferencia de archivos.
-- **Operación** especifica una de *COPY*, *MOVE*, *REMOVE*, *GETLIST*.
-- **Workflow** indica el Workflow ejecutado por la Orden.
-  - Al hacer clic en el nombre del Workflow se navega a la vista [Workflows](/workflows).
-  - Al hacer clic en el icono del lápiz se navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
-- **ID de Orden** es el identificador único asignado a una Orden.
-- **Total** indica la cantidad de archivos incluidos en la transferencia.
+- **History Status** indicates if a transfer was *successful* or *failed*.
+  - *Success* indicates that all files in the transfer were successfully processed.
+  - *Failed* indicates that one or more files in the transfer were processed with errors.
+- **Profile Name** is the unique identifier of a file transfer profile.
+- **Operation** specifies one of *COPY*, *MOVE*, *REMOVE*, *GETLIST*.
+- **Workflow** indicates the Workflow executed by the Order.
+  - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
+  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
+- **Order ID** is the unique identifier assigned to an Order.
+- **Total** indicates the number of files included in the transfer.
 
-### Historial por Archivo
+### History per File
 
-Una operación de transferencia de archivos puede incluir cualquier número de archivos. El *Historial de Transferencia de Archivos* muestra el estado de transferencia por archivo al hacer clic en el icono de flecha hacia abajo disponible desde la transferencia:
+A file transfer operation can include any number of files. The *File Transfer History* displays the transfer status per file when clicking the arrow-down icon available from the transfer:
 
-La información mostrada se agrupa en los siguientes bloques:
+Information displayed is grouped in the following blocks:
 
-- **Origen** indica el origen de la transferencia.
-- **Destino** indica el destino de la transferencia.
-- **Jump** indica el uso de un host intermediario entre el origen y el destino. Se utiliza un host *Jump* cuando la transferencia de archivos no puede realizarse directamente entre el origen y el destino, sino que requiere un host en la DMZ para operaciones de entrada y salida.
+- **Source** indicates the source of transfer.
+- **Target** indicates the target of transfer.
+- **Jump** indicates use of a jump host between source and target. A *Jump* host is used if file transfer cannot be directly performed between source and target but requires a host in the DMZ for incoming and outgoing operations.
 
-Los detalles se muestran para los hosts de *Origen*, *Destino* y *Jump*:
+Details are displayed for *Source*, *Target* and *Jump* hosts:
 
-- **Host** indica el nombre de host o la dirección IP del servidor.
-- **Cuenta** indica la cuenta de usuario utilizada para acceder al servidor.
-- **Puerto** indica el puerto utilizado para conectarse al servidor.
-- **Protocolo** indica el protocolo de transferencia de archivos, como FTP, FTPS, SFTP, CIFS, etc.
+- **Host** indicates the hostname or IP address of the server.
+- **Account** indicates the user account used to access the server.
+- **Port** indicates the port used to connect to the server.
+- **Protocol** indicates the file transfer protocol such as FTP, FTPS, SFTP, CIFS etc.
 
-Para *Origen* y *Destino* se muestran los siguientes detalles:
+For *Source* and *Target* the following details are displayed:
 
-- **Nombre del Archivo** indica el nombre del archivo.
-- **Ruta del Archivo** muestra la ruta del directorio del archivo, incluido su nombre.
-- **Estado**
-  - **TRANSFERRED** indica que el archivo fue transferido exitosamente cuando se usa con las operaciones *COPY* o *MOVE*.
-  - **DELETED** indica que el archivo fue eliminado cuando se usa con la operación *REMOVE*.
-  - **SKIPPED** indica que el archivo fue excluido de la transferencia, por ejemplo cuando se usa con la operación *GETLIST*.
-- **Tamaño** especifica la cantidad de bytes transferidos.
-- **Hash de Integridad** indica un hash MD5 si la opción correspondiente fue utilizada para la transferencia.
+- **File Name** indicates the name of the file.
+- **File Path** shows the directory path of the file, including its name.
+- **Status**
+  - **TRANSFERRED** indicates that the file was successfully transferred when used with *COPY* or *MOVE* operations.
+  - **DELETED** indicates that the file was deleted when used with the *REMOVE* operation.
+  - **SKIPPED** indicates that the file was excluded from transfer, for example when used with the *GETLIST* operation.
+- **Size** specifies the number of bytes transferred.
+- **Integrity Hash** indicates an MD5 hash if the related options was used for transfer.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Historial de Órdenes](/history-orders)
-- [Historial de Tareas](/history-tasks)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

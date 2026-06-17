@@ -1,24 +1,24 @@
-# Plan Diario
+# Daily Plan
 
-La vista *Plan Diario* proporciona una descripción general de las Órdenes planificadas para ejecución futura y permite a los usuarios gestionar el *Plan Diario*.
+The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows users to manage the *Daily Plan*. 
 
-El [Servicio del Plan Diario](/service-daily-plan) se usa para crear y enviar Órdenes del Plan Diario a los Controladores. El servicio opera en segundo plano y actúa diariamente para planificar y enviar Órdenes con varios días de anticipación.
+The [Daily Plan Service](/service-daily-plan) is used to create and to submit Orders for the Daily Plan to Controllers. The service is operated in the background and acts on a daily basis to plan and to submit Orders a few days ahead.
 
-El Plan Diario está sujeto a la depuración de la base de datos realizada por el [Servicio de Limpieza](/service-cleanup).
+The Daily Plan is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-Para las operaciones relacionadas con el *Panel de Calendario*, consulte [Plan Diario - Calendario](/daily-plan-calendar).
+For operations related to the *Calendar Panel* see [Daily Plan - Calendar](/daily-plan-calendar).
 
-## Estados de Órdenes
+## Order States
 
-El Plan Diario incluye Órdenes con uno de los siguientes estados:
+The Daily Plan includes Orders holding one of the states:
 
-- **Planned**: Las Órdenes han sido creadas pero no han sido *enviadas* al Controlador y a los Agentes.
-- **Submitted**: Las Órdenes han sido enviadas al Controlador y a los Agentes, que iniciarán las Órdenes de forma autónoma. El estado se aplica a las Órdenes planificadas para ejecución futura y a las Órdenes en ejecución.
-- **Finished**: Las Órdenes han finalizado. La vista [Historial de Órdenes](/history-orders) explica si la ejecución fue exitosa o fallida.
+- **Planned**: Orders have been created but have not been *submitted* to the Controller and Agents.
+- **Submitted**: Orders have been forwarded to the Controller and Agents that will start Orders autonomously. The status applies to Orders scheduled for future execution and to Orders in execution.
+- **Finished**: Orders have completed. The [Order History](/history-orders) view explains if execution was successful or failed.
 
-## Transiciones de Estado de Órdenes
+## Order State Transitions
 
-El Plan Diario ofrece las siguientes transiciones de estado:
+The Daily Plan offers the following state transitions:
 
 <pre>
       ┌──────────────────┐
@@ -54,82 +54,83 @@ El Plan Diario ofrece las siguientes transiciones de estado:
       ┖──────────────────┘
 </pre>
 
-## Panel del Plan Diario
+## Daily Plan Panel
 
-### Operaciones de Estado de Órdenes
+### Order Status Operations
 
-Las operaciones están disponibles individualmente desde el menú de acción de una Orden y desde operaciones masivas.
+Operations are available individually from an Order's action menu and from bulk operations.
 
-Los siguientes botones de filtro limitan el alcance de las operaciones:
+The following filter buttons limit the scope of operations: 
 
-- **All**: La operación se aplicará a Órdenes con cualquier estado.
-- **Planned**: Las operaciones *submit* y *remove* pueden aplicarse a Órdenes *planificadas* que no han sido *enviadas* al Controlador.
-- **Submitted**: Las operaciones *let run* y *cancel* pueden aplicarse a Órdenes *enviadas* al Controlador y a los Agentes.
-- **Finished**: La operación *cancel* puede aplicarse a Órdenes que hayan finalizado.
-- **Late** es un filtro adicional sobre los estados de las Órdenes que indica que las Órdenes se iniciaron más tarde de lo esperado.
+- **All**: The operation will be applied to Orders holding any status.
+- **Planned**: The *submit* and *remove* operations can be applied to *planned* Orders that are not *submitted* to the Controller.
+- **Submitted**: The *let run* and *cancel* operations can be applied to Orders *submitted* to the Controller and Agents.
+- **Finished**: The *cancel* operation can be applied to Orders that completed.
+- **Late** is an additional filter on top of Order states that indicates that Orders were started later than expected.
 
-#### Operaciones del Ciclo de Vida
+#### Life Cycle Operations
 
 - **Let Run Orders**
-  - Cuando se aplica a Órdenes *enviadas*, se iniciarán inmediatamente. Las Órdenes en el ámbito de una operación masiva se iniciarán simultáneamente.
+  - When applied to *submitted* Orders, then they will start immediately. Orders in scope of a bulk operation will start simultaneously.
 - **Submit Orders**
-  - Cuando se aplica a Órdenes *planificadas*, se establecerán al estado *enviado* y se enviarán al Controlador y a los Agentes.
+  - When applied to *planned* Orders, then they will be set to the *submitted* status and will be forwarded to Controller and Agents.
 - **Cancel Orders**
-  - Cuando se aplica a Órdenes *enviadas*, las Órdenes serán recuperadas del Controlador y los Agentes y se establecerán al estado *planificado*.
+  - When applied to *submitted* Orders, then Orders will be recalled from the Controller & Agents and will be set to the *planned* status.
 - **Remove Orders**
-  - Cuando se aplica a Órdenes *planificadas*, las Órdenes se eliminarán del Plan Diario. Una ejecución posterior del Servicio del Plan Diario no intentará agregar Órdenes para la fecha indicada.
+  - When applied to *planned* Orders, then Orders will be removed from the Daily Plan. A later run of the Daily Plan Service will not try to add Orders to the given date.
 - **Copy Orders**
-  - **Start Time**: Copia Órdenes a una fecha futura del Plan Diario. La entrada de fecha/hora es similar a la modificación del tiempo de inicio de una Orden.
-  - **Keep Daily Plan Assignment**: Las dependencias basadas en calendario de los Tableros de Avisos se resolverán a la fecha original del Plan Diario.
-  - **Ignore Job Admission Times**: Los Jobs pueden estar limitados para ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Las Órdenes que llegan deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs a iniciarse independientemente de tales limitaciones.
+  - **Start Time**: Copies Orders to a future Daily Plan date. Date/time input is similar to modifying an Order's start time.
+  - **Keep Daily Plan Assignment**: Calendar-based dependencies from Notice Boards will be resolved to the original Daily Plan date.
+  - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
-#### Modificar Tiempo de Inicio
+#### Modify Start Time
 
-- **Now**: Las Órdenes se iniciarán inmediatamente.
-- **Specific Date**: Las Órdenes se iniciarán en la fecha y hora especificadas. A las Órdenes se les asignará la fecha del Plan Diario correspondiente al resolver las dependencias basadas en calendario.
-- **Relative to Current Time**: Las Órdenes se iniciarán con un desplazamiento respecto al tiempo actual en segundos o en horas, minutos y segundos; por ejemplo, *15* para iniciar en 15 segundos o *01:30:15* para iniciar 1 hora, 30 minutos y 15 segundos después.
-- **Relative to Start Time**: Las Órdenes se iniciarán con un desplazamiento positivo o negativo respecto a su tiempo de inicio original en segundos o en horas, minutos y segundos; por ejemplo, *-04:00:00* para iniciar 4 horas antes o *+12:00:00* para iniciar 12 horas después. La asignación de las Órdenes a la fecha original del Plan Diario se mantiene al resolver las dependencias basadas en calendario.
+- **Now**: Orders will start immediately.
+- **Specific Date**: Orders will start on the given date and time. Orders will be assigned the related Daily Plan date when it comes to resolving calendar-based dependencies.
+- **Relative to Current Time**: Orders will start with an offset to the current time in seconds or in hours, minutes, seconds, for example *15* to start in 15 seconds or *01:30:15* to start 1 hour, 30 minutes and 15 seconds later.
+- **Relative to Start Time**: Orders will start with a positive or negative offset to their original start time in seconds or in hours, 
+minutes, seconds, for example *-04:00:00* to start 4 hours earlier or *+12:00:00* to start 12 hours later. The Orders' assignment to the original Daily Plan date remains in place when it comes to resolving calendar-based dependencies.
 
-#### Modificar Parametrización
+#### Modify Parameterization
 
-Para los Workflows relacionados que especifican variables, los valores pueden modificarse. Cuando se usa con operaciones masivas, todas las Órdenes llevarán los mismos valores para las variables.
+For related Workflows specifying variables, the values can be modified. When used with bulk operations, all Orders will carry the same values for variables.
 
-- **Modify Variable**:
-  - Si el Workflow especifica variables sin valores predeterminados, la Orden debe especificar los valores correspondientes.
-  - Si el Workflow especifica variables con valores predeterminados, su especificación desde una Orden es opcional.
+- **Modify Variable**: 
+  - If the Workflow specifies variables without default values, then the Order has to specify related values.
+  - If the Workflow specifies variables with default values, then their specification from an Order is optional.
 
-Se puede especificar una posición si las Órdenes no deben iniciarse desde el primer nodo del Workflow sino desde un nodo posterior.
+A position can be specified if Orders should not start from the first node in the Workflow but from a later node.
 
-- **Block Position**: Para Workflows que contienen instrucciones de bloque como *Try/Catch*, *Resource Lock*, *Fork/Join*, se puede seleccionar la instrucción relacionada.
-- **Start Position**: Si no se especifica una *Start Position*, la Orden se iniciará desde el primer nodo del Workflow o la *Block Position*.
-  - Si no se especifica una *Block Position*, se puede seleccionar cualquier instrucción de nivel superior del Workflow desde la que se iniciará la Orden.
-  - Si se especifica una *Block Position*, la Posición de Inicio es un nodo del mismo nivel dentro del bloque.
+- **Block Position**: For Workflows holding block instructions such as *Try/Catch*, *Resource Lock*, *Fork/Join*, the related instruction can be selected.
+- **Start Position**: If no *Start Position* is specified, then the Order will start from the first node in the Workflow or *Block Position*
+  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
+  - If a *Block Position* is specified, then the Start Position is a same-level node inside the block.
 - **End Positions**:
-  - Si no se especifica una *Block Position*, se puede seleccionar cualquier instrucción de nivel superior del Workflow antes de la cual se terminará la Orden.
-  - Si se especifica una *Block Position*, se puede especificar cualquier nodo del mismo nivel dentro del bloque antes del cual se terminará la Orden.
-  - Se puede especificar más de una *End Position*.
+  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
+  - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
+  - More than one *End Position* can be specified.
 
-#### Modificar Prioridad
+#### Modify Priority
 
 - **Priority**:
-  - Si una Orden encontrará una instrucción de *Resource Lock* en el Workflow que limita el paralelismo, su *Prioridad* determina la posición en la cola de Órdenes en estado *esperando*.
-  - Las *Prioridades* se especifican mediante enteros negativos, cero y positivos, o a partir de los accesos directos ofrecidos. Una *Prioridad* más alta tiene precedencia. Los accesos directos ofrecen los siguientes valores:
+  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
+  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000
     - **Below Normal**: -10000
     - **Normal**: 0
     - **Above Normal**: 10000
     - **High**: 20000
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Limpieza](/service-cleanup)
-- [Plan Diario - Calendario](/daily-plan-calendar)
-- [Servicio del Plan Diario](/service-daily-plan)
-- [Historial de Órdenes](/history-orders)
-- [Configuración - Plan Diario](/settings-daily-plan)
+- [Cleanup Service](/service-cleanup)
+- [Daily Plan - Calendar](/daily-plan-calendar)
+- [Daily Plan Service](/service-daily-plan)
+- [Order History](/history-orders)
+- [Settings - Daily Plan](/settings-daily-plan)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

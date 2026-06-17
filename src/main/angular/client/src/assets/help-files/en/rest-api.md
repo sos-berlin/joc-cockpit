@@ -1,16 +1,16 @@
-# REST API de Servicios Web
+# REST Web Service API
 
-La [JS7 - REST Web Service API](https://kb.sos-berlin.com/display/JS7/JS7+-+REST+Web+Service+API) ofrece acceso a operaciones sobre productos JS7 y objetos de planificación:
+The [JS7 - REST Web Service API](https://kb.sos-berlin.com/display/JS7/JS7+-+REST+Web+Service+API) offers access to operations on JS7 products and scheduling objects:
 
-- Cualquier operación realizada sobre Órdenes, Workflows, Jobs y objetos relacionados, como cancelar, suspender y reanudar Órdenes, se lleva a cabo mediante la *REST Web Service API*.
-- Tenga en cuenta que cualquier operación proporcionada por la interfaz gráfica del JOC Cockpit hace uso de la *REST Web Service API*.
-- Encuentre detalles en la [Documentación Técnica de la REST Web Service API](https://www.sos-berlin.com/JOC/latest/raml-doc/JOC-API/index.html)
-- La [JS7 - Unix Shell Command Line Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Unix+Shell+Command+Line+Interface) está disponible para operaciones de uso frecuente basadas en la *REST Web Service API*.
-- Además, hay disponible un módulo PowerShell para un acceso simplificado a la *REST Web Service API*, véase [JS7 - PowerShell Module](https://kb.sos-berlin.com/display/JS7/JS7+-+PowerShell+Module).
+- Any operations performed on Orders, Workflows, Jobs and related objects such as cancelling, suspending and resuming Orders are performed by the *REST Web Service API*.
+- Note that any operation provided by the JOC Cockpit GUI makes use of the *REST Web Service API*.
+- Find details from the [Technical Documentation of the REST Web Service API](https://www.sos-berlin.com/JOC/latest/raml-doc/JOC-API/index.html)
+- The [JS7 - Unix Shell Command Line Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Unix+Shell+Command+Line+Interface) is offered for frequently used operations based on the *REST Web Service API*.
+- In addition, a PowerShell module is available for simplified access to the *REST Web Service API*, see [JS7 - PowerShell Module](https://kb.sos-berlin.com/display/JS7/JS7+-+PowerShell+Module).
 
-## Referencias
+## References
 
 - [JS7 - REST Web Service API](https://kb.sos-berlin.com/display/JS7/JS7+-+REST+Web+Service+API)
   - [JS7 - Unix Shell Command Line Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Unix+Shell+Command+Line+Interface)
   - [JS7 - PowerShell Module](https://kb.sos-berlin.com/display/JS7/JS7+-+PowerShell+Module)
-- [Documentación Técnica de la REST Web Service API](https://www.sos-berlin.com/JOC/latest/raml-doc/JOC-API/index.html)
+- [Technical Documentation of the REST Web Service API](https://www.sos-berlin.com/JOC/latest/raml-doc/JOC-API/index.html)

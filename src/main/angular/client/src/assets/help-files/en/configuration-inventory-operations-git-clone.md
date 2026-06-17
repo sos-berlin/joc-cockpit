@@ -1,41 +1,41 @@
-# Configuración - Inventario - Operaciones - Git - Clonar Repositorio
+# Configuration - Inventory - Operations - Git - Clone Repository
 
-Los objetos del Inventario pueden desplegarse utilizando Repositorios Git, ver [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration).
+Inventory objects can be rolled out using Git Repositories, see [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration).
 
-Esto incluye operaciones Git para confirmar (commit), enviar (push) y obtener (pull) objetos.
+This includes Git operations to commit, to push and to pull objects.
 
-Los Repositorios Git se mapean a carpetas de inventario de nivel superior.
+Git Repositories are mapped to top-level inventory folders. 
 
-- La operación inicial consiste en clonar un repositorio remoto a un repositorio local gestionado por JOC Cockpit.
-- Los repositorios de JOC Cockpit se encuentran en el directorio del sistema de archivos *\<jetty-base\>/resources/joc/repositories*.
-  - El subdirectorio *local* indica un repositorio utilizado para objetos locales a una instancia de JOC Cockpit, por ejemplo, Recursos de Job que contienen configuraciones específicas de un entorno.
-  - El subdirectorio *rollout* indica un repositorio utilizado para objetos que se desplegarán en otros entornos, por ejemplo Workflows que deben utilizarse en todos los entornos sin cambios.
-  - Para el mapeo de tipos de objetos de inventario a tipos de repositorios Git, ver [Configuración - Git](/settings-git).
-- Los usuarios pueden acceder a los repositorios de JOC Cockpit desde el sistema de archivos y pueden usar un cliente Git para operaciones relacionadas, por ejemplo la gestión de ramas.
+- The initial operation includes to clone a remote repository to a local repository that is managed by JOC Cockpit.
+- The JOC Cockpit's repositories are located in the *\<jetty-base\>/resources/joc/repositories* file system directory. 
+  - The *local* sub-directory indicates a repository used for objects that are local to a JOC Cockpit instance, for example, Job Resources that hold settings specific for an environment.
+  - The *rollout* sub-directories indicates a repository used for objects that will be rolled out to other environments, for example Workflows that should be used in every environment without changes.
+  - For the mapping of inventory object types to Git repository types see [Settings - Git](/settings-git).
+- Users can access the JOC Cockpit's repositories from the file system and can use a Git Client for related operations, for example managing branches.
 
-La operación *Clonar* está disponible en el panel de *Navegación* y se ofrece para carpetas de nivel superior desde su menú de acción de tres puntos. La jerarquía del menú incluye *Repositorio Git->Local|Rollout->Git->Clonar*.
+The *Clone* operation is available from the *Navigation* panel and is offered for top-level folders from their related 3-dots action menu. The menu hierarchy includes *Git Repository->Local|Rollout->Git->Clone*.
 
-## Clonar Repositorio
+## Clone Repository
 
 <img src="git-clone.png" alt="Git Clone Repository" width="400" height="130" />
 
-El campo de entrada espera la URL Git utilizada para clonar, por ejemplo, *git@github.com:sos-berlin/js7-demo-inventory-rollout.git*
+The input field expects the Git URL used for cloning, for example, *git@github.com:sos-berlin/js7-demo-inventory-rollout.git*
 
-- *git@* es un prefijo constante,
-- *github.com* especifica el nombre de host del servidor Git,
-- *sos-berlin* es el propietario del repositorio,
-- *js7-demo-inventory-rollout* es el nombre del repositorio,
-- *.git* es un sufijo constante.
+- *git@* is a constant prefix,
+- *github.com* specifies the hostname of the Git server,
+- *sos-berlin* is the repository owner,
+- *js7-demo-inventory-rollout* is the repository name,
+- *.git* is a constant suffix.
 
-Los valores anteriores representan un ejemplo. Por favor especifique valores que correspondan al servidor Git deseado.
+Above values represent an example. Please specify values matching the desired Git server.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Dependency Matrix](/dependencies-matrix)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)

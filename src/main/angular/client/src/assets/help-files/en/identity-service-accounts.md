@@ -1,10 +1,10 @@
-# Servicio de Identidad - Cuentas
+# Identity Service - Accounts
 
-Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
+Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
-Las cuentas de usuario se gestionan y almacenan en JOC Cockpit para los siguientes Tipos de Servicio de Identidad:
+User accounts will be managed and stored with JOC Cockpit for the following Identity Service Types:
 
-| Tipo de Servicio de Identidad | Documentación |
+| Identity Service Type | Documentation |
 | ----- | ----- |
 | *JOC* | [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service) |
 | *KEYCLOAK-JOC* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) |
@@ -13,68 +13,68 @@ Las cuentas de usuario se gestionan y almacenan en JOC Cockpit para los siguient
 | *CERTIFICATE* | [JS7 - Certificate Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) |
 | *FIDO* | [JS7 - FIDO Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) |
 
-Para los siguientes Tipos de Servicio de Identidad, las cuentas de usuario no se gestionan en JOC Cockpit sino con el Proveedor del Servicio de Identidad:
+For the following Identity Service Types user accounts are not managed with JOC Cockpit but with the Identity Service Provider:
 
-| Tipo de Servicio de Identidad | Documentación |
+| Identity Service Type | Documentation |
 | ----- | ----- |
 | *KEYCLOAK* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) |
 | *LDAP* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) |
 | *OIDC* | [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service) |
 
-## Lista de Cuentas
+## List of Accounts
 
-Para cada cuenta se muestran las siguientes propiedades:
+For each account the following properties are displayed:
 
-- **Cuenta** indica la cuenta tal como se especificó durante el inicio de sesión.
-- **Roles** indica la lista de [Servicio de Identidad - Roles](/identity-service-roles) asignados a la cuenta.
-- **Forzar Cambio de Contraseña** indica si la cuenta de usuario debe cambiar su contraseña en el próximo inicio de sesión.
-- **Bloqueado** indica que la cuenta ha sido añadida a una [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist) y se le deniega el acceso.
-- **Deshabilitado** indica que la cuenta está inactiva y se le deniega el acceso.
+- **Account** indicates the account as specified during login.
+- **Roles** indicates the list of [Identity Service - Roles](/identity-service-roles) that are assigned the account.
+- **Force Password Change** indicates if the user account must change its password on next login.
+- **Blocked** indicates that the account has been added to a [Identity Service - Blocklist](/identity-service-blocklist) and is denied access.
+- **Disabled** indicates that the account is inactive and is denied access.
 
-## Operaciones sobre las Cuentas
+## Operations on Accounts
 
-Los usuarios pueden agregar una cuenta usando el botón correspondiente en la esquina superior derecha de la vista.
+Users can add an account using the related button from the upper-right corner of the view.
 
-### Operaciones sobre Cuentas Individuales
+### Operations on Single Accounts
 
-Las siguientes operaciones están disponibles desde el menú de acción de 3 puntos de cada cuenta:
+The following operations are available from each account's 3-dots action menu:
 
-- **Editar** permite especificar la [Configuración de Cuenta del Servicio de Identidad](/identity-service-account-configuration).
-- **Duplicar** copia la cuenta seleccionada a una nueva cuenta. Los usuarios deben especificar el nombre de la nueva cuenta.
-- **Restablecer Contraseña** elimina la contraseña de la cuenta y asigna la contraseña especificada con el parámetro *initial_password* en la página [Configuración - Servicio de Identidad](/settings-identity-service). La cuenta de usuario correspondiente debe iniciar sesión con la *initial_password* y debe cambiar su contraseña en el próximo inicio de sesión.
-- **Forzar Cambio de Contraseña** obliga a la cuenta a cambiar su contraseña en el próximo inicio de sesión.
-- **Agregar a Lista de Bloqueo** deniega el acceso a la cuenta durante el tiempo que la cuenta esté añadida a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist).
-- **Deshabilitar** desactiva la cuenta y deniega el acceso desde esta cuenta.
-- **Eliminar** borra la cuenta del Servicio de Identidad.
-- **Mostrar Permisos** muestra la lista de permisos resultantes de la combinación de los roles de la cuenta indicada.
+- **Edit** allows specifying the [Identity Service - Account Configuration](/identity-service-account-configuration).
+- **Duplicate** copies the selected account to a new account. Users must specify the name of the new account.
+- **Reset Password** drops the account's password and assigns the password specified with the *initial_password* setting in the [Settings - Identity Service](/settings-identity-service) page. The related user account must login with the *initial_password* and must change its password on next login.
+- **Force Password Change** forces the account to change its password on next login.
+- **Add to Blocklist** denies access to the account for the duration that the account is added the [Identity Service - Blocklist](/identity-service-blocklist).
+- **Disable** deactivates the account and denies access from this account.
+- **Delete** wipes the account from the Identity Service.
+- **Show Permissions** displays the list of permissions resulting from merged roles of the given account.
 
-### Operaciones Masivas sobre Cuentas
+### Bulk Operations on Accounts
 
-Los usuarios encuentran las siguientes operaciones masivas desde los botones en la parte superior de la pantalla:
+Users find the following bulk operations from buttons at the top of the screen:
 
-- **Exportar** agregará las cuentas seleccionadas a un archivo de exportación en formato JSON que puede utilizarse para importar cuentas a un Servicio de Identidad diferente en la misma o en una instancia diferente de JOC Cockpit.
-- **Copiar** copiará las cuentas seleccionadas a un portapapeles interno desde el cual pueden pegarse a un Servicio de Identidad diferente en la misma instancia de JOC Cockpit.
+- **Export** will add selected accounts to an export file in JSON format that can be used for importing accounts to a different Identity Service in the same or in a different JOC Cockpit instance.
+- **Copy** will copy selected accounts to an internal clipboard from which they can be pasted to a different Identity Service in the same JOC Cockpit instance.
 
-Los usuarios pueden seleccionar una o más *Cuentas* para realizar las operaciones anteriores en forma masiva para las *Cuentas* seleccionadas.
+Users can select one or more *Accounts* to perform above operations in bulk for selected *Accounts*.
 
-- **Restablecer Contraseña** elimina la contraseña de las cuentas seleccionadas y asigna la contraseña especificada con el parámetro *initial_password* en la página [Configuración - Servicio de Identidad](/settings-identity-service). Las cuentas de usuario correspondientes deben iniciar sesión con la *initial_password* y deben cambiar su contraseña en el próximo inicio de sesión.
-- **Forzar Cambio de Contraseña** obliga a las cuentas seleccionadas a cambiar su contraseña en el próximo inicio de sesión.
-- **Deshabilitar** desactiva las cuentas seleccionadas y deniega el acceso desde dichas cuentas.
-- **Habilitar** activa las cuentas seleccionadas que estaban deshabilitadas.
-- **Eliminar** borra las cuentas seleccionadas del Servicio de Identidad.
+- **Reset Password** drops the selected accounts' password and assigns the password specified with the *initial_password* setting in the [Settings - Identity Service](/settings-identity-service) page. The related user accounts must login with the *initial_password* and must change their password on next login.
+- **Force Password Change** forces selected accounts to change their password on next login.
+- **Disable** deactivates selected accounts and denies access from the given accounts.
+- **Enable** activates selected, disabled accounts.
+- **Delete** wipes selected accounts from the Identity Service.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Identidad - Configuración](/identity-service-configuration)
-- [Configuración de Cuenta del Servicio de Identidad](/identity-service-account-configuration)
-- [Servicio de Identidad - Roles](/identity-service-roles)
-- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
-- [Servicios de Identidad](/identity-services)
-- [Configuración - Servicio de Identidad](/settings-identity-service)
-- [Configuración - JOC Cockpit](/settings-joc)
+- [Identity Service - Configuration](/identity-service-configuration)
+- [Identity Service - Account Configuration](/identity-service-account-configuration)
+- [Identity Service - Roles](/identity-service-roles) 
+- [Identity Service - Blocklist](/identity-service-blocklist)
+- [Identity Services](/identity-services)
+- [Settings - Identity Service](/settings-identity-service)
+- [Settings - JOC Cockpit](/settings-joc)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

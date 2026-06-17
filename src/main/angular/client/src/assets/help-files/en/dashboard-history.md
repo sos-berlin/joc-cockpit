@@ -1,33 +1,33 @@
-# Dashboard - Historial
+# Dashboard - History
 
-El panel *Historial* proporciona información sobre la ejecución pasada de Órdenes y Jobs.
+The *History* panel provides information about past execution of Orders and Jobs.
 
-<img src="dashboard-history.png" alt="Historial" width="330" height="80" />
+<img src="dashboard-history.png" alt="History" width="330" height="80" />
 
-## Estado del Historial
+## History Status
 
-El estado del historial es el estado final cuando una Orden o un Job se completa. El estado del historial no considera Órdenes ni Jobs que estén en progreso. No hay operaciones disponibles sobre las Órdenes o Jobs indicados: son historial.
+The history status is the final status when an Order or Job is completed. The history status does not consider Orders and Jobs that are in progress. No operations are available on indicated Orders or Jobs - they are history.
 
-- **Órdenes Exitosas**: completadas con un resultado exitoso. Incluye Órdenes que pueden haber fallado durante su ciclo de vida pero que se recuperaron mediante manejo automático de errores o por intervención del usuario.
-- **Órdenes Fallidas**: encontraron un problema como un Job fallido o una *Instrucción de Fallo*.
-- **Jobs Exitosos**: completados con un resultado exitoso. Incluye Jobs en Workflows cuyas Órdenes relacionadas aún no están completadas.
-- **Jobs Fallidos**: encontraron un problema al ejecutar el Job.
+- **Successful Orders** are completed with a successful outcome. This includes Orders that might have failed during their lifetime but recovered by automated error handling or by user intervention.
+- **Failed Orders** did meet a problem such as a failed Job or *Fail Instruction*.
+- **Successful Jobs** are completed with a successful outcome. This includes Jobs in Workflows for which related Orders are not completed.
+- **Failed Jobs** did meet a problem when executing the Job.
 
-Al hacer clic en la cantidad indicada de Órdenes o Jobs, se navega a la vista [Historial de Órdenes](/history-orders) o [Historial de Tareas](/history-tasks) que muestra las Órdenes y Jobs en detalle.
+Clicking the indicated number of Orders or Jobs navigates to the [Order History](/history-orders) view or [Task History](/history-tasks) view that displays Orders and Jobs in detail.
 
-## Filtros
+## Filters
 
-El botón desplegable en la esquina superior derecha del panel permite seleccionar Órdenes y Jobs pasados de un rango de fechas:
+The drop-down button in the upper-right corner of the panel offers selecting past Orders and Jobs from a date range:
 
-- **Hoy**: las Órdenes y Jobs corresponden al día actual, calculado a partir de la zona horaria del perfil del usuario.
-- **Última hora**: incluye Órdenes y Jobs completados durante la última hora.
-- **Últimas 12 horas**: incluye Órdenes y Jobs completados durante las últimas 12 horas.
-- **Últimas 24 horas**: incluye Órdenes y Jobs completados durante las últimas 24 horas.
-- **Últimos 7 días**: incluye Órdenes y Jobs completados durante los últimos 7 días.
+- **Today** Orders and Jobs are related to the current day which is calculated from the time zone in the user's profile.
+- **Last hour** includes Orders and Jobs that completed during the last hour.
+- **Last 12 hours** includes Orders and Jobs that completed during the last 12 hours.
+- **Last 24 hours** includes Orders and Jobs that completed during the last 24 hours.
+- **Last 7 days** includes Orders and Jobs that completed during the last 7 days.
 
-## Referencias
+## References
 
-- [Historial de Órdenes](/history-orders)
-- [Historial de Tareas](/history-tasks)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

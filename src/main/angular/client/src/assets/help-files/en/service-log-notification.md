@@ -1,42 +1,42 @@
-# Servicio de Notificación de Logs
+# Log Notification Service
 
-La [JS7 - Log Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Management) se ofrece con el JOC Cockpit para el monitoreo de la salida de logs y el envío de notificaciones creadas por instancias de Controlador, Agente y JOC Cockpit.
+[JS7 - Log Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Management) is offered with JOC Cockpit for monitoring of log output and dispatch of notifications created by Controller, Agent & JOC Cockpit instances.
 
-El [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service) está disponible desde la instancia activa del JOC Cockpit:
+The [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service) is available from the active JOC Cockpit instance:
 
-## Servicio
+## Service
 
-El servicio se utiliza para recopilar advertencias y errores de la salida de logs de instancias de Controlador y Agente, y para crear [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications).
+The service is used to collect warnings and errors from log output of Controller & Agent instances and to create [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications).
 
-- Las notificaciones del JOC Cockpit se crean directamente y sin uso del servicio.
-- El servicio es compatible con RFC5424, también conocido como protocolo syslog.
-- El servicio ofrece capacidades de reinicio: en caso de Conmutación por error o Conmutación del JOC Cockpit, el Servicio de Notificación de Logs estará disponible desde la instancia activa del JOC Cockpit.
+- JOC Cockpit notifications are created directly and without use of the service.
+- The service is compliant to RFC5424, aka syslog protocol.
+- The service offers restart capabilities: in case of fail-over or switch-over of JOC Cockpit the Log Notification Service will become available from the active JOC Cockpit instance.
 
-## Clientes
+## Clients
 
-Las instancias de Controlador y Agente de JS7 actúan como clientes del Servicio de Notificación de Logs. Los productos pueden configurarse para reportar advertencias y errores de la salida de logs al Servicio de Notificación de Logs; para más detalles, véase [JS7 - Log Configuration for use with System Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Configuration+for+use+with+System+Notifications).
+The JS7 Controller & Agent instances act as clients to the Log Notification Service. The products can be configured to report warnings and errors from log output to the Log Notification Service, for details see [JS7 - Log Configuration for use with System Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Configuration+for+use+with+System+Notifications).
 
-Los usuarios tienen la opción de habilitar el reenvío de la salida de logs por instancia de Controlador y Agente durante la instalación o posteriormente ajustando la configuración de Log4j2.
+Users have a choice to enable forwarding of log output per instance of Controller & Agent during installation or later on by adjusting the Log4j2 configuration.
 
-## Interfaz de Usuario
+## User Interface
 
-El JOC Cockpit ofrece Notificaciones del Sistema desde la vista [Monitor - Notificaciones del Sistema](/monitor-notifications-system).
+The JOC Cockpit offers System Notifications from the [Monitor - System Notifications](/monitor-notifications-system) view.
 
-El JOC Cockpit ofrece [Configuración de Notificaciones](/configuration-notification) para el reenvío de notificaciones por correo electrónico, desde herramientas de línea de comandos, etc.
+The JOC Cockpit offers [Notifications- Configuration ](/configuration-notification) for forwarding notifications by e-mail, from command line tools etc.
 
-## Configuración del Servicio de Notificación de Logs
+## Log Notification Service Settings
 
-Para la configuración del Servicio de Notificación de Logs, véase [Configuración - Notificación de Logs](/settings-log-notification).
+For settings of the Log Notification Service see [Settings - Log Notification](/settings-log-notification).
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
-- [Configuración de Notificaciones](/configuration-notification)
-- [Configuración - Notificación de Logs](/settings-log-notification)
+- [Monitor - System Notifications](/monitor-notifications-system)
+- [Notification - Configuration](/configuration-notification)
+- [Settings - Log Notification](/settings-log-notification)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Log Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Management)
   - [JS7 - Log Configuration for use with System Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Configuration+for+use+with+System+Notifications)

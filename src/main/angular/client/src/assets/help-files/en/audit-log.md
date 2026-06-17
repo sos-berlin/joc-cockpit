@@ -1,27 +1,27 @@
-# Registro de Auditoría
+# Audit Log
 
-El *Registro de Auditoría* lleva un seguimiento de los cambios realizados a los objetos de planificación.
+The *Audit Log* keeps track of changes to scheduling objects.
 
-## Solicitud
+## Request
 
-En JOC Cockpit todas las operaciones de usuario se realizan a través de solicitudes a la API REST.
+In JOC Cockpit all user operations are performed from REST API requests.
 
-La solicitud identifica el endpoint utilizado y ofrece la visualización del cuerpo de la solicitud al hacer clic en el ícono de flecha hacia abajo.
+The request identifies the endpoint used and offers displaying the request body when clicking the arrow-down icon.
 
-## Categorías
+## Categories
 
-- **CONTROLLER** indica operaciones del Controlador, como la adición de Órdenes a demanda.
-- **DAILYPLAN** indica cambios en el Plan Diario.
-- **IDENTITY** indica cambios en los Servicios de Identidad.
-- **INVENTORY** indica cambios en el inventario, como el almacenamiento de Workflows.
+- **CONTROLLER** indicates Controller operations such as adding Orders on demand.
+- **DAILYPLAN** indicates changes to the Daily Plan.
+- **IDENTITY** indicates changes to Identity Services.
+- **INVENTORY** indicates inventory changes such as storing Workflows.
 
-# Registro de Auditoría Detallado
+# Audit Trail
 
-JOC Cockpit puede configurarse para escribir un *Registro de Auditoría Detallado* que lleva un seguimiento de todas las solicitudes a la API REST. El *Registro de Auditoría Detallado* incluye información sobre las sesiones de usuario y no está disponible desde la interfaz gráfica de JOC Cockpit.
+The JOC Cockpit can be configured to write an *Audit Trail* that keeps track of any REST API requests. The *Audit Trail* includes information about user sessions and is not available from the JOC Cockpit GUI.
 
-El *Registro de Auditoría Detallado* puede ser activado por los administradores y está disponible en los archivos de log en disco.
+The *Audit Trail* can be activated by administrators and is available from log files on disk.
 
-## Referencias
+## References
 
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Audit Trail](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Trail)

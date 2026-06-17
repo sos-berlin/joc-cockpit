@@ -1,43 +1,43 @@
-# Perfiles de Aprobadores
+# Approver Profiles
 
-El [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) se ofrece para situaciones en las que los usuarios tienen la intención de realizar operaciones tales como agregar o cancelar Órdenes que requieren la aprobación de un segundo usuario. Esto puede incluir cualquier operación que modifique un objeto de planificación.
+The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) is offered for situations in which users intend performing operations such as adding or cancelling Orders that require approval by a second user. This can include any operation that modifies a scheduling object.
 
-El Proceso de Aprobación involucra los siguientes roles:
+The Approval Process involves the following roles:
 
-- Un *Solicitante* solicita realizar una intervención que requiere aprobación.
-- Un *Aprobador* confirma o rechaza la Solicitud de Aprobación.
+- A *Requestor* requests performing an intervention that requires approval.
+- An *Approver* confirms or denies the Approval Request.
 
-La funcionalidad básica del Proceso de Aprobación incluye:
+The basic functionality of the Approval Process includes:
 
-- implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
-- llevar un seguimiento de las Solicitudes de Aprobación pendientes.
-- ofrecer alternativa a un grupo de *Aprobadores*.
+- to implement the 4-eyes principle: an *Approver* must confirm the intervention of a *Requestor* before the intervention can be executed in the scope of the *Requestor's* account, roles and permissions. 
+- to keep track of pending Approval Requests.
+- to offer fallback to a number of *Approvers*.
 
-## Lista de Perfiles de Aprobadores
+## List of Approver Profiles
 
-Para agregar un Perfil de Aprobador, los usuarios encontrarán el botón correspondiente en la esquina superior derecha de la vista.
+To add an Approver Profile, users find the related button in the upper-right corner of the view.
 
-La lista de Perfiles de Aprobadores se ofrece con las siguientes propiedades:
+The list of Approver Profiles is offered with the following properties:
 
-- **Nombre de Cuenta** especifica la cuenta de usuario del *Aprobador*.
-- **Nombre**, **Apellido** del *Aprobador*.
-- **Correo Electrónico** especifica la dirección de correo electrónico del *Aprobador*. Si se especifica, el *Aprobador* recibirá notificaciones sobre las [Solicitudes de Aprobación](/approval-requests) entrantes por correo electrónico.
+- **Account Name** specifies the *Approver's* user account.
+- **First Name**, **Last Name** of the the *Approver*.
+- **E-Mail** specifies the *Approver's* e-mail address. If specified, then the *Approver* will receive notification about incoming [Approval Requests](/approval-requests) by mail.
 
-## Operaciones sobre Perfiles de Aprobadores
+## Operations on Approver Profiles
 
-El menú de acciones de 3 puntos de un Perfil de Aprobador ofrece las siguientes operaciones:
+An Approver Profile's 3-dots action menu offers the following operations:
 
-- **Editar** actualiza las propiedades del Perfil de Aprobador.
-- **Eliminar** borra el Perfil de Aprobador.
+- **Edit** updates the Approver Profile's properties.
+- **Delete** wipes the Approver Profile.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración de Notificaciones de Aprobación](/approval-notification-settings)
-- [Solicitud de Aprobación](/approval-request)
-- [Solicitudes de Aprobación](/approval-requests)
+- [Approval Notification Settings](/approval-notification-settings)
+- [Approval Request](/approval-request)
+- [Approval Requests](/approval-requests)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)

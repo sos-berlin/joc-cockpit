@@ -1,79 +1,79 @@
-# Operación Inicial - Registrar Clúster de Agentes
+# Initial Operation - Register Agent Cluster
 
-La Operación Inicial se realiza tras la instalación del JS7 Controller, Agent y JOC Cockpit. El registro de un Clúster de Agentes ocurre después de completar la [Operación Inicial - Registrar Controlador](/initial-operation-register-controller).
+Initial Operation is performed after installation of the JS7 Controller, Agent and JOC Cockpit. Registration of an Agent Cluster occurs after [Initial Operation - Register Controller](/initial-operation-register-controller) is completed.
 
-El uso de un Clúster de Agentes está sujeto a los acuerdos de la [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
+Operation of an Agent Cluster is subject to the agreements of the [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
-- Uso del Agente Autónomo:
-  - disponible para titulares de licencia Open Source y para titulares de licencia comercial.
-- Uso del Clúster de Agentes:
-  - disponible para titulares de licencia comercial,
-  - para más detalles, consulte [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)
+- Use of Standalone Agent:
+  - available to Open Source License holders and to commercial license holders.
+- Use of Agent Cluster:
+  - available to commercial license holders,
+  - for details see [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)
 
-## Arquitectura
+## Architecture
 
-### Agentes
+### Agents
 
-- Los **Agentes Autónomos** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Se operan individualmente y son gestionados por el Controlador.
-- **Clúster de Agentes**
-  - Los **Agentes Directores** orquestan los *Subagentes* en un Clúster de Agentes. Se operan desde dos instancias en clúster activo-pasivo y son gestionados por el Controlador.
-  - Los **Subagentes** ejecutan Jobs en máquinas remotas on-premises y desde contenedores. Pueden considerarse nodos trabajadores en un Clúster de Agentes y son gestionados por los *Agentes Directores*.
+- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
+- **Agent Cluster**
+  - **Director Agents** orchestrate *Subagents* in an Agent Cluster. They are operated from two instances in active-passive clustering and are managed by the Controller.
+  - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.
 
-### Conexiones
+### Connections
 
-- Las conexiones del **Agente Autónomo** y del **Agente Director** son establecidas por el Controlador.
-- Las conexiones de **Subagente** en un Clúster de Agentes son establecidas por los *Agentes Directores*.
+- **Standalone Agent**, **Director Agent** connections are established by the Controller. 
+- **Subagent** connections in an Agent Cluster are established by *Director Agents*.
 
-## Registrar Clúster de Agentes
+## Register Agent Cluster
 
-El registro de un Clúster de Agentes incluye registrar el Agente Director Primario y el Secundario. Para el registro posterior de Subagentes, consulte [Operación Inicial - Registrar Subagente](/initial-operation-register-agent-subagent).
+Registration of an Agent Cluster includes to register the Primary and Secondary Director Agents. For later registration of Subagents see - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent).
 
-Los prerequisitos antes de la instalación incluyen:
+Prerequisites before installation include:
 
-- JOC Cockpit, el Controlador y todas las instancias de Agente Director deben estar equipados con una clave de licencia JS7 válida.
-- El Agente Director Secundario debe tener en su archivo ./config/agent.conf la configuración: *js7.journal.cluster.node.is-backup = yes*
-- Ambas instancias del Agente Director Primario y Secundario deben estar activas y en funcionamiento.
+- JOC Cockpit, Controller and all Director Agent instances must be equipped with a valid JS7 license key.
+- The Secondary Director Agent must hold in its ./config/agent.conf file the setting: *js7.journal.cluster.node.is-backup = yes*
+- Both Primary and Secondary Director Agent instances must be up and running.
 
-Los usuarios deben verificar que las conexiones de red desde el servidor del Controlador a los servidores de ambos Agentes Directores estén disponibles y que las reglas de firewall permitan conexiones a los puertos de los Agentes Directores.
+Users should verify that network connections from the Controller's server to both Director Agents' servers are available and that firewall rules allow connections to the Director Agents' ports.
 
-La página *Gestionar Controladores/Agentes* está disponible desde el icono de rueda dentada en la barra de menú principal y ofrece la operación *Agregar Clúster de Agentes* desde el menú de acción del Controlador. Esto abre la ventana emergente para el registro de un Clúster de Agentes.
+The *Manage Controllers/Agents* page is available from the wheel icon in the main menu bar and offers the *Add Agent Cluster* operation from the Controller's action menu. This brings up the pop-up window for registration of an Agent Cluster.
 
-Los usuarios proporcionan los siguientes datos:
+Users provide the following inputs:
 
-- **Agent ID** es el identificador único del Clúster de Agentes que no puede modificarse durante la vida útil del Clúster. El *Agent ID* no es visible en Jobs y Workflows.
-  - Sugerencia: Use un nombre único como *agent-cluster-001*.
-- **Nombre del Clúster de Agentes** es el nombre único de un Clúster de Agentes. Al asignar un Agente a un Job, se utiliza el *Nombre del Clúster de Agentes*.
-  - Sugerencia: Si usa entornos separados para producción y no producción, debería usar el mismo *Nombre del Clúster de Agentes* para ambos. Por eso, ingrese un nombre descriptivo, por ejemplo, para un departamento de negocio como *ventas*, *finanzas*, etc.
-  - Sugerencia: Cambiar el *Nombre del Clúster de Agentes* posteriormente permite continuar usando el *Nombre del Clúster de Agentes* anterior como *Nombre Alternativo*.
-- **Título** es una descripción que puede agregarse para un Clúster de Agentes.
-- **Nombres Alternativos** son nombres alternativos para el mismo Clúster de Agentes. Al asignar un Agente a un Job, también se ofrecerán los *Nombres Alternativos del Clúster*. Los *Nombres Alternativos del Clúster* pueden usarse, por ejemplo, si un entorno de pruebas incluye menos Clústeres de Agentes que el entorno de producción: para mantener las asignaciones de Agentes sin cambios entre entornos, los Clústeres de Agentes faltantes se mapean desde los *Nombres Alternativos del Clúster* del mismo Clúster de Agentes.
-- **Agente Director Primario**
-  - **Subagent ID** es el identificador único del Agente Director Primario que no puede modificarse durante la vida útil del Agente Director. El *Subagent ID* no es visible en Jobs y Workflows.
-    - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
-  - **Título** es una descripción que puede agregarse para un Agente Director.
-  - **URL** espera la URL compuesta por protocolo, host y puerto que usa el Controlador para conectarse al Agente Director Primario, por ejemplo http://localhost:4445.
-    - La URL comienza con el protocolo *http* si el Agente Director usa HTTP simple. Se usa el protocolo *https* si el Agente Director está configurado para HTTPS.
-    - El nombre de host puede ser *localhost* si el Agente Director está instalado en la misma máquina que el Controlador. De lo contrario, se debe especificar el FQDN del host del Agente Director.
-    - El *puerto* del Agente Director se determina durante la instalación.
-  - **Como Clúster de Subagentes propio** crea opcionalmente Clústeres de Subagentes para cada Agente Director Primario y Secundario; consulte [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster).
-- **Agente Director Secundario**
-  - **Subagent ID** es el identificador único del Agente Director Secundario que no puede modificarse durante la vida útil del Agente Director. El *Subagent ID* no es visible en Jobs y Workflows.
-    - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
-  - **Título** es una descripción que puede agregarse para un Agente Director.
-  - **URL** espera la URL compuesta por protocolo, host y puerto que usa el Controlador para conectarse al Agente Director Secundario, de manera similar al *Agente Director Primario*.
+- **Agent ID** is the unique identifier of the Agent Cluster that cannot be changed during the Cluster's lifetime. The *Agent ID* is not visible with Jobs and Workflows.
+  - Hint: Use a unique name such as *agent-cluster-001*.
+- **Agent Cluster Name** is the unique name of an Agent Cluster. When assigning a Job an Agent then the *Agent Cluster Name* is used.
+  - Hint: If you use separate environments for production and non-production, you should use the same *Agent Cluster Name* for both. Therefore, enter a descriptive name, e.g., for a business department such as *sales*, *finance* etc.
+  - Hint: Changing the *Agent Cluster Name* later on offers continuing use of the previous *Agent Cluster Name* from an *Alias Name*.
+- **Title** is a description that can be added for an Agent Cluster.
+- **Alias Names** are alternative names for the same Agent Cluster. When assigning a Job an Agent, then *Alias Cluster Names* will be offered too. *Alias Cluster Names* can be used for example, if a test environment includes fewer Agent Clusters than the production environment: to keep Agent assignments unchanged between environments, the missing Agent Clusters are mapped from *Alias Cluster Names* of the same Agent Cluster.
+- **Primary Director Agent**
+  - **Subagent ID** is the unique identifier of the Primary Director Agent that cannot be changed during the Director Agent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
+    - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
+  - **Title** is a description that can be added for a Director Agent.
+  - **URL** expects the URL from protocol, host and port used by the Controller to connect to the Primary Director Agent, for example http://localhost:4445.
+    - The URL starts from the *http* protocol if the Director Agent makes use of plain HTTP. The *https* protocol is used, if the Director Agent is configured for HTTPS.
+    - The hostname can be *localhost* if the Director Agent is installed on the same machine as the Controller. Otherwise the FQDN of the Director Agent's host should be specified.
+    - The Director Agent's *port* is determined during installation. 
+  - **As own Subagent Cluster** optionally creates Subagent Clusters for each Primary and Secondary Director Agent, see [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster).
+- **Secondary Director Agent**
+  - **Subagent ID** is the unique identifier of the Secondary Director Agent that cannot be changed during the Director Agent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
+    - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
+  - **Title** is a description that can be added for a Director Agent.
+  - **URL** expects the URL from protocol, host and port used by the Controller to connect to the Secondary Director Agent similarly as for the *Primary Director Agent*.
 
-Tras el registro exitoso, el Agente se mostrará en la vista [Recursos - Agentes](/resources-agents).
+After successful registration the Agent will be displayed from the [Resources - Agents](/resources-agents) view.
 
-## Referencias
+## References
 
-### Ayuda de Contexto
+### Context Help
 
-- [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone)
-- [Operación Inicial - Registrar Subagente](/initial-operation-register-agent-subagent)
-- [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster)
-- [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
+- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
+- [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
+- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)
+- [Initial Operation - Register Controller](/initial-operation-register-controller)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
 - [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License)

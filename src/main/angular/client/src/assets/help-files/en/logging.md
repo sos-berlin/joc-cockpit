@@ -1,27 +1,27 @@
-# Registrando Logs
+# Logging
 
-El JOC Cockpit ofrece registros de logs para operaciones de la GUI cuando sea necesario analizar, por ejemplo, los tiempos de respuesta de la [API REST de Servicios Web](/rest-api).
+The JOC Cockpit offers logging for GUI operations should the need arise to analyze for example response times of the [REST Web Service API](/rest-api).
 
-Los usuarios pueden especificar los niveles de log deseados:
+Users can specify the desired log levels:
 
 - **Info**
 - **Error**
 - **Warn**
 - **Debug**
 
-Para activar el registro de logs, se debe marcar la siguiente casilla:
+To activate logging, the following checkbox should be checked:
 
-- **Log Habilitado**
+- **Log Enabled**
 
-La salida del Log estará disponible en la vista *Registrando Logs*. La configuración del Log se persiste y permanece activa para sesiones de usuario posteriores.
+Log output will become available in the *Logging* view. Log settings are persisted and are active for later user sessions too.
 
-## Operaciones sobre la Salida del Log
+## Operations on Log Output
 
-Cuando la salida del Log esté disponible, se pueden aplicar las siguientes operaciones desde los botones relacionados en la esquina superior derecha de la vista:
+When log output is available, then the following operations can be applied from related buttons in the right upper corner of the view:
 
-- **Copiar al portapapeles** copiará la salida del Log al portapapeles del usuario.
-- **Abrir en nueva pestaña** abrirá una nueva pestaña del navegador que contiene la salida del Log relacionada.
+- **Copy to clipboard** will copy log output to the user's clipboard.
+- **Open in new tab** will open a new browser tab that holds related log output.
 
-## Referencias
+## References
 
-[API REST de Servicios Web](/rest-api)
+[REST Web Service API](/rest-api)

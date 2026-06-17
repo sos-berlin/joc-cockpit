@@ -1,202 +1,202 @@
-# Configuración - JOC Cockpit
+# Settings - JOC Cockpit
 
-Las siguientes configuraciones se aplican al JOC Cockpit. Los cambios tienen efecto inmediato.
+The following settings are applied to JOC Cockpit. Changes become effective immediately.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-## Configuración del Registro de Auditoría
+## Audit Log Settings
 
-### Configuración: *force\_comments\_for\_audit\_log*, Predeterminado: *false*
+### Setting: *force\_comments\_for\_audit\_log*, Default: *false*
 
-Especifica que se debe agregar un motivo al [Registro de Auditoría](/audit-log) para cualquier cambio aplicado a objetos, como agregar una Orden, cancelar una Orden, etc.
+Specifies that a reason has to be added for the [Audit Log](/audit-log) for any changes applied to objects such as adding an Order, cancelling an Order etc.
 
-Esto aplica a operaciones desde la interfaz gráfica y a operaciones desde la [REST Web Service API](/rest-api).
-Especificar el valor *true* para esta configuración obliga a cualquier solicitud de API que modifique objetos a proporcionar argumentos para el Registro de Auditoría.
+This applies to operations from the GUI and to operations from the [REST Web Service API](/rest-api)
+Specifying the value *true* for this setting forces any API requests that modify objects to provide  arguments for the Audit Log.
 
-Tenga en cuenta que las [Preferencias del Perfil](/profile-preferences) incluyen una configuración relacionada para Habilitar Motivos para el Registro de Auditoría que tiene el mismo efecto. Sin embargo, su uso es voluntario y está restringido a la cuenta del perfil. La configuración force\_comments\_for\_audit\_log impone este comportamiento para cualquier cuenta de usuario independientemente de la configuración del perfil de cada cuenta.
+Note that the [Profile - Preferences](/profile-preferences) include a related setting to Enable Reasons for Audit Log that has the same effect. However, its use is voluntary and is restricted to the profile's account. The force\_comments\_for\_audit\_log setting enforces this behavior for any user accounts regardless of the profile settings of individual user accounts.
 
-### Configuración: *comments\_for\_audit\_log*
+### Setting: *comments\_for\_audit\_log*
 
-Especifica una lista de posibles comentarios para que el usuario los seleccione al realizar una operación de interfaz gráfica que modifica un objeto. Además de usar las entradas de la lista, los usuarios son libres de usar comentarios individuales al realizar dichas operaciones.
+Specifies a list of possible comments for selection by a user when performing a GUI operation that modifies an object. In addition to using list entries, users are free to use individual comments when performing such operations.
 
-La lista se rellena con algunos motivos bien conocidos para modificaciones de objetos. Los usuarios son libres de modificar las entradas de la lista y agregar sus propias entradas para posibles comentarios.
+The list is populated with some well-known reasons for object modifications. Users are free to modify list entries and add their own entries for possible comments.
 
-### Configuración: *default\_profile\_account*, Predeterminado: *root*
+### Setting: *default\_profile\_account*, Default: *root*
 
-Cuando se agregan cuentas de usuario al JOC Cockpit mediante los [Servicios de Identidad](/identity-services), se crearán [Preferencias del Perfil](/profile-preferences) con configuraciones individuales para cada cuenta de usuario.
+When user accounts are added to the JOC Cockpit using the [Identity Services](/identity-services) then [Profile - Preferences](/profile-preferences) will be created with individual settings for each user account.
 
-- Esta configuración especifica la cuenta que se usa como plantilla para el perfil cuando se crean cuentas de usuario.
-- De forma predeterminada, se usa la cuenta *root*, lo que significa que el perfil de una nueva cuenta se rellena con configuraciones como idioma, tema, etc. de la cuenta de perfil predeterminada.
+- This setting specifies the account that is used as a template for the profile when user accounts are created. 
+- By default the *root* account is used which boils down to the fact that a new account's profile is populated from settings such as language, theme etc. of the default profile account.
 
-## Configuración de Inicio de Sesión
+## Login Settings
 
-### Configuración: *enable\_remember\_me*, Predeterminado: *true*
+### Setting: *enable\_remember\_me*, Default: *true*
 
-Esta configuración habilita la casilla de verificación *Recordarme* disponible en la ventana de inicio de sesión, que almacena las credenciales del usuario, como cuenta y contraseña, en una cookie del sitio. Como resultado, la cuenta de usuario y la contraseña se rellenan automáticamente en el próximo inicio de sesión.
+This setting enables the *Remember me* checkbox that is available from the login window and which stores user's credentials such as account and password in a site cookie. As a result the user account and password are populated with the next login.
 
-- Algunos usuarios pueden considerar un riesgo de seguridad almacenar credenciales en datos del navegador.
-- Esta configuración puede deshabilitarse para no ofrecer el almacenamiento de credenciales de usuario.
+- Some users might consider it a security risk to store credentials in browser data.
+- This setting can be disabled in order not to offer storing user credentials.
 
-## Configuración del Inventario
+## Inventory Settings
 
-### Configuración: *copy\_paste\_suffix*, *copy\_paste\_prefix*, Predeterminado: *copy*
+### Setting: *copy\_paste\_suffix*, *copy\_paste\_prefix*, Default: *copy*
 
-Especifica el prefijo/sufijo que se utilizará para los nombres de objetos al realizar operaciones de copiar y pegar en la interfaz gráfica del JOC Cockpit.
+Specifies the prefix/suffix to be used for object names when performing copy & paste operations in the JOC Cockpit GUI.
 
-- En el inventario de JS7, los nombres de los objetos son únicos para cada tipo de objeto: por ejemplo, los Workflows usan nombres únicos; sin embargo, un Recurso de Job puede usar el mismo nombre que un Workflow.
-- Por lo tanto, se debe crear un nuevo nombre de objeto al realizar operaciones de copiar y pegar. Esto se logra agregando un prefijo o sufijo que los usuarios pueden elegir.
+- In JS7 inventory object names are unique for each object type: for example, Workflows use unique names, however, a Job Resource can use the same name as a Workflow.
+- Therefore a new object name has to be created when performing copy & paste operations. This is achieved by adding a prefix or suffix which can be chosen by users.
 
-### Configuración: *restore\_suffix*, *restore\_prefix*, Predeterminado: *restored*
+### Setting: *restore\_suffix*, *restore\_prefix*, Default: *restored*
 
-Cuando los objetos del inventario se eliminan, se agregan a la papelera del inventario.
+When inventory objects are removed, they will be added to the inventory trash.
 
-- Cuando se restauran objetos eliminados desde la papelera del inventario, el nombre del objeto original podría estar siendo usado por algún objeto más nuevo.
-- Esta configuración permite al usuario especificar los valores de prefijo y sufijo que se usarán al restaurar objetos desde la papelera.
+- When removed objects are restored from the inventory trash, then the original object name might be used by some newer object. 
+- This setting allows the user to specify the prefix and suffix values to be used when restoring objects from the trash.
 
-### Configuración: *import\_suffix*, *import\_prefix*, Predeterminado: *imported*
+### Setting: *import\_suffix*, *import\_prefix*, Default: *imported*
 
-Las operaciones de exportación e importación del inventario de JS7 permiten importar objetos desde un archivo de archivo.
+The JS7 inventory export and import operations allow objects to be imported from an archive file.
 
-- Cuando se importan objetos, sus nombres podrían entrar en conflicto con nombres de objetos existentes.
-- Esta configuración permite al usuario especificar los valores de prefijo y sufijo que se usarán al importar objetos.
+- When objects are imported, then their names might conflict with existing object names.
+- This setting allows the user to specify the prefix and suffix values to be used when importing objects.
 
-## Configuración de Vistas
+## View Settings
 
-### Configuración: *show\_view\_\**
+### Setting: *show\_view\_\**
 
-Estas configuraciones pueden usarse para deshabilitar vistas individuales disponibles en la interfaz gráfica del JOC Cockpit mediante elementos del menú principal como Plan Diario, Monitor, Workflows, etc.
+These settings can be used to disable individual views that are available from the JOC Cockpit GUI by main menu items such as Daily Plan, Monitor, Workflows etc.
 
-- Esta configuración funciona independientemente de los roles y permisos predeterminados.
-- Como resultado, una cuenta de usuario puede tener permisos para ver datos desde la vista del Monitor, aunque la vista no se ofrezca desde la interfaz gráfica. Al mismo tiempo, los datos de la vista del Monitor estarán disponibles para esta cuenta al usar la [REST Web Service API](/rest-api).
+- This setting works independently of default roles and permissions.
+- As a result a user account might have permissions to view data from the Monitor view, although the view is not offered from the GUI. At the same time, data from the Monitor view will be available for this account when using the [REST Web Service API](/rest-api).
 
-### Configuración: *display\_folders\_in\_views*, Predeterminado: *true*
+### Setting: *display\_folders\_in\_views*, Default: *true*
 
-Especifica que en vistas como *Workflows*, *Plan Diario*, *Recursos - Calendarios*, *Recursos - Recursos de Lock*, *Recursos - Tableros de Avisos* se muestran los nombres y rutas de los objetos de planificación. Si se usa el valor *false* para esta configuración, la ruta se omite de la visualización de objetos. En JS7, cualquier nombre de objeto es único.
+Specifies that in views such as *Workflows*, *Daily Plan*, *Resources - Calendars*, *Resources - Resource Locks*, *Resources - Notice Boards* scheduling object names and paths are displayed. If the *false* value is used for this setting, then the path is omitted from display of objects. In JS7 any objects names are unique.
 
-## Configuración del Controlador
+## Controller Settings
 
-### Configuración: *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
+### Setting: *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
 
-JS7 ofrece una configuración consistente sin uso de contraseñas. Esto incluye la conexión del JOC Cockpit a los Controladores, que puede asegurarse mediante autenticación mutua HTTPS de servidor y cliente. Si los usuarios no desean configurar autenticación mutua para las conexiones del Controlador, se debe usar una contraseña para identificar el JOC Cockpit con el Controlador.
+JS7 offers consistent configuration without use of passwords. This includes the connection from JOC Cockpit to Controllers which can be secured by mutual HTTPS Server Authentication and Client Authentication. If users do not wish to configure mutual authentication for Controller connections, then a password has to be used to identify the JOC Cockpit with the Controller.
 
-Esto aplica a dos conexiones establecidas desde el JOC Cockpit a los Controladores, reflejadas por configuraciones separadas para *controller\_connection\_joc\_password* y *controller\_connection\_history\_password*:
+This applies to two connections established from JOC Cockpit to Controllers that are reflected by separate settings for the *controller\_connection\_joc\_password* and the *controller\_connection\_history\_password*:
 
-- La interfaz gráfica del JOC Cockpit usa una conexión para recibir eventos, por ejemplo sobre transiciones de estado de Órdenes.
-- El Servicio de Historial está conectado a un Controlador para recibir información de historial, como el estado de ejecución de Jobs y cualquier salida de log de Jobs.
+- The JOC Cockpit GUI makes use of a connection to receive events, for example about Order state transitions.
+- The History Service is connected to a Controller to receive history information such as the execution status of jobs and any log output of jobs.
 
-La contraseña se especifica como texto plano en la página de Configuración y como valor hasheado en el archivo private.conf del Controlador.
+The password is specified as plain text in the Settings page and as a hashed value in the Controller's private.conf file.
 
-El enlace **Mostrar Valor Hasheado** está disponible en la página de Configuración y permite mostrar el valor hasheado de la contraseña.
+The **Show Hash Value** link is available on the Settings page and allows to display the hashed value of the password.
 
-Si se modifica una contraseña en la página de Configuración, también debe modificarse en el archivo private.conf del Controlador para que las contraseñas coincidan.
+If a password is modified in the Settings page, then it has to be modified in the Controller's private.conf file too to make passwords match.
 
-Se recomienda modificar primero la contraseña en el archivo private.conf de la instancia activa del Controlador y luego en la página de Configuración. Luego se debe reiniciar la instancia del Controlador. El JOC Cockpit se reconectará entonces a la instancia activa del Controlador. Si se usa un Clúster de Controladores, el mismo cambio debe aplicarse al archivo private.conf de la instancia pasiva del Controlador.
+It is recommended that the password in the active Controller instance's private.conf file is modified first and then in the Settings page. Then the Controller instance should be restarted. The JOC Cockpit will then reconnect to the active Controller instance. If a Controller Cluster is used, then the same change has to be applied to the passive Controller instance's private.conf file.
 
-## Configuración de Unicode
+## Unicode Settings
 
-### Configuración: *encoding*
+### Setting: *encoding*
 
-La codificación se aplica si el JOC Cockpit opera para entornos Windows. Windows no admite Unicode sino que utiliza páginas de código. En caso de que la página de código de Windows no pueda detectarse automáticamente, los usuarios pueden especificar la página de código. Un valor frecuentemente utilizado es *UTF-8*.
+The encoding is applied if JOC Cockpit is operated for Windows environments. Windows does not support Unicode but makes use of code pages. In case that the Windows code page cannot be detected automatically, users can specify the code page. A frequently used value is *UTF-8*.
 
-## Configuración de Licencia
+## License Settings
 
-### Configuración: *disable\_warning\_on\_license\_expiration*, Predeterminado: *false*
+### Setting: *disable\_warning\_on\_license\_expiration*, Default: *false*
 
-JS7 ofrece mostrar advertencias en caso de próxima expiración de la licencia. La función de mostrar advertencias de expiración de licencia puede deshabilitarse asignando a esta configuración el valor *true*.
+JS7 offers to display warnings in case of upcoming license expiration. The feature to display license expiration warnings can be disabled by assigning this setting the *true* value.
 
-## Configuración de Logs
+## Log Settings
 
-### Configuración: *log\_ext\_directory*
+### Setting: *log\_ext\_directory*
 
-Especifica un directorio accesible para el JOC Cockpit al cual se escribirán copias de los archivos de log de Órdenes y archivos de log de tareas.
+Specifies a directory that is accessible to JOC Cockpit and to which copies of Order log files and task log files will be written.
 
-### Configuración: *log\_ext\_order\_history*
+### Setting: *log\_ext\_order\_history*
 
-Especifica que se crea un archivo JSON con información sobre el Historial de Órdenes en caso de Órdenes exitosas, Órdenes fallidas o ambas. Los valores posibles incluyen:
+Specifies that a JSON file holding information about the Order History is created in case of successful Orders, failed Orders or both. Possible values include:
 
-- **all**: crear archivo de historial para todas las Órdenes exitosas y fallidas.
-- **failed**: crear archivo de historial para Órdenes fallidas.
-- **successful**: crear archivo de historial para Órdenes exitosas.
+- **all**: create history file for all successful and failed Orders.
+- **failed**: create history file for failed Orders.
+- **successful**: create history file for successful Orders.
 
-### Configuración: *log\_ext\_order*
+### Setting: *log\_ext\_order*
 
-Especifica que se crea un archivo de log de Orden en caso de Órdenes exitosas, Órdenes fallidas o ambas. Los valores posibles incluyen:
+Specifies that an Order log file is created in case of successful Orders, failed Orders or both. Possible values include:
 
-- **all**: crear archivo de log de Orden para todas las Órdenes exitosas y fallidas.
-- **failed**: crear archivo de log de Orden para Órdenes fallidas.
-- **successful**: crear archivo de log de Orden para Órdenes exitosas.
+- **all**: create Order log file for all successful and failed Orders.
+- **failed**: create Order log file for failed Orders.
+- **successful**: create Order log file for successful Orders.
 
-### Configuración: *log\_ext\_task*
+### Setting: *log\_ext\_task*
 
-Especifica que se crea un archivo de log de tarea en caso de tareas exitosas, tareas fallidas o ambas. Los valores posibles incluyen:
+Specifies that a task log file is created in case of successful task, failed tasks or both. Possible values include:
 
-- **all**: crear archivo de log de tarea para todas las tareas exitosas y fallidas.
-- **failed**: crear archivo de log de tarea para tareas fallidas.
-- **successful**: crear archivo de log de tarea para tareas exitosas.
+- **all**: create task log file for all successful and failed tasks.
+- **failed**: create task log file for failed tasks.
+- **successful**: create task log file for successful tasks.
 
-### Configuración: *log\_maximum\_display\_size*, Predeterminado: *10* MB
+### Setting: *log\_maximum\_display\_size*, Default: *10* MB
 
-El JOC Cockpit ofrece salida de log para visualización en la ventana de Vista de Log si el tamaño de la salida de log sin comprimir no supera este valor. De lo contrario, el log se ofrece solo para descarga. El tamaño se especifica en MB.
+JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only. The size is specified in MB.
 
-### Configuración: *log\_applicable\_size*, Predeterminado: *500* MB
+### Setting: *log\_applicable\_size*, Default: *500* MB
 
-Si se supera el valor para el tamaño de la salida de log de un Job, el Servicio de Historial truncará la salida de log y usará los primeros y últimos 100 KB para el log de tarea. El archivo de log original será eliminado. El tamaño se especifica en MB.
+If the value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is specified in MB.
 
-### Configuración: *log\_maximum\_size*, Predeterminado: *1000* MB
+### Setting: *log\_maximum\_size*, Default: *1000* MB
 
-Si se supera este valor para el tamaño de la salida de log de un Job, el Servicio de Historial truncará la salida de log y usará los primeros 100 KB para el log de tarea. El archivo de log original será eliminado. El tamaño se especifica en MB.
+If this value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is specified in MB.
 
-## Configuración de Enlaces
+## Link Settings
 
-### Configuración: *joc\_reverse\_proxy\_url*
+### Setting: *joc\_reverse\_proxy\_url*
 
-Si el JOC Cockpit no es accesible desde su URL original sino solo desde un servicio proxy inverso, este valor especifica la URL a utilizar, por ejemplo con notificaciones por correo electrónico.
+If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example with e-mail notifications,
 
-## Configuración de Jobs
+## Job Settings
 
-### Configuración: *allow\_empty\_arguments*, Predeterminado: *false*
+### Setting: *allow\_empty\_arguments*, Default: *false*
 
-De forma predeterminada, los argumentos especificados para Jobs deben tener valores, de lo contrario el Workflow se considera no válido. Esta configuración anula el comportamiento predeterminado y permite especificar valores vacíos.
+By default arguments that are specified for jobs have to hold values as otherwise the Workflow is considered invalid. This setting overrides the default behavior and allows empty values to be specified.
 
-## Configuración de Órdenes
+## Order Settings
 
-### Configuración: *allow\_undeclared\_variables*, Predeterminado: *false*
+### Setting: *allow\_undeclared\_variables*, Default: *false*
 
-De forma predeterminada, cualquier variable de Orden debe estar declarada con el Workflow. Esta configuración cambia el comportamiento predeterminado y permite que las Órdenes especifiquen variables arbitrarias. Los usuarios deben tener en cuenta que los Jobs e instrucciones relacionadas fallarán si hacen referencia a variables que no son especificadas por las Órdenes entrantes.
+By default any Order variables have to be declared with the Workflow. This setting changes the default behavior and allows Orders to specify arbitrary variables. Users should be aware that jobs and related instructions will fail if they reference variables that are not specified by incoming orders.
 
-## Configuración de Etiquetas
+## Tag Settings
 
-### Configuración: *num\_of\_tags\_displayed\_as\_order\_id*, Predeterminado: *0*
+### Setting: *num\_of\_tags\_displayed\_as\_order\_id*, Default: *0*
 
-Especifica el número de Etiquetas mostradas con cada Orden. Un valor 0 suprimirá la visualización de Etiquetas. Tenga en cuenta que mostrar un mayor número de Etiquetas por Orden puede causar penalizaciones de rendimiento.
+Specifies the number of Tags displayed with each Order. A value 0 will suppress display of Tags. Consider that display of a larger number of Tags per Order can cause performance penalties.
 
-### Configuración: *num\_of\_workflow\_tags\_displayed*, Predeterminado: *0*
+### Setting: *num\_of\_workflow\_tags\_displayed*, Default: *0*
 
-Especifica el número de Etiquetas mostradas con cada Workflow. Un valor 0 suprimirá la visualización de Etiquetas.
+Specifies the number of Tags displayed with each Workflow. A value 0 will suppress display of Tags.
 
-## Configuración de Aprobaciones
+## Approval Settings
 
-### Configuración: *approval\_requestor\_role*
+### Setting: *approval\_requestor\_role*
 
-Especifica el nombre del Rol del Solicitante que se asigna a las cuentas sujetas al Proceso de Aprobación.
+Specifies the name of the Requestor role that is assigned accounts which are subject to the Approval Process.
 
-## Configuración de Reportes
+## Report Settings
 
-### Configuración: *report\_java\_options*, Predeterminado: *-Xmx54M*
+### Setting: *report\_java\_options*, Default: *-Xmx54M*
 
-Especifica las opciones de Java utilizadas al crear Reportes. El valor predeterminado considera el espacio mínimo de heap de Java requerido para crear Reportes. Los usuarios que encuentren un mayor número de ejecuciones de Jobs por día pueden necesitar aumentar este valor para satisfacer las necesidades de memoria.
+Specifies the Java options used when creating Reports. The default value considers the minimum Java heap space required to create Reports. Users who find a larger number of job executions per day might have to increase this value to match memory needs.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Registro de Auditoría](/audit-log)
-- [Servicios de Identidad](/identity-services)
-- [Preferencias del Perfil](/profile-preferences)
+- [Audit Log](/audit-log)
+- [Identity Services](/identity-services)
+- [Profile - Preferences](/profile-preferences)
 - [REST Web Service API](/rest-api)
-- [Configuración](/settings)
+- [Settings](/settings)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Audit Trail](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Trail)

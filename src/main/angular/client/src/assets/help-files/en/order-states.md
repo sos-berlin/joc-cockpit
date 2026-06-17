@@ -1,36 +1,36 @@
-# Fuentes de Órdenes
+# Order Sources
 
-Las Órdenes pueden agregarse desde las siguientes fuentes:
+Orders can be added from the following sources:
 
-- Órdenes agregadas por el [Plan Diario](/daily-plan)
-- Órdenes agregadas bajo demanda por los usuarios desde la vista [Workflows](/workflows)
-- Órdenes agregadas desde Órdenes Disparadas por Archivo que monitorean directorios en busca de archivos entrantes
+- Orders added by the [Daily Plan](/daily-plan)
+- Orders added on demand by users from the [Workflows](/workflows) view
+- Orders added from File Order Sources that watch directories for incoming files
 
-Los estados de las Órdenes actuales se muestran en la vista del *Panel de Control*:
+States of current Orders are displayed with the *Dashboard* view:
 
-<img src="dashboard-orders.png" alt="Órdenes" width="330" height="140" />
+<img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
 
-## Estados de Órdenes
+## Order States
 
-Los siguientes *Estados de Órdenes* están disponibles:
+The following *Order States* are available:
 
-- Las Órdenes **Pendientes** han sido agregadas a Workflows sin especificar una hora de inicio; pueden asignárseles una hora de inicio posteriormente.
-- Las Órdenes **Planificadas** han sido agregadas a Workflows y están programadas para su ejecución en una fecha y hora posterior.
-- Las Órdenes **En Progreso** están siendo procesadas por instrucciones de Workflow pero no están ejecutando un Job.
-- Las Órdenes **Ejecutando** están en ejecución de un Job.
-- Las Órdenes **Suspendidas** han sido detenidas por intervención del usuario y pueden reanudarse.
-- Las Órdenes **Completadas** finalizaron un Workflow pero no han sido eliminadas; por ejemplo, si se usa una Orden Disparada por Archivo para monitoreo de archivos y el Workflow no mueve ni elimina los archivos entrantes. En esta situación, la Orden permanecerá en su lugar mientras el archivo exista en el directorio de entrada.
-- Las Órdenes **A Confirmar** son puestas en espera por la *instrucción Prompt* en un Workflow y requieren la confirmación del usuario para continuar la ejecución del Workflow.
-- Las Órdenes **Esperando** esperan un recurso como un *Recurso de Lock*, un *Aviso*, un intervalo de *Retry* o *Cycle*, o un proceso si el Agente en uso especifica un Límite de Procesos que se ha superado.
-- Las Órdenes **Bloqueadas** no pueden iniciarse, por ejemplo, si el Agente no es accesible desde que se agregó la Orden.
-- Las Órdenes **Fallidas** indican que un Job falló o que una *instrucción Fail* impide que la Orden continúe.
+- **Pending** Orders have been added to Workflows without specifying a start time, they can later on be assigned a start time.
+- **Scheduled** Orders have been added to Workflows and are scheduled for execution at a later date and time.
+- **In Progress** Orders are processed by Workflow Instructions but are not running a Job. 
+- **Running** Orders are in execution of a Job. 
+- **Suspended** Orders have been halted by user intervention and can be resumed.
+- **Completed** Orders did finish a Workflow but have not been removed, for example if a File Order Source is used for file watching and the Workflow would not (re)move incoming files. In this situation the Order will remain in place as long as the file exists in the incoming directory.
+- **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
+- **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.
+- **Blocked** Orders cannot start, for example if the Agent is not reachable since the Order was added.
+- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from proceeding. 
 
-Hacer clic en el número indicado de Órdenes navega a la [Vista General de Órdenes](/orders-overview) que muestra las Órdenes en detalle.
+Clicking the indicated number of Orders navigates to the [Orders Overview](/orders-overview) that displays Orders in detail.
 
-## Referencias
+## References
 
-- [Plan Diario](/daily-plan)
-- [Vista General de Órdenes](/orders-overview)
+- [Daily Plan](/daily-plan)
+- [Orders Overview](/orders-overview)
 - [Workflows](/workflows)
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)

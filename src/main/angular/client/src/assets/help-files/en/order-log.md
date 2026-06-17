@@ -1,49 +1,49 @@
-# Vista del Log de Orden
+# Order Log View
 
-La *Vista del Log de Orden* ofrece un log en ejecución que se actualiza cada 2-3 segundos. Esto permite seguir la salida de Jobs e instrucciones de Workflow ejecutadas por la Orden casi en tiempo real.
+The *Order Log View* offers a running log that is updated every 2-3s. This allows following output of Jobs and Workflow Instructions executed by the Order in near real-time.
 
-## Filtro
+## Filter
 
-La *Vista del Log de Orden* ofrece filtrado por varios criterios disponibles en la parte superior de la ventana:
+The *Order Log View* offers filtering from a number of criteria available from the top of the window:
 
-- **Principal** especifica que se mostrarán los detalles sobre los inicios de Órdenes, los inicios de Jobs y la parametrización en los inicios de Jobs. Dicha salida se indica con el calificador [MAIN].
-- Los eventos de **Éxito** se indican con el calificador [SUCCESS] y muestran detalles como la parametrización resultante cuando se completan los Jobs.
-- **stdout** especifica si la salida escrita por los Jobs al canal stdout se mostrará usando el calificador [STDOUT].
-- **Debug** aplica a Jobs JVM que hacen uso de la [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). A dichos Jobs se les puede agregar el argumento *log_level* con el valor *debug* o *trace*. Si hay salida de depuración disponible en un Job, se mostrará usando el calificador [DEBUG].
-- **Detalle** especifica si se mostrarán los eventos creados por instrucciones de Workflow como la publicación y espera de Avisos.
+- **Main** specifies that details about Order starts, Job starts and the parameterization on Job starts will be displayed. Such output is indicated by the [MAIN] qualifier.
+- **Success** events are indicated by the [SUCCESS] qualifier and show details such as the resulting parameterization when Jobs are completed.
+- **stdout** specifies if output written by Jobs to the stdout channel will be displayed using the [STDOUT] qualifier.
+- **Debug** applies to JVM Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or*trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
+- **Detail** specifies if events created by Workflow instructions such as posting and expecting Notices should be displayed.
 
-La salida del log escrita por los Jobs al canal stderr no está sujeta a filtrado y se mostrará con el calificador [STDERR].
+Log output written by Jobs to the stderr channel is not subject to filtering and will be displayed from the [STDERR] qualifier.
 
-## Visualización de la Salida del Log
+## Display of Log Output
 
-### Panel de Log
+### Log Panel
 
-La salida del log se muestra en orden histórico de llegada. Si un Workflow bifurca la ejecución a Jobs paralelos, la salida de cada Job se mostrará de forma coherente.
+Log output is displayed in historic ordering of arrival. If a Workflow forks execution to parallel Jobs, then output of each Job will be displayed coherently.
 
-La parte superior de la ventana ofrece los iconos de chevron hacia abajo y chevron hacia arriba que expanden o contraen la salida del log de cualquier Job.
+The top of the window offers the chevron-down and chevron-up icons that will expand or collapse log output of any Jobs.
 
-#### Marcas de Tiempo
+#### Timestamps
 
-La salida del log indica marcas de tiempo de diferentes fuentes:
+Log output indicates timestamps from different sources:
 
-- **Hora del Agente**: Los eventos principales iniciales como *OrderStarted* son creados por el Agente y reflejan el reloj en tiempo real del Agente.
-- **Hora del Job**: La salida de los Jobs usa la zona horaria del servidor en el que se ejecutará el Job o la zona horaria especificada en la implementación del Job.
-- **Hora del Controlador**: Los eventos finales como *OrderFinished* son creados por el Controlador y reflejan el reloj en tiempo real del Controlador.
+- **Agent's time**: Initial main events such as *OrderStarted* are created by the Agent and reflect the Agent's real-time clock.
+- **Job's time**: Output of Jobs makes use of the time zone of the server on which the Job will be executed or the time zone specified from the Job's implementation.
+- **Controller's time**: Final events such as *OrderFinished* are created by the Controller and reflect the Controller's real-time clock.
 
-La *Vista del Log de Orden* convierte las marcas de tiempo a la zona horaria del usuario, si el ajuste correspondiente en [Perfil - Preferencias](/profile-preferences) está activo. De lo contrario, se usarán las zonas horarias del Controlador y del Agente.
+The *Order Log View* converts timestamps to the user's time zone, if the related setting in the [Profile - Preferences](/profile-preferences) is active. Other than that, the Controller's and Agent's time zones will be used.
 
-Si los relojes en tiempo real del Controlador y del Agente no están sincronizados, esto puede resultar en una salida del log que sugiere viajes en el tiempo.
+If the Controller's and Agent's real-time clocks are not synchronized, this can result in log output that suggests time travel.
 
-### Panel de Navegación
+### Navigation Panel
 
-En el lado derecho de la ventana, los usuarios encuentran un icono de flecha izquierda que muestra el panel de navegación.
+On the right side of the window users find an arrow-left icon that brings forward the navigation panel.
 
-El panel ofrece el orden histórico de Jobs e instrucciones de Workflow ejecutadas por la Orden. El color rojo indica Jobs e instrucciones de Workflow fallidos.
+The panel offers the historic ordering of Jobs and Workflow Instructions executed by the Order. Red color indicates failed Jobs and Workflow Instructions.
 
-Hacer clic en un Job o instrucción de Workflow en el panel de navegación salta a la salida del log relacionada en el panel de log.
+Clicking a Job or Workflow instruction in the navigation panel jumps to related log output in the log panel.
 
-## Referencias
+## References
 
-- [Perfil - Preferencias](/profile-preferences)
+- [Profile - Preferences](/profile-preferences)
 - [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API)
 - [JS7 - Log Levels and Debug Options](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Levels+and+Debug+Options)

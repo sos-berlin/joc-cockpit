@@ -1,88 +1,88 @@
-# Servicio de Identidad - Roles
+# Identity Service - Roles
 
-Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
+Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
-Para la autorización, JS7 ofrece un Modelo de Control de Acceso Basado en Roles (RBAC) que incluye que:
+For authorization the JS7 offers a Role Based Access Model (RBAC) which includes that
 
-- los roles se configuran libremente a partir de los permisos disponibles,
-- a los usuarios se les asignan uno o más roles que se combinan para obtener los permisos resultantes.
+- roles are freely configured from available permissions,
+- users are assigned one or more roles that are merged for resulting permissions.
 
-JS7 incluye los siguientes [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions) que pueden modificarse o eliminarse según la voluntad del usuario:
+The JS7 ships with the following - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions) that can be modified or deleted at the user's will:
 
-| Rol | Propósito | Permisos |
+| Role | Purpose | Permissions |
 | ----- | ----- | ----- |
-| administrator | Este es un rol técnico sin responsabilidades en el proceso de TI ni en el proceso de negocio. | El rol incluye todos los permisos para iniciar, reiniciar, realizar la conmutación, etc. de los productos JS7. |
-| api_user | El rol está destinado a aplicaciones como monitores de sistema que acceden a JS7 a través de su API. | El rol concede preferentemente permisos de visualización. Además se incluyen permisos para gestionar órdenes y desplegar workflows. |
-| application_manager | Este es un rol de ingeniería con conocimiento profundo de workflows, por ejemplo para la Gestión de Cambios. Este rol no está necesariamente involucrado en las operaciones diarias. | El rol incluye permisos para tareas administrativas en instancias del Controlador, configuración de clústeres, certificados y personalizaciones. Además, el rol incluye permisos para gestionar el inventario de JS7. La gestión de cuentas de usuario no está incluida. |
-| business_user | El rol está destinado a usuarios de back-office que no son responsables de las operaciones de TI, pero posiblemente sí del proceso de negocio y por ello interesados en mantenerse informados sobre el estado de la ejecución de workflows. | El rol ofrece permisos de solo lectura. |
-| incident_manager | El rol es para el Servicio de Atención de TI, por ejemplo soporte de 1.° y 2.° nivel, intervenciones y gestión de incidentes. | El rol está basado en el rol *application_manager* y agrega permisos completos de Controlador y Agente requeridos para la gestión de incidentes, por ejemplo acceso a archivos de log. |
-| it_operator | Este es el rol para las operaciones diarias de workflows y el plan diario. | El rol concede preferentemente permisos de visualización. Además se incluyen permisos para gestionar órdenes y desplegar workflows. |
+| administrator	| This is a technical role without any responsibilities in the IT process and business process. | The role includes all permissions to start, restart, switch-over etc. the JS7 products. |
+| api_user | The role is intended for applications such as system monitors that access JS7 via its API. | The role preferably grants view permissions. On top come permissions to manage orders and to deploy workflows. |
+| application_manager | This an engineering role with in-depth knowledge of workflows, for example for Change Management. This role is not necessarily involved in daily operations. | The role includes permissions for administrative tasks on Controller instances, cluster configuration, certificates and customizations. In addition, the role includes permissions to manage the JS7 inventory. Management of user accounts is not included. |
+| business_user | The role is intended for back-office users who are not responsible for IT operations, but possibly for the business process and therefore interested to stay informed about the status of workflow execution. | The role offers read-only permissions. |
+| incident_manager |The role is for the IT Service Desk, for example 1st and 2nd level support, interventions and incident management | The role is based on the *application_manager* role and adds full Controller and Agent permissions required for incident management, for example access to log files. |
+| it_operator | This is the role for daily operations of workflows and daily plan. | The role preferably grants view permissions. On top come permissions to manage orders and to deploy workflows. |
 
-Se alienta a los usuarios a eliminar los roles no utilizados y a ajustar los permisos de los roles según sea necesario.
+Users are encouraged to drop unused roles and to adjust permissions for roles as needed.
 
-## Alcance de los Roles
+## Scope of Roles
 
-Los roles se especifican para los siguientes ámbitos:
+Roles are specified for the following scopes:
 
-- Cada rol puede limitarse a una o más carpetas del inventario.
-- A cada rol se le asigna un conjunto de permisos para las operaciones en JOC Cockpit.
-- A cada rol se le asigna un conjunto de permisos para las operaciones predeterminadas en cualquier Controlador.
-- A cada rol se le pueden asignar conjuntos de permisos adicionales por Controlador.
+- Every role can be limited to one or more inventory folders.
+- Every role is assigned a permission set for operations in JOC Cockpit.
+- Every role is assigned a permission set for default operations on any Controllers.
+- Every role can be assigned additional permission sets per Controller.
 
-Los permisos especifican uno de los siguientes estados en el ámbito correspondiente:
+Permissions specify one of the following states in the related scope:
 
-- el permiso no está asignado,
-- el permiso está concedido,
-- el permiso está denegado.
+- the permission is unassigned,
+- the permission is granted,
+- the permission is denied.
 
-Los permisos se combinan de todos los roles para obtener los permisos resultantes de una cuenta de usuario:
+Permission are merged from all roles for resulting permissions of a user account:
 
 - JOC Cockpit
-  - Si un permiso no está asignado en el ámbito de un solo rol, entonces los roles adicionales pueden conceder el permiso. Si ningún rol concede el permiso, entonces no se concede en los permisos resultantes.
-  - Si un permiso está concedido en el ámbito de un solo rol, entonces se concederá en los permisos resultantes.
-  - Si un permiso está denegado en el ámbito de un solo rol, entonces se denegará en los permisos resultantes. Los permisos denegados prevalecen sobre los permisos concedidos.
-- Controlador
-  - Si un permiso no está asignado en el ámbito predeterminado, entonces los ámbitos para Controladores individuales pueden conceder el permiso para el Controlador correspondiente.
-  - Si un permiso está concedido en el ámbito predeterminado, entonces por defecto se aplica a todos los Controladores.
-  - Si un permiso está concedido para un Controlador dado, entonces los permisos resultantes para el Controlador incluirán el permiso.
-  - Si un permiso está denegado para un Controlador dado, esto prevalece sobre el mismo permiso concedido desde el ámbito predeterminado y desde otros roles para el mismo Controlador.
-  - Si un permiso está denegado desde el ámbito predeterminado, esto prevalece sobre el mismo permiso concedido para cualquier Controlador.
+  - If a permission is unassigned in the scope of a single role, then additional roles can grant the permission. If no role grants the permission, then it is not granted from resulting permissions.
+  - If a permission is granted in scope of a single role, then it will be granted for resulting permissions.
+  - If a permission is denied in scope of a single role, then it will be denied from resulting permissions. Denied permissions overrule granted permissions.
+- Controller
+  - if a permission is unassigned in the default scope, then scopes for individual Controllers can grant the permission for the related Controller.
+  - if a permission is granted in the default scope, then by default this applies to all Controllers.
+  - if a permission is granted for a given Controller, then resulting permissions for the Controller will include the permission.
+  - If a permission is denied for a given Controller, then this overrules the same permission granted from the default scope and from other roles for the same Controller.
+  - If a permission is denied from the default scope, then this overrules the same permission granted for any Controller.
 
-## Operaciones sobre los Roles
+## Operations on Roles
 
-Las siguientes operaciones están disponibles desde los botones correspondientes en la esquina superior derecha de la sub-vista:
+The following operations are available from related buttons in the upper-right corner of the sub-view:
 
-- **Cuenta** limita la visualización a los roles asignados a la cuenta seleccionada.
-- **Importar** ofrece importar roles desde un archivo en formato JSON que fue creado previamente mediante una *Exportación* de roles.
-- **Agregar Controlador** ofrece agregar el ámbito de un Controlador específico.
-- **Agregar Rol** ofrece crear un nuevo rol.
+- **Account** limits display to roles assigned the selected account.
+- **Import** offers importing roles form a file in JSON format that was previously created from an *Export* of roles.
+- **Add Controller** offers adding the scope of a specific Controller.
+- **Add Role** offers creating a new role.
 
-### Operaciones sobre Roles Individuales
+### Operations on Single Roles
 
-Desde la lista de roles, los usuarios pueden arrastrar y soltar un rol a una posición diferente. La operación no tiene impacto en el procesamiento de los roles.
+From the list of roles, users can drag & drop a role to a different position. The operation has no impact on the processing of roles.
 
-Desde el menú de acción de 3 puntos de cada rol se ofrecen las siguientes operaciones:
+From each role's 3-dots action menu the following operations are offered:
 
-- **Editar** ofrece cambiar el nombre del rol. Los cambios se aplican a los roles existentes asignados a cualquier cuenta de usuario.
-- **Duplicar** copia el rol a un nuevo rol. El usuario especifica el nombre del nuevo rol.
-- **Eliminar** borra el rol del inventario y de cualquier cuenta de usuario a la que se le haya asignado el rol.
+- **Edit** offers changing the role's name. Changes are considered for existing roles assigned any user accounts.
+- **Duplicate** copies the role to a new role. The user specifies the name of the new role.
+- **Delete** wipes the role from the inventory and from any user accounts assigned the role.
 
-### Operaciones Masivas sobre Roles
+### Bulk Operations on Roles
 
-Las siguientes operaciones masivas están disponibles al seleccionar uno o más roles:
+The following bulk operations are available when selecting one or more roles:
 
-- **Exportar** ofrecerá un archivo para descargar en formato JSON que contiene la configuración de los roles seleccionados. El archivo de exportación puede utilizarse para importar en la misma o en una instancia diferente de JOC Cockpit.
-- **Copiar** agrega los roles al portapapeles interno para pegarlos posteriormente en un Servicio de Identidad diferente en la misma instancia de JOC Cockpit.
-- **Eliminar** borra los roles seleccionados del inventario y de cualquier cuenta de usuario a la que se le hayan asignado los roles.
+- **Export** will offer a file for download in JSON format that holds the configuration of selected roles. The export file can be used for import with the same or with a different JOC Cockpit instance.
+- **Copy** adds the roles to the internal clipboard for later pasting to a different Identity Service in the same JOC Cockpit instance.
+- **Delete** wipes the selected roles from the inventory and from any user accounts assigned the roles.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Identidad - Permisos](/identity-service-permissions)
-- [Servicios de Identidad](/identity-services)
+- [Identity Service - Permissions](/identity-service-permissions)
+- [Identity Services](/identity-services)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

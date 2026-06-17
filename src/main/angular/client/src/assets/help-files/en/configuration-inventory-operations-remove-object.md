@@ -1,51 +1,51 @@
-# Configuración - Inventario - Operaciones - Eliminar Objeto
+# Configuration - Inventory - Operations - Remove Object
 
-Eliminar objetos incluye borrarlos de los Controladores y del inventario. Esto aplica a objetos como Workflows y Planificaciones disponibles en las carpetas del sistema *Controlador* y *Automatización*.
+Removing objects includes to delete them from Controllers and from the inventory. This applies to objects such as Workflows and Schedules available from the *Controller* and *Automation* system folders.
 
-Los objetos eliminados permanecen disponibles en la papelera del Inventario.
+Removed objects remain available in the Inventory trash.
 
-La vista *Configuración->Inventario* permite eliminar un objeto individual y eliminar objetos desde carpetas, ver [Configuración - Inventario - Operaciones - Eliminar Carpeta](/configuration-inventory-operations-remove-folder).
+The *Configuration->Inventory* view offers removing a single object and removing objects from folders, see [Configuration - Inventory - Operations - Remove Folder](/configuration-inventory-operations-remove-folder).
 
-Al eliminar un objeto individual utilizando la operación *Eliminar* disponible en el menú de acción de tres puntos del objeto en el panel de navegación, se mostrará una ventana emergente como la siguiente:
+When removing a single object using the *Remove* operation available from the object's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
 
 <img src="remove-workflow.png" alt="Remove Workflow" width="600" height="140" />
 
-## Eliminación de Objetos de los Controladores
+## Removing Objects from Controllers
 
-Al eliminar un objeto, será eliminado de todos los Controladores en los que haya sido desplegado.
+When removing an object, it will be removed from all Controllers to which it has been deployed.
 
-## Actualización del Plan Diario
+## Updating the Daily Plan
 
-La eliminación de objetos como Workflows y Planificaciones impacta el [Plan Diario](/daily-plan).
+Removal of objects such as Workflows and Schedules impacts the [Daily Plan](/daily-plan). 
 
-Las Órdenes existentes para Workflows relacionados serán canceladas en los Controladores y eliminadas del Plan Diario.
+Existing Orders for related Workflows will be cancelled from Controllers and will be removed from the Daily Plan.
 
-## Inclusión de Dependencias
+## Including Dependencies
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
 
-Al eliminar objetos se considera la consistencia, por ejemplo:
+When removing objects, consistency is considered, for example:
 
-- Si un Recurso de Job es referenciado por un Workflow, entonces la eliminación del Recurso de Job incluye revocar el Workflow.
-- Si se elimina un Workflow, entonces una Planificación que lo referencia será recuperada y las Órdenes relacionadas serán canceladas y eliminadas del Plan Diario.
+- If a Job Resource is referenced by a Workflow, then removal of the Job Resource includes revoking the Workflow.
+- If a Workflow is removed, then a Schedule referencing the Workflow will be recalled and related Orders will be cancelled and removed from the Daily Plan.
 
-Los usuarios controlan la eliminación consistente de objetos desde las siguientes opciones:
+Users control consistent removal of objects from the following options:
 
-- **Incluir Dependencias**
-  - cuando está marcado, incluirá tanto objetos que referencian como objetos referenciados.
-    - Si los objetos relacionados han sido desplegados o liberados previamente, se ofrecerá la eliminación/revocación conjunta: el objeto para el cual se realiza la operación *Eliminar* será eliminado; para los objetos relacionados se ofrecerá la revocación. La revocación de los objetos relacionados se aplicará de forma obligatoria si es requerida por las relaciones entre objetos.
-    - Lo mismo aplica a los objetos en estado de borrador que hayan sido desplegados o liberados previamente.
-  - cuando no está marcado, no se considerarán las dependencias. Los usuarios deben verificar que los objetos relacionados sean válidos y estén desplegados/liberados. El Controlador generará mensajes de error en caso de objetos faltantes debido a una revocación inconsistente.
+- **Include Dependencies**
+  - when checked, this will include both referencing and referenced objects.
+    - If related objects have previously been deployed or released, then common removal/revocation is offered: the object for which the *Remove* operation is performed will be removed, for related objects revocation is offered. Revocation of related objects will be enforced, if required by object relationships.
+    - This similarly applies to objects in draft status that have previously been deployed or released.
+  - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent revocation.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Operaciones - Eliminar Carpeta](/configuration-inventory-operations-remove-folder)
-- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Configuration - Inventory - Operations - Remove Folder](/configuration-inventory-operations-remove-folder)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Daily Plan](/daily-plan)
+- [Dependency Matrix](/dependencies-matrix)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

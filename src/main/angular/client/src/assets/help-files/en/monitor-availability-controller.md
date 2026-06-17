@@ -1,39 +1,39 @@
-# Monitor - Disponibilidad del Controlador
+# Monitor - Controller Availability
 
-La vista muestra indicadores de disponibilidad de un Controlador.
+The view displays indicators for availability of a Controller.
 
-Si se usa un Clúster de Controladores, se considera la disponibilidad del clúster. Por ejemplo, si una instancia del Controlador en un clúster se apaga por motivos de mantenimiento y la instancia restante asume la carga, esto no reduce la disponibilidad.
+If a Controller Cluster is used then cluster availability is considered. For example, if a Controller instance in a cluster is shut down for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
 
-La esquina superior derecha de la pantalla ofrece la casilla *Controlador Actual*: cuando no está marcada, se mostrará la disponibilidad de todos los Controladores conectados; de lo contrario, la información se muestra únicamente para el Controlador seleccionado actualmente.
+The right-upper corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for all connected Controllers and otherwise the information is displayed for the currently selected Controller only.
 
-Los usuarios deben tener en cuenta que los datos históricos de disponibilidad del Controlador están sujetos a depuración por el [Servicio de Limpieza](/service-cleanup).
+Users should be aware that historic data for Controller availability are subject to purge by the [Cleanup Service](/service-cleanup).
 
-## Filtros de Fecha
+## Date Filters
 
-La esquina superior derecha del panel ofrece la selección de un rango de fechas para mostrar la disponibilidad:
+The upper-right corner of the panel offers selecting a date range for display of availability:
 
-- **Semana** hace que el control deslizante de fechas cambie a un período de una semana.
-- **Mes** hace que el control deslizante de fechas cambie a un período de un mes.
-- **Rango** ofrece especificar la fecha de inicio y la fecha de fin.
+- **Week** makes the date slider switch for a week's period.
+- **Month** makes the date slider switch for a month's period.
+- **Range** offers specifying the start date and end date.
 
-## Tiempo de Ejecución
+## Running Time
 
-Indica el porcentaje de tiempo durante el cual se confirma que el Controlador estuvo disponible en el período dado.
+Gives the percentage for which the Controller is confirmed being available in the given period.
 
-## Estadísticas
+## Statistics
 
-Muestra la disponibilidad mediante un gráfico de barras en base diaria para el período dado.
+Shows availability from a bar chart on a daily basis in the given period.
 
-## Vista General
+## Overview
 
-Muestra la disponibilidad por Controlador y día en el período dado.
+Shows availability per Controller and day in the given period.
 
-- El gráfico indica en color verde las horas en las que se confirma la disponibilidad del Controlador.
-- El color rojo indica no disponibilidad.
-- El color gris indica datos faltantes.
+- The chart indicates hours in green color for which Controller availability is confirmed. 
+- The red color indicates unavailability.
+- The grey color indicates missing data.
 
-## Referencias
+## References
 
-- [Servicio de Limpieza](/service-cleanup)
-- [Monitor - Disponibilidad - Agente](/monitor-availability-agent)
+- [Cleanup Service](/service-cleanup)
+- [Monitor - Availability - Agent](/monitor-availability-agent)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

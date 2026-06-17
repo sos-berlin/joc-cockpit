@@ -1,65 +1,65 @@
-# Servicio de Identidad - Permisos
+# Identity Service - Permissions
 
-Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
+Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
-Para la autorización, JS7 ofrece un Modelo de Control de Acceso Basado en Roles (RBAC) que incluye que:
+For authorization the JS7 offers a Role Based Access Model (RBAC) which includes that
 
-- los roles se configuran libremente a partir de los permisos disponibles,
-- a los usuarios se les asignan uno o más roles que se combinan para obtener los permisos resultantes.
+- roles are freely configured from available permissions,
+- users are assigned one or more roles that are merged for resulting permissions.
 
-Los permisos especifican uno de los siguientes estados:
+Permissions specify one of the following states:
 
-- el permiso no está asignado (color de fondo blanco),
-- el permiso está concedido (color de fondo azul),
-- el permiso está denegado (color de fondo gris).
+- the permission is unassigned (white background color),
+- the permissions is granted (blue background color),
+- the permission is denied (grey background color).
 
-Los permisos se combinan de todos los roles para obtener los permisos resultantes de una cuenta de usuario.
+Permission are merged from all roles for resulting permissions of a user account.
 
-## Alcance de Carpeta
+## Folder Scope
 
-El alcance de los permisos en un rol puede limitarse a una o más carpetas del inventario.
+The scope of permissions in a role can be limited to one or more inventory folders.
 
-- Los usuarios pueden usar el botón *Agregar Carpeta* en la esquina superior derecha de la vista para seleccionar una carpeta del inventario y especificar el uso recursivo.
-- Los usuarios pueden agregar cualquier número de carpetas del inventario a un rol.
+- Users can apply the *Add Folder* button in the upper-right corner of the view to select an inventory folder and to specify recursive use.
+- Users can add any number of inventory folders to a role.
 
-## Árbol de Permisos
+## Permission Tree
 
-Los permisos pueden considerarse un árbol que ofrece una jerarquía de ramas. Conceder o denegar permisos en un nivel superior hereda la asignación de permisos recursivamente a niveles más profundos del árbol.
+Permissions can be considered a tree that offers a hierarchy of branches. Granting or denying permissions at a higher level inherits permission assignment recursively to deeper levels of the tree.
 
-### Conceder y Denegar Permisos
+### Granting and Denying Permissions
 
-Los permisos se visualizan como un rectángulo similar a una batería:
+Permission are visualized from a rectangle similar to a battery:
 
-- Al hacer clic en el polo en el lado derecho de una batería se expandirán/contraerán los permisos descendientes.
-- Al hacer clic en el fondo de la batería se alternará el permiso entre el estado no asignado y el estado concedido:
-  - Un rectángulo con color de fondo blanco indica un permiso no asignado.
-  - Un rectángulo con color de fondo azul indica un permiso concedido que se propagará a los permisos descendientes. <br/><img src="identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
-  - Un rectángulo con color de fondo azul claro indica un permiso concedido heredado. Los cambios al permiso requieren no conceder el permiso del padre sino conceder los permisos hijos individualmente. <br/><img src="identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
-- Al hacer clic en el icono + dentro del rectángulo de un permiso se cambia el permiso al estado denegado, indicado con color de fondo gris. Al hacer clic en el icono - dentro de un permiso denegado, este pasa a ser un permiso no asignado con color de fondo blanco. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
+- Clicking the pole at the right side of a battery will expand/collapse descendent permissions.
+- Clicking the background of the battery will switch permission between the unassigned status and the granted status:
+  - A rectangle using white background color indicates an unassigned permission.
+  - A rectangle using blue background color indicates a granted permission that will be passed to descendent permissions. <br/><img src="identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
+  - A rectangle using light blue background color indicates an inherited, granted permission. Changes to the permission require not to grant the parent permission but to grant child permissions individually.  <br/><img src="identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
+- Clicking the + icon inside a permission's rectangle switches the permission to the denied status indicated from grey background color. Clicking the - icon inside a denied permission makes it an unassigned permission using white background color. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
 
-### Contraer y Expandir Permisos
+### Collapsing and Expanding Permissions
 
-Se ofrecen los siguientes botones para expandir/contraer permisos:
+The following buttons are offered to expand/collapse permissions:
 
-- **Expandir Todo**, **Contraer Todo** expandirán o contraerán todos los permisos.
-- **Expandir Activos** expandirá los permisos concedidos/denegados y mantendrá contraídos los permisos heredados.
-- **Contraer Inactivos** contraerá los permisos no asignados.
+- **Expand All**, **Collapse All** will expand or collapse all permissions.
+- **Expand Active** will expand granted/denied permission and will keep inherited permissions collapsed.
+- **Collapse Inactive** will collapse unassigned permissions.
 
-## Vista Gráfica y Tabular
+## Graphical and Tabular View
 
-En la esquina superior derecha se ofrecen los siguientes botones para la visualización de permisos:
+In the upper-right corner the following buttons are offered for display of permissions:
 
-- **Vista Gráfica** muestra los permisos en un árbol con forma de batería.
-- **Vista Tabular** muestra los permisos en una representación textual con los niveles de permisos separados por dos puntos.
+- **Graphical View** displays permissions from a tree using battery shape.
+- **Tabular View** displays permissions from a textual representation with permission levels being separated by colon.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Servicio de Identidad - Roles](/identity-service-roles)
-- [Servicios de Identidad](/identity-services)
+- [Identity Service - Roles](/identity-service-roles)
+- [Identity Services](/identity-services)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)

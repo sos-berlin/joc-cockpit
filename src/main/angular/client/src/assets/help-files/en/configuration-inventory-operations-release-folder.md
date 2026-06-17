@@ -1,53 +1,53 @@
-# Configuración - Inventario - Operaciones - Liberar Carpeta
+# Configuration - Inventory - Operations - Release Folder
 
-Liberar objetos los activa, por ejemplo, para su uso con el [Plan Diario](/daily-plan). Esto aplica a objetos como Planificaciones y Calendarios disponibles en la carpeta del sistema *Automatización*.
+Releasing objects activates them, for example, for use with the [Daily Plan](/daily-plan). This applies to objects such as Schedules and Calendars available from the *Automation* system folder.
 
-La vista *Configuración->Inventario* permite liberar un objeto individual, ver [Configuración - Inventario - Operaciones - Liberar Objeto](/configuration-inventory-operations-release-object), y liberar objetos desde carpetas.
+The *Configuration->Inventory* view offers releasing a single object, see [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object) and releasing objects from folders.
 
-Al liberar objetos desde carpetas utilizando la operación *Liberar* disponible en el menú de acción de tres puntos de la carpeta, se mostrará una ventana emergente como la siguiente:
+When releasing objects from folders using the related *Release* operation from the folder's 3-dots action menu, a pop-up window will be displayed like this:
 
 <img src="release-folder.png" alt="Release Folder" width="592" height="560" />
 
-## Actualización del Plan Diario
+## Updating the Daily Plan
 
-Liberar objetos como Planificaciones y Calendarios impacta el [Plan Diario](/daily-plan). Con frecuencia, la versión actualizada de un objeto debería utilizarse para las Órdenes del Plan Diario. Los usuarios controlan el comportamiento desde las siguientes opciones:
+Releasing objects such as Schedules and Calendars impacts the [Daily Plan](/daily-plan). Frequently, the updated version of an object should be used for Orders in the Daily Plan. Users control the behavior from the following options:
 
-- **Actualizar Plan Diario**
-  - **Ahora** especifica actualizar el Plan Diario para las Órdenes planificadas a partir del momento actual.
-  - **Fecha de Inicio** cuando se selecciona, agrega un campo de entrada para la fecha de destino a partir de la cual se actualizará el Plan Diario.
-  - **No** especifica que el Plan Diario no será actualizado. Las Órdenes existentes seguirán usando versiones previamente desplegadas de los objetos.
-- **Incluir Órdenes tardías de hoy** cuando se marca, incluirá las Órdenes planificadas para un momento pasado del día actual pero que están retrasadas y no comenzaron.
+- **Update Daily Plan**
+  - **Now** specifies updating the Daily Plan for Orders scheduled for a point in time starting from now.
+  - **Start Date** when selected will add an input field for the target date starting from which the Daily Plan will be updated.
+  - **No** specifies that the Daily Plan will not be updated. Existing Orders will stick to using previously deployed versions of objects.
+- **Include today's late Orders** when checked this will include Orders that have been scheduled for a past time in the current day but that are delayed and did not start.
 
-## Inclusión de Subcarpetas
+## Including Sub-folders
 
-La opción **Incluir Subcarpetas** permite liberar objetos de subcarpetas de forma recursiva.
+The **Handle recursively** option allows releasing objects from sub-folders recursively.
 
-## Inclusión de Dependencias
+## Including Dependencies
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Inventory objects are related by dependencies, see [Dependency Matrix](/dependencies-matrix). For example, a Workflow referencing a Job Resource and a Resource Lock; a Schedule referencing a Calendar and one or more Workflows.
 
-Al liberar objetos se considera la consistencia, por ejemplo:
+When releasing objects, consistency is considered, for example:
 
-- Si se crea una Planificación y referencia un Calendario recién creado, entonces liberar la Planificación incluye liberar el Calendario también. Esto además incluye el despliegue de un Workflow en borrador referenciado por la Planificación.
-- Si un Calendario es referenciado por una Planificación liberada y debe ser recuperado o eliminado, entonces la Planificación también debe ser recuperada o eliminada. Esto incluye revocar o eliminar el Workflow referenciado por la Planificación.
+- If a Schedule is created and references a newly created Calendar, then releasing the Schedule includes releasing the Calendar too. This further includes deployment of a draft Workflow referenced by the Schedule.
+- If a Calendar is referenced by a released Schedule and should be recalled or removed, then the Schedule must be recalled or removed too. This includes to revoke or remove the Workflow referenced by the Schedule.
 
-Los usuarios controlan el despliegue consistente desde las siguientes opciones:
+Users control consistent deployment from the following options:
 
-- **Incluir Dependencias**
-  - cuando está marcado, incluirá tanto objetos que referencian como objetos referenciados.
-    - Si los objetos relacionados están en estado de borrador, se ofrecerá el despliegue conjunto. Se aplicará de forma obligatoria si es requerido por cambios en las relaciones entre objetos.
-    - Si los objetos relacionados están en estado desplegado/liberado, el despliegue conjunto es opcional. Los usuarios pueden seleccionar objetos relacionados para el despliegue conjunto.
-  - cuando no está marcado, no se considerarán las dependencias. Los usuarios deben verificar que los objetos relacionados sean válidos y estén desplegados/liberados. El Controlador generará mensajes de error en caso de objetos faltantes debido a un despliegue inconsistente.
+- **Include Dependencies**
+  - when checked, this will include both referencing and referenced objects.
+    - If related objects are in draft status, then common deployment is offered. It will be enforced, if required by changes to object relationships.
+    - If related objects are in deployed/released status, then common deployment is optional. Users can select related objects for common deployment.
+  - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Operaciones - Liberar Objeto](/configuration-inventory-operations-release-object)
-- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Daily Plan](/daily-plan)
+- [Dependency Matrix](/dependencies-matrix)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)

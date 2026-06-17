@@ -1,33 +1,33 @@
-# Historial de Ejecución de Reportes
+# Report Run History
 
-Los [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) ofrecen información sobre la ejecución pasada de Workflows y Jobs:
+The [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offer insight from past execution of Workflows and Jobs:
 
-- Los Reportes se crean a partir de [Plantillas de Reportes](/report-templates) predefinidas que se parametrizan desde [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- Los usuarios ejecutan Reportes desde la vista [Creación de Reportes](/report-creation) o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista *Historial de Ejecución de Reportes* proporciona evidencia sobre ejecuciones pasadas de Reportes.
-- Los Reportes se visualizan en la vista [Reportes](/reports).
+- Reports are created from predefined [Report Templates](/report-templates) that are parameterized from [Configuration - Inventory - Reports](/configuration-inventory-reports).
+- Users run Reports from the [Report Creation](/report-creation) view or by [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). The  *Report Run History* view  provides evidence about past Report runs.
+- Reports are visualized in the [Reports](/reports) view.
 
-## Visualización del Historial de Ejecución de Reportes
+## Display of Report Run History
 
-El historial de ejecuciones de Reportes se muestra con las siguientes propiedades:
+The history of Report Runs is displayed from the following properties:
 
-- **Nombre** indica el nombre único de una Configuración de Reporte tal como se especificó desde la vista [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- **ID de Controlador** indica el Controlador para el cual se crea el Reporte.
-- **Plantilla de Reporte** indica la [Plantilla de Reporte](/report-templates) en uso.
-- **Estado** indica uno de los siguientes: *ejecutando*, *exitoso*, *fallido*.
-- **Frecuencias** indica las *Frecuencias del Reporte* que dividen el *Período del Reporte* en unidades iguales.
-- **N.° de Reportes** indica el número de Reportes que se han creado para la Configuración de Reporte.
-- **Mensaje de Error** indica el error ocurrido si el *Estado* de la Ejecución del Reporte es *fallido*.
-- **Mes Desde**, **Mes Hasta** indica el inicio y el fin del *Período del Reporte*.
+- **Name** indicates the unique name of a Report Configuration as specified from the [Configuration - Inventory - Reports](/configuration-inventory-reports) view.
+- **Controller ID** indicates the Controller for which the Report is created.
+- **Report Template** indicates the [Report Template](/report-templates) in use.
+- **Status** indicates one of *running*, *successful*, *failed*.
+- **Frequencies** indicates the *Report Frequencies* that divide the *Report Period* into equal units.
+- **No. of Reports** indicates the number of Reports that have been created for the Report Configuration.
+- **Error Message** indicates the error that occurred should the *Status* of the Report Run be *failed*.
+- **Month From**, **Month To** indicate beginning and end of the *Report Period*.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Reportes](/configuration-inventory-reports)
-- [Reportes](/reports)
-- [Reporte - Creación](/report-creation)
+- [Configuration - Inventory - Reports](/configuration-inventory-reports)
+- [Reports](/reports)
+- [Report - Creation](/report-creation)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)

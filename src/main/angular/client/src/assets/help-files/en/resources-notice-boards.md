@@ -1,83 +1,83 @@
-# Recursos - Tableros de Avisos
+# Resources - Notice Boards
 
-La vista *Tableros de Avisos* muestra información en tiempo real sobre el uso de Tableros de Avisos.
+The *Notice Boards* view displays live information about use of Notice Boards.
 
-Los Tableros de Avisos implementan dependencias entre Workflows mediante el uso de Avisos. Un Aviso es un indicador que está adjunto a un Tablero de Avisos o no existe. Los Tableros de Avisos están disponibles en las siguientes modalidades:
+Notice Boards implement dependencies across Workflows by use of Notices. A Notice is a flag that is attached a Notice Board or does not exist. Notice Boards are available from the following flavors:
 
-- **Tableros de Avisos Globales** implementan Avisos en alcance global, lo que hace que el mismo Aviso esté disponible para cualquier Workflow en cualquier momento.
-- **Tableros de Avisos Planificables** implementan Avisos en el alcance del [Plan Diario](/daily-plan). El Aviso existe o no existe por fecha del *Plan Diario*, por ejemplo:
-  - El Workflow 1 se ejecuta de lunes a viernes.
-  - El Workflow 2 se ejecuta de lunes a domingo y depende de la ejecución previa del Workflow 1.
-  - Durante los fines de semana el Workflow 1 no iniciará. Para permitir que el Workflow 2 inicie los fines de semana, la dependencia se mapea al Plan Diario mediante el uso de *Tableros de Avisos Planificables*: si no se anuncia ninguna Orden para el Workflow 1, la dependencia puede ignorarse.
+- **Global Notice Boards** implement Notices* at global scope which makes the same Notice available for any Workflow at any time. 
+- **Schedulable Notice Boards** implement Notices in scope of the [Daily Plan](/daily-plan). The Notice exists or does not exist per *Daily Plan* date, for example
+  - Workflow 1 runs Mon-Fri.
+  - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
+  - During weekends Workflow 1 will not start. To allow Workflow 2 starting on weekends, the dependency is mapped to the Daily Plan by use of *Schedulable Notice Boards*: if no Order is announced for Workflow 1, then the dependency can be ignored.
 
-Los *Tableros de Avisos* son referenciados en Workflows desde las siguientes instrucciones:
+*Notice Boards* are referenced in Workflows from the following instructions:
 
-- La **Instrucción PostNotices** publica uno o más *Avisos*.
-- La **Instrucción ExpectNotices** espera a que uno o más *Avisos* estén presentes.
-- La **Instrucción ConsumeNotices** es una instrucción de bloque que:
-  - puede abarcar varios Jobs e Instrucciones de Workflow en el mismo Workflow,
-  - espera a que uno o más *Avisos* estén presentes y elimina los *Avisos* al completar el bloque.
+- **PostNotices Instruction** posts one or more *Notices*.
+- **ExpectNotices Instruction** waits for one or more *Notices* being present.
+- **ConsumeNotices Instruction** is a block instruction that
+  - can span a number of Jobs and Workflow Instructions in the same Workflow,
+  - waits for one or more *Notices* being present and deletes *Notices* on completion of the block.
 
-## Panel de Navegación
+## Navigation Panel
 
-El panel izquierdo muestra el árbol de carpetas del inventario que contienen Tableros de Avisos.
+The left panel displays the tree of inventory folders that hold Notice Boards.
 
-- Hacer clic en la carpeta muestra los Tableros de Avisos de esa carpeta.
-- Hacer clic en el ícono chevron-down disponible al pasar el cursor sobre una carpeta muestra los Tableros de Avisos de la carpeta y de cualquier subcarpeta.
+- Clicking the folder displays Notice Boards from that folder.
+- Clicking the chevron-down icon available when hovering on a folder displays Notice Boards from the folder and any sub-folders.
 
-El ícono de Búsqueda Rápida ofrece la posibilidad de buscar Tableros de Avisos basándose en la entrada del usuario:
+The Quick Search icon offers looking up Notice Boards based on user input:
 
-- Escribir **Test** mostrará Tableros de Avisos con nombres como *test-board-1* y *TEST-board-2*.
-- Escribir **\*Test** mostrará Tableros de Avisos con nombres como *test-board-1* y *my-TEST-board-2*.
+- Typing **Test** will display Notice Boards with names such as *test-board-1* and *TEST-board-2*. 
+- Typing **\*Test** will display Notice Boards with names such as *test-board-1* and *my-TEST-board-2*
 
-## Panel de Tableros de Avisos
+## Notice Board Panel
 
-La visualización se centra en los *Tableros de Avisos*, los *Avisos* relacionados y las Órdenes.
+Display is focused on *Notice Boards*, related *Notices* and Orders.
 
-La vista [Plan Diario - Dependencias](/daily-plan-dependencies) se centra en la visualización de *Tableros de Avisos*, *Avisos* y Órdenes relacionados con una fecha específica del Plan Diario.
+The [Daily Plan - Dependencies](/daily-plan-dependencies) view is focused on display of *Notice Boards*, *Notices* and Orders related to a specific Daily Plan date.
 
-### Visualización de Tableros de Avisos
+### Display of Notice Boards
 
-Se muestra la siguiente información:
+The following information is displayed:
 
-- **Nombre** es el nombre único de un Tablero de Avisos.
-- **Fecha de Despliegue** es la fecha en que se desplegó el Tablero de Avisos.
-- **Estado** es uno de *Sincronizado* y *No Sincronizado* si el Tablero de Avisos no ha sido desplegado al Controlador.
-- **Número de Avisos** indica el número de *Avisos* del Tablero de Avisos.
-  - Los **Tableros de Avisos Globales** contienen *Avisos* únicos.
-  - Los **Tableros de Avisos Planificables** contienen *Avisos* por fecha del Plan Diario.
-- **Número de Órdenes en Espera** indica el número de Órdenes que esperan que se publique un *Aviso*.
+- **Name** is the unique name of a Notice Board.
+- **Deployment Date** is the date on which the Notice Board was deployed.
+- **Status** is one of *Synchronized* and *Not Synchronized* if the Notice Board has not been deployed to the Controller.
+- **Number of Notices** indicates the number of *Notices* for the Notice Board.
+  - **Global Notice Boards** hold unique *Notices*.
+  - **Schedulable Notice Boards** hold *Notices* per Daily Plan date.
+- **Number of Expecting Orders** indicates the number of Orders that expect a *Notice* being posted.
 
-### Visualización de Avisos y Órdenes
+### Display of Notices and Orders
 
-Hacer clic en el ícono de flecha hacia abajo expandirá el Tablero de Avisos y mostrará información detallada sobre los *Avisos* que han sido publicados y las Órdenes que están esperando que se publiquen *Avisos*.
+Clicking the arrow-down icon will expand the Notice Board and will display detailed information about *Notices* that have been posted and Orders that are waiting for *Notices* being posted.
 
-### Operaciones sobre Tableros de Avisos
+### Operations on Notice Boards
 
-Las siguientes operaciones están disponibles:
+The following operations are available:
 
-- **Publicar Aviso** publicará el *Aviso* relacionado de manera similar a una *Instrucción PostNotices*.
-- **Eliminar Aviso** eliminará el *Aviso* de manera similar a una *Instrucción ConsumeNotices*.
+- **Post Notice** will post the related *Notice* similar to a *PostNotices Instruction*.
+- **Delete Notice** will delete the *Notice* similar to a *ConsumeNotides Instruction*.
 
-## Búsqueda
+## Search
 
-La [Búsqueda de Tableros de Avisos](/resources-notice-boards-search) ofrece criterios para buscar Tableros de Avisos por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Tableros de Avisos utilizados por el Workflow.
+The [Resources - Notice Boards - Search](/resources-notice-boards-search) offers criteria for looking up Notice Boards from dependencies, for example by searching for Workflows including a specific Job name, the Notice Boards used by the Workflow will be returned.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Configuración - Inventario - Tableros de Avisos](/configuration-inventory-notice-boards)
-- [Plan Diario](/daily-plan)
-- [Plan Diario - Dependencias](/daily-plan-dependencies)
-- [Búsqueda de Tableros de Avisos](/resources-notice-boards-search)
+- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
+- [Daily Plan](/daily-plan)
+- [Daily Plan - Dependencies](/daily-plan-dependencies)
+- [Resources - Notice Boards - Search](/resources-notice-boards-search)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
   - [JS7 - Global Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Global+Notice+Boards)
   - [JS7 - Schedulable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedulable+Notice+Boards)
-- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)
+- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)  
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
   - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)

@@ -1,59 +1,59 @@
-# Configuración - Git
+# Settings - Git
 
-El JOC Cockpit ofrece [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) para el versionado y despliegue de objetos de planificación mediante repositorios Git.
+The JOC Cockpit offers [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) for versioning and rollout of scheduling objects by use of Git repositories.
 
-La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
-Las siguientes configuraciones se aplican para el uso con repositorios Git. Los cambios tienen efecto inmediato.
+The following settings are applied for use with Git repositories. Changes become effective immediately.
 
-## Configuración del Repositorio Git
+## Git Repository Settings
 
-### Configuración: *git\_hold\_workflows*, Predeterminado: *rollout*
+### Setting: *git\_hold\_workflows*, Default: *rollout*
 
-Especifica si los Workflows se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether Workflows are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_resource\_locks*, Predeterminado: *rollout*
+### Setting: *git\_hold\_resource\_locks*, Default: *rollout*
 
-Especifica si los [Recursos de Lock](/resources-resource-locks) se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether [Resource Locks](/resources-resource-locks) are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_file\_order\_sources*, Predeterminado: *rollout*
+### Setting: *git\_hold\_file\_order\_sources*, Default: *rollout*
 
-Especifica si las Órdenes Disparadas por Archivo se consideran locales a un entorno o están destinadas al despliegue con Git.
+Specifies whether File Order Sources are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_notice\_boards*, Predeterminado: *rollout*
+### Setting: *git\_hold\_notice\_boards*, Default: *rollout*
 
-Especifica si los [Tableros de Avisos](/resources-notice-boards) se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether [Notice Boards](/resources-notice-boards) are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_script\_includes*, Predeterminado: *rollout*
+### Setting: *git\_hold\_script\_includes*, Default: *rollout*
 
-Especifica si los Scripts Incluidos se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether Script Includes are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_job\_templates*, Predeterminado: *rollout*
+### Setting: *git\_hold\_job\_templates*, Default: *rollout*
 
-Especifica si las Plantillas de Jobs se consideran locales a un entorno o están destinadas al despliegue con Git.
+Specifies whether Job Templates are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_job\_resources*, Predeterminado: *local*
+### Setting: *git\_hold\_job\_resources*, Default: *local*
 
-Especifica si los Recursos de Jobs se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether Job Resources are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_calendars*, Predeterminado: *local*
+### Setting: *git\_hold\_calendars*, Default: *local*
 
-Especifica si los Calendarios se consideran locales a un entorno o están destinados al despliegue con Git.
+Specifies whether Calendars are considered local to an environment or intended for rollout with Git.
 
-### Configuración: *git\_hold\_schedules*, Predeterminado: *local*
+### Setting: *git\_hold\_schedules*, Default: *local*
 
-Especifica si las Planificaciones se consideran locales a un entorno o están destinadas al despliegue con Git.
+Specifies whether Schedules are considered local to an environment or intended for rollout with Git.
 
-## Referencias
+## References
 
-### Ayuda Contextual
+### Context Help
 
-- [Perfil - Gestión de Git](/profile-git-management)
-- [Recursos - Tableros de Avisos](/resources-notice-boards)
-- [Recursos - Recursos de Lock](/resources-resource-locks)
-- [Configuración](/settings)
+- [Profile - Git Management](/profile-git-management)
+- [Resources - Notice Boards](/resources-notice-boards)
+- [Resources - Resource Locks](/resources-resource-locks)
+- [Settings](/settings)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

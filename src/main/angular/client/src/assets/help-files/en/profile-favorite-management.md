@@ -1,77 +1,77 @@
-# Perfil - Gestión de Favoritos
+# Profile - Favorite Management
 
-La pestaña *Perfil - Gestión de Favoritos* permite especificar entradas de favoritos desde pestañas separadas
+The *Profile - Favorite Management* tab allows specifying favorite entries from separate tabs
 
-- para la selección de *Agentes* asignados a Jobs.
-- para *Facetas* que rigen la entrada del usuario en Variables de Orden.
+- for selection of *Agents* assigned to Jobs.
+- for *Facets* that rule user input to Order Variables.
 
-Para más detalles, consulte [JS7 - Inventory Favorites](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Favorites) y [JS7 - Profiles - Favorite Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Favorite+Management).
+For details see [JS7 - Inventory Favorites](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Favorites) and [JS7 - Profiles - Favorite Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Favorite+Management).
 
-## Agentes Favoritos
+## Favorite Agents
 
-Los usuarios pueden encontrar una gran cantidad de Agentes en su entorno de planificación desde [Agentes Autónomos](/initial-operation-register-agent-standalone) y desde [Clústeres de Subagentes](/initial-operation-register-agent-subagent-cluster). En lugar de desplazarse por listas extensas, los usuarios pueden especificar sus *Agentes Favoritos* que aparecerán al principio de la lista de Agentes asignables.
+Users might find a larger number of Agents in their scheduling environment from [Standalone Agents](/initial-operation-register-agent-standalone) and from [Subagent Clusters](/initial-operation-register-agent-subagent-cluster). Instead of scrolling through lengthy lists, users can specify their *Favorite Agents* that will make it on top of the list of assignable Agents.
 
-### Agregar Agentes Favoritos
+### Adding Favorite Agents
 
-Los *Agentes Favoritos* pueden agregarse directamente al asignar Agentes en la pestaña [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties). Hacer clic en el enlace \* de un Agente agregará el Agente relacionado a la lista de favoritos.
+*Favorite Agents* can be added directly when assigning Agents in the [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) tab. Clicking the \* link for an Agent will add the related Agent to the list of favorites.
 
-Los usuarios pueden agregar *Agentes Favoritos* desde su *Perfil* usando el botón *Agregar Favorito*. Esto permite seleccionar el Agente que se debe agregar.
+Users can add *Favorite Agents* from their *Profile* using the *Add Favorite* button. This allows selecting the Agent that should be added.
 
-### Lista de Agentes Favoritos
+### List of Favorite Agents
 
-La lista de *Agentes Favoritos* puede limitarse con el botón *Compartidos conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
+The list of *Favorite Agents* can be limited from the *Shared with me* button. This restricts the list to favorites shared by other users.
 
-Los usuarios pueden limitar aún más la lista especificando una cadena en el campo de entrada *Buscar* que se buscará en el nombre del Agente. La búsqueda implica truncamiento izquierdo y derecho.
+Users can further limit the list by specifying a string for the *Search* input field that will be looked up in the Agent's name. Search implies left and right truncation.
 
-Los usuarios pueden ordenar la lista moviendo un *Agente Favorito* a una posición anterior o posterior.
+Users can order the list by moving a *Favorite Agent* to an earlier or later position.
 
-### Operaciones sobre Agentes Favoritos
+### Operations on Favorite Agents
 
-Las siguientes operaciones están disponibles desde el menú de acción de 3 puntos de un *Agente Favorito*:
+The following operations are available from a *Favorite Agent's* 3-dots action menu:
 
-- **Editar** permite cambiar el Agente.
-- **Compartir** ofrece compartir el favorito con otros usuarios. Los favoritos compartidos se indican con un icono relacionado.
-- **Eliminar** elimina el Agente relacionado de la lista de favoritos.
+- **Edit** allows to switch the Agent.
+- **Share** offers to share the favorite with other users. Shared favorites are indicated by a related icon.
+- **Delete** removes the related Agent from the list of favorites.
 
-## Facetas Favoritas
+## Favorite Facets
 
-Los usuarios pueden tener una gran cantidad de *Facetas* en su inventario que se aplican a [Configuración - Inventario - Workflows](/configuration-inventory-workflows). Si un Workflow especifica Variables de Workflow del tipo de datos cadena, se puede aplicar una *Faceta* para restringir la entrada del usuario. Las *Facetas* son expresiones regulares que se aplican para verificar la entrada del usuario coincidente.
+Users might hold a larger number of *Facets* in their inventory that are applied to [Configuration - Inventory - Workflows](/configuration-inventory-workflows). If a Workflow specifies Workflow Variables of the string data type, then a *Facet* can be applied to restrict user input. *Facets* are regular expressions that are applied to check matching user input.
 
-Al asignar *Facetas* a Variables de Workflow, en lugar de desplazarse por listas extensas, los usuarios pueden especificar sus *Facetas Favoritas* que aparecerán al principio de la lista.
+When assigning *Facets* to Workflow Variables, instead of scrolling through lengthy lists, users can specify their *Favorite Facets* that will make it on top of the list.
 
-### Agregar Facetas Favoritas
+### Adding Favorite Facets
 
-Las *Facetas Favoritas* pueden agregarse directamente al especificar Variables de Workflow en la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows). Hacer clic en el enlace \* de una *Faceta* agregará la *Faceta* relacionada a la lista de favoritos.
+*Favorite Facets* can be added directly when specifying Workflow Variables in the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view. Clicking the \* link for a *Facet* will add the related *Facet* to the list of favorites.
 
-Los usuarios pueden agregar *Facetas Favoritas* desde su *Perfil* usando el botón *Agregar Favorito*. Esto permite especificar el nombre de la *Faceta* y la expresión regular relacionada que se debe agregar.
+Users can add *Favorite Facets* from their *Profile* using the *Add Favorite* button. This allows specifying the *Facet* name and related regular expression that should be added.
 
-### Lista de Facetas Favoritas
+### List of Favorite Facets
 
-La lista de *Facetas Favoritas* puede limitarse con el botón *Compartidas conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
+The list of *Favorite Facets* can be limited from the *Shared with me* button. This restricts the list to favorites shared by other users.
 
-Los usuarios pueden limitar aún más la lista especificando una cadena en el campo de entrada *Buscar* que se buscará en el nombre de la *Faceta*. La búsqueda implica truncamiento izquierdo y derecho.
+Users can further limit the list by specifying a string for the *Search* input field that will be looked up in the *Facet's* name. Search implies left and right truncation.
 
-Los usuarios pueden ordenar la lista moviendo una *Faceta Favorita* a una posición anterior o posterior.
+Users can order the list by moving a *Favorite Facet* to an earlier or later position.
 
-### Operaciones sobre Facetas Favoritas
+### Operations on Favorite Facets
 
-Las siguientes operaciones están disponibles desde el menú de acción de 3 puntos de una *Faceta Favorita*:
+The following operations are available from a *Favorite Facet's* 3-dots action menu:
 
-- **Editar** permite modificar el nombre y la expresión regular de una Faceta.
-- **Compartir** ofrece compartir el favorito con otros usuarios. Los favoritos compartidos se indican con un icono relacionado.
-- **Eliminar** elimina la *Faceta* relacionada de la lista de favoritos.
+- **Edit** allows to modify the name and regular expression of a Facet.
+- **Share** offers to share the favorite with other users. Shared favorites are indicated by a related icon.
+- **Delete** removes the related *Facet* from the list of favorites.
 
-## Referencias
+## References
 
-### Ayuda de Contexto
+### Context Help
 
-- [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties)
-- [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone)
-- [Operación Inicial - Registrar Clústeres de Subagentes](/initial-operation-register-agent-subagent-cluster)
-- [Perfil](/profile)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
+- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
+- [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-cluster)
+- [Profile](/profile)
 
-### Base de Conocimiento del Producto
+### Product Knowledge Base
 
 - [JS7 - Inventory Favorites](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Favorites)
 - [JS7 - Profiles - Favorite Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Favorite+Management)
