@@ -151,7 +151,7 @@
               }
               @if (operation === 'recall') {
                 <div class="form-group row">
-                  <div class="col-md-3" translate>inventory.label.keepOrders</div>
+                  <div class="col-md-3" translate [appRichTooltip]="('inventory.tooltips.recall.keepOrdersInDailyPlan') | translate" >inventory.label.keepOrders</div>
                   <div class="col-md-9">
                     <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
                   </div>

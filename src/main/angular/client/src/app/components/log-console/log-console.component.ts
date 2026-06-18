@@ -1766,8 +1766,6 @@ export class LogConsoleModalComponent implements OnInit {
         if (s.dateMode !== undefined)   this.form.dateMode   = s.dateMode;
         if (s.dateFrom !== undefined)   this.form.dateFrom   = s.dateFrom;
         if (s.dateTo !== undefined)     this.form.dateTo     = s.dateTo;
-        if (s.numOfLines !== undefined) this.form.numOfLines = s.numOfLines;
-        if (s.limit      !== undefined) this.form.limit      = s.limit;
         if (s.timeZone)                 this.form.timeZone   = s.timeZone;
         if (s.dateFromDate) this.form.dateFromDate = new Date(s.dateFromDate);
         if (s.dateFromTime) this.form.dateFromTime = new Date(s.dateFromTime);

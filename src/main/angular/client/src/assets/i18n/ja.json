@@ -2772,7 +2772,8 @@
         "includeTodaysLateOrders": "Include Today's Late Orders",
         "includeDependencies": "Include Dependencies",
         "manageDependencies": "Manage Dependencies",
-        "showRelatedObjects": "Show Related Objects"
+        "showRelatedObjects": "Show Related Objects",
+        "keepOrdersInDailyPlan":"Keep Orders in Daily Plan"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {

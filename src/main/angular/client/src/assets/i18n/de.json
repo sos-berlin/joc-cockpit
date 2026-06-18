@@ -2772,7 +2772,8 @@
         "includeTodaysLateOrders": "Löscht ^Aufträge|order^ im heutigen ^Tagesplan|daily-plan^, die verspätet sind, da sie nicht zum geplanten Zeitpunkt gestartet werden konnten.",
         "includeDependencies": "Nimmt abhängige Objekte zurück, bspw. eine ^Job-Ressource|job-resource^, auf die ein ^Arbeitsablauf|workflow^ verweist, oder einen ^Zeitplan|schedule^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden und werden in die Operation einbezogen.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Notwendige**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Matrix der Abhängigkeiten](context:help:dependencies-matrix).",
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Notwendige** können die Objekte abgewählt werden.",
-        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsabläufe|workflow^, die dieselbe ^Job-Ressource|job-resource^ verwenden.\n\nIm Fall eines großen ^Inventars|inventory^ kann die Anzeige einige Zeit in Anspruch nehmen."
+        "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsabläufe|workflow^, die dieselbe ^Job-Ressource|job-resource^ verwenden.\n\nIm Fall eines großen ^Inventars|inventory^ kann die Anzeige einige Zeit in Anspruch nehmen.",
+        "keepOrdersInDailyPlan":"Keep Orders in Daily Plan"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
