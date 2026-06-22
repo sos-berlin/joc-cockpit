@@ -2773,7 +2773,7 @@
         "includeDependencies": "Retire les objets dépendants, par exemple, une ^Planification|schedule^ faisant référence à un ^Calendrier|calendar^.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et sont retirés.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Obligatoires**, il est possible de désélectionner des objets.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche|job-resource^.\n\nSi l'^Inventaire|inventory^ est volumineux, l'affichage peut prendre un certain temps.",
-        "keepOrdersInDailyPlan":"Keep Orders in Daily Plan"
+        "keepOrdersInDailyPlan":"Si la date de début des ^Ordres|order^ est déplacée vers une date antérieure ou postérieure à celle du ^Plan Quotidien|daily-plan^, cette option précise que leur lien avec la date initiale du Plan Quotidien reste inchangé.\n\nLes ^Annonces|notice^ générées par les Ordres seront traitées en fonction de la date du Plan Quotidien."
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
