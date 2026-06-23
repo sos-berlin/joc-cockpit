@@ -8,7 +8,7 @@ Los usuarios que estén conformes con los valores predeterminados y deseen envia
 
 - **Nombre de la Orden**: Un nombre opcional que puede usarse para filtrar Órdenes en varias vistas.
 - **Nombre de Etiqueta**: Se puede especificar cualquier número de Etiquetas que se agregarán a la Orden. Las Etiquetas se muestran en varias vistas si se especifican desde la página [Configuración - JOC Cockpit](/settings-joc).
-- **Ignorar Tiempos de Admisión de Jobs**: Los Jobs pueden limitarse para ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Las Órdenes que llegan fuera de un intervalo de tiempo deben esperar al próximo intervalo disponible. La opción fuerza a los Jobs a iniciarse independientemente de tales limitaciones.
+- **Ignorar Ventanas de Admisión de Jobs**: Los Jobs pueden limitarse para ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Las Órdenes que llegan fuera de un intervalo de tiempo deben esperar al próximo intervalo disponible. La opción fuerza a los Jobs a iniciarse independientemente de tales limitaciones.
 
 ### Hora de Inicio
 

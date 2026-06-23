@@ -46,7 +46,7 @@ Se muestra la siguiente información:
 - **Número de Avisos** indica el número de *Avisos* del Tablero de Avisos.
   - Los **Tableros de Avisos Globales** contienen *Avisos* únicos.
   - Los **Tableros de Avisos Planificables** contienen *Avisos* por fecha del Plan Diario.
-- **Número de Órdenes en Espera** indica el número de Órdenes que esperan que se publique un *Aviso*.
+- **Número de Órdenes Receptoras** indica el número de Órdenes que esperan que se publique un *Aviso*.
 
 ### Visualización de Avisos y Órdenes
 

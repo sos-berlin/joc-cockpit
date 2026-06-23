@@ -37,7 +37,7 @@ Las Plantillas de Job ofrecen las siguientes operaciones para actualizar Jobs:
   - Los usuarios pueden seleccionar los Workflows y Jobs que deben actualizarse.
   - **Filtro** permite limitar las actualizaciones a Workflows en estado *Borrador* y/o en estado *Desplegado*.
   - **Actualizar Notificación** especifica que la configuración de Notificaciones del Job debe actualizarse desde la Plantilla de Job.
-  - **Actualizar Tiempos de Admisión** especifica que los Tiempos de Admisión del Job deben actualizarse desde la Plantilla de Job.
+  - **Actualizar Ventanas de Admisión** especifica que las Ventanas de Admisión del Job deben actualizarse desde la Plantilla de Job.
   - **Actualizar desde argumentos requeridos** especifica que los argumentos de la Plantilla de Job calificados como requeridos deben actualizarse en los Jobs seleccionados.
   - **Actualizar desde argumentos opcionales** especifica que los argumentos de la Plantilla de Job calificados como opcionales deben actualizarse en los Jobs seleccionados.
 - **Actualizar Jobs desde Plantillas** está disponible desde el *Panel de Navegación* y actualizará los Jobs de los Workflows ubicados en la *Carpeta de Inventario* seleccionada a partir de las Plantillas de Job ubicadas en cualquier carpeta.
@@ -71,7 +71,7 @@ Los Jobs que referencian Plantillas de Job no permiten modificar la mayor parte 
 - **Nombre del Job**
 - **Etiqueta**
 - **Agente**
-- **Tiempos de Admisión del Job**
+- **Ventanas de Admisión del Job**
 - **Notificación del Job**
 
 Para asignar valores dinámicamente a los **Argumentos para Jobs JVM** o a las **Variables de Entorno para Jobs de Shell**, los usuarios pueden proceder de la siguiente manera:

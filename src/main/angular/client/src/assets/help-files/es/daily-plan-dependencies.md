@@ -23,7 +23,7 @@ Las operaciones sobre fechas de plan incluyen:
 Se muestran los siguientes objetos:
 
 - **Posting Workflow**: En el lado izquierdo se muestra el Workflow que publica Avisos.
-- **Notice**: En la sección central se muestra el nombre del Tablero de Avisos que crea el Aviso.
+- **Aviso**: En la sección central se muestra el nombre del Tablero de Avisos que crea el Aviso.
 - **Receiving Workflow**: En el lado derecho se muestra el Workflow que espera o consume el Aviso.
 
 Se indican las siguientes relaciones:
@@ -43,8 +43,8 @@ El estado de cumplimiento de las dependencias se indica mediante líneas:
 
 Los filtros permiten limitar la visualización de Workflows y dependencias:
 
-- **Notices Announced**: Muestra los Workflows para los que se han anunciado Avisos, es decir, las Órdenes están planificadas pero aún no se han iniciado y aún no han publicado el Aviso. Cuando se publica un Aviso, su anuncio se elimina.
-- **Notices Present**: Muestra los Workflows para los que se han publicado Avisos y pueden ser procesados. Si un Aviso es consumido por un Workflow, se eliminará y ya no estará presente.
+- **Avisos Anunciados**: Muestra los Workflows para los que se han anunciado Avisos, es decir, las Órdenes están planificadas pero aún no se han iniciado y aún no han publicado el Aviso. Cuando se publica un Aviso, su anuncio se elimina.
+- **Avisos Publicados**: Muestra los Workflows para los que se han publicado Avisos y pueden ser procesados. Si un Aviso es consumido por un Workflow, se eliminará y ya no estará presente.
 
 Si ambos botones de filtro están activos, esto incluye los Avisos anunciados y publicados, pero excluye las dependencias que han sido resueltas y cuyos Avisos han sido consumidos y ya no están presentes.
 
