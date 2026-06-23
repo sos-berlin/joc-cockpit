@@ -1538,36 +1538,44 @@ export class ScheduleComponent {
       path: name,
       withPositions: true,
       objectType: InventoryObject.WORKFLOW
-    }).subscribe((conf: any) => {
-      if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
-        this.ref.detectChanges();
-        let msg;
-        if (conf.configuration.orderPreparation) {
-          msg = 'inventory.message.workflowsWithoutVariables';
-        } else if (this.workflow.orderPreparation) {
-          msg = 'inventory.message.workflowWithVariables';
-        }
-        if (msg) {
-          this.removeSelection(name);
-          this.translate.get(msg).subscribe(translatedValue => {
-            this.toasterService.warning(translatedValue);
+    }).subscribe({
+      next: (conf: any) => {
+        if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
+          this.ref.detectChanges();
+          let msg;
+          if (conf.configuration.orderPreparation) {
+            msg = 'inventory.message.workflowsWithoutVariables';
+          } else if (this.workflow.orderPreparation) {
+            msg = 'inventory.message.workflowWithVariables';
+          }
+          if (msg) {
+            this.removeSelection(name);
+            this.translate.get(msg).subscribe(translatedValue => {
+              this.toasterService.warning(translatedValue);
+            });
+
+            return;
+          }
+        } else {
+          this.workflow = conf.configuration;
+          if (flag && this.schedule.configuration) {
+            this.schedule.configuration.orderParameterisations = [];
+          }
+          this.getPositions(conf.path, () => {
+
+            this.updateVariableList();
+            this.saveJSON();
           });
-
-          return;
         }
-      } else {
-        this.workflow = conf.configuration;
-        if (flag && this.schedule.configuration) {
-          this.schedule.configuration.orderParameterisations = [];
+        if (cb) {
+          cb();
         }
-        this.getPositions(conf.path, () => {
-
-          this.updateVariableList();
-          this.saveJSON();
-        });
-      }
-      if (cb) {
-        cb();
+      },
+      error: () => {
+        if (cb) {
+          cb();
+        }
+        this.ref.detectChanges();
       }
     });
   }
