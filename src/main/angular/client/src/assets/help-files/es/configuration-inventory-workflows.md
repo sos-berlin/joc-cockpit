@@ -57,7 +57,7 @@ Para un Workflow están disponibles las siguientes entradas:
 - **Title** contiene una explicación opcional del propósito del Workflow.
 - **Job Resources** son objetos del Inventario que contienen variables en pares clave/valor y que pueden ponerse a disposición a través de Variables de Workflow y Variables de Entorno. Los *Recursos de Job* pueden asignarse a nivel de Job y a nivel de Workflow, lo que los hace disponibles para todos los Jobs del Workflow. Para más detalles, consulte [Configuración - Inventario - Recursos de Job](/configuration-inventory-job-resources).
 - **Time Zone** que se toma del [Perfil - Preferencias](/profile-preferences) del usuario. Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria, consulte [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-  - La *Zona Horaria* se aplica a los períodos en los Tiempos de Admisión de Jobs y en las *Cycle Instructions*.
+  - La *Zona Horaria* se aplica a los períodos en las Ventanas de Admisión de Jobs y en las *Cycle Instructions*.
   - Es posible usar una *Zona Horaria* diferente a la de [Configuración - Plan Diario](/settings-daily-plan). Sin embargo, puede generar resultados confusos.
 - **Allow undeclared variables** permite el uso de Variables de Órdenes que no están declaradas en el Workflow. Esto incluye que las Órdenes pueden llevar variables que no son verificadas por tipo de dato ni por uso obligatorio. Los Jobs fallarán al referenciar variables no declaradas que no estén disponibles en una Orden.
 

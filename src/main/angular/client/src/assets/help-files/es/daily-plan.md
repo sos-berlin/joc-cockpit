@@ -81,7 +81,7 @@ Los siguientes botones de filtro limitan el alcance de las operaciones:
 - **Copy Orders**
   - **Start Time**: Copia Órdenes a una fecha futura del Plan Diario. La entrada de fecha/hora es similar a la modificación del tiempo de inicio de una Orden.
   - **Keep Daily Plan Assignment**: Las dependencias basadas en calendario de los Tableros de Avisos se resolverán a la fecha original del Plan Diario.
-  - **Ignore Job Admission Times**: Los Jobs pueden estar limitados para ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Las Órdenes que llegan deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs a iniciarse independientemente de tales limitaciones.
+  - **Ignorar Ventanas de Admisión de Jobs**: Los Jobs pueden estar limitados para ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Las Órdenes que llegan deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs a iniciarse independientemente de tales limitaciones.
 
 #### Modificar Tiempo de Inicio
 

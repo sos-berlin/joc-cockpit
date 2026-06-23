@@ -48,7 +48,7 @@ Las proyecciones pueden exportarse a un archivo .xlsx con la fecha del Plan Diar
 - El acceso directo *Export* exportará las Órdenes visibles en la ventana.
 - El botón *Export* ofrece seleccionar las Órdenes para exportar:
   - **Start Date**, **End Date**: Primera y última fecha del Plan Diario para las que se exportarán las Órdenes.
-  - **Workflows**, **Schedules**: Los usuarios pueden limitar la exportación a ciertas Planificaciones y Workflows, opcionalmente limitados por carpetas.
+  - **Workflows**, **Planificaciones**: Los usuarios pueden limitar la exportación a ciertas Planificaciones y Workflows, opcionalmente limitados por carpetas.
   - **Inverted Projection**:
     - *Sin marcar*: Exporta las fechas para las que se calculan Órdenes.
     - *Marcado*: Exporta las fechas para las que no se calculan Órdenes. Esto puede usarse para verificar si se consideran los días no laborables.

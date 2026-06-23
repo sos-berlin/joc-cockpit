@@ -31,7 +31,7 @@ Para una Planificación están disponibles los siguientes campos de entrada:
 
 - **Nombre de Orden**: Un nombre opcional que puede usarse para filtrar Órdenes en varias vistas.
 - **Nombre de Etiqueta**: Se puede especificar cualquier número de Etiquetas que se agregarán a la Orden. Las Etiquetas de Órdenes se muestran en varias vistas si se especifican desde la página [Configuración - JOC Cockpit](/settings-joc).
-- **Ignorar Tiempos de Admisión**: Los Jobs pueden limitarse a ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Esto también aplica al uso de la *Instrucción AdmissionTimes*. Las Órdenes que llegan fuera de un intervalo de tiempo deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs y otras instrucciones a iniciar independientemente de dichas limitaciones.
+- **Ignorar Ventanas de Admisión**: Los Jobs pueden limitarse a ejecutarse en ciertos días y/o en ciertos intervalos de tiempo. Esto también aplica al uso de la *Instrucción AdmissionTimes*. Las Órdenes que llegan fuera de un intervalo de tiempo deben esperar al próximo intervalo disponible. Esta opción fuerza a los Jobs y otras instrucciones a iniciar independientemente de dichas limitaciones.
 
 ### Posición de la Orden
 

@@ -29,9 +29,9 @@ La interfaz gráfica ofrece una serie de pestañas para especificar los detalles
 - **Fail on output to stderr** especifica que el Agente fallará el Job si este escribe en el canal stderr. Esta comprobación se suma a la verificación del *Valor de Retorno* (para Jobs de Shell: código de salida) de un Job.
 - **Warn on output to stderr** especifica que se realiza la misma comprobación que para *Fail on output to stderr*. Sin embargo, el Job no fallará, sino que se generará una advertencia y se creará una Notificación.
 
-### Tiempos de Admisión de Job
+### Ventanas de Admisión de Job
 
-Los *Tiempos de Admisión* determinan cuándo puede iniciarse o debe omitirse un Job, y el período absoluto durante el cual puede ejecutarse. Para más detalles, consulte [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
+Las *Ventanas de Admisión* determinan cuándo puede iniciarse o debe omitirse un Job, y el período absoluto durante el cual puede ejecutarse. Para más detalles, consulte [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 
 - **Skip Job if no admission for Order's date** especifica que el Job se omitirá si su *Tiempo de Admisión* no coincide con la fecha de la Orden. Por ejemplo, el *Tiempo de Admisión* del Job puede excluir los fines de semana, lo que hace que el Job se ejecute de lunes a viernes y sea omitido por Órdenes planificadas para sábado y domingo. Los usuarios deben considerar que lo relevante es la fecha para la que está planificada la Orden, no la fecha de llegada de la Orden al Job. Si la fecha planificada de la Orden coincide con el *Tiempo de Admisión*, pero la Orden llega en un momento posterior fuera del *Tiempo de Admisión*, el Job no se omitirá y la Orden esperará al próximo *Tiempo de Admisión*.
 - **Terminate Job at end of period** especifica que el Agente cancelará el Job si supera el punto en el tiempo especificado con el período del *Tiempo de Admisión*.
