@@ -18,43 +18,33 @@
     "description": "How to deploy a Workflow"
   },
   "workflows-remove": {
-    "id": "O97w1MmDTW0",
+    "id": "pTdRk2V197I",
     "title": "Remove Workflow",
-    "description": "How to remove a Workflow"
+    "description": "How to remove an existing Workflow"
   },
   "workflows-revoke": {
     "id": "SpZuG7FrBOc",
     "title": "Revoke Workflow",
     "description": "How to revoke a Workflow"
   },
-  "jobResources-deploy": {
-    "id": "",
-    "title": "Deploy Job Resource",
-    "description": "How to deploy a Job Resource"
-  },
-  "jobResources-remove": {
-    "id": "",
-    "title": "Remove Job Resource",
-    "description": "How to remove a Job Resource"
-  },
-  "jobResources-revoke": {
-    "id": "",
-    "title": "Revoke Job Resource",
-    "description": "How to revoke a Job Resource"
-  },
-  "schedules-release": {
-    "id": "QCZ2DxWCZaM",
+  "schedule-release": {
+    "id": "nXwi_lc3upU",
     "title": "Release Schedule",
     "description": "How to release a Schedule"
   },
-  "schedules-recall": {
-    "id": "Ckf4qSO08cE",
+  "schedule-recall": {
+    "id": "Lw-YrIJ3xxw",
     "title": "Recall Schedule",
     "description": "How to recall a Schedule"
   },
-  "schedules-remove": {
-    "id": "kupymjNEXSE",
-    "title": "Remove Schedule",
-    "description": "How to remove a Schedule"
+  "dailyplan-overview": {
+    "id": "1C-styyZI-k",
+    "title": "Manage Daily Plan",
+    "description": "How to manage the Daily Plan"
+  },
+  "inventoryobject-export": {
+    "id": "JDazuggb2fw",
+    "title": "Export inventory objects",
+    "description": "How to export inventory objects"
   }
 }
