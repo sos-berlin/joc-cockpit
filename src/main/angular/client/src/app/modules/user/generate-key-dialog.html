@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.keyManagement.label.generateKey</span>
+    <span >{{ 'profile.keyManagement.label.generateKey' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,18 +14,18 @@
     @if (type === 'key') {
       <div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3" translate>profile.keyManagement.label.setExpiryDate</label>
+          <label class="col-md-4 col-lg-3" >{{ 'profile.keyManagement.label.setExpiryDate' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="expiry.dateValue" name="expireDate">
-              <label nz-radio nzValue="date"><span translate>profile.keyManagement.label.expire</span></label>
+              <label nz-radio nzValue="date"><span >{{ 'profile.keyManagement.label.expire' | translate }}</span></label>
               <label nz-radio nzValue="0"><span
-                translate>profile.keyManagement.label.neverExpire</span></label>
+                >{{ 'profile.keyManagement.label.neverExpire' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
         @if (expiry.dateValue === 'date') {
           <div class="form-group row">
-            <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.date</label>
+            <label class="col-md-4 col-lg-3 form-control-label" >{{ 'profile.keyManagement.label.date' | translate }}</label>
             <div class="col-md-8 col-lg-6">
               <nz-date-picker (ngModelChange)="onChange($event)" [(ngModel)]="key.validUntil"
                               name="date"></nz-date-picker>
@@ -33,18 +33,18 @@
           </div>
         }
         <div class="form-group row">
-          <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
+          <div class="col-md-4 col-lg-3" >{{ 'profile.keyManagement.label.keyAlgorithm' | translate }}</div>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group [(ngModel)]="key.keyAlg" name="alg">
-              <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
-              <label nz-radio nzValue="RSA"><span translate>profile.keyManagement.label.rsa</span></label>
-              <label nz-radio nzValue="PGP"><span translate>profile.keyManagement.label.pgp</span></label>
+              <label nz-radio nzValue="ECDSA"><span >{{ 'profile.keyManagement.label.ecdsa' | translate }}</span></label>
+              <label nz-radio nzValue="RSA"><span >{{ 'profile.keyManagement.label.rsa' | translate }}</span></label>
+              <label nz-radio nzValue="PGP"><span >{{ 'profile.keyManagement.label.pgp' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row">
-          <div class="col-md-4 col-lg-3 text-dark" translate>
-            profile.keyManagement.label.useSigningKeys
+          <div class="col-md-4 col-lg-3 text-dark" >
+            {{ 'profile.keyManagement.label.useSigningKeys' | translate }}
           </div>
           <div class="col-md-8 col-lg-9">
             <label name="useSSLca" nz-checkbox [(ngModel)]="useSSLcA"></label>
@@ -55,7 +55,7 @@
     @if (type === 'ca'|| 'key') {
       <div>
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label" translate>profile.keyManagement.label.distinguishedName
+          <label class="col-md-4 col-lg-3 form-control-label" >{{ 'profile.keyManagement.label.distinguishedName' | translate }}
             @if (type === 'ca') {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -66,7 +66,7 @@
             @if (dn.invalid && (dn.dirty || dn.touched)) {
               <div class="text-danger help-block">
                 @if (dn.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -84,7 +84,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.cancel</span>
+      <span >{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 </form>

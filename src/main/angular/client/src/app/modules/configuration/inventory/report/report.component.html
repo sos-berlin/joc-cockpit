@@ -9,7 +9,7 @@
             <span class="_600">{{ data.path }}@if (data.path !=='/') {<span>/</span>}{{ data.name }}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b >{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{ lastModified | stringToDate }}</i>
               </span>
             }
@@ -32,11 +32,11 @@
                 <span [ngClass]="!report.valid ? 'badge-danger':'badge-success'"
                       class="badge m-r-12">
                     @if (report.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span >{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!report.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span >{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
                       </span>
                   }
@@ -45,10 +45,10 @@
               @if (report.configuration) {
                 <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
                     @if (!data.released) {
-                      <span translate>inventory.label.notReleased</span>
+                      <span >{{ 'inventory.label.notReleased' | translate }}</span>
                     }
                   @if (data.released) {
-                    <span translate>inventory.label.released</span>
+                    <span >{{ 'inventory.label.released' | translate }}</span>
                   }
                   </span>
               }
@@ -57,7 +57,7 @@
                   (click)="release()"
                   [disabled]="!report.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.release</span>
+                  <span >{{ 'inventory.button.release' | translate }}</span>
                 </button>
               }
             </div>
@@ -69,7 +69,7 @@
                  class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.name' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.name' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -79,10 +79,10 @@
                 @if (name.invalid && (name.dirty || name.touched)) {
                   <div class="text-danger help-block">
                     @if (name.errors['invalidIdentifier']) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                     @if (name.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div >{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -91,7 +91,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.title' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="report.configuration.title"
                        [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -102,7 +102,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.template' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.template
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.template' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -115,12 +115,12 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.interval' | translate) : ''"
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.interval' | translate }}</label>
               <div class="col-md-8">
                 <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
-                  <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
-                  <label nz-radio nzValue="relative"><span translate>reporting.label.relative</span></label>
-                  <label nz-radio nzValue="preset"><span translate>reporting.label.preset</span></label>
+                  <label nz-radio nzValue="absolute"><span >{{ 'reporting.label.absolute' | translate }}</span></label>
+                  <label nz-radio nzValue="relative"><span >{{ 'reporting.label.relative' | translate }}</span></label>
+                  <label nz-radio nzValue="preset"><span >{{ 'reporting.label.preset' | translate }}</span></label>
                 </nz-radio-group>
 
               </div>
@@ -130,7 +130,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthFrom' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.monthFrom' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
@@ -144,16 +144,16 @@
                   @if (monthFrom.invalid && (monthFrom.dirty || monthFrom.touched)) {
                     <div class="text-danger help-block">
                       @if (monthFrom.errors?.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div >{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (monthFrom.errors?.invalidMonth) {
-                        <div translate>common.message.invalid</div>
+                        <div >{{ 'common.message.invalid' | translate }}</div>
                       }
                       @if (monthFrom.errors?.invalidMonthUnit) {
-                        <div translate>common.message.invalidMonthUnit</div>
+                        <div >{{ 'common.message.invalidMonthUnit' | translate }}</div>
                       }
                       @if (monthFrom.errors?.monthFromAfterMonthTo) {
-                        <div translate>common.message.monthFromAfterMonthTo</div>
+                        <div >{{ 'common.message.monthFromAfterMonthTo' | translate }}</div>
                       }
                     </div>
                   }
@@ -164,7 +164,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthTo' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.monthTo' | translate }}
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
                      [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
@@ -178,16 +178,16 @@
                   @if (monthTo.invalid && (monthTo.dirty || monthTo.touched)) {
                     <div class="text-danger help-block">
                       @if (monthTo.errors?.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div >{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (monthTo.errors?.invalidMonth) {
-                        <div translate>common.message.invalid</div>
+                        <div >{{ 'common.message.invalid' | translate }}</div>
                       }
                       @if (monthTo.errors?.invalidMonthUnit) {
-                        <div translate>common.message.notValidInput</div>
+                        <div >{{ 'common.message.notValidInput' | translate }}</div>
                       }
                       @if (monthTo.errors?.monthFromAfterMonthTo) {
-                        <div translate>common.message.monthFromAfterMonthTo</div>
+                        <div >{{ 'common.message.monthFromAfterMonthTo' | translate }}</div>
                       }
                     </div>
                   }
@@ -198,7 +198,7 @@
             @if (isInterval === 'relative') {
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.unit' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -211,7 +211,7 @@
             @if (isInterval === 'relative') {
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.from' | translate) : ''"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.from' | translate }}<sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [(ngModel)]="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -222,7 +222,7 @@
             @if (isInterval === 'preset') {
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.preset.fromSample' | translate) : ''"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.fromSample</label>
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.fromSample' | translate }}</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
                                     [object]="preset" [attributeName]="'name'" [listArray]="preset"
@@ -233,7 +233,7 @@
             @if (isInterval === 'relative') {
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.count' | translate) : ''"
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.count' | translate }}
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [(ngModel)]="count" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -243,11 +243,11 @@
             }
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.sort' | translate) : ''"
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.sort' | translate }}</label>
               <div class="col-md-8">
                 <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
-                  <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.highest</span></label>
-                  <label nz-radio nzValue="LOWEST"><span translate>reporting.label.lowest</span></label>
+                  <label nz-radio nzValue="HIGHEST"><span >{{ 'reporting.label.highest' | translate }}</span></label>
+                  <label nz-radio nzValue="LOWEST"><span >{{ 'reporting.label.lowest' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
@@ -255,7 +255,7 @@
               <label
                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.frequencies' | translate) : ''"
 
-                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.frequencies
+                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.frequencies' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -270,7 +270,7 @@
               <label
                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.controllerId' | translate) : ''"
 
-                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.controllerId</label>
+                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.controllerId' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-input (modelChange)="saveJSON()" [attributeName]="'controllerId'" [name]="'id'"
                                   [placeholder]="'common.label.selectController'" [isAllowClear]="true"
@@ -281,7 +281,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.hits' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.hits
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.hits' | translate }}
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
@@ -295,7 +295,7 @@
                 <label
                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodLength' | translate) : ''"
 
-                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodLength
+                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.periodLength' | translate }}
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
@@ -309,7 +309,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodStep' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodStep
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'reporting.label.periodStep' | translate }}
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"

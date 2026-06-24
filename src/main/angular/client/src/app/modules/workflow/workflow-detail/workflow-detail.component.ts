@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
@@ -18,6 +18,7 @@ declare const $;
   standalone: false,
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`.left-sidebar {
     height: calc(100vh - 260px);
     width: 180px;
@@ -70,7 +71,8 @@ export class WorkflowDetailComponent {
 
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
-              public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService) {
+              public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -132,6 +134,7 @@ export class WorkflowDetailComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.detectChanges();
       }, time);
     }
   }
@@ -390,7 +393,7 @@ export class WorkflowDetailComponent {
           this.coreService.post('workflow/transition', obj).subscribe({
             next: () => {
               this.resetAction();
-            }, error: () => this.isProcessing = false
+            }, error: () => { this.isProcessing = false; this.cdr.detectChanges(); }
           });
         }
       });
@@ -399,7 +402,7 @@ export class WorkflowDetailComponent {
       this.coreService.post('workflow/transition', obj).subscribe({
         next: () => {
           this.resetAction();
-        }, error: () => this.isProcessing = false
+        }, error: () => { this.isProcessing = false; this.cdr.detectChanges(); }
       });
     }
   }
@@ -445,7 +448,7 @@ export class WorkflowDetailComponent {
       this.coreService.post('workflows/' + (type === 'Resume' ? 'resume' : 'suspend'), obj).subscribe({
         next: () => {
           this.resetAction(5000);
-        }, error: () => this.isProcessing = false
+        }, error: () => { this.isProcessing = false; this.cdr.detectChanges(); }
       });
     }
   }
@@ -504,7 +507,8 @@ export class WorkflowDetailComponent {
           }, 0);
         }
         WorkflowDetailComponent.showAndHideBtn();
-      }, error: () => this.loading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -550,7 +554,8 @@ export class WorkflowDetailComponent {
         if (this.sideBar.isVisible) {
           this.sideBar.orders = this.workflow.orders;
         }
-      }, error: () => this.loading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = true; this.cdr.markForCheck(); }
     });
   }
 

@@ -1,47 +1,47 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (type === 'DOCUMENTATION') {
-      <span translate>resource.documentation.label.importDocument</span>
+      <span >{{ 'resource.documentation.label.importDocument' | translate }}</span>
     }
     @if (type === 'DEPLOYMENT' || type === 'USER' || (type == 'INVENTORY' && !isDeploy)) {
-      <span translate>inventory.label.import</span>
+      <span >{{ 'inventory.label.import' | translate }}</span>
     }
     @if (type === 'INVENTORY' && preferences.showHelpPages){
       <i (click)="helpPage('configuration-inventory-operations-import')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (isDeploy) {
-      <span translate>inventory.label.importAndDeploy</span>
+      <span >{{ 'inventory.label.importAndDeploy' | translate }}</span>
     }
     @if (type === 'XML_EDITOR') {
       <span>
         @if (!importXsd) {
-          <span translate>xml.label.importXML</span>
+          <span >{{ 'xml.label.importXML' | translate }}</span>
         }
         @if (importXsd) {
-          <span translate>xml.label.importXSD</span>
+          <span >{{ 'xml.label.importXSD' | translate }}</span>
         }
       </span>
     }
     @if (type === 'INVENTORY_OBJECT') {
       <span>
-        <span translate>inventory.label.uploadJSON</span>
+        <span >{{ 'inventory.label.uploadJSON' | translate }}</span>
         <span class="text-muted">{{name}}</span>
       </span>
     }
     @if (type === 'CONTROLLER') {
       <span>
-        <span translate>agent.label.importAgentConfiguration</span>:
+        <span >{{ 'agent.label.importAgentConfiguration' | translate }}</span>:
         {{controller.controllerId}}
       </span>
     }
     @if (type === 'CRON') {
-      <span translate>inventory.cronTab.label.convertCron</span>
+      <span >{{ 'inventory.cronTab.label.convertCron' | translate }}</span>
     }
     @if (type === 'SETTING') {
-      <span translate>settings.label.importSetting</span>
+      <span >{{ 'settings.label.importSetting' | translate }}</span>
     }
     @if (type === 'WORKFLOW') {
-      <span translate>workflow.label.importWorkflow</span>
+      <span >{{ 'workflow.label.importWorkflow' | translate }}</span>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -58,7 +58,7 @@
         <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.folder</label>
+              <label >{{ 'inventory.cronTab.label.folder' | translate }}</label>
             </label>
             <div class="col-md-9">
               <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select"
@@ -86,7 +86,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.calendarName
+              <label >{{ 'inventory.cronTab.label.calendarName' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -103,7 +103,7 @@
               @if (calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)) {
                 <div class="text-danger help-block">
                   @if (calendarName.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -111,7 +111,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.cronTab.label.agentName
+              <label >{{ 'inventory.cronTab.label.agentName' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -123,7 +123,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" >{{ 'inventory.cronTab.label.systemCrontab' | translate }}</label>
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
@@ -134,7 +134,7 @@
       @if (type === 'DOCUMENTATION') {
         <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>common.label.path</label>
+            <label class="col-sm-3 form-control-label" >{{ 'common.label.path' | translate }}</label>
             <div class="col-sm-9">
               <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
                      name="path"
@@ -166,7 +166,7 @@
             <div class="col-md-12">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.signatureAlgorithm
+                  <label >{{ 'inventory.label.signatureAlgorithm' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                 </label>
@@ -177,7 +177,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.fileFormat</label>
+                  <label >{{ 'inventory.label.fileFormat' | translate }}</label>
                 </label>
                 <div class="col-md-9">
                   <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -190,7 +190,7 @@
             <div class="col-md-12">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.folder</label>
+                  <label >{{ 'inventory.label.folder' | translate }}</label>
                 </label>
                 <div class="col-md-9">
                   <input [(ngModel)]="requestObj.targetFolder" [appAutofocus]="true" autocomplete="off" class="form-control pos-abt input-path-with-select"
@@ -218,7 +218,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <label translate>inventory.label.fileFormat</label>
+                  <label >{{ 'inventory.label.fileFormat' | translate }}</label>
                 </label>
                 <div class="col-md-9">
                   <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -227,7 +227,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3">
-                  <label translate>inventory.label.overwrite</label>
+                  <label >{{ 'inventory.label.overwrite' | translate }}</label>
                 </label>
                 <div class="col-md-9">
                   <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
@@ -235,7 +235,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-3">
-                  <label translate>inventory.label.overwriteTags</label>
+                  <label >{{ 'inventory.label.overwriteTags' | translate }}</label>
                 </label>
                 <div class="col-md-9">
                   <label [(ngModel)]="requestObj.overwriteTags" name="overwriteTags" nz-checkbox></label>
@@ -243,12 +243,12 @@
               </div>
               @if (!requestObj.overwrite) {
                 <div class="form-group row">
-                  <label class="col-md-3" translate>inventory.label.objectName</label>
+                  <label class="col-md-3" >{{ 'inventory.label.objectName' | translate }}</label>
                   <div class="col-md-9">
                     <nz-radio-group [(ngModel)]="requestObj.type" name="type">
-                      <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
-                      <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
-                      <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+                      <label nz-radio nzValue="ignore"><span >{{ 'inventory.label.ignoreIfExist' | translate }}</span></label>
+                      <label nz-radio nzValue="prefix"><span >{{ 'inventory.label.prefix' | translate }}</span></label>
+                      <label nz-radio nzValue="suffix"><span >{{ 'inventory.label.suffix' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
@@ -264,10 +264,10 @@
                     @if (suffix.invalid && (suffix.dirty || suffix.touched)) {
                       <div class="text-danger help-block">
                         @if ((suffix.errors && suffix.errors['required'])) {
-                          <div translate>common.message.requiredError</div>
+                          <div >{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (suffix.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div >{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -285,10 +285,10 @@
                     @if (prefix.invalid && (prefix.dirty || prefix.touched)) {
                       <div class="text-danger help-block">
                         @if ((prefix.errors && prefix.errors['required'])) {
-                          <div translate>common.message.requiredError</div>
+                          <div >{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (prefix.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div >{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -303,7 +303,7 @@
         <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.label.fileFormat</label>
+              <label >{{ 'inventory.label.fileFormat' | translate }}</label>
             </label>
             <div class="col-md-9">
               <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
@@ -312,7 +312,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3">
-              <label translate>inventory.label.overwrite</label>
+              <label >{{ 'inventory.label.overwrite' | translate }}</label>
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
@@ -333,7 +333,7 @@
       @if (fileList.length === 0) {
         <div>
           <i class="icon-upload-icon"></i>
-          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+          <div class="upload-text" >{{ 'common.button.dragAndDropFileToUpload' | translate }}</div>
         </div>
       }
     </nz-upload>
@@ -349,7 +349,7 @@
         <div class="p-t-sm">
           <button class="btn btn-default btn-sm" type="button">
             <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>common.button.chooseFileToUpload</span>
+            <span >{{ 'common.button.chooseFileToUpload' | translate }}</span>
           </button>
         </div>
       </nz-upload>
@@ -363,14 +363,14 @@
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
         @if (type !== 'CRON') {
-          <span translate>common.button.import</span>
+          <span >{{ 'common.button.import' | translate }}</span>
         }
         @if (type === 'CRON') {
-          <span translate>inventory.cronTab.button.convert</span>
+          <span >{{ 'inventory.cronTab.button.convert' | translate }}</span>
         }
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{'common.button.cancel' | translate }}
       </button>
     </div>
   }

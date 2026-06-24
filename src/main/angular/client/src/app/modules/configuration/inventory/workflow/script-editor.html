@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>workflow.label.scriptEditor</span>
+    <span class="drag-text" >{{ 'workflow.label.scriptEditor' | translate }}</span>
   </h4>
   <a class="max-btn" appMaximum [codeEditor]="codeEditor">
     <i class="fa fa-window-maximize"></i>
@@ -18,17 +18,17 @@
           <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
             <li class="nav-item" nz-tooltip="Ctrl-F">
               <a (click)="execCommand('find')" class="nav-link">
-                <span class="nav-text" translate>workflow.button.find</span>
+                <span class="nav-text" >{{ 'workflow.button.find' | translate }}</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-G">
               <a (click)="execCommand('findNext')" class="nav-link">
-                <span class="nav-text" translate>workflow.button.findNext</span>
+                <span class="nav-text" >{{ 'workflow.button.findNext' | translate }}</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-G">
               <a (click)="execCommand('findPrev');" class="nav-link">
-                <span class="nav-text" translate>workflow.button.findPrevious</span>
+                <span class="nav-text" >{{ 'workflow.button.findPrevious' | translate }}</span>
               </a>
             </li>
             <li class="nav-item dropdown-separator">
@@ -36,12 +36,12 @@
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-F">
               <a (click)="execCommand('replace')" class="nav-link">
-                <span class="nav-text" translate>workflow.button.replace</span>
+                <span class="nav-text" >{{ 'workflow.button.replace' | translate }}</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Shift-Ctrl-R">
               <a (click)="execCommand('replaceAll')" class="nav-link">
-                <span class="nav-text" translate>workflow.button.replaceAll</span>
+                <span class="nav-text" >{{ 'workflow.button.replaceAll' | translate }}</span>
               </a>
             </li>
             <li class="nav-item dropdown-separator">
@@ -49,7 +49,7 @@
             </li>
             <li class="nav-item" nz-tooltip="Alt-G">
               <a (click)="execCommand('jumpToLine');" class="nav-link">
-                <span class="nav-text" translate>workflow.button.jumpToLine</span>
+                <span class="nav-text" >{{ 'workflow.button.jumpToLine' | translate }}</span>
               </a>
             </li>
             <li class="nav-item dropdown-separator">
@@ -57,12 +57,12 @@
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Z">
               <a (click)="execCommand('undo');" class="nav-link">
-                <span class="nav-text" translate>workflow.button.undo</span>
+                <span class="nav-text" >{{ 'workflow.button.undo' | translate }}</span>
               </a>
             </li>
             <li class="nav-item" nz-tooltip="Ctrl-Y">
               <a (click)="execCommand('redo');" class="nav-link">
-                <span class="nav-text" translate>workflow.button.redo</span>
+                <span class="nav-text" >{{ 'workflow.button.redo' | translate }}</span>
               </a>
             </li>
             @if (cmOption.mode === 'javascript' || cmOption.mode === 'python') {
@@ -73,7 +73,7 @@
             @if (cmOption.mode === 'javascript' || cmOption.mode === 'python') {
               <li class="nav-item">
                 <a class="nav-link" nz-tooltip="shft+Alt-F">
-                  <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>
+                  <span class="nav-text" (click)="autoFormatCode($event)" >{{ 'workflow.button.format' | translate }}</span>
                 </a>
               </li>
             }
@@ -94,12 +94,12 @@
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
         @if (!isSkip) {
-          <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+          <div class="text-sm text-muted" >{{ 'inventory.tooltips.script.autocompleteShortCut' | translate }}</div>
         }
         @if ((cm.invalid && (cm.dirty || cm.touched))) {
           <div class="text-danger help-block">
             @if ((cm.errors && cm.errors.required)) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -108,13 +108,12 @@
   </div>
   <div class="modal-footer">
     @if (!disabled) {
-      <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
+      <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
         common.button.submit
       </button>
     }
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-            translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

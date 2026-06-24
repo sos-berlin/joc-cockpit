@@ -4327,8 +4327,7 @@
       "Mié",
       "Jue",
       "Vie",
-      "Sáb",
-      "Dom"
+      "Sáb"
     ],
     "daysMin": [
       "Do",
@@ -4337,8 +4336,7 @@
       "Mi",
       "Ju",
       "Vi",
-      "Sá",
-      "Do"
+      "Sá"
     ],
     "months": [
       "Enero",

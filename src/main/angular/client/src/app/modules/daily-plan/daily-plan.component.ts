@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {forkJoin, map, Observable, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -552,6 +552,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -579,7 +580,7 @@ export class SearchComponent {
     {status: 'NONE', text: 'none'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -596,6 +597,7 @@ export class SearchComponent {
     this.getFolderTree();
     this.fetchTags();
     this.fetchOrderTags();
+    this.cdr.markForCheck();
   }
 
   getFolderTree(): void {
@@ -605,6 +607,7 @@ export class SearchComponent {
       types: ['SCHEDULE']
     }).subscribe(res => {
       this.scheduleTree = this.coreService.prepareTree(res, false);
+      this.cdr.markForCheck();
     });
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
@@ -612,6 +615,7 @@ export class SearchComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
+      this.cdr.markForCheck();
     });
   }
 
@@ -621,6 +625,7 @@ export class SearchComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.tags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -630,6 +635,7 @@ export class SearchComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.orderTags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -717,7 +723,8 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
-  styleUrls: ['./daily-plan.component.css']
+  styleUrls: ['./daily-plan.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyPlanComponent {
   objectType = 'DAILYPLAN';
@@ -729,7 +736,7 @@ export class DailyPlanComponent {
   planOrders: any = [];
   isLoaded = false;
   isRefreshed = false;
-  dailyPlanFilters: any = {filter: {}, index: 0};
+  dailyPlanFilters: any = {filter: {}, index: 0, tabIndex: 0};
   pageView = '';
   pageView2 = '';
   savedFilter: any = {};
@@ -892,7 +899,7 @@ export class DailyPlanComponent {
       }
 
       if (updated) {
-        this.cdr.detectChanges();
+        setTimeout(() => this.cdr.detectChanges(), 0);
       }
     });
   }
@@ -956,6 +963,7 @@ export class DailyPlanComponent {
 
   loadProjectionForCalendar(): void {
     this.isLoaded = false;
+    this.cdr.markForCheck();
     let obj: any = {
       controllerIds: [],
       withoutStartTime: this.dailyPlanFilters.projection.withoutStartTime,
@@ -1023,9 +1031,11 @@ export class DailyPlanComponent {
           }
         }
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.projectionData = [];
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1106,12 +1116,14 @@ export class DailyPlanComponent {
           this.filterData(res.plannedOrderItems);
           this.isLoaded = true;
           this.isRefreshed = false;
+          this.cdr.markForCheck();
         }, error: () => {
           this.isLoaded = true;
           this.isRefreshed = false;
           this.plans = [];
           this.planOrders = [];
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -2158,6 +2170,7 @@ export class DailyPlanComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isLoaded = false;
+        this.cdr.markForCheck();
         this.loadOrderPlan();
       }
     });
@@ -2194,6 +2207,7 @@ export class DailyPlanComponent {
         modal.afterClose.subscribe(result => {
           if (result) {
             this.isLoaded = false;
+            this.cdr.markForCheck();
             this.loadOrderPlan();
           }
         });
@@ -2281,6 +2295,7 @@ export class DailyPlanComponent {
   private load(date): void {
     if (!date) {
       this.isLoaded = false;
+      this.cdr.markForCheck();
     }
     let d;
     if (date) {
@@ -2326,8 +2341,10 @@ export class DailyPlanComponent {
         if (calendar) {
           calendar.setDataSource(this.submissionHistoryItems);
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2355,9 +2372,11 @@ export class DailyPlanComponent {
       next: (result: any) => {
         this.filterData(result.plannedOrderItems);
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetCheckBox();
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2753,6 +2772,7 @@ export class DailyPlanComponent {
       this.checkSharedFilters();
     } else {
       this.isLoaded = false;
+      this.cdr.markForCheck();
       this.loadOrderPlan();
     }
     setTimeout(() => {
@@ -2779,6 +2799,7 @@ export class DailyPlanComponent {
               this.isLoaded = false;
               this.loadOrderPlan();
             }
+            this.cdr.markForCheck();
           },
           renderEnd: (e) => {
             const year = e.currentYear || new Date().getFullYear();
@@ -2789,6 +2810,7 @@ export class DailyPlanComponent {
             if (this.dateRanges && this.dateRanges.length > 1) {
               $('#full-calendar').data('calendar').checkRange({from: this.dateRanges[0], to: this.dateRanges[1]});
             }
+            this.cdr.markForCheck();
           },
           rangeEnd: (e) => {
             this.dateRanges = e.dateRanges;
@@ -2799,6 +2821,7 @@ export class DailyPlanComponent {
             } else {
               this.isPastDate = this.selectedDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
             }
+            this.cdr.markForCheck();
           }
         });
       }
@@ -2966,6 +2989,11 @@ export class DailyPlanComponent {
             planItems[i].status = translatedValue;
           });
         }
+        const stateText = planItems[i].state?._text;
+        planItems[i].isSubmitRemoveDisabled = !!(stateText === 'FINISHED' || stateText === 'SUBMITTED');
+        planItems[i].isCancelDisabled = !!(stateText === 'FINISHED' || stateText === 'PLANNED');
+        planItems[i].isFinishedState = stateText === 'FINISHED';
+        planItems[i].isNotFinishedState = !!(planItems[i].state && stateText !== 'FINISHED');
 
         // Add tags to the searchable properties
         if (planItems[i].tags && planItems[i].tags.length > 0) {
@@ -3152,6 +3180,7 @@ export class DailyPlanComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.isLoaded = false;
+        this.cdr.markForCheck();
         this.loadOrderPlan();
       });
     } else {

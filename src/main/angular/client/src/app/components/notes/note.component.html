@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate> inventory.notes.label.notes</span>
+    <span >{{ 'inventory.notes.label.notes' | translate }}</span>
     @if (objectPath) {
       <span class="object-path"> - ({{ objectPath }})</span>
     }
@@ -46,7 +46,7 @@
 
         <div class="message-actions">
           <div>
-            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
+            <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.close' | translate }}</button>
             @if (permission.joc && permission.joc.inventory.manage){
             <button (click)="delete()"  [disabled]="posts.length === 0"
                     class="btn btn-danger btn-sm m-l-sm" type="button">
@@ -63,16 +63,16 @@
                 <li class="nav-item">
                   <div style="line-height: 18px; padding: 10px 3px">
                   <span class="cur-point" [nzDropdownMenu]="headingMenu"
-                    nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
+                    nz-dropdown nzTrigger="click" >{{ 'inventory.notes.label.style' | translate }}<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
 
                     <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
                       <ul nz-menu>
-                        <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
-                        <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
-                        <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
-                        <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
-                        <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
-                        <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
+                        <li nz-menu-item (click)="applyHeading('h1')"><a >{{ 'H1' | translate }}</a></li>
+                        <li nz-menu-item (click)="applyHeading('h2')"><a >{{ 'H2' | translate }}</a></li>
+                        <li nz-menu-item (click)="applyHeading('h3')"><a >{{ 'H3' | translate }}</a></li>
+                        <li nz-menu-item (click)="applyHeading('h4')"><a >{{ 'H4' | translate }}</a></li>
+                        <li nz-menu-item (click)="applyHeading('h5')"><a >{{ 'H5' | translate }}</a></li>
+                        <li nz-menu-item (click)="applyHeading('h6')"><a >{{ 'H6' | translate }}</a></li>
                       </ul>
                     </nz-dropdown-menu>
                   </div>
@@ -157,7 +157,7 @@
       <div class="split-view">
         <div class="editor-panel">
           <div class="modal-header">
-            <span translate>inventory.notes.label.editor</span>
+            <span >{{ 'inventory.notes.label.editor' | translate }}</span>
           </div>
           <nz-mention [nzSuggestions]="filteredMentionUsers"
                       [nzPrefix]="['@']"
@@ -174,7 +174,7 @@
 
         <div class="preview-panel">
           <div class="modal-header">
-            <span translate>inventory.notes.label.preview</span>
+            <span >{{ 'inventory.notes.label.preview' | translate }}</span>
           </div>
           <div class="fullscreen-preview help-md" [innerHTML]="notePreview"></div>
         </div>
@@ -187,16 +187,16 @@
               <li class="nav-item">
                 <div style="line-height: 18px; padding: 10px 3px">
           <span class="cur-point" [nzDropdownMenu]="headingMenu"
-                nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
+                nz-dropdown nzTrigger="click" >{{ 'inventory.notes.label.style' | translate }}<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
 
                   <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
                     <ul nz-menu>
-                      <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
-                      <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
-                      <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
-                      <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
-                      <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
-                      <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
+                      <li nz-menu-item (click)="applyHeading('h1')"><a >{{ 'H1' | translate }}</a></li>
+                      <li nz-menu-item (click)="applyHeading('h2')"><a >{{ 'H2' | translate }}</a></li>
+                      <li nz-menu-item (click)="applyHeading('h3')"><a >{{ 'H3' | translate }}</a></li>
+                      <li nz-menu-item (click)="applyHeading('h4')"><a >{{ 'H4' | translate }}</a></li>
+                      <li nz-menu-item (click)="applyHeading('h5')"><a >{{ 'H5' | translate }}</a></li>
+                      <li nz-menu-item (click)="applyHeading('h6')"><a >{{ 'H6' | translate }}</a></li>
                     </ul>
                   </nz-dropdown-menu>
                 </div>
@@ -263,8 +263,8 @@
         </div>
 
         <div class="action-buttons">
-          <button class="btn btn-grey btn-sm" (click)="toggleFullscreenEdit()" translate>
-            common.button.close
+          <button class="btn btn-grey btn-sm" (click)="toggleFullscreenEdit()" >
+            {{ 'common.button.close' | translate }}
           </button>
           <button [disabled]="submitted || !noteContent.trim()"
                   class="btn btn-primary btn-sm"

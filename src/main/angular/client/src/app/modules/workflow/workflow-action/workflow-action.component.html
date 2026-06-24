@@ -6,10 +6,10 @@
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
       <li (click)="navToDetailView('list')" nz-menu-item>
-        <a translate>workflow.button.showTabularView</a>
+        <a >{{ 'workflow.button.showTabularView' | translate }}</a>
       </li>
       <li (click)="navToDetailView('grid')" nz-menu-item>
-        <a translate>workflow.button.showGraphicalView</a>
+        <a >{{ 'workflow.button.showGraphicalView' | translate }}</a>
       </li>
       <li nz-menu-divider></li>
       @if (permission.currentController.orders.create) {
@@ -46,11 +46,11 @@
       <li (click)="coreService.showDocumentation(workflow.documentationName, preferences)" [nzDisabled]="!workflow.documentationName"
           nz-menu-item>
         <a>
-          <span translate>common.button.viewDocumentation</span>
+          <span >{{ 'common.button.viewDocumentation' | translate }}</span>
         </a>
       </li>
       <li (click)="coreService.copyLink('workflow',workflow.path,  '', workflow.versionId)" nz-menu-item>
-        <a translate>common.button.copyLinkToObject</a>
+        <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
       </li>
     </ul>
   </nz-dropdown-menu>

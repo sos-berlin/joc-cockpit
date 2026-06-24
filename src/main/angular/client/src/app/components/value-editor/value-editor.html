@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>workflow.label.valueEditor</span>
+    <span >{{ 'workflow.label.valueEditor' | translate }}</span>
   </h4>
   <a class="max-btn" appMaximum [textarea]="myInputField">
     <i class="fa fa-window-maximize"></i>
@@ -23,10 +23,10 @@
         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
           <div class="text-danger help-block">
             @if (value.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
             @if (value.errors['invalidFacet']) {
-              <div translate>common.message.invalid</div>
+              <div >{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
@@ -34,12 +34,11 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm" translate type="submit">
+    <button class="btn btn-primary btn-sm" type="submit">
       common.button.submit
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-            translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

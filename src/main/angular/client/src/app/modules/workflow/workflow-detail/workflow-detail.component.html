@@ -38,13 +38,13 @@
               @for (btn of filterBtn; track btn) {
                 <button (click)="loadOrders(btn.date)"
                         [ngClass]="{'btn-primary': workflowFilters.date===btn.date}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>filters.button.{{btn.text}}
+                        class="btn btn-grey btn-sm button-group-ellipsis" >{{ 'filters.button.' + btn.text | translate }}
                 </button>
               }
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate type="button">
+                      nzTrigger="click" type="button">
                 common.label.anyDate
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
@@ -53,7 +53,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadOrders(btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}"
                         nz-menu-item>
-                      <a translate>filters.button.{{btn.text}}</a>
+                      <a >{{ 'filters.button.' + btn.text | translate }}</a>
                     </li>
                   }
                 </ul>
@@ -65,33 +65,33 @@
               <button (click)="openModal()"
                       class="btn btn-grey btn-sm m-l-12 button-group-ellipsis">
                 <i class="fa fa-codepen"></i>
-                &nbsp;<span class="hidden-sm-down" translate>workflow.button.showDependency</span>
+                &nbsp;<span class="hidden-sm-down" >{{ 'workflow.button.showDependency' | translate }}</span>
               </button>
             }
             @if (permission.currentController && permission.currentController.orders?.create) {
               <button (click)="addOrder()" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
                       class="btn btn-grey btn-sm m-l-12 button-group-ellipsis"><i
                 class="fa fa-plus-square"></i>
-                &nbsp;<span class="hidden-sm-down" translate>workflow.button.addOrder</span>
+                &nbsp;<span class="hidden-sm-down" >{{ 'workflow.button.addOrder' | translate }}</span>
               </button>
             }
             @if (!workflow.suspended) {
               <button (click)="suspend()" [disabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
                       class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-stop p-r-xs"></i>
-                <span class="hidden-sm-down" translate>order.button.suspend</span></button>
+                <span class="hidden-sm-down" >{{ 'order.button.suspend' | translate }}</span></button>
             }
             @if (workflow.suspended) {
               <button (click)="resume()" [disabled]="!workflow.isCurrentVersion"
                       class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
-                                                             translate>order.button.resume</span>
+                                                             >{{ 'order.button.resume' | translate }}</span>
               </button>
             }
             @if (workflow.path && !workflow.isCurrentVersion) {
               <button (click)="transitionOrders()" [disabled]="workflow?.state?._text === 'NOT_IN_SYNC'"
                       class="btn btn-grey btn-sm m-l-12 button-group-ellipsis"><i class="fa fa-exchange"></i>
-                &nbsp;<span class="hidden-sm-down" translate>workflow.button.transitionOrders</span>
+                &nbsp;<span class="hidden-sm-down" >{{ 'workflow.button.transitionOrders' | translate }}</span>
               </button>
             }
             <div class="btn-group m-l-12">
@@ -133,23 +133,23 @@
             >
               <thead>
               <tr>
-                <th rowspan="2"><span translate>common.label.path</span></th>
-                <th rowspan="2"><span translate>inventory.label.deploymentDate</span></th>
-                <th rowspan="2"><span translate>common.label.status</span></th>
-                <th rowspan="2"><span translate>workflow.label.noOfOrders</span></th>
-                <th colspan="10"><span translate>workflow.label.order</span></th>
+                <th rowspan="2"><span >{{ 'common.label.path' | translate }}</span></th>
+                <th rowspan="2"><span >{{ 'inventory.label.deploymentDate' | translate }}</span></th>
+                <th rowspan="2"><span >{{ 'common.label.status' | translate }}</span></th>
+                <th rowspan="2"><span >{{ 'workflow.label.noOfOrders' | translate }}</span></th>
+                <th colspan="10"><span >{{ 'workflow.label.order' | translate }}</span></th>
               </tr>
               <tr>
-                <th><span translate>common.label.pending</span></th>
-                <th><span translate>common.label.scheduled</span></th>
-                <th><span translate>common.label.incomplete</span></th>
-                <th><span translate>common.label.running</span></th>
-                <th><span translate>common.label.suspended</span></th>
-                <th><span translate>common.label.prompting</span></th>
-                <th><span translate>common.label.waiting</span></th>
-                <th><span translate>common.label.blocked</span></th>
-                <th><span translate>common.label.failed</span></th>
-                <th><span translate>common.label.completed</span></th>
+                <th><span >{{ 'common.label.pending' | translate }}</span></th>
+                <th><span >{{ 'common.label.scheduled' | translate }}</span></th>
+                <th><span >{{ 'common.label.incomplete' | translate }}</span></th>
+                <th><span >{{ 'common.label.running' | translate }}</span></th>
+                <th><span >{{ 'common.label.suspended' | translate }}</span></th>
+                <th><span >{{ 'common.label.prompting' | translate }}</span></th>
+                <th><span >{{ 'common.label.waiting' | translate }}</span></th>
+                <th><span >{{ 'common.label.blocked' | translate }}</span></th>
+                <th><span >{{ 'common.label.failed' | translate }}</span></th>
+                <th><span >{{ 'common.label.completed' | translate }}</span></th>
               </tr>
               </thead>
               <tbody>
@@ -258,14 +258,14 @@
                                   class="m-a-0 inner-table" nzSize="small">
                           <thead>
                           <tr>
-                            <th><span class="m-l-sm" translate>common.label.path</span></th>
-                            <th><span translate>inventory.label.deploymentDate</span></th>
-                            <th><span translate>common.label.status</span></th>
-                            <th><span translate>workflow.label.agent</span></th>
-                            <th><span translate>inventory.label.directory</span></th>
-                            <th><span translate>inventory.label.pattern</span></th>
-                            <th><span translate>common.label.timeZone</span></th>
-                            <th><span translate>workflow.label.delay</span></th>
+                            <th><span class="m-l-sm" >{{ 'common.label.path' | translate }}</span></th>
+                            <th><span >{{ 'inventory.label.deploymentDate' | translate }}</span></th>
+                            <th><span >{{ 'common.label.status' | translate }}</span></th>
+                            <th><span >{{ 'workflow.label.agent' | translate }}</span></th>
+                            <th><span >{{ 'inventory.label.directory' | translate }}</span></th>
+                            <th><span >{{ 'inventory.label.pattern' | translate }}</span></th>
+                            <th><span >{{ 'common.label.timeZone' | translate }}</span></th>
+                            <th><span >{{ 'workflow.label.delay' | translate }}</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -377,7 +377,7 @@
                      class="box m-b-0 p-a-0 resizable" id="workflowTextId">
                   <div class="p-a overflow-y" style="height: 100%">
                     <div class="hover">
-                      <a class="text-primary noExl" translate>workflow.label.start</a>
+                      <a class="text-primary noExl" >{{ 'workflow.label.start' | translate }}</a>
                       <span class="expand-collapse-btn">
                         <i (click)="expandAll()"
                            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="cursor fa fa-lg fa-angle-double-down"></i>
@@ -434,15 +434,15 @@
   </div>
 </div>
 <!-- BEGIN SLIDER -->
-<nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
-    <div class="p-l-sm p-r-sm">
-      <app-order-list-sidebar [orderPreparation]="orderPreparation" [orders]="sideBar.orders"
-                              [permission]="permission" [preferences]="preferences"
-                              [schedulerId]="schedulerIds.selected"></app-order-list-sidebar>
-    </div>
-  </ng-container>
+<ng-template #orderSidebarTpl>
+  <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+  <div class="p-l-sm p-r-sm">
+    <app-order-list-sidebar [orderPreparation]="orderPreparation" [orders]="sideBar.orders"
+                            [permission]="permission" [preferences]="preferences"
+                            [schedulerId]="schedulerIds.selected"></app-order-list-sidebar>
+  </div>
+</ng-template>
+<nz-drawer [nzContent]="orderSidebarTpl" (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
 </nz-drawer>
 <!-- END SLIDER -->
 @if (!loading) {

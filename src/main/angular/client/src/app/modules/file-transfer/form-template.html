@@ -2,7 +2,7 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'customization.label.customizationName' | translate }}
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -15,19 +15,19 @@
         @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
           <div class="text-danger help-block">
             @if (name.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
         @if (!isUnique) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div >{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.profileNames</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.profileNames' | translate }}</label>
       <div class=" col-sm-6">
         @for (profile of filter.profiles; track $index; let i = $index) {
           <div>
@@ -46,18 +46,18 @@
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+        <label class="col-md-2 col-sm-4" >{{ 'common.label.dateRange' | translate }}</label>
         <div class="col-md-6">
           <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+            <label nz-radio nzValue="current"><span >{{ 'common.label.specificDate' | translate }}</span></label>
+            <label nz-radio nzValue="planned"><span >{{ 'common.label.relativeDate' | translate }}</span></label>
           </nz-radio-group>
         </div>
       </div>
     }
     @if (filter.radio == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.from</label>
+        <label class="col-md-2 col-sm-4 form-control-label" >{{ 'common.label.from' | translate }}</label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
@@ -68,7 +68,7 @@
     }
     @if (filter.radio == 'current') {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.to</label>
+        <label class="col-md-2 col-sm-4 form-control-label" >{{ 'common.label.to' | translate }}</label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
@@ -80,14 +80,14 @@
     @if (filter.radio == 'planned') {
       <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
            class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processExecuted</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'common.label.processExecuted' | translate }}</label>
         <div class=" col-sm-6">
           <input #processExc1="ngModel" [(ngModel)]="filter.planned" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
                  type="text" validateReqex>
           @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
             <div class="help-block text-danger">
               @if (!processExc1.valid) {
-                <div translate>common.message.invalid</div>
+                <div >{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
@@ -96,7 +96,7 @@
     }
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <label class="col-md-2 col-sm-4 form-control-label" >{{ 'common.label.controllerId' | translate }}</label>
         <div class=" col-sm-6">
           <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [ignoreTranslate]="true"
                             [placeholder]="'common.label.selectController'"
@@ -107,14 +107,14 @@
     }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>dailyPlan.label.workflows</label>
+             >{{ 'dailyPlan.label.workflows' | translate }}</label>
       <div class="col-sm-6">
         <app-multi-select [attribute]="'workflowNames'" [list]="filter" [nodes]="workflowTree"
                           [type]="'WORKFLOW'"></app-multi-select>
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>fileTransfer.label.status</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" >{{ 'fileTransfer.label.status' | translate }}</label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="fileTransferStatus"
@@ -122,7 +122,7 @@
           (ngModelChange)="stateChange($event)">
           @for (option of stateOptions; track option) {
             <label [nzValue]="option.status" nz-checkbox>
-              <span translate>common.label.{{option.text}}</span>
+              <span >{{ 'common.label.' + option.text | translate }}</span>
             </label>
           }
         </nz-checkbox-group>
@@ -130,7 +130,7 @@
     </div>
 
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.operations</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " >{{ 'fileTransfer.search.label.operations' | translate }}</label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="fileTransferOperations"
@@ -138,7 +138,7 @@
           (ngModelChange)="operationChange($event)">
           @for (option of operationOptions; track option) {
             <label [nzValue]="option.status" nz-checkbox>
-              <span translate>fileTransfer.search.label.{{option.text}}</span>
+              <span >{{ 'fileTransfer.search.label.' + option.text | translate }}</span>
             </label>
           }
         </nz-checkbox-group>
@@ -146,21 +146,21 @@
     </div>
 
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.numOfFilesFrom</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " >{{ 'fileTransfer.search.label.numOfFilesFrom' | translate }}</label>
       <div class="col-sm-6">
         <nz-input-number name="numOfFilesFrom" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesFrom' | translate"
                          [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesFrom"></nz-input-number>
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.numOfFilesTo</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " >{{ 'fileTransfer.search.label.numOfFilesTo' | translate }}</label>
       <div class="col-sm-6">
         <nz-input-number name="numOfFilesTo" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesTo' | translate"
                          [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesTo"></nz-input-number>
       </div>
     </div>
     <div class="form-group row b-t p-t-12">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceFilePaths</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.sourceFilePaths' | translate }}</label>
       <div class=" col-sm-6">
         @for (sourceFile of filter.sourceFiles; track $index; let i = $index) {
           <div>
@@ -178,14 +178,14 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceHost</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.sourceHost' | translate }}</label>
       <div class=" col-sm-6">
         <input [(ngModel)]="filter.sourceHost" class="form-control"
                name="sourceHost" placeholder="{{'fileTransfer.search.placeholder.sourceHost' | translate}}">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceProtocol</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.sourceProtocol' | translate }}</label>
       <div class="col-sm-6">
         <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="true"
                           [isSearchable]="true"
@@ -195,7 +195,7 @@
       </div>
     </div>
     <div class="form-group row b-t p-t-12">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetFilePaths</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.targetFilePaths' | translate }}</label>
       <div class=" col-sm-6">
         @for (targetFile of filter.targetFiles; track $index; let i = $index) {
           <div>
@@ -213,14 +213,14 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetHost</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.targetHost' | translate }}</label>
       <div class=" col-sm-6">
         <input [(ngModel)]="filter.targetHost" class="form-control"
                name="targetHost" placeholder="{{'fileTransfer.search.placeholder.targetHost' | translate}}">
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.targetProtocol</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'fileTransfer.search.label.targetProtocol' | translate }}</label>
       <div class=" col-sm-6">
         <app-select-input [attributeName]="'targetProtocol'" [isAllowClear]="true" [isSearchable]="true"
                           [isMultiple]="true" [placeholder]="'fileTransfer.search.placeholder.targetProtocol'"
@@ -230,7 +230,7 @@
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4" >{{ 'customization.label.sharedCustomization' | translate }}</label>
         <div class="col-sm-6">
           <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
         </div>
@@ -238,7 +238,7 @@
     }
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search();" class="btn btn-primary btn-sm" translate type="button">common.button.search</button>
+        <button (click)="search();" class="btn btn-primary btn-sm" type="button">{{ 'common.button.search' | translate }}</button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
           @if (submitted) {
@@ -246,7 +246,7 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">{{ 'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -259,7 +259,7 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel</button>
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
     </div>
   }
   @if (isSearch && preferences.showHelpPages) {

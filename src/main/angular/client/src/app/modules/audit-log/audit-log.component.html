@@ -19,51 +19,51 @@
           @if (auditLog.type !== 'AUDITLOG') {
             <div class="btn-group m-l-12 hidden-btn-group">
               <button (click)="loadLoginHistory('all')" [ngClass]="{'btn-primary': historyLogin.filter.date=='all'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.all
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.all' | translate }}
               </button>
               <button (click)="loadLoginHistory('today')" [ngClass]="{'btn-primary': historyLogin.filter.date=='today'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.today
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.today' | translate }}
               </button>
               <button (click)="loadLoginHistory('-1h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-1h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last1
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last1' | translate }}
               </button>
               <button (click)="loadLoginHistory('-12h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-12h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last12
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last12' | translate }}
               </button>
               <button (click)="loadLoginHistory('-24h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-24h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last24
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last24' | translate }}
               </button>
               <button (click)="loadLoginHistory('-7d')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-7d'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.lastWeak
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.lastWeak' | translate }}
               </button>
             </div>
           }
           @if (auditLog.type === 'AUDITLOG') {
             <div class="btn-group m-l-12 hidden-btn-group">
               <button (click)="load('all')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='all'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.all
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.all' | translate }}
               </button>
               <button (click)="load('today')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='today'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.today
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.today' | translate }}
               </button>
               <button (click)="load('-1h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last1
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last1' | translate }}
               </button>
               <button (click)="load('-12h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last12
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last12' | translate }}
               </button>
               <button (click)="load('-24h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.last24
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.last24' | translate }}
               </button>
               <button (click)="load('-7d')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.lastWeak
+                      class="btn btn-grey btn-sm" >{{ 'filters.button.lastWeak' | translate }}
               </button>
             </div>
           }
           @if (auditLog.type === 'AUDITLOG') {
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate type="button">
+                      nzTrigger="click" type="button">
                 common.label.anyDate
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
@@ -71,27 +71,27 @@
                 <ul nz-menu>
                   <li (click)="load('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.all</a>
+                    <a >{{ 'filters.button.all' | translate }}</a>
                   </li>
                   <li (click)="load('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.today</a>
+                    <a >{{ 'filters.button.today' | translate }}</a>
                   </li>
                   <li (click)="load('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.last1</a>
+                    <a >{{ 'filters.button.last1' | translate }}</a>
                   </li>
                   <li (click)="load('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.last12</a>
+                    <a >{{ 'filters.button.last12' | translate }}</a>
                   </li>
                   <li (click)="load('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.last24</a>
+                    <a >{{ 'filters.button.last24' | translate }}</a>
                   </li>
                   <li (click)="load('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}"
                       nz-menu-item>
-                    <a translate>filters.button.lastWeak</a>
+                    <a >{{ 'filters.button.lastWeak' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -113,12 +113,12 @@
                   @if (permission.joc && permission.joc.administration.customization.manage) {
                     <li (click)="createCustomization()"
                         nz-menu-item>
-                      <a translate>customization.label.createCustomization</a>
+                      <a >{{ 'customization.label.createCustomization' | translate }}</a>
                     </li>
                   }
                   @if (filterList.length>0) {
                     <li nz-menu-item>
-                      <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                      <a (click)="editFilters()" >{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                     </li>
                   }
                   @if (filterList.length>0) {
@@ -157,7 +157,7 @@
           <li class="nav-item">
             <a (click)="auditLogTab()" [ngClass]="{'active': auditLog.type=='AUDITLOG'}" class="nav-link">
               <span class="nav-text text-dark p-b-sm">
-                <span class="text" translate>auditLog.tab.auditLog</span>
+                <span class="text" >{{ 'auditLog.tab.auditLog' | translate }}</span>
                 </span>
             </a>
           </li>
@@ -167,7 +167,7 @@
           <li class="nav-item">
             <a (click)="loginHistoryTab()" [ngClass]="{'active': auditLog.type=='LOGINHISTORY'}" class="nav-link">
               <span class="nav-text text-dark p-b-sm">
-                <span class="text" translate>auditLog.tab.loginHistory</span>
+                <span class="text" >{{ 'auditLog.tab.loginHistory' | translate }}</span>
               </span>
             </a>
           </li>
@@ -185,14 +185,14 @@
         @if (!showSearchPanel && auditLog.type === 'AUDITLOG') {
           <button (click)="advancedSearch()"
                   class="btn btn-sm inline pull-right m-l btn-grey">
-            <span translate>common.button.advancedSearch</span>
+            <span >{{ 'common.button.advancedSearch' | translate }}</span>
             <i class="fa fa-caret-down p-l-xs"></i>
           </button>
         }
         @if (showSearchPanel && auditLog.type === 'AUDITLOG') {
           <button (click)="cancel()"
                   class="btn btn-sm inline pull-right m-l btn-grey">
-            <span translate>common.button.advancedSearch</span>
+            <span >{{ 'common.button.advancedSearch' | translate }}</span>
             <i class="fa fa-caret-down p-l-xs"></i>
           </button>
         }
@@ -253,7 +253,7 @@
               <tr>
                 @if (!adtLog.current) {
                   <th (click)="sort('controllerId')" nzWidth="185px"><a><span class="p-r-xs"
-                                                                              translate>common.label.controllerId</span>
+                                                                              >{{ 'common.label.controllerId' | translate }}</span>
                     @if (adtLog.filter.sortBy == 'controllerId' && !adtLog.reverse) {
                       <i class="fa fa-caret-up "></i>
                     }
@@ -263,7 +263,7 @@
                   </th>
                 }
                 <th (click)="sort('created')" nzWidth="185px"><a><span class="p-r-xs"
-                                                                       translate>auditLog.label.created</span>
+                                                                       >{{ 'auditLog.label.created' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'created' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -271,7 +271,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('account')"><a><span class="p-r-xs" translate>auditLog.label.account</span>
+                <th (click)="sort('account')"><a><span class="p-r-xs" >{{ 'auditLog.label.account' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'account' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -279,7 +279,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('request')"><a><span class="p-r-xs" translate>auditLog.label.request</span>
+                <th (click)="sort('request')"><a><span class="p-r-xs" >{{ 'auditLog.label.request' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'request' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -287,7 +287,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('category')"><a><span class="p-r-xs" translate>auditLog.label.category</span>
+                <th (click)="sort('category')"><a><span class="p-r-xs" >{{ 'auditLog.label.category' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'category' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -295,7 +295,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('comment')"><a><span class="p-r-xs" translate>auditLog.label.comment</span>
+                <th (click)="sort('comment')"><a><span class="p-r-xs" >{{ 'auditLog.label.comment' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'comment' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -303,7 +303,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('timeSpent')"><a><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
+                <th (click)="sort('timeSpent')"><a><span class="p-r-xs" >{{ 'auditLog.label.timeSpend' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'timeSpent' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -311,7 +311,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('ticketLink')"><a><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
+                <th (click)="sort('ticketLink')"><a><span class="p-r-xs" >{{ 'auditLog.label.ticketLink' | translate }}</span>
                   @if (adtLog.filter.sortBy == 'ticketLink' && !adtLog.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -369,7 +369,7 @@
                         <td></td>
                         <td colspan="7">
                           <div class="m-a-0">
-                            <span class="_500" translate>auditLog.label.requestBody</span>
+                            <span class="_500" >{{ 'auditLog.label.requestBody' | translate }}</span>
                             :
                             <span [innerHtml]="auditLog.parameters"></span>
                           </div>
@@ -388,7 +388,7 @@
                           <td></td>
                           <td colspan="7">
                             <div class="m-a-0">
-                              <span class="_500" translate>auditLog.label.details</span>
+                              <span class="_500" >{{ 'auditLog.label.details' | translate }}</span>
                               :
                               <span>{{auditLog.details | json}}</span>
                             </div>
@@ -403,12 +403,12 @@
           </div>
           @if (ajaxTable.data.length >0) {
             <div class="w-half label-top"><span
-              translate>common.label.total</span> {{data.length}}
+              >{{ 'common.label.total' | translate }}</span> {{data.length}}
               @if (ajaxTable.data.length >1) {
-                <span translate>auditLog.label.auditLogsFound</span>
+                <span >{{ 'auditLog.label.auditLogsFound' | translate }}</span>
               }
               @if (ajaxTable.data.length ==1) {
-                <span translate>auditLog.label.auditLogFound</span>
+                <span >{{ 'auditLog.label.auditLogFound' | translate }}</span>
               }
             </div>
           }
@@ -434,10 +434,10 @@
               <thead>
               <tr>
                 @if (permission.joc && permission.joc.administration.accounts.manage) {
-                  <th class="menu"><span translate>common.label.action</span></th>
+                  <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
                 }
                 <th (click)="sort('accountName')" nzWidth="30%"><a>
-                  <span class="p-r-xs" translate>auditLog.label.account</span>
+                  <span class="p-r-xs" >{{ 'auditLog.label.account' | translate }}</span>
                   @if (historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -447,7 +447,7 @@
                 </a>
                 </th>
                 <th (click)="sort('loginDate')"><a>
-                  <span class="p-r-xs" translate>auditLog.label.loginDate</span>
+                  <span class="p-r-xs" >{{ 'auditLog.label.loginDate' | translate }}</span>
                   @if (historyLogin.filter.sortBy == 'loginDate' && !historyLogin.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -470,7 +470,7 @@
                             <ul nz-menu>
                               <li (click)="addBlockedAccounts(account)" [nzDisabled]="account.accountName === '*none'"
                                   nz-menu-item>
-                                <a translate>user.button.addToBlocklist</a>
+                                <a >{{ 'user.button.addToBlocklist' | translate }}</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -501,8 +501,8 @@
                                   nzSize="small">
                           <thead>
                           <tr>
-                            <th nzWidth="31%"><span translate>auditLog.label.identityServiceName</span></th>
-                            <th><span translate>auditLog.label.message</span></th>
+                            <th nzWidth="31%"><span >{{ 'auditLog.label.identityServiceName' | translate }}</span></th>
+                            <th><span >{{ 'auditLog.label.message' | translate }}</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -523,12 +523,12 @@
           </div>
           @if (ajaxTable.data.length >0) {
             <div class="w-half label-top"><span
-              translate>common.label.total</span> {{data.length}}
+              >{{ 'common.label.total' | translate }}</span> {{data.length}}
               @if (ajaxTable.data.length >1) {
-                <span translate>auditLog.label.loginsFound</span>
+                <span >{{ 'auditLog.label.loginsFound' | translate }}</span>
               }
               @if (ajaxTable.data.length ==1) {
-                <span translate>auditLog.label.loginFound</span>
+                <span >{{ 'auditLog.label.loginFound' | translate }}</span>
               }
             </div>
           }

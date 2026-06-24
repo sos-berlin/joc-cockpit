@@ -1,12 +1,13 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  SimpleChanges,
-  Input,
-  ViewChild,
   ElementRef,
-  Output,
   EventEmitter,
-  ChangeDetectorRef
+  Input,
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
@@ -43,7 +44,8 @@ declare const mxCellOverlay: any;
   standalone: false,
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
-  styleUrl: './dependencies.component.scss'
+  styleUrl: './dependencies.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;
@@ -137,6 +139,7 @@ export class DependenciesComponent {
 
   ngAfterViewInit() {
     this.initGraph();
+    setTimeout(() => this.cd.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {
@@ -220,6 +223,7 @@ export class DependenciesComponent {
     this.coreService.post('plans/ids', requestPayload)
       .subscribe((res) => {
         this.isLoaded = true;
+        this.cd.markForCheck();
         this.processData(res);
       });
   }
@@ -1216,6 +1220,7 @@ export class DependenciesComponent {
       controllerId: this.schedulerId,
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
+      this.cd.markForCheck();
       this.workflowData = res;
       if (res.noticeBoards) {
         this.noticeBoards = res.noticeBoards;
@@ -1232,6 +1237,7 @@ export class DependenciesComponent {
       noticeSpaceKeys: [this.coreService.getStringDate(this.selectedDate)]
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
+      this.cd.markForCheck();
       this.workflowData = res;
 
       if (res.noticeBoards) {

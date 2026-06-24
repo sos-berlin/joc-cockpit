@@ -1,17 +1,18 @@
-import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Optional, Output, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from "@angular/forms";
 
 @Component({
   standalone: false,
   selector: 'app-select-input',
   templateUrl: './select-input.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   viewProviders: [{
     provide: ControlContainer,
     deps: [[Optional, NgForm]],
     useFactory: (ngForm: NgForm) => ngForm,
   }]
 })
-export class SelectInputComponent {
+export class SelectInputComponent implements OnChanges {
   @Input() placeholder = '';
   @Input() isMultiple = false;
   @Input() name = '';
@@ -34,7 +35,11 @@ export class SelectInputComponent {
   @Output() modelChange = new EventEmitter<any>();
   @Output() onBlur = new EventEmitter<any>();
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
+  }
+
+  ngOnChanges(_changes: SimpleChanges): void {
+    this.cdr.markForCheck();
   }
 
 }

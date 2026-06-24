@@ -5,7 +5,7 @@
         <form (ngSubmit)="onSubmit()">
           <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
             <h4 class="modal-title">
-              <span translate="">inventory.search.label.filterBy</span>
+              <span>{{ 'inventory.search.label.filterBy' | translate }}</span>
               @if (filter.submit && isHide && (filter.workflowPaths.length > 0 || filter.workflowFolders.length > 0 ||
                 filter.schedulePaths.length > 0 || filter.scheduleFolders.length > 0)) {
                 <i class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>
@@ -24,7 +24,7 @@
             <div class="modal-body p-a p-t p-b-xs">
               <div class="form-group row">
                 <label class="col-md-2 form-control-label"
-                       translate>dailyPlan.label.workflows</label>
+                       >{{ 'dailyPlan.label.workflows' | translate }}</label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
                                     [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
@@ -33,7 +33,7 @@
               </div>
               @if (filter.workflowFolders?.length > 0) {
                 <div class="form-group row">
-                  <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
+                  <label class="col-md-2" >{{ 'dailyPlan.label.workflowFolders' | translate }}</label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.workflowFolders; track path) {
                       <div>
@@ -46,7 +46,7 @@
               }
               <div class="form-group row">
                 <label class="col-md-2 form-control-label"
-                       translate>dailyPlan.label.schedules</label>
+                       >{{ 'dailyPlan.label.schedules' | translate }}</label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
                                     [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
@@ -55,7 +55,7 @@
               </div>
               @if (filter.scheduleFolders?.length > 0) {
                 <div class="form-group row">
-                  <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
+                  <label class="col-md-2" >{{ 'dailyPlan.label.scheduleFolders' | translate }}</label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.scheduleFolders; track path) {
                       <div>
@@ -77,8 +77,8 @@
                 }
                 {{'common.button.search' | translate}}
               </button>
-              <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-                common.button.cancel
+              <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+                {{'common.button.cancel' | translate }}
               </button>
             </div>
           }

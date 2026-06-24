@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>inventory.label.impactedSchedules</span>
+    <span class="drag-text" >{{ 'inventory.label.impactedSchedules' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close"
           type="button">
@@ -10,7 +10,7 @@
 <div class="modal-body p-a max-ht-120">
   <div class="row text-center">
     <div class="col-sm-12 m-t">
-      <span translate>inventory.message.impactedSchedules</span>
+      <span >{{ 'inventory.message.impactedSchedules' | translate }}</span>
     </div>
   </div>
   @if (impactedSchedules?.length > 0) {
@@ -30,8 +30,7 @@
   }
 </div>
 <div class="modal-footer">
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-          translate type="button">
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
     common.button.close
   </button>
 </div>

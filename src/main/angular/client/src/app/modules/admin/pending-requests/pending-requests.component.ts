@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
@@ -11,7 +11,8 @@ import {DataService} from '../data.service';
   standalone: false,
   selector: 'app-pending-requests',
   templateUrl: './pending-requests.component.html',
-  styleUrls: ['./pending-requests.component.scss']
+  styleUrls: ['./pending-requests.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PendingRequestsComponent {
   requests: any = {};
@@ -34,7 +35,8 @@ export class PendingRequestsComponent {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, private modal: NzModalService, private coreService: CoreService,
-              private dataService: DataService, private searchPipe: SearchPipe, private orderPipe: OrderPipe) {
+              private dataService: DataService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -66,6 +68,7 @@ export class PendingRequestsComponent {
       this.pendingRequests = res.fidoRegistrationItems;
       this.loading = false;
       this.searchInResult();
+      this.cdr.markForCheck();
     })
   }
 

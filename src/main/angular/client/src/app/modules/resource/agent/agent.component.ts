@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -62,7 +62,8 @@ export class ConfirmNodeModalComponent {
 @Component({
   standalone: false,
   selector: 'app-agent-cluster',
-  templateUrl: 'agent.component.html'
+  templateUrl: 'agent.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentComponent {
   loading: boolean;
@@ -80,7 +81,8 @@ export class AgentComponent {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService) {
+              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -166,9 +168,11 @@ private getAgentClassList(obj): void {
       this.agentClusters = [...updatedAgents];
       this.searchInResult();
       this.loading = false;
+      this.cdr.markForCheck();
     },
     error: () => {
       this.loading = false;
+      this.cdr.markForCheck();
     }
   });
 }

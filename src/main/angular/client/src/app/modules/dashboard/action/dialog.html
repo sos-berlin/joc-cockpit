@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>common.label.writeComment</span>
+    <span >{{ 'common.label.writeComment' | translate }}</span>
     @if (controllerID) {
       <span>: {{controllerID}}</span>
     }
@@ -13,13 +13,13 @@
   <div class="modal-body container">
     @if (comments.name) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.controllerId</label>
+        <label class="col-sm-4" >{{ 'common.label.controllerId' | translate }}</label>
         <label class="col-sm-8">{{comments.name}}</label>
       </div>
     }
     @if (comments.operation) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.operation</label>
+        <label class="col-sm-4" >{{ 'common.label.operation' | translate }}</label>
         <label class="col-sm-8">{{comments.operation}}</label>
       </div>
     }
@@ -37,8 +37,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

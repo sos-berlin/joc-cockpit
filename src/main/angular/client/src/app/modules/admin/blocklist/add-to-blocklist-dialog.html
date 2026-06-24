@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>user.button.addToBlocklist</span>
+    <span >{{ 'user.button.addToBlocklist' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,7 +14,7 @@
     @if (bulkBlock) {
       <div [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid)}"
            class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.user
+        <label class="col-sm-4 form-control-label" >{{ 'user.label.user' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -23,7 +23,7 @@
           @if (account.invalid && (account.dirty || account.touched)) {
             <div class="text-danger help-block">
               @if (account.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -33,12 +33,12 @@
 
     @if (!bulkBlock) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>auditLog.label.account</label>
+        <label class="col-sm-4" >{{ 'auditLog.label.account' | translate }}</label>
         <label class="col-sm-8">{{obj.accountName}}</label>
       </div>
     }
     <div class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>common.label.comment</label>
+      <label class="col-sm-4 form-control-label" >{{ 'common.label.comment' | translate }}</label>
       <div class="col-sm-6">
         <textarea class="form-control" name="bComment" rows="2" [(ngModel)]="comment"></textarea>
       </div>
@@ -52,7 +52,7 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -2344,7 +2345,8 @@ export class ApiRequestDialogComponent {
 @Component({
   standalone: false,
   selector: 'app-job-wizard',
-  templateUrl: './job-wizard.component.html'
+  templateUrl: './job-wizard.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JobWizardComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -2386,7 +2388,7 @@ export class JobWizardComponent {
   parameters: any;
   private searchTerm = new Subject<string>();
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -2431,7 +2433,8 @@ export class JobWizardComponent {
       next: (res: any) => {
         this.jobList = res.jobs;
         this.loading = false;
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -2445,8 +2448,10 @@ export class JobWizardComponent {
       next: (res) => {
         this.isTreeLoad = true;
         this.jobTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       }, error: () => {
         this.isTreeLoad = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2515,7 +2520,8 @@ export class JobWizardComponent {
             this.wizard.token = res.token;
             this.jobTemplates = res.results;
             this.wizard.loading = false;
-          }, error: () => this.wizard.loading = false
+            this.cdr.markForCheck();
+          }, error: () => { this.wizard.loading = false; this.cdr.markForCheck(); }
         });
       }
     } else {
@@ -2534,6 +2540,7 @@ export class JobWizardComponent {
       this.wizard.indeterminate = false;
       this.checkRequiredParam();
       this.isAnyRequiredVariable();
+      this.cdr.markForCheck();
     });
   }
 
@@ -2586,8 +2593,10 @@ export class JobWizardComponent {
           this.wizard.indeterminate = false;
           this.checkRequiredParam(true);
           this.isAnyRequiredVariable();
+          this.cdr.markForCheck();
         }, error: () => {
           job.loading = false;
+          this.cdr.markForCheck();
         }
       });
     }

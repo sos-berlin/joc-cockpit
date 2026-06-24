@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
@@ -27,7 +27,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-controller-cluster',
-  templateUrl: './controller-cluster.component.html'
+  templateUrl: './controller-cluster.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
@@ -51,7 +52,7 @@ export class ControllerClusterComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
               private elementRef: ElementRef, private translate: TranslateService, public modal: NzModalService,
-              private nzContextMenuService: NzContextMenuService) {
+              private nzContextMenuService: NzContextMenuService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
     });
@@ -71,7 +72,7 @@ export class ControllerClusterComponent {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     setTimeout(() => {
       this.alignCenter();
@@ -134,7 +135,7 @@ export class ControllerClusterComponent {
         } else {
           this.createEditor();
         }
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -460,7 +461,8 @@ export class ControllerClusterComponent {
           this.createWorkflowDiagram(this.editor.graph);
         }
         this.isDataLoaded = true;
-      }, error: () => this.isDataLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isDataLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -624,6 +626,7 @@ export class ControllerClusterComponent {
       // Updates the display
       graph.getModel().endUpdate();
     }
+    this.cdr.markForCheck();
     setTimeout(() => {
       this.alignCenter();
     }, 0);

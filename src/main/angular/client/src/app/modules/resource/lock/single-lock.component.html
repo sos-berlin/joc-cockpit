@@ -29,16 +29,16 @@
             >
               <thead>
               <tr>
-                <th><span translate>resource.lock.label.name</span></th>
+                <th><span >{{ 'resource.lock.label.name' | translate }}</span></th>
                 @if (isPathDisplay) {
-                  <th><span translate>common.label.path</span></th>
+                  <th><span >{{ 'common.label.path' | translate }}</span></th>
                 }
-                <th><span translate>resource.lock.label.deploymentDate</span></th>
-                <th><span translate>common.label.status</span></th>
-                <th><span translate>resource.lock.label.acquiredLockCount</span></th>
-                <th><span translate>resource.lock.label.ordersHoldingLocks</span></th>
-                <th><span translate>resource.lock.label.ordersWaitingForLocks</span></th>
-                <th><span translate>resource.lock.label.limit</span></th>
+                <th><span >{{ 'resource.lock.label.deploymentDate' | translate }}</span></th>
+                <th><span >{{ 'common.label.status' | translate }}</span></th>
+                <th><span >{{ 'resource.lock.label.acquiredLockCount' | translate }}</span></th>
+                <th><span >{{ 'resource.lock.label.ordersHoldingLocks' | translate }}</span></th>
+                <th><span >{{ 'resource.lock.label.ordersWaitingForLocks' | translate }}</span></th>
+                <th><span >{{ 'resource.lock.label.limit' | translate }}</span></th>
               </tr>
               </thead>
               <tbody>
@@ -110,7 +110,7 @@
                                   [nzSize]="'small'" class="m-a-0 inner-table">
                           <thead>
                           <tr>
-                            <th class="text-left" colspan="8"><span translate>order.label.workflow</span></th>
+                            <th class="text-left" colspan="8"><span >{{ 'order.label.workflow' | translate }}</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -141,10 +141,10 @@
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td class="custom-th" colspan="3"><span class="p-l" translate>order.label.orderId</span></td>
-                                    <td class="custom-th" colspan="3"><span translate>workflow.label.label</span></td>
-                                    <td class="custom-th"><span translate>order.label.state</span></td>
-                                    <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                                    <td class="custom-th" colspan="3"><span class="p-l" >{{ 'order.label.orderId' | translate }}</span></td>
+                                    <td class="custom-th" colspan="3"><span >{{ 'workflow.label.label' | translate }}</span></td>
+                                    <td class="custom-th"><span >{{ 'order.label.state' | translate }}</span></td>
+                                    <td class="custom-th"><span >{{ 'order.label.scheduledFor' | translate }}</span></td>
                                   </tr>
                                   @for (item of workflow.ordersWaitingForLocks; track item) {
                                     <tr>
@@ -171,10 +171,10 @@
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td class="custom-th" colspan="3"><span class="p-l" translate>order.label.orderId</span></td>
-                                    <td class="custom-th" colspan="3"><span translate>workflow.label.label</span></td>
-                                    <td class="custom-th"><span translate>order.label.state</span></td>
-                                    <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                                    <td class="custom-th" colspan="3"><span class="p-l" >{{ 'order.label.orderId' | translate }}</span></td>
+                                    <td class="custom-th" colspan="3"><span >{{ 'workflow.label.label' | translate }}</span></td>
+                                    <td class="custom-th"><span >{{ 'order.label.state' | translate }}</span></td>
+                                    <td class="custom-th"><span >{{ 'order.label.scheduledFor' | translate }}</span></td>
                                   </tr>
                                   @for (item of workflow.ordersHoldingLocks; track item) {
                                     <tr>

@@ -1,7 +1,7 @@
-<nz-tabset [(nzSelectedIndex)]="index">
+<nz-tabs [(nzSelectedIndex)]="index">
   @if (permission.currentController && permission.currentController.orders.view) {
     <nz-tab (nzClick)="loadOrderHistory()" [nzTitle]="'history.label.orderHistory' | translate">
-      <a (click)="navToHistory('ORDER')" class="text-primary text-hover-primary pos-abt r-15" style="top: -45px" translate>common.button.viewHistory</a>
+      <a (click)="navToHistory('ORDER')" class="text-primary text-hover-primary pos-abt r-15" style="top: -45px" >{{ 'common.button.viewHistory' | translate }}</a>
       <div class="table-responsive" id="orderTable">
         <nz-table
           #orderHistoryTable
@@ -14,9 +14,9 @@
         >
           <thead>
           <tr>
-            <th class=" menu"><span translate>common.label.action</span></th>
+            <th class=" menu"><span >{{ 'common.label.action' | translate }}</span></th>
             <th (click)="sort('orderId','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.orderId</span>
+              <span class="p-r-xs" >{{ 'history.label.orderId' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'orderId' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -24,7 +24,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('label','orderHistory')" class="dynamic-thead"><a><span
-              class="p-r-xs" translate>workflow.label.label</span>
+              class="p-r-xs" >{{ 'workflow.label.label' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'label' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -32,7 +32,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('state._text','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.status</span>
+              <span class="p-r-xs" >{{ 'history.label.status' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'state._text' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -40,7 +40,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('orderState._text','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.orderState</span>
+              <span class="p-r-xs" >{{ 'history.label.orderState' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'orderState._text' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -48,7 +48,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('plannedTime','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.plannedTime</span>
+              <span class="p-r-xs" >{{ 'history.label.plannedTime' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'plannedTime' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -56,7 +56,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('startTime','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.startTime</span>
+              <span class="p-r-xs" >{{ 'history.label.startTime' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'startTime' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -64,7 +64,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('endTime','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.endTime</span>
+              <span class="p-r-xs" >{{ 'history.label.endTime' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'endTime' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -72,7 +72,7 @@
                 <i class="fa fa-caret-down "></i>
               }</a></th>
             <th (click)="sort('duration','orderHistory')" class="dynamic-thead"><a>
-              <span class="p-r-xs" translate>history.label.duration</span>
+              <span class="p-r-xs" >{{ 'history.label.duration' | translate }}</span>
               @if (workflowFilters.historyFilter.sortBy == 'duration' && !workflowFilters.historyFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -93,14 +93,14 @@
                     <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                       <ul nz-menu>
                         <li (click)="coreService.copyArguments(history, 'arguments', message)" nz-menu-item [nzDisabled]="!history.arguments">
-                          <a translate>common.button.copyArguments</a>
+                          <a >{{ 'common.button.copyArguments' | translate }}</a>
                         </li>
                         <li nz-menu-divider></li>
                         <li (click)="coreService.copyLink('order',history.orderId, history.workflow)" nz-menu-item>
-                          <a translate>common.button.copyLinkToObject</a>
+                          <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                         </li>
                         <li (click)="copyOrderId(history.orderId)" nz-menu-item>
-                          <a translate>common.button.copyOrderId</a>
+                          <a >{{ 'common.button.copyOrderId' | translate }}</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
@@ -179,7 +179,7 @@
   }
   @if (permission.currentController && permission.currentController.orders.view) {
     <nz-tab (nzClick)="loadTaskHistory()" [nzTitle]="'history.label.taskHistory' | translate">
-      <a (click)="navToHistory('TASK')" class="text-primary text-hover-primary pos-abt r-15" style="top: -45px" translate>common.button.viewHistory</a>
+      <a (click)="navToHistory('TASK')" class="text-primary text-hover-primary pos-abt r-15" style="top: -45px" >{{ 'common.button.viewHistory' | translate }}</a>
       <div class="table-responsive">
         <nz-table
           #taskHistoryTable
@@ -191,42 +191,42 @@
         >
           <thead>
           <tr>
-            <th (click)="sort('job','taskHistory')"><span class="p-r-xs" translate>history.label.job</span>
+            <th (click)="sort('job','taskHistory')"><span class="p-r-xs" >{{ 'history.label.job' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'job' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'job' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('label','taskHistory')"><span class="p-r-xs" translate>workflow.label.label</span>
+            <th (click)="sort('label','taskHistory')"><span class="p-r-xs" >{{ 'workflow.label.label' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'label' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'label' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('state._text','taskHistory')"><span class="p-r-xs" translate>history.label.status</span>
+            <th (click)="sort('state._text','taskHistory')"><span class="p-r-xs" >{{ 'history.label.status' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'state._text' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'state._text' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('startTime','taskHistory')"><span class="p-r-xs" translate>history.label.startTime</span>
+            <th (click)="sort('startTime','taskHistory')"><span class="p-r-xs" >{{ 'history.label.startTime' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'startTime' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'startTime' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('endTime','taskHistory')"><span class="p-r-xs" translate>history.label.endTime</span>
+            <th (click)="sort('endTime','taskHistory')"><span class="p-r-xs" >{{ 'history.label.endTime' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'endTime' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'endTime' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('duration','taskHistory')"><span class="p-r-xs" translate>history.label.duration</span>
+            <th (click)="sort('duration','taskHistory')"><span class="p-r-xs" >{{ 'history.label.duration' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'duration' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -234,14 +234,14 @@
                 <i class="fa fa-caret-down "></i>
               }</th>
             <th (click)="sort('criticality','taskHistory')"><span class="p-r-xs"
-                                                                  translate>history.label.criticality</span>
+                                                                  >{{ 'history.label.criticality' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'criticality' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.taskHistoryFilter.sortBy == 'criticality' && workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('returnCode','taskHistory')"><span class="p-r-xs" translate>history.label.returnCode</span>
+            <th (click)="sort('returnCode','taskHistory')"><span class="p-r-xs" >{{ 'history.label.returnCode' | translate }}</span>
               @if (workflowFilters.taskHistoryFilter.sortBy == 'returnCode' && !workflowFilters.taskHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -298,7 +298,7 @@
   @if (jobName && permission.currentController && permission.currentController.orders.view) {
     <nz-tab (nzClick)="loadJobHistory()" [nzTitle]="titleTemplate">
       <ng-template #titleTemplate>
-        <span translate>history.label.jobHistory</span>
+        <span >{{ 'history.label.jobHistory' | translate }}</span>
         <span class="text-muted p-l-xs">({{jobName}})</span>
       </ng-template>
       <div class="table-responsive">
@@ -312,49 +312,49 @@
         >
           <thead>
           <tr>
-            <th (click)="sort('label','jobHistory')"><span class="p-r-xs" translate>workflow.label.label</span>
+            <th (click)="sort('label','jobHistory')"><span class="p-r-xs" >{{ 'workflow.label.label' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'label' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'label' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('state._text','jobHistory')"><span class="p-r-xs" translate>history.label.status</span>
+            <th (click)="sort('state._text','jobHistory')"><span class="p-r-xs" >{{ 'history.label.status' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'state._text' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'state._text' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('startTime','jobHistory')"><span class="p-r-xs" translate>history.label.startTime</span>
+            <th (click)="sort('startTime','jobHistory')"><span class="p-r-xs" >{{ 'history.label.startTime' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'startTime' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'startTime' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('endTime','jobHistory')"><span class="p-r-xs" translate>history.label.endTime</span>
+            <th (click)="sort('endTime','jobHistory')"><span class="p-r-xs" >{{ 'history.label.endTime' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'endTime' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'endTime' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('duration','jobHistory')"><span class="p-r-xs" translate>history.label.duration</span>
+            <th (click)="sort('duration','jobHistory')"><span class="p-r-xs" >{{ 'history.label.duration' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'duration' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'duration' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('criticality','jobHistory')"><span class="p-r-xs" translate>history.label.criticality</span>
+            <th (click)="sort('criticality','jobHistory')"><span class="p-r-xs" >{{ 'history.label.criticality' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'criticality' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.jobHistoryFilter.sortBy == 'criticality' && workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('returnCode','jobHistory')"><span class="p-r-xs" translate>history.label.returnCode</span>
+            <th (click)="sort('returnCode','jobHistory')"><span class="p-r-xs" >{{ 'history.label.returnCode' | translate }}</span>
               @if (workflowFilters.jobHistoryFilter.sortBy == 'returnCode' && !workflowFilters.jobHistoryFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -411,49 +411,49 @@
         >
           <thead>
           <tr>
-            <th (click)="sort('created','auditLog')"><span class="p-r-xs" translate>auditLog.label.created</span>
+            <th (click)="sort('created','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.created' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'created' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'created' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('account','auditLog')"><span class="p-r-xs" translate>auditLog.label.account</span>
+            <th (click)="sort('account','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.account' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'account' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'account' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('request','auditLog')"><span class="p-r-xs" translate>auditLog.label.request</span>
+            <th (click)="sort('request','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.request' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'request' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'request' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('category','auditLog')"><span class="p-r-xs" translate>auditLog.label.category</span>
+            <th (click)="sort('category','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.category' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'category' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'category' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('comment','auditLog')"><span class="p-r-xs" translate>auditLog.label.comment</span>
+            <th (click)="sort('comment','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.comment' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'comment' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'comment' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('timeSpend','auditLog')"><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
+            <th (click)="sort('timeSpend','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.timeSpend' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'timeSpend' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
               @if (workflowFilters.auditLogFilter.sortBy == 'timeSpend' && workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-down "></i>
               }</th>
-            <th (click)="sort('ticketLink','auditLog')"><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
+            <th (click)="sort('ticketLink','auditLog')"><span class="p-r-xs" >{{ 'auditLog.label.ticketLink' | translate }}</span>
               @if (workflowFilters.auditLogFilter.sortBy == 'ticketLink' && !workflowFilters.auditLogFilter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -498,7 +498,7 @@
                   <td></td>
                   <td colspan="6">
                     <div class="m-a-0">
-                      <span translate>auditLog.label.requestBody</span>
+                      <span >{{ 'auditLog.label.requestBody' | translate }}</span>
                       :
                       <span [innerHtml]="auditLog.parameters"></span>
                     </div>
@@ -511,4 +511,4 @@
       </div>
     </nz-tab>
   }
-</nz-tabset>
+</nz-tabs>

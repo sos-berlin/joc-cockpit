@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>workflow.label.valueEditor</span>
+    <span >{{ 'workflow.label.valueEditor' | translate }}</span>
   </h4>
   <a [codeEditor]="codeEditor" appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
@@ -38,16 +38,16 @@
                           name="expectBoardExpression"
                           required title="{{'workflow.placeholder.expression' | translate}}"></app-codemirror-editor>
         </div>
-        <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
+        <div class="text-sm text-muted" >{{ 'workflow.label.showNoticeBoardNames' | translate }}</div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm" translate type="submit">
+    <button class="btn btn-primary btn-sm" type="submit">
       common.button.submit
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

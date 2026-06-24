@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (board) {
-      <span translate>resource.board.button.post</span>
+      <span >{{ 'resource.board.button.post' | translate }}</span>
     }
     @if (!board) {
-      <span translate>resource.board.button.postAll</span>
+      <span >{{ 'resource.board.button.postAll' | translate }}</span>
     }
     {{board?.path}}
   </h4>
@@ -19,8 +19,8 @@
     </div>
     @if ((singular && showNoticeId) || (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')) {
       <div [ngClass]="{'has-error' : ((noticeKey.dirty || noticeKey.touched) && noticeKey.invalid)}" class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          resource.board.label.noticeKey
+        <label class="col-sm-4 form-control-label" >
+          {{ 'resource.board.label.noticeKey' | translate }}
           @if (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL') {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -39,19 +39,19 @@
 
     @if (!showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
+        <label class="col-sm-4 " >{{ 'resource.board.label.endOfLife' | translate }}</label>
         <div class="col-md-8">
           <nz-radio-group [(ngModel)]="postObj.at" name="at">
-            <label nz-radio nzValue="later"><span translate>common.label.relativeDate</span></label>
-            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+            <label nz-radio nzValue="later"><span >{{ 'common.label.relativeDate' | translate }}</span></label>
+            <label nz-radio nzValue="date"><span >{{ 'common.label.specificDate' | translate }}</span></label>
           </nz-radio-group>
         </div>
       </div>
     }
     @if (postObj.at == 'later' && !showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          common.label.time
+        <label class="col-sm-4 form-control-label" >
+          {{ 'common.label.time' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -61,11 +61,11 @@
           @if (time.errors && (time.dirty || time.touched)) {
             <div class="help-block text-danger">
               @if (!time.valid && !time.errors['required']) {
-                <div translate>common.message.invalid</div>
+                <div >{{ 'common.message.invalid' | translate }}</div>
               }
               @if (time.errors['required']) {
-                <div translate>
-                  common.message.requiredError
+                <div >
+                  {{ 'common.message.requiredError' | translate }}
                 </div>
               }
             </div>
@@ -75,8 +75,8 @@
     }
     @if (singular && showNoticeId) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          resource.board.label.planKey
+        <label class="col-sm-4 form-control-label" >
+          {{ 'resource.board.label.planKey' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -88,8 +88,8 @@
     }
     @if (postObj.at == 'date') {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>
-          workflow.label.enterDateAndTime
+        <label class="col-sm-4 form-control-label" >
+          {{ 'workflow.label.enterDateAndTime' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
@@ -102,7 +102,7 @@
     }
     @if (!showNoticeId) {
       <div class="form-group row">
-        <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+        <div class="col-sm-4 form-control-label" >{{ 'common.label.timeZone' | translate }}</div>
         <div class="col-sm-6">
           <nz-select [(ngModel)]="postObj.timeZone" name="timeZone" nzAllowClear nzShowSearch>
             @for (zone of zones; track zone) {
@@ -120,8 +120,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

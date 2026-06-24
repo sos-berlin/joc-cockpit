@@ -3,19 +3,19 @@
     @if (!new) {
       <span>
         @if (!isCluster) {
-          <span translate>agent.label.editAgent</span>
+          <span >{{ 'agent.label.editAgent' | translate }}</span>
         }
         @if (isCluster) {
-          <span translate>agent.label.editClusterAgent</span>
+          <span >{{ 'agent.label.editClusterAgent' | translate }}</span>
         }:
         <span [innerHtml]="data.agentName"></span>
       </span>
     }
     @if (new && !isCluster) {
-      <span translate>agent.label.addAgent</span>
+      <span >{{ 'agent.label.addAgent' | translate }}</span>
     }
     @if (new && isCluster) {
-      <span translate>agent.label.addClusterAgent</span>
+      <span >{{ 'agent.label.addClusterAgent' | translate }}</span>
     }
     @if (!isCluster && preferences.showHelpPages) {
       <i (click)="helpPage('initial-operation-register-agent-standalone')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
@@ -35,7 +35,7 @@
     </div>
     @if (!new) {
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" translate>agent.label.agentId</label>
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" >{{ 'agent.label.agentId' | translate }}</label>
         <div class="col-sm-8">
           {{agent.agentId}}
         </div>
@@ -43,7 +43,7 @@
     }
     @if (new) {
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3 form-control-label" translate>agent.label.agentId
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3 form-control-label" >{{ 'agent.label.agentId' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}" class=" col-sm-8">
@@ -53,10 +53,10 @@
           @if (agentId.invalid && (agentId.dirty || agentId.touched)) {
             <div class="text-danger help-block">
               @if (agentId.errors && agentId.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
               @if (agentId.errors.invalidIdentifier) {
-                <div translate>common.message.invalid</div>
+                <div >{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
@@ -66,13 +66,13 @@
     <div class="form-group row">
       @if (!isCluster) {
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentName' | translate" class="col-sm-3 form-control-label"
-               translate>agent.label.agentName
+               >{{ 'agent.label.agentName' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
       }
       @if (isCluster) {
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.agentClusterName' | translate"
-               class="col-sm-3 form-control-label" translate>agent.label.agentClusterName
+               class="col-sm-3 form-control-label" >{{ 'agent.label.agentClusterName' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
       }
@@ -83,7 +83,7 @@
         @if (agentName.invalid && (agentName.dirty || agentName.touched)) {
           <div class="text-danger help-block">
             @if (agentName.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -92,7 +92,7 @@
     <div class="form-group row">
       <label class="col-sm-3 form-control-label"
              nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.title' | translate) : ('agent.tooltip.title' | translate) }}"
-             translate>common.label.title</label>
+             >{{ 'common.label.title' | translate }}</label>
       <div class=" col-sm-8">
         <input [(ngModel)]="agent.title" [maxLength]="255" class="form-control"
                name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
@@ -103,7 +103,7 @@
         <label class="col-sm-3 form-control-label">
           @if (i==0) {
             <span
-              nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.agentNameAliases' | translate) : ('agent.tooltip.agentNameAliases' | translate) }}" translate>agent.label.agentNameAliases</span>
+              nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.agentNameAliases' | translate) : ('agent.tooltip.agentNameAliases' | translate) }}" >{{ 'agent.label.agentNameAliases' | translate }}</span>
           }
         </label>
         <div class=" col-sm-8">
@@ -125,11 +125,11 @@
     <div class="form-group row">
       <label class="col-sm-3"
              nz-tooltip="{{isCluster ? ('agent.cluster.tooltip.processLimit' | translate) : ('agent.tooltip.processLimit' | translate)}}"
-             translate>agent.label.processLimit</label>
+             >{{ 'agent.label.processLimit' | translate }}</label>
       <div class="col-sm-8">
         <nz-radio-group name="processLimitTry" [(ngModel)]="processLimitTry" (ngModelChange)="changeLimit($event)">
-          <label nz-radio nzValue="limited"><span translate>workflow.label.limited</span></label>
-          <label nz-radio nzValue="unlimited"><span translate>workflow.label.unlimited</span></label>
+          <label nz-radio nzValue="limited"><span >{{ 'workflow.label.limited' | translate }}</span></label>
+          <label nz-radio nzValue="unlimited"><span >{{ 'workflow.label.unlimited' | translate }}</span></label>
         </nz-radio-group>
       </div>
     </div>
@@ -143,7 +143,7 @@
     }
     @if (!isCluster) {
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.url' | translate" class="col-sm-3 form-control-label" >{{ 'agent.label.url' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class=" col-sm-8">
@@ -152,7 +152,7 @@
           @if (url.invalid && (url.dirty || url.touched)) {
             <div class="text-danger help-block">
               @if (url.errors && url.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -161,14 +161,14 @@
     }
     @if (isCluster && new) {
       <div class="form-group row">
-        <div class="col-sm-12 m-t-xs" translate>PRIMARY_DIRECTOR</div>
+        <div class="col-sm-12 m-t-xs" >{{ 'PRIMARY_DIRECTOR' | translate }}</div>
       </div>
     }
     @if (isCluster && new) {
       <div class="p-a b-a">
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
-                 translate>agent.label.subagentId
+                 >{{ 'agent.label.subagentId' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}"
@@ -179,24 +179,24 @@
             @if (subagentId.invalid && (subagentId.dirty || subagentId.touched)) {
               <div class="text-danger help-block">
                 @if (subagentId.errors && subagentId.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
                 @if (subagentId.errors.invalidIdentifier) {
-                  <div translate>common.message.invalid</div>
+                  <div >{{ 'common.message.invalid' | translate }}</div>
                 }
               </div>
             }
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" translate>common.label.title</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
           <div class=" col-sm-8">
             <input [(ngModel)]="agent.subtitle" [maxLength]="255" class="form-control"
                    name="subtitle" placeholder="{{'common.placeholder.title' | translate}}" type="text">
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" >{{ 'agent.label.url' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class="col-sm-8">
@@ -205,7 +205,7 @@
             @if (url.invalid && (url.dirty || url.touched)) {
               <div class="text-danger help-block">
                 @if (url.errors && url.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -213,7 +213,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3"
-                 translate>agent.label.withGenerateSubagentCluster</label>
+                 >{{ 'agent.label.withGenerateSubagentCluster' | translate }}</label>
           <div class="col-sm-6">
             <label [(ngModel)]="agent.withGenerateSubagentCluster" name="withGenerateSubagentCluster"
                    nz-checkbox></label>
@@ -223,14 +223,14 @@
     }
     @if (isCluster && new) {
       <div class="form-group row">
-        <div class="col-sm-12 m-t-12" translate>SECONDARY_DIRECTOR</div>
+        <div class="col-sm-12 m-t-12" >{{ 'SECONDARY_DIRECTOR' | translate }}</div>
       </div>
     }
     @if (isCluster && new) {
       <div class="p-a b-a">
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
-                 translate>agent.label.subagentId</label>
+                 >{{ 'agent.label.subagentId' | translate }}</label>
           <div [ngClass]="{'has-error' : ((subagentId2.dirty || subagentId2.touched) && subagentId2.invalid)}"
                class=" col-sm-8">
             <input #subagentId2="ngModel" [(ngModel)]="agent.subagentId2" class="form-control" identifierValidation name="subagentId2"
@@ -238,21 +238,21 @@
             @if (subagentId2.invalid && (subagentId2.dirty || subagentId2.touched)) {
               <div class="text-danger help-block">
                 @if (subagentId2.errors.invalidIdentifier) {
-                  <div translate>common.message.invalid</div>
+                  <div >{{ 'common.message.invalid' | translate }}</div>
                 }
               </div>
             }
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" translate>common.label.title</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
           <div class=" col-sm-8">
             <input [(ngModel)]="agent.subtitle2" [maxLength]="255" class="form-control"
                    name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}" type="text">
           </div>
         </div>
         <div class="row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" >{{ 'agent.label.url' | translate }}
             @if (agent.subagentId2 && agent.subagentId2.length > 0) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -264,7 +264,7 @@
             @if (url2.invalid && (url2.dirty || url2.touched)) {
               <div class="text-danger help-block">
                 @if (url2.errors && url2.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -274,7 +274,7 @@
     }
     @if (!new && !isCluster) {
       <div class="row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.hidden' | translate" class="col-sm-3" translate>agent.label.hidden</label>
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.hidden' | translate" class="col-sm-3" >{{ 'agent.label.hidden' | translate }}</label>
         <div class="col-sm-6">
           <label [(ngModel)]="agent.hidden" name="hidden" nz-checkbox></label>
         </div>
@@ -295,7 +295,7 @@
               <div class="p-a b-a">
                 <div class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
-                         translate>agent.label.subagentId
+                         >{{ 'agent.label.subagentId' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}"
@@ -306,7 +306,7 @@
                     @if (subagentId.invalid && (subagentId.dirty || subagentId.touched)) {
                       <div class="text-danger help-block">
                         @if (subagentId.errors.invalidIdentifier) {
-                          <div translate>common.message.invalid</div>
+                          <div >{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -314,7 +314,7 @@
                 </div>
                 <div class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
-                         translate>common.label.title</label>
+                         >{{ 'common.label.title' | translate }}</label>
                   <div class=" col-sm-8">
                     <input [(ngModel)]="item.title" [maxLength]="255" class="form-control"
                            name="title{{i}}" placeholder="{{'common.placeholder.title' | translate}}" type="text">
@@ -322,7 +322,7 @@
                 </div>
                 <div class="row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label"
-                         translate>agent.label.url
+                         >{{ 'agent.label.url' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class="col-sm-8">
@@ -331,7 +331,7 @@
                     @if (url.invalid && (url.dirty || url.touched)) {
                       <div class="text-danger help-block">
                         @if (url.errors && url.errors.required) {
-                          <div translate>common.message.requiredError</div>
+                          <div >{{ 'common.message.requiredError' | translate }}</div>
                         }
                       </div>
                     }
@@ -342,12 +342,12 @@
           </ng-container>
         }
         <div class="form-group row">
-          <div class="col-sm-12 m-t-12" translate>SECONDARY_DIRECTOR</div>
+          <div class="col-sm-12 m-t-12" >{{ 'SECONDARY_DIRECTOR' | translate }}</div>
         </div>
         <div class="p-a b-a">
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.cluster.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
-                   translate>agent.label.subagentId</label>
+                   >{{ 'agent.label.subagentId' | translate }}</label>
             <div [ngClass]="{'has-error' : ((subagentIdSec.dirty || subagentIdSec.touched) && subagentIdSec.invalid)}"
                  class=" col-sm-8">
               <input #subagentIdSec="ngModel" [(ngModel)]="secondaryDirector.subagentId" class="form-control" identifierValidation name="subagentIdSec"
@@ -356,7 +356,7 @@
               @if (subagentIdSec.invalid && (subagentIdSec.dirty || subagentIdSec.touched)) {
                 <div class="text-danger help-block">
                   @if (subagentIdSec.errors.invalidIdentifier) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -364,14 +364,14 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
-                   translate>common.label.title</label>
+                   >{{ 'common.label.title' | translate }}</label>
             <div class=" col-sm-8">
               <input [(ngModel)]="secondaryDirector.title" [maxLength]="255" class="form-control"
                      name="subtitle2" placeholder="{{'common.placeholder.title' | translate}}" type="text">
             </div>
           </div>
           <div class="row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" >{{ 'agent.label.url' | translate }}
               @if (secondaryDirector.subagentId && secondaryDirector.subagentId.length > 0) {
                 <sup class="text-danger text-sm">*</sup>
               }
@@ -383,7 +383,7 @@
               @if (suburl.invalid && (suburl.dirty || suburl.touched)) {
                 <div class="text-danger help-block">
                   @if (suburl.errors && suburl.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -401,8 +401,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

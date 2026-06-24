@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-order-overview',
-  templateUrl: './order-overview.component.html'
+  templateUrl: './order-overview.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderOverviewComponent {
   @Input('sizeX') xbody: number;
@@ -33,7 +34,7 @@ export class OrderOverviewComponent {
   ];
 
   constructor(public authService: AuthService, public coreService: CoreService,
-              private router: Router, private dataService: DataService,private modal: NzModalService) {
+              private router: Router, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -53,6 +54,10 @@ export class OrderOverviewComponent {
       this.notAuthenticate = true;
       this.isLoaded = true;
     }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {
@@ -86,9 +91,11 @@ export class OrderOverviewComponent {
       next: (res: any) => {
         this.orders = res.orders;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

@@ -1,91 +1,91 @@
 <ng-template #itemTemplate let-order>
   <ng-template #contentTemplate>
     <div class="p-l-sm">
-      <span translate> order.label.state </span>:
+      <span >{{ 'order.label.state' | translate }}</span>:
       <span class="_600"> {{order.state._text | translate}}</span>
     </div>
     @if (order.state._reason) {
       <div class="p-l-sm">
-        <span translate> common.label.comment </span>:
+        <span >{{ 'common.label.comment' | translate }}</span>:
         <span class="_600"> {{order.state._reason}}</span>
       </div>
     }
     @if (order.question) {
       <div class="p-l-sm">
-        <span translate> workflow.label.prompt </span>:
+        <span >{{ 'workflow.label.prompt' | translate }}</span>:
         <span class="_600"> {{order.question}}</span>
       </div>
     }
     @if (order.lastOutcome) {
       <div class="p-l-sm">
-        <span translate> order.label.lastOutcome </span>:
+        <span >{{ 'order.label.lastOutcome' | translate }}</span>:
         <span class="_600">{{order.lastOutcome.TYPE}}</span>
       </div>
     }
     @if (!order.cyclicOrder) {
       <div class="p-l-sm">
-        <span translate> order.label.scheduledFor </span>:
+        <span >{{ 'order.label.scheduledFor' | translate }}</span>:
         @if (!order.scheduledNever) {
           <span class="_600">{{order.scheduledFor | stringToDate}}</span>
         }
         @if (order.scheduledNever) {
-          <span class="_600 text-l-c" translate>common.label.never</span>
+          <span class="_600 text-l-c" >{{ 'common.label.never' | translate }}</span>
         }
       </div>
     }
     @if (order.cyclicOrder) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+        <div class="_600 m-b-xs" >{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.begin' | translate }}</span>:
         {{order.cyclicOrder.firstStart | stringToDate}}
         <br>
-        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.end' | translate }}</span>:
         {{order.cyclicOrder.lastStart | stringToDate}}
         <br>
-        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+        <span class="_600 p-l-sm" >{{ 'order.label.orders' | translate }}</span>:
         {{order.cyclicOrder.count}}
       </div>
     }
     @if (order.cycleState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+        <div class="_600 m-b-xs" >{{ 'order.cycleState.label.cycleState' | translate }}</div>
         @if (order.cycleState.since) {
           <span>
-            <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+            <span class="_600 p-l-sm" >{{ 'order.cycleState.label.since' | translate }}</span>:
             {{order.cycleState.since | stringToDate}}
           </span>
         }
         @if (order.cycleState.next) {
           <span>
-            <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+            <span class="_600 p-l-sm" >{{ 'order.cycleState.label.next' | translate }}</span>:
             {{order.cycleState.next | stringToDate}}
           </span>
         }
         <br>
-        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+        <span class="_600 p-l-sm" >{{ 'order.cycleState.label.index' | translate }}</span>:
         {{order.cycleState.index}}
       </div>
     }
     @if (order.retryState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+        <div class="_600 m-b-xs" >{{ 'order.retryState.label.retryState' | translate }}</div>
         @if (order.retryState.next) {
           <span>
-            <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+            <span class="_600 p-l-sm" >{{ 'order.retryState.label.next' | translate }}</span>:
             {{ order.retryState.next | stringToDate }}
           </span>
         }
         <br>
-        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+        <span class="_600 p-l-sm" >{{ 'order.retryState.label.attempt' | translate }}</span>:
         {{ order.retryState.attempt }}
       </div>
     }
     @if (order.sleepState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
+        <div class="_600 m-b-xs" >{{ 'order.sleepState.label.sleepState' | translate }}</div>
         @if (order.sleepState.until) {
           <span>
-            <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
+            <span class="_600 p-l-sm" >{{ 'order.sleepState.label.until' | translate }}</span>:
             {{ order.sleepState.until | stringToDate }}
           </span>
         }
@@ -93,7 +93,7 @@
     }
     @if (order.priority) {
       <div class="p-l-sm">
-        <span translate> order.label.priority </span>:
+        <span >{{ 'order.label.priority' | translate }}</span>:
         <span class="_600">{{order.priority}}</span>
       </div>
     }
@@ -105,7 +105,7 @@
       <i class="text-sm text-muted">{{order.scheduledFor | stringToDate}}</i>
     }
     @if (order.scheduledNever) {
-      <i class="text-sm text-muted" translate>common.label.never</i>
+      <i class="text-sm text-muted" >{{ 'common.label.never' | translate }}</i>
     }
   </span>
 </ng-template>
@@ -122,7 +122,7 @@
               <i class="text-sm text-muted">{{order.value['scheduledFor'] | stringToDate}}</i>
             }
             @if (order.value['scheduledNever']) {
-              <i class="text-sm text-muted" translate>common.label.never</i>
+              <i class="text-sm text-muted" >{{ 'common.label.never' | translate }}</i>
             }
           </ng-container>
         }
@@ -148,7 +148,7 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     <li (click)="showConfiguration(instruction);" nz-menu-item>
-                      <a translate>common.button.showConfiguration</a>
+                      <a >{{ 'common.button.showConfiguration' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -173,7 +173,7 @@
                       <ng-template #lockItemTemplate>
                         <div>
                           <div class="p-l-sm">
-                            <span translate> workflow.label.count </span>:
+                            <span >{{ 'workflow.label.count' | translate }}</span>:
                             <span class="_600">{{item.count}}</span>
                           </div>
                         </div>
@@ -223,7 +223,7 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     <li (click)="showConfiguration(instruction);" nz-menu-item>
-                      <a translate>common.button.showConfiguration</a>
+                      <a >{{ 'common.button.showConfiguration' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -416,7 +416,7 @@
                 <a (click)="collapse(instruction.catch)" class="m-l">
                   <i [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
                   <span [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
-                        id="{{instruction.positionString}}$" translate>workflow.label.catch</span>
+                        id="{{instruction.positionString}}$" >{{ 'workflow.label.catch' | translate }}</span>
                 </a>
                 @if ((instruction.catch.order)) {
                   <span class="m-l-md">

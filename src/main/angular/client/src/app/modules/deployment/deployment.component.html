@@ -28,11 +28,11 @@
                   <span [ngClass]="!isValid ? 'badge-danger':'badge-success'"
                         class="badge badge-success m-r-12 pos-rel t-1">
                     @if (isValid) {
-                      <span translate>inventory.label.valid</span>
+                      <span >{{ 'inventory.label.valid' | translate }}</span>
                     }
                     @if (!isValid) {
                       <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span >{{ 'inventory.label.notValid' | translate }}</span>
                         <i [nzTooltipTitle]="titleTemplate" class="fa fa-info-circle p-l-xs" nz-tooltip></i>
                       </span>
                     }
@@ -194,7 +194,7 @@
     <span class="_600">{{deploymentData.path}}</span>
     @if (lastModified) {
       <span class="text-dark text-sm _400"> -
-        <b translate>inventory.label.lastModified</b>
+        <b >{{ 'inventory.label.lastModified' | translate }}</b>
         <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
       </span>
     }
@@ -260,7 +260,7 @@
                 <form>
 
                   <div class="p-l-sm">
-                    <h5 class="p-l-sm" translate>deploymentService.label.descriptor
+                    <h5 class="p-l-sm" >{{ 'deploymentService.label.descriptor' | translate }}
                       <i (click)="obj.isDescriptorExpanded = !obj.isDescriptorExpanded"
                          [ngClass]="{'fa-caret-up': obj.isDescriptorExpanded}"
                          class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -268,7 +268,7 @@
                     <div [ngClass]="{'fade-in show': obj.isDescriptorExpanded}" class="m-l-md hide">
                       <div class="row m-t-sm">
                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                          <label translate>deploymentService.descriptor.label.descriptorId
+                          <label >{{ 'deploymentService.descriptor.label.descriptorId' | translate }}
                             <sup class="text-danger text-sm">*</sup>
                           </label>
                           <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.descriptorId' | translate"
@@ -284,12 +284,12 @@
                           @if (descriptorId.invalid && (descriptorId.dirty || descriptorId.touched)) {
                             <div class="text-danger help-block">
                               @if (descriptorId.errors.required) {
-                                <div translate>
-                                  common.message.requiredError
+                                <div >
+                                  {{ 'common.message.requiredError' | translate }}
                                 </div>
                               }
                               @if (descriptorId.errors.invalidIdentifier) {
-                                <div translate>common.message.invalid</div>
+                                <div >{{ 'common.message.invalid' | translate }}</div>
                               }
                             </div>
                           }
@@ -298,7 +298,7 @@
                       @if (obj.isMoreDescriptorDetail) {
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.descriptor.label.title</label> <i
+                            <label >{{ 'deploymentService.descriptor.label.title' | translate }}</label> <i
                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.title' | translate"
                             class="p-l-sm fa fa-info-circle"></i>
                           </div>
@@ -313,7 +313,7 @@
                       @if (obj.isMoreDescriptorDetail) {
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.descriptor.label.account</label> <i
+                            <label >{{ 'deploymentService.descriptor.label.account' | translate }}</label> <i
                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.account' | translate"
                             class="p-l-sm fa fa-info-circle"></i>
                           </div>
@@ -328,7 +328,7 @@
                       @if (obj.isMoreDescriptorDetail) {
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.descriptor.label.scheduled</label> <i
+                            <label >{{ 'deploymentService.descriptor.label.scheduled' | translate }}</label> <i
                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.scheduled' | translate"
                             class="p-l-sm fa fa-info-circle"></i>
                           </div>
@@ -341,7 +341,7 @@
                       @if (obj.isMoreDescriptorDetail) {
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.descriptor.label.created</label> <i
+                            <label >{{ 'deploymentService.descriptor.label.created' | translate }}</label> <i
                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.created' | translate"
                             class="p-l-sm fa fa-info-circle"></i>
                           </div>
@@ -354,11 +354,11 @@
                       <div class="m-t-sm">
                         @if (obj.isMoreDescriptorDetail) {
                           <a (click)="obj.isMoreDescriptorDetail = false" class="text-primary text-hover-primary"
-                             translate>deploymentService.button.hideMoreOption</a>
+                             >{{ 'deploymentService.button.hideMoreOption' | translate }}</a>
                         }
                         @if (!obj.isMoreDescriptorDetail) {
                           <a (click)="obj.isMoreDescriptorDetail = true" class="text-primary text-hover-primary"
-                             translate>deploymentService.button.showMoreOption</a>
+                             >{{ 'deploymentService.button.showMoreOption' | translate }}</a>
                         }
                       </div>
                     </div>
@@ -366,7 +366,7 @@
                   </div>
                   @if (data.license) {
                     <div class="p-l-sm ">
-                      <h5 class="p-l-sm hover-icon" translate>deploymentService.label.license
+                      <h5 class="p-l-sm hover-icon" >{{ 'deploymentService.label.license' | translate }}
                         <i (click)="obj.isLicenseExpanded = !obj.isLicenseExpanded"
                            [ngClass]="{'fa-caret-up': obj.isLicenseExpanded}"
                            class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -376,7 +376,7 @@
                       <div [ngClass]="{'fade-in show': obj.isLicenseExpanded}" class="m-l-md hide">
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.license.label.licenseKeyFile
+                            <label >{{ 'deploymentService.license.label.licenseKeyFile' | translate }}
                               <sup class="text-danger text-sm">*</sup>
                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.license.tooltip.licenseKeyFile' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
@@ -391,8 +391,8 @@
                             @if (licenseKeyFile.invalid && (licenseKeyFile.dirty || licenseKeyFile.touched)) {
                               <div class="text-danger help-block">
                                 @if (licenseKeyFile.errors.required) {
-                                  <div translate>
-                                    common.message.requiredError
+                                  <div >
+                                    {{ 'common.message.requiredError' | translate }}
                                   </div>
                                 }
                               </div>
@@ -401,7 +401,7 @@
                         </div>
                         <div class="row m-t-sm">
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                            <label translate>deploymentService.license.label.licenseBinFile
+                            <label >{{ 'deploymentService.license.label.licenseBinFile' | translate }}
                               <sup class="text-danger text-sm">*</sup>
                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.license.tooltip.licenseBinFile' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
@@ -416,8 +416,8 @@
                             @if (licenseBinFile.invalid && (licenseBinFile.dirty || licenseBinFile.touched)) {
                               <div class="text-danger help-block">
                                 @if (licenseBinFile.errors.required) {
-                                  <div translate>
-                                    common.message.requiredError
+                                  <div >
+                                    {{ 'common.message.requiredError' | translate }}
                                   </div>
                                 }
                               </div>
@@ -430,7 +430,7 @@
                   }
                   @if (data.certificates) {
                     <div class="p-l-sm hover-trash-icon">
-                      <h5 class="p-l-sm hover-icon" translate>deploymentService.label.certificates
+                      <h5 class="p-l-sm hover-icon" >{{ 'deploymentService.label.certificates' | translate }}
                         <i (click)="obj.isCertificateExpanded = !obj.isCertificateExpanded"
                            [ngClass]="{'fa-caret-up': obj.isCertificateExpanded}"
                            class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -448,7 +448,7 @@
 
                       <div [ngClass]="{'fade-in show': obj.isCertificateExpanded}" class="m-l-md hide">
 
-                        <h6 class="m-t-12" translate>deploymentService.label.controller
+                        <h6 class="m-t-12" >{{ 'deploymentService.label.controller' | translate }}
                           <i (click)="data.certificates.isControllerExpanded = !data.certificates.isControllerExpanded"
                              [ngClass]="{'fa-caret-up': data.certificates.isControllerExpanded}"
                              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -456,7 +456,7 @@
                         <div [ngClass]="{'fade-in show': data.certificates.isControllerExpanded}" class="p-a b-a hide">
                           <div class="row ">
                             <div class="col-md-4 col-lg-3 form-control-label">
-                              <label translate>deploymentService.certificate.label.primaryControllerCert
+                              <label >{{ 'deploymentService.certificate.label.primaryControllerCert' | translate }}
                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.primaryControllerCert' | translate"
                                           class="p-l-sm fa fa-info-circle"></i>
                             </div>
@@ -471,7 +471,7 @@
 
                           <div class="row m-t-sm">
                             <div class="col-md-4 col-lg-3 form-control-label">
-                              <label translate>deploymentService.certificate.label.secondaryControllerCert
+                              <label >{{ 'deploymentService.certificate.label.secondaryControllerCert' | translate }}
                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryControllerCert' | translate"
                                           class="p-l-sm fa fa-info-circle"></i>
                             </div>
@@ -485,7 +485,7 @@
                             </div>
                           </div>
                         </div>
-                        <h6 class="m-t-12" translate>deploymentService.label.joc
+                        <h6 class="m-t-12" >{{ 'deploymentService.label.joc' | translate }}
                           <i (click)="data.certificates.isJocExpanded = !data.certificates.isJocExpanded"
                              [ngClass]="{'fa-caret-up': data.certificates.isJocExpanded}"
                              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -493,7 +493,7 @@
                         <div [ngClass]="{'fade-in show': data.certificates.isJocExpanded}" class="p-a b-a hide">
                           <div class="row">
                             <div class="col-md-4 col-lg-3 form-control-label">
-                              <label translate>deploymentService.certificate.label.primaryJocCert
+                              <label >{{ 'deploymentService.certificate.label.primaryJocCert' | translate }}
                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.primaryJocCert' | translate"
                                           class="p-l-sm fa fa-info-circle"></i>
                             </div>
@@ -507,7 +507,7 @@
                           </div>
                           <div class="row m-t-sm">
                             <div class="col-md-4 col-lg-3 form-control-label">
-                              <label translate>deploymentService.certificate.label.secondaryJocCert
+                              <label >{{ 'deploymentService.certificate.label.secondaryJocCert' | translate }}
                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryJocCert' | translate"
                                           class="p-l-sm fa fa-info-circle"></i>
                             </div>
@@ -527,7 +527,7 @@
 
                   @if (data.agents?.controllerRefs?.length > 0) {
                     <div class="p-l-sm ">
-                      <h5 class="p-l-sm hover-icon" translate>deploymentService.label.agents
+                      <h5 class="p-l-sm hover-icon" >{{ 'deploymentService.label.agents' | translate }}
                         <i (click)="obj.isAgentExpanded = !obj.isAgentExpanded"
                            [ngClass]="{'fa-caret-up': obj.isAgentExpanded}"
                            class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -561,7 +561,7 @@
                             <div [ngClass]="{'fade-in show': agent.isAgentExpanded}" class="p-a b-a hide">
                               <div class="row">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                  <label translate>deploymentService.agent.label.controllerId
+                                  <label >{{ 'deploymentService.agent.label.controllerId' | translate }}
                                     <sup class="text-danger text-sm">*</sup>
                                   </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.controllerId' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
@@ -583,8 +583,8 @@
                                   @if (controllerId.invalid && (controllerId.dirty || controllerId.touched)) {
                                     <div class="text-danger help-block">
                                       @if (controllerId.errors.required) {
-                                        <div translate>
-                                          common.message.requiredError
+                                        <div >
+                                          {{ 'common.message.requiredError' | translate }}
                                         </div>
                                       }
                                     </div>
@@ -617,7 +617,7 @@
                                   <div [ngClass]="{'fade-in show': item.isAgentPropertiesExpanded}" class="p-a b-a hide">
                                     <div class="row">
                                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                        <label translate>deploymentService.agent.label.agentId
+                                        <label >{{ 'deploymentService.agent.label.agentId' | translate }}
                                           <sup class="text-danger text-sm">*</sup>
                                         </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.agentId' | translate"
                                                     class="p-l-sm fa fa-info-circle"></i>
@@ -632,15 +632,15 @@
                                         @if (agentId.invalid && (agentId.dirty || agentId.touched)) {
                                           <div class="text-danger help-block">
                                             @if (agentId.errors.required) {
-                                              <div translate>
-                                                common.message.requiredError
+                                              <div >
+                                                {{ 'common.message.requiredError' | translate }}
                                               </div>
                                             }
                                           </div>
                                         }
                                       </div>
                                     </div>
-                                    <h6 class="m-t-sm hover-icon" translate>deploymentService.label.target
+                                    <h6 class="m-t-sm hover-icon" >{{ 'deploymentService.label.target' | translate }}
                                       <i (click)="paste('agents', 'target', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'target' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -650,11 +650,11 @@
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
                                     <div class="p-a b-a">
-                                      <h6 translate>deploymentService.label.connection </h6>
+                                      <h6 >{{ 'deploymentService.label.connection' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.host
+                                            <label >{{ 'deploymentService.agent.label.host' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.host' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -669,8 +669,8 @@
                                             @if (host.invalid && (host.dirty || host.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (host.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -680,7 +680,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.port
+                                              <label >{{ 'deploymentService.agent.label.port' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.port' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -694,11 +694,11 @@
                                           </div>
                                         }
                                       </div>
-                                      <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+                                      <h6 class="m-t-12" >{{ 'deploymentService.label.authentication' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.method
+                                            <label >{{ 'deploymentService.agent.label.method' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.method' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -713,7 +713,7 @@
                                         </div>
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.user
+                                            <label >{{ 'deploymentService.agent.label.user' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.user' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -728,8 +728,8 @@
                                             @if (user.invalid && (user.dirty || user.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (user.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -739,7 +739,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.keyFile
+                                              <label >{{ 'deploymentService.agent.label.keyFile' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyFile' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -755,7 +755,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.packageLocation
+                                          <label >{{ 'deploymentService.agent.label.packageLocation' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.packageLocation' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -771,8 +771,8 @@
                                           @if (packageLocation.invalid && (packageLocation.dirty || packageLocation.touched)) {
                                             <div class="text-danger help-block">
                                               @if (packageLocation.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -782,7 +782,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.execPre
+                                            <label >{{ 'deploymentService.agent.label.execPre' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.execPre' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -798,7 +798,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.execPost
+                                            <label >{{ 'deploymentService.agent.label.execPost' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.execPost' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -814,7 +814,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.agent.label.makeService
+                                            <label >{{ 'deploymentService.agent.label.makeService' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.makeService' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -828,7 +828,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.agent.label.forceSudo
+                                            <label >{{ 'deploymentService.agent.label.forceSudo' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.forceSudo' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -841,7 +841,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.serviceName
+                                            <label >{{ 'deploymentService.agent.label.serviceName' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.serviceName' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -857,7 +857,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.serviceDir
+                                            <label >{{ 'deploymentService.agent.label.serviceDir' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.serviceDir' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -871,8 +871,8 @@
                                         </div>
                                       }
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>
-                                      deploymentService.label.media
+                                    <h6 class="m-t-12 hover-icon" >
+                                      {{ 'deploymentService.label.media' | translate }}
                                       <i (click)="paste('agents', 'media', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'media' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -884,7 +884,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.release
+                                          <label >{{ 'deploymentService.agent.label.release' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.release' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -899,8 +899,8 @@
                                           @if (release.invalid && (release.dirty || release.touched)) {
                                             <div class="text-danger help-block">
                                               @if (release.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -909,7 +909,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.tarball
+                                          <label >{{ 'deploymentService.agent.label.tarball' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.tarball' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -924,8 +924,8 @@
                                           @if (tarball.invalid && (tarball.dirty || tarball.touched)) {
                                             <div class="text-danger help-block">
                                               @if (tarball.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -933,7 +933,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                                    <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.installation' | translate }}
                                       <i (click)="paste('agents', 'installation', agentIdx, $index)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'installation' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -945,7 +945,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.home
+                                          <label >{{ 'deploymentService.agent.label.home' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.home' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -960,8 +960,8 @@
                                           @if (home.invalid && (home.dirty || home.touched)) {
                                             <div class="text-danger help-block">
                                               @if (home.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -970,7 +970,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.data
+                                          <label >{{ 'deploymentService.agent.label.data' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.data' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -985,8 +985,8 @@
                                           @if (aData.invalid && (aData.dirty || aData.touched)) {
                                             <div class="text-danger help-block">
                                               @if (aData.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -996,8 +996,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.homeOwner
-
+                                            <label >{{ 'deploymentService.agent.label.homeOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.homeOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1013,8 +1012,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.dataOwner
-
+                                            <label >{{ 'deploymentService.agent.label.dataOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.dataOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1030,7 +1028,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.agent.label.runUser
+                                            <label >{{ 'deploymentService.agent.label.runUser' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.runUser' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1045,7 +1043,7 @@
                                       }
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.httpPort
+                                          <label >{{ 'deploymentService.agent.label.httpPort' | translate }}
                                             @if (!item.installation.httpsPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -1064,8 +1062,8 @@
                                           @if (httpPort.invalid && (httpPort.dirty || httpPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1074,7 +1072,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.agent.label.httpsPort
+                                          <label >{{ 'deploymentService.agent.label.httpsPort' | translate }}
                                             @if (!item.installation.httpPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -1093,8 +1091,8 @@
                                           @if (httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpsPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1104,7 +1102,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.agent.label.javaHome
+                                            <label >{{ 'deploymentService.agent.label.javaHome' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.javaHome' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1120,7 +1118,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.agent.label.javaOptions
+                                            <label >{{ 'deploymentService.agent.label.javaOptions' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.javaOptions' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1135,7 +1133,7 @@
                                       }
                                     </div>
                                     @if (item.isMoreKeyFileDetail) {
-                                      <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                                      <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.configuration' | translate }}
                                         <i (click)="paste('agents', 'configuration', agentIdx, $index)"
                                            [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'configuration' )}"
                                            class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -1145,11 +1143,11 @@
                                            nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                       </h6>
                                       <div class="p-a b-a">
-                                        <h6 translate>deploymentService.label.certificates </h6>
+                                        <h6 >{{ 'deploymentService.label.certificates' | translate }}</h6>
                                         <div class="p-a b-a">
                                           <div class="row">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.keyStore
+                                              <label >{{ 'deploymentService.agent.label.keyStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -1164,8 +1162,8 @@
                                               @if (keyStore.invalid && (keyStore.dirty || keyStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -1174,7 +1172,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.keyStorePassword
+                                              <label >{{ 'deploymentService.agent.label.keyStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -1191,8 +1189,8 @@
                                               @if (keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -1201,7 +1199,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.keyPassword
+                                              <label >{{ 'deploymentService.agent.label.keyPassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyPassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -1217,8 +1215,8 @@
                                               @if (keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyPassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -1228,7 +1226,7 @@
                                           @if (item.isMoreKeyFileDetail) {
                                             <div class="row m-t-sm">
                                               <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                                <label translate>deploymentService.agent.label.keyAlias
+                                                <label >{{ 'deploymentService.agent.label.keyAlias' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyAlias' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               </div>
@@ -1243,7 +1241,7 @@
                                           }
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.trustStore
+                                              <label >{{ 'deploymentService.agent.label.trustStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.trustStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -1258,8 +1256,8 @@
                                               @if (trustStore.invalid && (trustStore.dirty || trustStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -1268,7 +1266,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.agent.label.trustStorePassword
+                                              <label >{{ 'deploymentService.agent.label.trustStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.trustStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -1285,8 +1283,8 @@
                                               @if (trustStorePassword.invalid && (trustStorePassword.dirty || trustStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -1299,8 +1297,7 @@
                                           <div class="row m-t-12">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                               @if ($index == 0) {
-                                                <label translate>deploymentService.agent.label.templates
-
+                                                <label >{{ 'deploymentService.agent.label.templates' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.templates' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               }
@@ -1326,11 +1323,11 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = false"
                                            class="text-primary text-hover-primary"
-                                           translate>deploymentService.button.hideMoreOption</a>
+                                           >{{ 'deploymentService.button.hideMoreOption' | translate }}</a>
                                       }
                                       @if (!item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = true"
-                                           class="text-primary text-hover-primary" translate>deploymentService.button.showMoreOption</a>
+                                           class="text-primary text-hover-primary" >{{ 'deploymentService.button.showMoreOption' | translate }}</a>
                                       }
                                     </div>
                                   </div>
@@ -1338,14 +1335,14 @@
                               }
                               <div class="m-t-12">
                                 <a (click)="addAnotherAgentInstance(agent)" class="text-primary text-hover-primary"
-                                   translate>deploymentService.agent.button.addSecondaryAgent</a>
+                                   >{{ 'deploymentService.agent.button.addSecondaryAgent' | translate }}</a>
                               </div>
                             </div>
                           </div>
                         }
                         <div class="m-t">
                           <a (click)="addAnotherAgent()" class="text-primary text-hover-primary"
-                             translate>deploymentService.agent.button.addAnotherAgent</a>
+                             >{{ 'deploymentService.agent.button.addAnotherAgent' | translate }}</a>
                         </div>
                       </div>
                       <hr>
@@ -1354,7 +1351,7 @@
 
                   @if (data.controllers?.length > 0) {
                     <div class="p-l-sm ">
-                      <h5 class="p-l-sm hover-icon" translate>deploymentService.label.controller
+                      <h5 class="p-l-sm hover-icon" >{{ 'deploymentService.label.controller' | translate }}
                         <i (click)="obj.isControllerExpanded = !obj.isControllerExpanded"
                            [ngClass]="{'fa-caret-up': obj.isControllerExpanded}"
                            class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -1389,7 +1386,7 @@
                             <div [ngClass]="{'fade-in show': controller.isControllerExpanded}" class="p-a b-a hide">
                               <div class="row">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                  <label translate>deploymentService.controller.label.controllerId
+                                  <label >{{ 'deploymentService.controller.label.controllerId' | translate }}
                                     <sup class="text-danger text-sm">*</sup>
                                   </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
@@ -1404,8 +1401,8 @@
                                   @if (controllerId.invalid && (controllerId.dirty || controllerId.touched)) {
                                     <div class="text-danger help-block">
                                       @if (controllerId.errors.required) {
-                                        <div translate>
-                                          common.message.requiredError
+                                        <div >
+                                          {{ 'common.message.requiredError' | translate }}
                                         </div>
                                       }
                                     </div>
@@ -1414,7 +1411,7 @@
                               </div>
                               <div class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                  <label translate>deploymentService.controller.label.jocRef
+                                  <label >{{ 'deploymentService.controller.label.jocRef' | translate }}
                                     <sup class="text-danger text-sm">*</sup>
                                   </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.jocRef' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
@@ -1437,8 +1434,8 @@
                                   @if (jocRef.invalid && (jocRef.dirty || jocRef.touched)) {
                                     <div class="text-danger help-block">
                                       @if (jocRef.errors.required) {
-                                        <div translate>
-                                          common.message.requiredError
+                                        <div >
+                                          {{ 'common.message.requiredError' | translate }}
                                         </div>
                                       }
                                     </div>
@@ -1471,7 +1468,7 @@
                                        nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                   </h6>
                                   <div [ngClass]="{'fade-in show': item.isControllerPropertiesExpanded}" class="p-a b-a hide">
-                                    <h6 class="hover-icon" translate>deploymentService.label.target
+                                    <h6 class="hover-icon" >{{ 'deploymentService.label.target' | translate }}
                                       <i (click)="paste('controllers', 'target', i, j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'target' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -1481,11 +1478,11 @@
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
                                     <div class="p-a b-a">
-                                      <h6 translate>deploymentService.label.connection </h6>
+                                      <h6 >{{ 'deploymentService.label.connection' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.host
+                                            <label >{{ 'deploymentService.controller.label.host' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.host' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -1501,8 +1498,8 @@
                                             @if (host.invalid && (host.dirty || host.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (host.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -1513,8 +1510,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.port
-
+                                              <label >{{ 'deploymentService.controller.label.port' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.port' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -1527,11 +1523,11 @@
                                           </div>
                                         }
                                       </div>
-                                      <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+                                      <h6 class="m-t-12" >{{ 'deploymentService.label.authentication' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.method
+                                            <label >{{ 'deploymentService.controller.label.method' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.method' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -1546,7 +1542,7 @@
                                         </div>
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.user
+                                            <label >{{ 'deploymentService.controller.label.user' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.user' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -1562,8 +1558,8 @@
                                             @if (user.invalid && (user.dirty || user.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (user.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -1573,8 +1569,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.keyFile
-
+                                              <label >{{ 'deploymentService.controller.label.keyFile' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyFile' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -1590,7 +1585,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.packageLocation
+                                          <label >{{ 'deploymentService.controller.label.packageLocation' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.packageLocation' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -1607,8 +1602,8 @@
                                           @if (packageLocation.invalid && (packageLocation.dirty || packageLocation.touched)) {
                                             <div class="text-danger help-block">
                                               @if (packageLocation.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1618,7 +1613,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.execPre
+                                            <label >{{ 'deploymentService.controller.label.execPre' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.execPre' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1634,7 +1629,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.execPost
+                                            <label >{{ 'deploymentService.controller.label.execPost' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.execPost' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1650,7 +1645,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.controller.label.makeService
+                                            <label >{{ 'deploymentService.controller.label.makeService' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.makeService' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1664,7 +1659,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.controller.label.forceSudo
+                                            <label >{{ 'deploymentService.controller.label.forceSudo' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.forceSudo' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1678,7 +1673,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.serviceName
+                                            <label >{{ 'deploymentService.controller.label.serviceName' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.serviceName' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1695,7 +1690,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.serviceDir
+                                            <label >{{ 'deploymentService.controller.label.serviceDir' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.serviceDir' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1710,8 +1705,8 @@
                                         </div>
                                       }
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>
-                                      deploymentService.label.media
+                                    <h6 class="m-t-12 hover-icon" >
+                                      {{ 'deploymentService.label.media' | translate }}
                                       <i (click)="paste('controllers', 'media', i, j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'media' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -1723,7 +1718,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.release
+                                          <label >{{ 'deploymentService.controller.label.release' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.release' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -1738,8 +1733,8 @@
                                           @if (release.invalid && (release.dirty || release.touched)) {
                                             <div class="text-danger help-block">
                                               @if (release.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1748,7 +1743,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.tarball
+                                          <label >{{ 'deploymentService.controller.label.tarball' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.tarball' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -1763,8 +1758,8 @@
                                           @if (tarball.invalid && (tarball.dirty || tarball.touched)) {
                                             <div class="text-danger help-block">
                                               @if (tarball.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1772,7 +1767,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                                    <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.installation' | translate }}
                                       <i (click)="paste('controllers', 'installation', i,j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'installation' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -1784,7 +1779,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.home
+                                          <label >{{ 'deploymentService.controller.label.home' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.home' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -1800,8 +1795,8 @@
                                           @if (home.invalid && (home.dirty || home.touched)) {
                                             <div class="text-danger help-block">
                                               @if (home.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1810,7 +1805,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.data
+                                          <label >{{ 'deploymentService.controller.label.data' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.data' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -1826,8 +1821,8 @@
                                           @if (cData.invalid && (cData.dirty || cData.touched)) {
                                             <div class="text-danger help-block">
                                               @if (cData.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1837,8 +1832,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.homeOwner
-
+                                            <label >{{ 'deploymentService.controller.label.homeOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.homeOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1855,8 +1849,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.dataOwner
-
+                                            <label >{{ 'deploymentService.controller.label.dataOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.dataOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1873,8 +1866,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.controller.label.runUser
-
+                                            <label >{{ 'deploymentService.controller.label.runUser' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.runUser' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1889,7 +1881,7 @@
                                       }
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.httpPort
+                                          <label >{{ 'deploymentService.controller.label.httpPort' | translate }}
                                             @if (!item.installation.httpsPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -1908,8 +1900,8 @@
                                           @if (httpPort.invalid && (httpPort.dirty || httpPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1918,7 +1910,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.controller.label.httpsPort
+                                          <label >{{ 'deploymentService.controller.label.httpsPort' | translate }}
                                             @if (!item.installation.httpPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -1937,8 +1929,8 @@
                                           @if (httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpsPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -1948,7 +1940,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.controller.label.javaHome
+                                            <label >{{ 'deploymentService.controller.label.javaHome' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.javaHome' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1964,7 +1956,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.controller.label.javaOptions
+                                            <label >{{ 'deploymentService.controller.label.javaOptions' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.javaOptions' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -1979,7 +1971,7 @@
                                       }
                                     </div>
                                     @if (item.isMoreKeyFileDetail) {
-                                      <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                                      <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.configuration' | translate }}
                                         <i (click)="paste('controllers', 'configuration', i, j)"
                                            [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'configuration' )}"
                                            class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -1989,11 +1981,11 @@
                                            nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                       </h6>
                                       <div class="p-a b-a">
-                                        <h6 translate>deploymentService.label.certificates </h6>
+                                        <h6 >{{ 'deploymentService.label.certificates' | translate }}</h6>
                                         <div class="p-a b-a">
                                           <div class="row">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.keyStore
+                                              <label >{{ 'deploymentService.controller.label.keyStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -2009,8 +2001,8 @@
                                               @if (keyStore.invalid && (keyStore.dirty || keyStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -2019,7 +2011,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.keyStorePassword
+                                              <label >{{ 'deploymentService.controller.label.keyStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -2036,8 +2028,8 @@
                                               @if (keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -2046,7 +2038,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.keyPassword
+                                              <label >{{ 'deploymentService.controller.label.keyPassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyPassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -2063,8 +2055,8 @@
                                               @if (keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyPassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -2074,7 +2066,7 @@
                                           @if (item.isMoreKeyFileDetail) {
                                             <div class="row m-t-sm">
                                               <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                                <label translate>deploymentService.controller.label.keyAlias
+                                                <label >{{ 'deploymentService.controller.label.keyAlias' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyAlias' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               </div>
@@ -2089,7 +2081,7 @@
                                           }
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.trustStore
+                                              <label >{{ 'deploymentService.controller.label.trustStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.trustStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -2106,8 +2098,8 @@
                                               @if (trustStore.invalid && (trustStore.dirty || trustStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -2116,7 +2108,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.trustStorePassword
+                                              <label >{{ 'deploymentService.controller.label.trustStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.trustStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -2133,8 +2125,8 @@
                                               @if (trustStorePassword.invalid && (trustStorePassword.dirty || trustStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -2143,7 +2135,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.controller.label.controllerCert
+                                              <label >{{ 'deploymentService.controller.label.controllerCert' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -2162,7 +2154,7 @@
                                           <div class="row m-t-12">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                               @if (k == 0) {
-                                                <label translate>deploymentService.controller.label.templates
+                                                <label >{{ 'deploymentService.controller.label.templates' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.templates' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               }
@@ -2189,12 +2181,12 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = false"
                                            class="text-primary text-hover-primary"
-                                           translate>deploymentService.button.hideMoreOption</a>
+                                           >{{ 'deploymentService.button.hideMoreOption' | translate }}</a>
                                       }
                                       @if (!item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = true"
                                            class="text-primary text-hover-primary"
-                                           translate>deploymentService.button.showMoreOption</a>
+                                           >{{ 'deploymentService.button.showMoreOption' | translate }}</a>
                                       }
                                     </div>
                                   </div>
@@ -2204,7 +2196,7 @@
                                 <div class="m-t-12">
                                   <a (click)="addSecondaryController(controller.cluster)"
                                      class="text-primary text-hover-primary"
-                                     translate>deploymentService.controller.button.addSecondaryController</a>
+                                     >{{ 'deploymentService.controller.button.addSecondaryController' | translate }}</a>
                                 </div>
                               }
                             </div>
@@ -2212,7 +2204,7 @@
                         }
                         <div class="m-t-12">
                           <a (click)="addController()" class="text-primary text-hover-primary"
-                             translate>deploymentService.controller.button.addAnotherController</a>
+                             >{{ 'deploymentService.controller.button.addAnotherController' | translate }}</a>
                         </div>
                       </div>
                       <hr>
@@ -2221,7 +2213,7 @@
 
                   @if (data.joc?.length > 0) {
                     <div class="p-l-sm ">
-                      <h5 class="p-l-sm hover-icon" translate>deploymentService.label.joc
+                      <h5 class="p-l-sm hover-icon" >{{ 'deploymentService.label.joc' | translate }}
                         <i (click)="obj.isJOCExpanded = !obj.isJOCExpanded"
                            [ngClass]="{'fa-caret-up': obj.isJOCExpanded}"
                            class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -2256,7 +2248,7 @@
                             <div [ngClass]="{'fade-in show': jocC.isJOCExpanded}" class="p-a b-a hide">
                               <div class="row">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                  <label translate>deploymentService.joc.label.jocClusterId
+                                  <label >{{ 'deploymentService.joc.label.jocClusterId' | translate }}
                                     <sup class="text-danger text-sm">*</sup>
                                   </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocClusterId' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
@@ -2272,8 +2264,8 @@
                                   @if (clusterId.invalid && (clusterId.dirty || clusterId.touched)) {
                                     <div class="text-danger help-block">
                                       @if (clusterId.errors.required) {
-                                        <div translate>
-                                          common.message.requiredError
+                                        <div >
+                                          {{ 'common.message.requiredError' | translate }}
                                         </div>
                                       }
                                     </div>
@@ -2305,7 +2297,7 @@
                                   <div [ngClass]="{'fade-in show': item.isJOCPropertiesExpanded}" class="p-a b-a hide">
                                     <div class="row">
                                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                        <label translate>deploymentService.joc.label.jocInstanceId
+                                        <label >{{ 'deploymentService.joc.label.jocInstanceId' | translate }}
                                           <sup class="text-danger text-sm">*</sup>
                                         </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocInstanceId' | translate"
                                                     class="p-l-sm fa fa-info-circle"></i>
@@ -2321,15 +2313,15 @@
                                         @if (jocInstanceId.invalid && (jocInstanceId.dirty || jocInstanceId.touched)) {
                                           <div class="text-danger help-block">
                                             @if (jocInstanceId.errors.required) {
-                                              <div translate>
-                                                common.message.requiredError
+                                              <div >
+                                                {{ 'common.message.requiredError' | translate }}
                                               </div>
                                             }
                                           </div>
                                         }
                                       </div>
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>deploymentService.label.target
+                                    <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.target' | translate }}
                                       <i (click)="paste('joc', 'target', i, j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'target' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -2339,11 +2331,11 @@
                                          nz-tooltip="{{'deploymentService.button.copy' | translate}}"></i>
                                     </h6>
                                     <div class="p-a b-a">
-                                      <h6 translate>deploymentService.label.connection </h6>
+                                      <h6 >{{ 'deploymentService.label.connection' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.host
+                                            <label >{{ 'deploymentService.joc.label.host' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.host' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -2359,8 +2351,8 @@
                                             @if (host.invalid && (host.dirty || host.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (host.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -2371,7 +2363,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.port
+                                              <label >{{ 'deploymentService.joc.label.port' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.port' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -2385,11 +2377,11 @@
                                           </div>
                                         }
                                       </div>
-                                      <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+                                      <h6 class="m-t-12" >{{ 'deploymentService.label.authentication' | translate }}</h6>
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.method
+                                            <label >{{ 'deploymentService.joc.label.method' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.method' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -2404,7 +2396,7 @@
                                         </div>
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.user
+                                            <label >{{ 'deploymentService.joc.label.user' | translate }}
                                               <sup class="text-danger text-sm">*</sup>
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.user' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
@@ -2420,8 +2412,8 @@
                                             @if (user.invalid && (user.dirty || user.touched)) {
                                               <div class="text-danger help-block">
                                                 @if (user.errors.required) {
-                                                  <div translate>
-                                                    common.message.requiredError
+                                                  <div >
+                                                    {{ 'common.message.requiredError' | translate }}
                                                   </div>
                                                 }
                                               </div>
@@ -2431,8 +2423,7 @@
                                         @if (item.isMoreKeyFileDetail) {
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.keyFile
-
+                                              <label >{{ 'deploymentService.joc.label.keyFile' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyFile' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -2447,7 +2438,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.packageLocation
+                                          <label >{{ 'deploymentService.joc.label.packageLocation' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.packageLocation' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -2464,8 +2455,8 @@
                                           @if (packageLocation.invalid && (packageLocation.dirty || packageLocation.touched)) {
                                             <div class="text-danger help-block">
                                               @if (packageLocation.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2475,7 +2466,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.execPre
+                                            <label >{{ 'deploymentService.joc.label.execPre' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.execPre' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2490,7 +2481,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.execPost
+                                            <label >{{ 'deploymentService.joc.label.execPost' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.execPost' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2505,7 +2496,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.makeService
+                                            <label >{{ 'deploymentService.joc.label.makeService' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.makeService' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2519,7 +2510,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.forceSudo
+                                            <label >{{ 'deploymentService.joc.label.forceSudo' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.forceSudo' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2532,7 +2523,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.serviceName
+                                            <label >{{ 'deploymentService.joc.label.serviceName' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.serviceName' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2548,7 +2539,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.serviceDir
+                                            <label >{{ 'deploymentService.joc.label.serviceDir' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.serviceDir' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2562,8 +2553,8 @@
                                         </div>
                                       }
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>
-                                      deploymentService.label.media
+                                    <h6 class="m-t-12 hover-icon" >
+                                      {{ 'deploymentService.label.media' | translate }}
                                       <i (click)="paste('joc', 'media', i, j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'media' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -2575,7 +2566,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.release
+                                          <label >{{ 'deploymentService.joc.label.release' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.release' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -2590,8 +2581,8 @@
                                           @if (release.invalid && (release.dirty || release.touched)) {
                                             <div class="text-danger help-block">
                                               @if (release.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2600,7 +2591,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.tarball
+                                          <label >{{ 'deploymentService.joc.label.tarball' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.tarball' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -2615,8 +2606,8 @@
                                           @if (tarball.invalid && (tarball.dirty || tarball.touched)) {
                                             <div class="text-danger help-block">
                                               @if (tarball.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2624,7 +2615,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                    <h6 class="m-t-12 hover-icon" translate>deploymentService.label.installation
+                                    <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.installation' | translate }}
                                       <i (click)="paste('joc', 'installation', i, j)"
                                          [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'installation' )}"
                                          class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -2636,7 +2627,7 @@
                                     <div class="p-a b-a">
                                       <div class="row">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.setupDir
+                                          <label >{{ 'deploymentService.joc.label.setupDir' | translate }}
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.setupDir' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
                                         </div>
@@ -2650,7 +2641,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.home
+                                          <label >{{ 'deploymentService.joc.label.home' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.home' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -2666,8 +2657,8 @@
                                           @if (home.invalid && (home.dirty || home.touched)) {
                                             <div class="text-danger help-block">
                                               @if (home.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2676,7 +2667,7 @@
                                       </div>
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.data
+                                          <label >{{ 'deploymentService.joc.label.data' | translate }}
                                             <sup class="text-danger text-sm">*</sup>
                                           </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.data' | translate"
                                                       class="p-l-sm fa fa-info-circle"></i>
@@ -2692,8 +2683,8 @@
                                           @if (jocData.invalid && (jocData.dirty || jocData.touched)) {
                                             <div class="text-danger help-block">
                                               @if (jocData.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2703,8 +2694,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.homeOwner
-
+                                            <label >{{ 'deploymentService.joc.label.homeOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.homeOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2721,8 +2711,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.dataOwner
-
+                                            <label >{{ 'deploymentService.joc.label.dataOwner' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dataOwner' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2739,8 +2728,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.runUser
-
+                                            <label >{{ 'deploymentService.joc.label.runUser' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.runUser' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2756,8 +2744,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.title
-
+                                            <label >{{ 'deploymentService.joc.label.title' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.title' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2773,8 +2760,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.securityLevel
-
+                                            <label >{{ 'deploymentService.joc.label.securityLevel' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.securityLevel' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2789,8 +2775,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.dbmsConfig
-
+                                            <label >{{ 'deploymentService.joc.label.dbmsConfig' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2806,7 +2791,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.dbmsDriver
+                                            <label >{{ 'deploymentService.joc.label.dbmsDriver' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2822,8 +2807,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.dbmsInit
-
+                                            <label >{{ 'deploymentService.joc.label.dbmsInit' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2838,7 +2822,7 @@
 
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.httpPort
+                                          <label >{{ 'deploymentService.joc.label.httpPort' | translate }}
                                             @if (!item.installation.httpsPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -2857,8 +2841,8 @@
                                           @if (httpPort.invalid && (httpPort.dirty || httpPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2868,7 +2852,7 @@
 
                                       <div class="row m-t-sm">
                                         <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                          <label translate>deploymentService.joc.label.httpsPort
+                                          <label >{{ 'deploymentService.joc.label.httpsPort' | translate }}
                                             @if (!item.installation.httpPort) {
                                               <sup class="text-danger text-sm">*</sup>
                                             }
@@ -2887,8 +2871,8 @@
                                           @if (httpsPort.invalid && (httpsPort.dirty || httpsPort.touched)) {
                                             <div class="text-danger help-block">
                                               @if (httpsPort.errors.required) {
-                                                <div translate>
-                                                  common.message.requiredError
+                                                <div >
+                                                  {{ 'common.message.requiredError' | translate }}
                                                 </div>
                                               }
                                             </div>
@@ -2898,7 +2882,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.javaHome
+                                            <label >{{ 'deploymentService.joc.label.javaHome' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.javaHome' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2914,7 +2898,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.javaOptions
+                                            <label >{{ 'deploymentService.joc.label.javaOptions' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.javaOptions' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2930,7 +2914,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.isUser
+                                            <label >{{ 'deploymentService.joc.label.isUser' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.isUser' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2944,7 +2928,7 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <div class="row m-t-sm">
                                           <div class="col-md-4 col-lg-3 col-xl-3">
-                                            <label translate>deploymentService.joc.label.isPreserveEnv
+                                            <label >{{ 'deploymentService.joc.label.isPreserveEnv' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2957,7 +2941,7 @@
                                       }
                                     </div>
                                     @if (item.isMoreKeyFileDetail) {
-                                      <h6 class="m-t-12 hover-icon" translate>deploymentService.label.configuration
+                                      <h6 class="m-t-12 hover-icon" >{{ 'deploymentService.label.configuration' | translate }}
                                         <i (click)="paste('joc', 'configuration', i, j)"
                                            [ngClass]="{'disable-link' : !copiedObject || (copiedObject && copiedObject.objectType !== 'configuration' )}"
                                            class="fa fa-paste fa-icon pull-right primary-text-hover-color p-r-sm font14 cursor"
@@ -2969,7 +2953,7 @@
                                       <div class="p-a b-a">
                                         <div class="row">
                                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                            <label translate>deploymentService.joc.label.responseDir
+                                            <label >{{ 'deploymentService.joc.label.responseDir' | translate }}
                                             </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.responseDir' | translate"
                                                         class="p-l-sm fa fa-info-circle"></i>
                                           </div>
@@ -2981,11 +2965,11 @@
                                                    type="text">
                                           </div>
                                         </div>
-                                        <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
+                                        <h6 class="m-t-12" >{{ 'deploymentService.label.certificates' | translate }}</h6>
                                         <div class="p-a b-a">
                                           <div class="row">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.keyStore
+                                              <label >{{ 'deploymentService.joc.label.keyStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -3001,8 +2985,8 @@
                                               @if (keyStore.invalid && (keyStore.dirty || keyStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -3011,7 +2995,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.keyStorePassword
+                                              <label >{{ 'deploymentService.joc.label.keyStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -3028,8 +3012,8 @@
                                               @if (keyStorePassword.invalid && (keyStorePassword.dirty || keyStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -3038,7 +3022,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.keyPassword
+                                              <label >{{ 'deploymentService.joc.label.keyPassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyPassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -3055,8 +3039,8 @@
                                               @if (keyPassword.invalid && (keyPassword.dirty || keyPassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (keyPassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -3066,7 +3050,7 @@
                                           @if (item.isMoreKeyFileDetail) {
                                             <div class="row m-t-sm">
                                               <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                                <label translate>deploymentService.joc.label.keyAlias
+                                                <label >{{ 'deploymentService.joc.label.keyAlias' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyAlias' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               </div>
@@ -3081,7 +3065,7 @@
                                           }
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.trustStore
+                                              <label >{{ 'deploymentService.joc.label.trustStore' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.trustStore' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -3098,8 +3082,8 @@
                                               @if (trustStore.invalid && (trustStore.dirty || trustStore.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStore.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -3108,7 +3092,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.trustStorePassword
+                                              <label >{{ 'deploymentService.joc.label.trustStorePassword' | translate }}
                                                 <sup class="text-danger text-sm">*</sup>
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
@@ -3125,8 +3109,8 @@
                                               @if (trustStorePassword.invalid && (trustStorePassword.dirty || trustStorePassword.touched)) {
                                                 <div class="text-danger help-block">
                                                   @if (trustStorePassword.errors.required) {
-                                                    <div translate>
-                                                      common.message.requiredError
+                                                    <div >
+                                                      {{ 'common.message.requiredError' | translate }}
                                                     </div>
                                                   }
                                                 </div>
@@ -3135,7 +3119,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.jocCert</label> <i
+                                              <label >{{ 'deploymentService.joc.label.jocCert' | translate }}</label> <i
                                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocCert' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -3148,11 +3132,11 @@
                                             </div>
                                           </div>
                                         </div>
-                                        <h6 class="m-t-12" translate>deploymentService.label.startFiles </h6>
+                                        <h6 class="m-t-12" >{{ 'deploymentService.label.startFiles' | translate }}</h6>
                                         <div class="p-a b-a">
                                           <div class="row">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.httpIni
+                                              <label >{{ 'deploymentService.joc.label.httpIni' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -3166,8 +3150,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.httpsIni
-
+                                              <label >{{ 'deploymentService.joc.label.httpsIni' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -3181,8 +3164,7 @@
                                           </div>
                                           <div class="row m-t-sm">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
-                                              <label translate>deploymentService.joc.label.sslIni
-
+                                              <label >{{ 'deploymentService.joc.label.sslIni' | translate }}
                                               </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.sslIni' | translate"
                                                           class="p-l-sm fa fa-info-circle"></i>
                                             </div>
@@ -3200,7 +3182,7 @@
                                           <div class="row m-t-12">
                                             <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                               @if (k == 0) {
-                                                <label translate>deploymentService.joc.label.templates
+                                                <label >{{ 'deploymentService.joc.label.templates' | translate }}
                                                 </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.templates' | translate"
                                                             class="p-l-sm fa fa-info-circle"></i>
                                               }
@@ -3227,12 +3209,12 @@
                                       @if (item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = false"
                                            class="text-primary text-hover-primary"
-                                           translate>deploymentService.button.hideMoreOption</a>
+                                           >{{ 'deploymentService.button.hideMoreOption' | translate }}</a>
                                       }
                                       @if (!item.isMoreKeyFileDetail) {
                                         <a (click)="item.isMoreKeyFileDetail = true"
                                            class="text-primary text-hover-primary"
-                                           translate>deploymentService.button.showMoreOption</a>
+                                           >{{ 'deploymentService.button.showMoreOption' | translate }}</a>
                                       }
                                     </div>
                                   </div>
@@ -3240,14 +3222,14 @@
                               }
                               <div class="m-t-12">
                                 <a (click)="addAnotherJOCInstance(jocC.members)" class="text-primary text-hover-primary"
-                                   translate>deploymentService.joc.button.addAnotherJOC</a>
+                                   >{{ 'deploymentService.joc.button.addAnotherJOC' | translate }}</a>
                               </div>
                             </div>
                           </div>
                         }
                         <div class="m-t-12">
                           <a (click)="addAnotherJOCCluster()" class="text-primary text-hover-primary"
-                             translate>deploymentService.joc.button.addAnotherJOCCluster</a>
+                             >{{ 'deploymentService.joc.button.addAnotherJOCCluster' | translate }}</a>
                         </div>
                       </div>
                       <hr>
@@ -3270,10 +3252,10 @@
         <li [nzTitle]="'inventory.button.new' | translate" nz-submenu>
           <ul>
             <li (click)="createFolder();" nz-menu-item>
-              <a translate>inventory.button.newFolder</a>
+              <a >{{ 'inventory.button.newFolder' | translate }}</a>
             </li>
             <li (click)="addObject()" nz-menu-item>
-              <a translate>deploymentService.button.newDescriptor</a>
+              <a >{{ 'deploymentService.button.newDescriptor' | translate }}</a>
             </li>
           </ul>
         </li>
@@ -3282,27 +3264,27 @@
         <li nz-menu-divider></li>
       }
       <li (click)="cutObject()" [nzDisabled]="node.origin.children && node.origin.path === '/'" nz-menu-item>
-        <a translate>inventory.button.cut</a>
+        <a >{{ 'inventory.button.cut' | translate }}</a>
       </li>
       <li (click)="copyObject()" nz-menu-item>
-        <a translate>inventory.button.copy</a>
+        <a >{{ 'inventory.button.copy' | translate }}</a>
       </li>
       @if (node.origin.children) {
         <li (click)="pasteObject()"
             [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)"
             nz-menu-item>
-          <a translate>inventory.button.paste</a>
+          <a >{{ 'inventory.button.paste' | translate }}</a>
         </li>
       }
       <li (click)="renameObject();" [nzDisabled]="node.origin.children && node.origin.path === '/'" nz-menu-item>
-        <a translate>inventory.button.rename</a>
+        <a >{{ 'inventory.button.rename' | translate }}</a>
       </li>
       @if (permission.joc.inventory.manage) {
         <li nz-menu-divider></li>
       }
       @if (permission.joc.inventory.manage) {
         <li (click)="removeObject();" [nzDisabled]="node.origin.children && node.origin.path === '/'" nz-menu-item>
-          <a translate>inventory.button.remove</a>
+          <a >{{ 'inventory.button.remove' | translate }}</a>
         </li>
       }
       @if (!node.origin.children) {
@@ -3310,12 +3292,12 @@
       }
       @if (!node.origin.children) {
         <li (click)="editJson(false)" nz-menu-item>
-          <a translate>inventory.button.showJSON</a>
+          <a >{{ 'inventory.button.showJSON' | translate }}</a>
         </li>
       }
       @if (!node.origin.children && permission.joc.inventory.manage) {
         <li (click)="editJson(true)" nz-menu-item>
-          <a translate>inventory.button.editJSON</a>
+          <a >{{ 'inventory.button.editJSON' | translate }}</a>
         </li>
       }
       @if (!node.origin.children) {
@@ -3323,12 +3305,12 @@
       }
       @if (!node.origin.children) {
         <li (click)="exportJSON()" nz-menu-item>
-          <a translate>inventory.button.downloadJSON</a>
+          <a >{{ 'inventory.button.downloadJSON' | translate }}</a>
         </li>
       }
       @if (!node.origin.children && permission.joc.inventory.manage) {
         <li (click)="importJSON()" nz-menu-item>
-          <a translate>inventory.button.uploadJSON</a>
+          <a >{{ 'inventory.button.uploadJSON' | translate }}</a>
         </li>
       }
     </ul>
@@ -3337,11 +3319,11 @@
     <ul nz-menu>
       @if (permission.joc.inventory.manage) {
         <li (click)="deletePermanently(node);" class="bg-hover-color" nz-menu-item>
-          <a translate>inventory.button.delete</a>
+          <a >{{ 'inventory.button.delete' | translate }}</a>
         </li>
       }
       <li (click)="restoreObject(node);" nz-menu-item>
-        <a translate>inventory.button.restore</a>
+        <a >{{ 'inventory.button.restore' | translate }}</a>
       </li>
     </ul>
   }

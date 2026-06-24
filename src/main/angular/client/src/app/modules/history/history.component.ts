@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -34,7 +35,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-order-history-template',
-  templateUrl: './order-history-template.html'
+  templateUrl: './order-history-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderTemplateComponent {
   @Input() history: any;
@@ -146,6 +148,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-order-form-template',
   templateUrl: './order-form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderSearchComponent {
   @Input() schedulerIds: any;
@@ -172,7 +175,7 @@ export class OrderSearchComponent {
   ];
   selectedHistoryStates: string[] = [];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -203,6 +206,7 @@ export class OrderSearchComponent {
     } else {
       this.selectedHistoryStates = [];
     }
+    this.cdr.markForCheck();
   }
 
   stateChange(value: string[]): void {
@@ -228,6 +232,7 @@ export class OrderSearchComponent {
         if (this.folders.length > 0) {
           this.folders[0].expanded = true;
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -382,6 +387,7 @@ export class OrderSearchComponent {
   standalone: false,
   selector: 'app-task-form-template',
   templateUrl: './task-form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskSearchComponent {
   @Input() schedulerIds: any;
@@ -413,7 +419,7 @@ export class TaskSearchComponent {
     {label: 'major', value: 'MAJOR', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -442,7 +448,7 @@ export class TaskSearchComponent {
         };
       });
     }
-
+    this.cdr.markForCheck();
   }
 
   stateChange(value: string[]): void {
@@ -471,6 +477,7 @@ export class TaskSearchComponent {
         if (this.folders.length > 0) {
           this.folders[0].expanded = true;
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1138,7 +1145,8 @@ export class SingleHistoryComponent {
 @Component({
   standalone: false,
   selector: 'app-history',
-  templateUrl: './history.component.html'
+  templateUrl: './history.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent {
   schedulerIds: any = {};
@@ -1391,6 +1399,7 @@ export class HistoryComponent {
     this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
+        this.cdr.markForCheck();
         this.historys = this.setDuration(res);
         this.workflowTagsPerWorkflow = res?.workflowTagsPerWorkflow || {};
         this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
@@ -1402,11 +1411,12 @@ export class HistoryComponent {
       }, error: () => {
         this.data = [];
         this.isLoading = true;
+        this.cdr.markForCheck();
       }
     });
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.coreService.calRowWidth(this.historyFilters.current);
@@ -1506,6 +1516,7 @@ export class HistoryComponent {
     this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res) => {
         this.isLoading = true;
+        this.cdr.markForCheck();
         this.taskHistorys = this.setDuration(res);
         this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
         if (flag) {
@@ -1516,6 +1527,7 @@ export class HistoryComponent {
       }, error: () => {
         this.data = [];
         this.isLoading = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1579,6 +1591,7 @@ export class HistoryComponent {
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
+        this.cdr.markForCheck();
         this.yadeHistorys = res.transfers || [];
         this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
         if (flag) {
@@ -1590,6 +1603,7 @@ export class HistoryComponent {
       }, error: () => {
         this.data = [];
         this.isLoading = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1674,6 +1688,7 @@ export class HistoryComponent {
     this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
+        this.cdr.markForCheck();
         this.deploymentHistorys = res.depHistory || [];
         this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
         if (flag) {
@@ -1684,6 +1699,7 @@ export class HistoryComponent {
       }, error: () => {
         this.data = [];
         this.isLoading = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1765,12 +1781,14 @@ export class HistoryComponent {
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;
+        this.cdr.markForCheck();
         this.submissionHistorys = res.dates || [];
         this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
         this.searchInResult();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1927,10 +1945,12 @@ export class HistoryComponent {
           this.historys = this.setDuration(res);
           this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.searchInResult();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
+          this.cdr.markForCheck();
         }
       });
     } else if (this.historyFilters.type === 'TASK') {
@@ -2000,12 +2020,14 @@ export class HistoryComponent {
       this.coreService.post('tasks/history', filter).subscribe({
         next: (res: any) => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.taskHistorys = this.setDuration(res);
           this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
+          this.cdr.markForCheck();
         }
       });
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
@@ -2031,12 +2053,14 @@ export class HistoryComponent {
       this.coreService.post('inventory/deployment/history', {compactFilter: filter}).subscribe({
         next: (res: any) => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.deploymentHistorys = res.depHistory || [];
           this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
+          this.cdr.markForCheck();
         }
       });
     } else if (this.historyFilters.type === 'SUBMISSION') {
@@ -2073,12 +2097,14 @@ export class HistoryComponent {
       this.coreService.post('daily_plan/history', filter).subscribe({
         next: (res: any) => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.submissionHistorys = res.dates || [];
           this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
           this.searchInResult();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
+          this.cdr.markForCheck();
         }
       });
     } else if (this.historyFilters.type === 'YADE') {
@@ -2089,6 +2115,7 @@ export class HistoryComponent {
       this.coreService.post('yade/transfers', filter).subscribe({
         next: (res: any) => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.yadeHistorys = res.transfers || [];
           this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
           this.searchInResult();
@@ -2096,6 +2123,7 @@ export class HistoryComponent {
         }, error: () => {
           this.data = [];
           this.isLoading = true;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -3509,7 +3537,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Task History Tab
         else if (this.isLoading && this.historyFilters.type === 'TASK') {
           if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
@@ -3521,7 +3549,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Deployment History Tab
         else if (this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
           if (eventType && eventType.match(/Deploy/)) {
@@ -3533,7 +3561,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Submission History Tab
         else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
           if (eventType === 'DailyPlanUpdated') {
@@ -3545,7 +3573,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // YADE/File Transfer Tab
         else if (this.isLoading && this.historyFilters.type === 'YADE') {
           if (eventType === 'FILETRANSFER' || eventType === 'FileTransferUpdated') {

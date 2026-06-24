@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -19,7 +19,8 @@ import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.
 @Component({
   standalone: false,
   selector: 'app-setting',
-  templateUrl: './setting.component.html'
+  templateUrl: './setting.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingComponent {
   zones: any = {};
@@ -45,7 +46,8 @@ export class SettingComponent {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
-              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe, private kioskService: KioskService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe, private kioskService: KioskService,
+              private cdr: ChangeDetectorRef) {
   }
 
   static checkTime(time): string {
@@ -302,20 +304,23 @@ static generateChildStoreObject(children): any {
             this.settings = JSON.parse(res.configurations[0].configurationItem);
             this.mergeData(this.defaultGlobals);
             this.loading = true;
+            this.cdr.markForCheck();
           } else {
             this.settings = {};
             this.mergeData(this.defaultGlobals);
             this.changeConfiguration(null, null, null);
             this.loading = true;
-
+            this.cdr.markForCheck();
           }
 
         }, error: () => {
           this.loading = true;
+          this.cdr.markForCheck();
         }
       });
     } else {
       this.loading = true;
+      this.cdr.markForCheck();
     }
   }
 

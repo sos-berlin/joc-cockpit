@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {TranslateService} from "@ngx-translate/core";
 import {groupBy, isEmpty} from "underscore";
@@ -213,7 +213,8 @@ export class ExportComponent {
 @Component({
   standalone: false,
   selector: 'app-projection-dialog-modal-content',
-  templateUrl: './projection-dialog.html'
+  templateUrl: './projection-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowProjectionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -229,7 +230,7 @@ export class ShowProjectionModalComponent {
   searchableProperties = ['workflow', 'schedule', 'periods']
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService,
-              private searchPipe: SearchPipe) {
+              private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -326,8 +327,9 @@ export class ShowProjectionModalComponent {
         this.schedule.list = uniqueList;
         this.loading = false;
         this.searchInResult();
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false
+      error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -366,7 +368,8 @@ export class ShowProjectionModalComponent {
   standalone: false,
   selector: 'app-projection',
   templateUrl: './projection.component.html',
-  styleUrls: ['./projection.component.css']
+  styleUrls: ['./projection.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectionComponent {
   @Input() projectionData: any = [];
@@ -399,7 +402,7 @@ export class ProjectionComponent {
   submitted: boolean;
 
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -532,6 +535,7 @@ export class ProjectionComponent {
       });
       setTimeout(() => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, 10);
     } else {
       if (this.filters.calView.toLowerCase() !== dom.data('calendar').getView()) {
@@ -542,6 +546,7 @@ export class ProjectionComponent {
       }
       dom.data('calendar').setDataSource(this.projectionData);
       this.isLoaded = true;
+      this.cdr.markForCheck();
     }
   }
 

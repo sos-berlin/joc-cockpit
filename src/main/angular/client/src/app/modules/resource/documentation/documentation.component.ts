@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
@@ -80,7 +80,8 @@ export class EditModalComponent {
 @Component({
   standalone: false,
   selector: 'app-single-document',
-  templateUrl: './single-documentation.component.html'
+  templateUrl: './single-documentation.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleDocumentationComponent {
   loading = false;
@@ -92,7 +93,7 @@ export class SingleDocumentationComponent {
   path?: string | null;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private route: ActivatedRoute) {
+              private modal: NzModalService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -180,6 +181,7 @@ export class SingleDocumentationComponent {
   deleteDocument(obj: any): void {
     this.coreService.post('documentations/delete', obj).subscribe(() => {
       this.documents = [];
+      this.cdr.markForCheck();
     });
   }
 
@@ -188,7 +190,8 @@ export class SingleDocumentationComponent {
       next: (res: any) => {
         this.loading = false;
         this.documents = res.documentations;
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -245,7 +248,8 @@ export class SingleDocumentationComponent {
 @Component({
   standalone: false,
   selector: 'app-document',
-  templateUrl: 'documentation.component.html'
+  templateUrl: 'documentation.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentationComponent {
   isLoading = false;
@@ -278,7 +282,7 @@ export class DocumentationComponent {
   @ViewChild(TreeComponent, {static: false}) child!: any;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -339,10 +343,12 @@ export class DocumentationComponent {
             this.loadDocument();
           }
           this.isLoading = true;
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
+      this.cdr.markForCheck();
     }
   }
 
@@ -359,6 +365,7 @@ export class DocumentationComponent {
       return;
     }
     this.loading = true;
+    this.cdr.markForCheck();
     for (let x = 0; x < paths.length; x++) {
       obj.folders.push({folder: paths[x], recursive: false});
     }
@@ -440,6 +447,7 @@ export class DocumentationComponent {
   getDocumentations(data, recursive): void {
     data.isSelected = true;
     this.loading = true;
+    this.cdr.markForCheck();
     const obj = {
       folders: [{folder: data.path, recursive}],
       controllerId: this.schedulerIds.selected,
@@ -732,8 +740,10 @@ export class DocumentationComponent {
         res.documentations = this.orderPipe.transform(res.documentations, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
         this.documents = res.documentations;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -802,9 +812,11 @@ export class DocumentationComponent {
       this.data = [];
       this.reloadState = 'yes';
       this.loading = false;
+      this.cdr.markForCheck();
       this.pendingHTTPRequests$.next();
     } else if (this.reloadState === 'yes') {
       this.loading = true;
+      this.cdr.markForCheck();
       this.loadDocument();
     }
   }

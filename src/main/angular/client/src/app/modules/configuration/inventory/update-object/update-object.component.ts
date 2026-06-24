@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {isArray, isEmpty} from 'underscore';
@@ -67,7 +67,8 @@ export class UpdateObjectComponent {
   @ViewChild('codeEditor', {static: false}) cm;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
-              private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
+              private authService: AuthService, private modal: NzModalService, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -102,6 +103,7 @@ export class UpdateObjectComponent {
     if (this.type === InventoryObject.WORKFLOW || this.type === InventoryObject.FILEORDERSOURCE) {
       this.coreService.getTimeZoneList((timezones) => {
         this.zones = timezones;
+        this.cdr.detectChanges();
       });
     } else if (this.type === 'CALENDAR') {
       this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -118,6 +120,7 @@ export class UpdateObjectComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       });
     }
     if (this.workflowTree.length === 0 && (this.type === InventoryObject.FILEORDERSOURCE || this.type === InventoryObject.SCHEDULE)) {
@@ -127,6 +130,7 @@ export class UpdateObjectComponent {
         types: [InventoryObject.WORKFLOW]
       }).subscribe((res) => {
         this.workflowTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       });
     }
     if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
@@ -135,11 +139,13 @@ export class UpdateObjectComponent {
         types: ['DOCUMENTATION']
       }).subscribe((res) => {
         this.documentationTree = this.coreService.prepareTree(res, true);
+        this.cdr.detectChanges();
       });
     }
     if (this.type === InventoryObject.FILEORDERSOURCE && this.permission.joc.inventory.view) {
       this.coreService.getAgents(this.agents, this.controllerId, () => {
         this.agentList = this.coreService.clone(this.agents.agentList);
+        this.cdr.detectChanges();
       });
     }
     if(this.type === InventoryObject.INCLUDESCRIPT){
@@ -151,6 +157,7 @@ export class UpdateObjectComponent {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
+      this.cdr.detectChanges();
     }, 100);
   }
 

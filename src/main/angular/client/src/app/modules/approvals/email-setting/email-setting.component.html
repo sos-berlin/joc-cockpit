@@ -6,7 +6,7 @@
           <div class="row">
             <div class="col-md-12">
               <h6>
-                <span translate>user.label.connection</span>
+                <span >{{ 'user.label.connection' | translate }}</span>
               </h6>
             </div>
           </div>
@@ -14,7 +14,7 @@
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate"
                    class="col-sm-2 form-control-label"
                    title="{{'user.label.jobResourceName' | translate}}"
-                   translate>user.label.jobResourceName
+                   >{{ 'user.label.jobResourceName' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
@@ -34,7 +34,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.contentType
+                   >{{ 'user.label.contentType' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
@@ -46,7 +46,7 @@
               @if (contentType.invalid && (contentType.dirty || contentType.touched)) {
                 <div class="text-danger help-block">
                   @if (contentType.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -55,7 +55,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.charset
+                   >{{ 'user.label.charset' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
@@ -67,7 +67,7 @@
               @if (charset.invalid && (charset.dirty || charset.touched)) {
                 <div class="text-danger help-block">
                   @if (charset.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -76,7 +76,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.encoding
+                   >{{ 'user.label.encoding' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
@@ -88,7 +88,7 @@
               @if (encoding.invalid && (encoding.dirty || encoding.touched)) {
                 <div class="text-danger help-block">
                   @if (encoding.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -97,14 +97,14 @@
           <div class="row m-t b-t p-t">
             <div class="col-md-12">
               <h6>
-                <span translate>user.label.approvalsConfirmationEmail</span>
+                <span >{{ 'user.label.approvalsConfirmationEmail' | translate }}</span>
               </h6>
             </div>
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.cc
+                   >{{ 'user.label.cc' | translate }}
             </label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.cc"
@@ -116,7 +116,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.bcc
+                   >{{ 'user.label.bcc' | translate }}
             </label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.bcc"
@@ -128,7 +128,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.subject
+                   >{{ 'user.label.subject' | translate }}
               <sup class="text-danger text-sm">*</sup>
 
             </label>
@@ -140,7 +140,7 @@
               @if (subject.invalid && (subject.dirty || subject.touched)) {
                 <div class="text-danger help-block">
                   @if (subject.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -149,17 +149,17 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
                    class="col-sm-2 form-control-label"
-                   translate>user.label.body
+                   >{{ 'user.label.body' | translate }}
               <sup class="text-danger text-sm">*</sup>
 
             </label>
             <div [ngClass]="{'has-error' : ((body.dirty || body.touched) && body.invalid)}" class="col-sm-6">
               <a (click)="previewRegistration = false;" [ngClass]="{'text-primary': previewRegistration !== true}"
                  class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                 translate>xml.button.sourceCode</a>
+                 >{{ 'xml.button.sourceCode' | translate }}</a>
               <a (click)="previewRegistration = true;" [ngClass]="{'text-primary': previewRegistration === true}"
                  class="btn btn-xs btn-default b-l" style="box-shadow: none !important;"
-                 translate>xml.button.preview</a>
+                 >{{ 'xml.button.preview' | translate }}</a>
               <a (click)="fullScreen = true" class="pull-right">
                 <i class="fa fa-arrows-alt text-hover-primary"></i>
               </a>
@@ -173,7 +173,7 @@
               @if (body.invalid && (body.dirty || body.touched)) {
                 <div class="text-danger help-block">
                   @if (body.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }

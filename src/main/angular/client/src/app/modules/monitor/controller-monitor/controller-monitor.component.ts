@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild, ElementRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
@@ -13,7 +13,8 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   standalone: false,
   selector: 'app-controller-monitor',
   templateUrl: './controller-monitor.component.html',
-  styleUrls: ['./controller-monitor.component.scss']
+  styleUrls: ['./controller-monitor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControllerMonitorComponent {
   @Input() permission: any;
@@ -49,7 +50,7 @@ export class ControllerMonitorComponent {
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private authService: AuthService, public coreService: CoreService, private translate: TranslateService,
-              private groupByPipe: GroupByPipe, private dataService: DataService) {
+              private groupByPipe: GroupByPipe, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -70,6 +71,10 @@ export class ControllerMonitorComponent {
       }
     }
     return isMatch;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -138,6 +143,7 @@ export class ControllerMonitorComponent {
     }).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.data = res.controllers;
         let groupData = [];
         const map = new Map();
@@ -183,7 +189,7 @@ export class ControllerMonitorComponent {
         });
         groupData = this.groupByPipe.transform(groupData, 'date');
         this.checkMissingDates(groupData, map);
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

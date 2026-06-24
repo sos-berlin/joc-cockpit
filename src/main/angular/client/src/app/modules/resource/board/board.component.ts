@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -299,7 +299,8 @@ export class PostModalComponent {
 @Component({
   standalone: false,
   selector: 'app-single-board',
-  templateUrl: './single-board.component.html'
+  templateUrl: './single-board.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleBoardComponent {
   loading: boolean;
@@ -312,7 +313,8 @@ export class SingleBoardComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -345,7 +347,8 @@ export class SingleBoardComponent {
         this.boards.forEach((value) => {
           value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         });
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -442,6 +445,7 @@ export class SingleBoardComponent {
             this.boards[0].numOfNotices = res.noticeBoard.numOfNotices;
             this.boards[0].numOfExpectingOrders = res.noticeBoard.numOfExpectingOrders;
             this.boards[0].notices = res.noticeBoard.notices;
+            this.cdr.markForCheck();
           });
           break;
         }
@@ -482,7 +486,8 @@ export class SingleBoardComponent {
 @Component({
   standalone: false,
   selector: 'app-board',
-  templateUrl: 'board.component.html'
+  templateUrl: 'board.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent {
   isLoading = false;
@@ -542,7 +547,7 @@ export class BoardComponent {
           }
         });
         if (updated) {
-          this.cdr.detectChanges();
+          setTimeout(() => this.cdr.detectChanges(), 0);
         }
       }
     });
@@ -582,11 +587,12 @@ export class BoardComponent {
       }).subscribe({
         next: res => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.tree = this.coreService.prepareTree(res, true);
           if (this.tree.length) {
             this.loadBoards();
           }
-        }, error: () => this.isLoading = true
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -722,6 +728,7 @@ export class BoardComponent {
     }).subscribe({
       next: (res: any) => {
         this.loading = false;
+        this.cdr.markForCheck();
         res.noticeBoards.forEach((value) => {
           for (let x = 0; x < this.boards.length; x++) {
             if (this.boards[x].path === value.path) {
@@ -734,7 +741,7 @@ export class BoardComponent {
           }
         });
         this.boards = [...this.boards];
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -780,12 +787,13 @@ export class BoardComponent {
         });
         res.noticeBoards = this.orderPipe.transform(res.noticeBoards, this.boardsFilters.filter.sortBy, this.boardsFilters.reverse);
         this.loading = false;
+        this.cdr.markForCheck();
         this.boards = res.noticeBoards;
         this.searchInResult();
         if (boards && boards.length > 0) {
           this.updateBoardsDetail(boards);
         }
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -1412,6 +1420,7 @@ export class BoardComponent {
         });
         this.boards = [...this.boards];
         this.reset();
+        this.cdr.detectChanges();
       });
     } else {
       this.reset();

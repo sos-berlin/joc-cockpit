@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!isCopy) {
-      <span translate>dailyPlan.label.setStartTime</span>
+      <span >{{ 'dailyPlan.label.setStartTime' | translate }}</span>
     }
     @if (isCopy) {
-      <span translate>dailyPlan.label.copyOrder</span>
+      <span >{{ 'dailyPlan.label.copyOrder' | translate }}</span>
     }
     @if ((order || plan) && !orders) {
       <span>:</span>
@@ -31,20 +31,20 @@
           <div class="form-group row">
             <div class="col-md-12 font14">
               @if (n2 === 0) {
-                <span [translateParams]="{n1}" translate>dailyPlan.popup.modifyOrdersCount</span>
+                <span >{{ 'dailyPlan.popup.modifyOrdersCount' | translate:{n1} }}</span>
               }
               @if (n2>0 && s1 == 0) {
-                <span [translateParams]="{n1, n2}" translate>dailyPlan.popup.modifyCyclicOrdersCount</span>
+                <span >{{ 'dailyPlan.popup.modifyCyclicOrdersCount' | translate:{n1, n2} }}</span>
               }
               @if (n2>0 && s1 > 0) {
-                <span [translateParams]="{s1, n1, n2}" translate>dailyPlan.popup.modifySingleAndCyclicOrdersCount</span>
+                <span >{{ 'dailyPlan.popup.modifySingleAndCyclicOrdersCount' | translate:{s1, n1, n2} }}</span>
               }
             </div>
           </div>
         }
         @if (order && order.orderId) {
           <div class="form-group row">
-            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <label class="col-md-3" >{{ 'dailyPlan.label.plannedStart' | translate }}</label>
             <div class="col-md-9">
               @if (order.plannedStartTime) {
                 <span>{{order.plannedStartTime}}</span>
@@ -57,41 +57,41 @@
         }
         @if (plan) {
           <div class="form-group row">
-            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <label class="col-md-3" >{{ 'dailyPlan.label.plannedStart' | translate }}</label>
             <div class="col-md-9">
               @if (plan.value.length ==1 && plan.value[0].plannedStartTime) {
                 <span>{{plan.value[0].plannedStartTime}}</span>
               }
               @if (plan.value.length > 1) {
-                <span [translateParams]="{n1}" translate>dailyPlan.popup.differentModifyStartTime</span>
+                <span >{{ 'dailyPlan.popup.differentModifyStartTime' | translate:{n1} }}</span>
               }
             </div>
           </div>
         }
         @if (order && !order.cyclicOrder) {
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <label class="col-md-3 " >{{ 'order.label.ignoreAdmissionTimes' | translate }}</label>
             <div class="col-md-8">
               <label [(ngModel)]="dateType.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3" translate>common.label.startTime</label>
+            <label class="col-md-3" >{{ 'common.label.startTime' | translate }}</label>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="dateType.at" name="at" (ngModelChange)="onTimeChange($event)">
-                <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
-                <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-                <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
-                <label nz-radio nzValue="cur"><span translate>common.label.relativeTimeFromCurrentTime</span></label>
+                <label nz-radio nzValue="now"><span >{{ 'common.label.now' | translate }}</span></label>
+                <label nz-radio nzValue="date"><span >{{ 'common.label.specificDate' | translate }}</span></label>
+                <label nz-radio nzValue="later"><span >{{ 'common.label.relativeTime' | translate }}</span></label>
+                <label nz-radio nzValue="cur"><span >{{ 'common.label.relativeTimeFromCurrentTime' | translate }}</span></label>
                 @if (!isDailyPlan) {
-                  <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                  <label nz-radio nzValue="never"><span >{{ 'common.label.never' | translate }}</span></label>
                 }
               </nz-radio-group>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.stickToDailyPlanDate</label>
+            <label class="col-md-3 " >{{ 'order.label.stickToDailyPlanDate' | translate }}</label>
             <div class="col-md-8">
               <label [(ngModel)]="stickToDailyPlanDate" name="stickToDailyPlanDate" nz-checkbox>
               </label>
@@ -99,7 +99,7 @@
           </div>
           @if (dateType.at == 'later') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.time
+              <label class="col-md-3 form-control-label" >{{ 'common.label.time' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
@@ -108,7 +108,7 @@
                 @if (time.errors && (time.dirty || time.touched)) {
                   <div class="help-block text-danger">
                     @if (!time.valid) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -117,16 +117,16 @@
           }
           @if (dateType.at == 'cur') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.time
+              <label class="col-md-3 form-control-label" >{{ 'common.label.time' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
                 <input nValidTimeRegex (blur)="onBlur(time,'atTimeFromCur')" type="text" #time="ngModel" class="form-control" required
-                       name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="Â±HH:MM:[SS] or Â±SECONDS">
+                       name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="±HH:MM:[SS] or ±SECONDS">
                 @if (time.errors && (time.dirty || time.touched)) {
                   <div class="help-block text-danger">
                     @if (!time.valid) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -135,7 +135,7 @@
           }
           @if (dateType.at == 'date') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
+              <label class="col-md-3 form-control-label" >{{ 'workflow.label.enterDateAndTime' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-sm-6">
@@ -149,14 +149,14 @@
         }
         @if (order && order.cyclicOrder) {
           <div class="form-group row">
-            <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
+            <label class="col-md-3 " >{{ 'order.label.ignoreAdmissionTimes' | translate }}</label>
             <div class="col-md-8">
               <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes" nz-checkbox>
               </label>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>runtime.label.repeatTime
+            <label class="col-md-3 form-control-label" >{{ 'runtime.label.repeatTime' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}">
@@ -167,7 +167,7 @@
           </div>
           @if (dateType.at == 'date') {
             <div class="form-group row">
-              <label class="col-md-3 form-control-label" translate>common.label.specificDate</label>
+              <label class="col-md-3 form-control-label" >{{ 'common.label.specificDate' | translate }}</label>
               <div class="col-md-2">
                 <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'scheduleDate'" [isRequired]="false"
                                 [isTime]="false" [isAllowClear]="true" [name]="'scheduleDate'" [dateFormat]="dateFormat"
@@ -177,7 +177,7 @@
             </div>
           }
           <div class="form-group row">
-            <label class="col-md-3 form-control-label" translate>runtime.label.begin
+            <label class="col-md-3 form-control-label" >{{ 'runtime.label.begin' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}">
@@ -185,7 +185,7 @@
                      [(ngModel)]="period.begin"
                      placeholder="HH:MM:SS" type="text">
             </div>
-            <label class="col-md-2 form-control-label text-right" translate>runtime.label.end
+            <label class="col-md-2 form-control-label text-right" >{{ 'runtime.label.end' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-md-2" [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}">
@@ -197,7 +197,7 @@
         }
 
         <div class="form-group row" [hidden]="!(dateType.at =='date')">
-          <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
+          <div class="col-md-3 form-control-label" >{{ 'common.label.timeZone' | translate }}</div>
           <div class="col-sm-6">
             <app-select-input isSearchable='true' isAllowClear="true" [attributeName]="'timeZone'" [name]="'timeZone'"
                               [listArray]="zones" [object]="dateType"></app-select-input>
@@ -217,8 +217,8 @@
         {{'common.button.submit' | translate}}
       </button>
     }
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

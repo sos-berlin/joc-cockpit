@@ -7,7 +7,7 @@
     <ul nz-menu>
       @if (permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED') && !(order.state._text === 'RUNNING')) {
         <li (click)="cancelOrder(order)" nz-menu-item>
-          <a translate>order.button.cancel</a>
+          <a >{{ 'order.button.cancel' | translate }}</a>
         </li>
       }
 
@@ -16,12 +16,12 @@
           <ul>
             @if (permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')) {
               <li (click)="cancelOrder(order)" nz-menu-item>
-                <a translate>order.button.cancelSoftly</a>
+                <a >{{ 'order.button.cancelSoftly' | translate }}</a>
               </li>
             }
             @if (permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING')) {
               <li (click)="cancelOrderWithKill()" nz-menu-item>
-                <a translate>order.button.force</a>
+                <a >{{ 'order.button.force' | translate }}</a>
               </li>
             }
           </ul>
@@ -32,12 +32,12 @@
           <ul>
             @if (order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')) {
               <li (click)="deepCancel(true)" nz-menu-item>
-                <a translate>order.button.cancelSoftly</a>
+                <a >{{ 'order.button.cancelSoftly' | translate }}</a>
               </li>
             }
             @if (order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')) {
               <li (click)="cancelOrderWithKill(true)" nz-menu-item>
-                <a translate>order.button.force</a>
+                <a >{{ 'order.button.force' | translate }}</a>
               </li>
             }
           </ul>
@@ -49,22 +49,22 @@
           <ul>
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)) {
               <li (click)="normal(order)" nz-menu-item>
-                <a translate>order.button.normal</a>
+                <a >{{ 'order.button.normal' | translate }}</a>
               </li>
             }
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text === 'RUNNING')) {
               <li (click)="force(order)" nz-menu-item>
-                <a translate>order.button.force</a>
+                <a >{{ 'order.button.force' | translate }}</a>
               </li>
             }
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)) {
               <li (click)="reset(order)" nz-menu-item>
-                <a translate>order.button.reset</a>
+                <a >{{ 'order.button.reset' | translate }}</a>
               </li>
             }
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')  && !order.state._reason === 'SLEEPING') {
               <li (click)="forceReset(order)" nz-menu-item>
-                <a translate>order.button.forceReset</a>
+                <a >{{ 'order.button.forceReset' | translate }}</a>
               </li>
             }
           </ul>
@@ -75,23 +75,23 @@
           <ul>
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)) {
               <li (click)="deepSuspendNormal(true)" nz-menu-item>
-                <a translate>order.button.normal</a>
+                <a >{{ 'order.button.normal' | translate }}</a>
               </li>
             }
             @if (permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)) {
               <li (click)="deepSuspendForce()" nz-menu-item>
-                <a translate>order.button.force</a>
+                <a >{{ 'order.button.force' | translate }}</a>
               </li>
             }
             @if (order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)) {
               <li (click)="deepSuspendReset(true)" nz-menu-item>
-                <a translate>order.button.reset</a>
+                <a >{{ 'order.button.reset' | translate }}</a>
               </li>
             }
             @if (order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING'
               || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')) {
               <li (click)="deepSuspendForceReset()" nz-menu-item>
-                <a translate>order.button.forceReset</a>
+                <a >{{ 'order.button.forceReset' | translate }}</a>
               </li>
             }
           </ul>
@@ -124,7 +124,7 @@
       }
       @if (permission && permission.currentController && permission.currentController.orders.cancel && order.canLeave) {
         <li (click)="removeWhenTerminated()" nz-menu-item>
-          <a translate>order.button.leaveWorkflow</a>
+          <a >{{ 'order.button.leaveWorkflow' | translate }}</a>
         </li>
       }
       @if (permission && permission.currentController && permission.currentController.orders.confirm && order.state && (order.state._text === 'PROMPTING')) {
@@ -135,11 +135,11 @@
       <li nz-menu-divider></li>
       @if (permission.currentController.orders.create && order.state && (order.state._text == 'SCHEDULED' || order.state._text == 'PENDING')) {
         <li (click)="cloneOrder(order)" nz-menu-item>
-          <a translate>order.button.cloneOrder</a>
+          <a >{{ 'order.button.cloneOrder' | translate }}</a>
         </li>
       }
       <li (click)="coreService.copyArguments(order, 'arguments', message)" nz-menu-item [nzDisabled]="!order.arguments">
-        <a translate>common.button.copyArguments</a>
+        <a >{{ 'common.button.copyArguments' | translate }}</a>
       </li>
       @if (order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')) {
         <li (click)="showLog(order)" nz-menu-item>
@@ -148,10 +148,10 @@
       }
       <li nz-menu-divider></li>
       <li (click)="coreService.copyLink('order',order.orderId, order.workflowId.path)" nz-menu-item>
-        <a translate>common.button.copyLinkToObject</a>
+        <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
       </li>
       <li (click)="copyOrderId(order.orderId)" nz-menu-item>
-        <a translate>common.button.copyOrderId</a>
+        <a >{{ 'common.button.copyOrderId' | translate }}</a>
       </li>
     </ul>
   </nz-dropdown-menu>

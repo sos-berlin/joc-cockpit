@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
 import {CoreService} from "../../../services/core.service";
@@ -6,7 +6,8 @@ import {CoreService} from "../../../services/core.service";
 @Component({
   standalone: false,
   selector: 'app-show-permission-view',
-  templateUrl: './show-permission.component.html'
+  templateUrl: './show-permission.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowPermissionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -16,7 +17,11 @@ export class ShowPermissionComponent {
   permission: any = {};
   schedulerIds: any = {};
 
-  constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService, private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -34,8 +39,10 @@ export class ShowPermissionComponent {
       next: (res) => {
         this.permission = res;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     })
   }

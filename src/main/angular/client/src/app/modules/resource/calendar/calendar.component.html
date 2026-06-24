@@ -16,23 +16,23 @@
                   <button (click)="loadCalendar('ALL')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='ALL'}"
                           class="btn btn-grey btn-sm "
-                          translate>common.button.all
+                          >{{ 'common.button.all' | translate }}
                   </button>
                   <button (click)="loadCalendar('WORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='WORKINGDAYSCALENDAR'}"
                           class="btn btn-grey btn-sm "
-                          translate>resource.calendar.button.workingDays
+                          >{{ 'resource.calendar.button.workingDays' | translate }}
                   </button>
                   <button (click)="loadCalendar('NONWORKINGDAYSCALENDAR')"
                           [ngClass]="{'btn-primary': calendarFilters.filter.type=='NONWORKINGDAYSCALENDAR'}"
                           class="btn btn-grey btn-sm "
-                          translate>resource.calendar.button.nonWorkingDays
+                          >{{ 'resource.calendar.button.nonWorkingDays' | translate }}
                   </button>
                 </div>
                 <div class="btn-group dropdown">
                   <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                           nzTrigger="click">
-                    <span translate>common.label.sortBy</span>
+                    <span >{{ 'common.label.sortBy' | translate }}</span>
                     <span class="text-primary">
                        @if (calendarFilters.filter.sortBy ==='name') {
                          <span>
@@ -72,13 +72,13 @@
                   <nz-dropdown-menu #sortBy="nzDropdownMenu">
                     <ul nz-menu>
                       <li (click)="sort('name')" nz-menu-item>
-                        <a translate>common.label.name</a>
+                        <a >{{ 'common.label.name' | translate }}</a>
                       </li>
                       <li (click)="sort('path1')" nz-menu-item>
-                        <a translate>common.label.path</a>
+                        <a >{{ 'common.label.path' | translate }}</a>
                       </li>
                       <li (click)="sort('type')" nz-menu-item>
-                        <a translate>common.label.type</a>
+                        <a >{{ 'common.label.type' | translate }}</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -100,7 +100,7 @@
     <div class="col-md-4 text-right">
       <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
         <i class="fa fa-search"></i>&nbsp;
-        <span translate>common.button.search</span>
+        <span >{{ 'common.button.search' | translate }}</span>
       </button>
       <div class="search-box-field pull-right">
         <label>
@@ -160,17 +160,17 @@
                                 <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                                   <ul nz-menu>
                                     <li (click)="previewCalendar(calendar)" nz-menu-item>
-                                      <a translate>resource.calendar.button.showPreview</a>
+                                      <a >{{ 'resource.calendar.button.showPreview' | translate }}</a>
                                     </li>
                                     <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
-                                      <a translate>common.button.copyLinkToObject</a>
+                                      <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                                     </li>
                                   </ul>
                                 </nz-dropdown-menu>
                               </div>
                             </div>
                             <div class="text-sm text-left p-t-sm">
-                              <span translate>common.label.type </span>:
+                              <span >{{ 'common.label.type' | translate }}</span>:
                               <span
                                 [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"
                                 [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"></span>
@@ -178,16 +178,16 @@
                             <div class="text-sm text-left p-t-xs">
                               @if (calendar.from && calendar.to) {
                                 <span><span
-                                  translate>resource.calendar.label.validity</span> :</span>
+                                  >{{ 'resource.calendar.label.validity' | translate }}</span> :</span>
                               }
                               @if (!calendar.from && calendar.to) {
-                                <span><span translate>resource.calendar.label.validityUntil</span> : </span>
+                                <span><span >{{ 'resource.calendar.label.validityUntil' | translate }}</span> : </span>
                               }
                               @if (calendar.from) {
                                 <span [innerHtml]="calendar.from | stringToDate1:true"></span>
                               }
                               @if (calendar.from && calendar.to) {
-                                <span translate>common.label.to </span>
+                                <span >{{ 'common.label.to' | translate }}</span>
                               }
                               @if (calendar.to) {
                                 <span [innerHtml]="calendar.to | stringToDate1:true"></span>
@@ -202,7 +202,7 @@
                               <a (click)="previewCalendar(calendar)"
                                  class="text-left primary-text-hover-color">
                                 <i class="fa fa-television text-black-lt"></i>&nbsp;
-                                <span class="text-black-lt" translate>resource.calendar.button.showPreview</span></a>
+                                <span class="text-black-lt" >{{ 'resource.calendar.button.showPreview' | translate }}</span></a>
                             </div>
                           </div>
                         </div>
@@ -231,8 +231,8 @@
                   >
                     <thead>
                     <tr>
-                      <th nzWidth="55px"><span translate>common.label.action</span></th>
-                      <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+                      <th nzWidth="55px"><span >{{ 'common.label.action' | translate }}</span></th>
+                      <th (click)="sort('name')"><a><span class="p-r-xs" >{{ 'common.label.name' | translate }}</span>
                         @if (calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -241,7 +241,7 @@
                         }</a>
                       </th>
                       @if (isPathDisplay) {
-                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                        <th (click)="sort('path1')"><a><span class="p-r-xs" >{{ 'common.label.path' | translate }}</span>
                           @if (calendarFilters.filter.sortBy == 'path1' && !calendarFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -250,7 +250,7 @@
                           }</a>
                         </th>
                       }
-                      <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
+                      <th (click)="sort('type')"><a><span class="p-r-xs" >{{ 'common.label.type' | translate }}</span>
                         @if (calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -259,7 +259,7 @@
                         }</a>
                       </th>
                       <th (click)="sort('from')"><a><span class="p-r-xs"
-                                                          translate>resource.calendar.label.validityFrom</span>
+                                                          >{{ 'resource.calendar.label.validityFrom' | translate }}</span>
                         @if (calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -267,7 +267,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.calendar.label.validityTo</span>
+                      <th (click)="sort('to')"><a><span class="p-r-xs" >{{ 'resource.calendar.label.validityTo' | translate }}</span>
                         @if (calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -289,10 +289,10 @@
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li (click)="previewCalendar(calendar)" nz-menu-item>
-                                    <a translate>resource.calendar.button.showPreview</a>
+                                    <a >{{ 'resource.calendar.button.showPreview' | translate }}</a>
                                   </li>
                                   <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -339,12 +339,12 @@
                     </tbody>
                   </nz-table>
                   @if (ajaxTable.data.length >0) {
-                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                    <div class="w-half label-top"><span >{{ 'common.label.total' | translate }}</span> {{data.length}}
                       @if (ajaxTable.data.length >1) {
-                        <span translate>resource.calendar.label.calendarsFound</span>
+                        <span >{{ 'resource.calendar.label.calendarsFound' | translate }}</span>
                       }
                       @if (ajaxTable.data.length ==1) {
-                        <span translate>resource.calendar.label.calendarFound</span>
+                        <span >{{ 'resource.calendar.label.calendarFound' | translate }}</span>
                       }
                     </div>
                   }
@@ -367,21 +367,21 @@
     </div>
   </div>
 </div>
-<nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="closeSearch()" class="close-btn"></div>
-    @if (preferences.showHelpPages) {
-      <i (click)="helpPage('resources-calendar-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
-    }
-    @if (isSearchVisible) {
-      <div>
-        <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
-        </div>
-        <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
-                              [isCalendar]="true"></app-inventory-search>
+<ng-template #searchDrawerTpl>
+  <div (click)="closeSearch()" class="close-btn"></div>
+  @if (preferences.showHelpPages) {
+    <i (click)="helpPage('resources-calendar-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+  }
+  @if (isSearchVisible) {
+    <div>
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" >{{ 'inventory.search.label.searchHeading' | translate }}</span>
       </div>
-    }
-  </ng-container>
+      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                            [isCalendar]="true"></app-inventory-search>
+    </div>
+  }
+</ng-template>
+<nz-drawer (nzOnClose)="closeSearch()" [nzContent]="searchDrawerTpl" [nzVisible]="isSearchVisible" nzPlacement="right">
 </nz-drawer>
 @if ((loading && pageView === 'grid') || !isLoading) {
   <div class="spinner">

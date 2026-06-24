@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>deploymentService.button.bulkUpdate</span>
+    <span >{{ 'deploymentService.button.bulkUpdate' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,7 +13,7 @@
         @if (!listOfObjects || listOfObjects.size == 0) {
           <div class="row">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.label.operationType</label>
+              <label >{{ 'deploymentService.label.operationType' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <nz-select [(ngModel)]="selectObject.operationType" name="operationType">
@@ -28,7 +28,7 @@
         @if (listOfObjects && listOfObjects.size > 0) {
           <div class="row">
             <div class="col-md-4">
-              <label translate>deploymentService.label.operationType</label>
+              <label >{{ 'deploymentService.label.operationType' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               @for (item of list; track item.name) {
@@ -39,16 +39,16 @@
             </div>
           </div>
         }
-        <h6 class="m-t-12" translate>deploymentService.label.target
+        <h6 class="m-t-12" >{{ 'deploymentService.label.target' | translate }}
           <i (click)="data.isTargetExpanded = !data.isTargetExpanded" [ngClass]="{'fa-caret-up': !data.isTargetExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
         </h6>
         <div [ngClass]="{'fade-in show': !data.isTargetExpanded}" class="p-a b-a hide">
-          <h6 translate>deploymentService.label.connection </h6>
+          <h6 >{{ 'deploymentService.label.connection' | translate }}</h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.host</label>
+                <label >{{ 'deploymentService.joc.label.host' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.connection.host" class="form-control"
@@ -62,7 +62,7 @@
 
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.port</label>
+                <label >{{ 'deploymentService.joc.label.port' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <nz-input-number [(ngModel)]="data.target.connection.port"
@@ -74,11 +74,11 @@
               </div>
             </div>
           </div>
-          <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+          <h6 class="m-t-12" >{{ 'deploymentService.label.authentication' | translate }}</h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.method</label>
+                <label >{{ 'deploymentService.joc.label.method' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.method" class="form-control"
@@ -91,7 +91,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.user</label>
+                <label >{{ 'deploymentService.joc.label.user' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.user" class="form-control"
@@ -104,7 +104,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyFile</label>
+                <label >{{ 'deploymentService.joc.label.keyFile' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.target.authentication.keyFile" class="form-control" name="keyFile"
@@ -118,7 +118,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.packageLocation</label>
+              <label >{{ 'deploymentService.joc.label.packageLocation' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.packageLocation" class="form-control"
@@ -132,7 +132,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.execPre</label>
+              <label >{{ 'deploymentService.joc.label.execPre' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.execPre" class="form-control" name="execPre"
@@ -145,7 +145,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.execPost</label>
+              <label >{{ 'deploymentService.joc.label.execPost' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.execPost" class="form-control" name="execPost"
@@ -159,7 +159,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.makeService</label>
+              <label >{{ 'deploymentService.joc.label.makeService' | translate }}</label>
             </div>
             <div class="col-md-6">
               <label [(ngModel)]="data.target.makeService" name="makeService" nz-checkbox></label>
@@ -170,7 +170,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.forceSudo</label>
+              <label >{{ 'deploymentService.joc.label.forceSudo' | translate }}</label>
             </div>
             <div class="col-md-6">
               <label [(ngModel)]="data.target.forceSudo" name="forceSudo" nz-checkbox></label>
@@ -181,7 +181,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.serviceName</label>
+              <label >{{ 'deploymentService.joc.label.serviceName' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.serviceName" class="form-control" name="serviceName"
@@ -195,7 +195,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.serviceDir</label>
+              <label >{{ 'deploymentService.joc.label.serviceDir' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.target.serviceDir" class="form-control" name="serviceDir"
@@ -208,14 +208,14 @@
             </div>
           </div>
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.media
+        <h6 class="m-t-12" >{{ 'deploymentService.label.media' | translate }}
           <i (click)="data.isMediaExpanded = !data.isMediaExpanded" [ngClass]="{'fa-caret-up': data.isMediaExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
         </h6>
         <div [ngClass]="{'fade-in show': data.isMediaExpanded}" class="p-a b-a hide">
           <div class="row">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.release</label>
+              <label >{{ 'deploymentService.joc.label.release' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.media.release" class="form-control" name="release"
@@ -229,7 +229,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.tarball</label>
+              <label >{{ 'deploymentService.joc.label.tarball' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.media.tarball" class="form-control" name="tarball"
@@ -243,7 +243,7 @@
           </div>
 
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.installation
+        <h6 class="m-t-12" >{{ 'deploymentService.label.installation' | translate }}
           <i (click)="data.isInstallationExpanded = !data.isInstallationExpanded"
              [ngClass]="{'fa-caret-up': data.isInstallationExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -252,7 +252,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.setupDir</label>
+                <label >{{ 'deploymentService.joc.label.setupDir' | translate }}</label>
               </div>
               <div class="col-md-6">
                 <input [(ngModel)]="data.installation.setupDir" class="form-control" name="setupDir"
@@ -266,7 +266,7 @@
           }
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.home</label>
+              <label >{{ 'deploymentService.joc.label.home' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.home" class="form-control" name="home"
@@ -279,7 +279,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.data</label>
+              <label >{{ 'deploymentService.joc.label.data' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.data" class="form-control" name="data"
@@ -292,7 +292,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.homeOwner</label>
+              <label >{{ 'deploymentService.joc.label.homeOwner' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.homeOwner" class="form-control" name="homeOwner"
@@ -306,7 +306,7 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.dataOwner</label>
+              <label >{{ 'deploymentService.joc.label.dataOwner' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.dataOwner" class="form-control" name="dataOwner"
@@ -320,7 +320,7 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.runUser</label>
+              <label >{{ 'deploymentService.joc.label.runUser' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.runUser" class="form-control" name="runUser"
@@ -334,7 +334,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.title</label>
+                <label >{{ 'deploymentService.joc.label.title' | translate }}</label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.title" [maxlength]="30" class="form-control" name="title"
@@ -349,7 +349,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.securityLevel</label>
+                <label >{{ 'deploymentService.joc.label.securityLevel' | translate }}</label>
               </div>
               <div class="col-md-6 ">
                 <nz-select [(ngModel)]="data.installation.securityLevel" name="securityLevel">
@@ -366,7 +366,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsConfig</label>
+                <label >{{ 'deploymentService.joc.label.dbmsConfig' | translate }}</label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.dbmsConfig" class="form-control" name="dbmsConfig"
@@ -381,7 +381,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsDriver</label>
+                <label >{{ 'deploymentService.joc.label.dbmsDriver' | translate }}</label>
               </div>
               <div class="col-md-6 ">
                 <input [(ngModel)]="data.installation.dbmsDriver" class="form-control" name="dbmsDriver"
@@ -396,7 +396,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.dbmsInit</label>
+                <label >{{ 'deploymentService.joc.label.dbmsInit' | translate }}</label>
               </div>
               <div class="col-md-6 ">
                 <nz-select [(ngModel)]="data.installation.dbmsInit" name="dbmsInit">
@@ -413,7 +413,7 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.httpPort</label>
+              <label >{{ 'deploymentService.joc.label.httpPort' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.httpPort" class="form-control" name="httpPort"
@@ -427,7 +427,7 @@
 
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
-              <label translate>deploymentService.joc.label.httpsPort</label>
+              <label >{{ 'deploymentService.joc.label.httpsPort' | translate }}</label>
             </div>
             <div class="col-md-6 ">
               <input [(ngModel)]="data.installation.httpsPort" class="form-control" name="httpsPort"
@@ -441,7 +441,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.javaHome</label>
+              <label >{{ 'deploymentService.joc.label.javaHome' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.installation.javaHome" class="form-control"
@@ -455,7 +455,7 @@
           </div>
           <div class="row m-t-sm">
             <div class="col-md-4">
-              <label translate>deploymentService.joc.label.javaOptions</label>
+              <label >{{ 'deploymentService.joc.label.javaOptions' | translate }}</label>
             </div>
             <div class="col-md-6">
               <input [(ngModel)]="data.installation.javaOptions" class="form-control"
@@ -470,7 +470,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4">
-                <label translate>deploymentService.joc.label.isUser</label>
+                <label >{{ 'deploymentService.joc.label.isUser' | translate }}</label>
               </div>
               <div class="col-md-6">
                 <label [(ngModel)]="data.installation.isUser" name="isUser" nz-checkbox></label>
@@ -483,7 +483,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row m-t-sm">
               <div class="col-md-4">
-                <label translate>deploymentService.joc.label.isPreserveEnv</label>
+                <label >{{ 'deploymentService.joc.label.isPreserveEnv' | translate }}</label>
               </div>
               <div class="col-md-6">
                 <label [(ngModel)]="data.installation.isPreserveEnv" name="isPreserveEnv"
@@ -495,7 +495,7 @@
             </div>
           }
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.configuration
+        <h6 class="m-t-12" >{{ 'deploymentService.label.configuration' | translate }}
           <i (click)="data.isConfigurationExpanded = !data.isConfigurationExpanded"
              [ngClass]="{'fa-caret-up': data.isConfigurationExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -504,7 +504,7 @@
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.responseDir</label>
+                <label >{{ 'deploymentService.joc.label.responseDir' | translate }}</label>
               </div>
               <div class="col-md-6">
                 <input [(ngModel)]="data.configuration.responseDir" class="form-control" name="responseDir"
@@ -516,11 +516,11 @@
               </div>
             </div>
           }
-          <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
+          <h6 class="m-t-12" >{{ 'deploymentService.label.certificates' | translate }}</h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyStore</label>
+                <label >{{ 'deploymentService.joc.label.keyStore' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyStore" class="form-control" name="keyStore"
@@ -533,7 +533,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyStorePassword</label>
+                <label >{{ 'deploymentService.joc.label.keyStorePassword' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyStorePassword" class="form-control" name="keyStorePassword"
@@ -548,7 +548,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyPassword</label>
+                <label >{{ 'deploymentService.joc.label.keyPassword' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyPassword" class="form-control" name="keyPassword"
@@ -561,7 +561,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.keyAlias</label>
+                <label >{{ 'deploymentService.joc.label.keyAlias' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.keyAlias" class="form-control" name="keyAlias"
@@ -574,7 +574,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.trustStore</label>
+                <label >{{ 'deploymentService.joc.label.trustStore' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.trustStore" class="form-control"
@@ -588,7 +588,7 @@
             </div>
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
-                <label translate>deploymentService.joc.label.trustStorePassword</label>
+                <label >{{ 'deploymentService.joc.label.trustStorePassword' | translate }}</label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
                 <input [(ngModel)]="data.configuration.certificates.trustStorePassword" class="form-control" name="trustStorePassword"
@@ -602,13 +602,13 @@
             </div>
           </div>
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
-            <h6 class="m-t-12" translate>deploymentService.label.startFiles </h6>
+            <h6 class="m-t-12" >{{ 'deploymentService.label.startFiles' | translate }}</h6>
           }
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="p-a b-a">
               <div class="row">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.httpIni</label>
+                  <label >{{ 'deploymentService.joc.label.httpIni' | translate }}</label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.httpIni" class="form-control"
@@ -622,7 +622,7 @@
               </div>
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.httpsIni</label>
+                  <label >{{ 'deploymentService.joc.label.httpsIni' | translate }}</label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.httpsIni" class="form-control"
@@ -636,7 +636,7 @@
               </div>
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
-                  <label translate>deploymentService.joc.label.sslIni</label>
+                  <label >{{ 'deploymentService.joc.label.sslIni' | translate }}</label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
                   <input [(ngModel)]="data.configuration.sslIni" class="form-control"
@@ -654,7 +654,7 @@
             <div class="row m-t-12">
               <div class="col-md-4 form-control-label">
                 @if ($index == 0) {
-                  <label translate>deploymentService.joc.label.templates</label>
+                  <label >{{ 'deploymentService.joc.label.templates' | translate }}</label>
                 }
               </div>
               <div class="col-md-6 ">
@@ -680,10 +680,10 @@
       @if (submitted) {
         <i class="fa fa-spin fa-spinner p-r-xs"></i>
       }
-      <span translate>common.button.submit</span>
+      <span >{{ 'common.button.submit' | translate }}</span>
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

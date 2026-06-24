@@ -1,14 +1,14 @@
 <div class="modal-header">
   @if (!orders) {
     <h4 class="modal-title">
-      <span translate> order.label.resumeOrder</span>
+      <span >{{ 'order.label.resumeOrder' | translate }}</span>
       :
       <i class="text-muted p-l-xs text">{{order.orderId}}</i>
     </h4>
   }
   @if (orders) {
     <h4 class="modal-title">
-      <span translate> order.label.resumeAllSelectedOrder</span>
+      <span >{{ 'order.label.resumeAllSelectedOrder' | translate }}</span>
     </h4>
   }
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -24,15 +24,15 @@
     @if (workflow) {
       <div>
         <div class="form-group row m-b-0">
-          <div class="col-md-12 m-b-sm _600" translate>order.label.listOfConstants</div>
+          <div class="col-md-12 m-b-sm _600" >{{ 'order.label.listOfConstants' | translate }}</div>
           @if (constants.length == 0) {
             <div class="col-md-12 m-b-sm"><span><</span>empty></div>
           }
         </div>
         @if (constants.length > 0) {
           <div class="form-group row m-b-0">
-            <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-            <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
+            <div class="col-md-4 col-lg-4 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+            <div class="col-md-4 col-lg-7 m-b-sm" >{{ 'common.label.value' | translate }}</div>
           </div>
         }
         @for (argument of constants; track trackByArgument($index, argument); let i = $index) {
@@ -67,7 +67,7 @@
           </div>
         }
         <div class="form-group row m-b-0 m-t-sm">
-          <div class="col-md-12 m-b-sm _600" translate>order.label.listOfDynamicallyVariables</div>
+          <div class="col-md-12 m-b-sm _600" >{{ 'order.label.listOfDynamicallyVariables' | translate }}</div>
           @if (variables.length == 0) {
             <div class="col-md-12 m-b-sm"><span><</span>empty></div>
           }
@@ -78,8 +78,8 @@
               <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                      (nzCheckedChange)="onAllChecked($event)"></label>
             </div>
-            <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" translate>common.label.name</div>
-            <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
+            <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" >{{ 'common.label.name' | translate }}</div>
+            <div class="col-md-4 col-lg-7 m-b-sm" >{{ 'common.label.value' | translate }}</div>
           </div>
         }
         @for (argument of variables; track trackByArgument($index, argument); let i = $index) {
@@ -141,12 +141,12 @@
         @if (allowVariable) {
           <div class="form-group row">
             <div class="col-sm-12">
-              <a class="text-u-l" (click)="addArgument()" translate>order.button.addVariable</a>
+              <a class="text-u-l" (click)="addArgument()" >{{ 'order.button.addVariable' | translate }}</a>
             </div>
           </div>
         }
         <div class="form-group row">
-          <label class="col-sm-4" translate>order.label.force</label>
+          <label class="col-sm-4" >{{ 'order.label.force' | translate }}</label>
           <label class="col-sm-8" nz-checkbox [(ngModel)]="isForced" name="force" [nzDisabled]="isPositionChanged"></label>
         </div>
       </div>
@@ -160,8 +160,8 @@
       <div>
         @if (withCyclePosition) {
           <div class="form-group row">
-            <label class="col-sm-4 form-control-label" translate>
-              order.label.cycleEndTime
+            <label class="col-sm-4 form-control-label" >
+              {{ 'order.label.cycleEndTime' | translate }}
               <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'order.tooltip.cycleEndTime' | translate" class=" p-l-xs fa fa-info-circle"></i>
             </label>
             <div [ngClass]="{'has-error' : ((cycleEndTime.dirty || cycleEndTime.touched) && cycleEndTime.invalid)}"
@@ -173,7 +173,7 @@
                 @if (cycleEndTime.invalid && (cycleEndTime.dirty || cycleEndTime.touched)) {
                   <div class="text-danger help-block">
                     @if (cycleEndTime.errors['validTimeReqex']) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -185,7 +185,7 @@
           <label><span nz-icon nzType="exclamation-circle" class="m-r-sm m-b-xs" nzTheme="outline"></span>{{'order.message.remove' | translate}}</label>
         </div>
         <div class="hover">
-          <a class="text-primary noExl" translate>workflow.label.start</a>
+          <a class="text-primary noExl" >{{ 'workflow.label.start' | translate }}</a>
           <span class="expand-collapse-btn">
             <i (click)="workflow.isExpand = true;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                class="cursor fa fa-lg fa-angle-double-down"></i>
@@ -207,7 +207,7 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
     @if (preferences.showHelpPages) {
       <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
     }

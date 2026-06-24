@@ -5,21 +5,21 @@
         <div class="progress-info">
           <span class="label-text">
             <i class="fa fa-clock-o"></i>
-            <span translate>order.label.elapsed</span>:
+            <span >{{ 'order.label.elapsed' | translate }}</span>:
             <strong>{{ formatTime(timeElapsed) }}</strong>
           </span>
           @if (estimatedTime > 0) {
             @if (!isOverdue) {
               <span class="label-text m-l-sm">
                 <i class="fa fa-hourglass-half"></i>
-                <span translate>order.label.remaining</span>:
+                <span >{{ 'order.label.remaining' | translate }}</span>:
                 <strong>{{ formatTime(timeRemaining) }}</strong>
               </span>
             }
             @if (isOverdue) {
               <span class="label-text m-l-sm">
                 <i class="fa fa-exclamation-triangle text-warning"></i>
-                <span translate>order.label.overdue</span>:
+                <span >{{ 'order.label.overdue' | translate }}</span>:
                 <strong>{{ formatTime(timeElapsed - estimatedTime) }}</strong>
               </span>
             }
@@ -27,14 +27,14 @@
           @if (estimatedTime > 0) {
             <span class="label-text m-l-sm">
               <i class="fa fa-tachometer"></i>
-              <span translate>order.label.expected</span>:
+              <span >{{ 'order.label.expected' | translate }}</span>:
               <strong>{{ formatTime(estimatedTime) }}</strong>
             </span>
           }
           @if (maxHistoricalTime > 0 && maxHistoricalTime > estimatedTime && isOverdue) {
             <span class="label-text m-l-sm text-muted">
               <i class="fa fa-history"></i>
-              <span translate>order.label.historicalMax</span>:
+              <span >{{ 'order.label.historicalMax' | translate }}</span>:
               <strong>{{ formatTime(maxHistoricalTime) }}</strong>
             </span>
           }

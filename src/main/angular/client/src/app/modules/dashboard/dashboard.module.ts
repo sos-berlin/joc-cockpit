@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
-import {GridsterModule} from 'angular-gridster2';
-import {NgChartsModule} from 'ng2-charts';
-import {DashboardRoutingModule} from './dashboard-routing.module';
+import {Gridster, GridsterItem} from 'angular-gridster2';
+import {BaseChartDirective, provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {SharedModule} from '../shared/shared.module';
 import {DashboardComponent, AddWidgetModalComponent, UpdateUrlModalComponent} from './dashboard.component';
 import {DailyPlanComponent} from './daily-plan/daily-plan.component';
@@ -20,13 +19,19 @@ import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-
 import {APIServerStatusComponent} from './api-server-status/api-server-status.component';
 import {WorkflowComponent} from './workflow/workflow.component';
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzTabsModule} from "ng-zorro-antd/tabs";
+import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
     imports: [
-        NgChartsModule,
-        GridsterModule,
+        CommonModule,
+        FormsModule,
         SharedModule,
-        DashboardRoutingModule,
+        NzTabsModule,
+        BaseChartDirective,
+        Gridster,
+        GridsterItem,
         NzTooltipDirective
     ],
   declarations: [
@@ -47,7 +52,8 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
     ActionComponent,
     APIServerStatusComponent,
     WorkflowComponent
-  ]
+  ],
+  providers: [provideCharts(withDefaultRegisterables())]
 })
 export class DashboardModule {
 

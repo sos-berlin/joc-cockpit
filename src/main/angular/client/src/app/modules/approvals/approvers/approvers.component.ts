@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../../services/data.service";
@@ -52,7 +52,8 @@ export class AddApproverModalComponent {
   standalone: false,
   selector: 'app-approvers',
   templateUrl: './approvers.component.html',
-  styleUrl: './approvers.component.scss'
+  styleUrl: './approvers.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApproversComponent {
   @Input() preferences: any = {};
@@ -69,8 +70,12 @@ export class ApproversComponent {
     indeterminate: false
   };
   constructor(public coreService: CoreService,
-              private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
+              private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
 
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -91,10 +96,12 @@ export class ApproversComponent {
     this.coreService.post('approval/approvers', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
                this.approversData = res.approvers
         this.searchInResult();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -227,9 +234,11 @@ export class ApproversComponent {
     this.coreService.post('approval/approver/delete', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       this.fetchApprovers()
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

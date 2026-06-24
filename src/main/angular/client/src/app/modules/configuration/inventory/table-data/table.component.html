@@ -3,34 +3,34 @@
     <span class="text text-dark pos-abt" style="left: 18px;top:22px">
       <span class="text-primary">{{dataObj.path}}@if (dataObj.path !=='/') {<span>/</span>}</span> -
       @if (objectType === 'WORKFLOW') {
-        <span translate>inventory.label.workflows</span>
+        <span >{{ 'inventory.label.workflows' | translate }}</span>
       }
       @if (objectType === 'FILEORDERSOURCE') {
-        <span translate>inventory.label.fileOrderSources</span>
+        <span >{{ 'inventory.label.fileOrderSources' | translate }}</span>
       }
       @if (objectType === 'JOBTEMPLATE') {
-        <span translate>inventory.label.jobTemplates</span>
+        <span >{{ 'inventory.label.jobTemplates' | translate }}</span>
       }
       @if (objectType === 'JOBRESOURCE') {
-        <span translate>inventory.label.jobResources</span>
+        <span >{{ 'inventory.label.jobResources' | translate }}</span>
       }
       @if (objectType === 'NOTICEBOARD') {
-        <span translate>inventory.label.boards</span>
+        <span >{{ 'inventory.label.boards' | translate }}</span>
       }
       @if (objectType === 'LOCK') {
-        <span translate>inventory.label.locks</span>
+        <span >{{ 'inventory.label.locks' | translate }}</span>
       }
       @if (objectType === 'SCHEDULE') {
-        <span translate>inventory.label.orders</span>
+        <span >{{ 'inventory.label.orders' | translate }}</span>
       }
       @if (objectType === 'INCLUDESCRIPT') {
-        <span translate>inventory.label.scripts</span>
+        <span >{{ 'inventory.label.scripts' | translate }}</span>
       }
       @if (objectType === 'REPORT') {
-        <span translate>inventory.label.reports</span>
+        <span >{{ 'inventory.label.reports' | translate }}</span>
       }
       @if (objectType && objectType.match('CALENDAR')) {
-        <span translate>inventory.label.calendars</span>
+        <span >{{ 'inventory.label.calendars' | translate }}</span>
       }
     </span>
     <div class="inline">
@@ -49,7 +49,7 @@
                 [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12"
                 type="button">
           <i class="fa fa-paste p-r-xs"></i>
-          <span translate>inventory.button.paste</span>
+          <span >{{ 'inventory.button.paste' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size === 0 && permission.joc && permission.joc.inventory.manage && !isTrash) {
@@ -57,34 +57,34 @@
                 type="button">
           <i class="fa fa-plus p-r-xs"></i>
           @if (objectType === 'WORKFLOW') {
-            <span translate>inventory.button.newWorkflow</span>
+            <span >{{ 'inventory.button.newWorkflow' | translate }}</span>
           }
           @if (objectType === 'FILEORDERSOURCE') {
-            <span translate>inventory.button.newFileOrderSource</span>
+            <span >{{ 'inventory.button.newFileOrderSource' | translate }}</span>
           }
           @if (objectType === 'JOBRESOURCE') {
-            <span translate>inventory.button.newJobResource</span>
+            <span >{{ 'inventory.button.newJobResource' | translate }}</span>
           }
           @if (objectType === 'NOTICEBOARD') {
-            <span translate>inventory.button.newBoard</span>
+            <span >{{ 'inventory.button.newBoard' | translate }}</span>
           }
           @if (objectType === 'LOCK') {
-            <span translate>inventory.button.newLock</span>
+            <span >{{ 'inventory.button.newLock' | translate }}</span>
           }
           @if (objectType === 'SCHEDULE') {
-            <span translate>inventory.button.newOrder</span>
+            <span >{{ 'inventory.button.newOrder' | translate }}</span>
           }
           @if (objectType === 'INCLUDESCRIPT') {
-            <span translate>inventory.button.newScript</span>
+            <span >{{ 'inventory.button.newScript' | translate }}</span>
           }
           @if (objectType === 'REPORT') {
-            <span translate>inventory.button.newReport</span>
+            <span >{{ 'inventory.button.newReport' | translate }}</span>
           }
           @if (objectType && objectType.match('CALENDAR')) {
-            <span translate>inventory.button.newCalendar</span>
+            <span >{{ 'inventory.button.newCalendar' | translate }}</span>
           }
           @if (objectType === 'JOBTEMPLATE') {
-            <span translate>inventory.button.newJobTemplate</span>
+            <span >{{ 'inventory.button.newJobTemplate' | translate }}</span>
           }
         </button>
       }
@@ -93,11 +93,11 @@
           <i class="fa fa-rocket p-r-xs"></i>
           @if (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
           && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH') {
-            <span translate>inventory.button.deploy</span>
+            <span >{{ 'inventory.button.deploy' | translate }}</span>
           }
           @if ((objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
             || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
-            <span translate>inventory.button.release</span>
+            <span >{{ 'inventory.button.release' | translate }}</span>
           }
         </button>
       }
@@ -105,38 +105,38 @@
         && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT')) {
         <button (click)="revokeAll(true)" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
-          <span  translate>inventory.button.revoke</span>
+          <span  >{{ 'inventory.button.revoke' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash && ((objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
         || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT'))) {
         <button (click)="revokeAll(false)" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
-          <span  translate>inventory.button.recall</span>
+          <span  >{{ 'inventory.button.recall' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash) {
         <button (click)="removeAll()" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-trash p-r-xs"></i>
-          <span translate>inventory.button.remove</span>
+          <span >{{ 'inventory.button.remove' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash) {
         <button (click)="deleteAll()" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-times p-r-xs"></i>
-          <span translate>inventory.button.deleteDraft</span>
+          <span >{{ 'inventory.button.deleteDraft' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && isTrash) {
         <button (click)="restoreAllObject()" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-refresh p-r-xs"></i>
-          <span translate>inventory.button.restore</span>
+          <span >{{ 'inventory.button.restore' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && isTrash) {
         <button (click)="deleteAllObject()" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-trash p-r-xs"></i>
-          <span translate>inventory.button.delete</span>
+          <span >{{ 'inventory.button.delete' | translate }}</span>
         </button>
       }
     </div>
@@ -144,17 +144,17 @@
   @if (checked && mapOfCheckedId.size > 0 && data.length > (filter.entryPerPage || preferences.entryPerPage)) {
     <div class="text-center font14 box p-a-10 m-b-12">
       @if (mapOfCheckedId.size !== data.length) {
-        <span [translateParams]="{count: mapOfCheckedId.size}" translate>common.label.selectAllEntriesOfCurrentPage</span>
+        <span >{{ 'common.label.selectAllEntriesOfCurrentPage' | translate:{count: mapOfCheckedId.size} }}</span>
       }
       @if (mapOfCheckedId.size === data.length) {
-        <span [translateParams]="{count: data.length}" translate>common.label.allEntriesSelected</span>
+        <span >{{ 'common.label.allEntriesSelected' | translate:{count: data.length} }}</span>
       }
       @if (mapOfCheckedId.size !== data.length) {
         <a (click)="selectAll()" [translateParams]="{count: data.length}" class="text-primary p-l-xs"
-           translate>common.label.selectAllEntries</a>
+           >{{ 'common.label.selectAllEntries' | translate }}</a>
       }
       @if (mapOfCheckedId.size === data.length) {
-        <a (click)="reset()" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+        <a (click)="reset()" class="text-primary p-l-xs" >{{ 'common.label.clearSelection' | translate }}</a>
       }
     </div>
   }
@@ -182,8 +182,8 @@
             class="chk"
           ></th>
         }
-        <th class="menu"><span translate>common.label.action</span></th>
-        <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+        <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
+        <th (click)="sort('name')"><a><span class="p-r-xs" >{{ 'common.label.name' | translate }}</span>
           @if (filter.sortBy == 'name' && !filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -191,7 +191,7 @@
             <i class="fa fa-caret-down "></i>
           }</a></th>
         @if (objectType === 'SCHEDULE') {
-          <th (click)="sort('workflowNames')"><a><span class="p-r-xs" translate>inventory.label.workflows</span>
+          <th (click)="sort('workflowNames')"><a><span class="p-r-xs" >{{ 'inventory.label.workflows' | translate }}</span>
             @if (filter.sortBy == 'workflowNames' && !filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -199,7 +199,7 @@
               <i class="fa fa-caret-down "></i>
             }</a></th>
         }
-        <th (click)="sort('valid')"><a><span class="p-r-xs" translate>inventory.label.validHeader</span>
+        <th (click)="sort('valid')"><a><span class="p-r-xs" >{{ 'inventory.label.validHeader' | translate }}</span>
           @if (filter.sortBy == 'valid' && !filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -208,7 +208,7 @@
           }</a></th>
         @if (!objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
           <th (click)="sort('deployed')">
-            <a><span class="p-r-xs" translate>common.label.status</span>
+            <a><span class="p-r-xs" >{{ 'common.label.status' | translate }}</span>
               @if (filter.sortBy == 'deployed' && !filter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -218,7 +218,7 @@
         }
         @if (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR')) {
           <th (click)="sort('released')">
-            <a><span class="p-r-xs" translate>common.label.status</span>
+            <a><span class="p-r-xs" >{{ 'common.label.status' | translate }}</span>
               @if (filter.sortBy == 'released' && !filter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -227,7 +227,7 @@
               }</a></th>
         }
         @if (objectType.match('CALENDAR')) {
-          <th (click)="sort('objectType')"><a><span class="p-r-xs" translate>common.label.type</span>
+          <th (click)="sort('objectType')"><a><span class="p-r-xs" >{{ 'common.label.type' | translate }}</span>
             @if (filter.sortBy == 'objectType' && !filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -237,7 +237,7 @@
           </th>
         }
         <th (click)="sort('modified')">
-          <a><span class="p-r-xs" translate>inventory.label.lastModified</span>
+          <a><span class="p-r-xs" >{{ 'inventory.label.lastModified' | translate }}</span>
             @if (filter.sortBy == 'modified' && !filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -247,7 +247,7 @@
 
         @if (inventoryService.checkDeploymentStatus.isChecked && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
           <th (click)="sort('syncState._text')">
-            <a><span class="p-r-xs" translate>inventory.label.deploymentStatus</span>
+            <a><span class="p-r-xs" >{{ 'inventory.label.deploymentStatus' | translate }}</span>
               @if (filter.sortBy == 'syncState._text' && !filter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -278,22 +278,22 @@
                   <ul nz-menu>
                     @if (permission.joc.inventory.manage) {
                       <li (click)="cutObject(data)" nz-menu-item>
-                        <a translate>inventory.button.cut</a>
+                        <a >{{ 'inventory.button.cut' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
                       <li (click)="copyObject(data)" nz-menu-item>
-                        <a translate>inventory.button.copy</a>
+                        <a >{{ 'inventory.button.copy' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
                       <li (click)="renameObject(data);" nz-menu-item>
-                        <a translate>inventory.button.rename</a></li>
+                        <a >{{ 'inventory.button.rename' | translate }}</a></li>
                     }
                     @if (permission.joc.inventory.manage && objectType === 'WORKFLOW') {
                       <li (click)="addTags(data);"
                           nz-menu-item>
-                        <a translate>inventory.button.manageTags</a>
+                        <a >{{ 'inventory.button.manageTags' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
@@ -302,12 +302,12 @@
                         <ul>
                           @if (permission.joc.inventory.manage) {
                             <li (click)="addToChange(data);" nz-menu-item>
-                              <a translate>changes.button.addToChange</a>
+                              <a >{{ 'changes.button.addToChange' | translate }}</a>
                             </li>
                           }
                           @if (permission.joc.inventory.manage) {
                             <li (click)="removeFromChange(data);" nz-menu-item>
-                              <a translate>changes.button.removeFromChange</a>
+                              <a >{{ 'changes.button.removeFromChange' | translate }}</a>
                             </li>
                           }
                         </ul>
@@ -316,7 +316,7 @@
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
                       <li (click)="showDependencies(data);"
                           nz-menu-item>
-                        <a translate>common.button.showDependencies</a>
+                        <a >{{ 'common.button.showDependencies' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
@@ -326,28 +326,28 @@
                       <li (click)="deployObject(data)"
                           [nzDisabled]="!data.hasDeployments && !data.valid"
                           nz-menu-item>
-                        <a translate>inventory.button.deploy</a>
+                        <a >{{ 'inventory.button.deploy' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR')  && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
                       <li (click)="revoke(data)"
                           [nzDisabled]="!data.hasDeployments"
                           nz-menu-item>
-                        <a translate>inventory.button.revoke</a>
+                        <a >{{ 'inventory.button.revoke' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') {
                       <li (click)="releaseObject(data)"
                           [nzDisabled]="!data.valid"
                           nz-menu-item>
-                        <a translate>inventory.button.release</a>
+                        <a >{{ 'inventory.button.release' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') {
                       <li (click)="recallObject(data)"
                           [nzDisabled]="!data.released"
                           nz-menu-item>
-                        <a translate>inventory.button.recall</a>
+                        <a >{{ 'inventory.button.recall' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
@@ -355,63 +355,63 @@
                         }
                     @if (permission.joc.inventory.manage) {
                       <li (click)="removeObject(data)" nz-menu-item>
-                        <a translate>inventory.button.remove</a>
+                        <a >{{ 'inventory.button.remove' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
                       <li (click)="deleteDraft(data)" [nzDisabled]="data.deployed || data.released"
                           nz-menu-item>
-                        <a translate>inventory.button.deleteDraft</a>
+                        <a >{{ 'inventory.button.deleteDraft' | translate }}</a>
                       </li>
                     }
                     <li nz-menu-divider></li>
                     <li (click)="newDraft(data)" nz-menu-item>
-                      <a translate>inventory.button.newDraft</a>
+                      <a >{{ 'inventory.button.newDraft' | translate }}</a>
                     </li>
                     @if (objectType === 'WORKFLOW') {
                       <li (click)="updateFromJobTemplates(data)"
                           nz-menu-item>
-                        <a translate>inventory.button.updateFromJobTemplates</a>
+                        <a >{{ 'inventory.button.updateFromJobTemplates' | translate }}</a>
                       </li>
                     }
                     <li nz-menu-divider></li>
                     <li (click)="showJson(data, false)" nz-menu-item>
-                      <a translate>inventory.button.showJSON</a>
+                      <a >{{ 'inventory.button.showJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
                       <li (click)="showJson(data, true)"
                           nz-menu-item>
-                        <a translate>inventory.button.editJSON</a>
+                        <a >{{ 'inventory.button.editJSON' | translate }}</a>
                       </li>
                     }
                     <li nz-menu-divider></li>
                     <li (click)="exportJSON(data)" nz-menu-item>
-                      <a translate>inventory.button.downloadJSON</a>
+                      <a >{{ 'inventory.button.downloadJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
                       <li (click)="importJSON(data)" nz-menu-item>
-                        <a translate>inventory.button.uploadJSON</a>
+                        <a >{{ 'inventory.button.uploadJSON' | translate }}</a>
                       </li>
                     }
                     <li
                       (click)="coreService.copyLink('configuration', (data.path + (data.path === '/' ? '' : '/') + data.name), data.type)"
                       nz-menu-item>
-                      <a translate>common.button.copyLinkToObject</a>
+                      <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                     </li>
                   </ul>
                 }
                 @if (isTrash && permission.joc) {
                   <ul nz-menu>
                     <li (click)="showJson(data, false)" nz-menu-item>
-                      <a translate>inventory.button.showJSON</a>
+                      <a >{{ 'inventory.button.showJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
                       <li (click)="deletePermanently(data);" class="bg-hover-color"
                           nz-menu-item>
-                        <a translate>inventory.button.delete</a></li>
+                        <a >{{ 'inventory.button.delete' | translate }}</a></li>
                     }
                     <li (click)="restoreObject(data);" nz-menu-item>
-                      <a translate>inventory.button.restore</a></li>
+                      <a >{{ 'inventory.button.restore' | translate }}</a></li>
                   </ul>
                 }
               </nz-dropdown-menu>
@@ -441,29 +441,29 @@
           <td (click)="editObject(data)" class="cursor">
             @if (data.valid) {
               <span class="label bg-dark-blue"
-                    translate>inventory.label.valid</span>
+                    >{{ 'inventory.label.valid' | translate }}</span>
             }
             @if (!data.valid) {
               <span class="label bg-orange"
-                    translate>inventory.label.notValid</span>
+                    >{{ 'inventory.label.notValid' | translate }}</span>
             }
           </td>
           <td (click)="editObject(data)" class="cursor">
             @if (data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
               <span class="label bg-dark-blue"
-                    translate>inventory.label.deployed</span>
+                    >{{ 'inventory.label.deployed' | translate }}</span>
             }
             @if (!data.deployed && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
               <span class="label bg-orange"
-                    translate>inventory.label.notDeployed</span>
+                    >{{ 'inventory.label.notDeployed' | translate }}</span>
             }
             @if (data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR'))) {
               <span class="label bg-dark-blue"
-                    translate>inventory.label.released</span>
+                    >{{ 'inventory.label.released' | translate }}</span>
             }
             @if (!data.released && (objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT' || objectType.match('CALENDAR'))) {
               <span class="label bg-orange"
-                    translate>inventory.label.notReleased</span>
+                    >{{ 'inventory.label.notReleased' | translate }}</span>
             }
           </td>
           @if (objectType.match('CALENDAR')) {
@@ -491,12 +491,12 @@
   </perfect-scrollbar>
   @if (ajaxTable.data.length >0) {
     <div class="w-half label-top"><span
-      translate>common.label.total</span> {{data.length}}
+      >{{ 'common.label.total' | translate }}</span> {{data.length}}
       @if (ajaxTable.data.length >1) {
-        <span translate>inventory.label.entriesFound</span>
+        <span >{{ 'inventory.label.entriesFound' | translate }}</span>
       }
       @if (ajaxTable.data.length ==1) {
-        <span translate>inventory.label.entryFound</span>
+        <span >{{ 'inventory.label.entryFound' | translate }}</span>
       }
     </div>
   }

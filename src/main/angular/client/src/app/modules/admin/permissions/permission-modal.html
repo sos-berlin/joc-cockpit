@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (add) {
-      <span translate>user.label.addPermission</span>
+      <span >{{ 'user.label.addPermission' | translate }}</span>
     }
     @if (!add) {
-      <span><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
+      <span><span >{{ 'user.label.editPermission' | translate }}</span> : {{currentPermission.permissionLabel}} </span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -17,7 +17,7 @@
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>user.label.permission
+      <label class="col-sm-3 form-control-label" >{{ 'user.label.permission' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -28,13 +28,13 @@
                           [listArray]="permissionOptions"></app-select-input>
         @if (isCovered) {
           <div [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
-            <div translate>user.message.permissionIsAlreadyCovered</div>
+            <div >{{ 'user.message.permissionIsAlreadyCovered' | translate }}</div>
           </div>
         }
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-sm-3" translate>user.label.excluded</label>
+      <label class="col-sm-3" >{{ 'user.label.excluded' | translate }}</label>
       <div class=" col-sm-6">
         <label nz-checkbox [(ngModel)]="currentPermission.excluded"
                name="excluded" (ngModelChange)="checkCovered(currentPermission)"></label>
@@ -49,8 +49,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

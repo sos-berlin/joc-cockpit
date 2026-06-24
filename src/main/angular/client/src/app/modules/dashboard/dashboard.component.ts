@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -87,7 +87,7 @@ export class DashboardComponent {
   isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService) {
+              private dataService: DataService, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -286,12 +286,23 @@ export class DashboardComponent {
       if (!this.permission.joc) {
         this.checkPermission(50);
       } else {
-        this.isLoading = true;
-        this.initConfig(false);
-        this.initWidgets();
-        DashboardComponent.calculateHeight();
+        this.ngZone.run(() => {
+          this.initConfig(false);
+          this.initWidgets();
+          setTimeout(() => {
+            const dom = $('#gridster-container');
+            let top = dom.position() ? dom.position().top : undefined;
+            if (!top || top < 140) {
+              top = 142;
+            }
+            $('.gridster').css({height: 'calc(100vh - ' + top + 'px)', 'scroll-top': '0'});
+            window.dispatchEvent(new Event('resize'));
+            this.isLoading = true;
+          }, 0);
+          this.cdr.detectChanges();
+        });
       }
-    }, timeout)
+    }, timeout);
   }
 
   private initWidgets(): void {

@@ -1,19 +1,19 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!releasable && !isRemove && !isRevoke) {
-      <span translate>inventory.label.deploy</span>
+      <span >{{ 'inventory.label.deploy' | translate }}</span>
     }
     @if (isRevoke) {
-      <span translate>inventory.label.revoke</span>
+      <span >{{ 'inventory.label.revoke' | translate }}</span>
     }
     @if (releasable && !isRemove && operation !== 'recall') {
-      <span translate>inventory.label.release</span>
+      <span >{{ 'inventory.label.release' | translate }}</span>
     }
     @if (operation === 'recall') {
-      <span translate>inventory.label.recall</span>
+      <span >{{ 'inventory.label.recall' | translate }}</span>
     }
     @if (isRemove) {
-      <span translate>inventory.label.remove</span>
+      <span >{{ 'inventory.label.remove' | translate }}</span>
     }
     @if (path) {
       <span>: {{path}}</span>
@@ -47,7 +47,7 @@
       @if (!releasable && !isRemove && nodes.length > 0) {
         <div class="form-group row">
           <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.controllers</label>
+            <label >{{ 'inventory.label.controllers' | translate }}</label>
           </label>
           <div class="col-md-6">
             <nz-select
@@ -67,19 +67,19 @@
 
       @if (operation != 'recall' && !isRevoke && !isRemove && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))) {
         <div class="form-group row">
-          <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+          <div class="col-md-3" >{{ 'inventory.addOrdersDateFrom.addOrders' | translate }}</div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-              <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
-              <label nz-radio nzValue="startingFrom"><span translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-              <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+              <label nz-radio nzValue="now"><span >{{ 'inventory.addOrdersDateFrom.now' | translate }}</span></label>
+              <label nz-radio nzValue="startingFrom"><span >{{ 'inventory.addOrdersDateFrom.startingFrom' | translate }}</span></label>
+              <label nz-radio nzValue=""><span >{{ 'inventory.addOrdersDateFrom.no' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
       }
       @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         <div class="form-group row">
-          <label class="col-md-3 form-control-label" translate>common.label.specificDate
+          <label class="col-md-3 form-control-label" >{{ 'common.label.specificDate' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-md-6">
@@ -92,18 +92,18 @@
       }
       @if (!data || !data.object && !releasable && !isRemove && !isRevoke) {
         <div class="row m-b-12">
-          <div class="col-md-3" translate>inventory.label.deployType</div>
+          <div class="col-md-3" >{{ 'inventory.label.deployType' | translate }}</div>
           <div class="col-md-6">
             <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
-              <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
-              <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
+              <label nz-radio nzValue="individual"><span >{{ 'inventory.label.individualObjects' | translate }}</span></label>
+              <label nz-radio nzValue="changes"><span >{{ 'inventory.label.changes' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
       }
       @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects) {
         <div class="form-group row">
-          <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+          <label class="col-md-3 " >{{ 'inventory.label.includeTodaysLateOrders' | translate }}</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
           </div>
@@ -111,7 +111,7 @@
       }
       @if (operation === 'recall') {
         <div class="form-group row">
-          <div class="col-md-3" translate>inventory.label.keepOrders</div>
+          <div class="col-md-3" translate>{{'inventory.label.keepOrders' | translate}}</div>
           <div class="col-md-9">
             <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
           </div>
@@ -120,7 +120,7 @@
       @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual') {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.export.label.filter</label>
+            <label >{{ 'inventory.export.label.filter' | translate }}</label>
           </div>
           <div class="col-md-9">
             <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
@@ -135,7 +135,7 @@
       @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual') {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.handleRecursively</label>
+            <label >{{ 'inventory.label.handleRecursively' | translate }}</label>
           </div>
           <div class="col-md-6">
             <label [(ngModel)]="object.isRecursive" name="isRecursive"
@@ -163,13 +163,13 @@
       @if (nodes.length > 0) {
         <div class="form-group row">
           <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
+            <label >{{ 'inventory.label.includeDependencies' | translate }}</label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-              <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+              <label nz-radio nzValue="all"><span >{{ 'inventory.label.all' | translate }}</span></label>
+              <label nz-radio nzValue="enforced"><span >{{ 'inventory.label.enforcedOnly' | translate }}</span></label>
+              <label nz-radio nzValue="none"><span >{{ 'inventory.label.none' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -177,7 +177,7 @@
 
       @if (nodes.length > 0 && dependencyMode !== 'none') {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.manageDependencies</label>
+          <label class="col-md-3" >{{ 'inventory.label.manageDependencies' | translate }}</label>
           <div class="col-md-6">
             <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
           </div>
@@ -186,7 +186,7 @@
 
       @if (nodes.length > 0 && dependencyMode !== 'none' && showDependencies) {
         <div class="form-group row">
-          <label class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+          <label class="col-md-3" >{{ 'inventory.label.showRelatedObjects' | translate }}</label>
           <div class="col-md-6">
             <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects"/>
           </div>
@@ -207,7 +207,7 @@
       }
       @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
         <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>common.label.name
+          <label class="col-sm-3 form-control-label" >{{ 'common.label.name' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -220,7 +220,7 @@
             @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
               <div class="text-danger help-block">
                 @if (changeName.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -315,7 +315,7 @@
                         <nz-option [nzLabel]="'workflow.label.draft' | translate" nzCustomContent nzValue="">
                           <div>
                             <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                            - <span class="label bg-orange" translate>inventory.label.notValid</span>
+                            - <span class="label bg-orange" >{{ 'inventory.label.notValid' | translate }}</span>
                           </div>
                         </nz-option>
                       }
@@ -349,23 +349,23 @@
                 @if (!isRemove && node.origin.type && operation !== 'recall' && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)) {
                   <div class="m-l">
                     @if (!node.origin.deleted) {
-                      <i class="text-muted" translate>workflow.label.draft</i>
+                      <i class="text-muted" >{{ 'workflow.label.draft' | translate }}</i>
                     }
                     @if (node.origin.deleted && node.origin.deploymentId) {
-                      <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                      <i class="text-danger" >{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                     }
                     @if (node.origin.deleted && !node.origin.deploymentId) {
-                      <i class="text-danger" translate>inventory.label.markForDelete</i>
+                      <i class="text-danger" >{{ 'inventory.label.markForDelete' | translate }}</i>
                     }
                   </div>
                 }
                 @if (!isRemove && !node.origin.type && !node.origin.object) {
                   <div class="m-l">
                     @if (node.origin.deleted && node.origin.deploymentId) {
-                      <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                      <i class="text-danger" >{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                     }
                     @if (node.origin.deleted && !node.origin.deploymentId) {
-                      <i class="text-danger" translate>inventory.label.markForDelete</i>
+                      <i class="text-danger" >{{ 'inventory.label.markForDelete' | translate }}</i>
                     }
                   </div>
                 }
@@ -387,8 +387,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
                                 @if (getObjectsByType(filteredDeps.referencedBy, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.referencedBy, objectType, $event, 'affected')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -445,8 +445,8 @@
                               @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
                                 @if (getObjectsByType(filteredDeps.references, objectType)?.length) {
                                   <div class="m-t-sm">
-                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                    <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                    [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                     [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.references, objectType, $event, 'referenced')">
                                       @if (!isCustomIcon(objectType)) {
                                         <span class="icon-color">
@@ -574,8 +574,8 @@
                                     @if (getObjectsByType(filteredDeps?.referencedBy, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="affectedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="affectedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-affected-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.referencedBy, objectType, $event, 'affected')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
@@ -626,8 +626,8 @@
                                     @if (getObjectsByType(filteredDeps?.references, objectType)?.length) {
                                       <div class="m-t-sm">
                                         <ng-container>
-                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked" 
-                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate" 
+                                          <label nz-checkbox [(ngModel)]="referencedSharedCheckboxState[node.origin.key + objectType].checked"
+                                          [nzIndeterminate]="referencedSharedCheckboxState[node.origin.key + objectType].indeterminate"
                                           [name]="'checkbox-referenced-' + node.origin.key + '-' + objectType" (ngModelChange)="onChangeParentObjTyp(filteredDeps.references, objectType, $event, 'referenced')">
                                             @if (!isCustomIcon(objectType)) {
                                               <span class="icon-color">
@@ -681,7 +681,7 @@
             <i class="cursor text-16 fa"
                [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
                (click)="toggleAllRelatedCollapse()"></i>
-            <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+            <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-600 cursor" >{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
 
             @if (isRelatedCollapsed) {
               <div class="m-t-sm m-l-sm">
@@ -765,7 +765,7 @@
       </button>
       <ng-template #invalidTooltip>
       <div style="max-width: 300px; text-align: left;">
-        <strong translate>inventory.message.invalidEnforcedObjects</strong>
+        <strong >{{ 'inventory.message.invalidEnforcedObjects' | translate }}</strong>
         <ul style="margin: 4px 0 0 0; padding-left: 20px; list-style: disc;">
           @for (path of getInvalidObjects(); track path) {
             <li style="margin: 2px 0;">{{ path }}</li>
@@ -782,8 +782,8 @@
         <span>{{'common.button.remove' | translate}}</span>
       </button>
     }
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

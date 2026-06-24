@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (new) {
-      <span translate>controller.label.newController</span>
+      <span >{{ 'controller.label.newController' | translate }}</span>
     }
     @if (!new) {
-      <span translate>controller.label.registerController</span>
+      <span >{{ 'controller.label.registerController' | translate }}</span>
     }
     @if (preferences.showHelpPages) {
       <i (click)="helpPage('initial-operation-register-controller')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
@@ -24,11 +24,11 @@
     }
     @if (hasLicense) {
       <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" >{{ 'common.label.type' | translate }}</label>
         <div class="col-sm-8">
           <nz-radio-group [(ngModel)]="controller.type" name="type">
-            <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
-            <label nz-radio nzValue="CLUSTER"><span translate>controller.label.cluster</span></label>
+            <label nz-radio nzValue="STANDALONE"><span >{{ 'controller.label.standalone' | translate }}</span></label>
+            <label nz-radio nzValue="CLUSTER"><span >{{ 'controller.label.cluster' | translate }}</span></label>
           </nz-radio-group>
         </div>
       </div>
@@ -37,7 +37,7 @@
       <div class="p-a b-a">
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
-                 translate>controller.label.caption
+                 >{{ 'controller.label.caption' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}"
@@ -47,7 +47,7 @@
             @if (title.invalid && (title.dirty || title.touched)) {
               <div class="text-danger help-block">
                 @if (title.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -55,7 +55,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                 translate>controller.label.standaloneUrl
+                 >{{ 'controller.label.standaloneUrl' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}"
@@ -66,10 +66,10 @@
             @if (remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)) {
               <div class="text-danger help-block">
                 @if (remoteUrl.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
                 @if (remoteUrl.errors['invalidUrl']) {
-                  <div translate>common.message.invalid</div>
+                  <div >{{ 'common.message.invalid' | translate }}</div>
                 }
               </div>
             }
@@ -91,12 +91,12 @@
     @if (controller.type === 'CLUSTER') {
       <div>
         <div class="form-group row">
-          <div class="col-sm-12" translate>controller.label.primaryController</div>
+          <div class="col-sm-12" >{{ 'controller.label.primaryController' | translate }}</div>
         </div>
         <div class="p-a b-a">
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.primaryTitle' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.caption
+                   >{{ 'controller.label.caption' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}"
@@ -107,7 +107,7 @@
               @if (primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)) {
                 <div class="text-danger help-block">
                   @if (primaryTitle.errors['required']) {
-                    <div translate>message.requiredError</div>
+                    <div >{{ 'message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -115,7 +115,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.jocUrlForPrimary
+                   >{{ 'controller.label.jocUrlForPrimary' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}"
@@ -125,10 +125,10 @@
               @if (primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)) {
                 <div class="text-danger help-block">
                   @if (primaryUrl.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (primaryUrl.errors['invalidUrl']) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -136,7 +136,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.urlForBackup' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.backupUrl</label>
+                   >{{ 'controller.label.backupUrl' | translate }}</label>
             <div [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}"
                  class="col-sm-8">
               <input #primaryClusterUrl="ngModel" [(ngModel)]="controller.primaryClusterUrl" class="form-control" name="primaryClusterUrl"
@@ -144,7 +144,7 @@
               @if (primaryClusterUrl.invalid && (primaryClusterUrl.dirty || primaryClusterUrl.touched)) {
                 <div class="text-danger help-block">
                   @if (primaryClusterUrl.errors['invalidUrl']) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -164,12 +164,12 @@
           </div>
         </div>
         <div class="form-group row">
-          <div class="col-sm-12 m-t" translate>controller.label.backupController</div>
+          <div class="col-sm-12 m-t" >{{ 'controller.label.backupController' | translate }}</div>
         </div>
         <div class="p-a b-a">
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.backupTitle' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.caption
+                   >{{ 'controller.label.caption' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}"
@@ -180,7 +180,7 @@
               @if (backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)) {
                 <div class="text-danger help-block">
                   @if (backupTitle.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -188,7 +188,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.jocUrlForBackup
+                   >{{ 'controller.label.jocUrlForBackup' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}"
@@ -198,10 +198,10 @@
               @if (backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)) {
                 <div class="text-danger help-block">
                   @if (backupUrl.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (backupUrl.errors['invalidUrl']) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -209,7 +209,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.urlForPrimary' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.primaryUrl</label>
+                   >{{ 'controller.label.primaryUrl' | translate }}</label>
             <div [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}"
                  class="col-sm-8">
               <input #backupClusterUrl="ngModel" [(ngModel)]="controller.backupClusterUrl" class="form-control" name="backupClusterUrl"
@@ -217,7 +217,7 @@
               @if (backupClusterUrl.invalid && (backupClusterUrl.dirty || backupClusterUrl.touched)) {
                 <div class="text-danger help-block">
                   @if (backupClusterUrl.errors['invalidUrl']) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -246,8 +246,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
-      common.button.cancel
+    <button type="button" class="btn btn-grey btn-sm" (click)="close()" >
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

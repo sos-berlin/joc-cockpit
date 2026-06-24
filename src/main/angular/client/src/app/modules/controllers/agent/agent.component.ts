@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, HostListener, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter, HostListener, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
@@ -702,7 +702,8 @@ export class AddPriorityModalComponent {
   standalone: false,
   selector: 'app-agent',
   templateUrl: './agent.component.html',
-  styleUrls: ['./agent.component.scss']
+  styleUrls: ['./agent.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentComponent {
   isLoading = true;
@@ -736,7 +737,8 @@ export class AgentComponent {
 
   constructor(public coreService: CoreService, private route: ActivatedRoute, private nzContextMenuService: NzContextMenuService,
               private translate: TranslateService, private modal: NzModalService, private authService: AuthService,
-              private dataService: DataService, private orderPipe: OrderPipe, private searchPipe: SearchPipe) {
+              private dataService: DataService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -820,7 +822,7 @@ export class AgentComponent {
     this.getClusters();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.center();
     AgentComponent.setHeight();
@@ -854,9 +856,11 @@ export class AgentComponent {
         this.isLoading = false;
         this.clusters = this.orderPipe.transform(this.clusters, this.clusterFilter.filter.sortBy, this.clusterFilter.reverse);
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         if (cb) cb();
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -871,6 +875,7 @@ export class AgentComponent {
           this.clusterAgents = agent.subagents;
         });
         this.updateList();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1080,7 +1085,7 @@ export class AgentComponent {
       subagentClusterIds: Array.from(this.object.mapOfCheckedId),
       auditLog
     };
-    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => this.reset());
+    this.coreService.post(isRevoke ? 'agents/cluster/revoke' : 'agents/cluster/delete', obj).subscribe(() => { this.reset(); this.cdr.detectChanges(); });
   }
 
   deployAll(): void {

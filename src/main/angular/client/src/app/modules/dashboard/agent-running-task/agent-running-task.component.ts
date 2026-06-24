@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html',
-  styleUrls: ['agent-running-task.component.css']
+  styleUrls: ['agent-running-task.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentRunningTaskComponent {
   @Input('layout') layout: any;
@@ -33,7 +34,7 @@ export class AgentRunningTaskComponent {
     return val.toLocaleString();
   };
 
-  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService,public modal: NzModalService) {
+  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -89,6 +90,10 @@ export class AgentRunningTaskComponent {
     }
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
+  }
+
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
@@ -113,7 +118,8 @@ export class AgentRunningTaskComponent {
       next: (res: any) => {
         this.agentClusterRunningTaskGraph(res);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

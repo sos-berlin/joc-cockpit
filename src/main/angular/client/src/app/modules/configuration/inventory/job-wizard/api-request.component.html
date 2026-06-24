@@ -33,16 +33,16 @@
                   />
                 </div>
                 <button class="btn btn-grey btn-sm" style="margin-right: 12px"
-                        type="button" (click)="docs()" translate>
+                        type="button" (click)="docs()">
                   <i nz-icon class="font14" nzType="file-search" nzTheme="outline"></i>
                 </button>
                 <button class="btn btn-primary btn-sm"
-                        type="submit" translate>
-                  workflow.apiRequest.button.sendRequest
+                        type="submit" >
+                  {{ 'workflow.apiRequest.button.sendRequest' | translate }}
                 </button>
               </div>
 
-              <nz-tabset>
+              <nz-tabs>
                 <!-- Params Tab -->
                 <nz-tab nzTitle="{{'workflow.apiRequest.label.params' | translate}}">
                   <nz-table
@@ -54,8 +54,8 @@
                   >
                     <thead>
                     <tr>
-                      <th translate>workflow.apiRequest.label.key</th>
-                      <th translate>workflow.apiRequest.label.value</th>
+                      <th >{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                      <th >{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       <th style="width:40px"></th>
                     </tr>
                     </thead>
@@ -105,7 +105,7 @@
                 <nz-tab nzTitle="{{'workflow.apiRequest.label.authorization' | translate}}">
                   <div class="form-group row">
                     <div class="col-sm-2">
-                      <label nzFor="authType" translate>common.label.type</label>
+                      <label nzFor="authType" >{{ 'common.label.type' | translate }}</label>
                     </div>
                     <div class="col-sm-5">
                       <nz-select
@@ -130,7 +130,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="apiKeyName"
-                                 translate>workflow.apiRequest.label.keyName</label>
+                                 >{{ 'workflow.apiRequest.label.keyName' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="apiKeyName" name="apiKeyName"
@@ -141,7 +141,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="apiKeyValue"
-                                 translate>workflow.apiRequest.label.value</label>
+                                 >{{ 'workflow.apiRequest.label.value' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="apiKeyValue" name="apiKeyValue"
@@ -152,15 +152,15 @@
                       <div class="form-group row">
 
                         <div class="col-sm-2">
-                          <label translate>workflow.apiRequest.label.in</label>
+                          <label >{{ 'workflow.apiRequest.label.in' | translate }}</label>
                         </div>
 
                         <div class="col-sm-5">
                           <nz-radio-group [(ngModel)]="auth.apiKey.in" name="apiKeyIn">
                             <label nz-radio nzValue="header"
-                                   translate>{{ 'workflow.apiRequest.label.header' | translate }}</label>
+                                   >{{ 'workflow.apiRequest.label.header' | translate | translate }}</label>
                             <label nz-radio nzValue="query"
-                                   translate>{{ 'workflow.apiRequest.label.query' | translate }}</label>
+                                   >{{ 'workflow.apiRequest.label.query' | translate | translate }}</label>
                           </nz-radio-group>
                         </div>
                       </div>
@@ -172,7 +172,7 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="bearerToken" translate>agent.label.token</label>
+                          <label nzFor="bearerToken" >{{ 'agent.label.token' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="bearerToken" name="bearerToken"
@@ -187,7 +187,7 @@
                     <div class="p-l-4">
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="basicUser" translate>profile.label.userName</label>
+                          <label nzFor="basicUser" >{{ 'profile.label.userName' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input
@@ -201,7 +201,7 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="basicPass" translate>login.label.password</label>
+                          <label nzFor="basicPass" >{{ 'login.label.password' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input
@@ -224,7 +224,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="clientId"
-                                 translate>workflow.apiRequest.label.clientId</label>
+                                 >{{ 'workflow.apiRequest.label.clientId' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="clientId" name="clientId"
@@ -233,7 +233,7 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-2">
-                          <label nzFor="clientSecret" translate>workflow.apiRequest.label.clientSecret</label>
+                          <label nzFor="clientSecret" >{{ 'workflow.apiRequest.label.clientSecret' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="clientSecret" name="clientSecret" type="password"
@@ -243,7 +243,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="tokenUrl"
-                                 translate>workflow.apiRequest.label.tokenUrl</label>
+                                 >{{ 'workflow.apiRequest.label.tokenUrl' | translate }}</label>
                         </div>
                         <div class="col-sm-5">
                           <input nz-input id="tokenUrl" name="tokenUrl"
@@ -260,8 +260,8 @@
                             [nzShowPagination]="false" nzSize="small">
                     <thead>
                     <tr>
-                      <th translate>workflow.apiRequest.label.key</th>
-                      <th translate>workflow.apiRequest.label.value</th>
+                      <th >{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                      <th >{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       <th style="width: 40px;"></th>
                     </tr>
                     </thead>
@@ -338,7 +338,7 @@
               placeholder="{{'workflow.apiRequest.placeholder.keyValue' | translate}}"
             ></textarea>
                 </nz-tab>
-              </nz-tabset>
+              </nz-tabs>
 
             </form>
 
@@ -379,7 +379,7 @@
                 }
                 @if (requestUrl) {
                   <div>
-                    <span translate>monitor.approvalRequest.label.requestUrl</span> - <span>{{requestUrl}}</span>
+                    <span >{{ 'monitor.approvalRequest.label.requestUrl' | translate }}</span> - <span>{{requestUrl}}</span>
                   </div>
                 }
                 <nz-divider></nz-divider>
@@ -389,8 +389,8 @@
                               nzSize="medium">
                       <thead>
                       <tr>
-                        <th translate>workflow.apiRequest.label.key</th>
-                        <th translate>workflow.apiRequest.label.value</th>
+                        <th >{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                        <th >{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -410,11 +410,10 @@
           <div class="modal-footer p-l-0 p-b-0">
             <button (click)="storeConfig()"
                     class="btn btn-primary btn-sm"
-                    translate
                     type="submit">
               {{ 'common.button.submit' | translate }}
             </button>
-            <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+            <button (click)="close()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
             </button>
 
           </div>
@@ -427,9 +426,9 @@
           <div class="m-t-sm box border p-a">
             <json-editor #editor [data]="data" [options]="options"></json-editor>
             <button (click)="copyToClipboard()" class="btn btn-default btn-sm m-t-1"
-                    translate type="button">log.button.copyToClipboard
+                    type="button">{{ 'log.button.copyToClipboard' | translate }}
             </button>
-            <button (click)="variableList()" class="btn btn-grey btn-sm m-t-1 m-l-sm pull-right" translate type="button">workflow.apiRequest.button.variableList
+            <button (click)="variableList()" class="btn btn-grey btn-sm m-t-1 m-l-sm pull-right" type="button">{{ 'workflow.apiRequest.button.variableList' | translate }}
             </button>
           </div>
         </div>

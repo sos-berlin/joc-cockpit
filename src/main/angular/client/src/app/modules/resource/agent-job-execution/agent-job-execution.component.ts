@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -14,7 +14,8 @@ import {SaveService} from '../../../services/save.service';
 @Component({
   standalone: false,
   selector: 'app-filter-agent-content',
-  templateUrl: './filter-dialog.html'
+  templateUrl: './filter-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -28,7 +29,7 @@ export class FilterModalComponent {
   permission: any = {};
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NzModalRef) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -52,6 +53,7 @@ export class FilterModalComponent {
       this.filter.radio = 'planned';
       this.name = clone(this.filter.name);
     }
+    this.cdr.markForCheck();
   }
 
   cancel(obj): void {
@@ -68,6 +70,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
 
@@ -87,7 +90,7 @@ export class SearchComponent {
   isUnique = true;
   agentIds = [];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -96,6 +99,7 @@ export class SearchComponent {
       this.existingName = this.coreService.clone(this.filter.name);
     }
     this.getAgentIds();
+    this.cdr.markForCheck();
   }
 
   private getAgentIds(): void {
@@ -199,7 +203,8 @@ export class SearchComponent {
 @Component({
   standalone: false,
   selector: 'app-agent-job-execution',
-  templateUrl: 'agent-job-execution.component.html'
+  templateUrl: 'agent-job-execution.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentJobExecutionComponent {
   objectType = 'AGENTCLUSTER';
@@ -226,7 +231,7 @@ export class AgentJobExecutionComponent {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe, private saveService: SaveService,
-              private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService) {
+              private dataService: DataService, private modal: NzModalService, private translate: TranslateService, private excelService: ExcelService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (!this.configLoading) {
         this.refresh(res);
@@ -508,10 +513,12 @@ export class AgentJobExecutionComponent {
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.agentTasks = [];
         this.isLoading = true;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -566,10 +573,12 @@ export class AgentJobExecutionComponent {
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.agentTasks = [];
         this.isLoading = true;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }
     })
   }

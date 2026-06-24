@@ -2,7 +2,7 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'customization.label.customizationName' | translate }}
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -15,20 +15,20 @@
         @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
           <div class="text-danger help-block">
             @if (name.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
         @if (!isUnique) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div >{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
     </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>workflow.label.regex</label>
+             >{{ 'workflow.label.regex' | translate }}</label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.regex" class="form-control" name="regex"
                placeholder="{{'common.placeholder.regex' | translate}}" type="text">
@@ -36,7 +36,7 @@
     </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-             translate>common.label.folders</label>
+             >{{ 'common.label.folders' | translate }}</label>
       <div class=" col-sm-6">
         <nz-tree-select
           [(ngModel)]="filter.paths"
@@ -74,14 +74,14 @@
     @if (filter.paths?.length > 0) {
       <div class="m-b-xs row">
         <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
-               translate>inventory.label.handleRecursively</label>
+               >{{ 'inventory.label.handleRecursively' | translate }}</label>
         <div class="col-sm-2">
           <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
         </div>
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>deploymentService.label.agents</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'deploymentService.label.agents' | translate }}</label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
@@ -121,7 +121,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.workflowTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'inventory.tab.workflowTagging' | translate }}</label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -133,7 +133,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>inventory.tab.orderTagging</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'inventory.tab.orderTagging' | translate }}</label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
@@ -145,7 +145,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.workflowAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" >{{ 'inventory.search.label.workflowAvailabilityStatus' | translate }}</label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="synchronizationStatus"
@@ -153,7 +153,7 @@
           (ngModelChange)="synchronizationStatusChange($event)">
           @for (option of synchronizationStatusOptions; track option) {
             <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
+              <span >{{ 'filters.button.' + option.label | translate }}</span>
             </label>
           }
         </nz-checkbox-group>
@@ -169,7 +169,7 @@
           (ngModelChange)="availabilityStatusChange($event)">
           @for (option of availabilityStatusOptions; track option) {
             <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
+              <span >{{ 'filters.button.' + option.label | translate }}</span>
             </label>
           }
         </nz-checkbox-group>
@@ -177,7 +177,7 @@
     </div>
 
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.jobAvailabilityStatus</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" >{{ 'inventory.search.label.jobAvailabilityStatus' | translate }}</label>
       <div class="col-sm-8">
         <nz-checkbox-group
           name="jobAvailabilityStatus"
@@ -185,7 +185,7 @@
           (ngModelChange)="jobAvailabilityStatusChange($event)">
           @for (option of jobAvailabilityStatusOptions; track option) {
             <label [nzValue]="option.value" nz-checkbox>
-              <span translate>filters.button.{{option.label}}</span>
+              <span >{{ 'filters.button.' + option.label | translate }}</span>
             </label>
           }
         </nz-checkbox-group>
@@ -194,7 +194,7 @@
 
     @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4" >{{ 'customization.label.sharedCustomization' | translate }}</label>
         <div class="col-sm-8">
           <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
         </div>
@@ -202,8 +202,8 @@
     }
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
-          common.button.search
+        <button (click)="search()" class="btn btn-primary btn-sm" type="button">
+          {{'common.button.search' | translate}}
         </button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
@@ -212,8 +212,8 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-          common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+          {{'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -226,8 +226,8 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{'common.button.cancel' | translate }}
       </button>
     </div>
   }

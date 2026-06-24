@@ -1189,7 +1189,7 @@ export class PeriodComponent {
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 
-  @HostListener('window:click', ['$event'])
+  @HostListener('window:click')
   onClick(): void {
     // if (this.isDisplay) {
     //   setTimeout(() => {

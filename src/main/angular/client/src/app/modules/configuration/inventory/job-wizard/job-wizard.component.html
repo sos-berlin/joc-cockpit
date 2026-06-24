@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>workflow.wizard.label.new</span>&nbsp;
+    <span >{{ 'workflow.wizard.label.new' | translate }}</span>&nbsp;
     @if (job.docName) {
       <span>{{job.docName}}</span>
     }
@@ -8,7 +8,7 @@
       <span>{{job.name}}</span>
     }
     @if (!job.docName && !job.name) {
-      <span class="_600" translate>workflow.wizard.label.job</span>
+      <span class="_600" >{{ 'workflow.wizard.label.job' | translate }}</span>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -21,13 +21,13 @@
       @if (wizard.step === 1) {
         <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
+            <label class="col-sm-3 form-control-label" >{{ 'workflow.wizard.label.title' | translate }}</label>
             <div class="col-sm-9">
               <input [(ngModel)]="job.title" class="form-control" name="title"
                      placeholder="{{'common.placeholder.title' | translate}}" type="text">
             </div>
           </div>
-          <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
+          <nz-tabs (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
             <nz-tab [nzTitle]="'workflow.wizard.tab.jitl' | translate">
               <div class="form-group row">
                 @if (index == 0) {
@@ -49,7 +49,7 @@
                       <thead>
                       <tr>
                         <th (click)="sort('assignReference')" nzWidth="22%"><a><span class="p-r-xs"
-                                                                                     translate>workflow.wizard.label.name</span>
+                                                                                     >{{ 'workflow.wizard.label.name' | translate }}</span>
                           @if (filter.sortBy == 'assignReference' && !filter.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -57,7 +57,7 @@
                             <i class="fa fa-caret-down "></i>
                           }</a>
                         </th>
-                        <th (click)="sort('title')"><a><span class="p-r-xs" translate>workflow.wizard.label.title</span>
+                        <th (click)="sort('title')"><a><span class="p-r-xs" >{{ 'workflow.wizard.label.title' | translate }}</span>
                           @if (filter.sortBy == 'title' && !filter.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -66,7 +66,7 @@
                           }</a>
                         </th>
                         <th (click)="sort('javaClass')"><a><span class="p-r-xs"
-                                                                 translate>workflow.wizard.label.class</span>
+                                                                 >{{ 'workflow.wizard.label.class' | translate }}</span>
                           @if (filter.sortBy == 'javaClass' && !filter.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -205,7 +205,7 @@
                 </div>
               </nz-tab>
             }
-          </nz-tabset>
+          </nz-tabs>
         </div>
       }
       @if (wizard.step === 2) {
@@ -215,8 +215,8 @@
               <label nz-checkbox [(nzChecked)]="wizard.checked" [nzIndeterminate]="wizard.indeterminate"
                      (nzCheckedChange)="onAllChecked($event)" ></label>
             </div>
-            <div class="col-sm-5 m-b-sm p-l-0" translate>common.label.name</div>
-            <div class="col-sm-6 m-b-sm p-r-0" translate>common.label.value</div>
+            <div class="col-sm-5 m-b-sm p-l-0" >{{ 'common.label.name' | translate }}</div>
+            <div class="col-sm-6 m-b-sm p-r-0" >{{ 'common.label.value' | translate }}</div>
           </div>
           <div class="form-group row">
             <div class="col-md-12">
@@ -248,7 +248,7 @@
                           @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                             <div class="text-danger help-block">
                               @if (value.errors.required) {
-                                <div translate>common.message.requiredError</div>
+                                <div >{{ 'common.message.requiredError' | translate }}</div>
                               }
                             </div>
                           }
@@ -276,10 +276,10 @@
                           @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                             <div class="text-danger help-block">
                               @if (value.errors.required) {
-                                <div translate>common.message.requiredError</div>
+                                <div >{{ 'common.message.requiredError' | translate }}</div>
                               }
                               @if (value.errors.invalidFacet) {
-                                <div translate>common.message.invalid</div>
+                                <div >{{ 'common.message.invalid' | translate }}</div>
                               }
                             </div>
                           }
@@ -294,7 +294,7 @@
                           @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                             <div class="text-danger help-block">
                               @if (value.errors.required) {
-                                <div translate>common.message.requiredError</div>
+                                <div >{{ 'common.message.requiredError' | translate }}</div>
                               }
                             </div>
                           }
@@ -313,7 +313,7 @@
                               <div>
                                 {{option.name}} @if (option.default) {<i>- </i>} @if (option.default) {
                                 <span class="label label-default"
-                                      translate>default</span>
+                                      >{{ 'default' | translate }}</span>
                               }
                               </div>
                             </nz-option>
@@ -323,7 +323,7 @@
                       @if (list.invalid && list.errors && (list.dirty || list.touched)) {
                         <div class="text-danger help-block">
                           @if (list.errors.required) {
-                            <div translate>common.message.requiredError</div>
+                            <div >{{ 'common.message.requiredError' | translate }}</div>
                           }
                         </div>
                       }
@@ -364,7 +364,7 @@
           @if (node) {
             <div class="form-group row">
               <div class="col-sm-12 p-l-md">
-                <a (click)="addParameter()" class="text-u-l" translate>workflow.wizard.button.addAnotherParameter</a>
+                <a (click)="addParameter()" class="text-u-l" >{{ 'workflow.wizard.button.addAnotherParameter' | translate }}</a>
               </div>
             </div>
           }
@@ -375,35 +375,34 @@
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || (!job.javaClass && !job.name) || (job && job.hasRequiredArguments && wizard.step === 1 && node)"
             class="btn btn-primary btn-sm"
-            translate
             type="submit">
       {{ 'common.button.submit' | translate }}
     </button>
     @if (wizard.step >= 1 && node) {
       <button (click)="next()" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid || wizard.step >= 2"
-              class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
+              class="btn btn-secondary btn-sm" type="button">{{ 'workflow.wizard.button.next' | translate }}
       </button>
     }
     @if (wizard.step === 2) {
-      <button (click)="back()" class="btn btn-secondary btn-sm" translate
-              type="button">common.button.back
+      <button (click)="back()" class="btn btn-secondary btn-sm"
+              type="button">{{'common.button.back' | translate}}
       </button>
     }
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
     </button>
     @if (wizard.step === 2 && (job.docPath || job.documentationName)) {
       <button (click)="showDoc(job.assignReference || job.docPath || job.documentationName)"
               class="btn btn-grey btn-sm pull-right"
               type="button">
         <i class="fa fa-book p-r-sm"></i>
-        <span translate>workflow.wizard.button.showDocumentation</span>
+        <span >{{ 'workflow.wizard.button.showDocumentation' | translate }}</span>
       </button>
     }
     @if (wizard.step === 2 && job.description) {
       <button [nzPopoverContent]="contentTemplate" class="btn btn-grey btn-sm pull-right" nz-popover
               nzPopoverTrigger="click" type="button">
         <i class="fa fa-file-text-o p-r-sm"></i>
-        <span translate>workflow.label.description</span>
+        <span >{{ 'workflow.label.description' | translate }}</span>
       </button>
     }
     <ng-template #contentTemplate>
@@ -411,11 +410,11 @@
     </ng-template>
   </div>
 </form>
-<nz-drawer [nzWrapClassName]="'report-drawer'"  (nzOnClose)="wizard.step = 2" [nzVisible]="wizard.step === 3" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="wizard.step = 2" class="close-btn"></div>
-    <div #editorContainer class="p-l-sm p-r-sm">
-      <app-api-request (configSaved)="onApiConfigSaved($event)"  (isStepBack)="wizard.step = $event" [arguments]="existingJob" [parameters]="parameters" [isClose]="true" ></app-api-request>
-    </div>
-  </ng-container>
+<ng-template #wizardApiRequestDrawerTpl>
+  <div (click)="wizard.step = 2" class="close-btn"></div>
+  <div #editorContainer class="p-l-sm p-r-sm">
+    <app-api-request (configSaved)="onApiConfigSaved($event)"  (isStepBack)="wizard.step = $event" [arguments]="existingJob" [parameters]="parameters" [isClose]="true" ></app-api-request>
+  </div>
+</ng-template>
+<nz-drawer [nzContent]="wizardApiRequestDrawerTpl" [nzWrapClassName]="'report-drawer'"  (nzOnClose)="wizard.step = 2" [nzVisible]="wizard.step === 3" nzPlacement="right">
 </nz-drawer>

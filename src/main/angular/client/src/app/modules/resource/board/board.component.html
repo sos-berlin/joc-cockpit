@@ -26,7 +26,7 @@
               <div class="btn-group dropdown">
                 <button nz-dropdown [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
                         nzTrigger="click">
-                  <span translate>common.label.sortBy</span>
+                  <span >{{ 'common.label.sortBy' | translate }}</span>
                   <span class="text-primary">
                     @if (boardsFilters.filter.sortBy =='name') {
                       <span>
@@ -55,10 +55,10 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="sort('name')" nz-menu-item>
-                      <a translate>resource.board.label.name</a>
+                      <a >{{ 'resource.board.label.name' | translate }}</a>
                     </li>
                     <li (click)="sort('path1')" nz-menu-item>
-                      <a translate>common.label.path</a>
+                      <a >{{ 'common.label.path' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -89,7 +89,7 @@
       </button>
       <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
         <i class="fa fa-search"></i>&nbsp;
-        <span translate>common.button.search</span>
+        <span >{{ 'common.button.search' | translate }}</span>
       </button>
       <div class="search-box-field pull-right">
         <label>
@@ -149,46 +149,46 @@
                                 <ul nz-menu>
                                   @if (permission.currentController && permission.currentController.noticeBoards.post) {
                                     <li (click)="post(board)" nz-menu-item>
-                                      <a translate>resource.board.button.post</a>
+                                      <a >{{ 'resource.board.button.post' | translate }}</a>
                                     </li>
                                   }
                                   @if (permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders) {
                                     <li (click)="delete(board, null)" nz-menu-item>
-                                      <a translate>resource.board.button.deleteAll</a>
+                                      <a >{{ 'resource.board.button.deleteAll' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
-                              <span translate>resource.board.label.deploymentDate </span>:
+                              <span >{{ 'resource.board.label.deploymentDate' | translate }}</span>:
                               <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"
                                     class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
-                              <span translate>common.label.status </span>:
+                              <span >{{ 'common.label.status' | translate }}</span>:
                               <span [innerHtml]="board.state._text | translate | highlight : boardsFilters.searchText"
                                     [ngClass]="coreService.getColor(board.state.severity, 'text')"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
-                              <span translate>resource.board.label.postOrderToNoticeId </span>:
+                              <span >{{ 'resource.board.label.postOrderToNoticeId' | translate }}</span>:
                               <span [innerHtml]="board.postOrderToNoticeId | highlight : boardsFilters.searchText"
                                     class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
-                              <span translate>resource.board.label.expectOrderToNoticeId </span>:
+                              <span >{{ 'resource.board.label.expectOrderToNoticeId' | translate }}</span>:
                               <span [innerHtml]="board.expectOrderToNoticeId | highlight : boardsFilters.searchText"
                                     class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
-                              <span translate>resource.board.label.numOfNotices </span>:
+                              <span >{{ 'resource.board.label.numOfNotices' | translate }}</span>:
                               <span [innerHtml]="board.numOfNotices" class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
-                              <span translate>resource.board.label.numOfExpectingOrders </span>:
+                              <span >{{ 'resource.board.label.numOfExpectingOrders' | translate }}</span>:
                               <span [innerHtml]="board.numOfExpectingOrders" class="text-black-dk"></span>
                             </div>
                           </div>
@@ -226,8 +226,8 @@
                             class="chk"
                         ></th>
                       }
-                      <th nzWidth="55px"><span translate>common.label.action</span></th>
-                      <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.board.label.name</span>
+                      <th nzWidth="55px"><span >{{ 'common.label.action' | translate }}</span></th>
+                      <th (click)="sort('name')"><a><span class="p-r-xs" >{{ 'resource.board.label.name' | translate }}</span>
                         @if (boardsFilters.filter.sortBy == 'name' && !boardsFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -236,7 +236,7 @@
                         }</a>
                       </th>
                       @if (isPathDisplay) {
-                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                        <th (click)="sort('path1')"><a><span class="p-r-xs" >{{ 'common.label.path' | translate }}</span>
                           @if (boardsFilters.filter.sortBy == 'path1' && !boardsFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -246,7 +246,7 @@
                         </th>
                       }
                       <th (click)="sort('versionDate')" nzWidth="130px" rowspan="2">
-                        <a><span class="p-r-xs" translate>resource.board.label.deploymentDate</span>
+                        <a><span class="p-r-xs" >{{ 'resource.board.label.deploymentDate' | translate }}</span>
                           @if (boardsFilters.filter.sortBy == 'versionDate' && !boardsFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -255,7 +255,7 @@
                           }</a>
                       </th>
                       <th (click)="sort('state._text')" nzWidth="100px" rowspan="2">
-                        <a><span class="p-r-xs" translate>common.label.status</span>
+                        <a><span class="p-r-xs" >{{ 'common.label.status' | translate }}</span>
                           @if (boardsFilters.filter.sortBy == 'state._text' && !boardsFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -263,7 +263,7 @@
                             <i class="fa fa-caret-down "></i>
                           }</a>
                       </th>
-                      <th (click)="sort('numOfNotices')" nzWidth="100px"><a><span class="p-r-xs" translate>resource.board.label.numOfNotices</span>
+                      <th (click)="sort('numOfNotices')" nzWidth="100px"><a><span class="p-r-xs" >{{ 'resource.board.label.numOfNotices' | translate }}</span>
                         @if (boardsFilters.filter.sortBy == 'numOfNotices' && !boardsFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -271,7 +271,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('numOfExpectingOrders')" nzWidth="120px"><a><span class="p-r-xs" translate>resource.board.label.numOfExpectingOrders</span>
+                      <th (click)="sort('numOfExpectingOrders')" nzWidth="120px"><a><span class="p-r-xs" >{{ 'resource.board.label.numOfExpectingOrders' | translate }}</span>
                         @if (boardsFilters.filter.sortBy == 'numOfExpectingOrders' && !boardsFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -299,16 +299,16 @@
                                 <ul nz-menu>
                                   @if (permission.currentController && permission.currentController.noticeBoards.post) {
                                     <li (click)="post(board)" nz-menu-item>
-                                      <a translate>resource.board.button.post</a>
+                                      <a >{{ 'resource.board.button.post' | translate }}</a>
                                     </li>
                                   }
                                   @if (permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders) {
                                     <li (click)="delete(board, null)" nz-menu-item>
-                                      <a translate>resource.board.button.deleteAll</a>
+                                      <a >{{ 'resource.board.button.deleteAll' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a >{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -384,9 +384,9 @@
                                         [nzSize]="'small'" class="m-a-0 inner-table">
                                 <thead>
                                 <tr>
-                                  <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                                  <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-                                  <th><span translate>resource.board.label.postOrderToExpirationDate</span></th>
+                                  <th><span >{{ 'resource.board.label.postOrderToNoticeId' | translate }}</span></th>
+                                  <th><span >{{ 'resource.board.label.expectOrderToNoticeId' | translate }}</span></th>
+                                  <th><span >{{ 'resource.board.label.postOrderToExpirationDate' | translate }}</span></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -424,12 +424,12 @@
                                     ></th>
                                   }
                                   @if (permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)) {
-                                    <th nzWidth="55px"><span translate>common.label.action</span></th>
+                                    <th nzWidth="55px"><span >{{ 'common.label.action' | translate }}</span></th>
                                   }
-                                  <th><span translate>resource.board.label.id</span></th>
-                                  <th><span translate>common.label.state</span></th>
-                                  <th><span translate>resource.board.label.expectingOrders</span></th>
-                                  <th><span translate>resource.board.label.expirationDate</span></th>
+                                  <th><span >{{ 'resource.board.label.id' | translate }}</span></th>
+                                  <th><span >{{ 'common.label.state' | translate }}</span></th>
+                                  <th><span >{{ 'resource.board.label.expectingOrders' | translate }}</span></th>
+                                  <th><span >{{ 'resource.board.label.expirationDate' | translate }}</span></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -453,14 +453,14 @@
                                                   <li (click)="post(board, notice)"
                                                       [nzDisabled]="(notice.state._text === 'POSTED')"
                                                       nz-menu-item>
-                                                    <a translate>resource.board.button.post</a>
+                                                    <a >{{ 'resource.board.button.post' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.currentController.noticeBoards.delete) {
                                                   <li (click)="delete(board, notice)"
                                                       [nzDisabled]="notice.state._text !== 'POSTED'"
                                                       nz-menu-item>
-                                                    <a translate>resource.board.button.delete</a>
+                                                    <a >{{ 'resource.board.button.delete' | translate }}</a>
                                                   </li>
                                                 }
                                               </ul>
@@ -478,9 +478,9 @@
                                       <tr>
                                         <td class="custom-th"></td>
                                         <td class="custom-th"></td>
-                                        <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                                        <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                                        <td class="custom-th"><span translate>workflow.label.label</span></td>
+                                        <td class="custom-th"><span class="p-l" >{{ 'order.label.orderId' | translate }}</span></td>
+                                        <td class="custom-th" colspan="2"><span >{{ 'order.label.workflow' | translate }}</span></td>
+                                        <td class="custom-th"><span >{{ 'workflow.label.label' | translate }}</span></td>
                                       </tr>
                                       @for (order of notice.expectingOrders; track order) {
                                         <tr>
@@ -522,12 +522,12 @@
                     </tbody>
                   </nz-table>
                   @if (ajaxTable.data.length >0) {
-                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                    <div class="w-half label-top"><span >{{ 'common.label.total' | translate }}</span> {{data.length}}
                       @if (ajaxTable.data.length >1) {
-                        <span translate>resource.board.label.boardsFound</span>
+                        <span >{{ 'resource.board.label.boardsFound' | translate }}</span>
                       }
                       @if (ajaxTable.data.length ==1) {
-                        <span translate>resource.board.label.boardFound</span>
+                        <span >{{ 'resource.board.label.boardFound' | translate }}</span>
                       }
                     </div>
                   }
@@ -550,21 +550,21 @@
     </div>
   </div>
 </div>
-<nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="closeSearch()" class="close-btn"></div>
-    @if (preferences.showHelpPages) {
-      <i (click)="helpPage('resources-notice-boards-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
-    }
-    @if (isSearchVisible) {
-      <div>
-        <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
-        </div>
-        <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
-                              [isBoard]="true"></app-inventory-search>
+<ng-template #searchDrawerTpl>
+  <div (click)="closeSearch()" class="close-btn"></div>
+  @if (preferences.showHelpPages) {
+    <i (click)="helpPage('resources-notice-boards-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
+  }
+  @if (isSearchVisible) {
+    <div>
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" >{{ 'inventory.search.label.searchHeading' | translate }}</span>
       </div>
-    }
-  </ng-container>
+      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                            [isBoard]="true"></app-inventory-search>
+    </div>
+  }
+</ng-template>
+<nz-drawer (nzOnClose)="closeSearch()" [nzContent]="searchDrawerTpl" [nzVisible]="isSearchVisible" nzPlacement="right">
 </nz-drawer>
 @if ((loading && pageView === 'grid') || !isLoading) {
   <div class="spinner">

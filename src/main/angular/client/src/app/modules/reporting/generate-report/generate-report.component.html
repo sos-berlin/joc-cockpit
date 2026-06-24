@@ -23,7 +23,7 @@
                 class="chk"
             ></th>
           }
-          <th class="menu"><span translate>common.label.action</span></th>
+          <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
           @if (filters.groupBy == 'path') {
             <th (click)="sort('path')"><a><span class="p-r-xs">
                 {{'common.label.name' | translate}} / {{'reporting.label.template' | translate}}</span>
@@ -48,7 +48,7 @@
             </th>
           }
           @if (filters.groupBy !== 'hits') {
-            <th nzWidth="450px" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
+            <th nzWidth="450px" (click)="sort('template')"><a><span class="p-r-xs" >{{ 'reporting.label.templateType' | translate }}</span>
               @if (filters.filter.sortBy == 'template' && !filters.filter.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -57,7 +57,7 @@
               }</a>
             </th>
           }
-          <th (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
+          <th (click)="sort('controllerId')"><a><span class="p-r-xs" >{{ 'common.label.controllerId' | translate }}</span>
             @if (filters.filter.sortBy == 'controllerId' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -66,7 +66,7 @@
             }</a>
           </th>
           <th (click)="sort('frequency')" nzWidth="150px"><a><span class="p-r-xs"
-                                                                   translate>reporting.label.frequency</span>
+                                                                   >{{ 'reporting.label.frequency' | translate }}</span>
             @if (filters.filter.sortBy == 'frequency' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -74,7 +74,7 @@
               <i class="fa fa-caret-down "></i>
             }</a>
           </th>
-          <th (click)="sort('dateFrom')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
+          <th (click)="sort('dateFrom')" nzWidth="110px"><a><span class="p-r-xs" >{{ 'reporting.label.dateFrom' | translate }}</span>
             @if (filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -82,7 +82,7 @@
               <i class="fa fa-caret-down "></i>
             }</a>
           </th>
-          <th (click)="sort('dateTo')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
+          <th (click)="sort('dateTo')" nzWidth="110px"><a><span class="p-r-xs" >{{ 'reporting.label.dateTo' | translate }}</span>
             @if (filters.filter.sortBy == 'dateTo' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -90,7 +90,7 @@
               <i class="fa fa-caret-down "></i>
             }</a>
           </th>
-          <th (click)="sort('created')" nzWidth="150px"><a><span class="p-r-xs" translate>reporting.label.created</span>
+          <th (click)="sort('created')" nzWidth="150px"><a><span class="p-r-xs" >{{ 'reporting.label.created' | translate }}</span>
             @if (filters.filter.sortBy == 'created' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -119,11 +119,11 @@
                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                     <ul nz-menu>
                       <li nz-menu-item (click)="onSelect(item)">
-                        <a translate>reporting.button.showReport</a>
+                        <a >{{ 'reporting.button.showReport' | translate }}</a>
                       </li>
                       @if (permission.joc && permission.joc.reports.manage) {
                         <li nz-menu-item (click)="deleteReport(item, true)">
-                          <a translate>common.button.delete</a>
+                          <a >{{ 'common.button.delete' | translate }}</a>
                         </li>
                       }
                     </ul>
@@ -222,11 +222,11 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                           <ul nz-menu>
                             <li nz-menu-item (click)="onSelect(item, 'highest')">
-                              <a translate>reporting.button.showReport</a>
+                              <a >{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
                               <li nz-menu-item (click)="deleteReport(item, true, 'highest')">
-                                <a translate>common.button.delete</a>
+                                <a >{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
                           </ul>
@@ -260,11 +260,11 @@
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu>
                               <li nz-menu-item (click)="onSelect(highestItem)">
-                                <a translate>reporting.button.showReport</a>
+                                <a >{{ 'reporting.button.showReport' | translate }}</a>
                               </li>
                               @if (permission.joc && permission.joc.reports.manage) {
                                 <li nz-menu-item (click)="deleteReport(highestItem)">
-                                  <a translate>common.button.delete</a>
+                                  <a >{{ 'common.button.delete' | translate }}</a>
                                 </li>
                               }
                             </ul>
@@ -320,11 +320,11 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                           <ul nz-menu>
                             <li nz-menu-item (click)="onSelect(item, 'lowest')">
-                              <a translate>reporting.button.showReport</a>
+                              <a >{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
                               <li nz-menu-item (click)="deleteReport(item, true, 'lowest')">
-                                <a translate>common.button.delete</a>
+                                <a >{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
                           </ul>
@@ -359,11 +359,11 @@
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu>
                               <li nz-menu-item (click)="onSelect(lowestItem)">
-                                <a translate>reporting.button.showReport</a>
+                                <a >{{ 'reporting.button.showReport' | translate }}</a>
                               </li>
                               @if (permission.joc && permission.joc.reports.manage) {
                                 <li nz-menu-item (click)="deleteReport(lowestItem, true)">
-                                  <a translate>common.button.delete</a>
+                                  <a >{{ 'common.button.delete' | translate }}</a>
                                 </li>
                               }
                             </ul>
@@ -417,11 +417,11 @@
                         <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                           <ul nz-menu>
                             <li nz-menu-item (click)="onSelect(child)">
-                              <a translate>reporting.button.showReport</a>
+                              <a >{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
                               <li nz-menu-item (click)="deleteReport(child)">
-                                <a translate>common.button.delete</a>
+                                <a >{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
                           </ul>
@@ -465,23 +465,23 @@
       </nz-table>
     </div>
     @if (ajaxTable.data.length >0) {
-      <div class="w-half label-top"><span translate>common.label.total</span> {{filteredData.length}}
+      <div class="w-half label-top"><span >{{ 'common.label.total' | translate }}</span> {{filteredData.length}}
         @if (ajaxTable.data.length >1) {
-          <span translate>inventory.label.entriesFound</span>
+          <span >{{ 'inventory.label.entriesFound' | translate }}</span>
         }
         @if (ajaxTable.data.length ==1) {
-          <span translate>inventory.label.entryFound</span>
+          <span >{{ 'inventory.label.entryFound' | translate }}</span>
         }
       </div>
     }
   </div>
 </div>
 
-<nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    @if (isVisible) {
-      <app-frequency-report (closePanel)="closePanel()" [templates]="templates" [groupBy]="filters.groupBy"
-                            [selectedReport]="selectedReport" [groupType]="groupType"></app-frequency-report>
-    }
-  </ng-container>
+<ng-template #reportPanelTpl>
+  @if (isVisible) {
+    <app-frequency-report (closePanel)="closePanel()" [templates]="templates" [groupBy]="filters.groupBy"
+                          [selectedReport]="selectedReport" [groupType]="groupType"></app-frequency-report>
+  }
+</ng-template>
+<nz-drawer (nzOnClose)="closePanel()" [nzContent]="reportPanelTpl" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
 </nz-drawer>

@@ -2,10 +2,10 @@
   <div class="modal-header">
     <h4 class="modal-title">
       @if (isNew) {
-        <span translate>runtime.label.addPeriod</span>
+        <span >{{ 'runtime.label.addPeriod' | translate }}</span>
       }
       @if (!isNew) {
-        <span translate>runtime.label.editPeriod</span>
+        <span >{{ 'runtime.label.editPeriod' | translate }}</span>
       }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -18,8 +18,8 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div>
             <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>
-                runtime.label.repeatInterval
+              <label class="col-sm-4 form-control-label" >
+                {{ 'runtime.label.repeatInterval' | translate }}
               </label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.frequency" name="frequency">
@@ -30,7 +30,7 @@
             </div>
             @if (period.frequency=='singleStart') {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
+                <label class="col-sm-4 form-control-label" >{{ 'runtime.label.startTime' | translate }}</label>
                 <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                      class="col-sm-3">
                   <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" (blur)="onBlur(startTime,'singleStart')" [appAutofocus]="true" autocomplete="off" class="form-control"
@@ -39,7 +39,7 @@
                   @if (startTime.errors && (startTime.dirty || startTime.touched)) {
                     <div class="help-block text-danger">
                       @if (!startTime.valid) {
-                        <div translate>common.message.invalid</div>
+                        <div >{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -49,8 +49,8 @@
 
             @if (period.frequency=='repeat') {
               <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>
-                  runtime.label.repeatTime
+                <label class="col-sm-4 form-control-label" >
+                  {{ 'runtime.label.repeatTime' | translate }}
                   @if (isDisplay) {
                     <i id="repeatId" [nzTooltipArrowPointAtCenter]="true" nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}"
                        [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
@@ -62,7 +62,7 @@
                   @if (repeat.errors && (repeat.dirty || repeat.touched)) {
                     <div class="help-block text-danger">
                       @if (!repeat.valid) {
-                        <div translate>common.message.invalid</div>
+                        <div >{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -70,33 +70,33 @@
               </div>
             }
             <div [hidden]="period.frequency=='singleStart'" class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
+              <label class="col-sm-4 form-control-label" >{{ 'runtime.label.begin' | translate }}</label>
               <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                 <input #begin="ngModel" [(ngModel)]="period.period.begin" (blur)="onBlur(begin, 'begin')" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
                        type="text" timeRelativeValidatorReqex>
                 @if (begin.errors && (begin.dirty || begin.touched)) {
                   <div class="help-block text-danger">
                     @if (!begin.valid) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
               </div>
-              <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
+              <label class="col-sm-2 form-control-label text-right" >{{ 'runtime.label.end' | translate }}</label>
               <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                 <input #end="ngModel" [(ngModel)]="period.period.end" (blur)="onBlur(end, 'end')" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
                        type="text" timeRelativeValidatorReqex>
                 @if (end.errors && (end.dirty || end.touched)) {
                   <div class="help-block text-danger">
                     @if (!end.valid) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.onHoliday</label>
+              <label class="col-sm-4 form-control-label" >{{ 'runtime.label.onHoliday' | translate }}</label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.period.whenHoliday" name="holidayOption">
                   @for (option of when_holiday_options; track option) {
@@ -109,10 +109,10 @@
           </div>
           <div>
             <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-              <span translate>common.button.save</span>
+              <span >{{ 'common.button.save' | translate }}</span>
             </button>
-            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-              common.button.cancel
+            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+              {{'common.button.cancel' | translate }}
             </button>
           </div>
         </form>

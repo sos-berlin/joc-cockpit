@@ -21,7 +21,7 @@
       @if (item.value.actions?.changes) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.changedProperties</span>:</li>
+            <li class="m-b-xs"><span class="_600 text" >{{ 'workflow.label.changedProperties' | translate }}</span>:</li>
             @for (item of item.value.actions.changes; track $index) {
               <li class="m-l-sm p-l-xs">
                 {{item}}
@@ -33,7 +33,7 @@
       @if (item.value.actions?.addRequiredArguments) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.addRequiredArguments</span>:</li>
+            <li class="m-b-xs"><span class="_600 text" >{{ 'workflow.label.addRequiredArguments' | translate }}</span>:</li>
             <li class="m-l-sm p-l-xs">
               {{item.value.actions.addRequiredArguments | json}}
             </li>
@@ -43,7 +43,7 @@
       @if (item.value.actions?.deleteArguments) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.deleteArguments</span>:</li>
+            <li class="m-b-xs"><span class="_600 text" >{{ 'workflow.label.deleteArguments' | translate }}</span>:</li>
             <li class="m-l-sm p-l-xs">
               {{item.value.actions.deleteArguments | json}}
             </li>
@@ -57,25 +57,25 @@
   <h4 class="modal-title">
     @if (treeObj) {
       <span>
-        <span translate>inventory.label.updateWorkflowsFromJobTemplates</span>:
+        <span >{{ 'inventory.label.updateWorkflowsFromJobTemplates' | translate }}</span>:
         {{treeObj.type ? treeObj.name : treeObj.path}}
       </span>
     }
     @if (job) {
       <span>
-        <span translate>inventory.button.updateFromJobTemplate</span>:
+        <span >{{ 'inventory.button.updateFromJobTemplate' | translate }}</span>:
         {{job.jobName}}
       </span>
     }
     @if (data) {
       <span>
-        <span translate>inventory.label.updateJobs</span>:
+        <span >{{ 'inventory.label.updateJobs' | translate }}</span>:
         {{data.name}}
       </span>
     }
     @if (folder) {
       <span>
-        <span translate>inventory.label.updateJobs</span>:
+        <span >{{ 'inventory.label.updateJobs' | translate }}</span>:
         {{folder.path}}
       </span>
     }
@@ -95,7 +95,7 @@
           @if (data || folder) {
             <div class="form-group row">
               <div class="col-md-3">
-                <label translate>inventory.export.label.filter</label>
+                <label >{{ 'inventory.export.label.filter' | translate }}</label>
               </div>
               <div class="col-md-9">
                 <label [(ngModel)]="object.draft" name="draft" nz-checkbox (ngModelChange)="filterList()" >
@@ -110,7 +110,7 @@
           @if (treeObj && !treeObj.object && !treeObj.controller && !treeObj.type) {
             <div class="form-group row">
               <div class="col-md-3">
-                <label translate>inventory.label.handleRecursively</label>
+                <label >{{ 'inventory.label.handleRecursively' | translate }}</label>
               </div>
               <div class="col-md-9">
                 <label [(ngModel)]="object.recursive" name="recursive" nz-checkbox></label>
@@ -119,7 +119,7 @@
           }
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteNotification</label>
+              <label >{{ 'inventory.label.overwriteNotification' | translate }}</label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteNotification" name="overwriteNotification" nz-checkbox></label>
@@ -127,7 +127,7 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteAdmissionTime</label>
+              <label >{{ 'inventory.label.overwriteAdmissionTime' | translate }}</label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteAdmissionTime" name="overwriteAdmissionTime" nz-checkbox></label>
@@ -135,7 +135,7 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteRequiredArguments</label>
+              <label >{{ 'inventory.label.overwriteRequiredArguments' | translate }}</label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.overwriteValues" name="overwriteValues" nz-checkbox></label>
@@ -143,7 +143,7 @@
           </div>
           <div class="form-group row">
             <div class="col-md-3">
-              <label translate>inventory.label.overwriteOptionalArguments</label>
+              <label >{{ 'inventory.label.overwriteOptionalArguments' | translate }}</label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="object.propagateOptionalArguments" name="propagateOptionalArguments" nz-checkbox></label>
@@ -155,7 +155,7 @@
               <div class="col-md-12">
                 <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                        (nzCheckedChange)="selectAll($event)"></label>
-                <label class="p-l-sm _600" translate>runtime.label.selectAll</label>
+                <label class="p-l-sm _600" >{{ 'runtime.label.selectAll' | translate }}</label>
               </div>
             </div>
           }
@@ -239,7 +239,7 @@
       <div>
         @if (updatedList.length > 0) {
           <ul>
-            <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
+            <li class="m-b-xs"><span class="_600 text" >{{ 'inventory.label.workflows' | translate }}</span>:</li>
             @for (workflow of updatedList | orderBy: 'path'; track workflow.path) {
               <li class="p-l-sm">
                 @if (!workflow.show) {
@@ -257,7 +257,7 @@
                       class="label m-l"></span>
                 @if (workflow.jobs && workflow.show) {
                   <ul class="m-b-sm p-t-xxs">
-                    <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
+                    <li class="m-b-xs"><span class="_600 text" >{{ 'dashboard.label.jobs' | translate }}</span>:</li>
                     @for (job of workflow.jobs | orderBy: 'name'; track job.name) {
                       <li class="m-l-sm p-l-xs">
                         <ng-container [ngTemplateOutletContext]="{ $implicit: job}"
@@ -290,16 +290,16 @@
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
-        <span translate>common.button.submit</span>
+        <span >{{ 'common.button.submit' | translate }}</span>
       </button>
     }
     @if (!isUpdated) {
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{'common.button.cancel' | translate }}
       </button>
     }
     @if (isUpdated) {
-      <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">
+      <button (click)="close()" class="btn btn-grey btn-sm" type="button">
         common.button.close
       </button>
     }

@@ -24,15 +24,14 @@
 
       @if (isAllowClear) {
         <a class="text-hover-primary p-l-sm"
-           (click)="object[attributeDate] = null; object[attributeTime] = '';"
-           translate="">common.button.clear</a>
+           (click)="object[attributeDate] = null; object[attributeTime] = '';">{{ 'common.button.clear' | translate }}</a>
       }
     </ng-container>
   }
   @if (from.invalid && (from.dirty || from.touched)) {
     <div class="text-danger help-block">
       @if (from.errors.required) {
-        <div translate>common.message.requiredError</div>
+        <div >{{ 'common.message.requiredError' | translate }}</div>
       }
     </div>
   }

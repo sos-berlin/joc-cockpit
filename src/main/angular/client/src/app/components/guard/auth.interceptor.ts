@@ -116,6 +116,7 @@ export class AuthInterceptor implements HttpInterceptor {
                   if (url && url.match(/returnUrl/)) {
                     url = url.substring(0, url.indexOf('returnUrl'));
                   }
+                  console.log(url, this.router.url)
                   this.router.navigate(['login'], {queryParams: {returnUrl: url}}).then();
                   return;
                 }

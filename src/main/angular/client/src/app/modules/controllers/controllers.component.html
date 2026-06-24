@@ -15,26 +15,26 @@
                 <ng-container>
                   <div class="btn-group">
                     <button (click)="loadAgents('ALL')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='ALL'}"
-                            class="btn btn-grey btn-sm" translate>agent.button.allAgent
+                            class="btn btn-grey btn-sm" >{{ 'agent.button.allAgent' | translate }}
                     </button>
                     <button (click)="loadAgents('IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='IN_SYNC'}"
-                            class="btn btn-grey btn-sm text-capitalize" translate>IN_SYNC
+                            class="btn btn-grey btn-sm text-capitalize" >{{ 'IN_SYNC' | translate }}
                     </button>
                     <button (click)="loadAgents('NOT_IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_IN_SYNC'}"
-                            class="btn btn-grey btn-sm text-capitalize" translate>NOT_IN_SYNC
+                            class="btn btn-grey btn-sm text-capitalize" >{{ 'NOT_IN_SYNC' | translate }}
                     </button>
                     <button (click)="loadAgents('NOT_DEPLOYED')"
                             [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_DEPLOYED'}"
-                            class="btn btn-grey btn-sm text-capitalize" translate>NOT_DEPLOYED
+                            class="btn btn-grey btn-sm text-capitalize" >{{ 'NOT_DEPLOYED' | translate }}
                     </button>
                     <button (click)="loadAgents('UNKNOWN')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='UNKNOWN'}"
-                            class="btn btn-grey btn-sm text-capitalize" translate>agent.button.unknown
+                            class="btn btn-grey btn-sm text-capitalize" >{{ 'agent.button.unknown' | translate }}
                     </button>
                   </div>
                   @if (isJOCActive) {
                     <button (click)="addController()" class="btn btn-grey btn-sm m-l-12">
                       <i class="fa fa-plus"></i>&nbsp;
-                      <span translate>controller.button.newController</span>
+                      <span >{{ 'controller.button.newController' | translate }}</span>
                     </button>
                   }
                 </ng-container>
@@ -42,56 +42,56 @@
 
               @if ((object.mapOfCheckedId.size>0 || object.mapOfCheckedId2.size > 0) && object.mapOfCheckedId3.size === 0) {
                 <div class="show-inline">
-                  <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>inventory.button.deploy</button>
-                  <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.revoke</button>
-                  <button (click)="createToken(null)" class="btn btn-grey btn-sm m-l-12" translate>
-                    agent.button.createToken
+                  <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" >{{ 'inventory.button.deploy' | translate }}</button>
+                  <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" >{{ 'agent.button.revoke' | translate }}</button>
+                  <button (click)="createToken(null)" class="btn btn-grey btn-sm m-l-12" >
+                    {{ 'agent.button.createToken' | translate }}
                   </button>
                   @if (object.mapOfCheckedId2.size == 0) {
                     <button (click)="disableAll()" class="btn btn-grey btn-sm m-l-12"
-                            translate>agent.button.disable
+                            >{{ 'agent.button.disable' | translate }}
                     </button>
                   }
                   @if (object.mapOfCheckedId2.size == 0) {
                     <button (click)="enableAll()" class="btn btn-grey btn-sm m-l-12"
-                            translate>agent.button.enable
+                            >{{ 'agent.button.enable' | translate }}
                     </button>
                   }
                   @if (object.mapOfCheckedId2.size == 0) {
                     <button (click)="hideAll()" class="btn btn-grey btn-sm m-l-12"
-                            translate>agent.button.hide
+                            >{{ 'agent.button.hide' | translate }}
                     </button>
                   }
                   @if (object.mapOfCheckedId2.size == 0) {
                     <button (click)="showAll()" class="btn btn-grey btn-sm m-l-12"
-                            translate>agent.button.show
+                            >{{ 'agent.button.show' | translate }}
                     </button>
                   }
                   @if (object.mapOfCheckedId2.size == 0) {
                     <button (click)="resetAll()" class="btn btn-grey btn-sm m-l-12"
-                            translate>agent.button.reset
+                            >{{ 'agent.button.reset' | translate }}
                     </button>
                   }
                   @if (object.mapOfCheckedId2.size == 0) {
-                    <button (click)="resetAll(true)" class="btn btn-grey btn-sm m-l-12" translate>agent.button.resetForced
+                    <button (click)="resetAll(true)" class="btn btn-grey btn-sm m-l-12" >{{ 'agent.button.resetForced' | translate }}
                     </button>
                   }
-                  <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>common.button.delete</button>
-                  <button (click)="exportBulkAgents()" class="btn btn-grey btn-sm m-l-12" translate>common.button.export</button>
+                  <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" >{{ 'common.button.delete' | translate }}</button>
+                  <button (click)="exportBulkAgents()" class="btn btn-grey btn-sm m-l-12" >{{ 'common.button.export' | translate }}</button>
                 </div>
               }
               @if (object.mapOfCheckedId3.size>0 && (object.mapOfCheckedId.size == 0 && object.mapOfCheckedId2.size == 0)) {
                 <div class="show-inline">
-                  <button (click)="disableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.disable
+                  <button (click)="disableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" >{{ 'agent.button.disable' | translate }}
                   </button>
-                  <button (click)="enableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.enable
+                  <button (click)="enableAllSubAgent()" class="btn btn-grey btn-sm m-l-12" >{{ 'agent.button.enable' | translate }}
                   </button>
-                  <button (click)="resetAllSubagent()" class="btn btn-grey btn-sm m-l-12" translate>agent.button.reset
+                  <button (click)="resetAllSubagent()" class="btn btn-grey btn-sm m-l-12" >{{ 'agent.button.reset' | translate }}
                   </button>
-                  <button (click)="resetAllSubagent(true)" class="btn btn-grey btn-sm m-l-12" translate>
-                    agent.button.resetForced
+                  <button (click)="resetAllSubagent(true)" class="btn btn-grey btn-sm m-l-12" >
+                    {{ 'agent.button.resetForced' | translate }}
                   </button>
-                  <button (click)="deleteAllSubagent()" class="btn btn-grey btn-sm m-l-12" translate>common.button.delete
+                  <button (click)="deleteAllSubagent()" class="btn btn-grey btn-sm m-l-12" >{{ 'common.button.delete' | translate }}
                   </button>
                 </div>
               }
@@ -145,32 +145,32 @@
                               <ul nz-menu>
                                 @if (isJOCActive) {
                                   <li (click)="editController(controller.controllerId)" nz-menu-item>
-                                    <a translate>common.button.edit</a>
+                                    <a >{{ 'common.button.edit' | translate }}</a>
                                   </li>
                                 }
                                 <li (click)="addAgent(controller)" nz-menu-item>
-                                  <a translate>agent.button.addAgent</a>
+                                  <a >{{ 'agent.button.addAgent' | translate }}</a>
                                 </li>
                                 @if (hasLicense) {
                                   <li (click)="addClusterAgent(controller)" nz-menu-item>
-                                    <a translate>agent.button.addClusterAgent</a>
+                                    <a >{{ 'agent.button.addClusterAgent' | translate }}</a>
                                   </li>
                                 }
                                 @if (permission.joc.administration.certificates.manage) {
                                   <li (click)="createToken(controller)" nz-menu-item>
-                                    <a translate>agent.button.createToken</a>
+                                    <a >{{ 'agent.button.createToken' | translate }}</a>
                                   </li>
                                 }
                                 <li nz-menu-divider></li>
                                 <li (click)="exportAgents(controller)" nz-menu-item>
-                                  <a translate>agent.button.exportAgentConfiguration</a>
+                                  <a >{{ 'agent.button.exportAgentConfiguration' | translate }}</a>
                                 </li>
                                 <li (click)="importAgents(controller)" nz-menu-item>
-                                  <a translate>agent.button.importAgentConfiguration</a>
+                                  <a >{{ 'agent.button.importAgentConfiguration' | translate }}</a>
                                 </li>
                                 <li nz-menu-divider></li>
                                 <li (click)="deleteController(controller.controllerId)" class="bg-hover-color" nz-menu-item>
-                                  <a translate>common.button.delete</a>
+                                  <a >{{ 'common.button.delete' | translate }}</a>
                                 </li>
                               </ul>
                             </nz-dropdown-menu>
@@ -198,30 +198,30 @@
                           }
                           @if (controller.token && controller.token.validUntil) {
                             <span class="text-sm pull-right m-r-sm">
-                              <span translate>agent.label.validityDate</span>:
+                              <span >{{ 'agent.label.validityDate' | translate }}</span>:
                               <i class="text-muted p-l-xs">{{controller.token.validUntil | stringToDate}}</i>
                               <a [nzPopoverContent]="contentTemplate" class="primary-text-hover-color p-l-sm"
                                  nz-popover nzPopoverTrigger="click"><i class="fa fa-key"></i></a>
                               <ng-template #contentTemplate>
                                 <div>
-                                  <b translate>agent.label.url</b> :
+                                  <b >{{ 'agent.label.url' | translate }}</b> :
                                   <span>{{controller.token.URI}}</span>
                                 </div>
                                 <div>
-                                  <b translate>agent.label.token</b> :
+                                  <b >{{ 'agent.label.token' | translate }}</b> :
                                   <span>{{controller.token.UUID}} <i (click)="showCopyMessage()" [cbContent]="controller.token.UUID"
                                                                      class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                      ngxClipboard></i></span>
                                 </div>
                                 @if (controller.token.URI2) {
                                   <div class="m-t-sm">
-                                    <b translate>agent.label.url</b> :
+                                    <b >{{ 'agent.label.url' | translate }}</b> :
                                     <span>{{controller.token.URI2}}</span>
                                   </div>
                                 }
                                 @if (controller.token.URI2) {
                                   <div>
-                                    <b translate>agent.label.token</b> :
+                                    <b >{{ 'agent.label.token' | translate }}</b> :
                                     <span>{{controller.token.UUID2}} <i (click)="showCopyMessage()" [cbContent]="controller.token.UUID2"
                                                                         class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                         ngxClipboard></i></span>
@@ -237,8 +237,8 @@
                       <div class="row">
                         <div class="col-md-12">
                           <div class="p-a-sm p-b-0">
-                            <div class="p-b-xs" translate>
-                              agent.label.agents
+                            <div class="p-b-xs" >
+                              {{ 'agent.label.agents' | translate }}
                               @if (coreService.preferences.controllers.has(controller.controllerId+ '$standalone$')) {
                                 <i (click)="collapse(controller.controllerId + '$standalone$');" class="cursor fa fa-caret-down m-l-xs"></i>
                               }
@@ -264,10 +264,10 @@
                                     ></th>
                                   }
                                   @if (permission.joc && permission.joc.administration.controllers.manage) {
-                                    <th class="menu"><span translate>common.label.action</span></th>
+                                    <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
                                   }
                                   <th (click)="sort(controller, 'agentId')">
-                                    <a><span class="p-r-xs" translate>agent.label.agentId</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentId' | translate }}</span>
                                       @if (controller.sortBy == 'agentId' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -276,7 +276,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'agentName')">
-                                    <a><span class="p-r-xs" translate>agent.label.agentName</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentName' | translate }}</span>
                                       @if (controller.sortBy == 'agentName' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -285,7 +285,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'agentNameAliases')">
-                                    <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentNameAliases' | translate }}</span>
                                       @if (controller.sortBy == 'agentNameAliases' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -294,7 +294,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'url')">
-                                    <a><span class="p-r-xs" translate>agent.label.url</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.url' | translate }}</span>
                                       @if (controller.sortBy == 'url' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -303,7 +303,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'version')">
-                                    <a><span class="p-r-xs" translate>dashboard.label.version</span>
+                                    <a><span class="p-r-xs" >{{ 'dashboard.label.version' | translate }}</span>
                                       @if (controller.sortBy == 'version' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -312,7 +312,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'processLimit')">
-                                    <a><span class="p-r-xs" translate>agent.label.processLimit</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.processLimit' | translate }}</span>
                                       @if (controller.sortBy == 'processLimit' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -321,7 +321,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'syncState._text')" nzWidth="100px">
-                                    <a><span class="p-r-xs" translate>common.label.status</span>
+                                    <a><span class="p-r-xs" >{{ 'common.label.status' | translate }}</span>
                                       @if (controller.sortBy == 'syncState._text' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -330,7 +330,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'hidden')" nzWidth="100px">
-                                    <a><span class="p-r-xs" translate>agent.label.hidden</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.hidden' | translate }}</span>
                                       @if (controller.sortBy == 'hidden' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -339,7 +339,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'disabled')" nzWidth="100px">
-                                    <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.disabled' | translate }}</span>
                                       @if (controller.sortBy == 'disabled' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -348,7 +348,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'validityDate')" nzWidth="150px">
-                                    <a><span class="p-r-xs" translate>agent.label.validityDate</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.validityDate' | translate }}</span>
                                       @if (controller.sortBy == 'validityDate' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -357,7 +357,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'token.validUntil')" nzWidth="140px">
-                                    <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.oneTimeToken' | translate }}</span>
                                       @if (controller.sortBy == 'token.validUntil' && !controller.reverse) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -365,7 +365,7 @@
                                         <i class="fa fa-caret-down "></i>
                                       }</a>
                                   </th>
-                                  <th nzWidth="100px"><span class="p-r-xs" translate>encipherment.label.certificates</span></th>
+                                  <th nzWidth="100px"><span class="p-r-xs" >{{ 'encipherment.label.certificates' | translate }}</span></th>
                                 </tr>
                                 </thead>
                                 <tbody (cdkDropListDropped)="agentsReordering($event, controller.filteredAgents)" cdkDropList>
@@ -394,54 +394,54 @@
                                             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                               <ul nz-menu>
                                                 <li (click)="editAgent(agent, controller)" nz-menu-item>
-                                                  <a translate>common.button.edit</a>
+                                                  <a >{{ 'common.button.edit' | translate }}</a>
                                                 </li>
                                                 <li (click)="deployAgent(agent, controller, true)" nz-menu-item>
-                                                  <a translate>inventory.button.deploy</a>
+                                                  <a >{{ 'inventory.button.deploy' | translate }}</a>
                                                 </li>
                                                 <li (click)="revoke(agent, controller, true)" nz-menu-item>
-                                                  <a translate>agent.button.revoke</a>
+                                                  <a >{{ 'agent.button.revoke' | translate }}</a>
                                                 </li>
                                                 <li (click)="createToken(controller, agent)" nz-menu-item>
-                                                  <a translate>agent.button.createToken</a>
+                                                  <a >{{ 'agent.button.createToken' | translate }}</a>
                                                 </li>
                                                 <li (click)="addCertificateToAgent(controller, agent)" nz-menu-item>
-                                                  <a translate>agent.button.addEnciphermentCertificate</a>
+                                                  <a >{{ 'agent.button.addEnciphermentCertificate' | translate }}</a>
                                                 </li>
                                                 <li nz-menu-divider></li>
                                                 @if (!agent.disabled) {
                                                   <li (click)="disableEnableSubagent(agent, controller, false, true)" nz-menu-item>
-                                                    <a translate>agent.button.disable</a>
+                                                    <a >{{ 'agent.button.disable' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (agent.disabled) {
                                                   <li (click)="disableEnableSubagent(agent, controller, true, true)" nz-menu-item>
-                                                    <a translate>agent.button.enable</a>
+                                                    <a >{{ 'agent.button.enable' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (!agent.hidden) {
                                                   <li (click)="hideAgent(agent, controller)" nz-menu-item>
-                                                    <a translate>agent.button.hide</a>
+                                                    <a >{{ 'agent.button.hide' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (agent.hidden) {
                                                   <li (click)="showAgent(agent, controller)" nz-menu-item>
-                                                    <a translate>agent.button.show</a>
+                                                    <a >{{ 'agent.button.show' | translate }}</a>
                                                   </li>
                                                 }
                                                 <li (click)="resetAgent(agent, controller)" nz-menu-item>
-                                                  <a translate>agent.button.reset</a>
+                                                  <a >{{ 'agent.button.reset' | translate }}</a>
                                                 </li>
                                                 <li (click)="resetAgent(agent, controller, true)" nz-menu-item>
-                                                  <a translate>agent.button.resetForced</a>
+                                                  <a >{{ 'agent.button.resetForced' | translate }}</a>
                                                 </li>
                                                 <li nz-menu-divider></li>
                                                 <li (click)="exportBulkAgents(agent.agentId)" nz-menu-item>
-                                                  <a translate>common.button.export</a>
+                                                  <a >{{ 'common.button.export' | translate }}</a>
                                                 </li>
                                                 <li nz-menu-divider></li>
                                                 <li (click)="removeAgent(agent, controller)" class="bg-hover-color" nz-menu-item>
-                                                  <a translate>common.button.delete</a>
+                                                  <a >{{ 'common.button.delete' | translate }}</a>
                                                 </li>
                                               </ul>
                                             </nz-dropdown-menu>
@@ -493,7 +493,7 @@
                                             <a [nzPopoverContent]="contentTemplate" class="primary-text-hover-color" nz-popover
                                                nzPopoverTrigger="click"><i class="fa fa-key"></i></a>
                                             <ng-template #contentTemplate>
-                                              <b translate>agent.label.token</b> :
+                                              <b >{{ 'agent.label.token' | translate }}</b> :
                                               <span>{{agent.token.UUID}} <i (click)="showCopyMessage()" [cbContent]="agent.token.UUID"
                                                                             class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                             ngxClipboard></i></span>
@@ -513,8 +513,8 @@
                               </nz-table>
                             }
                             @if (hasLicense) {
-                              <div class="m-t p-b-xs" translate>
-                                agent.label.agentGroups
+                              <div class="m-t p-b-xs" >
+                                {{ 'agent.label.agentGroups' | translate }}
                                 @if (coreService.preferences.controllers.has(controller.controllerId+ '$cluster$')) {
                                   <i (click)="collapse(controller.controllerId + '$cluster$');" class="cursor fa fa-caret-down m-l-xs"></i>
                                 }
@@ -540,9 +540,9 @@
                                         class="chk"
                                     ></th>
                                   }
-                                  <th class="menu"><span translate>common.label.action</span></th>
+                                  <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
                                   <th (click)="sort(controller, 'agentId', true)">
-                                    <a><span class="p-r-xs" translate>agent.label.agentId</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentId' | translate }}</span>
                                       @if (controller.sortBy2 == 'agentId' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -551,7 +551,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'agentName', true)" nzWidth="15%">
-                                    <a><span class="p-r-xs" translate>agent.label.agentName</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentName' | translate }}</span>
                                       @if (controller.sortBy2 == 'agentName' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -560,7 +560,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'agentNameAliases', true)">
-                                    <a><span class="p-r-xs" translate>agent.label.agentNameAliases</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.agentNameAliases' | translate }}</span>
                                       @if (controller.sortBy2 == 'agentNameAliases' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -569,7 +569,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'version', true)">
-                                    <a><span class="p-r-xs" translate>dashboard.label.version</span>
+                                    <a><span class="p-r-xs" >{{ 'dashboard.label.version' | translate }}</span>
                                       @if (controller.sortBy2 == 'version' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -578,7 +578,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'processLimit', true)">
-                                    <a><span class="p-r-xs" translate>agent.label.processLimit</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.processLimit' | translate }}</span>
                                       @if (controller.sortBy2 == 'processLimit' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -587,7 +587,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'syncState._text', true)" nzWidth="100px">
-                                    <a><span class="p-r-xs" translate>common.label.status</span>
+                                    <a><span class="p-r-xs" >{{ 'common.label.status' | translate }}</span>
                                       @if (controller.sortBy2 == 'syncState._text' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -596,7 +596,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'validityDate', true)" nzWidth="150px">
-                                    <a><span class="p-r-xs" translate>agent.label.validityDate</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.validityDate' | translate }}</span>
                                       @if (controller.sortBy2 == 'validityDate' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -605,7 +605,7 @@
                                       }</a>
                                   </th>
                                   <th (click)="sort(controller, 'token.validUntil', true)" nzWidth="140px">
-                                    <a><span class="p-r-xs" translate>agent.label.oneTimeToken</span>
+                                    <a><span class="p-r-xs" >{{ 'agent.label.oneTimeToken' | translate }}</span>
                                       @if (controller.sortBy2 == 'token.validUntil' && !controller.reverse2) {
                                         <i class="fa fa-caret-up "></i>
                                       }
@@ -643,20 +643,20 @@
                                               <ul nz-menu>
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="editAgent(clusterAgent, controller, true)" nz-menu-item>
-                                                    <a translate>common.button.edit</a>
+                                                    <a >{{ 'common.button.edit' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="addSubagent(clusterAgent, controller)" nz-menu-item>
-                                                    <a translate>agent.button.addSubagent</a>
+                                                    <a >{{ 'agent.button.addSubagent' | translate }}</a>
                                                   </li>
                                                 }
                                                 <li (click)="navToController(controller.controllerId, clusterAgent.agentId)" nz-menu-item>
-                                                  <a translate>agent.button.manageCluster</a>
+                                                  <a >{{ 'agent.button.manageCluster' | translate }}</a>
                                                 </li>
                                                 @if (permission.joc.administration.certificates.manage) {
                                                   <li (click)="createToken(controller, clusterAgent)" nz-menu-item>
-                                                    <a translate>agent.button.createToken</a>
+                                                    <a >{{ 'agent.button.createToken' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
@@ -664,22 +664,22 @@
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="deployAgent(clusterAgent, controller)" nz-menu-item>
-                                                    <a translate>inventory.button.deploy</a>
+                                                    <a >{{ 'inventory.button.deploy' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="revoke(clusterAgent, controller)" nz-menu-item>
-                                                    <a translate>agent.button.revoke</a>
+                                                    <a >{{ 'agent.button.revoke' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="resetAgent(clusterAgent, controller)" nz-menu-item>
-                                                    <a translate>agent.button.reset</a>
+                                                    <a >{{ 'agent.button.reset' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="resetAgent(clusterAgent, controller, true)" nz-menu-item>
-                                                    <a translate>agent.button.resetForced</a>
+                                                    <a >{{ 'agent.button.resetForced' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
@@ -687,7 +687,7 @@
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="exportBulkAgents(clusterAgent.agentId)" nz-menu-item>
-                                                    <a translate>common.button.export</a>
+                                                    <a >{{ 'common.button.export' | translate }}</a>
                                                   </li>
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
@@ -695,7 +695,7 @@
                                                 }
                                                 @if (permission.joc && permission.joc.administration.controllers.manage) {
                                                   <li (click)="removeAgent(clusterAgent, controller, true)" class="bg-hover-color" nz-menu-item>
-                                                    <a translate>common.button.delete</a>
+                                                    <a >{{ 'common.button.delete' | translate }}</a>
                                                   </li>
                                                 }
                                               </ul>
@@ -762,7 +762,7 @@
                                               <a [nzPopoverContent]="contentTemplate" class="primary-text-hover-color" nz-popover
                                                  nzPopoverTrigger="click"><i class="fa fa-key"></i></a>
                                               <ng-template #contentTemplate>
-                                                <b translate>agent.label.token</b> :
+                                                <b >{{ 'agent.label.token' | translate }}</b> :
                                                 <span>{{clusterAgent.token.UUID}} <i (click)="showCopyMessage()"
                                                                                      [cbContent]="clusterAgent.token.UUID"
                                                                                      class="cursor primary-text-hover-color p-l-sm fa fa-copy"
@@ -794,14 +794,14 @@
                                                       class="chk"
                                                   ></th>
                                                 }
-                                                <th nzWidth="56px"><span translate>common.label.action</span></th>
-                                                <th><span translate>agent.label.subagentId</span></th>
-                                                <th><span translate>agent.label.role</span></th>
-                                                <th><span translate>agent.label.url</span></th>
-                                                <th><span translate>dashboard.label.version</span></th>
-                                                <th nzWidth="150px"><span translate>common.label.status</span></th>
-                                                <th nzWidth="140px"><span translate>agent.label.disabled</span></th>
-                                                <th nzWidth="100px"><span class="p-r-xs" translate>encipherment.label.certificates</span></th>
+                                                <th nzWidth="56px"><span >{{ 'common.label.action' | translate }}</span></th>
+                                                <th><span >{{ 'agent.label.subagentId' | translate }}</span></th>
+                                                <th><span >{{ 'agent.label.role' | translate }}</span></th>
+                                                <th><span >{{ 'agent.label.url' | translate }}</span></th>
+                                                <th><span >{{ 'dashboard.label.version' | translate }}</span></th>
+                                                <th nzWidth="150px"><span >{{ 'common.label.status' | translate }}</span></th>
+                                                <th nzWidth="140px"><span >{{ 'agent.label.disabled' | translate }}</span></th>
+                                                <th nzWidth="100px"><span class="p-r-xs" >{{ 'encipherment.label.certificates' | translate }}</span></th>
                                               </tr>
                                               </thead>
                                               <tbody (cdkDropListDropped)="drop($event, clusterAgent)" cdkDropList>
@@ -827,38 +827,38 @@
                                                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                                             <ul nz-menu>
                                                               <li (click)="editSubagent(sub, clusterAgent, controller)" nz-menu-item>
-                                                                <a translate>common.button.edit</a>
+                                                                <a >{{ 'common.button.edit' | translate }}</a>
                                                               </li>
                                                               <li (click)="addCertificateToSubAgent(sub, clusterAgent, controller)" nz-menu-item>
-                                                                <a translate>agent.button.addEnciphermentCertificate</a>
+                                                                <a >{{ 'agent.button.addEnciphermentCertificate' | translate }}</a>
                                                               </li>
                                                               @if (sub.isDirector == 'NO_DIRECTOR') {
                                                                 <li nz-menu-divider></li>
                                                               }
                                                               @if (!sub.disabled) {
                                                                 <li (click)="disableEnableSubagent(sub, controller, false)" nz-menu-item>
-                                                                  <a translate>agent.button.disable</a>
+                                                                  <a >{{ 'agent.button.disable' | translate }}</a>
                                                                 </li>
                                                               }
                                                               @if (sub.disabled) {
                                                                 <li (click)="disableEnableSubagent(sub, controller, true)" nz-menu-item>
-                                                                  <a translate>agent.button.enable</a>
+                                                                  <a >{{ 'agent.button.enable' | translate }}</a>
                                                                 </li>
                                                               }
                                                               @if (sub.isDirector == 'NO_DIRECTOR') {
                                                                 <li (click)="resetSubagent(sub, clusterAgent, controller)" nz-menu-item>
-                                                                  <a translate>agent.button.reset</a>
+                                                                  <a >{{ 'agent.button.reset' | translate }}</a>
                                                                 </li>
                                                               }
                                                               @if (sub.isDirector == 'NO_DIRECTOR') {
                                                                 <li (click)="resetSubagent(sub, clusterAgent, controller, true)" nz-menu-item>
-                                                                  <a translate>agent.button.resetForced</a>
+                                                                  <a >{{ 'agent.button.resetForced' | translate }}</a>
                                                                 </li>
                                                               }
                                                               <li nz-menu-divider></li>
                                                               <li (click)="removeSubagent(sub, clusterAgent, controller)" class="bg-hover-color"
                                                                   nz-menu-item>
-                                                                <a translate="">common.button.delete</a>
+                                                                <a="">{{ 'common.button.delete' | translate }}</a>
                                                               </li>
                                                             </ul>
                                                           </nz-dropdown-menu>

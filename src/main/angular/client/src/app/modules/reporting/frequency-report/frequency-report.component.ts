@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, NgZone , Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone , Input, Output, ViewChild} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
@@ -11,7 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
   standalone: false,
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
-  styleUrls: ['./frequency-report.component.scss']
+  styleUrls: ['./frequency-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FrequencyReportComponent {
   @Input({required: true}) readonly templates: any;
@@ -56,7 +57,8 @@ export class FrequencyReportComponent {
   @ViewChild('content') content: ElementRef;
 
   constructor(private modal: NzModalService, private coreService: CoreService,private ngZone: NgZone,
-              private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService) {
+              private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
 
   }
 
@@ -87,6 +89,7 @@ export class FrequencyReportComponent {
   this.coreService.post('reporting/reports/generated', obj).subscribe({
     next: (res: any) => {
       this.isLoading = true;
+      this.cdr.markForCheck();
       this.multiReports = res.reports;
 
       // Filter reports based on groupType
@@ -140,7 +143,7 @@ export class FrequencyReportComponent {
         }, 100);
       }
     },
-    error: () => this.isLoading = true
+    error: () => { this.isLoading = true; this.cdr.markForCheck(); }
   });
 }
 
@@ -737,7 +740,7 @@ removeCard(cardId: any): void {
         type: 'bar',
         data: data,
         options: {
-          plugins: {
+          plugins: ({
             datalabels: {display: false},
             tooltip: {
               callbacks: {
@@ -757,7 +760,7 @@ removeCard(cardId: any): void {
                 }
               }
             }
-          },
+          } as any),
           maintainAspectRatio: false,
           onClick: function (event, elements) {
             if (elements.length > 0) {
@@ -892,6 +895,7 @@ sort(type: string): void {
 
   async createReport() {
     this.loading = true;
+    this.cdr.markForCheck();
     this.progress = 0;
     this.progressMessage = 'Initializing...';
 
@@ -979,6 +983,7 @@ sort(type: string): void {
 
     pdf.save('report_' + this.getTranslatedText(this.selectedReport) + '.pdf');
     this.loading = false;
+    this.cdr.markForCheck();
     this.progress = 0;
     this.progressMessage = '';
 

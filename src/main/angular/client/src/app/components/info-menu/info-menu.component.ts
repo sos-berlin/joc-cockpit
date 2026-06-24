@@ -236,7 +236,7 @@ export class StepGuideComponent {
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
   versionData: any = {};
-  constructor(private modal: NzModalService, private coreService: CoreService) {
+  constructor(private modal: NzModalService, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -244,6 +244,11 @@ export class InfoMenuComponent {
         this.versionData = data;
       });
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
+  }
+
   about(): any {
     this.modal.create({
       nzTitle: undefined,

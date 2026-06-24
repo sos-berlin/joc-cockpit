@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>resource.label.showUsage</span>
+    <span >{{ 'resource.label.showUsage' | translate }}</span>
     : &nbsp;
     {{document.path}}
   </h4>
@@ -16,7 +16,7 @@
         <div class="p-l-sm">
           <div class="row m-b">
             <div class="col-md-12">
-              <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
+              <span class="text _600" >{{ 'resource.documentation.label.documentationUsedIn' | translate }}</span> : -
             </div>
           </div>
           @for (doc of document.usedIn; track doc) {
@@ -32,15 +32,15 @@
         </div>
       }
       @if (!document.usedIn || document.usedIn.length ==0) {
-        <div class="text-center text" translate>
-          resource.documentation.message.documentNotUsed
+        <div class="text-center text" >
+          {{ 'resource.documentation.message.documentNotUsed' | translate }}
         </div>
       }
     </div>
   </div>
 </div>
 <div class="modal-footer">
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate
-          type="button">common.button.close
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+          type="button">{{'common.button.close' | translate}}
   </button>
 </div>

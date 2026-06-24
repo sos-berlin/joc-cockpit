@@ -77,12 +77,12 @@
     }
   </div>
   <div class="modal-footer ">
-    <button (click)="submit()" class="btn btn-primary btn-sm" translate
-            type="button">common.button.done
+    <button (click)="submit()" class="btn btn-primary btn-sm"
+            type="button">{{ 'common.button.done' | translate }}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm"
             type="button">
-      common.button.cancel
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </div>

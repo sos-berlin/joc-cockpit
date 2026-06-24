@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
@@ -313,7 +313,8 @@ export class CreateTokenModalComponent {
 @Component({
   standalone: false,
   selector: 'app-controllers',
-  templateUrl: './controllers.component.html'
+  templateUrl: './controllers.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControllersComponent {
   data: any = [];
@@ -341,7 +342,8 @@ export class ControllersComponent {
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
               private searchPipe: SearchPipe,
-              private authService: AuthService, private dataService: DataService, private router: Router) {
+              private authService: AuthService, private dataService: DataService, private router: Router,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -379,6 +381,7 @@ export class ControllersComponent {
         } else if (args.eventSnapshots[j].eventType === 'ControllerStateChanged' || ((args.eventSnapshots[j].eventType === 'ProxyCoupled'
           || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType.match(/Item/)) && args.eventSnapshots[j].objectType === 'CONTROLLER')) {
           this.isLoaded = false;
+          this.cdr.markForCheck();
           this.refreshView();
           break;
         }
@@ -436,7 +439,10 @@ export class ControllersComponent {
           this.coreService.preferences.controllers.add(data.selected);
         }
         this.getSecurity();
-      }, error: () => this.loading = true
+      }, error: () => {
+        this.loading = true;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -649,6 +655,7 @@ export class ControllersComponent {
     modalInstance.afterClose.subscribe(result => {
       if (result && this.controllers.length === 0) {
         this.isLoaded = false;
+        this.cdr.markForCheck();
         this.getSchedulerIds();
       }
     });
@@ -2011,6 +2018,7 @@ export class ControllersComponent {
       }
     }
     this.loading = true;
+    this.cdr.markForCheck();
   }
 
   private getSchedulerIds(): void {
@@ -2018,11 +2026,15 @@ export class ControllersComponent {
       next: (res: any) => {
         this.data = res.controllerIds;
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.getSecurity();
         this.authService.setIds(res);
         this.authService.save();
         this.dataService.isProfileReload.next(true);
-      }, error: () => this.isLoaded = true
+      }, error: () => {
+        this.isLoaded = true;
+        this.cdr.markForCheck();
+      }
     });
   }
 

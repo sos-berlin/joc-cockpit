@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -15,7 +15,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-single-lock',
-  templateUrl: './single-lock.component.html'
+  templateUrl: './single-lock.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleLockComponent {
   loading = false;
@@ -28,7 +29,7 @@ export class SingleLockComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService, private route: ActivatedRoute) {
+              private dataService: DataService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -68,7 +69,8 @@ export class SingleLockComponent {
           value.hasNote = value.lock?.hasNote;
         });
         this.locks = res.locks;
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -90,6 +92,7 @@ export class SingleLockComponent {
               this.locks[0].workflowTagsPerWorkflow = lock.workflowTagsPerWorkflow;
               this.locks[0].workflows = lock.workflows;
             }
+            this.cdr.markForCheck();
           });
           break;
         }
@@ -131,7 +134,8 @@ export class SingleLockComponent {
 @Component({
   standalone: false,
   selector: 'app-lock',
-  templateUrl: 'lock.component.html'
+  templateUrl: 'lock.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LockComponent {
   isLoading = false;
@@ -159,7 +163,8 @@ export class LockComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
-              private dataService: DataService, private orderPipe: OrderPipe, private modal: NzModalService) {
+              private dataService: DataService, private orderPipe: OrderPipe, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -219,7 +224,8 @@ export class LockComponent {
           if (this.tree.length) {
             this.loadLocks();
           }
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -352,6 +358,7 @@ export class LockComponent {
     }).subscribe({
       next: (res: any) => {
         this.loading = false;
+        this.cdr.markForCheck();
         res.locks.forEach((value: any) => {
           for (let x = 0; x < this.locks.length; x++) {
             if (this.locks[x].path === value.lock.path) {
@@ -377,7 +384,7 @@ export class LockComponent {
             }
           }
         });
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -401,6 +408,7 @@ export class LockComponent {
     this.coreService.post('locks', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.loading = false;
+        this.cdr.markForCheck();
         if (res.locks && res.locks.length === 0) {
           this.locksFilters.currentPage = 1;
         }
@@ -430,7 +438,7 @@ export class LockComponent {
         if (locks && locks.length > 0) {
           this.updateLocksDetail(locks);
         }
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 

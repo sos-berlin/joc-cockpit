@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Directive,
   EventEmitter, forwardRef,
@@ -536,7 +538,8 @@ export class AllOrderResumeModelComponent {
   standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
-  styleUrls: ['./order-overview.component.css']
+  styleUrls: ['./order-overview.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderOverviewComponent {
   loading: boolean;
@@ -654,7 +657,8 @@ export class OrderOverviewComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService,
-              public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
+              public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -764,10 +768,14 @@ export class OrderOverviewComponent {
         next: res => {
           this.tree = this.coreService.prepareTree(res, true);
           this.loading = true;
+          this.cdr.markForCheck();
           if (this.tree.length) {
             this.loadOrder();
           }
-        }, error: () => this.loading = true
+        }, error: () => {
+          this.loading = true;
+          this.cdr.markForCheck();
+        }
       });
     } else {
       this.loading = true;
@@ -817,10 +825,12 @@ export class OrderOverviewComponent {
         this.orderOverview = res.orders;
         this.loading = true;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.orderOverview = {};
         this.loading = true;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1027,11 +1037,13 @@ export class OrderOverviewComponent {
         this.isLoaded = true;
         this.loading = true;
         this.resetAction();
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetCheckBox();
         this.isLoaded = true;
         this.loading = true;
         this.resetAction();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1124,7 +1136,11 @@ export class OrderOverviewComponent {
       next: (res: any) => {
         this.auditLogs = res.auditLog;
         this.showPanelObj.loading = false;
-      }, error: () => this.showPanelObj.loading = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.showPanelObj.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

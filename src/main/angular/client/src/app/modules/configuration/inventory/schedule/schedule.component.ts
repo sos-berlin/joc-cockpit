@@ -1769,6 +1769,7 @@ export class ScheduleComponent {
           this.data.valid = res.valid;
         }
         this.setErrorMessage(res);
+        this.ref.detectChanges();
       }
     });
   }
@@ -1881,6 +1882,7 @@ export class ScheduleComponent {
       // this.allTags = this.allTags.map((item) => {
       //   return item.name;
       // })
+      this.ref.detectChanges();
     });
   }
 

@@ -4,17 +4,17 @@
       <thead>
       <tr>
         @if (groupBy === 'DATE') {
-          <th><span translate>monitor.label.date</span></th>
+          <th><span >{{ 'monitor.label.date' | translate }}</span></th>
         }
-        <th><span translate>dashboard.label.controllerId</span></th>
+        <th><span >{{ 'dashboard.label.controllerId' | translate }}</span></th>
         @if (groupBy !== 'DATE') {
-          <th><span translate>monitor.label.date</span></th>
+          <th><span >{{ 'monitor.label.date' | translate }}</span></th>
         }
         @if (isAgent) {
-          <th><span translate>agent.label.agentId</span></th>
+          <th><span >{{ 'agent.label.agentId' | translate }}</span></th>
         }
         @if (isAgent) {
-          <th><span translate>dashboard.label.url</span></th>
+          <th><span >{{ 'dashboard.label.url' | translate }}</span></th>
         }
       </tr>
       </thead>
@@ -97,7 +97,7 @@
                 }" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
                 class="statusBar"
               >
-              <i translate>COUPLED</i>
+              <i >{{ 'COUPLED' | translate }}</i>
             </span>
             }
           </div>

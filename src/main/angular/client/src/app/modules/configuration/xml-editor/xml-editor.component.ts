@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -777,7 +777,8 @@ export class ConfirmationModalComponent {
   standalone: false,
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
-  styleUrls: ['./xml-editor.component.scss']
+  styleUrls: ['./xml-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XmlEditorComponent {
   schedulerIds: any = {};
@@ -872,7 +873,8 @@ export class XmlEditorComponent {
     public toasterService: ToastrService,
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     this.subscription1 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -950,7 +952,7 @@ export class XmlEditorComponent {
 
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   beforeunload(): void {
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
       this.isChange = true;
@@ -1053,6 +1055,7 @@ export class XmlEditorComponent {
           this.selectedNode = {};
           this.submitXsd = false;
           this.isLoading = false;
+          this.cdr.markForCheck();
           this.schemaIdentifier = '';
           this.createNewTab();
         });
@@ -1422,6 +1425,7 @@ export class XmlEditorComponent {
         if (!res.configurations) {
           this.tabsArray = [];
           this.isLoading = false;
+          this.cdr.markForCheck();
           this.newFile();
         } else {
           this.tabsArray = clone(res.configurations);
@@ -1443,6 +1447,7 @@ export class XmlEditorComponent {
         }
       }, error: (error) => {
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.tabsArray = [];
         this.error = true;
         if (error && error.error) {
@@ -1547,9 +1552,11 @@ export class XmlEditorComponent {
           }
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.submitXsd = false;
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.extraInfo = {};
         this.error = true;
         if (err.data && err.data.error) {
@@ -1633,6 +1640,7 @@ export class XmlEditorComponent {
             jsonArray = JSON.parse(res.configurationJson);
           } catch (e) {
             this.isLoading = false;
+            this.cdr.markForCheck();
             this.submitXsd = false;
           }
           this.recreateJsonFlag = res.recreateJson;
@@ -1649,6 +1657,7 @@ export class XmlEditorComponent {
           }
           if (this.nodes) {
             this.isLoading = false;
+            this.cdr.markForCheck();
             this.selectedNode = this.nodes[0];
             this.getIndividualData(this.selectedNode, undefined);
             this.selectedNodeDoc = this.checkText(this.nodes[0]);
@@ -1659,6 +1668,7 @@ export class XmlEditorComponent {
           if (!this.ok(res.configuration)) {
             this.nodes = [];
             this.isLoading = true;
+            this.cdr.markForCheck();
             this.submitXsd = true;
             this.prevXML = this.removeComment(res.configuration);
             this.loadTree(this.path, true);
@@ -1668,14 +1678,17 @@ export class XmlEditorComponent {
           } else {
             this.submitXsd = false;
             this.isLoading = false;
+            this.cdr.markForCheck();
             // openXMLDialog(res.configuration);
           }
         } else {
           this.submitXsd = false;
           this.isLoading = false;
+          this.cdr.markForCheck();
         }
       }, error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.submitXsd = false;
       }
     });
@@ -4992,6 +5005,7 @@ export class XmlEditorComponent {
             this.copyItem = undefined;
             this.selectedXsd = importObj.assignXsd;
             this.isLoading = true;
+            this.cdr.markForCheck();
             if (this.objectType !== 'NOTIFICATION') {
               if (this.tabsArray.length === 0) {
                 let _tab = {id: -1, name: 'edit1', schemaIdentifier: this.schemaIdentifier};
@@ -5027,6 +5041,7 @@ export class XmlEditorComponent {
       }, error: (err) => {
         this.showErrorToast(err.data.error.message, '');
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -5206,10 +5221,12 @@ export class XmlEditorComponent {
         this.submitXsd = true;
         this.prevXML = '';
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.isChange = true;
         this.storeXML(this.activeTab);
       }, error: (error) => {
         this.isLoading = false;
+        this.cdr.markForCheck();
         if (error && error.error) {
           this.showErrorToast(error.error.message, '');
         }
@@ -5258,9 +5275,11 @@ export class XmlEditorComponent {
         this.path = res.schemaIdentifier;
         this.selectedXsd = res.schemaIdentifier;
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.reassignSchema = false;
       }, error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -5899,6 +5918,7 @@ export class XmlEditorComponent {
             this.coreService.post('xmleditor/xml2json', obj1).subscribe({
               next: (result: any) => {
                 this.isLoading = true;
+                this.cdr.markForCheck();
                 let a = [];
                 let arr = JSON.parse(result.configurationJson);
                 a.push(arr);
@@ -5907,6 +5927,7 @@ export class XmlEditorComponent {
                 this.nodes = a;
                 this.convertBooleanValuesInTree(this.nodes);
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 this.selectedNode = this.nodes[0];
                 this.selectedNodeDoc = this.checkText(this.nodes[0]);
                 this.getIndividualData(this.selectedNode, undefined);
@@ -5915,6 +5936,7 @@ export class XmlEditorComponent {
                 this.copyItem = undefined;
               }, error: (err) => {
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 this.error = true;
                 this.showErrorToast(err.data.error.message, '');
               }
@@ -5957,6 +5979,7 @@ export class XmlEditorComponent {
             this.coreService.post('xmleditor/xml2json', obj1).subscribe({
               next: (result: any) => {
                 this.isLoading = true;
+                this.cdr.markForCheck();
                 let a = [];
                 let arr = JSON.parse(result.configurationJson);
                 a.push(arr);
@@ -5965,6 +5988,7 @@ export class XmlEditorComponent {
                 this.nodes = a;
                 this.convertBooleanValuesInTree(this.nodes);
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 this.selectedNode = this.nodes[0];
                 this.selectedNodeDoc = this.checkText(this.nodes[0]);
                 this.getIndividualData(this.selectedNode, undefined);
@@ -5973,6 +5997,7 @@ export class XmlEditorComponent {
                 this.copyItem = undefined;
               }, error: (err) => {
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 this.error = true;
                 this.showErrorToast(err.data.error.message, '');
               }
@@ -6012,6 +6037,7 @@ export class XmlEditorComponent {
       this.submitXsd = false;
     }
     this.isLoading = false;
+    this.cdr.markForCheck();
   }
 
   private showError(error): void {
@@ -6288,6 +6314,7 @@ export class XmlEditorComponent {
         this.getIndividualData(this.selectedNode, undefined);
         this.selectedNodeDoc = this.checkText(this.nodes[0]);
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.submitXsd = true;
         this.isChange = true;
         this.prevXML = '';
@@ -6305,6 +6332,7 @@ export class XmlEditorComponent {
         }
       }, error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -6371,6 +6399,7 @@ export class XmlEditorComponent {
       }, error: (err) => {
         this.submitXsd = false;
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.error = true;
         this.extraInfo = {};
         this.showErrorToast(err.data.error.message, '');

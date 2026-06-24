@@ -1,4 +1,4 @@
-import {Component, inject, ElementRef} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, ElementRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
@@ -38,8 +38,9 @@ export class ResumeOrderModalComponent {
   isPositionChanged: boolean = false;
   isForced: boolean = false;
 
-  constructor(private elRef: ElementRef,public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService, private workflowService: WorkflowService) {
+  constructor(private elRef: ElementRef, public coreService: CoreService, private activeModal: NzModalRef,
+              private modal: NzModalService, private workflowService: WorkflowService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -163,6 +164,7 @@ export class ResumeOrderModalComponent {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
       this.workflow.configuration = {instructions: res.workflow.instructions};
+      this.cdr.detectChanges();
       this.checkPositions();
       const elementId = this.order?.positionString;
       setTimeout(() => {

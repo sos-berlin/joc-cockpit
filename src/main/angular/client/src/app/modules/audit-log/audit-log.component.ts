@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -208,7 +208,8 @@ export class SearchComponent {
 @Component({
   standalone: false,
   selector: 'app-audit-log',
-  templateUrl: './audit-log.component.html'
+  templateUrl: './audit-log.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditLogComponent {
   objectType = 'AUDITLOG';
@@ -241,7 +242,7 @@ export class AuditLogComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
               private translate: TranslateService, private toasterService: ToastrService, private excelService: ExcelService, private router: Router,
-              private orderPipe: OrderPipe) {
+              private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -333,6 +334,10 @@ export class AuditLogComponent {
       obj.dateTo = toDate;
     }
     return obj;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -498,10 +503,12 @@ export class AuditLogComponent {
           });
         }
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.searchInResult();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -529,10 +536,12 @@ export class AuditLogComponent {
 
         this.loginHistory = res.loginHistoryItems
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.searchInResult();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -904,8 +913,12 @@ export class AuditLogComponent {
         res.auditLog = this.orderPipe.transform(res.auditLog, this.adtLog.filter.sortBy, this.adtLog.reverse);
         this.auditLogs = res.auditLog;
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+      }, error: () => {
+        this.isLoaded = true;
+        this.cdr.markForCheck();
+      }
     });
   }
 

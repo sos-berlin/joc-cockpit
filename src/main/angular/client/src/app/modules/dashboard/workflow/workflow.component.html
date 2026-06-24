@@ -1,6 +1,6 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.workflows
+    <h3 >{{ 'dashboard.label.workflows' | translate }}
       @if (preferences.showHelpPages) {
         <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
@@ -13,12 +13,12 @@
           <div [ngStyle]="{'width': synchronized+'%'}" class="plan-overview bg-finished">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
               <a (click)="navigate(1)" class="nav-link w-full">
-                <div class="show-inline block-ellipsis-job" translate>dashboard.label.synchronized</div>
+                <div class="show-inline block-ellipsis-job" >{{ 'dashboard.label.synchronized' | translate }}</div>
                 - {{ synchronized | noRoundNumber:2 }} %
               </a>
             </label>
             <ng-template #tooltipTemplate1>
-              <div translate>dashboard.label.synchronized</div>
+              <div >{{ 'dashboard.label.synchronized' | translate }}</div>
               <div>{{(synchronized * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
             </ng-template>
           </div>
@@ -27,12 +27,12 @@
           <div [ngStyle]="{width: outstanding+'%'}" class="plan-overview bg-mangenta">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
               <a (click)="navigate(2)" class="nav-link w-full">
-                <div class="show-inline block-ellipsis-job" translate>dashboard.label.outstanding</div>
+                <div class="show-inline block-ellipsis-job" >{{ 'dashboard.label.outstanding' | translate }}</div>
                 - {{outstanding | noRoundNumber:2 }} %
               </a>
             </label>
             <ng-template #tooltipTemplate2>
-              <div translate>dashboard.label.outstanding</div>
+              <div >{{ 'dashboard.label.outstanding' | translate }}</div>
               <div>{{(outstanding * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
             </ng-template>
           </div>
@@ -41,12 +41,12 @@
           <div [ngStyle]="{width: suspended+'%'}" class="plan-overview bg-orange">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
               <a (click)="navigate(3)" class="nav-link w-full">
-                <div class="show-inline block-ellipsis-job" translate>dashboard.label.suspended</div>
+                <div class="show-inline block-ellipsis-job" >{{ 'dashboard.label.suspended' | translate }}</div>
                 - {{suspended | noRoundNumber:2 }} %
               </a>
             </label>
             <ng-template #tooltipTemplate3>
-              <div translate>dashboard.label.suspended</div>
+              <div >{{ 'dashboard.label.suspended' | translate }}</div>
               <div>{{(suspended * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
             </ng-template>
           </div>
@@ -55,12 +55,12 @@
           <div [ngStyle]="{width: notSynchronized+'%'}" class="plan-overview bg-light-orange">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
               <a (click)="navigate(4)" class="nav-link w-full">
-                <div class="show-inline block-ellipsis-job" translate>dashboard.label.notSynchronized</div>
+                <div class="show-inline block-ellipsis-job" >{{ 'dashboard.label.notSynchronized' | translate }}</div>
                 - {{notSynchronized | noRoundNumber:2 }} %
               </a>
             </label>
             <ng-template #tooltipTemplate4>
-              <div translate>dashboard.label.notSynchronized</div>
+              <div >{{ 'dashboard.label.notSynchronized' | translate }}</div>
               <div>{{(notSynchronized * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
             </ng-template>
           </div>

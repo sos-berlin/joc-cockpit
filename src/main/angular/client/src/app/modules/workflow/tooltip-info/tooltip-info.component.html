@@ -4,7 +4,7 @@
       @if (workflow.info.notConfirmedAgentNames && workflow.info.notConfirmedAgentNames.length > 0) {
         <div>
           <div class="p-l-sm m-t-xs">
-            <span translate> workflow.label.outstandingAgents </span>:
+            <span >{{ 'workflow.label.outstandingAgents' | translate }}</span>:
             <span class="_600"> {{workflow.info.notConfirmedAgentNames.length}}</span>
           </div>
           @for (agent of workflow.info.notConfirmedAgentNames; track agent) {

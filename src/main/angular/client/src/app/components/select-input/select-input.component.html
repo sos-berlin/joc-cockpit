@@ -24,7 +24,7 @@
   @if (type.invalid && (type.dirty || type.touched)) {
     <div class="text-danger help-block">
       @if (type.errors['required']) {
-        <div translate>common.message.requiredError</div>
+        <div >{{ 'common.message.requiredError' | translate }}</div>
       }
     </div>
   }

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-history-summary',
-  templateUrl: './history-summary.component.html'
+  templateUrl: './history-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistorySummaryComponent {
   orderSummary: any;
@@ -23,7 +24,7 @@ export class HistorySummaryComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, private coreService: CoreService,
-              private router: Router, private dataService: DataService, private modal: NzModalService) {
+              private router: Router, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -71,6 +72,10 @@ export class HistorySummaryComponent {
     }
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
@@ -84,9 +89,11 @@ export class HistorySummaryComponent {
       next: (res: any) => {
         this.orderSummary = res.orders || {};
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.notAuthenticate1 = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -100,6 +107,7 @@ export class HistorySummaryComponent {
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
       this.orderSummary = res.orders || {};
+      this.cdr.markForCheck();
     });
   }
 
@@ -112,9 +120,11 @@ export class HistorySummaryComponent {
       next: (res: any) => {
         this.taskSummary = res.jobs;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.notAuthenticate2 = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -126,6 +136,7 @@ export class HistorySummaryComponent {
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
       this.taskSummary = res.jobs;
+      this.cdr.markForCheck();
     });
   }
 

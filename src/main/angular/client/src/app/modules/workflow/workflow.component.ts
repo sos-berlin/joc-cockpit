@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -77,6 +77,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -120,7 +121,7 @@ export class SearchComponent {
   selectedAvailabilityStatuses: string[] = [];
   selectedJobAvailabilityStatuses: string[] = [];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
 ngOnInit(): void {
@@ -165,6 +166,7 @@ ngOnInit(): void {
       }
     }
   });
+  this.cdr.markForCheck();
 }
 
   private getFolderTree(): void {
@@ -181,6 +183,7 @@ ngOnInit(): void {
         if (this.folders.length > 0) {
           this.folders[0].expanded = true;
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -717,7 +720,8 @@ export class SingleWorkflowComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  templateUrl: './workflow.component.html'
+  templateUrl: './workflow.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowComponent {
   isLoading = false;
@@ -841,6 +845,10 @@ export class WorkflowComponent {
     this.workflowFilters = this.coreService.getWorkflowTab();
     this.sideView = this.coreService.getSideView();
     this.init();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {
@@ -1207,6 +1215,7 @@ export class WorkflowComponent {
             this.expandTreeNode(this.selectedFiltered.paths);
           }
           this.isLoading = true;
+          this.cdr.markForCheck();
           if (this.tree.length && !reload) {
             if (this.workflowFilters.tagType === 'folders') {
               this.loadWorkflow();
@@ -1222,7 +1231,7 @@ export class WorkflowComponent {
           if (!isFound) {
             this.workflowFilters.expandedKeys.push('/');
           }
-        }, error: () => this.isLoading = true
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -1374,6 +1383,7 @@ export class WorkflowComponent {
         this.workflowFilters.expandedObjects = [];
         this.workflowFilters.mapObj = new Map();
         this.loading = false;
+        this.cdr.markForCheck();
         this.workflows = res.workflows;
         this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         this.searchInResult();
@@ -1399,7 +1409,7 @@ export class WorkflowComponent {
           this.traverseTreeForSearchData();
         }
         this.updatePanelHeight();
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 

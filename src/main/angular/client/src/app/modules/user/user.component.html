@@ -26,34 +26,34 @@
     <div class="row m-t-sm">
       <div class="col-sm-12">
         <div class="box p-a p-b-md">
-          <h5 translate>profile.label.userDetails</h5>
+          <h5 >{{ 'profile.label.userDetails' | translate }}</h5>
           <div class="row m-t">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate>profile.label.userName</span></div>
+            <div class="col-md-4 col-lg-3"><span class="text-dark" >{{ 'profile.label.userName' | translate }}</span></div>
             <div class="col-md-8 col-lg-9">
               <span [innerHtml]="authService.currentUserData | decodeSpace" class="text-black-lt"></span>
             </div>
           </div>
           @if (identityServiceType === 'JOC') {
             <div class="row m-t">
-              <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.label.password</span></div>
+              <div class="col-md-4 col-lg-3"><span class="text-dark" >{{ 'user.label.password' | translate }}</span></div>
               <div class="col-md-8 col-lg-9">
                 <a (click)="changePassword()" class="text-u-l text-hover-primary"
-                   translate>profile.button.changePassword</a>
+                   >{{ 'profile.button.changePassword' | translate }}</a>
               </div>
             </div>
           }
           @if (identityServiceType == 'FIDO') {
             <div class="row m-t">
-              <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.button.addAuthenticatorDevice</span>
+              <div class="col-md-4 col-lg-3"><span class="text-dark" >{{ 'user.button.addAuthenticatorDevice' | translate }}</span>
               </div>
               <div class="col-md-8 col-lg-9">
                 <a (click)="addDevice()" class="text-u-l text-hover-primary"
-                   translate><i class="fa fa-plus"></i></a>
+                  ><i class="fa fa-plus"></i></a>
               </div>
             </div>
           }
           <hr>
-          <h5 translate>profile.label.roles</h5>
+          <h5 >{{ 'profile.label.roles' | translate }}</h5>
           <div class="row m-t-sm">
             <div class="col-sm-6">
               @for (role of permission.roles; track role) {
@@ -64,7 +64,7 @@
             </div>
           </div>
           <hr>
-          <nz-tabset (nzSelectChange)="tabChange($event)">
+          <nz-tabs (nzSelectChange)="tabChange($event)">
             <nz-tab [nzTitle]="tabTitle1">
               <ng-template #tabTitle1>
                 {{ 'profile.label.preferences' | translate }}
@@ -79,7 +79,7 @@
               </ng-template>
               <div class="m-l-12 p-b-xs">
                 <div class="row">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.language' | translate }}</div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="setLocale()" [attributeName]="'locale'" [classNames]="'w-xl'"
                                       [listArray]="coreService.locales" [name]="'language'" [object]="preferences"
@@ -87,7 +87,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.timeZone</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.timeZone' | translate }}</div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'zone'" [classNames]="'w-xl'"
                                       [extraLabelText]="'local '" [isSearchable]="true" [ignoreTranslate]="true"
@@ -96,7 +96,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.dateTimeFormat
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.dateTimeFormat' | translate }}
                   </div>
                   <div class="col-md-8 col-lg-9">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'dateFormat'" [classNames]="'w-xl'"
@@ -112,8 +112,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.maxNumberOfHistoryEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >
+                    {{ 'profile.label.maxNumberOfHistoryEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration(isGroupBtnActive)" [(ngModel)]="preferences.maxRecords" [nzMin]="1" [nzStep]="5"
@@ -122,13 +122,13 @@
                       <i (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
                     }
                     @if (!isGroupBtnActive) {
-                      <a (click)="groupLimit()" class="text-hover-primary p-l-sm" translate>profile.button.groupLimit</a>
+                      <a (click)="groupLimit()" class="text-hover-primary p-l-sm" >{{ 'profile.button.groupLimit' | translate }}</a>
                     }
                   </div>
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfAuditLogEntries
+                       >{{ 'profile.label.maxNumberOfAuditLogEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -145,7 +145,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfNotificationEntries
+                       >{{ 'profile.label.maxNumberOfNotificationEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -162,7 +162,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfOverviewEntries
+                       >{{ 'profile.label.maxNumberOfOverviewEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -179,7 +179,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfDailyPlanEntries
+                       >{{ 'profile.label.maxNumberOfDailyPlanEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -196,7 +196,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfWorkflowEntries
+                       >{{ 'profile.label.maxNumberOfWorkflowEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -213,7 +213,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfFileTransferEntries
+                       >{{ 'profile.label.maxNumberOfFileTransferEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -230,7 +230,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfResourceLockEntries
+                       >{{ 'profile.label.maxNumberOfResourceLockEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -247,7 +247,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfNoticeBoardEntries
+                       >{{ 'profile.label.maxNumberOfNoticeBoardEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     @if (!isGroupBtnActive) {
@@ -264,7 +264,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfHistoryEntriesPerOrder
+                       >{{ 'profile.label.maxNumberOfHistoryEntriesPerOrder' | translate }}
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerOrder" [nzMin]="1" [nzStep]="5"
@@ -273,7 +273,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfHistoryEntriesPerTask
+                       >{{ 'profile.label.maxNumberOfHistoryEntriesPerTask' | translate }}
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxHistoryPerTask" [nzMin]="1" [nzStep]="5"
@@ -282,7 +282,7 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label"
-                       translate>profile.label.maxNumberOfAuditLogPerObject
+                       >{{ 'profile.label.maxNumberOfAuditLogPerObject' | translate }}
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxAuditLogPerObject" [nzMin]="1"
@@ -291,8 +291,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.maxNumberOfFavoriteEntries
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >
+                    {{ 'profile.label.maxNumberOfFavoriteEntries' | translate }}
                   </div>
                   <div class="col-md-6">
                     <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.maxFavoriteEntries" [nzMin]="1"
@@ -301,7 +301,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.maxEntryPerPage
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.maxEntryPerPage' | translate }}
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'maxEntryPerPage'" [classNames]="'w-xl'"
@@ -312,7 +312,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.entryPerPage</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.entryPerPage' | translate }}</div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'entryPerPage'" [classNames]="'w-xl'"
                                       [listArray]="entryPerPage"
@@ -321,7 +321,7 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.theme' | translate }}</div>
                   <div class="col-md-6" style="display: flex">
                     <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
                                       [listArray]="themeArray" [object]="preferences"
@@ -337,7 +337,7 @@
                       <!-- Pending -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.pending' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[0].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -351,7 +351,7 @@
                       <!-- Scheduled -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.scheduled' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[1].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -365,7 +365,7 @@
                       <!-- In Progress -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.incomplete' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[2].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -379,7 +379,7 @@
                       <!-- Running -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.running' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[3].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -393,7 +393,7 @@
                       <!-- Suspended -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.suspended' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[4].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -409,7 +409,7 @@
                       <!-- Completed -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.completed' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[5].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -423,7 +423,7 @@
                       <!-- Prompting -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.prompting' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[6].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -437,7 +437,7 @@
                       <!-- Waiting -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.waiting' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[7].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -451,7 +451,7 @@
                       <!-- Blocked -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.blocked' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[8].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -465,7 +465,7 @@
                       <!-- Failed -->
                       <div class="col-md-2 col-sm-4">
                         <div class="row">
-                          <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
+                          <div class="col-4 text-dark form-control-label" >{{ 'common.label.failed' | translate }}</div>
                           <div class="col-8" style="position: relative;">
                             <input [(ngModel)]="orderStateColors[9].color"  class="form-control w-sm color-input" type="text"
                                    placeholder="{{'profile.label.enterColor' | translate}}">
@@ -477,13 +477,13 @@
                       </div>
                     </div>
 
-                    <a (click)="resetDefault()" class="text-u-l rev" translate>profile.label.resetDefault</a>
+                    <a (click)="resetDefault()" class="text-u-l rev" >{{ 'profile.label.resetDefault' | translate }}</a>
                   </div>
                 }
 
                 @if (this.preferences.theme === 'light') {
                   <div class="row m-t">
-                    <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
+                    <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.menuBarTheme' | translate }}</div>
                     <div class="col-md-6">
                       <app-select-input (modelChange)="changeMenuTheme()" [attributeName]="'headerColor'" [classNames]="'w-xl'"
                                         [isSearchable]="true"
@@ -494,72 +494,72 @@
                 }
 
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.themeTitle' | translate }}</div>
                   <div class="col-md-6">
                     <input (blur)="changeConfiguration()" [(ngModel)]="preferences.themeTitle" class="form-control w-xl"
                            type="text">
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.tabSize</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.tabSize' | translate }}</div>
                   <div class="col-md-6">
                     <input (blur)="changeConfiguration()" [(ngModel)]="preferences.tabSize" class="form-control w-xl"
                            type="text">
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showLogs</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showLogs' | translate }}</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                      <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
+                      <label nz-radio nzValue="newWindow"><span >{{ 'profile.label.newWindow' | translate }}</span></label>
+                      <label nz-radio nzValue="newTab"><span >{{ 'profile.label.newTab' | translate }}</span></label>
+                      <label nz-radio nzValue="download"><span >{{ 'profile.label.download' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showDocumentations</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showDocumentations' | translate }}</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                      <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                      <label nz-radio nzValue="newWindow"><span >{{ 'profile.label.newWindow' | translate }}</span></label>
+                      <label nz-radio nzValue="newTab"><span >{{ 'profile.label.newTab' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showSubFolderAndFolderContents</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showSubFolderAndFolderContents' | translate }}</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
-                      <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
+                      <label nz-radio nzValue="single"><span >{{ 'profile.label.folderContents' | translate }}</span></label>
                       <label nz-radio nzValue="both"><span
-                        translate>profile.label.subFolderAndFolderContents</span></label>
+                        >{{ 'profile.label.subFolderAndFolderContents' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showFilesImmediately</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showFilesImmediately' | translate }}</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showFiles"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.enableCommentsForAuditLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.enableCommentsForAuditLog' | translate }}</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
                     ></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.useTimezoneForLog</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.useTimezoneForLog' | translate }}</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.logTimezone"
                            (ngModelChange)="changeConfiguration()"></label>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.currentController
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.currentController' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.currentController"
@@ -567,8 +567,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.showTooltipInfo
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.showTooltipInfo' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showTooltipInfo"
@@ -576,8 +576,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.licenseWarningGotIt
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.licenseWarningGotIt' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
@@ -585,8 +585,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.showMoreOptions
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.showMoreOptions' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
@@ -594,8 +594,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.listVariableCollapse
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.listVariableCollapse' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
@@ -603,26 +603,26 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showView</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showView' | translate }}</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
-                      <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                      <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                      <label nz-radio nzValue="grid"><span >{{ 'profile.label.asCard' | translate }}</span></label>
+                      <label nz-radio nzValue="list"><span >{{ 'profile.label.asList' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.orderOverviewPageView</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.orderOverviewPageView' | translate }}</div>
                   <div class="col-md-6">
                     <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
-                      <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                      <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                      <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
+                      <label nz-radio nzValue="grid"><span >{{ 'profile.label.asCard' | translate }}</span></label>
+                      <label nz-radio nzValue="list"><span >{{ 'profile.label.asList' | translate }}</span></label>
+                      <label nz-radio nzValue="bulk"><span >{{ 'profile.label.asBulk' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>profile.label.showHelpPages</div>
+                  <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showHelpPages' | translate }}</div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
                            (ngModelChange)="changeConfiguration()"></label>
@@ -631,12 +631,12 @@
                 <div class="row m-t b-t p-t">
                   <div class="col-md-12">
                     <h6>
-                      <span translate>profile.label.customizeWorkflowLayout</span>
+                      <span >{{ 'profile.label.customizeWorkflowLayout' | translate }}</span>
                     </h6>
                   </div>
                 </div>
                 <div class="row m-t-xs">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.orientation</div>
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >{{ 'profile.label.orientation' | translate }}</div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'orientation'" [classNames]="'w-xl'"
                                       [isSearchable]="false"
@@ -648,8 +648,8 @@
                     The minimum distance between instructions on adjacent ranks. Default 40px
                 -->
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.interRankCellSpacing
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >
+                    {{ 'profile.label.interRankCellSpacing' | translate }}
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'interRankCellSpacing'" [classNames]="'w-xl'"
@@ -662,8 +662,8 @@
                     The minimum buffer between instructions on the same rank. Default 30px
                 -->
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>
-                    profile.label.intraCellSpacing
+                  <div class="col-md-4 col-lg-3 text-dark form-control-label" >
+                    {{ 'profile.label.intraCellSpacing' | translate }}
                   </div>
                   <div class="col-md-6">
                     <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'intraCellSpacing'" [classNames]="'w-xl'"
@@ -673,8 +673,8 @@
                   </div>
                 </div>
                 <div class="row m-t">
-                  <div class="col-md-4 col-lg-3 text-dark" translate>
-                    profile.label.edgeRounded
+                  <div class="col-md-4 col-lg-3 text-dark" >
+                    {{ 'profile.label.edgeRounded' | translate }}
                   </div>
                   <div class="col-md-6">
                     <label nz-checkbox [(ngModel)]="preferences.edgeRounded"
@@ -721,30 +721,30 @@
                         <div class="m-t-xs">
                           <div class="row">
                             <div class="col-md-2">
-                              <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
+                              <span class="text-dark _600" >{{ 'profile.keyManagement.label.keysAndCertificates' | translate }}</span>
                             </div>
                             <div class="col-md-10">
                               @if (keys.keyID || keys.keyAlgorithm) {
                                 <span>
-                                  <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
+                                  <span class="text-dark _600" style="padding-right: 10%" >{{ keys.keyID | translate }}</span>
                                   <span class="text-black-lt">
                                     <i [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"
                                        class="fa fa-check text-success"></i>&nbsp;
                                     @if (!keys.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.valid</span>
+                                      <span >{{ 'profile.keyManagement.label.valid' | translate }}</span>
                                     }
                                     @if (keys.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.expiredKey</span>
+                                      <span >{{ 'profile.keyManagement.label.expiredKey' | translate }}</span>
                                     }
                                     @if (keys.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                        <span class="m-l" >{{ 'profile.keyManagement.label.validUntil' | translate }}</span>:
                                         <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
                                       </span>
                                     }
                                     @if (!keys.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                                        <span class="m-l" >{{ 'profile.keyManagement.label.noValidDate' | translate }}</span>
                                       </span>
                                     }
                                   </span>
@@ -754,8 +754,8 @@
                                 </span>
                               }
                               @if (!keys.keyID && !keys.keyAlgorithm) {
-                                <span translate>
-                                  profile.keyManagement.message.noKeyFound
+                                <span >
+                                  {{ 'profile.keyManagement.message.noKeyFound' | translate }}
                                 </span>
                               }
                               <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
@@ -818,31 +818,31 @@
                         <div class="m-t-xs">
                           <div class="row">
                             <div class="col-md-2">
-                              <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
+                              <span class="text-dark _600" >{{ 'profile.keyManagement.label.keysAndCertificates' | translate }}</span>
                             </div>
                             <div class="col-md-10">
                               @if (certificates.keyID || certificates.keyAlgorithm) {
                                 <span>
                                   <span class="text-dark _600" style="padding-right: 10%"
-                                        translate>{{certificates.keyID}}</span>
+                                        >{{ certificates.keyID | translate }}</span>
                                   <span class="text-black-lt">
                                     <i [ngClass]="{'fa-times text-danger': certificates.isKeyExpired}"
                                        class="fa fa-check text-success"></i>&nbsp;
                                     @if (!certificates.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.valid</span>
+                                      <span >{{ 'profile.keyManagement.label.valid' | translate }}</span>
                                     }
                                     @if (certificates.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.expiredKey</span>
+                                      <span >{{ 'profile.keyManagement.label.expiredKey' | translate }}</span>
                                     }
                                     @if (certificates.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                        <span class="m-l" >{{ 'profile.keyManagement.label.validUntil' | translate }}</span>:
                                         <span class="text-muted p-l-sm">{{certificates.validUntil | stringToDate}}</span>
                                       </span>
                                     }
                                     @if (!certificates.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                                        <span class="m-l" >{{ 'profile.keyManagement.label.noValidDate' | translate }}</span>
                                       </span>
                                     }
                                   </span>
@@ -852,8 +852,8 @@
                                 </span>
                               }
                               @if (!certificates.keyID && !certificates.keyAlgorithm) {
-                                <span translate>
-                                  profile.keyManagement.message.noCAFound
+                                <span >
+                                  {{ 'profile.keyManagement.message.noCAFound' | translate }}
                                 </span>
                               }
                               @if (permission.joc.administration.certificates.manage) {
@@ -908,7 +908,7 @@
                             </div>
                           </div>
                           <div class="col-md-12">
-                            <span class="text-dark _600 font14" translate>profile.gitManagement.label.credentials</span>
+                            <span class="text-dark _600 font14" >{{ 'profile.gitManagement.label.credentials' | translate }}</span>
                           </div>
                           @if (gitCredentials.credentials) {
                             <div class="col-md-12 m-t-sm">
@@ -916,15 +916,15 @@
                                 <table class="table table-hover">
                                   <thead>
                                   <tr>
-                                    <th class="no-borders" style="width: 60px"><span translate>common.label.action</span>
+                                    <th class="no-borders" style="width: 60px"><span >{{ 'common.label.action' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitServer</span>
+                                    <th class="no-borders" style="width: 22%"><span >{{ 'profile.gitManagement.label.gitServer' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitAccount</span>
+                                    <th class="no-borders" style="width: 22%"><span >{{ 'profile.gitManagement.label.gitAccount' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.userName</span>
+                                    <th class="no-borders" style="width: 22%"><span >{{ 'profile.gitManagement.label.userName' | translate }}</span>
                                     </th>
-                                    <th class="no-borders"><span translate>profile.gitManagement.label.emailAddress</span>
+                                    <th class="no-borders"><span >{{ 'profile.gitManagement.label.emailAddress' | translate }}</span>
                                     </th>
                                   </tr>
                                   </thead>
@@ -939,10 +939,10 @@
                                             <nz-dropdown-menu #option="nzDropdownMenu">
                                               <ul nz-menu>
                                                 <li (click)="editCredential(cred)" nz-menu-item>
-                                                  <a translate>common.button.edit</a>
+                                                  <a >{{ 'common.button.edit' | translate }}</a>
                                                 </li>
                                                 <li (click)="deleteCredential(cred)" class="bg-hover-color" nz-menu-item>
-                                                  <a translate>common.button.delete</a>
+                                                  <a >{{ 'common.button.delete' | translate }}</a>
                                                 </li>
                                               </ul>
                                             </nz-dropdown-menu>
@@ -960,7 +960,7 @@
                             </div>
                           }
                           @if (!gitCredentials.credentials || gitCredentials.credentials.length === 0) {
-                            <div class="col-md-12" translate>
+                            <div class="col-md-12">
                               <div class="text-center">
                                 <app-empty-data title="profile.gitManagement.message.noCredentialFound"></app-empty-data>
                               </div>
@@ -986,7 +986,7 @@
                 }
               </ng-template>
               <div class="p-l-sm p-r-rm m-t-n-sm">
-                <nz-tabset (nzSelectChange)="innnerTabChange($event)">
+                <nz-tabs (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.agents' | translate">
                     <app-manage-favorite-list (reload)="reload($event)" [account]="authService.currentUserData" [favList]="favList"
                                               [filter]="favFilter.agent" [schedulerId]="schedulerIds"
@@ -999,10 +999,10 @@
                                               [sharedList]="sharedList"
                                               [type]="'FACET'"></app-manage-favorite-list>
                   </nz-tab>
-                </nz-tabset>
+                </nz-tabs>
               </div>
             </nz-tab>
-          </nz-tabset>
+          </nz-tabs>
         </div>
       </div>
     </div>

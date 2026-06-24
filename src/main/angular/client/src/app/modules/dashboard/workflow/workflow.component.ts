@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  templateUrl: './workflow.component.html'
+  templateUrl: './workflow.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowComponent {
   schedulerIds: any = {};
@@ -23,7 +24,7 @@ export class WorkflowComponent {
   isLoaded = false;
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private router: Router, private dataService: DataService, private modal: NzModalService) {
+              private router: Router, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -51,7 +52,8 @@ export class WorkflowComponent {
       next: (res) => {
         this.filterData(res.workflows);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

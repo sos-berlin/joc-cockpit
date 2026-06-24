@@ -7,21 +7,21 @@
             <div class="col-md-12 m-t-n-8">
               <button (click)="assignCalendar()" [disabled]="isTrash"
                       class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                      translate type="button">runtime.button.assignWorkingDayCalendar
+                      type="button">{{ 'runtime.button.assignWorkingDayCalendar' | translate }}
               </button>
               <button (click)="assignHolidayCalendar()" [disabled]="isTrash"
                       class="btn btn-sm btn-grey m-r-sm m-t-sm"
-                      translate type="button">runtime.button.assignNonWorkingDayCalendar
+                      type="button">{{ 'runtime.button.assignNonWorkingDayCalendar' | translate }}
               </button>
               <button (click)="planFromRuntime()"
                       [disabled]="!canShowPreview()"
                       [nz-tooltip]="hasUnreleasedCalendars() ? ('runtime.message.calendarNotReleased' | translate) : (!calendars || calendars.length === 0 ? ('runtime.message.noCalendarsAssigned' | translate) : null)"
                       class="btn btn-sm btn-grey m-t-sm"
-                      translate type="button">runtime.button.showYearView
+                      type="button">{{ 'runtime.button.showYearView' | translate }}
               </button>
             </div>
             <div class="row col-md-12 m-t m-b-sm">
-              <div class="col-sm-3 form-control-label" translate>runtime.label.timeZone</div>
+              <div class="col-sm-3 form-control-label" >{{ 'runtime.label.timeZone' | translate }}</div>
               <div class="col-sm-6">
                 <nz-select [(ngModel)]="timeZone" [nzDisabled]="isTrash" name="timeZone" nzAllowClear nzShowSearch>
                   @for (zone of zones; track zone) {
@@ -37,9 +37,9 @@
                     <table class="table table-hover table-bordered ">
                       <thead>
                       <tr>
-                        <th><span translate>runtime.label.listOfCalendars</span></th>
-                        <th><span translate>runtime.label.period</span></th>
-                        <th><span translate>runtime.label.restrictions</span></th>
+                        <th><span >{{ 'runtime.label.listOfCalendars' | translate }}</span></th>
+                        <th><span >{{ 'runtime.label.period' | translate }}</span></th>
+                        <th><span >{{ 'runtime.label.restrictions' | translate }}</span></th>
                       </tr>
                       </thead>
                       <tbody>
@@ -137,7 +137,7 @@
                   {{calendar.calendarName }}
                 </label>
                   <span class="text-muted text-xs m-l-sm">
-                    <i class="fa fa-info-circle m-r-xs"></i> <span translate>runtime.label.usingReleasedCalendars</span>
+                    <i class="fa fa-info-circle m-r-xs"></i> <span >{{ 'runtime.label.usingReleasedCalendars' | translate }}</span>
                   </span>
               }
               <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
@@ -145,7 +145,7 @@
                   <a (click)="viewCalObj.calendarView = 'month';getPlan()"
                      [ngClass]="{'active' : viewCalObj.calendarView=='month'}"
                      class="nav-link">
-                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.monthly</span>
+                    <span class="nav-text text-dark p-b-sm" >{{ 'runtime.label.monthly' | translate }}</span>
                   </a>
                 </li>
                 <li class="nav-item dropdown-separator">
@@ -155,7 +155,7 @@
                   <a (click)="viewCalObj.calendarView = 'year';getPlan()"
                      [ngClass]="{'active' : viewCalObj.calendarView=='year'}"
                      class="nav-link">
-                    <span class="nav-text text-dark p-b-sm" translate>runtime.label.yearly</span>
+                    <span class="nav-text text-dark p-b-sm" >{{ 'runtime.label.yearly' | translate }}</span>
                   </a>
                 </li>
               </ul>
@@ -171,7 +171,7 @@
     </div>
     @if (editor.showPlanned) {
       <div class="modal-footer border-top-0 text-left">
-        <button (click)="back()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
+        <button (click)="back()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.close' | translate }}</button>
       </div>
     }
   </form>

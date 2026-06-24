@@ -10,7 +10,7 @@
                   class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b >{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -32,11 +32,11 @@
                 <span [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'"
                       class="badge m-r-12">
                     @if (calendar.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span >{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!calendar.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span >{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
                       </span>
                   }
@@ -46,10 +46,10 @@
                 <span [ngClass]="!data.released ? 'badge-danger':'badge-success'"
                       class="badge">
                     @if (!data.released) {
-                      <span translate>inventory.label.notReleased</span>
+                      <span >{{ 'inventory.label.notReleased' | translate }}</span>
                     }
                   @if (data.released) {
-                    <span translate>inventory.label.released</span>
+                    <span >{{ 'inventory.label.released' | translate }}</span>
                   }
                   </span>
               }
@@ -58,7 +58,7 @@
                   (click)="release()"
                   [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.release</span>
+                  <span >{{ 'inventory.button.release' | translate }}</span>
                 </button>
               }
             </div>
@@ -72,7 +72,7 @@
                      class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
 
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.name' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -84,10 +84,10 @@
                     @if (cname.invalid && (cname.dirty || cname.touched)) {
                       <div class="text-danger help-block">
                         @if (cname.errors['required']) {
-                          <div translate>common.message.requiredError</div>
+                          <div >{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (cname.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div >{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -96,7 +96,7 @@
                 <div class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
 
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                            autocomplete="off" class="form-control"
@@ -107,7 +107,7 @@
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
 
-                           class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                           class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.documentation' | translate }}</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
                       <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
                                            [documentationTree]="documentationTree"></app-select-document>
@@ -117,7 +117,7 @@
                 <div class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
 
-                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.type' | translate }}</label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
                                       [isSelectDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -128,7 +128,7 @@
                 <div class="form-group row">
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
 
-                         class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
+                         class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'runtime.label.validFrom' | translate }}</label>
                   <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
                     <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
                                     [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzFormat]="dateFormat"
@@ -137,7 +137,7 @@
                   </div>
                   <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
 
-                         class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
+                         class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" >{{ 'runtime.label.validTo' | translate }}</label>
                   <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
                        class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
                     <nz-date-picker #to="ngModel" [(ngModel)]="calendar.configuration.to" (ngModelChange)="saveJSON()"
@@ -151,26 +151,23 @@
               <div class="col-lg-12 col-xl-11 col-xxl-9">
                 <div class="btn-group">
                   <button (click)="changeFrequencyType('INCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
-                          class="btn btn-grey btn-sm button-group-ellipsis"
-                          translate type="button">
-                    runtime.button.includedFrequencies
+                          class="btn btn-grey btn-sm button-group-ellipsis" type="button">
+                    {{ 'runtime.button.includedFrequencies' | translate }}
                   </button>
                   <button (click)="changeFrequencyType('EXCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
-                          class="btn btn-grey btn-sm button-group-ellipsis"
-                          translate type="button">
-                    runtime.button.excludedFrequencies
+                          class="btn btn-grey btn-sm button-group-ellipsis" type="button">
+                    {{ 'runtime.button.excludedFrequencies' | translate }}
                   </button>
                 </div>
                 <button (click)="createNewFrequency()" [disabled]="isTrash || !permission.joc.inventory.manage"
-                        class="btn btn-sm pull-right btn-grey" translate type="button">
+                        class="btn btn-sm pull-right btn-grey" type="button">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>runtime.button.addNewFrequency</span>
+                  <span >{{ 'runtime.button.addNewFrequency' | translate }}</span>
                 </button>
                 <button (click)="showYearView()" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
-                        class="btn btn-sm pull-right btn-grey m-r-12 m-b"
-                        translate type="button">
+                        class="btn btn-sm pull-right btn-grey m-r-12 m-b" type="button">
                   <i class="fa fa-television"></i>&nbsp;
-                  <span translate>runtime.button.showYearView</span>
+                  <span >{{ 'runtime.button.showYearView' | translate }}</span>
                 </button>
               </div>
               <div class="col-lg-12 col-xl-11 col-xxl-9 max-ht-n-554">
@@ -178,10 +175,10 @@
                   <table class="table table-hover table-bordered ">
                     <thead>
                     <tr>
-                      <th><span translate>runtime.label.listOfFrequencies</span></th>
-                      <th><span translate>runtime.label.validFrom</span></th>
-                      <th><span translate>runtime.label.validTo</span></th>
-                      <th style="width: 80px"><span translate>runtime.label.action</span></th>
+                      <th><span >{{ 'runtime.label.listOfFrequencies' | translate }}</span></th>
+                      <th><span >{{ 'runtime.label.validFrom' | translate }}</span></th>
+                      <th><span >{{ 'runtime.label.validTo' | translate }}</span></th>
+                      <th style="width: 80px"><span >{{ 'runtime.label.action' | translate }}</span></th>
                     </tr>
                     </thead>
                     <tbody>

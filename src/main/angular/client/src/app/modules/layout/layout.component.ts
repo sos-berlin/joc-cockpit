@@ -1,4 +1,4 @@
-import {Component, HostListener, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, NgZone, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -20,10 +20,11 @@ declare const $: any;
   standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
   preferences: any = {};
-  schedulerIds: any;
+  schedulerIds: any = {};
   permission: any;
   remainingSessionTime = '';
   interval: any;
@@ -57,7 +58,8 @@ export class LayoutComponent {
 
   constructor(public coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService, private popoutService: PopupService,
-              private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService) {
+              private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService,
+              private cdr: ChangeDetectorRef, private ngZone: NgZone) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -225,6 +227,7 @@ export class LayoutComponent {
       if (differenceInTime < 0) {
         this.translate.get('license.secondWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
           this.warningMessage2 = translatedValue;
+          this.cdr.markForCheck();
         });
       } else {
         if (remainingDays == 0) {
@@ -232,6 +235,7 @@ export class LayoutComponent {
         }
         this.translate.get('license.firstWarning', {date: this.coreService.getDateByFormat(this.licenseDate, this.preferences.zone, this.preferences.dateFormat)}).subscribe(translatedValue => {
           this.warningMessage = this.coreService.convertTextToLink(translatedValue, 'mailto:sales@sos-berlin.com');
+          this.cdr.markForCheck();
         });
       }
     } else {
@@ -284,19 +288,19 @@ export class LayoutComponent {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     LayoutComponent.calculateHeight();
   }
 
-  @HostListener('window:click', ['$event'])
+  @HostListener('window:click')
   onClick(): void {
     if (!this.isLogout) {
       this.refreshSession();
     }
   }
 
-  @HostListener('window:refresh-session', ['$event'])
+  @HostListener('window:refresh-session')
   onSessionRefresh(): void {
 
     if (!this.isLogout) {
@@ -305,7 +309,7 @@ export class LayoutComponent {
   }
 
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   onWindowClose() {
     this.popoutService.closePopoutModal();
   }
@@ -372,7 +376,7 @@ export class LayoutComponent {
     $('#style-color').attr('href', './styles/' + preferences.theme + '-style.css');
     localStorage['$SOS$THEME'] = preferences.theme;
     localStorage['$SOS$LANG'] = preferences.locale;
-    this.translate.setDefaultLang(preferences.locale);
+    this.translate.setFallbackLang(preferences.locale);
     this.translate.use(preferences.locale);
     if (this.child) {
       this.child.reloadSettings();
@@ -429,25 +433,53 @@ export class LayoutComponent {
 
   private getPermissions(flag = false): void {
     if (!this.permission) {
-      this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
-        permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
-        this.authService.setPermission(permission);
-        this.authService.save();
-        this.permission = permission;
-        if (!sessionStorage['preferences']) {
-          this.ngOnInit();
-        }
-        if (this.child) {
-          this.child.reloadSettings();
-        }
-        if (flag) {
-          this.loading = true;
-        }
-        setTimeout(() => {
-          if (!this.loading) {
-            this.loadInit(false);
+      this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe({
+        next: (permission: any) => {
+          permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
+          this.authService.setPermission(permission);
+          this.authService.save();
+          this.permission = permission;
+          this.cdr.markForCheck();
+          if (!sessionStorage['preferences']) {
+            const preferences: any = {};
+            this.getDefaultPreferences(preferences);
+            sessionStorage['preferences'] = JSON.stringify(preferences);
           }
-        }, 10);
+          if (this.child) {
+            this.child.reloadSettings();
+          }
+          if (flag) {
+            this.ngZone.run(() => {
+              this.loading = true;
+              this.cdr.detectChanges();
+              setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+            });
+          }
+          setTimeout(() => {
+            if (!this.loading) {
+              this.loadInit(false);
+            }
+          }, 10);
+        },
+        error: () => {
+          if (!sessionStorage['preferences']) {
+            const preferences: any = {};
+            this.getDefaultPreferences(preferences);
+            sessionStorage['preferences'] = JSON.stringify(preferences);
+          }
+          if (flag) {
+            this.ngZone.run(() => {
+              this.loading = true;
+              this.cdr.detectChanges();
+              setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+            });
+          }
+          setTimeout(() => {
+            if (!this.loading) {
+              this.loadInit(false);
+            }
+          }, 10);
+        }
       });
     }
   }
@@ -468,6 +500,7 @@ export class LayoutComponent {
           this.authService.setIds(res);
           this.authService.save();
           this.schedulerIds = res;
+          this.cdr.markForCheck();
           this.getComments(false, () => {
           });
         } else {
@@ -490,7 +523,11 @@ export class LayoutComponent {
             this.router.navigate(['/start-up']).then();
           });
           setTimeout(() => {
-            this.loading = true;
+            this.ngZone.run(() => {
+              this.loading = true;
+              this.cdr.detectChanges();
+              setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+            });
           }, 10);
         }
       }
@@ -506,7 +543,11 @@ export class LayoutComponent {
       }
     });
     setTimeout(() => {
-      this.loading = true;
+      this.ngZone.run(() => {
+        this.loading = true;
+        this.cdr.detectChanges();
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+      });
       this.loadInit(false, true);
     }, 10);
   }
@@ -563,7 +604,14 @@ export class LayoutComponent {
         if (!this.permission) {
           this.permission = JSON.parse(this.authService.permission) || {};
         }
-        this.loading = true;
+        if (sessionStorage['preferences']) {
+          this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+        }
+        this.ngZone.run(() => {
+          this.loading = true;
+          this.cdr.detectChanges();
+          setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+        });
       } else {
         return;
       }
@@ -654,47 +702,49 @@ export class LayoutComponent {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    this.interval = setInterval(() => {
-      if (!this.preferences || !this.preferences.zone && sessionStorage['preferences']) {
-        this.preferences = JSON.parse(sessionStorage['preferences']) || {};
-        if (sessionStorage['licenseValidUntil']) {
-          this.checkLicenseExpireDate();
-        }
-      }
-      this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
-      if (this.sessionTimeout > 0) {
-        this.count = this.count - 3;
-        const s = Math.floor((this.count) % 60);
-        const m = Math.floor((this.count / (60)) % 60);
-        const h = Math.floor((this.count / (60 * 60)) % 24);
-        const d = Math.floor(this.count / (60 * 60 * 24));
-
-        const x = m > 9 ? m : '0' + m;
-        const y = s > 9 ? s : '0' + s;
-
-        if (d === 0 && h !== 0) {
-          this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
-        } else if (d === 0 && h === 0 && m !== 0) {
-          this.remainingSessionTime = x + 'm ' + y + 's';
-        } else if (d === 0 && h === 0 && m === 0) {
-          this.remainingSessionTime = s + 's';
-        } else {
-          this.remainingSessionTime = d + 'd ' + h + 'h';
-        }
-        if (this.count <= 0) {
-          clearInterval(this.interval);
-          this.isLogout = true;
-          this.logout('timeout');
-        } else {
-          let currentTime = this.coreService.convertTimeToLocalTZ(this.preferences, new Date()).format('HH:mm:ss');
-          if (currentTime === '00:00:00' || currentTime === '00:00:01' || currentTime === '00:00:02') {
-            this.dataService.refreshUI('reload');
+    this.ngZone.runOutsideAngular(() => {
+      this.interval = setInterval(() => {
+        if (!this.preferences || !this.preferences.zone && sessionStorage['preferences']) {
+          this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+          if (sessionStorage['licenseValidUntil']) {
+            this.ngZone.run(() => this.checkLicenseExpireDate());
           }
         }
-      }
-      this.openStepGuideModal();
+        this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
+        if (this.sessionTimeout > 0) {
+          this.count = this.count - 3;
+          const s = Math.floor((this.count) % 60);
+          const m = Math.floor((this.count / (60)) % 60);
+          const h = Math.floor((this.count / (60 * 60)) % 24);
+          const d = Math.floor(this.count / (60 * 60 * 24));
 
-    }, 3000);
+          const x = m > 9 ? m : '0' + m;
+          const y = s > 9 ? s : '0' + s;
+
+          if (d === 0 && h !== 0) {
+            this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
+          } else if (d === 0 && h === 0 && m !== 0) {
+            this.remainingSessionTime = x + 'm ' + y + 's';
+          } else if (d === 0 && h === 0 && m === 0) {
+            this.remainingSessionTime = s + 's';
+          } else {
+            this.remainingSessionTime = d + 'd ' + h + 'h';
+          }
+          if (this.count <= 0) {
+            clearInterval(this.interval);
+            this.isLogout = true;
+            this.ngZone.run(() => this.logout('timeout'));
+          } else {
+            let currentTime = this.coreService.convertTimeToLocalTZ(this.preferences, new Date()).format('HH:mm:ss');
+            if (currentTime === '00:00:00' || currentTime === '00:00:01' || currentTime === '00:00:02') {
+              this.ngZone.run(() => this.dataService.refreshUI('reload'));
+            }
+          }
+        }
+        this.ngZone.run(() => this.openStepGuideModal());
+        this.cdr.detectChanges();
+      }, 3000);
+    });
   }
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {

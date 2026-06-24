@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
@@ -44,7 +44,7 @@ export class UpdateJobComponent {
   required = false;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private translate: TranslateService,
-              private workflowService: WorkflowService, private authService: AuthService) {
+              private workflowService: WorkflowService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -70,6 +70,7 @@ export class UpdateJobComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       });
     }
     if (this.scriptTree.length === 0) {
@@ -79,6 +80,7 @@ export class UpdateJobComponent {
         types: [InventoryObject.INCLUDESCRIPT]
       }).subscribe((res) => {
         this.scriptTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       });
     }
     if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
@@ -87,6 +89,7 @@ export class UpdateJobComponent {
         types: ['DOCUMENTATION']
       }).subscribe((res) => {
         this.documentationTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       });
     }
     if (this.agents.agentList.length === 0 && this.permission.joc.inventory.view) {
@@ -95,12 +98,14 @@ export class UpdateJobComponent {
           this.selectedNode.job = {};
           this.step = 2;
         }
+        this.cdr.detectChanges();
       })
     } else {
       if (this.data.onlyUpdate) {
         setTimeout(() => {
           this.selectedNode.job = {};
           this.step = 2;
+          this.cdr.detectChanges();
         }, 100);
       }
     }

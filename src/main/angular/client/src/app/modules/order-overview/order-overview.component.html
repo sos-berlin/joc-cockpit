@@ -22,7 +22,7 @@
             <div [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}" class="inline m-b-xs">
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                        nzTrigger="click" translate type="button">
+                        nzTrigger="click" type="button">
                   <span>  {{ 'filters.button.' + orderFilters.filter.dateLabel | translate}} </span>
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -31,7 +31,7 @@
                     @for (btn of dateFilterBtn; track btn) {
                       <li (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}"
                           nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
+                        <a >{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -41,13 +41,13 @@
                 @for (btn of filterBtn; track btn) {
                   <button (click)="changeStatus(btn.status)"
                           [ngClass]="{'btn-primary': orderFilters.filter.state===btn.status}"
-                          class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+                          class="btn btn-grey btn-sm button-group-ellipsis" >{{ 'common.button.' + btn.text | translate }}
                   </button>
                 }
               </div>
               <div class="btn-group m-l-12 dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
-                        nzTrigger="click" translate type="button">
+                        nzTrigger="click" type="button">
                   common.label.state
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -56,7 +56,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="changeStatus(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=== btn.status}"
                           nz-menu-item>
-                        <a translate>common.button.{{btn.text}}</a>
+                        <a >{{ 'common.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -67,7 +67,7 @@
               <div [ngClass]="{'hide': (pageView === 'bulk')}" class="btn-group dropdown">
                 <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click">
-                  <span translate>common.label.sortBy</span>
+                  <span >{{ 'common.label.sortBy' | translate }}</span>
                   <span class="text-primary">
                     @if (orderFilters.filter.sortBy ==='orderId') {
                       <span>
@@ -96,10 +96,10 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="sort('orderId')" nz-menu-item>
-                      <a translate>order.label.orderId</a>
+                      <a >{{ 'order.label.orderId' | translate }}</a>
                     </li>
                     <li (click)="sort('path')" nz-menu-item>
-                      <a translate>common.label.path</a>
+                      <a >{{ 'common.label.path' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -115,80 +115,80 @@
                 <button (click)="modifyAllStartTime()"
                         [disabled]="!object.isModifyStartTime" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-calendar"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
+                  <span class="hidden-sm-down" >{{ 'dailyPlan.button.setStartTime' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.modify) {
                 <button (click)="modifyAllOrder()"
                         [disabled]="!object.isModify" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-edit"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
+                  <span class="hidden-sm-down" >{{ 'dailyPlan.button.setParameters' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.modify) {
                 <button (click)="modifyPriority()"
                         class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-signal"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>inventory.button.modifyPriority</span>
+                  <span class="hidden-sm-down" >{{ 'inventory.button.modifyPriority' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.cancel) {
                 <button (click)="cancelAllOrder()"
                         [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
-                  <span class="hidden-sm-down" translate>order.button.cancel</span></button>
+                  <span class="hidden-sm-down" >{{ 'order.button.cancel' | translate }}</span></button>
               }
               @if (permission.currentController.orders.cancel) {
                 <button (click)="cancelAllOrder(true)"
                         [disabled]="!object.isCancelWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
+                  <span class="hidden-sm-down" >{{ 'order.button.cancelAndKillTask' | translate }}</span>
                 </button>
               }
               @if (object.isTerminate && permission.currentController.orders) {
                 <button (click)="terminateAllOrder()"
                         class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
-                  <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
+                  <span class="hidden-sm-down" >{{ 'order.button.leaveWorkflow' | translate }}</span></button>
               }
               @if (permission.currentController.orders.suspendResume) {
                 <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-stop p-r-xs"></i>
-                  <span class="hidden-sm-down" translate>order.button.suspend</span>
+                  <span class="hidden-sm-down" >{{ 'order.button.suspend' | translate }}</span>
                 </button>
               }
               <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="suspendAllOrder(false, false)" nz-menu-item [nzDisabled]="!object.isSuspendSoftly">
-                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                    <span class="hidden-sm-down" translate>order.button.normal</span>
+                    <span class="hidden-sm-down" >{{ 'order.button.suspend' | translate }}</span>&nbsp;
+                    <span class="hidden-sm-down" >{{ 'order.button.normal' | translate }}</span>
                   </li>
                   <li (click)="suspendAllOrder(false, true)" nz-menu-item [nzDisabled]="!object.isSuspendReset">
-                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                    <span class="hidden-sm-down" translate>order.button.reset</span>
+                    <span class="hidden-sm-down" >{{ 'order.button.suspend' | translate }}</span>&nbsp;
+                    <span class="hidden-sm-down" >{{ 'order.button.reset' | translate }}</span>
                   </li>
                   <li (click)="suspendAllOrder(true, true)" nz-menu-item [nzDisabled]="!object.isSuspendWithResetAndKill">
-                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                    <span class="hidden-sm-down" translate>order.button.forceReset</span>
+                    <span class="hidden-sm-down" >{{ 'order.button.suspend' | translate }}</span>&nbsp;
+                    <span class="hidden-sm-down" >{{ 'order.button.forceReset' | translate }}</span>
                   </li>
                   <li (click)="suspendAllOrder(true, false)" nz-menu-item [nzDisabled]="!object.isSuspendWithKill">
-                    <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
+                    <span class="hidden-sm-down" >{{ 'order.button.suspendAndKillTask' | translate }}</span>
                   </li>
                 </ul>
               </nz-dropdown-menu>
               @if (permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed) {
                 <button (click)="resumeAllOrder()"
                         [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
-                  class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
+                  class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" >{{ 'order.button.resume' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.modify && object.isContinue) {
                 <button (click)="continueAllOrder()"
                         class="btn btn-grey btn-sm m-l-12"><i
-                  class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.continue</span>
+                  class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" >{{ 'order.button.continue' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.confirm && object.isPrompt) {
                 <button (click)="confirmAllOrder()"
                         class="btn btn-grey btn-sm m-l-12"><i
-                  class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
+                  class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" >{{ 'order.button.confirm' | translate }}</span>
                 </button>
               }
             </div>
@@ -237,17 +237,17 @@
                   <table class="w-full order-table-panel table-hover">
                     <thead>
                     <tr>
-                      <th style="width: 20%"><span translate>order.treeView.label.state</span></th>
+                      <th style="width: 20%"><span >{{ 'order.treeView.label.state' | translate }}</span></th>
                       <th></th>
-                      <th style="width: 20%"><span translate>order.treeView.label.numberOfOrders</span></th>
+                      <th style="width: 20%"><span >{{ 'order.treeView.label.numberOfOrders' | translate }}</span></th>
                       <th></th>
-                      <th style="width: 20%"><span translate>order.treeView.label.allowedTransaction</span></th>
-                      <th style="width: 10%"><span translate>order.treeView.label.action</span></th>
+                      <th style="width: 20%"><span >{{ 'order.treeView.label.allowedTransaction' | translate }}</span></th>
+                      <th style="width: 10%"><span >{{ 'order.treeView.label.action' | translate }}</span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr class="all">
-                      <td><span class="_400" translate>order.label.allOrders</span></td>
+                      <td><span class="_400" >{{ 'order.label.allOrders' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td><span
                         class="_600">{{(orderOverview.pending || 0) + (orderOverview.inProgress || 0) + (orderOverview.running || 0) + (orderOverview.suspended || 0) + (orderOverview.calling || 0)
@@ -261,7 +261,7 @@
                       <td></td>
                     </tr>
                     <tr class="pending">
-                      <td><span class="_400" translate>common.label.pending</span></td>
+                      <td><span class="_400" >{{ 'common.label.pending' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.pending}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -274,13 +274,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('pending', 'PENDING')" [disabled]="!orderOverviewAction.pending"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="scheduled">
-                      <td><span class="_400" translate>common.label.scheduled</span></td>
+                      <td><span class="_400" >{{ 'common.label.scheduled' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.scheduled}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -293,13 +293,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('scheduled', 'SCHEDULED')" [disabled]="!orderOverviewAction.scheduled"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="in-progress">
-                      <td><span class="_400" translate>common.label.incomplete</span></td>
+                      <td><span class="_400" >{{ 'common.label.incomplete' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.inProgress}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -312,13 +312,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('inProgress', 'INPROGRESS')" [disabled]="!orderOverviewAction.inProgress"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="running">
-                      <td><span class="_400" translate>common.label.running</span></td>
+                      <td><span class="_400" >{{ 'common.label.running' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.running}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -331,13 +331,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('running', 'RUNNING')" [disabled]="!orderOverviewAction.running"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="suspend">
-                      <td><span class="_400" translate>common.label.suspended</span></td>
+                      <td><span class="_400" >{{ 'common.label.suspended' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.suspended}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -350,13 +350,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('suspended', 'SUSPENDED')" [disabled]="!orderOverviewAction.suspended"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="prompting">
-                      <td><span class="_400" translate>common.label.prompting</span></td>
+                      <td><span class="_400" >{{ 'common.label.prompting' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.prompting}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -368,13 +368,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('prompting', 'PROMPTING')" [disabled]="!orderOverviewAction.prompting"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="waiting">
-                      <td><span class="_400" translate>common.label.waiting</span></td>
+                      <td><span class="_400" >{{ 'common.label.waiting' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.waiting}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -386,13 +386,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('waiting', 'WAITING')" [disabled]="!orderOverviewAction.waiting"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="blocked">
-                      <td><span class="_400" translate>common.label.blocked</span></td>
+                      <td><span class="_400" >{{ 'common.label.blocked' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td><span class="_600">{{orderOverview.blocked}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -404,13 +404,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('blocked', 'BLOCKED')" [disabled]="!orderOverviewAction.blocked"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="failed">
-                      <td><span class="_400" translate>common.label.failed</span></td>
+                      <td><span class="_400" >{{ 'common.label.failed' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.failed}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -422,13 +422,13 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('failed', 'FAILED')" [disabled]="!orderOverviewAction.failed"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
                     <tr class="terminate">
-                      <td><span class="_400" translate>common.label.completed</span></td>
+                      <td><span class="_400" >{{ 'common.label.completed' | translate }}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
                       <td class="count"><span class="_600">{{orderOverview.terminated}}</span></td>
                       <td><span class="fa fa-long-arrow-right"></span></td>
@@ -439,8 +439,8 @@
                       </td>
                       <td>
                         <button (click)="submitTransaction('completed', 'COMPLETED')" [disabled]="!orderOverviewAction.completed"
-                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                                type="button">common.button.submit
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs"
+                                type="button">{{'common.button.submit' | translate}}
                         </button>
                       </td>
                     </tr>
@@ -456,7 +456,7 @@
             <div class="row">
               <div class="col-lg-2 col-sm-3 p-r-xs">
                 <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
-                  <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="orderFilters.selectedIndex">
+                  <nz-tabs class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="orderFilters.selectedIndex">
                     <nz-tab (nzClick)="switchToTagging('workflowTags');orderFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
                       <ng-template #workflowTagsTitle>
                         <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
@@ -467,7 +467,7 @@
                         <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
                       </ng-template>
                     </nz-tab>
-                  </nz-tabset>
+                  </nz-tabs>
                   @if (orderFilters.tagType === 'workflowTags') {
                     <div>
                       <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm order-overview-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
@@ -637,7 +637,7 @@
                           </button>
                           @if (orderFilters.filter.state === 'INPROGRESS' || orderFilters.filter.state === 'FAILED'
                           || orderFilters.filter.state === 'RUNNING' || orderFilters.filter.state === 'COMPLETED') {
-                            <label class="pos-rel m-r-12 t-6 hidden-btn-group1" translate>inventory.search.label.from</label>
+                            <label class="pos-rel m-r-12 t-6 hidden-btn-group1" >{{ 'inventory.search.label.from' | translate }}</label>
                             @if (orderFilters.isRelative) {
                               <div [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                                    class="pos-rel t-1">
@@ -656,7 +656,7 @@
                                                 nzShowTime></nz-date-picker>
                               </div>
                             }
-                            <label class="pos-rel t-6 p-l hidden-btn-group1" translate>inventory.search.label.to</label>
+                            <label class="pos-rel t-6 p-l hidden-btn-group1" >{{ 'inventory.search.label.to' | translate }}</label>
                             @if (orderFilters.isRelative) {
                               <div [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}"
                                    class="pos-rel t-xxs">
@@ -677,13 +677,13 @@
                             }
                             @if (orderFilters.isRelative) {
                               <a (click)="switchToSpecificDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text" >
-                                <span translate>common.button.switchToSpecificDate</span>
+                                <span >{{ 'common.button.switchToSpecificDate' | translate }}</span>
                                 <i nz-icon nzType="swap" nzTheme="outline"></i>
                               </a>
                             }
                             @if (!orderFilters.isRelative) {
                               <a (click)="switchToRelativeDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text">
-                                <span translate>common.button.switchToRelativeDate</span>
+                                <span >{{ 'common.button.switchToRelativeDate' | translate }}</span>
                                 <i nz-icon nzType="swap" nzTheme="outline"></i>
                               </a>
                             }
@@ -730,7 +730,7 @@
                                                       [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
                                   </div>
                                   <div (mouseover)="getObstacles(order)" class="text-sm text-left text-muted p-t-sm">
-                                    <span translate>order.label.state </span>:
+                                    <span >{{ 'order.label.state' | translate }}</span>:
                                     <span
                                       [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"
                                       [ngClass]="coreService.getColor(order.state.severity, 'text')"
@@ -745,7 +745,7 @@
                                   </div>
                                   <ng-template #tooltipTemplate1>
                                     <div class="p-l-sm">
-                                      <span translate> order.label.state </span>:
+                                      <span >{{ 'order.label.state' | translate }}</span>:
                                       <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
                                             class="_600"> {{order.state._text |  translate}}</span>
                                       @if (order.marked) {
@@ -755,13 +755,13 @@
                                     </div>
                                     @if (order.state._reason) {
                                       <div class="p-l-sm">
-                                        <span translate> common.label.comment </span>:
+                                        <span >{{ 'common.label.comment' | translate }}</span>:
                                         <span class="_600"> {{order.state._reason}}</span>
                                       </div>
                                     }
                                     @if (order.question) {
                                       <div class="p-l-sm">
-                                        <span translate> workflow.label.prompt </span>:
+                                        <span >{{ 'workflow.label.prompt' | translate }}</span>:
                                         <span class="_600"> {{order.question}}</span>
                                       </div>
                                     }
@@ -769,7 +769,7 @@
                                       <div class="p-l-sm">
                                         @for (obstacle of order.obstacles; track obstacle) {
                                           <div>
-                                            <span translate> {{obstacle.type | translate}} </span>
+                                            <span>{{obstacle.type | translate}}</span>
                                             @if (obstacle.until) {
                                               <span class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
                                             }
@@ -779,18 +779,18 @@
                                     }
                                     @if (order.lastOutcome) {
                                       <div class="p-l-sm">
-                                        <span translate> order.label.lastOutcome </span>:
+                                        <span >{{ 'order.label.lastOutcome' | translate }}</span>:
                                         <span class="_600">{{order.lastOutcome.TYPE}}</span>
                                       </div>
                                     }
                                     @if (!order.cyclicOrder) {
                                       <div class="p-l-sm">
-                                        <span translate> order.label.scheduledFor </span>:
+                                        <span >{{ 'order.label.scheduledFor' | translate }}</span>:
                                         @if (!order.scheduledNever) {
                                           <span class="_600">{{order.scheduledFor | stringToDate}}</span>
                                         }
                                         @if (order.scheduledNever) {
-                                          <span class="_600" translate>common.label.never</span>
+                                          <span class="_600" >{{ 'common.label.never' | translate }}</span>
                                         }
                                       </div>
                                     }
@@ -806,54 +806,54 @@
                                     }
                                     @if (order.cyclicOrder) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        <div class="_600 m-b-xs" >{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.begin' | translate }}</span>:
                                         {{order.cyclicOrder.firstStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.end' | translate }}</span>:
                                         {{order.cyclicOrder.lastStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.label.orders' | translate }}</span>:
                                         {{order.cyclicOrder.count}}
                                       </div>
                                     }
                                     @if (order.cycleState) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+                                        <div class="_600 m-b-xs" >{{ 'order.cycleState.label.cycleState' | translate }}</div>
                                         @if (order.cycleState.since) {
                                           <span>
-                                        <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.cycleState.label.since' | translate }}</span>:
                                             {{order.cycleState.since | stringToDate}}
                                       </span>
                                         }
                                         @if (order.cycleState.next) {
                                           <span>
-                                        <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.cycleState.label.next' | translate }}</span>:
                                             {{order.cycleState.next | stringToDate}}
                                       </span>
                                         }
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.cycleState.label.index' | translate }}</span>:
                                         {{order.cycleState.index}}
                                       </div>
                                     }
                                     @if (order.retryState) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                        <div class="_600 m-b-xs" >{{ 'order.retryState.label.retryState' | translate }}</div>
                                         @if (order.retryState.next) {
                                           <span>
-                                        <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.retryState.label.next' | translate }}</span>:
                                             {{ order.retryState.next | stringToDate }}
                                       </span>
                                         }
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.retryState.label.attempt' | translate }}</span>:
                                         {{ order.retryState.attempt }}
                                       </div>
                                     }
                                   </ng-template>
                                   <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
-                                    <span translate>workflow.label.label </span>:
+                                    <span >{{ 'workflow.label.label' | translate }}</span>:
                                     @if (order.label) {
                                       <span class="text-black-dk cur-point" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                                     }
@@ -862,7 +862,7 @@
                                     }
                                   </div>
                                   <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
-                                    <span translate>order.label.workflow </span>:
+                                    <span >{{ 'order.label.workflow' | translate }}</span>:
                                     @if (permission.joc && permission.joc.inventory.view) {
                                       <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
                                          class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
@@ -890,12 +890,12 @@
                                     }
                                   </div>
                                   <div class="text-sm text-left text-muted p-t-xs">
-                                    <span translate>order.label.scheduledFor </span>:
+                                    <span >{{ 'order.label.scheduledFor' | translate }}</span>:
                                     @if (!order.scheduledNever) {
                                       <span class="text-black-dk">{{order.scheduledFor | stringToDate}}</span>
                                     }
                                     @if (order.scheduledNever) {
-                                      <span class="text-black-dk" translate>common.label.never</span>
+                                      <span class="text-black-dk" >{{ 'common.label.never' | translate }}</span>
                                     }
                                   </div>
                                 </div>
@@ -906,14 +906,14 @@
                                      [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') || order.positionIsImplicitEnd}"
                                      class="hide text-left primary-text-hover-color">
                                     <i class="fa fa-edit p-r-xs text-black-lt"></i>
-                                    <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
+                                    <span class="text-black-lt" >{{ 'dailyPlan.button.setStartTime' | translate }}</span>
                                   </a>
                                   @if (permission.currentController && permission.currentController.orders.cancel) {
                                     <a (click)="actionChild.cancelOrder(order);"
                                        [ngClass]="{'pull-right':permission.currentController.orders.modify, 'disable-link' : order.positionIsImplicitEnd}"
                                        class="text-right primary-text-hover-color">
                                       <i class="fa fa-times p-r-xs text-black-lt"></i>
-                                      <span class="text-black-lt" translate>order.button.cancel</span>
+                                      <span class="text-black-lt" >{{ 'order.button.cancel' | translate }}</span>
                                     </a>
                                   }
                                 </div>
@@ -927,20 +927,18 @@
                   @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage)) {
                     <div class="text-center font14 box p-a-10 m-b-12">
                       @if (object.mapOfCheckedId.size !== data.length) {
-                        <span [translateParams]="{count: object.mapOfCheckedId.size}"
-                              translate>common.label.selectAllEntriesOfCurrentPage</span>
+                        <span >{{ 'common.label.selectAllEntriesOfCurrentPage' | translate:{count: object.mapOfCheckedId.size} }}</span>
                       }
                       @if (object.mapOfCheckedId.size === data.length) {
-                        <span [translateParams]="{count: data.length}"
-                              translate>common.label.allEntriesSelected</span>
+                        <span >{{ 'common.label.allEntriesSelected' | translate:{count: data.length} }}</span>
                       }
                       @if (object.mapOfCheckedId.size !== data.length) {
                         <a (click)="selectAll()" [translateParams]="{count: data.length}"
-                           class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+                           class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate }}</a>
                       }
                       @if (object.mapOfCheckedId.size === data.length) {
                         <a (click)="resetCheckBox()"
-                           class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+                           class="text-primary p-l-xs" >{{ 'common.label.clearSelection' | translate }}</a>
                       }
                     </div>
                   }
@@ -970,9 +968,9 @@
                                 (nzCheckedChange)="checkAll($event)"
                                 class="chk"
                             ></th>
-                            <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
+                            <th class="menu" rowspan="2"><span >{{ 'common.label.action' | translate }}</span></th>
                             <th (click)="sort('orderId')">
-                              <a><span class="p-r-xs" translate>order.label.orderId</span>
+                              <a><span class="p-r-xs" >{{ 'order.label.orderId' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -981,7 +979,7 @@
                                 }</a>
                             </th>
                             <th (click)="sort('workflowId.path')">
-                              <a><span class="p-r-xs" translate>order.label.workflow</span>
+                              <a><span class="p-r-xs" >{{ 'order.label.workflow' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'workflowId.path' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -990,7 +988,7 @@
                                 }</a>
                             </th>
                             <th (click)="sort('label')">
-                              <a><span class="p-r-xs" translate>workflow.label.label</span>
+                              <a><span class="p-r-xs" >{{ 'workflow.label.label' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'label' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -999,7 +997,7 @@
                                 }</a>
                             </th>
                             <th (click)="sort('state._text')">
-                              <a><span class="p-r-xs" translate>order.label.state</span>
+                              <a><span class="p-r-xs" >{{ 'order.label.state' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'state._text' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -1008,7 +1006,7 @@
                                 }</a>
                             </th>
                             <th (click)="sort('priority')">
-                              <a><span class="p-r-xs" translate>order.label.priority</span>
+                              <a><span class="p-r-xs" >{{ 'order.label.priority' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'priority' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -1017,7 +1015,7 @@
                                 }</a>
                             </th>
                             <th (click)="sort('scheduledFor')">
-                              <a><span class="p-r-xs" translate>order.label.scheduledFor</span>
+                              <a><span class="p-r-xs" >{{ 'order.label.scheduledFor' | translate }}</span>
                                 @if (orderFilters.filter.sortBy == 'scheduledFor' && !orderFilters.reverse) {
                                   <i class="fa fa-caret-up "></i>
                                 }
@@ -1066,14 +1064,14 @@
                                   <ng-template #tooltipTemplate>
                                     @if (order.cyclicOrder) {
                                       <div class="m-a-sm">
-                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        <div class="_600 m-b-xs" >{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.begin' | translate }}</span>:
                                         {{order.cyclicOrder.firstStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.end' | translate }}</span>:
                                         {{order.cyclicOrder.lastStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.label.orders' | translate }}</span>:
                                         {{order.cyclicOrder.count}}
                                       </div>
                                     }
@@ -1126,7 +1124,7 @@
                                   }
                                   <ng-template #tooltipTemplate1>
                                     <div class="p-l-sm">
-                                      <span translate> order.label.state </span>:
+                                      <span >{{ 'order.label.state' | translate }}</span>:
                                       <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
                                             class="_600"> {{order.state._text |  translate}}</span>
                                       @if (order.marked) {
@@ -1136,13 +1134,13 @@
                                     </div>
                                     @if (order.state._reason) {
                                       <div class="p-l-sm">
-                                        <span translate> common.label.comment </span>:
+                                        <span >{{ 'common.label.comment' | translate }}</span>:
                                         <span class="_600"> {{order.state._reason}}</span>
                                       </div>
                                     }
                                     @if (order.question) {
                                       <div class="p-l-sm">
-                                        <span translate> workflow.label.prompt </span>:
+                                        <span >{{ 'workflow.label.prompt' | translate }}</span>:
                                         <span class="_600"> {{order.question}}</span>
                                       </div>
                                     }
@@ -1150,7 +1148,7 @@
                                       <div class="p-l-sm">
                                         @for (obstacle of order.obstacles; track obstacle) {
                                           <div>
-                                            <span translate> {{obstacle.type | translate}} </span>
+                                            <span>{{obstacle.type | translate}}</span>
                                             @if (obstacle.until) {
                                               <span class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
                                             }
@@ -1160,18 +1158,18 @@
                                     }
                                     @if (order.lastOutcome) {
                                       <div class="p-l-sm">
-                                        <span translate> order.label.lastOutcome </span>:
+                                        <span >{{ 'order.label.lastOutcome' | translate }}</span>:
                                         <span class="_600">{{order.lastOutcome.TYPE}}</span>
                                       </div>
                                     }
                                     @if (!order.cyclicOrder) {
                                       <div class="p-l-sm">
-                                        <span translate> order.label.scheduledFor </span>:
+                                        <span >{{ 'order.label.scheduledFor' | translate }}</span>:
                                         @if (!order.scheduledNever) {
                                           <span class="_600">{{order.scheduledFor | stringToDate}}</span>
                                         }
                                         @if (order.scheduledNever) {
-                                          <span class="_600" translate>common.label.never</span>
+                                          <span class="_600" >{{ 'common.label.never' | translate }}</span>
                                         }
                                       </div>
                                     }
@@ -1187,57 +1185,57 @@
                                     }
                                     @if (order.cyclicOrder) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        <div class="_600 m-b-xs" >{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.begin' | translate }}</span>:
                                         {{order.cyclicOrder.firstStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        <span class="_600 p-l-sm" >{{ 'dailyPlan.label.end' | translate }}</span>:
                                         {{order.cyclicOrder.lastStart | stringToDate}}
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.label.orders' | translate }}</span>:
                                         {{order.cyclicOrder.count}}
                                       </div>
                                     }
                                     @if (order.cycleState) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+                                        <div class="_600 m-b-xs" >{{ 'order.cycleState.label.cycleState' | translate }}</div>
                                         @if (order.cycleState.since) {
                                           <span>
-                                    <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                                    <span class="_600 p-l-sm" >{{ 'order.cycleState.label.since' | translate }}</span>:
                                             {{ order.cycleState.since | stringToDate }}
                                   </span>
                                         }
                                         @if (order.cycleState.next) {
                                           <span>
-                                    <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                                    <span class="_600 p-l-sm" >{{ 'order.cycleState.label.next' | translate }}</span>:
                                             {{ order.cycleState.next | stringToDate }}
                                   </span>
                                         }
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.cycleState.label.index' | translate }}</span>:
                                         {{ order.cycleState.index }}
                                       </div>
                                     }
                                     @if (order.retryState) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                        <div class="_600 m-b-xs" >{{ 'order.retryState.label.retryState' | translate }}</div>
                                         @if (order.retryState.next) {
                                           <span>
-                                    <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                    <span class="_600 p-l-sm" >{{ 'order.retryState.label.next' | translate }}</span>:
                                             {{ order.retryState.next | stringToDate }}
                                   </span>
                                         }
                                         <br>
-                                        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                        <span class="_600 p-l-sm" >{{ 'order.retryState.label.attempt' | translate }}</span>:
                                         {{ order.retryState.attempt }}
                                       </div>
                                     }
                                     @if (order.sleepState) {
                                       <div class="m-a-sm m-t-0">
-                                        <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
+                                        <div class="_600 m-b-xs" >{{ 'order.sleepState.label.sleepState' | translate }}</div>
                                         @if (order.sleepState.until) {
                                           <span>
-                                    <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
+                                    <span class="_600 p-l-sm" >{{ 'order.sleepState.label.until' | translate }}</span>:
                                             {{ order.sleepState.until | stringToDate }}
                                   </span>
                                         }
@@ -1262,7 +1260,7 @@
                                     <span>{{order.scheduledFor | stringToDate}}</span>
                                   }
                                   @if (order.scheduledNever) {
-                                    <span translate>common.label.never</span>
+                                    <span >{{ 'common.label.never' | translate }}</span>
                                   }
                                 </td>
                               </tr>
@@ -1279,12 +1277,12 @@
                           </tbody>
                         </nz-table>
                         @if (ajaxTable.data.length >0) {
-                          <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                          <div class="w-half label-top"><span >{{ 'common.label.total' | translate }}</span> {{data.length}}
                             @if (ajaxTable.data.length >1) {
-                              <span translate>order.label.ordersFound</span>
+                              <span >{{ 'order.label.ordersFound' | translate }}</span>
                             }
                             @if (ajaxTable.data.length ==1) {
-                              <span translate>order.label.orderFound</span>
+                              <span >{{ 'order.label.orderFound' | translate }}</span>
                             }
                           </div>
                         }
@@ -1315,7 +1313,7 @@
                             </ul>
                           </div>
                           <div class="box-body p-t-0 b-t">
-                            <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="selectedIndex">
+                            <nz-tabs (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="selectedIndex">
                               <nz-tab [nzTitle]="'history.label.orderHistory' | translate">
                                 <nz-table
                                   #orderHistoryTable
@@ -1327,13 +1325,13 @@
                                 >
                                   <thead>
                                   <tr>
-                                    <th><span translate>history.label.orderId</span></th>
-                                    <th><span translate>workflow.label.label</span></th>
-                                    <th><span translate>history.label.status</span></th>
-                                    <th><span translate>history.label.plannedTime</span></th>
-                                    <th><span translate>history.label.startTime</span></th>
-                                    <th><span translate>history.label.endTime</span></th>
-                                    <th><span translate>history.label.duration</span></th>
+                                    <th><span >{{ 'history.label.orderId' | translate }}</span></th>
+                                    <th><span >{{ 'workflow.label.label' | translate }}</span></th>
+                                    <th><span >{{ 'history.label.status' | translate }}</span></th>
+                                    <th><span >{{ 'history.label.plannedTime' | translate }}</span></th>
+                                    <th><span >{{ 'history.label.startTime' | translate }}</span></th>
+                                    <th><span >{{ 'history.label.endTime' | translate }}</span></th>
+                                    <th><span >{{ 'history.label.duration' | translate }}</span></th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -1390,13 +1388,13 @@
                                   >
                                     <thead>
                                     <tr>
-                                      <th><span translate>auditLog.label.created</span></th>
-                                      <th><span translate>auditLog.label.account</span></th>
-                                      <th><span translate>auditLog.label.request</span></th>
-                                      <th><span translate>auditLog.label.category</span></th>
-                                      <th><span translate>auditLog.label.comment</span></th>
-                                      <th><span translate>auditLog.label.timeSpend</span></th>
-                                      <th><span translate>auditLog.label.ticketLink</span></th>
+                                      <th><span >{{ 'auditLog.label.created' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.account' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.request' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.category' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.comment' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.timeSpend' | translate }}</span></th>
+                                      <th><span >{{ 'auditLog.label.ticketLink' | translate }}</span></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1435,7 +1433,7 @@
                                             <td></td>
                                             <td colspan="6">
                                               <div class="m-a-0">
-                                                <span translate>auditLog.label.requestBody</span>
+                                                <span >{{ 'auditLog.label.requestBody' | translate }}</span>
                                                 :
                                                 <span [innerHtml]="auditLog.parameters"></span>
                                               </div>
@@ -1447,7 +1445,7 @@
                                   </nz-table>
                                 </nz-tab>
                               }
-                            </nz-tabset>
+                            </nz-tabs>
                           </div>
                         </div>
                       </div>

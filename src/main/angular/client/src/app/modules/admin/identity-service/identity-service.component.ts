@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {clone, isEmpty} from 'underscore';
@@ -979,7 +979,8 @@ export class IdentityServiceModalComponent {
 @Component({
   standalone: false,
   selector: 'app-identity-service-all',
-  templateUrl: 'identity-service.component.html'
+  templateUrl: 'identity-service.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IdentityServiceComponent {
   loading = true;
@@ -996,7 +997,7 @@ export class IdentityServiceComponent {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService,) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private translate: TranslateService, private cdr: ChangeDetectorRef) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
     });
@@ -1257,7 +1258,11 @@ export class IdentityServiceComponent {
         this.identityServiceTypes = res.identityServiceTypes;
         this.identityServices = res.identityServiceItems;
         this.loading = false;
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

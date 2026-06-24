@@ -25,10 +25,10 @@
           ></th>
         }
         @if (permission.joc && permission.joc.administration.accounts.manage) {
-          <th class="menu"><span translate>common.label.action</span></th>
+          <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
         }
         <th (click)="sort('accountName')">
-          <a><span class="p-r-xs" translate>user.label.user</span>
+          <a><span class="p-r-xs" >{{ 'user.label.user' | translate }}</span>
             @if (usr.sortBy == 'accountName' && !usr.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -38,7 +38,7 @@
         </th>
         @if (identityServiceType == 'FIDO') {
           <th (click)="sort('email')">
-            <a><span class="p-r-xs" translate>user.label.email</span>
+            <a><span class="p-r-xs" >{{ 'user.label.email' | translate }}</span>
               @if (usr.sortBy == 'email' && !usr.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -48,7 +48,7 @@
           </th>
         }
         <th (click)="sort('roles')">
-          <a><span class="p-r-xs" translate>user.label.roles</span>
+          <a><span class="p-r-xs" >{{ 'user.label.roles' | translate }}</span>
             @if (usr.sortBy == 'roles' && !usr.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -58,7 +58,7 @@
         </th>
         @if ((identityServiceType === 'JOC')) {
           <th (click)="sort('forcePasswordChange')" nzWidth="20%">
-            <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
+            <a><span class="p-r-xs" >{{ 'user.label.forcePasswordChange' | translate }}</span>
               @if (usr.sortBy == 'forcePasswordChange' && !usr.reverse) {
                 <i class="fa fa-caret-up "></i>
               }
@@ -68,7 +68,7 @@
           </th>
         }
         <th (click)="sort('blocked')" nzWidth="20%">
-          <a><span class="p-r-xs" translate>common.label.blocked</span>
+          <a><span class="p-r-xs" >{{ 'common.label.blocked' | translate }}</span>
             @if (usr.sortBy == 'blocked' && !usr.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -77,7 +77,7 @@
             }</a>
         </th>
         <th (click)="sort('disabled')" nzWidth="20%">
-          <a><span class="p-r-xs" translate>user.label.disabled</span>
+          <a><span class="p-r-xs" >{{ 'user.label.disabled' | translate }}</span>
             @if (usr.sortBy == 'disabled' && !usr.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -104,66 +104,66 @@
                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                     <ul nz-menu>
                       <li (click)="editUser(account)" nz-menu-item>
-                        <a translate>common.button.edit</a>
+                        <a >{{ 'common.button.edit' | translate }}</a>
                       </li>
                       @if (identityServiceType == 'FIDO') {
                         <li nz-menu-divider></li>
                       }
                       @if (identityServiceType == 'FIDO') {
                         <li (click)="addDevice(account)" nz-menu-item>
-                          <a translate>user.button.addAuthenticatorDevice</a>
+                          <a >{{ 'user.button.addAuthenticatorDevice' | translate }}</a>
                         </li>
                       }
                       @if (identityServiceType == 'FIDO') {
                         <li (click)="removeDevice(account)" nz-menu-item>
-                          <a translate>user.button.removeDevices</a>
+                          <a >{{ 'user.button.removeDevices' | translate }}</a>
                         </li>
                       }
                       @if (identityServiceType !== 'FIDO') {
                         <li (click)="copyUser(account)" nz-menu-item>
-                          <a translate>common.button.duplicate</a>
+                          <a >{{ 'common.button.duplicate' | translate }}</a>
                         </li>
                       }
                       @if ((identityServiceType === 'JOC')) {
                         <li (click)="resetPassword(account)" nz-menu-item>
-                          <a translate>user.button.resetPassword</a>
+                          <a >{{ 'user.button.resetPassword' | translate }}</a>
                         </li>
                       }
                       @if ((identityServiceType === 'JOC')) {
                         <li (click)="forcePasswordChange(account)"
                             [nzDisabled]="account.forcePasswordChange" nz-menu-item>
-                          <a translate>user.button.forcePasswordChange</a>
+                          <a >{{ 'user.button.forcePasswordChange' | translate }}</a>
                         </li>
                       }
                       @if (account.blocked === 'undefined' || account.blocked === false) {
                         <li (click)="addToBlocklist(account)"
                             [ngClass]="{'disable-link': (username==account.accountName && selectedIdentityService === userIdentityService)}"
                             nz-menu-item>
-                          <a translate>user.button.addToBlocklist</a>
+                          <a >{{ 'user.button.addToBlocklist' | translate }}</a>
                         </li>
                       }
                       @if (account.blocked) {
                         <li (click)="removeBlockAcc(account)" nz-menu-item>
-                          <a translate>user.button.removeFromBlocklist</a>
+                          <a >{{ 'user.button.removeFromBlocklist' | translate }}</a>
                         </li>
                       }
                       <li nz-menu-divider></li>
                       <li (click)="disabledUser(account, account.disabled)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}"
                           nz-menu-item>
                         @if (account.disabled) {
-                          <a translate>user.button.enable</a>
+                          <a >{{ 'user.button.enable' | translate }}</a>
                         }
                         @if (!account.disabled) {
-                          <a translate>user.button.disable</a>
+                          <a >{{ 'user.button.disable' | translate }}</a>
                         }
                       </li>
                       <li (click)="deleteUser(account.accountName)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}" class="bg-hover-color"
                           nz-menu-item>
-                        <a translate>user.button.delete</a>
+                        <a >{{ 'user.button.delete' | translate }}</a>
                       </li>
                       <li nz-menu-divider></li>
                       <li (click)="showPermission(account)" nz-menu-item>
-                        <a translate>user.button.showPermission</a>
+                        <a >{{ 'user.button.showPermission' | translate }}</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -195,12 +195,12 @@
   </div>
   @if (ajaxTable.data.length >0) {
     <div class="w-half label-top">
-      <span translate>common.label.total</span> <span> {{data.length}} </span>
+      <span >{{ 'common.label.total' | translate }}</span> <span> {{data.length}} </span>
       @if (ajaxTable.data.length >1) {
-        <span translate>user.label.usersFound</span>
+        <span >{{ 'user.label.usersFound' | translate }}</span>
       }
       @if (ajaxTable.data.length ===1) {
-        <span translate>user.label.userFound</span>
+        <span >{{ 'user.label.userFound' | translate }}</span>
       }
     </div>
   }

@@ -552,6 +552,7 @@ export class JobTemplateComponent {
           types: [InventoryObject.JOBRESOURCE]
         }).subscribe((res) => {
           this.jobResourcesTree = this.coreService.prepareTree(res, false);
+          this.ref.detectChanges();
         });
       }
       if (this.scriptTree.length === 0) {
@@ -561,6 +562,7 @@ export class JobTemplateComponent {
           types: [InventoryObject.INCLUDESCRIPT]
         }).subscribe((res) => {
           this.scriptTree = this.coreService.prepareTree(res, false);
+          this.ref.detectChanges();
         });
       }
 

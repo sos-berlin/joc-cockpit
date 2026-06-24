@@ -1,15 +1,15 @@
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}}" translate>common.label.selectComments</label>
+  <label class="col-sm-{{sizeX}}" >{{ 'common.label.selectComments' | translate }}</label>
   <div class="col-sm-8">
     <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
-      <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
-      <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+      <label nz-radio nzValue="predefined"><span >{{ 'common.label.predefined' | translate }}</span></label>
+      <label nz-radio nzValue="new"><span >{{ 'common.label.individual' | translate }}</span></label>
     </nz-radio-group>
   </div>
 </div>
 @if (comments.radio=='predefined') {
   <div class="form-group row">
-    <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
+    <label class="col-sm-{{sizeX}} form-control-label" >{{ 'common.label.selectComment' | translate }}
       @if (required) {
         <sup class="text-danger text-sm">*</sup>
       }
@@ -24,7 +24,7 @@
 @if (comments.radio=='new') {
   <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
        class="form-group row">
-    <label class="col-sm-{{sizeX}} " translate>common.label.comment
+    <label class="col-sm-{{sizeX}} " >{{ 'common.label.comment' | translate }}
       @if (required) {
         <sup class="text-danger text-sm">*</sup>
       }
@@ -37,8 +37,8 @@
       @if (textComment.invalid && (textComment.dirty || textComment.touched)) {
         <div class="text-danger help-block">
           @if (textComment.errors && textComment.errors['required']) {
-            <div translate>
-              common.message.requiredError
+            <div >
+              {{ 'common.message.requiredError' | translate }}
             </div>
           }
         </div>
@@ -47,14 +47,14 @@
   </div>
 }
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.timeSpend</label>
+  <label class="col-sm-{{sizeX}} form-control-label" >{{ 'common.label.timeSpend' | translate }}</label>
   <div class="col-sm-{{sizeY}}">
     <nz-input-number name="timeSpend" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
                      [nzMin]="0" [nzStep]="1" [(ngModel)]="comments.timeSpent"></nz-input-number>
   </div>
 </div>
 <div class="form-group row">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.ticketLink</label>
+  <label class="col-sm-{{sizeX}} form-control-label" >{{ 'common.label.ticketLink' | translate }}</label>
   <div class="col-sm-{{sizeY}}">
     <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
            [(ngModel)]="comments.ticketLink">
@@ -62,7 +62,7 @@
 </div>
 @if (router.url.match('/users/') || router.url.match('/settings')) {
   <div class="form-group row">
-    <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
+    <label class="col-sm-{{sizeX}}" >{{ 'user.label.reuseReason' | translate }}</label>
     <div class="col-sm-{{sizeY}}">
       <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
     </div>

@@ -5156,6 +5156,7 @@ export class ChangeImpactDialogComponent {
   standalone: false,
   selector: 'app-history-log-dialog',
   templateUrl: './history-log-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryLogDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -5173,7 +5174,11 @@ export class HistoryLogDialogComponent {
   auditLogs: any = [];
   data = [];
 
-  constructor(public activeModal: NzModalRef, private authService: AuthService, public coreService: CoreService, private orderPipe: OrderPipe) {
+  constructor(public activeModal: NzModalRef, private authService: AuthService, public coreService: CoreService, private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -5202,9 +5207,11 @@ export class HistoryLogDialogComponent {
         }
         this.auditLogs = res.auditLog;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -5236,7 +5243,8 @@ export class HistoryLogDialogComponent {
         next: (res: any) => {
           auditLog.details = res.auditLogDetails;
           auditLog.isLoaded = true;
-        }, error: () => auditLog.isLoaded = true
+          this.cdr.markForCheck();
+        }, error: () => { auditLog.isLoaded = true; this.cdr.markForCheck(); }
       });
     }
   }
@@ -6712,14 +6720,14 @@ export class WorkflowComponent {
     }
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   beforeunload(): void {
     if (this.data.type) {
       this.ngOnDestroy();
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.centered(true);
     this.checkGraphHeight();

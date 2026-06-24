@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject} from '@angular/core';
 import {HttpHeaders} from '@angular/common/http';
 import {NzUploadFile} from 'ng-zorro-antd/upload';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -85,7 +85,8 @@ export class FileUploaderComponent {
   controller: any;
 
   constructor(private activeModal: NzModalRef, private toasterService: ToastrService, private authService: AuthService,
-              private coreService: CoreService, private translate: TranslateService, private modal: NzModalService) {
+              private coreService: CoreService, private translate: TranslateService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
 
   }
 
@@ -170,6 +171,7 @@ export class FileUploaderComponent {
           res.folders.push({name: '', path: '/'});
         }
         this.nodes = this.coreService.prepareTree(res, true);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -181,6 +183,7 @@ export class FileUploaderComponent {
     }).subscribe({
       next: (res: any) => {
         this.calendarTree = this.coreService.prepareTree(res, false);
+        this.cdr.detectChanges();
       }
     });
   }

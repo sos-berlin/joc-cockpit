@@ -9,7 +9,7 @@
           <span class="_600">{{data.path}}@if (data.path !=='/' ) {<span>/</span>}{{data.name}}</span>
           @if (lastModified) {
             <span class="text-dark text-sm _400"> -
-              <b translate>inventory.label.lastModified</b>
+              <b >{{ 'inventory.label.lastModified' | translate }}</b>
               <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
             </span>
           }
@@ -32,11 +32,11 @@
                 @if (job.configuration) {
                   <span [ngClass]="!job.valid ? 'badge-danger':'badge-success'" class="badge m-r-12">
                   @if (job.valid) {
-                    <span translate>inventory.label.valid</span>
+                    <span >{{ 'inventory.label.valid' | translate }}</span>
                   }
                     @if (!job.valid) {
                       <span>
-                      <span translate>inventory.label.notValid</span>
+                      <span >{{ 'inventory.label.notValid' | translate }}</span>
                       <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
                     </span>
                     }
@@ -45,10 +45,10 @@
                 @if (job.configuration) {
                   <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
                   @if (!data.released) {
-                    <span translate>inventory.label.notReleased</span>
+                    <span >{{ 'inventory.label.notReleased' | translate }}</span>
                   }
                     @if (data.released) {
-                      <span translate>inventory.label.released</span>
+                      <span >{{ 'inventory.label.released' | translate }}</span>
                     }
                 </span>
                 }
@@ -57,7 +57,7 @@
                     (click)="release()"
                     [disabled]="!job.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                     <i class="fa fa-rocket p-r-xs"></i>
-                    <span translate>inventory.button.release</span>
+                    <span >{{ 'inventory.button.release' | translate }}</span>
                   </button>
                 }
                 @if (job.configuration) {
@@ -82,7 +82,7 @@
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}" class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
 
-                     class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
+                     class="col-md-4 col-lg-3 form-control-label" >{{ 'common.label.name' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -93,10 +93,10 @@
                 @if (name.invalid && (name.dirty || name.touched)) {
                   <div class="text-danger help-block">
                     @if (name.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div >{{ 'common.message.requiredError' | translate }}</div>
                     }
                     @if (name.errors['invalidIdentifier']) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -105,7 +105,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
 
-                     class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+                     class="col-md-4 col-lg-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input #title="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.title"
                        [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -118,7 +118,7 @@
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
 
                        class="col-md-4 col-lg-3 form-control-label"
-                       title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
+                       title="{{'inventory.label.documentation' | translate}}" >{{ 'inventory.label.documentation' | translate }}</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-document (funcCall)="saveJSON($event)" [data]="job.configuration"
                                        [documentationTree]="documentationTree"></app-select-document>
@@ -129,7 +129,7 @@
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                     title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
+                     title="{{'workflow.label.jobResourceNames' | translate}}" >{{ 'workflow.label.jobResourceNames' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-multi-select (funcCall)="saveJSON()" [attribute]="'jobResourceNames'" [list]="job.configuration"
                                   [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-multi-select>
@@ -139,7 +139,7 @@
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.description' | translate) : ''"
 
                      class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'workflow.label.description' | translate}}" translate>workflow.label.description</label>
+                     title="{{'workflow.label.description' | translate}}" >{{ 'workflow.label.description' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
             <textarea (blur)="saveJSON()" [(ngModel)]="job.configuration.description"
                       class="form-control" name="description" placeholder="{{'workflow.placeholder.description' | translate}}"
@@ -150,18 +150,18 @@
               <div class="form-group row">
                 <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
                      class="col-md-4 col-lg-3"
-                     translate>workflow.label.returnCode
+                     >{{ 'workflow.label.returnCode' | translate }}
                 </div>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();" >
                     <label (click)="job.configuration.executable.returnCodeMeaning.success = (job.configuration.executable.returnCodeMeaning.failure == 'none' ? '0' : job.configuration.executable.returnCodeMeaning.failure);job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
                            nzValue="success"><span
-                      translate>workflow.label.onSuccess</span></label>
+                      >{{ 'workflow.label.onSuccess' | translate }}</span></label>
                     <label (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''" nz-radio
                            nzValue="failure"><span
-                      translate>workflow.label.onFailure</span></label>
+                      >{{ 'workflow.label.onFailure' | translate }}</span></label>
                     <label (click)="job.configuration.executable.returnCodeMeaning.failure = 'none';job.configuration.executable.returnCodeMeaning.success = ''" nz-radio nzValue="ignore"><span
-                      translate>workflow.label.ignore</span></label>
+                      >{{ 'workflow.label.ignore' | translate }}</span></label>
                   </nz-radio-group>
                 </div>
               </div>
@@ -181,7 +181,7 @@
                   @if (success.invalid && (success.dirty || success.touched)) {
                     <div class="text-danger help-block">
                       @if (success.errors['invalidRange']) {
-                        <div translate>common.message.invalid</div>
+                        <div >{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -191,8 +191,8 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
-                     title="{{'workflow.label.onWarning' | translate}}" translate>
-                workflow.label.onWarning
+                     title="{{'workflow.label.onWarning' | translate}}" >
+                {{ 'workflow.label.onWarning' | translate }}
               </label>
               <div [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}"
                    class="col-lg-9 col-xl-8 col-xxl-6">
@@ -206,7 +206,7 @@
                 @if (warning.invalid && (warning.dirty || warning.touched)) {
                   <div class="text-danger help-block">
                     @if (warning.errors['invalidRange']) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -217,7 +217,7 @@
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
 
                        class="col-md-4 col-lg-3 form-control-label"
-                       translate>workflow.label.jobClass</label>
+                       >{{ 'workflow.label.jobClass' | translate }}</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-select [(ngModel)]="job.configuration.executable.TYPE"
                              name="executableType" (ngModelChange)="reloadScript();saveJSON()" >
@@ -232,11 +232,11 @@
             }
             <div class="form-group row">
               <div class="col-md-12">
-                <nz-tabset [(nzSelectedIndex)]="selectedIndex" >
+                <nz-tabs [(nzSelectedIndex)]="selectedIndex" >
                   @if (job.configuration.executable && (job.configuration.executable.TYPE === 'ShellScriptExecutable' || job.configuration.executable.TYPE === 'JavaScript' || job.configuration.executable.TYPE === 'Python')) {
                     <nz-tab [nzTitle]="titleTemplate">
                       <ng-template #titleTemplate>
-                        <span translate>workflow.label.script</span>
+                        <span >{{ 'workflow.label.script' | translate }}</span>
                         <sup class="text-danger text-sm">*</sup>
                       </ng-template>
                       <div class="row">
@@ -268,11 +268,11 @@
                                                      [options]="editorOptions"
                                                      name="script" required></app-codemirror-editor>
                             </div>
-                            <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+                            <div class="text-sm text-muted" >{{ 'inventory.tooltips.script.autocompleteShortCut' | translate }}</div>
                             @if ((script.invalid && (script.dirty && script.touched))) {
                               <div class="text-danger help-block">
                                 @if ((script.errors && script.errors['required'])) {
-                                  <div translate>common.message.requiredError</div>
+                                  <div >{{ 'common.message.requiredError' | translate }}</div>
                                 }
                               </div>
                             }
@@ -284,7 +284,7 @@
                   @if (job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable' || job.configuration.executable.TYPE === 'Java')) {
                     <nz-tab [nzTitle]="titleTemplate">
                       <ng-template #titleTemplate>
-                        <span translate>workflow.label.className</span>
+                        <span >{{ 'workflow.label.className' | translate }}</span>
                         <sup class="text-danger text-sm">*</sup>
                       </ng-template>
                       <div class="row">
@@ -298,7 +298,7 @@
                           @if ((className.invalid && (className.dirty && className.touched))) {
                             <div class="text-danger help-block">
                               @if ((className.errors && className.errors['required'])) {
-                                <div translate>common.message.requiredError</div>
+                                <div >{{ 'common.message.requiredError' | translate }}</div>
                               }
                             </div>
                           }
@@ -308,22 +308,21 @@
                   }
                   <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                     <div class="pos-abt r-t-12">
-                      <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                      <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" type="button">
                         <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                       </button>
                       <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                              nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                              nz-tooltip="{{'common.button.cut' | translate}}" type="button">
                         <i class="fa fa-scissors"></i>
                       </button>
                       <button (click)="copyParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0"
                               class="btn btn-grey btn-sm m-l-sm"
-                              nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
+                              nz-tooltip="{{'common.button.copy' | translate}}" type="button">
                         <i class="fa fa-copy"></i>
                       </button>
                       <button (click)="pasteParam(job.configuration, 'arguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
                               class="btn btn-grey btn-sm m-l-sm"
-                              nz-tooltip="{{'common.button.paste' | translate}}"
-                              translate type="button">
+                              nz-tooltip="{{'common.button.paste' | translate}}" type="button">
                         <i class="fa fa-paste"></i>
                       </button>
                     </div>
@@ -335,9 +334,9 @@
                                    (nzCheckedChange)="onAllChecked(job.configuration,'arguments', $event)"></label>
                           </div>
                           <div class="form-group row m-b-0 m-l-md">
-                            <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
-                            <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm" translate>common.label.type</div>
-                            <div class="col-md-5 col-lg-5 col-xl-3 m-b-sm" translate>common.label.value</div>
+                            <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+                            <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm" >{{ 'common.label.type' | translate }}</div>
+                            <div class="col-md-5 col-lg-5 col-xl-3 m-b-sm" >{{ 'common.label.value' | translate }}</div>
                           </div>
                         </div>
                       }
@@ -362,7 +361,7 @@
                                 @if (pname.invalid && pname.errors && (pname.dirty || pname.touched)) {
                                   <div class="text-danger help-block">
                                     @if (pname.errors['invalidIdentifier']) {
-                                      <div translate>common.message.invalid</div>
+                                      <div >{{ 'common.message.invalid' | translate }}</div>
                                     }
                                   </div>
                                 }
@@ -419,7 +418,7 @@
                                     @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                       <div class="text-danger help-block">
                                         @if (value.errors['invalidFacet']) {
-                                          <div translate>common.message.invalid</div>
+                                          <div >{{ 'common.message.invalid' | translate }}</div>
                                         }
                                       </div>
                                     }
@@ -446,9 +445,9 @@
                               </div>
                               <div class="col-lg-12 col-xl-9 m-b-xs">
                                 <a (click)="parameter.preview = false;" [ngClass]="{'text-primary': parameter.preview !== true}"
-                                   class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
+                                   class="btn btn-xs btn-default" style="box-shadow: none !important;" >{{ 'xml.button.sourceCode' | translate }}</a>
                                 <a (click)="parameter.preview = true;" [ngClass]="{'text-primary': parameter.preview === true}"
-                                   class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                                   class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" >{{ 'xml.button.preview' | translate }}</a>
                                 @if (!parameter.preview) {
                                   <textarea (blur)="saveJSON()" [(ngModel)]="parameter.value.description" class="form-control"
                                             name="pdescription{{i}}"
@@ -473,7 +472,7 @@
                         <div class="form-group row">
                           @if (job.configuration.arguments) {
                             <div class="col-sm-12">
-                              <a (click)="addParameter();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                              <a (click)="addParameter();saveJSON()" class="text-u-l m-l-11" >{{ 'workflow.button.addArgument' | translate }}</a>
                             </div>
                           }
                         </div>
@@ -483,22 +482,21 @@
                   @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable') {
                     <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
                       <div class="pos-abt r-t-12">
-                        <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                        <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" type="button">
                           <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                         </button>
                         <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                                nz-tooltip="{{'common.button.cut' | translate}}" type="button">
                           <i class="fa fa-scissors"></i>
                         </button>
                         <button (click)="copyParam('env')" [disabled]="object.setOfCheckedEnv.size === 0"
                                 class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
+                                nz-tooltip="{{'common.button.copy' | translate}}" type="button">
                           <i class="fa fa-copy"></i>
                         </button>
                         <button (click)="pasteParam(job.configuration.executable,'env')" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
                                 class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.paste' | translate}}"
-                                translate type="button">
+                                nz-tooltip="{{'common.button.paste' | translate}}" type="button">
                           <i class="fa fa-paste"></i>
                         </button>
                       </div>
@@ -510,8 +508,8 @@
                                      (nzCheckedChange)="onAllChecked(job.configuration.executable,'env', $event)"></label>
                             </div>
                             <div class="form-group row m-b-0 m-l-md">
-                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" >{{ 'common.label.value' | translate }}</div>
                             </div>
                           </div>
                         }
@@ -536,7 +534,7 @@
                                   @if (ename.invalid && ename.errors && (ename.dirty || ename.touched)) {
                                     <div class="text-danger help-block">
                                       @if (ename.errors['invalidIdentifier']) {
-                                        <div translate>common.message.invalid</div>
+                                        <div >{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -564,7 +562,7 @@
                           </div>
                           <div class="form-group row">
                             <div class="col-sm-12">
-                              <a (click)="addEnv();saveJSON()" class="text-u-l m-l-11" translate>order.button.addVariable</a>
+                              <a (click)="addEnv();saveJSON()" class="text-u-l m-l-11" >{{ 'order.button.addVariable' | translate }}</a>
                             </div>
                           </div>
                         </div>
@@ -575,23 +573,22 @@
                   @if (job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable')) {
                     <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate">
                       <div class="pos-abt r-t-12">
-                        <button (click)="encryptAllJobArguments()" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                        <button (click)="encryptAllJobArguments()" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" type="button">
                           <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                         </button>
                         <button (click)="cutParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                                nz-tooltip="{{'common.button.cut' | translate}}" type="button">
                           <i class="fa fa-scissors"></i>
                         </button>
                         <button (click)="copyParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0"
                                 class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.copy' | translate}}" translate
+                                nz-tooltip="{{'common.button.copy' | translate}}"
                                 type="button">
                           <i class="fa fa-copy"></i>
                         </button>
                         <button (click)="pasteParam(job.configuration.executable,'jobArguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0"
                                 class="btn btn-grey btn-sm m-l-sm"
-                                nz-tooltip="{{'common.button.paste' | translate}}"
-                                translate type="button">
+                                nz-tooltip="{{'common.button.paste' | translate}}" type="button">
                           <i class="fa fa-paste"></i>
                         </button>
                       </div>
@@ -603,8 +600,8 @@
                                      (nzCheckedChange)="onAllChecked(job.configuration.executable,'jobArguments', $event)"></label>
                             </div>
                             <div class="form-group row m-b-0 m-l-md">
-                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" >{{ 'common.label.value' | translate }}</div>
                             </div>
                           </div>
                         }
@@ -633,7 +630,7 @@
                                   @if (jname.invalid && jname.errors && (jname.dirty || jname.touched)) {
                                     <div class="text-danger help-block">
                                       @if (jname.errors['invalidIdentifier']) {
-                                        <div translate>common.message.invalid</div>
+                                        <div >{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -663,7 +660,7 @@
                           <div class="form-group row">
                             @if (job.configuration.executable.jobArguments) {
                               <div class="col-sm-12">
-                                <a (click)="addJobArgument();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                                <a (click)="addJobArgument();saveJSON()" class="text-u-l m-l-11" >{{ 'workflow.button.addArgument' | translate }}</a>
                               </div>
                             }
                           </div>
@@ -678,7 +675,7 @@
 
                                class="col-md-4 col-lg-3 form-control-label"
                                title="{{'workflow.label.parallelism' | translate}}"
-                               translate>workflow.label.parallelism</label>
+                               >{{ 'workflow.label.parallelism' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <nz-input-number #parallelism="ngModel" [(ngModel)]="job.configuration.parallelism"
                                            [appAutofocus]="true" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0" [nzStep]="1"
@@ -687,7 +684,7 @@
                           @if (parallelism.invalid && (parallelism.dirty || parallelism.touched)) {
                             <div class="text-danger help-block">
                               @if (parallelism.errors['required']) {
-                                <div translate>common.message.requiredError</div>
+                                <div >{{ 'common.message.requiredError' | translate }}</div>
                               }
                             </div>
                           }
@@ -697,7 +694,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                                class="col-md-4 col-lg-3 form-control-label"
                                title="{{'workflow.label.timeout' | translate}}"
-                               translate>workflow.label.timeout</label>
+                               >{{ 'workflow.label.timeout' | translate }}</label>
                         <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
                              class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
@@ -713,7 +710,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
 
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.graceTimeout' | translate}}" translate>workflow.label.graceTimeout</label>
+                               title="{{'workflow.label.graceTimeout' | translate}}" >{{ 'workflow.label.graceTimeout' | translate }}</label>
                         <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}"
                              class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
@@ -729,7 +726,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
 
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.warnIfShorter' | translate}}" translate>workflow.label.warnIfShorter</label>
+                               title="{{'workflow.label.warnIfShorter' | translate}}" >{{ 'workflow.label.warnIfShorter' | translate }}</label>
                         <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}"
                              class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
@@ -746,7 +743,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
 
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.warnIfLonger' | translate}}" translate>workflow.label.warnIfLonger</label>
+                               title="{{'workflow.label.warnIfLonger' | translate}}" >{{ 'workflow.label.warnIfLonger' | translate }}</label>
                         <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}"
                              class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
@@ -763,7 +760,7 @@
                           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                                  class="col-md-4 col-lg-3 form-control-label"
                                  title="{{'workflow.label.compatibleMode' | translate}}"
-                                 translate>workflow.label.compatibleMode</label>
+                                 >{{ 'workflow.label.compatibleMode' | translate }}</label>
                           <div class="col-lg-9 col-xl-8 col-xxl-6">
                             <nz-select [(ngModel)]="job.configuration.executable.v1Compatible" name="v1Compatible"
                                        nzAllowClear (ngModelChange)="saveJSON();">
@@ -776,7 +773,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
 
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.criticality' | translate}}" translate>workflow.label.criticality</label>
+                               title="{{'workflow.label.criticality' | translate}}" >{{ 'workflow.label.criticality' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <nz-select [(ngModel)]="job.configuration.criticality" (ngModelChange)="saveJSON()"
                                      [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
@@ -803,8 +800,7 @@
                             title="{{
             'workflow.label.jobNotRestartable' | translate
           }}"
-                            translate
-                          >workflow.label.jobNotRestartable</label
+                          >{{ 'workflow.label.jobNotRestartable' | translate }}</label
                           >
                           <div class="col-lg-9 col-xl-8 col-xxl-6">
                             <label
@@ -820,7 +816,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
 
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.credentialKey' | translate}}" translate>workflow.label.credentialKey
+                               title="{{'workflow.label.credentialKey' | translate}}" >{{ 'workflow.label.credentialKey' | translate }}
                           @if (job.configuration.executable.login.withUserProfile) {
                             <sup class="text-danger text-sm">*</sup>
                           }
@@ -840,7 +836,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
-                               title="{{'workflow.label.loadUserProfile' | translate}}" translate>workflow.label.loadUserProfile</label>
+                               title="{{'workflow.label.loadUserProfile' | translate}}" >{{ 'workflow.label.loadUserProfile' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label [(ngModel)]="job.configuration.executable.login.withUserProfile" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -851,7 +847,7 @@
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
-                               title="{{'workflow.label.failOnOutputErr' | translate}}" translate>workflow.label.failOnOutputErr</label>
+                               title="{{'workflow.label.failOnOutputErr' | translate}}" >{{ 'workflow.label.failOnOutputErr' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label [(ngModel)]="job.configuration.failOnErrWritten" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.warnOnErrWritten"
@@ -863,7 +859,7 @@
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
                                title="{{'workflow.label.warnOnOutputErr' | translate}}"
-                               translate>workflow.label.warnOnOutputErr</label>
+                               >{{ 'workflow.label.warnOnOutputErr' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label [(ngModel)]="job.configuration.warnOnErrWritten" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.failOnErrWritten"
@@ -875,7 +871,7 @@
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
                                title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
-                               translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
+                               >{{ 'workflow.label.skipIfNoAdmissionForOrderDay' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -887,7 +883,7 @@
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
                                title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
-                               translate>workflow.label.killAtEndOfAdmissionPeriod</label>
+                               >{{ 'workflow.label.killAtEndOfAdmissionPeriod' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label [(ngModel)]="job.configuration.killAtEndOfAdmissionPeriod" (ngModelChange)="saveJSON()"
                                  [nzDisabled]="isTrash || !permission.joc.inventory.manage"
@@ -899,9 +895,9 @@
 
                                class="col-md-4 col-lg-3 block-ellipsis-job"
                                title="{{'workflow.label.admissionTime' | translate}}"
-                               translate>workflow.label.admissionTime</label>
+                               >{{ 'workflow.label.admissionTime' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
-                          <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
+                          <a (click)="showRuntime()" class="text-hover-primary" >{{ 'workflow.label.showPeriods' | translate }}</a>
                         </div>
                       </div>
                     </div>
@@ -911,7 +907,7 @@
                       <div class="form-group row">
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.mailOn' | translate}}" translate>workflow.label.mailOn</label>
+                               title="{{'workflow.label.mailOn' | translate}}" >{{ 'workflow.label.mailOn' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <nz-select [(ngModel)]="job.configuration.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
                                      class="w-full" (ngModelChange)="saveJSON()"
@@ -925,7 +921,7 @@
                       <div class="form-group row">
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.mailTo' | translate}}" translate>workflow.label.mailTo</label>
+                               title="{{'workflow.label.mailTo' | translate}}" >{{ 'workflow.label.mailTo' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
                             <input (blur)="checkLength();" [(ngModel)]="job.configuration.notification.mail.to"
@@ -938,7 +934,7 @@
                       <div class="form-group row">
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.mailCC' | translate}}" translate>workflow.label.mailCC</label>
+                               title="{{'workflow.label.mailCC' | translate}}" >{{ 'workflow.label.mailCC' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
                             <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.cc"
@@ -951,7 +947,7 @@
                       <div class="form-group row">
                         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                                class="col-md-4 col-lg-3 form-control-label"
-                               title="{{'workflow.label.mailBcc' | translate}}" translate>workflow.label.mailBcc</label>
+                               title="{{'workflow.label.mailBcc' | translate}}" >{{ 'workflow.label.mailBcc' | translate }}</label>
                         <div class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
                             <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.bcc"
@@ -961,7 +957,7 @@
                           </label>
                           @if (isLengthExceed) {
                             <div class="text-danger help-block">
-                              <div translate>workflow.message.mailLengthExceed</div>
+                              <div >{{ 'workflow.message.mailLengthExceed' | translate }}</div>
                             </div>
                           }
                         </div>
@@ -969,7 +965,7 @@
                     </div>
                   </nz-tab>
 
-                </nz-tabset>
+                </nz-tabs>
               </div>
             </div>
           </div>
@@ -985,18 +981,18 @@
     </div>
   }
 </div>
-<nz-drawer (nzOnClose)="closeRuntime()" [nzVisible]="isRuntimeVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="closeRuntime()" class="close-btn"></div>
-    @if (isRuntimeVisible && permission.joc) {
-      <div class="p-a">
-        <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
-                                                                                   translate>workflow.label.admissionTime</span>
-        </div>
-        <app-admission-time (close)="closeRuntime()" [data]="selectedNode"
-                            [isTooltipVisible]="!preferences.showTooltipInfo"
-                            [job]="job.configuration"></app-admission-time>
+<ng-template #admissionTimeDrawerTpl>
+  <div (click)="closeRuntime()" class="close-btn"></div>
+  @if (isRuntimeVisible && permission.joc) {
+    <div class="p-a">
+      <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
+                                                                                 >{{ 'workflow.label.admissionTime' | translate }}</span>
       </div>
-    }
-  </ng-container>
+      <app-admission-time (close)="closeRuntime()" [data]="selectedNode"
+                          [isTooltipVisible]="!preferences.showTooltipInfo"
+                          [job]="job.configuration"></app-admission-time>
+    </div>
+  }
+</ng-template>
+<nz-drawer [nzContent]="admissionTimeDrawerTpl" (nzOnClose)="closeRuntime()" [nzVisible]="isRuntimeVisible" nzPlacement="right">
 </nz-drawer>

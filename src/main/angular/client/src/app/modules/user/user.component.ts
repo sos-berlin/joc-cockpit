@@ -1142,8 +1142,8 @@ export class UserComponent {
     import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.js`).then(locale => {
       registerLocaleData(locale.default);
     });
-    this.translate.use(this.preferences.locale).subscribe((res) => {
-      const data = res.extra;
+    this.translate.use(this.preferences.locale).subscribe((res: any) => {
+      const data: any = res['extra'];
       data.DatePicker.lang.monthBeforeYear = true;
       data.Calendar.lang.monthBeforeYear = true;
       data.locale = this.preferences.locale;
@@ -1151,7 +1151,7 @@ export class UserComponent {
         if (this.preferences.locale === this.coreService.locales[i].lang) {
           this.coreService.locales[i] = {
             ...this.coreService.locales[i],
-            ...res.calendar
+            ...(res['calendar'] as any)
           };
           break;
         }

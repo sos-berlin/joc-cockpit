@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>history.label.ignoreListFilters</span>
+    <span >{{ 'history.label.ignoreListFilters' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,22 +14,22 @@
           <thead>
           <tr>
             <th>
-              <span translate>history.label.workflow</span>
+              <span >{{ 'history.label.workflow' | translate }}</span>
               @if (historyFilters.type == 'TASK') {
                 <span>/</span>
               }
               @if (historyFilters.type == 'TASK') {
-                <span translate>history.label.job</span>
+                <span >{{ 'history.label.job' | translate }}</span>
               }
             </th>
-            <th><span translate>common.label.action</span></th>
+            <th><span >{{ 'common.label.action' | translate }}</span></th>
           </tr>
           </thead>
           <tbody>
             @for (workflow of savedIgnoreList.workflows; track workflow) {
               <tr [hidden]="historyFilters.type !== 'ORDER'">
                 <td>{{workflow}}</td>
-                <td><a (click)="removeWorkflowIgnoreList(workflow)" class="text-u-l text-danger" translate>common.button.remove</a>
+                <td><a (click)="removeWorkflowIgnoreList(workflow)" class="text-u-l text-danger" >{{ 'common.button.remove' | translate }}</a>
                 </td>
               </tr>
             }
@@ -40,7 +40,7 @@
                     <i>,</i>
                   } {{job.job}}
                 </td>
-                <td><a (click)="removeJobIgnoreList(job)" class="text-u-l text-danger" translate>common.button.remove</a>
+                <td><a (click)="removeJobIgnoreList(job)" class="text-u-l text-danger" >{{ 'common.button.remove' | translate }}</a>
                 </td>
               </tr>
             }

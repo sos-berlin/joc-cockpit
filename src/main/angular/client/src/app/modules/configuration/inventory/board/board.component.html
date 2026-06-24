@@ -11,7 +11,7 @@
 
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b >{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -34,11 +34,11 @@
                 <span [ngClass]="!board.valid ? 'badge-danger':'badge-success'"
                       class="badge badge-success m-r-12">
                     @if (board.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span >{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!board.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span >{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
                       </span>
                   }
@@ -46,10 +46,10 @@
               }
               <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
                   @if (!data.deployed) {
-                    <span translate>inventory.label.notDeployed</span>
+                    <span >{{ 'inventory.label.notDeployed' | translate }}</span>
                   }
                 @if (data.deployed) {
-                  <span translate>inventory.label.deployed</span>
+                  <span >{{ 'inventory.label.deployed' | translate }}</span>
                 }
               </span>
               @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
@@ -64,7 +64,7 @@
                   [disabled]="!board.valid && !board.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs"
                   type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.deploy</span>
+                  <span >{{ 'inventory.button.deploy' | translate }}</span>
                 </button>
               }
             </div>
@@ -76,7 +76,7 @@
                  class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.name' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.name' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -87,10 +87,10 @@
                 @if (name.invalid && (name.dirty || name.touched)) {
                   <div class="text-danger help-block">
                     @if (name.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div >{{ 'common.message.requiredError' | translate }}</div>
                     }
                     @if (name.errors['invalidIdentifier']) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -99,7 +99,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.title' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.title' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="board.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                        autocomplete="off" class="form-control"
@@ -110,7 +110,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.documentation' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.documentation' | translate }}</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-document (funcCall)="saveJSON($event)" [data]="board.configuration"
                                        [documentationTree]="documentationTree"></app-select-document>
@@ -118,13 +118,13 @@
               </div>
             }
             <div class="form-group row">
-              <div class="col-md-4 col-lg-3" translate [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.boardType' | translate) : ''">workflow.label.boardType</div>
+              <div class="col-md-4 col-lg-3" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.boardType' | translate) : ''">{{ 'workflow.label.boardType' | translate }}</div>
               <div  class="col-md-6 col-lg-8">
                 <nz-radio-group [(ngModel)]="board.configuration.boardType" (ngModelChange)="onChange()" name="boardType">
                   <label nz-radio nzValue="GLOBAL"><span
-                    translate>workflow.label.global</span></label>
+                    >{{ 'workflow.label.global' | translate }}</span></label>
                   <label nz-radio nzValue="PLANNABLE"><span
-                    translate>workflow.label.plannable</span></label>
+                    >{{ 'workflow.label.plannable' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
@@ -133,7 +133,7 @@
                    class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.toNotice' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -154,7 +154,7 @@
                   @if (toNotice.invalid && (toNotice.dirty || toNotice.touched)) {
                     <div class="text-danger help-block">
                       @if (toNotice.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div >{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }
@@ -165,7 +165,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.toNotice' | translate }}
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <nz-space-compact nzBlock>
@@ -192,7 +192,7 @@
                    class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.readingOrderToNoticeId' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.readingOrderToNoticeId
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.readingOrderToNoticeId' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -214,7 +214,7 @@
                   @if (readingOrderToNoticeId.invalid && (readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched)) {
                     <div class="text-danger help-block">
                       @if (readingOrderToNoticeId.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div >{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }
@@ -225,7 +225,7 @@
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.endOfLife' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.endOfLife
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.endOfLife' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((endOfLife.dirty || endOfLife.touched) && endOfLife.invalid))}"
@@ -253,7 +253,7 @@
                   @if (endOfLife.invalid && (endOfLife.dirty || endOfLife.touched)) {
                     <div class="text-danger help-block">
                       @if (endOfLife.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div >{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }

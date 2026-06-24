@@ -42,7 +42,7 @@ export class ValueEditorComponent {
     }, 10);
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.height = Math.ceil(($('body').height() - 212) / 20);
     this.do_resize();

@@ -77,7 +77,7 @@
           [title]="'helpSearch.tooltip.search' | translate"
         >
           <i class="fa fa-search"></i>&nbsp;
-          <span translate>common.button.search</span>
+          <span >{{ 'common.button.search' | translate }}</span>
         </button>
       }
     </div>
@@ -140,7 +140,7 @@
 
   @if (history.length > 0) {
     <button type="button" class="btn btn-grey btn-sm" (click)="goBack()">
-      <span translate>common.button.back</span>
+      <span >{{ 'common.button.back' | translate }}</span>
     </button>
   }
 
@@ -160,7 +160,7 @@
   }
 
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
-    <span translate>common.button.close</span>
+    <span >{{ 'common.button.close' | translate }}</span>
   </button>
 
   @if (fallbackNotice) {

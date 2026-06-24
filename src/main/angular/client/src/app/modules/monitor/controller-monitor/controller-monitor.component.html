@@ -4,18 +4,18 @@
       <div class="inline btn-group pull-right">
         <div (click)="setView('Week')"
              [class.primary]="filters.filter.view === 'Week'"
-             class="btn btn-default btn-sm" translate>
-          monitor.button.week
+             class="btn btn-default btn-sm" >
+          {{ 'monitor.button.week' | translate }}
         </div>
         <div (click)="setView('Month')"
              [class.primary]="filters.filter.view === 'Month'"
-             class="btn btn-default btn-sm" translate>
-          monitor.button.month
+             class="btn btn-default btn-sm" >
+          {{ 'monitor.button.month' | translate }}
         </div>
         <div (click)="setView('Custom')"
              [class.primary]="filters.filter.view === 'Custom'"
-             class="btn btn-default btn-sm" translate>
-          monitor.button.custom
+             class="btn btn-default btn-sm" >
+          {{ 'monitor.button.custom' | translate }}
         </div>
       </div>
       @if (filters.filter.view === 'Custom') {
@@ -53,7 +53,7 @@
     <div class="box">
       <div class="box-header b-b">
         <h3>
-          <span translate>monitor.label.runningTime</span>
+          <span >{{ 'monitor.label.runningTime' | translate }}</span>
         </h3>
       </div>
       <div class="box-body p-a" style="height: 292px; overflow: auto">
@@ -74,8 +74,7 @@
                 >
                 </app-gauge>
               </div>
-              <i class="text-muted" style="position: relative;top:-12px">{{'common.label.total' | translate}} <i [translateParams]="{count: item.hours}"
-                                                                                                                 translate>monitor.label.totalDays</i></i>
+              <i class="text-muted" style="position: relative;top:-12px">{{'common.label.total' | translate}} <i >{{ 'monitor.label.totalDays' | translate:{count: item.hours} }}</i></i>
             </div>
           }
           @if (!isLoaded) {
@@ -100,7 +99,7 @@
     <div class="box">
       <div class="box-header b-b">
         <h3>
-          <span translate>monitor.label.statistics</span>
+          <span >{{ 'monitor.label.statistics' | translate }}</span>
         </h3>
       </div>
       <div #chartArea [hidden]="!isLoaded || statisticsData.length ===0" class="box-body p-a scroll-class">
@@ -145,7 +144,7 @@
     <div class="box">
       <div class="box-header b-b">
         <h3>
-          <span translate>monitor.label.overview</span>
+          <span >{{ 'monitor.label.overview' | translate }}</span>
         </h3>
       </div>
       @if (isLoaded && ganttData.length > 0) {

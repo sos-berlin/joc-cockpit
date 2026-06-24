@@ -1,22 +1,22 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (approve) {
-      <span translate>common.label.approve</span>
+      <span >{{ 'common.label.approve' | translate }}</span>
     }
     @if (reject) {
-      <span translate>common.label.reject</span>
+      <span >{{ 'common.label.reject' | translate }}</span>
     }
     @if (delete || deleteRequest || deleteDevices) {
-      <span translate>common.label.delete</span>
+      <span >{{ 'common.label.delete' | translate }}</span>
     }
     @if (cancel) {
-      <span translate>common.button.cancel</span>
+      <span >{{ 'common.button.cancel' | translate }}</span>
     }
     @if (reset) {
-      <span translate>user.label.resetPassword</span>
+      <span >{{ 'user.label.resetPassword' | translate }}</span>
     }
     @if (forceChange) {
-      <span translate>user.label.forcePasswordChange</span>
+      <span >{{ 'user.label.forcePasswordChange' | translate }}</span>
     }
     @if (account) {
       <span>: {{account.accountName}}</span>
@@ -38,18 +38,18 @@
             @if (blocklist) {
               <span>
                 @if (account) {
-                  <span translate>user.message.deleteBlocklist</span>
+                  <span >{{ 'user.message.deleteBlocklist' | translate }}</span>
                 }
                 @if (!account) {
-                  <span translate>user.message.deleteSelectedBlocklist</span>
+                  <span >{{ 'user.message.deleteSelectedBlocklist' | translate }}</span>
                 }
               </span>
             }
             @if (!isRole && !blocklist) {
-              <span translate>user.message.deleteSelectedUser</span>
+              <span >{{ 'user.message.deleteSelectedUser' | translate }}</span>
             }
             @if (isRole) {
-              <span translate>user.message.deleteSelectedRole</span>
+              <span >{{ 'user.message.deleteSelectedRole' | translate }}</span>
             }
           </span>
         }
@@ -58,10 +58,10 @@
             @if (activeSession) {
               <span>
                 @if (account) {
-                  <span translate>user.message.cancelActiveSession</span>
+                  <span >{{ 'user.message.cancelActiveSession' | translate }}</span>
                 }
                 @if (!account) {
-                  <span translate>user.message.cancelSelectedActiveSession</span>
+                  <span >{{ 'user.message.cancelSelectedActiveSession' | translate }}</span>
                 }
               </span>
             }
@@ -70,41 +70,41 @@
         @if (account && !blocklist) {
           <span>
             @if (reset) {
-              <span translate>user.message.resetPasswordForUser</span>
+              <span >{{ 'user.message.resetPasswordForUser' | translate }}</span>
             }
             @if (forceChange) {
-              <span translate>user.message.forcePasswordChangeForUser</span>
+              <span >{{ 'user.message.forcePasswordChangeForUser' | translate }}</span>
             }
           </span>
         }
         @if (!account) {
           <span>
             @if (reset) {
-              <span translate>user.message.resetPasswordForSelectedUser</span>
+              <span >{{ 'user.message.resetPasswordForSelectedUser' | translate }}</span>
             }
             @if (forceChange) {
-              <span translate>user.message.forcePasswordChangeForSelectedUser</span>
+              <span >{{ 'user.message.forcePasswordChangeForSelectedUser' | translate }}</span>
             }
           </span>
         }
         @if (approve) {
           <span>
-            <span translate>user.message.approveForSelectedPendingRequests</span>
+            <span >{{ 'user.message.approveForSelectedPendingRequests' | translate }}</span>
           </span>
         }
         @if (reject) {
           <span>
-            <span translate>user.message.rejectForSelectedPendingRequests</span>
+            <span >{{ 'user.message.rejectForSelectedPendingRequests' | translate }}</span>
           </span>
         }
         @if (deleteRequest) {
           <span>
-            <span translate>user.message.deleteForSelectedPendingRequests</span>
+            <span >{{ 'user.message.deleteForSelectedPendingRequests' | translate }}</span>
           </span>
         }
         @if (deleteDevices) {
           <span>
-            <span translate>user.message.deleteDevices</span>
+            <span >{{ 'user.message.deleteDevices' | translate }}</span>
           </span>
         }
       </div>
@@ -124,7 +124,7 @@
       <span>{{'common.button.confirm' | translate}}</span>
     }
   </button>
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate
-          type="button">common.button.cancel
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
+          type="button">{{'common.button.cancel' | translate}}
   </button>
 </div>

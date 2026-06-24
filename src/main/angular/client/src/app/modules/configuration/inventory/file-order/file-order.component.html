@@ -9,7 +9,7 @@
             <span class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b >{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -32,11 +32,11 @@
                 <span [ngClass]="!fileOrder.valid ? 'badge-danger':'badge-success'"
                       class="badge m-r-12">
                   @if (fileOrder.valid) {
-                    <span translate>inventory.label.valid</span>
+                    <span >{{ 'inventory.label.valid' | translate }}</span>
                   }
                   @if (!fileOrder.valid) {
                     <span>
-                      <span translate>inventory.label.notValid</span>
+                      <span >{{ 'inventory.label.notValid' | translate }}</span>
                       <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
                     </span>
                   }
@@ -44,10 +44,10 @@
               }
               <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
                 @if (!data.deployed) {
-                  <span translate>inventory.label.notDeployed</span>
+                  <span >{{ 'inventory.label.notDeployed' | translate }}</span>
                 }
                 @if (data.deployed) {
-                  <span translate>inventory.label.deployed</span>
+                  <span >{{ 'inventory.label.deployed' | translate }}</span>
                 }
               </span>
               @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
@@ -62,7 +62,7 @@
                   [disabled]="!fileOrder.valid && !fileOrder.hasDeployments"
                   class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.deploy</span>
+                  <span >{{ 'inventory.button.deploy' | translate }}</span>
                 </button>
               }
             </div>
@@ -73,7 +73,7 @@
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
 
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                   translate>common.label.name
+                   >{{ 'common.label.name' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
@@ -85,10 +85,10 @@
               @if (name.invalid && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">
                   @if (name.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (name.errors.invalidIdentifier) {
-                    <div translate>common.message.invalid</div>
+                    <div >{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -98,7 +98,7 @@
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''"
 
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                   translate>common.label.title</label>
+                   >{{ 'common.label.title' | translate }}</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
                      autocomplete="off" class="form-control"
@@ -107,7 +107,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.tagName' | translate }}</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
                 @for (tag of tags; track tag; let i = $index) {
@@ -151,7 +151,7 @@
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''"
 
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                     translate>inventory.label.documentation</label>
+                     >{{ 'inventory.label.documentation' | translate }}</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-document (funcCall)="saveJSON($event)" [data]="fileOrder.configuration"
                                      [documentationTree]="documentationTree"></app-select-document>
@@ -162,7 +162,7 @@
                class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowName
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.workflowName' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6 ">
@@ -178,7 +178,7 @@
               @if (workflowName.invalid && (workflowName.dirty || workflowName.touched)) {
                 <div class="text-danger help-block">
                   @if (workflowName.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -192,7 +192,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.agent
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'workflow.label.agent' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -203,7 +203,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.directory
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.directory' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : (directory.dirty || directory.touched) && directory.invalid}"
@@ -216,7 +216,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.pattern</label>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'inventory.label.pattern' | translate }}</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.pattern" [readonly]="isTrash" autocomplete="off"
                      class="form-control"
@@ -229,7 +229,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'common.label.timeZone' | translate }}</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <app-select-input (modelChange)="changeValue($event, 'timeZone')" [attributeName]="'timeZone'"
                                 [isAllowClear]="true" [isSearchable]="true"
@@ -240,7 +240,7 @@
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.delay</label>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" >{{ 'workflow.label.delay' | translate }}</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.delay" [nzMin]="1" [nzStep]="1"
                                name="delay"></nz-input-number>
@@ -251,7 +251,7 @@
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
 
                    class="col-lg-3 col-xl-3 col-xxl-3"
-                   translate>order.label.priority</label>
+                   >{{ 'order.label.priority' | translate }}</label>
             <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
                  class="col-lg-9 col-xl-8 col-xxl-6">
               <nz-space-compact nzBlock>
@@ -272,7 +272,7 @@
               @if (priority.invalid && (priority.dirty || priority.touched)) {
                 <div class="text-danger help-block">
                   @if (priority.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div >{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }

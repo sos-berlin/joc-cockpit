@@ -25,10 +25,10 @@
           ></th>
         }
         @if (permission.joc && permission.joc.administration.accounts.manage) {
-          <th class="menu"><span translate>common.label.action</span></th>
+          <th class="menu"><span >{{ 'common.label.action' | translate }}</span></th>
         }
         <th (click)="sort('accountName')">
-          <a><span class="p-r-xs" translate>user.label.name</span>
+          <a><span class="p-r-xs" >{{ 'user.label.name' | translate }}</span>
             @if (requests.sortBy == 'accountName' && !requests.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -37,7 +37,7 @@
             }</a>
         </th>
         <th (click)="sort('email')">
-          <a><span class="p-r-xs" translate>user.label.email</span>
+          <a><span class="p-r-xs" >{{ 'user.label.email' | translate }}</span>
             @if (requests.sortBy == 'email' && !requests.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -46,7 +46,7 @@
             }</a>
         </th>
         <th (click)="sort('origin')">
-          <a><span class="p-r-xs" translate>user.label.origin</span>
+          <a><span class="p-r-xs" >{{ 'user.label.origin' | translate }}</span>
             @if (requests.sortBy == 'origin' && !requests.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -55,7 +55,7 @@
             }</a>
         </th>
         <th (click)="sort('confirmed')">
-          <a><span class="p-r-xs" translate>user.label.emailVerified</span>
+          <a><span class="p-r-xs" >{{ 'user.label.emailVerified' | translate }}</span>
             @if (requests.sortBy == 'confirmed' && !requests.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -64,7 +64,7 @@
             }</a>
         </th>
         <th (click)="sort('deferred')">
-          <a><span class="p-r-xs" translate>user.label.rejected</span>
+          <a><span class="p-r-xs" >{{ 'user.label.rejected' | translate }}</span>
             @if (requests.sortBy == 'deferred' && !requests.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -91,13 +91,13 @@
                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                     <ul nz-menu>
                       <li (click)="approveList(account)" nz-menu-item>
-                        <a translate>common.button.approve</a>
+                        <a >{{ 'common.button.approve' | translate }}</a>
                       </li>
                       <li (click)="rejectList(account)" [nzDisabled]="account.rejected" nz-menu-item>
-                        <a translate>common.button.reject</a>
+                        <a >{{ 'common.button.reject' | translate }}</a>
                       </li>
                       <li (click)="deleteList(account)" class="bg-hover-color" nz-menu-item>
-                        <a translate>user.button.delete</a>
+                        <a >{{ 'user.button.delete' | translate }}</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -118,12 +118,12 @@
   </div>
   @if (ajaxTable.data.length >0) {
     <div class="w-half label-top">
-      <span translate>common.label.total</span> <span> {{data.length}} </span>
+      <span >{{ 'common.label.total' | translate }}</span> <span> {{data.length}} </span>
       @if (ajaxTable.data.length >1) {
-        <span translate>user.label.usersFound</span>
+        <span >{{ 'user.label.usersFound' | translate }}</span>
       }
       @if (ajaxTable.data.length ===1) {
-        <span translate>user.label.userFound</span>
+        <span >{{ 'user.label.userFound' | translate }}</span>
       }
     </div>
   }

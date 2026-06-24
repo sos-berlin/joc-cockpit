@@ -5,18 +5,18 @@
       class="fa fa-times-circle"></i></a>
     <div class="row m-b-sm">
       <label class="col-sm-12" [hidden]="!editor.create">
-        <span class="text-primary " translate>runtime.label.addFrequencies</span>
+        <span class="text-primary " >{{ 'runtime.label.addFrequencies' | translate }}</span>
         : <span class="text-muted">{{'runtime.'+str | translate}}</span>
       </label>
       <label class="col-sm-12" [hidden]="editor.create">
-        <span class="text-primary " translate>runtime.label.editFrequencies</span>
+        <span class="text-primary " >{{ 'runtime.label.editFrequencies' | translate }}</span>
         : <span class="text-muted">{{_temp.str | translate}}</span>
       </label>
     </div>
     <div class="m-b">
       @if (isVisible) {
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.frequencyType' | translate }}</label>
           <div class="col-sm-6">
             <div class="col-sm-6">
               <app-select-input [attributeName]="'tab'" [isSearchable]="true"
@@ -31,12 +31,12 @@
          [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
       <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
         <div class="form-group row">
-          <label class="col-sm-3" translate>runtime.label.weekDays</label>
+          <label class="col-sm-3" >{{ 'runtime.label.weekDays' | translate }}</label>
 
           <div class="col-sm-9">
             <label class="w" nz-checkbox [(ngModel)]="frequency.all" name="week"
                    (ngModelChange)="selectAllWeek()">
-              <span translate>runtime.label.everyDay</span>
+              <span >{{ 'runtime.label.everyDay' | translate }}</span>
             </label><br>
             <nz-checkbox-group
               name="frequencyDays"
@@ -45,7 +45,7 @@
               @for (option of daysOptions; track option) {
                 <ng-container>
                   <label nz-checkbox [nzValue]="option.value">
-                    <span translate>runtime.label.{{option.label}}</span>
+                    <span >{{ 'runtime.label.' + option.label | translate }}</span>
                   </label>
                 </ng-container>
               }
@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validFrom' | translate }}</label>
 
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'startingWithW'"
@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validTo' | translate }}</label>
 
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'endOnW'"
@@ -75,7 +75,7 @@
       </div>
       <div class="tab-pane animated fadeIn" id="tab2" [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
         <div class="form-group row">
-          <label class="col-sm-3" translate>runtime.label.dayNumber</label>
+          <label class="col-sm-3" >{{ 'runtime.label.dayNumber' | translate }}</label>
           <div class="col-sm-5">
             <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'which' "
                               [listArray]="calendarService.dayNumbers" [name]="'types'" [optionLabel]="'label'" [optionValue]="'value'"
@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.weekDays</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.weekDays' | translate }}</label>
           <div class="col-sm-5">
             <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'specificWeekDay'"
                               [listArray]="calendarService.specificWeekDay" [name]="'specificWeekDay'" [optionLabel]="'label'" [optionValue]="'value'"
@@ -91,7 +91,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validFrom' | translate }}</label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'startingWithS'"
                             [name]="'startingWithS'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -100,7 +100,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validTo' | translate }}</label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
                             [name]="'endOnS'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -113,7 +113,7 @@
            [ngClass]="{'active':frequency.tab == 'specificDays'}">
         <div>
           <div class="form-group row b-b p-b">
-            <label class="col-sm-3 form-control-label" translate>history.label.date</label>
+            <label class="col-sm-3 form-control-label" >{{ 'history.label.date' | translate }}</label>
             <div class="col-sm-2">
               <app-date-input [object]="frequency" [attributeDate]="'specificDate'"
                               [name]="'specificDate'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -131,12 +131,12 @@
       </div>
       <div class="tab-pane animated fadeIn" id="tab4" [ngClass]="{'active':frequency.tab == 'monthDays'}">
         <div class="form-group row">
-          <label class="col-sm-3" translate>runtime.label.monthDays</label>
+          <label class="col-sm-3" >{{ 'runtime.label.monthDays' | translate }}</label>
 
           <div class="col-sm-9">
             <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos" (ngModelChange)="onFrequencyChange()">
-              <label nz-radio nzValue="months"><span translate>runtime.label.countFromFirstDay</span></label>
-              <label nz-radio nzValue="ultimos"><span translate>runtime.label.countFromTheLastDay</span></label>
+              <label nz-radio nzValue="months"><span >{{ 'runtime.label.countFromFirstDay' | translate }}</span></label>
+              <label nz-radio nzValue="ultimos"><span >{{ 'runtime.label.countFromTheLastDay' | translate }}</span></label>
             </nz-radio-group>
           </div>
           <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
@@ -176,7 +176,7 @@
               <tbody>
               <tr>
                 <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
-                  translate>runtime.label.lastDay</a></td>
+                  >{{ 'runtime.label.lastDay' | translate }}</a></td>
                 <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
                 >-1</a></td>
                 <td (click)="selectMonthDaysUFunc('3')" [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
@@ -230,7 +230,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validFrom' | translate }}</label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
                             [name]="'startingWithM'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -239,7 +239,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validTo' | translate }}</label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
                             [name]="'endOnM'" [dateFormat]="dateFormat" [isAllowClear]="true"
@@ -250,7 +250,7 @@
       </div>
       <div class="tab-pane animated fadeIn" id="tab5" [ngClass]="{'active':frequency.tab == 'every'}">
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.every</label>
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.every' | translate }}</label>
           <div class="col-sm-2">
             <nz-input-number [nzMin]="1" [nzMax]="31" [nzStep]="1" name="interval"
                              [(ngModel)]="frequency.interval" (ngModelChange)="onFrequencyChange()">
@@ -263,7 +263,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validFrom' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-5">
@@ -274,7 +274,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>runtime.label.validTo
+          <label class="col-sm-3 form-control-label" >{{ 'runtime.label.validTo' | translate }}
           </label>
           <div class="col-sm-5">
             <app-date-input [object]="frequency" [attributeDate]="'endOn'"
@@ -289,13 +289,13 @@
         @if (countryField) {
           <div class="form-group row">
             <label class="col-sm-12">
-              <span translate>runtime.label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
+              <span >{{ 'runtime.label.updateNationalHoliday' | translate }}</span>&nbsp;{{frequency.year}}
             </label>
           </div>
         }
         @if (!countryField) {
           <div class="form-group row">
-            <label class="col-sm-3" translate>runtime.label.country</label>
+            <label class="col-sm-3" >{{ 'runtime.label.country' | translate }}</label>
             <div class="col-sm-6">
               <app-select-input [attributeName]="'country'"  [isSearchable]="true"
                                 [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'"
@@ -305,7 +305,7 @@
         }
         @if (!countryField) {
           <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>runtime.label.year</label>
+            <label class="col-sm-3 form-control-label" >{{ 'runtime.label.year' | translate }}</label>
             <div class="col-sm-6">
               <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
                                [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
@@ -314,7 +314,7 @@
         }
         @if (holidayList.length) {
           <div class="row m-b-sm">
-            <label class="col-sm-3" translate>runtime.label.selectAll</label>
+            <label class="col-sm-3" >{{ 'runtime.label.selectAll' | translate }}</label>
             <div class="col-sm-6">
               <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
                      (ngModelChange)="selectAllHolidays()"></label>
@@ -355,7 +355,7 @@
       <div class="tab-pane animated fadeIn" id="tab7"
            [ngClass]="{'active':frequency.tab == 'nonWorkingDayCalendars'}">
         <div class="form-group row">
-          <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
+          <label class="col-sm-3" >{{ 'runtime.label.nonWorkingDayCalendars' | translate }}</label>
           <div class="col-sm-9">
             <app-multi-select
               [isDisabled]="false"
@@ -371,7 +371,7 @@
       </div>
     </div>
     <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars' || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
-      <label class="col-sm-3" translate>runtime.label.monthRange
+      <label class="col-sm-3" >{{ 'runtime.label.monthRange' | translate }}
         <a class="cursor">
           <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
              (click)="showMonthRange=true"></i>
@@ -382,7 +382,7 @@
       <div class="col-sm-9" [hidden]="!showMonthRange">
         <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
                (ngModelChange)="selectAllMonth()">
-          <span translate>runtime.label.everyMonth</span>
+          <span >{{ 'runtime.label.everyMonth' | translate }}</span>
         </label><br>
         <nz-checkbox-group
           name="frequencyMonths"
@@ -391,7 +391,7 @@
           @for (option of monthsOptions; track option) {
             <ng-container>
               <label nz-checkbox [nzValue]="option.value">
-                <span translate>runtime.label.{{option.label}}</span>
+                <span >{{ 'runtime.label.' + option.label | translate }}</span>
               </label>
             </ng-container>
           }
@@ -403,11 +403,11 @@
           <table class="table table-hover table-bordered">
             <thead>
             <tr>
-              <th><span translate>runtime.label.srNo</span></th>
-              <th><span translate>runtime.label.frequency</span></th>
-              <th><span translate>runtime.label.validFrom</span></th>
-              <th><span translate>runtime.label.validTo</span></th>
-              <th style="width: 80px"><span translate>runtime.label.action</span></th>
+              <th><span >{{ 'runtime.label.srNo' | translate }}</span></th>
+              <th><span >{{ 'runtime.label.frequency' | translate }}</span></th>
+              <th><span >{{ 'runtime.label.validFrom' | translate }}</span></th>
+              <th><span >{{ 'runtime.label.validTo' | translate }}</span></th>
+              <th style="width: 80px"><span >{{ 'runtime.label.action' | translate }}</span></th>
             </tr>
             </thead>
             <tbody>
@@ -470,20 +470,20 @@
     <button type="button" class="btn btn-primary btn-sm pos-abt b-10"
             [disabled]="!myForm.form.valid || !editor.isEnable" (click)="addFrequency();">
       @if (editor.create) {
-        <span translate>runtime.button.addNewFrequency</span>
+        <span >{{ 'runtime.button.addNewFrequency' | translate }}</span>
       }
       @if (!editor.create) {
-        <span translate>runtime.button.updateFrequency</span>
+        <span >{{ 'runtime.button.updateFrequency' | translate }}</span>
       }
     </button>
   </div>
   <div class="modal-footer">
     <button type="submit" class="btn btn-primary btn-sm"
             [disabled]="!myForm.form.valid || calendar.frequencyList.length==0">
-      <span translate>common.button.submit</span>
+      <span >{{ 'common.button.submit' | translate }}</span>
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()"
-            translate>common.button.cancel
+            >{{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

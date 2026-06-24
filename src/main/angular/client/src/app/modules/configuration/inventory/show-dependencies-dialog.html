@@ -1,7 +1,7 @@
 <script src="inventory.component.ts"></script>
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>{{'common.button.'+ title}}</span>  </h4>
+    <span >{{ 'common.button.'+ title | translate }}</span>  </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -15,7 +15,7 @@
         <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
              (click)="toggleAllAffectedCollapse()"></i>
-          <label (click)="toggleAllAffectedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.affectedObjects</label>
+          <label (click)="toggleAllAffectedCollapse()" class="m-l-sm font-600 cursor" >{{ 'inventory.label.affectedObjects' | translate }}</label>
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
              (click)="expandAllAffected()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
@@ -71,7 +71,7 @@
         <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
              (click)="toggleAllReferencedCollapse()"></i>
-          <label (click)="toggleAllReferencedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.referencedObjects</label>
+          <label (click)="toggleAllReferencedCollapse()" class="m-l-sm font-600 cursor" >{{ 'inventory.label.referencedObjects' | translate }}</label>
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm" (click)="expandAllReferenced()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs" (click)="collapseAllReferenced()"></i>
           @if (isReferencedCollapsed) {
@@ -132,7 +132,7 @@
       <i class="cursor text-16 fa"
          [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
          (click)="isRelatedCollapsed = !isRelatedCollapsed"></i>
-      <label  (click)="isRelatedCollapsed = !isRelatedCollapsed" class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+      <label  (click)="isRelatedCollapsed = !isRelatedCollapsed" class="m-l-sm font-600 cursor" >{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
 
       @if (isRelatedCollapsed) {
         <div class="m-t-sm m-l-sm">
@@ -188,7 +188,7 @@
 </div>
 
 <div class="modal-footer">
-  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-    common.button.cancel
+  <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+    {{'common.button.cancel' | translate }}
   </button>
 </div>

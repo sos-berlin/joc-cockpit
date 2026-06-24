@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (variable) {
-      <span translate>dailyPlan.label.setParameter</span>
+      <span >{{ 'dailyPlan.label.setParameter' | translate }}</span>
     }
     @if (!variable) {
-      <span translate>dailyPlan.label.setParameters</span>
+      <span >{{ 'dailyPlan.label.setParameters' | translate }}</span>
     }
     @if (order || plan) {
       <span>:</span>
@@ -27,7 +27,7 @@
     </div>
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable && blockPositions?.size > 0) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+        <label class="col-sm-4 form-control-label" >{{ 'order.label.blockPosition' | translate }}</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [blockPositionList]="blockPositionList" [type]="'BLOCK_POSITION'" [workflow]="workflow"
                              [blockPositions]="blockPositions" (onBlur)="getNewPositions($event)"></app-node-position>
@@ -36,7 +36,7 @@
     }
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+        <label class="col-sm-4 form-control-label" >{{ 'order.label.startNode' | translate }}</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [newPositions]="newPositions" [type]="'START'" [workflow]="workflow" [positions]="positions"></app-node-position>
         </div>
@@ -44,7 +44,7 @@
     }
     @if (permission.currentController && permission.currentController.orders.managePositions && !variable) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+        <label class="col-sm-4 form-control-label" >{{ 'order.label.endNode' | translate }}</label>
         <div class="col-sm-7">
           <app-node-position [obj]="positionObj" [newPositions]="newPositions" [position]="positionObj.startPosition" [type]="'END'" [workflow]="workflow" [positions]="positions"></app-node-position>
         </div>
@@ -61,8 +61,8 @@
               @if (listVariables.list) {
                 <div class="p-a-sm b-a m-b">
                   <div class="form-group row m-b-0 m-l-12">
-                    <div class="col-md-5 col-sm-6 m-b-sm" translate>common.label.name</div>
-                    <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
+                    <div class="col-md-5 col-sm-6 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+                    <div class="col-md-6 col-sm-6 m-b-sm" >{{ 'common.label.value' | translate }}</div>
                   </div>
                   @for (actualListArr of listVariables.actualList; track actualListArr; let i = $index) {
                     <div class="form-group row m-b-0 m-l-12" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}">
@@ -88,7 +88,7 @@
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
-                                        <div translate>common.message.requiredError</div>
+                                        <div >{{ 'common.message.requiredError' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -111,7 +111,7 @@
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
-                                        <div translate>common.message.requiredError</div>
+                                        <div >{{ 'common.message.requiredError' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -148,8 +148,8 @@
               @if (listVariables.map) {
                 <div class="p-a-sm b-a m-b">
                   <div class="form-group row m-b-0 m-l-12">
-                    <div class="col-md-5 col-sm-6 m-b-sm" translate>common.label.name</div>
-                    <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
+                    <div class="col-md-5 col-sm-6 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+                    <div class="col-md-6 col-sm-6 m-b-sm" >{{ 'common.label.value' | translate }}</div>
                   </div>
                   @for (actualMapArr of listVariables.actualMap; track actualMapArr; let i = $index) {
                     <div class="form-group row m-b-0 m-l-12" [ngClass]="{'b-b m-b-sm': i !== listVariables.actualMap.length - 1}">
@@ -169,7 +169,7 @@
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
-                                        <div translate>common.message.requiredError</div>
+                                        <div >{{ 'common.message.requiredError' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -192,7 +192,7 @@
                                   @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                     <div class="text-danger help-block">
                                       @if (value.errors.required) {
-                                        <div translate>common.message.requiredError</div>
+                                        <div >{{ 'common.message.requiredError' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -223,8 +223,8 @@
         <div class="col-sm-12 text m-b">
           @if (variables.length > 0) {
             <div class="form-group row m-b-0 m-l-12">
-              <div class="col-md-5 col-sm-5 m-b-sm" translate>common.label.name</div>
-              <div class="col-md-6 col-sm-6 m-b-sm" translate>common.label.value</div>
+              <div class="col-md-5 col-sm-5 m-b-sm" >{{ 'common.label.name' | translate }}</div>
+              <div class="col-md-6 col-sm-6 m-b-sm" >{{ 'common.label.value' | translate }}</div>
             </div>
           }
           <div cdkDropList (cdkDropListDropped)="drop($event)">
@@ -257,7 +257,7 @@
                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                         <div class="text-danger help-block">
                           @if (value.errors.required) {
-                            <div translate>common.message.requiredError</div>
+                            <div >{{ 'common.message.requiredError' | translate }}</div>
                           }
                         </div>
                       }
@@ -283,10 +283,10 @@
                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                         <div class="text-danger help-block">
                           @if (value.errors.required) {
-                            <div translate>common.message.requiredError</div>
+                            <div >{{ 'common.message.requiredError' | translate }}</div>
                           }
                           @if (value.errors.invalidFacet) {
-                            <div translate>common.message.invalid</div>
+                            <div >{{ 'common.message.invalid' | translate }}</div>
                           }
                         </div>
                       }
@@ -307,12 +307,12 @@
                 <div class="col-sm-12 col-md-12"
                      [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
                   <a class="text-u-l" (click)="addVariable()"
-                     translate>order.button.modifyVariable</a>
+                     >{{ 'order.button.modifyVariable' | translate }}</a>
                 </div>
               }
               @if ((orderPreparation && orderPreparation.allowUndeclared)) {
                 <div class="col-sm-12">
-                  <a class="text-u-l" (click)="addVariable(true)" translate>order.button.addVariable</a>
+                  <a class="text-u-l" (click)="addVariable(true)" >{{ 'order.button.addVariable' | translate }}</a>
                 </div>
               }
             </div>
@@ -321,7 +321,7 @@
       }
       @if (((variableList.length === 0 && forkListVariables.length === 0) || (variables.length === 0 && forkListVariables.length === 0 && variable)) && (!(orderPreparation && orderPreparation.allowUndeclared))) {
         <div class="col-sm-12 text">
-          <div class="text-center m-t m-b" translate>common.message.noVariableDeclarationFound</div>
+          <div class="text-center m-t m-b" >{{ 'common.message.noVariableDeclarationFound' | translate }}</div>
         </div>
       }
     </div>
@@ -334,7 +334,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
-      <span translate>common.button.cancel</span>
+      <span >{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 </form>

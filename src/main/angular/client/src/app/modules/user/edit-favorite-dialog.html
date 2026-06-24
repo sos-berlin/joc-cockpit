@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.favoriteManagement.label.manageFavorite</span>
+    <span >{{ 'profile.favoriteManagement.label.manageFavorite' | translate }}</span>
     @if (data) {
       <i>:&nbsp;</i>
     }
@@ -15,7 +15,7 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>common.label.name</label>
+      <label class="col-sm-3 form-control-label" >{{ 'common.label.name' | translate }}</label>
       @if (type == 'AGENT') {
         <div [ngClass]="{ 'has-error' : (name.dirty || name.touched) && name.invalid}" class="col-sm-8">
           <nz-tree-select
@@ -46,7 +46,7 @@
           @if (name.invalid && (name.dirty || name.touched)) {
             <div class="text-danger help-block">
               @if (name.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -60,7 +60,7 @@
           @if (name.invalid && (name.dirty || name.touched)) {
             <div class="text-danger help-block">
               @if (name.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -69,7 +69,7 @@
     </div>
     @if (type == 'FACET') {
       <div class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>workflow.label.facet</label>
+        <label class="col-sm-3 form-control-label" >{{ 'workflow.label.facet' | translate }}</label>
         <div [ngClass]="{ 'has-error' : ((facet.dirty || facet.touched) && facet.invalid) || object.invalid}"
              class="col-sm-8">
           <textarea #facet="ngModel" (blur)="checkRegularExp(object)" (keydown)="checkRegularExp(object)" [(ngModel)]="object.content"
@@ -78,7 +78,7 @@
           @if ((facet.invalid && facet.errors && (facet.dirty || facet.touched)) || object.invalid) {
             <div class="text-danger help-block">
               @if (object.invalid) {
-                <div translate>workflow.message.invalidRegularExpression</div>
+                <div >{{ 'workflow.message.invalidRegularExpression' | translate }}</div>
               }
             </div>
           }
@@ -87,14 +87,14 @@
     }
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate>
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm">
       @if (submitted) {
         <i class="fa fa-spin fa-spinner p-r-xs"></i>
       }
-      common.button.submit
+      {{ 'common.button.submit' | translate }}
     </button>
-    <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="close()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

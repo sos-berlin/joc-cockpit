@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -12,7 +12,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-agent-status',
-  templateUrl: './agent-status.component.html'
+  templateUrl: './agent-status.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentStatusComponent {
   @Input('layout') layout: any;
@@ -64,7 +65,7 @@ export class AgentStatusComponent {
   public pieChartPlugins = [DatalabelsPlugin];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
-              private router: Router, private dataService: DataService, public modal: NzModalService,) {
+              private router: Router, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -82,6 +83,10 @@ export class AgentStatusComponent {
     if (!localStorage['$SOS$THEME'] || localStorage['$SOS$THEME'].match(/light/)) {
       this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
     }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {
@@ -215,6 +220,7 @@ export class AgentStatusComponent {
 
         this.pieChartData.labels.push(displayLabel);
       });
+      this.cdr.markForCheck();
     });
   }
 
@@ -232,7 +238,8 @@ export class AgentStatusComponent {
         next: res => {
             this.prepareAgentClusterData(res);
             this.isLoaded = true;
-        }, error: () => this.isLoaded = true
+            this.cdr.markForCheck();
+        }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

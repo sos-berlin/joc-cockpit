@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isArray, isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
@@ -12,7 +12,8 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-log',
-  templateUrl: './log.component.html'
+  templateUrl: './log.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogComponent {
   preferences: any = {};
@@ -56,7 +57,8 @@ export class LogComponent {
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
 
   constructor(private route: ActivatedRoute,  private authService: AuthService, public coreService: CoreService,
-              private clipboardService: ClipboardService, private message: NzMessageService, public modal: NzModalService) {
+              private clipboardService: ClipboardService, private message: NzMessageService, public modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
 
   }
 
@@ -68,7 +70,7 @@ export class LogComponent {
     $('.log').height(height);
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     LogComponent.calculateHeight();
   }
@@ -99,7 +101,8 @@ export class LogComponent {
               this.preferences = JSON.parse(res.profileItem);
             }
             this.init();
-          }, error: () => this.init()
+            this.cdr.markForCheck();
+          }, error: () => { this.init(); this.cdr.markForCheck(); }
         });
       } else {
         this.init();
@@ -295,6 +298,7 @@ export class LogComponent {
           this.finished = true;
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         window.document.getElementById('logs').innerHTML = '';
         if (err.data && err.data.error) {
@@ -306,6 +310,7 @@ export class LogComponent {
         this.loading = false;
         this.finished = true;
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -427,6 +432,7 @@ export class LogComponent {
           }
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         window.document.getElementById('logs').innerHTML = '';
         if (err.data && err.data.error) {
@@ -438,6 +444,7 @@ export class LogComponent {
         this.loading = false;
         this.finished = true;
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -841,6 +848,7 @@ export class LogComponent {
     this.checkAndExpand();
     this.isChildren = obj.isChildren;
     this.loading = false;
+    this.cdr.markForCheck();
   }
 
   flattenArgumentsToStrings(obj: any): any[] {
@@ -877,6 +885,7 @@ export class LogComponent {
 
   renderData(res: any, domId: string | null): void {
     this.loading = false;
+    this.cdr.markForCheck();
     LogComponent.calculateHeight();
     if(res) {
       this.coreService.renderData(res, domId, this.object, {

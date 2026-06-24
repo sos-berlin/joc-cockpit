@@ -1,12 +1,12 @@
 <div class="modal-header">
   @if (!list && !docs) {
-    <h4 class="modal-title" translate>workflow.apiRequest.label.defineVariable</h4>
+    <h4 class="modal-title" >{{ 'workflow.apiRequest.label.defineVariable' | translate }}</h4>
   }
   @if (list) {
-    <h4 class="modal-title" translate>workflow.apiRequest.button.variableList</h4>
+    <h4 class="modal-title" >{{ 'workflow.apiRequest.button.variableList' | translate }}</h4>
   }
   @if (docs) {
-    <h4 class="modal-title" translate>workflow.apiRequest.button.documentation</h4>
+    <h4 class="modal-title" >{{ 'workflow.apiRequest.button.documentation' | translate }}</h4>
   }
   @if (!list && !docs) {
     <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
@@ -28,7 +28,7 @@
     <form #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
       <div class="form-group row">
         <div class="col-md-3 form-control-label">
-          <label translate>workflow.apiRequest.label.value</label>
+          <label >{{ 'workflow.apiRequest.label.value' | translate }}</label>
         </div>
         <div class="col-md-6">
           <label>{{ variableValue }}</label>
@@ -37,7 +37,7 @@
 
       <div class="form-group row">
         <div class="col-md-3 form-control-label">
-          <label translate>workflow.apiRequest.label.name
+          <label >{{ 'workflow.apiRequest.label.name' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
         </div>
@@ -55,7 +55,7 @@
             @if (aname.invalid && (aname.dirty || aname.touched)) {
               <div class="text-danger help-block">
                 @if (aname.errors && aname.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div >{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -84,9 +84,9 @@
             class="chk"
           ></th>
           <th class="menu"><span
-            translate>common.label.action</span></th>
-          <th translate>common.label.name</th>
-          <th translate>common.label.path</th>
+            >{{ 'common.label.action' | translate }}</span></th>
+          <th >{{ 'common.label.name' | translate }}</th>
+          <th >{{ 'common.label.path' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -105,10 +105,10 @@
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     <li (click)="edit(i)" nz-menu-item >
-                      <a translate>common.button.edit</a>
+                      <a >{{ 'common.button.edit' | translate }}</a>
                     </li>
                     <li (click)="removeMapping(i)" nz-menu-item>
-                      <a translate>common.button.delete</a>
+                      <a >{{ 'common.button.delete' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -127,7 +127,7 @@
   @if (list && !isAdding) {
     <div class="form-group row m-t-1 m-b-0">
       <div class="col-sm-12">
-        <a (click)="addVariable()" class="text-u-l" translate>workflow.apiRequest.label.addVariable</a>
+        <a (click)="addVariable()" class="text-u-l" >{{ 'workflow.apiRequest.label.addVariable' | translate }}</a>
       </div>
     </div>
   }
@@ -143,9 +143,9 @@
       >
         <thead>
         <tr>
-          <th translate>common.label.name</th>
-          <th translate>common.label.title</th>
-          <th translate>workflow.apiRequest.label.ramlDocs</th>
+          <th >{{ 'common.label.name' | translate }}</th>
+          <th >{{ 'common.label.title' | translate }}</th>
+          <th >{{ 'workflow.apiRequest.label.ramlDocs' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -180,7 +180,7 @@
   @if (isAdding) {
     <div class="form-group row">
       <div class="col-md-3 form-control-label">
-        <label translate>workflow.apiRequest.label.name
+        <label >{{ 'workflow.apiRequest.label.name' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
       </div>
@@ -198,7 +198,7 @@
           @if (addname.invalid && (addname.dirty || addname.touched)) {
             <div class="text-danger help-block">
               @if (addname.errors && addname.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -210,7 +210,7 @@
   @if (isAdding) {
     <div class="form-group row">
       <div class="col-md-3 form-control-label">
-        <label translate>workflow.apiRequest.label.value
+        <label >{{ 'workflow.apiRequest.label.value' | translate }}
           <sup class="text-danger text-sm">*</sup></label>
       </div>
       <div class="col-md-6">
@@ -222,7 +222,7 @@
           @if (addvalue.invalid && (addvalue.dirty || addvalue.touched)) {
             <div class="text-danger help-block">
               @if (addvalue.errors && addvalue.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -246,18 +246,18 @@
     </button>
   }
   @if (docs) {
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-      common.button.close
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" >
+      {{ 'common.button.close' | translate }}
     </button>
   }
   @if (isAdding) {
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancelAdd()" translate>
-      common.button.cancel
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancelAdd()" >
+      {{ 'common.button.cancel' | translate }}
     </button>
   }
   @if (list && !isAdding) {
-    <button type="button" class="btn btn-grey btn-sm" (click)="closeWithMappings()" translate>
-      common.button.close
+    <button type="button" class="btn btn-grey btn-sm" (click)="closeWithMappings()" >
+      {{ 'common.button.close' | translate }}
     </button>
   }
 </div>

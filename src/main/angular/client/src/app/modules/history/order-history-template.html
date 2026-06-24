@@ -6,10 +6,10 @@
                 [nzShowPagination]="false" class="m-a-0 inner-table" nzSize="small">
         <thead>
         <tr>
-          <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" translate>history.label.state</span>
+          <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" >{{ 'history.label.state' | translate }}</span>
           </th>
-          <th><span translate>history.label.stateTime</span></th>
-          <th><span translate>history.label.stateText</span></th>
+          <th><span >{{ 'history.label.stateTime' | translate }}</span></th>
+          <th><span >{{ 'history.label.stateText' | translate }}</span></th>
         </tr>
         </thead>
         <tbody>
@@ -41,15 +41,15 @@
           @if ((i > 0 && !history.children[i-1].task) || i==0) {
             <thead>
             <tr>
-              <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" translate>history.label.job</span>
+              <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}" >{{ 'history.label.job' | translate }}</span>
               </th>
-              <th><span translate>workflow.label.label</span></th>
-              <th><span translate>history.label.status</span></th>
-              <th><span translate>history.label.startTime</span></th>
-              <th><span translate>history.label.endTime</span></th>
-              <th><span translate>history.label.duration</span></th>
-              <th><span translate>history.label.criticality</span></th>
-              <th><span translate>history.label.returnCode</span></th>
+              <th><span >{{ 'workflow.label.label' | translate }}</span></th>
+              <th><span >{{ 'history.label.status' | translate }}</span></th>
+              <th><span >{{ 'history.label.startTime' | translate }}</span></th>
+              <th><span >{{ 'history.label.endTime' | translate }}</span></th>
+              <th><span >{{ 'history.label.duration' | translate }}</span></th>
+              <th><span >{{ 'history.label.criticality' | translate }}</span></th>
+              <th><span >{{ 'history.label.returnCode' | translate }}</span></th>
             </tr>
             </thead>
           }

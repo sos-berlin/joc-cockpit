@@ -85,12 +85,12 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.calcHeight();
   }
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onScroll(): void {
     this.calcHeight();
   }

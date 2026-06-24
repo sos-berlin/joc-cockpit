@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -13,7 +13,8 @@ import {TranslateService} from "@ngx-translate/core";
 @Component({
   standalone: false,
   selector: 'app-running-history',
-  templateUrl: './running-history.component.html'
+  templateUrl: './running-history.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RunningHistoryComponent {
   @Input() permission: any;
@@ -34,7 +35,7 @@ export class RunningHistoryComponent {
   private pendingHTTPRequests$ = new Subject<void>();
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -50,6 +51,10 @@ export class RunningHistoryComponent {
         this.getData()
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -84,6 +89,7 @@ export class RunningHistoryComponent {
     this.coreService.post('reporting/run/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.reports = res.runs;
         this.reports.forEach((report) => {
           const template = this.templates.find(template => template.templateName == report.templateName);
@@ -93,7 +99,7 @@ export class RunningHistoryComponent {
           }
         })
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

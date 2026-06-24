@@ -7,13 +7,13 @@
                   [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('future') !== -1}"
                   class="btn btn-grey btn-sm hidden-btn-text">
             <i class="icon icon-workflows-icon"></i>
-            <span translate>dailyPlan.button.future</span>
+            <span >{{ 'dailyPlan.button.future' | translate }}</span>
           </button>
           <button (click)="setNoticeStatus('present')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.present'|translate"
                   [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('present') !== -1}"
                   class="btn btn-grey btn-sm hidden-btn-text">
             <i class="icon icon-workflows-icon"></i>
-            <span translate>dailyPlan.button.present</span>
+            <span >{{ 'dailyPlan.button.present' | translate }}</span>
           </button>
 
           <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
@@ -47,9 +47,9 @@
         <div class="p-b b-b icon-hover">
           <ng-template #tooltipTemplate>
             <div class="m-a-xs">
-              <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep1</span><br>
-              <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep2</span><br>
-              <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
+              <i class="fa fa-circle circle daily-plan-step-icon"></i><span >{{ 'dailyPlan.tooltip.dateRangeSelectStep1' | translate }}</span><br>
+              <i class="fa fa-circle circle daily-plan-step-icon"></i><span >{{ 'dailyPlan.tooltip.dateRangeSelectStep2' | translate }}</span><br>
+              <i class="fa fa-circle circle daily-plan-step-icon"></i><span >{{ 'dailyPlan.tooltip.dateRangeSelectStep3' | translate }}</span>
             </div>
           </ng-template>
           <div class="calendar-sm m-t-0" id="full-calendar2"></div>
@@ -58,13 +58,13 @@
           @if (permission.joc && permission.joc.dailyPlan.manage) {
             <button (click)="openPlan()" [disabled]="!isClosed" class="btn btn-grey btn-sm m-b-sm">
               <i class="fa fa-stop selected-blue m-r-sm"></i>
-              <span translate>dailyPlan.button.openPlan</span>
+              <span >{{ 'dailyPlan.button.openPlan' | translate }}</span>
             </button>
           }
           @if (permission.joc && permission.joc.dailyPlan.manage) {
             <button (click)="closePlan()" [disabled]="!isOpen" class="btn btn-grey btn-sm m-l-xs m-b-sm">
               <i class="fa fa-stop selected-orange m-r-sm"></i>
-              <span translate>dailyPlan.button.closePlan</span>
+              <span >{{ 'dailyPlan.button.closePlan' | translate }}</span>
             </button>
           }
         </div>
@@ -109,8 +109,7 @@
         </div>
       <div style="margin-top: 14px">
       <span class="m-l-2 m-t-2"
-            [translateParams]="{total: totalWorkflows, noticeCount: totalNotices}"
-            translate>dailyPlan.label.totalWorkflowNoticeEntry</span>
+            >{{ 'dailyPlan.label.totalWorkflowNoticeEntry' | translate:{total: totalWorkflows, noticeCount: totalNotices} }}</span>
         @if (workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows) {
           <nz-pagination class="pull-right m-r-sm"
                          [nzPageSize]="pageSize || preferences.entryPerPage || 25"
@@ -127,15 +126,15 @@
     </div>
   </div>
 </div>
-<nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
-    <div class="p-l-sm p-r-sm">
-      <app-order-list-sidebar  [orders]="sideBar.orders"
-                              [permission]="permission" [preferences]="preferences"
-                              [schedulerId]="schedulerId"></app-order-list-sidebar>
-    </div>
-  </ng-container>
+<ng-template #orderSidebarDrawerTpl>
+  <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+  <div class="p-l-sm p-r-sm">
+    <app-order-list-sidebar  [orders]="sideBar.orders"
+                            [permission]="permission" [preferences]="preferences"
+                            [schedulerId]="schedulerId"></app-order-list-sidebar>
+  </div>
+</ng-template>
+<nz-drawer [nzContent]="orderSidebarDrawerTpl" (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
 </nz-drawer>
 @if (!isLoaded) {
   <div class="spinner">

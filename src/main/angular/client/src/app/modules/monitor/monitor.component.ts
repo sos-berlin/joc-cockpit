@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -7,7 +7,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-monitor',
-  templateUrl: './monitor.component.html'
+  templateUrl: './monitor.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonitorComponent {
   monitor: Array<any> = [];
@@ -24,9 +25,11 @@ export class MonitorComponent {
               private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.loading = false;
+      this.cdr.markForCheck();
       this.init();
       setTimeout(() => {
         this.loading = true;
+        this.cdr.markForCheck();
       }, 10);
     });
   }

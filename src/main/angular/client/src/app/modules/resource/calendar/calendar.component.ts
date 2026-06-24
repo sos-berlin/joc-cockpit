@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -88,7 +88,8 @@ export class SingleCalendarComponent {
 @Component({
   standalone: false,
   selector: 'app-calendar',
-  templateUrl: 'calendar.component.html'
+  templateUrl: 'calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent {
   isLoading = false;
@@ -114,7 +115,8 @@ export class CalendarComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private searchPipe: SearchPipe, private dataService: DataService) {
+              private modal: NzModalService, private searchPipe: SearchPipe, private dataService: DataService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -152,7 +154,8 @@ export class CalendarComponent {
           this.loadCalendar(null);
         }
         this.isLoading = true;
-      }, error: () => this.isLoading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -314,6 +317,7 @@ export class CalendarComponent {
           this.calendarFilters.currentPage = 1;
         }
         this.loading = false;
+        this.cdr.markForCheck();
         if (res.calendars) {
           for (let i = 0; i < res.calendars.length; i++) {
             res.calendars[i].path1 = res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/')) || res.calendars[i].path.substring(0, res.calendars[i].path.lastIndexOf('/') + 1);
@@ -321,7 +325,7 @@ export class CalendarComponent {
         }
         this.calendars = res.calendars || [];
         this.searchInResult();
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -357,6 +361,7 @@ export class CalendarComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       });
     }
   }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -68,6 +68,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
@@ -104,7 +105,7 @@ export class FileTransferSearchComponent {
     {status: 'RENAME', text: 'rename', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -178,6 +179,7 @@ export class FileTransferSearchComponent {
   } else {
     this.selectedOperations = [];
   }
+  this.cdr.markForCheck();
 }
 
   getFolderTree(): void {
@@ -453,7 +455,8 @@ export class SingleFileTransferComponent {
 @Component({
   standalone: false,
   selector: 'app-file-transfer',
-  templateUrl: './file-transfer.component.html'
+  templateUrl: './file-transfer.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileTransferComponent {
   schedulerIds: any = {};
@@ -483,7 +486,7 @@ export class FileTransferComponent {
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {
+              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -492,6 +495,10 @@ export class FileTransferComponent {
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -581,6 +588,7 @@ export class FileTransferComponent {
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.fileTransfers = res.transfers || [];
         if (this.showFiles) {
           this.fileTransfers.forEach((transfer) => {
@@ -590,7 +598,7 @@ export class FileTransferComponent {
         }
         this.searchInResult();
         this.setHeaderWidth();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -664,10 +672,11 @@ export class FileTransferComponent {
     this.coreService.post('yade/transfers', filter).subscribe({
       next: (res: any) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
         this.fileTransfers = res.transfers;
         this.searchInResult();
         this.setHeaderWidth();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

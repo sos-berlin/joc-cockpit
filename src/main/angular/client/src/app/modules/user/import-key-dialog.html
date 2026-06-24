@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (type !== 'certificate' && (securityLevel !== 'HIGH' || (securityLevel ==='HIGH' && type === 'ca'))) {
-      <span translate>profile.keyManagement.label.importPrivateKey</span>
+      <span >{{ 'profile.keyManagement.label.importPrivateKey' | translate }}</span>
     }
     @if (type !== 'certificate' && securityLevel ==='HIGH' && type !== 'ca') {
-      <span translate>profile.keyManagement.label.importPublicKey</span>
+      <span >{{ 'profile.keyManagement.label.importPublicKey' | translate }}</span>
     }
     @if (type === 'certificate') {
-      <span translate>profile.keyManagement.label.importCertificate</span>
+      <span >{{ 'profile.keyManagement.label.importCertificate' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -23,17 +23,17 @@
       @if (type !== 'certificate') {
         <div class="col-md-12">
           <div class="form-group row">
-            <div class="col-md-4 col-lg-3" translate>profile.keyManagement.label.keyAlgorithm</div>
+            <div class="col-md-4 col-lg-3" >{{ 'profile.keyManagement.label.keyAlgorithm' | translate }}</div>
             <div class="col-md-8 col-lg-9">
               <nz-radio-group [(ngModel)]="key.keyAlg" name="alg">
-                <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
+                <label nz-radio nzValue="ECDSA"><span >{{ 'profile.keyManagement.label.ecdsa' | translate }}</span></label>
                 @if (type === 'key') {
                   <label nz-radio nzValue="RSA"><span
-                    translate>profile.keyManagement.label.rsa</span></label>
+                    >{{ 'profile.keyManagement.label.rsa' | translate }}</span></label>
                 }
                 @if (type === 'key') {
                   <label nz-radio nzValue="PGP"><span
-                    translate>profile.keyManagement.label.pgp</span></label>
+                    >{{ 'profile.keyManagement.label.pgp' | translate }}</span></label>
                 }
               </nz-radio-group>
             </div>
@@ -53,7 +53,7 @@
       @if (fileList.length === 0) {
         <div>
           <i class="icon-upload-icon"></i>
-          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+          <div class="upload-text" >{{ 'common.button.dragAndDropFileToUpload' | translate }}</div>
         </div>
       }
     </nz-upload>
@@ -70,7 +70,7 @@
         <div class="p-t-sm">
           <button class="btn btn-default btn-sm" type="button">
             <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>common.button.chooseFileToUpload</span>
+            <span >{{ 'common.button.chooseFileToUpload' | translate }}</span>
           </button>
         </div>
       </nz-upload>
@@ -85,8 +85,8 @@
         }
         {{'common.button.import' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{'common.button.cancel' | translate }}
       </button>
     </div>
   }

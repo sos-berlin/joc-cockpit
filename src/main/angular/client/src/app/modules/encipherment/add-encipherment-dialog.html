@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>{{'encipherment.label.'+ title}}</span>
+    <span >{{ 'encipherment.label.'+ title | translate }}</span>
     @if (preferences.showHelpPages) {
       <i (click)="helpPage('encryption-manage-certificate')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
@@ -18,7 +18,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
+      <label class="col-sm-3 form-control-label" >{{ 'encipherment.label.certAlias' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -27,10 +27,10 @@
         @if (certAlias.invalid && (certAlias.dirty || certAlias.touched)) {
           <div class="text-danger help-block">
             @if ((certAlias.errors && certAlias.errors.required)) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
             @if (certAlias.errors.invalidIdentifier) {
-              <div translate>common.message.invalid</div>
+              <div >{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
@@ -38,7 +38,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.certificate
+      <label class="col-sm-3 form-control-label" >{{ 'encipherment.label.certificate' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -48,7 +48,7 @@
         @if (certificate.invalid && (certificate.dirty || certificate.touched)) {
           <div class="text-danger help-block">
             @if (certificate.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -56,7 +56,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
          class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.privateKeyPath
+      <label class="col-sm-3 form-control-label" >{{ 'encipherment.label.privateKeyPath' | translate }}
       </label>
       <div class="col-sm-9">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
@@ -64,14 +64,14 @@
         @if (privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)) {
           <div class="text-danger help-block">
             @if (privateKeyPath.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}" class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>encipherment.label.jobResourceFolder
+      <label class="col-sm-3 form-control-label" >{{ 'encipherment.label.jobResourceFolder' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -95,7 +95,7 @@
                 <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                 {{node.origin.name}}
                 @if (node.origin.notExist) {
-                  <span class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
+                  <span class="m-l-sm label bg-danger" >{{ 'user.label.folderNotExist' | translate }}</span>
                 }
               </div>
             </div>
@@ -104,7 +104,7 @@
         @if (jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)) {
           <div class="text-danger help-block">
             @if (jobResourceFolder.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -113,7 +113,7 @@
     <div class="form-group row">
       <div class="col-sm-12">
         @if (certificateObj.certAlias && title === 'updateCertificate') {
-          <a (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+          <a (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" >{{ 'encipherment.label.showAssignedAgents' | translate }}</a>
         }
       </div>
     </div>
@@ -121,7 +121,7 @@
     @if (title === 'updateCertificate') {
       <div class="form-group row">
         <div class="col-sm-12">
-          <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
+          <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" >{{ 'encipherment.label.assignAgents' | translate }}</a>
         </div>
       </div>
     }
@@ -129,13 +129,13 @@
     @if (!showEncryptionSample && title === 'updateCertificate') {
       <div class="form-group row">
         <div class="col-sm-12">
-          <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
+          <a (click)="toggleEncryptionSample()" class="text-u-l" >{{ 'encipherment.label.showEncryptionSample' | translate }}</a>
         </div>
       </div>
     }
     @if (showEncryptionSample) {
       <div class="form-group row">
-        <label class="col-sm-3" translate>encipherment.label.plainText</label>
+        <label class="col-sm-3" >{{ 'encipherment.label.plainText' | translate }}</label>
         <div class="col-sm-8">
           <input [(ngModel)]="plainText" name="plainText" class="form-control" placeholder="{{'encipherment.placeholder.plainText' | translate}}" />
         </div>
@@ -147,7 +147,7 @@
       </div>
       @if (encryptedText) {
         <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>encipherment.label.encrypt</label>
+          <label class="col-sm-3 form-control-label" >{{ 'encipherment.label.encrypt' | translate }}</label>
           <div class="col-sm-8">
             <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
           </div>
@@ -167,7 +167,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.cancel</span>
+      <span >{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 </form>

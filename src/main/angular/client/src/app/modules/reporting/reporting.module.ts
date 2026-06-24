@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {NgChartsModule} from 'ng2-charts';
+import {BaseChartDirective, provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {ReportingRoutingModule} from "./reporting-routing.module";
@@ -28,14 +28,14 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
   ],
     imports: [
         ReportingRoutingModule,
-        NgChartsModule,
+        BaseChartDirective,
         SharedModule,
         NzDrawerModule,
         NzTabsModule,
         GaugeModule.forRoot(),
         NzTooltipDirective,
     ],
-  providers: [GroupByPipe, SharingDataService]
+  providers: [GroupByPipe, SharingDataService, provideCharts(withDefaultRegisterables())]
 })
 export class ReportingModule {
 }

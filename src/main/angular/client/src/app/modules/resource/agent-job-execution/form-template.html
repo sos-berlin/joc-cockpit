@@ -2,7 +2,7 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'customization.label.customizationName' | translate }}
         @if (!isSearch) {
           <sup class="text-danger text-sm">*</sup>
         }
@@ -16,32 +16,32 @@
           <div class="text-danger help-block">
             @if (name.errors['required']) {
               <div>
-                <div translate>common.message.requiredError</div>
+                <div >{{ 'common.message.requiredError' | translate }}</div>
               </div>
             }
           </div>
         }
         @if (!isUnique) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div >{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
     </div>
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4" translate>common.label.dateRange</label>
+        <label class="col-md-2 col-sm-4" >{{ 'common.label.dateRange' | translate }}</label>
         <div class="col-md-6">
           <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+            <label nz-radio nzValue="current"><span >{{ 'common.label.specificDate' | translate }}</span></label>
+            <label nz-radio nzValue="planned"><span >{{ 'common.label.relativeDate' | translate }}</span></label>
           </nz-radio-group>
         </div>
       </div>
     }
     @if (filter.radio === 'current') {
       <div class="form-group row ">
-        <label class="col-sm-2 form-control-label" translate>common.label.from</label>
+        <label class="col-sm-2 form-control-label" >{{ 'common.label.from' | translate }}</label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
@@ -52,7 +52,7 @@
     }
     @if (filter.radio === 'current') {
       <div class="form-group row">
-        <label class="col-sm-2 form-control-label" translate>common.label.to</label>
+        <label class="col-sm-2 form-control-label" >{{ 'common.label.to' | translate }}</label>
         <div class="col-sm-6">
           <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
                           [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
@@ -64,7 +64,7 @@
     @if (filter.radio === 'planned') {
       <div [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}"
            class="form-group row">
-        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processExecuted</label>
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'common.label.processExecuted' | translate }}</label>
         <div class=" col-sm-6">
           <input #processExc="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
                  type="text"
@@ -72,7 +72,7 @@
           @if (processExc.errors && (processExc.dirty || processExc.touched)) {
             <div class="help-block text-danger">
               @if (!processExc.valid) {
-                <div translate>common.message.invalid</div>
+                <div >{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
@@ -81,7 +81,7 @@
     }
     @if (isSearch) {
       <div class="form-group row">
-        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <label class="col-md-2 col-sm-4 form-control-label" >{{ 'common.label.controllerId' | translate }}</label>
         <div class=" col-sm-6">
           <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [placeholder]="'common.label.selectController'"
                             [listArray]="schedulerIds.controllerIds" [name]="'id'" [ignoreTranslate]="true"
@@ -90,7 +90,7 @@
       </div>
     }
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentIds</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'resource.agentJobExecution.label.agentIds' | translate }}</label>
       <div class="col-sm-6">
         <app-select-input [attributeName]="'agentIds' "
                           [placeholder]="'resource.agentJobExecution.placeholder.selectAgentIds'" [isMultiple]="true" [isSearchable]="true"
@@ -99,7 +99,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>resource.agentJobExecution.label.agentUrls</label>
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" >{{ 'resource.agentJobExecution.label.agentUrls' | translate }}</label>
       <div class="col-sm-6">
         <input [(ngModel)]="filter.urls" autocomplete="off" class="form-control"
                name="urls"
@@ -108,7 +108,7 @@
     </div>
     @if (permission.joc.administration.customization.share && !isSearch) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <label class="col-sm-4" >{{ 'customization.label.sharedCustomization' | translate }}</label>
         <div class="col-sm-8">
           <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
         </div>
@@ -116,8 +116,8 @@
     }
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
-          common.button.search
+        <button (click)="search()" class="btn btn-primary btn-sm" type="button">
+          {{'common.button.search' | translate}}
         </button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
@@ -126,8 +126,8 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-          common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+          {{'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -140,8 +140,8 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+        {{'common.button.cancel' | translate }}
       </button>
     </div>
   }

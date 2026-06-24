@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>dashboard.label.addWidget</h4>
+  <h4 class="modal-title" >{{ 'dashboard.label.addWidget' | translate }}</h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -16,9 +16,9 @@
       </div>
       <div class="col-sm-4 text-right">
         <div>
-          <button nz-dropdown [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nzTrigger="click" translate
+          <button nz-dropdown [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nzTrigger="click"
                   type="button">
-            <i class="fa fa-cog"></i> dashboard.button.changeSize
+            <i class="fa fa-cog"></i> {{'dashboard.button.changeSize' | translate}}
           </button>
           <nz-dropdown-menu #size="nzDropdownMenu">
             <ul class="text-overflow max-ht-120 max-w-110" nz-menu>
@@ -48,8 +48,8 @@
                   nz-menu-item><a>3 <i class="fa fa-times"></i> 5</a></li>
             </ul>
           </nz-dropdown-menu>
-          <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-            <i class="fa fa-plus"></i> dashboard.button.widget
+          <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" type="button">
+            <i class="fa fa-plus"></i> {{'dashboard.button.widget' | translate}}
           </button>
         </div>
       </div>

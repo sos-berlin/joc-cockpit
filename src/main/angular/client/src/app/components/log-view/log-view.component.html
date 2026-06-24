@@ -15,42 +15,42 @@
         }
 
         <label [(ngModel)]="object.checkBoxs.main" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('MAIN')" >
-          <span translate>log.label.main</span></label>
+          <span >{{ 'log.label.main' | translate }}</span></label>
         @if (isStdSuccessLevel) {
           <label [(ngModel)]="object.checkBoxs.success" class="m-r"
-                 (ngModelChange)="checkLogLevel('SUCCESS')" nz-checkbox><span translate>log.label.success</span></label>
+                 (ngModelChange)="checkLogLevel('SUCCESS')" nz-checkbox><span >{{ 'log.label.success' | translate }}</span></label>
         }
         <label [(ngModel)]="object.checkBoxs.stdout" class="m-r"
-               nz-checkbox (ngModelChange)="checkLogLevel('STDOUT')" ><span translate>log.label.stdout</span></label>
+               nz-checkbox (ngModelChange)="checkLogLevel('STDOUT')" ><span >{{ 'log.label.stdout' | translate }}</span></label>
         @if (isStdErrLevel) {
           <label [(ngModel)]="object.checkBoxs.stderr" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('STDERR')" ><span translate>log.label.stderr</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('STDERR')" ><span >{{ 'log.label.stderr' | translate }}</span></label>
         }
         @if (isInfoLevel) {
           <label [(ngModel)]="object.checkBoxs.info" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('INFO')" ><span translate>log.label.info</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('INFO')" ><span >{{ 'log.label.info' | translate }}</span></label>
         }
         @if (isFatalLevel) {
           <label [(ngModel)]="object.checkBoxs.fatal" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('FATAL')" ><span translate>log.label.fatal</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('FATAL')" ><span >{{ 'log.label.fatal' | translate }}</span></label>
         }
         @if (isErrorLevel) {
           <label [(ngModel)]="object.checkBoxs.error" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('ERROR')" ><span translate>log.label.error</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('ERROR')" ><span >{{ 'log.label.error' | translate }}</span></label>
         }
         @if (isWarnLevel) {
           <label [(ngModel)]="object.checkBoxs.warn" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('WARN')" ><span translate>log.label.warn</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('WARN')" ><span >{{ 'log.label.warn' | translate }}</span></label>
         }
         <label [(ngModel)]="object.checkBoxs.debug" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('DEBUG')" ><span
-          translate>log.label.debug</span></label>
+          >{{ 'log.label.debug' | translate }}</span></label>
         @if (isTraceLevel) {
           <label [(ngModel)]="object.checkBoxs.trace" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('TRACE')" ><span translate>log.label.trace</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('TRACE')" ><span >{{ 'log.label.trace' | translate }}</span></label>
         }
         @if (isDetailLevel) {
           <label [(ngModel)]="object.checkBoxs.detail" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span translate>log.label.detail</span></label>
+                 nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span >{{ 'log.label.detail' | translate }}</span></label>
         }
         @if (preferences.showHelpPages) {
           <a (click)="helpPage()" class="m-r pull-right">
@@ -64,22 +64,22 @@
         @if (!isCancel && !finished) {
           <a (click)="cancel()" class="m-r m-l pull-right">
             <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>
-            <span translate>common.button.cancel</span>
+            <span >{{ 'common.button.cancel' | translate }}</span>
           </a>
         }
         @if (finished || isCancel) {
           <a (click)="reloadLog()" class="m-r m-l pull-right">
             <i class="icon" nz-icon nzTheme="outline" nzType="reload"></i>
-            <span translate>workflow.button.reload</span>
+            <span >{{ 'workflow.button.reload' | translate }}</span>
           </a>
         }
         <a (click)="downloadLog()" class="m-l pull-right">
           <i class="icon" nz-icon nzTheme="outline" nzType="download"></i>
-          <span translate>common.button.download</span>
+          <span >{{ 'common.button.download' | translate }}</span>
         </a>
         <a (click)="copy()" class="m-l pull-right">
           <i class="icon" nz-icon nzTheme="outline" nzType="copy"></i>
-          <span translate>log.button.copyToClipboard</span>
+          <span >{{ 'log.button.copyToClipboard' | translate }}</span>
         </a>
       </div>
     </div>

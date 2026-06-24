@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.newDraft</span>
+    <span >{{ 'inventory.label.newDraft' | translate }}</span>
     @if (deployablesObject.length===0 && !loading) {
       <span>: {{data.name}}</span>
     }
@@ -51,7 +51,7 @@
                             <nz-option [nzLabel]="'workflow.label.draft' | translate" nzCustomContent nzValue="">
                               <div>
                                 <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                                - <span class="label bg-gold" translate>inventory.label.notValid</span>
+                                - <span class="label bg-gold" >{{ 'inventory.label.notValid' | translate }}</span>
                               </div>
                             </nz-option>
                           </ng-container>
@@ -93,7 +93,7 @@
                   }
                   @if (!child.deployablesVersions || child.deployablesVersions.length ===0) {
                     <div class="m-l">
-                      <i class="text-muted" translate>workflow.label.draft</i>
+                      <i class="text-muted" >{{ 'workflow.label.draft' | translate }}</i>
                     </div>
                   }
                 </div>
@@ -106,7 +106,7 @@
     @if (deployablesObject.length===0 && !loading) {
       <div class="row text-center">
         <div class="col-sm-12 m-t m-b">
-          <span class="text" translate>inventory.message.deleteCurrentDraftObject</span>
+          <span class="text" >{{ 'inventory.message.deleteCurrentDraftObject' | translate }}</span>
         </div>
       </div>
     }
@@ -117,7 +117,7 @@
     }
   </div>
   <div class="modal-footer text-left">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate type="submit">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" type="submit">
       @if (submitted) {
         <i class="fa fa-spin fa-spinner p-r-xs"></i>
       }
@@ -128,6 +128,6 @@
         <span>{{'common.button.confirm' | translate}}</span>
       }
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
   </div>
 </form>

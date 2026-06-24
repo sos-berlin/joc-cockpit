@@ -3,7 +3,7 @@
     <div class="text-right d-flex justify-content-end align-items-center">
       <button (click)="addGroup()" class="btn btn-sm btn-grey m-l-12">
         <i [nzType]="'plus'" nz-icon nzTheme="outline"></i>&nbsp;
-        <span translate>inventory.button.newGroup</span>
+        <span >{{ 'inventory.button.newGroup' | translate }}</span>
       </button>
     </div>
     <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list m-t-sm">
@@ -32,12 +32,12 @@
               <nz-dropdown-menu #groupTagMenu="nzDropdownMenu" role="menu">
                 <ul nz-menu>
                   <li (click)="addTagsToGroup(group);" nz-menu-item>
-                    <a translate>inventory.button.assignTags</a></li>
+                    <a >{{ 'inventory.button.assignTags' | translate }}</a></li>
                   <li (click)="renameGroup(group);" nz-menu-item>
-                    <a translate>inventory.button.rename</a></li>
+                    <a >{{ 'inventory.button.rename' | translate }}</a></li>
                   <li (click)="deleteGroup(group);" class="bg-hover-color"
                       nz-menu-item>
-                    <a translate>inventory.button.delete</a></li>
+                    <a >{{ 'inventory.button.delete' | translate }}</a></li>
                 </ul>
               </nz-dropdown-menu>
             </div>
@@ -49,8 +49,8 @@
           @if (group.isExpanded && !group.loading) {
             <div class="p-l-md">
               @if (group.children?.length == 0) {
-                <div class="m-l-sm node-wrapper p-b-xxs" translate>
-                  common.message.noDataAvailable
+                <div class="m-l-sm node-wrapper p-b-xxs" >
+                  {{ 'common.message.noDataAvailable' | translate }}
                 </div>
               }
               @for (child of group.children; track child) {

@@ -1,6 +1,6 @@
 <div id="ordersSummary1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.history
+    <h3 >{{ 'dashboard.label.history' | translate }}
       @if (preferences.showHelpPages) {
         <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
@@ -21,23 +21,23 @@
                 <ul nz-menu>
                   <li (click)="getSummaryByDate('0d');filters.label='filters.button.today'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}"
                       nz-menu-item>
-                    <a translate>filters.button.today</a>
+                    <a >{{ 'filters.button.today' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last1</a>
+                    <a >{{ 'filters.button.last1' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last12</a>
+                    <a >{{ 'filters.button.last12' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last24</a>
+                    <a >{{ 'filters.button.last24' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}"
                       nz-menu-item>
-                    <a translate>filters.button.lastWeak</a>
+                    <a >{{ 'filters.button.lastWeak' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -52,16 +52,16 @@
       <table class="w-full">
         <tr class="text-center">
           <td style="width: 25%">
-            <div translate>dashboard.label.successfulOrders</div>
+            <div >{{ 'dashboard.label.successfulOrders' | translate }}</div>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.failedOrders</div>
+            <div >{{ 'dashboard.label.failedOrders' | translate }}</div>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.successfulJobs</div>
+            <div >{{ 'dashboard.label.successfulJobs' | translate }}</div>
           </td>
           <td style="width: 25%">
-            <div translate>dashboard.label.failedJobs</div>
+            <div >{{ 'dashboard.label.failedJobs' | translate }}</div>
           </td>
         </tr>
         <tr class="text-center">

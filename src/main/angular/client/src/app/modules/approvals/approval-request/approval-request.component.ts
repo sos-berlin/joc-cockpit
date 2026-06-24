@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
@@ -13,7 +13,8 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
   standalone: false,
   selector: 'app-approval-request',
   templateUrl: './approval-request.component.html',
-  styleUrl: './approval-request.component.scss'
+  styleUrl: './approval-request.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApprovalRequestComponent {
   @Input() preferences: any = {};
@@ -36,7 +37,7 @@ export class ApprovalRequestComponent {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
+              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
       setTimeout(() =>{
         if (res) {
@@ -59,6 +60,10 @@ export class ApprovalRequestComponent {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnInit(): void {
@@ -98,6 +103,7 @@ export class ApprovalRequestComponent {
     this.coreService.post('approval/requests', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
         const requests = res.requests;
         const approvers = res.approvers;
 
@@ -119,6 +125,7 @@ export class ApprovalRequestComponent {
       },
       error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
 
@@ -255,9 +262,11 @@ export class ApprovalRequestComponent {
       next: () => {
        this.fetchRequests()
         this.isLoaded = true;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -320,9 +329,11 @@ export class ApprovalRequestComponent {
           this.coreService.post(`approval/${action}`, payload).subscribe({
             next: () => {
               this.isLoaded = true;
+              this.cdr.markForCheck();
             },
             error: () => {
               this.isLoaded = true;
+              this.cdr.markForCheck();
             }
           });
         }
@@ -332,9 +343,11 @@ export class ApprovalRequestComponent {
       this.coreService.post(`approval/${action}`, payload).subscribe({
         next: () => {
           this.isLoaded = true;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.isLoaded = true;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -378,11 +391,13 @@ export class ApprovalRequestComponent {
             this.coreService.post(`approvals/${action}`, payload).subscribe({
               next: () => {
                 this.isLoaded = true;
+                this.cdr.markForCheck();
                 this.filters.mapOfCheckedId.clear();
                 this.refreshCheckedStatus()
               },
               error: () => {
                 this.isLoaded = true;
+                this.cdr.markForCheck();
               }
             });
           }
@@ -392,16 +407,19 @@ export class ApprovalRequestComponent {
         this.coreService.post(`approvals/${action}`, payload).subscribe({
           next: () => {
             this.isLoaded = true;
+            this.cdr.markForCheck();
             this.filters.mapOfCheckedId.clear();
             this.refreshCheckedStatus()
           },
           error: () => {
             this.isLoaded = true;
+            this.cdr.markForCheck();
           }
         });
       }
     }else{
       this.isLoaded = true;
+      this.cdr.markForCheck();
       this.filters.mapOfCheckedId.clear();
       this.refreshCheckedStatus()
     }

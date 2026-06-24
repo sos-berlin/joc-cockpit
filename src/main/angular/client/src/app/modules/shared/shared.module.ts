@@ -8,7 +8,7 @@ import {NzCollapseModule} from 'ng-zorro-antd/collapse';
 // import {NzMessageModule} from 'ng-zorro-antd/message';
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
-import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
+
 import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {NzMentionModule} from "ng-zorro-antd/mention";
 import {NzRadioModule} from 'ng-zorro-antd/radio';
@@ -93,7 +93,7 @@ import {NzResizableDirective} from "ng-zorro-antd/resizable";
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzMentionModule, NzTagModule, NzSelectModule,
   NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule, CodeMirrorModule,
-  NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
+  NzDatePickerModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
   ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent];

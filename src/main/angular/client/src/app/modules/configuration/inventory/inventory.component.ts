@@ -457,7 +457,8 @@ export class NewDraftComponent {
 @Component({
   standalone: false,
   selector: 'app-single-deploy-modal',
-  templateUrl: './single-deploy-dialog.html'
+  templateUrl: './single-deploy-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleDeployComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -546,6 +547,7 @@ export class SingleDeployComponent {
     this._dependenciesPromise = this.getDependencies()
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+    this.ref.markForCheck();
   }
 
   init(): void {
@@ -1301,6 +1303,7 @@ export class SingleDeployComponent {
           this.loading = false;
           this.dependenciesLoading = false;
           resolve();
+          this.ref.markForCheck();
         },
         error: (err) => {
           this.loading = false;
@@ -12780,7 +12783,8 @@ export class PublishChangeModalComponent {
 @Component({
   standalone: false,
   selector: 'app-show-dependencies-modal',
-  templateUrl: './show-dependencies-dialog.html'
+  templateUrl: './show-dependencies-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowDependenciesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -12830,6 +12834,7 @@ export class ShowDependenciesModalComponent {
       this.display = true;
     }
     this.getDependencies();
+    this.ref.markForCheck();
   }
 
   private getDependencies(): void {
@@ -12859,6 +12864,7 @@ export class ShowDependenciesModalComponent {
         this.updateNodeDependencies(res, requestedKeys);
         this.prepareObject(res);
         this.loading = false;
+        this.ref.markForCheck();
       },
       error: (err) => {
         this.loading = false;
@@ -13737,7 +13743,8 @@ export class AddTagsToGropusModalComponent {
   standalone: false,
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.scss']
+  styleUrls: ['./inventory.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InventoryComponent {
   schedulerIds: any = {};
@@ -13760,7 +13767,7 @@ export class InventoryComponent {
   sideView: any = {};
   securityLevel = '';
   type = '';
-  inventoryConfig: any;
+  inventoryConfig: any = {selectedIndex: 0};
   isTreeLoaded = false;
   isTrash = false;
   isTag = false;
@@ -13805,7 +13812,8 @@ export class InventoryComponent {
     private toasterService: ToastrService,
     private route: ActivatedRoute,
     private nzContextMenuService: NzContextMenuService,
-    private message: NzMessageService) {
+    private message: NzMessageService,
+    private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -13894,6 +13902,7 @@ export class InventoryComponent {
 
     this.intervalIds['backgroundCheck'] = setInterval(() => {
       this.backgroundOperationsInProgress = sessionStorage['backgroundOperationInProgress'] === 'true';
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -13908,15 +13917,17 @@ export class InventoryComponent {
     this.dataService.reloadTree.next(null);
     this.dataService.announceFunction('');
     this.coreService.tabs._configuration.state = 'inventory';
-    this.inventoryConfig.expand_to = this.getExpandPaths();
-    if (!this.isTrash) {
-      this.inventoryConfig.selectedObj = this.selectedObj;
-    }
-    this.inventoryConfig.copyObj = this.copyObj;
-    this.inventoryConfig.isTrash = this.isTrash;
-    this.inventoryConfig.isTag = this.isTag;
-    if (this.isTag) {
-      this.inventoryConfig.selectTagName = this.selectTagName;
+    if (this.inventoryConfig) {
+      this.inventoryConfig.expand_to = this.getExpandPaths();
+      if (!this.isTrash) {
+        this.inventoryConfig.selectedObj = this.selectedObj;
+      }
+      this.inventoryConfig.copyObj = this.copyObj;
+      this.inventoryConfig.isTrash = this.isTrash;
+      this.inventoryConfig.isTag = this.isTag;
+      if (this.isTag) {
+        this.inventoryConfig.selectTagName = this.selectTagName;
+      }
     }
     $('.scroll-y').remove();
   }
@@ -13929,6 +13940,7 @@ export class InventoryComponent {
 
     if (!path) {
       this.isLoading = true;
+      this.cdr.markForCheck();
     }
     this.coreService.post('tree', {
       forInventory: true,
@@ -13965,6 +13977,7 @@ export class InventoryComponent {
             if (this.inventoryConfig.selectedObj && this.inventoryConfig.selectedObj.path && !this.isTag) {
               this.updateFolders(this.inventoryConfig.selectedObj.path, false, recursive, (response: any) => {
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 this.type = this.inventoryConfig.selectedObj.type;
                 if (response) {
                   this.selectedData = response.data;
@@ -13973,6 +13986,7 @@ export class InventoryComponent {
               });
             } else {
               this.isLoading = false;
+              this.cdr.markForCheck();
             }
           } else if (!isEmpty(this.inventoryConfig.selectedObj) || (this.objectType && this.path)) {
             this.tree = tree;
@@ -13993,6 +14007,7 @@ export class InventoryComponent {
               this.updateObjects(this.tree[0], false, recursive, (children: any) => {
 
                 this.isLoading = false;
+                this.cdr.markForCheck();
                 if (children.length > 0) {
                   this.tree[0].children.splice(0, 0, children[0]);
                   this.tree[0].children.splice(1, 0, children[1]);
@@ -14006,7 +14021,10 @@ export class InventoryComponent {
             }
           }
         }
-      }, error: () => this.isLoading = false
+      }, error: () => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -14055,6 +14073,7 @@ export class InventoryComponent {
           this.updateObjects(this.tree[0], this.isTrash, false, (children) => {
 
             this.isLoading = false;
+            this.cdr.markForCheck();
             if (children.length > 0) {
               this.tree[0].children.splice(0, 0, children[0]);
               this.tree[0].children.splice(1, 0, children[1]);
@@ -14128,6 +14147,7 @@ export class InventoryComponent {
                   }
                   self.type = self.selectedObj.type;
                   self.isLoading = false;
+                  self.cdr.markForCheck();
                   self.updateTree(self.isTrash);
                 }
               }
@@ -14862,6 +14882,7 @@ export class InventoryComponent {
     this.isTag = true;
     this.isTrash = false;
     this.isTagLoaded = false;
+    this.cdr.markForCheck();
     if (this.type) {
       this.tempObjSelection = {
         type: clone(this.type),
@@ -14892,8 +14913,10 @@ export class InventoryComponent {
         }
         this.clearSelection();
         this.isTagLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.isTagLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -14904,6 +14927,7 @@ export class InventoryComponent {
     this.isJobTag = true;
     this.isTrash = false;
     this.isTagLoaded = false;
+    this.cdr.markForCheck();
     if (this.type) {
       this.tempObjSelection = {
         type: clone(this.type),
@@ -14934,8 +14958,10 @@ export class InventoryComponent {
         }
         this.clearSelection();
         this.isTagLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.isTagLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -16541,6 +16567,7 @@ export class InventoryComponent {
         this.initTrashTree(null);
       } else if (this.isTag) {
         this.isLoading = false;
+        this.cdr.markForCheck();
         this.switchToTagging();
       }
     }

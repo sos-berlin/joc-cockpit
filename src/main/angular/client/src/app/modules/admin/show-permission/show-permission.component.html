@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>user.label.showPermission</span>:
+    <span >{{ 'user.label.showPermission' | translate }}</span>:
     {{account.accountName}}
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -27,7 +27,7 @@
   }
 </div>
 <div class="modal-footer">
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
     common.button.close
   </button>
 </div>

@@ -1,8 +1,7 @@
 <ng-template #customTpl>
   <app-empty-data></app-empty-data>
 </ng-template>
-@if (loading) {
-  <div class="app-content" id="content">
+<div class="app-content" id="content" [style.display]="loading ? '' : 'none'">
     <div class="fixed-top">
       <div class="w-full text-right top-header-bar white fa-fa-color">
         @if (preferences.themeTitle) {
@@ -11,13 +10,13 @@
                   class="_600 m-l-sm text-shadow _500 backup-text"></span>
           </span>
         }
-        <span class="m-r-sm"><span class="text-muted" translate>common.label.time</span>:
+        <span class="m-r-sm"><span class="text-muted" >{{ 'common.label.time' | translate }}</span>:
                 <i [innerHtml]="currentTime" class="text-dark _500"></i></span>
         @if (sessionTimeout >= 0) {
           <i class="fa fa-circle-o circle"></i>
         }
         @if (sessionTimeout >= 0) {
-          <span class="m-r-sm"><span class="text-muted" translate>common.label.remainingSessionTime</span>:
+          <span class="m-r-sm"><span class="text-muted" >{{ 'common.label.remainingSessionTime' | translate }}</span>:
                   <span [innerHtml]="remainingSessionTime" class="text-orange"></span></span>
         }
         @if (schedulerIds.selected) {
@@ -26,7 +25,7 @@
         @if (schedulerIds.selected) {
           <span class="dropdown">
             <a [nzDropdownMenu]="option" nz-dropdown nzPlacement="bottomRight" nzTrigger="click">
-              <span class="backup-text text-muted" translate>common.label.controllerId</span>:
+              <span class="backup-text text-muted" >{{ 'common.label.controllerId' | translate }}</span>:
               <span [innerHtml]="schedulerIds.selected" class="_500 text-orange"></span><i
               class="fa fa-caret-down p-l-xs"></i>
             </a>
@@ -59,10 +58,10 @@
               <div class="p-0 col-10">
                 <p [innerHTML]="warningMessage" class="p-2 p-b-0 m-b-sm _400"></p>
                 @if (!warningMessage2) {
-                  <a (click)="gotIt()" class="btn-text text-primary m-l-xs p-l-xxs" translate>info.button.gotIt</a>
+                  <a (click)="gotIt()" class="btn-text text-primary m-l-xs p-l-xxs" >{{ 'info.button.gotIt' | translate }}</a>
                 }
                 @if (!warningMessage2) {
-                  <a (click)="remindLater()" class="btn-text text-primary m-l-12" translate>info.button.remindMeLater</a>
+                  <a (click)="remindLater()" class="btn-text text-primary m-l-12" >{{ 'info.button.remindMeLater' | translate }}</a>
                 }
               </div>
             }
@@ -76,8 +75,7 @@
       }
       <router-outlet></router-outlet>
     </div>
-  </div>
-}
+</div>
 <iframe class="iframe" height="1" id="tmpFrame" name="tmpFrame" width="1"></iframe>
 @if (!loading) {
   <div class="spinner">
@@ -91,10 +89,10 @@
     <div class="row p-a-10 p-l p-r">
       <div class="col-md-6 ">
         <i  class="fa fa-spin fa-spinner"></i>&nbsp;
-        <span translate>reporting.label.reportRunning</span>
+        <span >{{ 'reporting.label.reportRunning' | translate }}</span>
       </div>
       <div class="col-md-6 text-right">
-        <a (click)="hideDownloadPanel(true)" class="text-primary text-u-l" translate>agent.button.hide</a>
+        <a (click)="hideDownloadPanel(true)" class="text-primary text-u-l" >{{ 'agent.button.hide' | translate }}</a>
       </div>
     </div>
   </div>

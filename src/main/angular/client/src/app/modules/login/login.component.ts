@@ -1,4 +1,4 @@
-  import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
+  import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
   import {ActivatedRoute, Router} from '@angular/router';
   import {ToastrService} from 'ngx-toastr';
   import {TranslateService} from '@ngx-translate/core';
@@ -16,7 +16,8 @@
     standalone: false,
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+    styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
   })
   export class LoginComponent {
     isLoading = true;
@@ -46,7 +47,8 @@
 
     constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
                 private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
-                private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService,private kioskService: KioskService) {
+                private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService,
+                private kioskService: KioskService, private cdr: ChangeDetectorRef) {
     }
 
     ngOnInit(): void {
@@ -62,6 +64,7 @@
             this.onSign(res.data.secondFactoridentityService);
             setTimeout(() => {
               this.isLoading = false;
+              this.cdr.markForCheck();
             }, 100)
           }
         }
@@ -90,6 +93,7 @@
     }
 
     ngAfterViewInit(): void {
+      this.cdr.detectChanges();
       if (this.user.userName && this.user.password) {
         setTimeout(() => {
           this.loginButton.nativeElement.focus();
@@ -107,6 +111,7 @@
         next: (res) => {
           this.isLoading = false;
           this.defaultSetting = res;
+          this.cdr.markForCheck();
           if (!res.enableRememberMe) {
             localStorage.removeItem('$SOS$FOO');
             localStorage.removeItem('$SOS$BOO');
@@ -142,6 +147,7 @@
         },
         error: () => {
           this.isLoading = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -155,6 +161,7 @@
           this.fido2ndFactorServiceItems = res.fido2ndFactorServiceItems || [];
           this.needAccountPassword = res.needAccountPassword;
           this.needLoginButton = res.needLoginButton;
+          this.cdr.markForCheck();
         }, error(err) {
           console.error(err)
         },
@@ -220,8 +227,8 @@
           } else {
             this.router.navigate([this.returnUrl]).then();
           }
-            sessionStorage.setItem('isApprover', data?.isApprover);
-            sessionStorage.setItem('isApprovalRequestor', data?.isApprovalRequestor);
+            sessionStorage.setItem('isApprover', JSON.stringify(!!data?.isApprover));
+            sessionStorage.setItem('isApprovalRequestor', JSON.stringify(!!data?.isApprovalRequestor));
         }, error: () => {
           this.submitted = false;
           this.errorMsg = true;
@@ -392,6 +399,7 @@
         } else {
           this.showLogin = true;
         }
+        this.cdr.markForCheck();
       });
     }
 

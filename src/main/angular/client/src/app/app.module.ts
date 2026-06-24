@@ -1,14 +1,13 @@
 import {ErrorHandler, Injectable, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {en_US, NZ_DATE_CONFIG, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
-import {registerLocaleData} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToastrModule} from 'ngx-toastr';
 import {PortalModule} from '@angular/cdk/portal';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {enUS} from 'date-fns/locale';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
@@ -18,13 +17,6 @@ import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
 
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  const lang = localStorage['$SOS$LANG'] || 'en';
-  import(`../../node_modules/@angular/common/locales/${lang}.js`).then(locale => {
-    registerLocaleData(locale.default);
-  });
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json?v=1659421544261');
-}
 
 @Injectable()
 export class MyErrorHandler implements ErrorHandler {
@@ -55,19 +47,14 @@ export class MyErrorHandler implements ErrorHandler {
       maxOpened: 1,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
-    }),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
     })
   ],
   providers: [
+    provideTranslateService({}),
+    ...provideTranslateHttpLoader({prefix: './assets/i18n/', suffix: '.json?v=1659421544261'}),
     {
-      provide: POPOUT_MODAL_DATA,  // That's the token we defined previously
-      useClass: PopupService,  // That's the actual service itself
+      provide: POPOUT_MODAL_DATA,
+      useClass: PopupService,
     },
     {provide: ErrorHandler, useClass: MyErrorHandler},
     {

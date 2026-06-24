@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { finalize, takeUntil, catchError, timeout, retryWhen, delay, take } from 'rxjs/operators';
 import { Subject, lastValueFrom, of } from 'rxjs';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
@@ -19,6 +19,7 @@ interface LinkValidationResult {
   standalone: false,
   selector: 'app-help-viewer',
   templateUrl: './help-viewer.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HelpViewerComponent implements OnInit, OnDestroy {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -58,6 +59,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     private readonly http: HttpClient,
     private toasterService: ToastrService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -422,10 +424,11 @@ onClick(e: MouseEvent): void {
 
   private loadHelp(key: string, restoreAnchor = false): void {
     this.isLoading = true;
+    this.cdr.markForCheck();
     this.help.getHelpHtml(key)
       .pipe(
         takeUntil(this.destroy$),
-        finalize(() => (this.isLoading = false))
+        finalize(() => { this.isLoading = false; this.cdr.markForCheck(); })
       )
       .subscribe({
         next: (res: HelpRenderResult | null) => {

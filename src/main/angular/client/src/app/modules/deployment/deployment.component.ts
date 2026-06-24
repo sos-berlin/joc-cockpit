@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {isArray, isEmpty, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -211,7 +211,8 @@ export class ShowJsonModalComponent {
   standalone: false,
   selector: 'app-deployment',
   templateUrl: './deployment.component.html',
-  styleUrls: ['./deployment.component.scss']
+  styleUrls: ['./deployment.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeploymentComponent {
   isLoading = true;
@@ -272,7 +273,8 @@ export class DeploymentComponent {
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
 
   constructor(private coreService: CoreService, private modal: NzModalService, private message: NzMessageService, private dataService: DataService,
-              private authService: AuthService, private nzContextMenuService: NzContextMenuService, private translate: TranslateService) {
+              private authService: AuthService, private nzContextMenuService: NzContextMenuService, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -419,6 +421,7 @@ export class DeploymentComponent {
             this.deploymentConfig.expand_to = undefined;
             this.copyObj = this.deploymentConfig.copyObj;
             this.isLoading = false;
+            this.cdr.markForCheck();
           } else {
             this.tree = tree;
             if (this.tree.length > 0) {
@@ -426,11 +429,12 @@ export class DeploymentComponent {
                 this.isLoading = false;
                 this.tree[0].expanded = true;
                 this.updateTree(false);
+                this.cdr.markForCheck();
               });
             }
           }
         }
-      }, error: () => this.isLoading = false
+      }, error: () => { this.isLoading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -451,11 +455,12 @@ export class DeploymentComponent {
               this.updateObjects(this.trashTree[0], true, () => {
                 this.isTreeLoaded = false;
                 this.updateTree(true);
+                this.cdr.markForCheck();
               });
             }
           }
         }
-      }, error: () => this.isTreeLoaded = false
+      }, error: () => { this.isTreeLoaded = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -733,8 +738,10 @@ export class DeploymentComponent {
         this.loading = false;
         this.updateJSONObject();
         this.history.push(this.deploymentData.data);
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1742,6 +1749,7 @@ export class DeploymentComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.loading = true;
+        this.cdr.markForCheck();
         this.storeData(this.selectedObj, result);
       }
     });

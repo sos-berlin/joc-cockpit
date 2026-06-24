@@ -1,7 +1,7 @@
 <div class="form-group row">
   <div class="col-sm-12 m-b-xs">
     <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.if.predicate' | translate) : ''"
-          translate>workflow.label.predicate
+          >{{ 'workflow.label.predicate' | translate }}
     </span>:
     <sup class="text-danger text-sm">*</sup>
   </div>
@@ -14,7 +14,7 @@
     @if (error || (cm.invalid && (cm.dirty || cm.touched))) {
       <div class="text-danger help-block">
         @if ((cm.errors && cm.errors['required']) || error) {
-          <div translate>common.message.requiredError</div>
+          <div >{{ 'common.message.requiredError' | translate }}</div>
         }
       </div>
     }
@@ -39,7 +39,7 @@
   </div>
   <div class="m-t col-sm-12">
     <div class="col-sm-6 p-l-0">
-      <div><span translate>workflow.label.functions</span>:</div>
+      <div><span >{{ 'workflow.label.functions' | translate }}</span>:</div>
       <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         <div>
           <a (click)="generateExpression('returnCode', null)"
@@ -69,7 +69,7 @@
       </div>
     </div>
     <div class="col-sm-6 p-r-0">
-      <div><span translate>workflow.label.description</span>:</div>
+      <div><span >{{ 'workflow.label.description' | translate }}</span>:</div>
       <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
         @if (expression.type === 'returnCode') {
           <div>
@@ -78,9 +78,9 @@
               The reserved word returnCode is used.
             </p>
             <div class="text-sm p-a-sm syntax-box">
-              <div translate>workflow.label.syntax</div>
+              <div >{{ 'workflow.label.syntax' | translate }}</div>
               <div class="text-muted">returnCode</div>
-              <div class="m-t-sm" translate>workflow.label.example</div>
+              <div class="m-t-sm" >{{ 'workflow.label.example' | translate }}</div>
               <div class="text-muted">!($returnCode in [7,9])</div>
             </div>
           </div>
@@ -93,7 +93,7 @@
               have a default value then the order stops at the If-Instruction.
             </p>
             <div class="text-sm p-a-sm syntax-box">
-              <div translate>workflow.label.syntax</div>
+              <div >{{ 'workflow.label.syntax' | translate }}</div>
               <div class="text-muted">{{varExam}}</div>
             </div>
           </div>

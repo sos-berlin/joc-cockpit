@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectorRef} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from "@angular/core";
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -98,9 +98,11 @@ export class AddChangesModalComponent {
       next: (res) => {
         this.changes = res.changes;
         this.loading = false;
+        this.cdRef.detectChanges();
       },
       error: () => {
         this.loading = false;
+        this.cdRef.detectChanges();
       }
     });
   }
@@ -400,9 +402,11 @@ export class AddChangesModalComponent {
           this.updateNodeDependencies(res);
           this.prepareObject(res);
         }
+        this.cdRef.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching dependencies:', err);
+        this.cdRef.detectChanges();
       }
     });
   }
@@ -705,6 +709,7 @@ export class AddChangesModalComponent {
   standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangesComponent {
   permission: any = {};
@@ -716,7 +721,7 @@ export class ChangesComponent {
     entryPerPage: 25,
   };
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 
@@ -751,9 +756,11 @@ export class ChangesComponent {
       next: (res) => {
         this.data = res.changes
         this.isLoading = true;
+        this.cdr.markForCheck();
       },
       error: ()=> {
         this.isLoading = true;
+        this.cdr.markForCheck();
     }
     });
   }

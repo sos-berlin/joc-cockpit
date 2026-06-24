@@ -40,13 +40,13 @@
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     <li (click)="editRole(role)" nz-menu-item>
-                      <a translate>common.button.edit</a>
+                      <a >{{ 'common.button.edit' | translate }}</a>
                     </li>
                     <li (click)="copyRole(role)" nz-menu-item>
-                      <a translate>common.button.duplicate</a>
+                      <a >{{ 'common.button.duplicate' | translate }}</a>
                     </li>
                     <li (click)="deleteRole(role)" class="bg-hover-color" nz-menu-item>
-                      <a translate>common.button.delete</a>
+                      <a >{{ 'common.button.delete' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -65,7 +65,7 @@
         @if (dataService.preferences.roles.has(role.roleName)) {
           <div class="row">
             <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-4"><span class="p-l-lg m-l"
-                                                                             translate>user.label.controllers</span></div>
+                                                                             >{{ 'user.label.controllers' | translate }}</span></div>
             <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
               @for (controller of role.controllers; track controller || 'default') {
                 <div class="role">
@@ -95,7 +95,7 @@
   <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
     <div class="row">
       <div class="col-md-12 text-center">
-        <span translate>user.message.noRoleAssign</span>
+        <span >{{ 'user.message.noRoleAssign' | translate }}</span>
       </div>
     </div>
   </div>

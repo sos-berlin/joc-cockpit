@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.export</span>
+    <span >{{ 'inventory.label.export' | translate }}</span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,14 +10,14 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label class="col-md-3 form-control-label" translate>common.placeholder.startDate
+      <label class="col-md-3 form-control-label" >{{ 'common.placeholder.startDate' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-2">
         <nz-date-picker [(ngModel)]="filter.dateFrom" [nzAllowClear]="false" [nzFormat]="dateFormat"
                         name="from" required></nz-date-picker>
       </div>
-      <label class="col-md-2 form-control-label" translate>common.placeholder.endDate
+      <label class="col-md-2 form-control-label" >{{ 'common.placeholder.endDate' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-2">
@@ -27,7 +27,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-3 form-control-label"
-             translate>dailyPlan.label.workflows</label>
+             >{{ 'dailyPlan.label.workflows' | translate }}</label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
                           [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
@@ -36,7 +36,7 @@
     </div>
     @if (filter.workflowFolders?.length > 0) {
       <div class="form-group row">
-        <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
+        <label class="col-md-3" >{{ 'dailyPlan.label.workflowFolders' | translate }}</label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.workflowFolders; track path) {
             <div>
@@ -49,7 +49,7 @@
     }
     <div class="form-group row">
       <label class="col-md-3 form-control-label"
-             translate>dailyPlan.label.schedules</label>
+             >{{ 'dailyPlan.label.schedules' | translate }}</label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
                           [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
@@ -58,7 +58,7 @@
     </div>
     @if (filter.scheduleFolders?.length > 0) {
       <div class="form-group row">
-        <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
+        <label class="col-md-3" >{{ 'dailyPlan.label.scheduleFolders' | translate }}</label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.scheduleFolders; track path) {
             <div>
@@ -70,7 +70,7 @@
       </div>
     }
     <div class="form-group row ">
-      <label class="col-md-3" translate>dailyPlan.label.invertProjection</label>
+      <label class="col-md-3" >{{ 'dailyPlan.label.invertProjection' | translate }}</label>
       <div class="col-md-6">
         <label [(ngModel)]="filter.withoutStartTime" name="late" nz-checkbox></label>
       </div>
@@ -84,8 +84,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

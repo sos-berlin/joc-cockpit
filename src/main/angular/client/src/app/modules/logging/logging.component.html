@@ -9,12 +9,12 @@
           @if (preferences.showHelpPages) {
             <i (click)="helpPage('logging')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           }
-          <button (click)="copy()" [disabled]="clientLogs.length == 0" class="btn btn-sm btn-grey" translate>
-            log.button.copyToClipboard
+          <button (click)="copy()" [disabled]="clientLogs.length == 0" class="btn btn-sm btn-grey" >
+            {{ 'log.button.copyToClipboard' | translate }}
           </button>
           <button (click)="redirectToNewTab()" [disabled]="!clientLogFilter.isEnable" class="btn btn-sm btn-grey m-l-12"
-                  translate>
-            log.button.openInNewTab
+                  >
+            {{ 'log.button.openInNewTab' | translate }}
           </button>
         </div>
       </div>
@@ -25,12 +25,12 @@
   <div class="padding p-b-0">
     <div class="row m-t-sm">
       <div class="col-sm-12">
-        <h5 translate>log.label.modifyLogCriteria</h5>
+        <h5 >{{ 'log.label.modifyLogCriteria' | translate }}</h5>
       </div>
       <div class="col-sm-12">
         <div class="box p-a">
           <div class="form-group row">
-            <label class="col-lg-2 col-sm-3 " translate>log.label.logLevel</label>
+            <label class="col-lg-2 col-sm-3 " >{{ 'log.label.logLevel' | translate }}</label>
             <div class=" col-sm-9">
               <nz-checkbox-group
                 name="logStatus"
@@ -38,7 +38,7 @@
                 (ngModelChange)="statusChange($event)">
                 @for (option of checkOptions; track option) {
                   <label [nzValue]="option.value" nz-checkbox>
-                    <span translate>log.label.{{option.label}}</span>
+                    <span >{{ 'log.label.' + option.label | translate }}</span>
                   </label>
                 }
               </nz-checkbox-group>
@@ -46,7 +46,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-lg-2 col-sm-3 " translate>log.label.logEnabled</label>
+            <label class="col-lg-2 col-sm-3 " >{{ 'log.label.logEnabled' | translate }}</label>
             <div class=" col-sm-9">
               <div>
                 <label [(ngModel)]="clientLogFilter.isEnable" name="isEnable" (ngModelChange)="saveSettingConf()"
@@ -60,7 +60,7 @@
     @if (clientLogs) {
       <div class="row">
         <div class="col-sm-12">
-          <h5 translate>log.label.logs</h5>
+          <h5 >{{ 'log.label.logs' | translate }}</h5>
         </div>
         <div class="col-md-12">
           <div class="box p-a" id="logDiv">
@@ -79,7 +79,7 @@
               </span>
             }
             @if (clientLogs.length==0) {
-              <div class="text-center m-t h6" translate>log.message.noLogsToViewEnableIt</div>
+              <div class="text-center m-t h6" >{{ 'log.message.noLogsToViewEnableIt' | translate }}</div>
             }
           </div>
         </div>

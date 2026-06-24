@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -401,7 +401,8 @@ export class AccountModalComponent {
 @Component({
   standalone: false,
   selector: 'app-accounts-all',
-  templateUrl: 'accounts.component.html'
+  templateUrl: 'accounts.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountsComponent {
   loading = true;
@@ -431,7 +432,7 @@ export class AccountsComponent {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private searchPipe: SearchPipe,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -479,6 +480,7 @@ export class AccountsComponent {
       this.accounts = res.accountItems;
       this.loading = false;
       this.searchInResult();
+      this.cdr.markForCheck();
     })
   }
 

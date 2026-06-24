@@ -2,10 +2,10 @@
   <div class="modal-header">
     <h4 class="modal-title">
       @if (!period) {
-        <span translate>runtime.label.addPeriod</span>
+        <span >{{ 'runtime.label.addPeriod' | translate }}</span>
       }
       @if (period) {
-        <span translate>runtime.label.editPeriod</span>
+        <span >{{ 'runtime.label.editPeriod' | translate }}</span>
       }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -20,7 +20,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime'
              : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''"
-                     class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime
+                     class="col-sm-3 form-control-label" >{{ 'workflow.admissionTime.label.startTime' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
@@ -38,7 +38,7 @@
                 @if (startTime.invalid && (startTime.dirty || startTime.touched)) {
                   <div class="text-danger help-block">
                     @if (startTime.errors.required) {
-                      <div translate>common.message.requiredError</div>
+                      <div >{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -47,7 +47,7 @@
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime'
              : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"  class="col-sm-3 form-control-label"
-                     translate>common.label.duration
+                     >{{ 'common.label.duration' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}"
@@ -58,16 +58,16 @@
                 @if (duration.invalid && (duration.dirty || duration.touched)) {
                   <div class="text-danger help-block">
                     @if (duration.errors.required) {
-                      <div translate>common.message.requiredError</div>
+                      <div >{{ 'common.message.requiredError' | translate }}</div>
                     }
                     @if (duration.errors.invalidDuration) {
-                      <div translate>common.message.invalid</div>
+                      <div >{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
                 @if (isExist) {
                   <div class="text-danger help-block">
-                    <div translate>workflow.admissionTime.message.duplicatePeriod</div>
+                    <div >{{ 'workflow.admissionTime.message.duplicatePeriod' | translate }}</div>
                   </div>
                 }
               </div>
@@ -75,10 +75,10 @@
           </div>
           <div>
             <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-              <span translate>common.button.save</span>
+              <span >{{ 'common.button.save' | translate }}</span>
             </button>
-            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-              common.button.cancel
+            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+              {{'common.button.cancel' | translate }}
             </button>
           </div>
         </form>

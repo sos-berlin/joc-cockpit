@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from 'jspdf';
@@ -118,7 +118,8 @@ export class ShareModalComponent {
   standalone: false,
   selector: 'app-reporting',
   templateUrl: './reporting.component.html',
-  styleUrls: ['./reporting.component.scss']
+  styleUrls: ['./reporting.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportingComponent {
 
@@ -152,7 +153,8 @@ export class ReportingComponent {
   runIds = new Set();
 
   constructor(private modal: NzModalService, private coreService: CoreService,
-              private authService: AuthService, private sharingDataService: SharingDataService) {
+              private authService: AuthService, private sharingDataService: SharingDataService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -168,8 +170,8 @@ export class ReportingComponent {
     this.coreService.post('reporting/templates', {}).subscribe({
       next: (res: any) => {
         this.loading = true;
-
-      }, error: () => this.loading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = true; this.cdr.markForCheck(); }
     });
   }
 

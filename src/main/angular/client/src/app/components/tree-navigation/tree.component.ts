@@ -103,12 +103,12 @@ export class TreeComponent {
     this.defaultExpandedKeys = [...this.defaultExpandedKeys];
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     TreeComponent.calcTop();
   }
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onScroll(): void {
     TreeComponent.calcTop();
   }

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isArray, isEmpty, object} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -12,7 +12,8 @@ import {NgModel} from "@angular/forms";
 @Component({
   standalone: false,
   selector: 'app-change-parameter',
-  templateUrl: './change-parameter-dialog.html'
+  templateUrl: './change-parameter-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangeParameterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -51,7 +52,7 @@ export class ChangeParameterModalComponent {
   };
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService, private authService: AuthService,
-              private modal: NzModalService) {
+              private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -115,6 +116,7 @@ export class ChangeParameterModalComponent {
           this.blockPositions.set(item.positionString, item.position);
           this.blockPositionList.set(item.positionString, item.positions);
         });
+        this.cdr.markForCheck();
       });
     }
   }
@@ -396,13 +398,15 @@ export class ChangeParameterModalComponent {
   }
 
   getNewPositions(positions): void {
-    this.newPositions = undefined;
-    if (positions) {
-      this.newPositions = new Map();
-      positions.forEach(item => {
-        this.newPositions.set(item.positionString, (item.position));
-      })
-    }
+    setTimeout(() => {
+      this.newPositions = undefined;
+      if (positions) {
+        this.newPositions = new Map();
+        positions.forEach(item => {
+          this.newPositions.set(item.positionString, (item.position));
+        });
+      }
+    }, 0);
   }
 
   addVariableToList(data): void {
@@ -696,7 +700,7 @@ export class ModifyStartTimeModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -793,7 +797,10 @@ export class ModifyStartTimeModalComponent {
 
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.coreService.getTimeZoneList((timezones) => {
-      this.zones = timezones;
+      setTimeout(() => {
+        this.zones = timezones;
+        this.cdr.detectChanges();
+      }, 0);
     });
     this.dateType.timeZone = this.preferences.zone;
   }

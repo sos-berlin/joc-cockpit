@@ -1,12 +1,12 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!order && !submissionsDelete) {
-      <span translate>
+      <span>
         @if (isSubmit) {
-          <span translate>dailyPlan.label.submitOrders</span>
+          <span >{{ 'dailyPlan.label.submitOrders' | translate }}</span>
         }
         @if (!isSubmit) {
-          <span translate>dailyPlan.label.removeOrders</span>
+          <span >{{ 'dailyPlan.label.removeOrders' | translate }}</span>
         }
       </span>
     }
@@ -30,32 +30,32 @@
         @if (!order.value) {
           <span>
             @if (isSubmit) {
-              <span translate>dailyPlan.label.submitOrder</span>
+              <span >{{ 'dailyPlan.label.submitOrder' | translate }}</span>
             }
             @if (!isSubmit) {
-              <span translate>dailyPlan.label.removeOrder</span>
+              <span >{{ 'dailyPlan.label.removeOrder' | translate }}</span>
             }
           </span>
         }
         @if (order.value) {
           <span>
             @if (isSubmit) {
-              <span translate>
+              <span>
                 @if (workflow) {
-                  <span translate>dailyPlan.label.submitOrderByWorkflow</span>
+                  <span >{{ 'dailyPlan.label.submitOrderByWorkflow' | translate }}</span>
                 }
                 @if (!workflow) {
-                  <span translate>dailyPlan.label.submitOrderBySchedule</span>
+                  <span >{{ 'dailyPlan.label.submitOrderBySchedule' | translate }}</span>
                 }
               </span>
             }
             @if (!isSubmit) {
-              <span translate>
+              <span>
                 @if (workflow) {
-                  <span translate>dailyPlan.label.removeOrderByWorkflow</span>
+                  <span >{{ 'dailyPlan.label.removeOrderByWorkflow' | translate }}</span>
                 }
                 @if (!workflow) {
-                  <span translate>dailyPlan.label.removeOrderBySchedule</span>
+                  <span >{{ 'dailyPlan.label.removeOrderBySchedule' | translate }}</span>
                 }
               </span>
             }
@@ -85,13 +85,13 @@
               <div class="m-t text">
                 <p class="m-t">
                   @if (isSubmit) {
-                    <span translate>dailyPlan.popup.submitSelectedOrder</span>
+                    <span >{{ 'dailyPlan.popup.submitSelectedOrder' | translate }}</span>
                   }
                   @if (!isSubmit && !(dateRange && dateRange.length > 0)) {
-                    <span translate>dailyPlan.popup.removeSelectedOrder</span>
+                    <span >{{ 'dailyPlan.popup.removeSelectedOrder' | translate }}</span>
                   }
                   @if (dateRange && dateRange.length > 0) {
-                    <span translate>dailyPlan.popup.removeSelectedOrderForDateRange</span>
+                    <span >{{ 'dailyPlan.popup.removeSelectedOrderForDateRange' | translate }}</span>
                   }
                 </p>
               </div>
@@ -100,10 +100,10 @@
               <div class="m-t text">
                 <p class="m-t">
                   @if (isSubmit) {
-                    <span [translateParams]="{count: count}" translate>dailyPlan.popup.submitOrderCount</span>
+                    <span >{{ 'dailyPlan.popup.submitOrderCount' | translate:{count: count} }}</span>
                   }
                   @if (!isSubmit) {
-                    <span [translateParams]="{count: count}" translate>dailyPlan.popup.removeOrderCount</span>
+                    <span >{{ 'dailyPlan.popup.removeOrderCount' | translate:{count: count} }}</span>
                   }
                 </p>
               </div>
@@ -114,10 +114,10 @@
           <div class="m-t text">
             <p class="m-t">
               @if (!(dateRange && dateRange.length > 0)) {
-                <span translate>dailyPlan.popup.deleteSubmissions</span>
+                <span >{{ 'dailyPlan.popup.deleteSubmissions' | translate }}</span>
               }
               @if (dateRange && dateRange.length > 0) {
-                <span translate>dailyPlan.popup.deleteSubmissionsForDateRange</span>
+                <span >{{ 'dailyPlan.popup.deleteSubmissionsForDateRange' | translate }}</span>
               }
             </p>
           </div>
@@ -146,8 +146,8 @@
         {{'common.button.submit' | translate}}
       </button>
     }
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

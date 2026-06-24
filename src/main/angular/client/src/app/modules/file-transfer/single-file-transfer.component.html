@@ -27,18 +27,18 @@
         >
           <thead>
           <tr class="main-header-row">
-            <th><span class="p-r-xs" translate>fileTransfer.label.status</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.profileName</span></th>
-            <th nzWidth="90px"><span class="p-r-xs" translate>fileTransfer.label.operation</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.workflow</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.order</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.status' | translate }}</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.profileName' | translate }}</span></th>
+            <th nzWidth="90px"><span class="p-r-xs" >{{ 'fileTransfer.label.operation' | translate }}</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.workflow' | translate }}</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.order' | translate }}</span></th>
             <th [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" nzWidth="60px"><span class="p-r-xs"
-                                                                                                                                           translate>fileTransfer.label.total</span>
+                                                                                                                                           >{{ 'fileTransfer.label.total' | translate }}</span>
             </th>
-            <th nzWidth="20%"><span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.startTime</span></th>
-            <th><span class="p-r-xs" translate>fileTransfer.label.endTime</span></th>
-            <th nzWidth="100px"><span class="p-r-xs" translate>common.label.duration</span></th>
+            <th nzWidth="20%"><span class="p-r-xs" >{{ 'fileTransfer.label.lastErrorMessage' | translate }}</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.startTime' | translate }}</span></th>
+            <th><span class="p-r-xs" >{{ 'fileTransfer.label.endTime' | translate }}</span></th>
+            <th nzWidth="100px"><span class="p-r-xs" >{{ 'common.label.duration' | translate }}</span></th>
           </tr>
           </thead>
           <tbody>
@@ -80,26 +80,26 @@
                               id="fileTransferTable">
                       <thead>
                       <tr>
-                        <th class="order-history-template0" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.source</span>
+                        <th class="order-history-template0" colspan="4" style="border-bottom: 1px solid #eee;"><span >{{ 'fileTransfer.label.source' | translate }}</span>
                         </th>
-                        <th class="order-history-template1" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.target</span>
+                        <th class="order-history-template1" colspan="4" style="border-bottom: 1px solid #eee;"><span >{{ 'fileTransfer.label.target' | translate }}</span>
                         </th>
-                        <th class="order-history-template2" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.jump</span>
+                        <th class="order-history-template2" colspan="4" style="border-bottom: 1px solid #eee;"><span >{{ 'fileTransfer.label.jump' | translate }}</span>
                         </th>
                       </tr>
                       <tr class="sub-header">
-                        <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                        <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                        <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                        <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                        <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                        <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                        <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                        <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                        <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                        <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                        <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                        <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
+                        <th class="order-history-template0 dynamic-thead"><span >{{ 'fileTransfer.label.host' | translate }}</span></th>
+                        <th class="order-history-template0 dynamic-thead"><span >{{ 'fileTransfer.label.account' | translate }}</span></th>
+                        <th class="order-history-template0 dynamic-thead"><span >{{ 'fileTransfer.label.port' | translate }}</span></th>
+                        <th class="order-history-template0 dynamic-thead"><span >{{ 'fileTransfer.label.protocol' | translate }}</span></th>
+                        <th class="order-history-template1 dynamic-thead"><span >{{ 'fileTransfer.label.host' | translate }}</span></th>
+                        <th class="order-history-template1 dynamic-thead"><span >{{ 'fileTransfer.label.account' | translate }}</span></th>
+                        <th class="order-history-template1 dynamic-thead"><span >{{ 'fileTransfer.label.port' | translate }}</span></th>
+                        <th class="order-history-template1 dynamic-thead"><span >{{ 'fileTransfer.label.protocol' | translate }}</span></th>
+                        <th class="order-history-template2 dynamic-thead"><span >{{ 'fileTransfer.label.host' | translate }}</span></th>
+                        <th class="order-history-template2 dynamic-thead"><span >{{ 'fileTransfer.label.account' | translate }}</span></th>
+                        <th class="order-history-template2 dynamic-thead"><span >{{ 'fileTransfer.label.port' | translate }}</span></th>
+                        <th class="order-history-template2 dynamic-thead"><span >{{ 'fileTransfer.label.protocol' | translate }}</span></th>
                       </tr>
                       </thead>
                       <tbody>
@@ -172,13 +172,13 @@
                               nzSize="small">
                       <thead>
                       <tr>
-                        <th><span translate>fileTransfer.label.sourceFileName</span></th>
-                        <th><span translate>fileTransfer.label.sourceFilePath</span></th>
-                        <th><span translate>fileTransfer.label.targetFileName</span></th>
-                        <th><span translate>fileTransfer.label.targetFilePath</span></th>
-                        <th><span translate>fileTransfer.label.status</span></th>
-                        <th><span translate>fileTransfer.label.size</span></th>
-                        <th><span translate>fileTransfer.label.integrityHash</span></th>
+                        <th><span >{{ 'fileTransfer.label.sourceFileName' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.sourceFilePath' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.targetFileName' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.targetFilePath' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.status' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.size' | translate }}</span></th>
+                        <th><span >{{ 'fileTransfer.label.integrityHash' | translate }}</span></th>
                       </tr>
                       </thead>
                       <tbody>

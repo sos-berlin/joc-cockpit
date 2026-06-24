@@ -98,8 +98,8 @@ export class AppComponent {
     }
 
     localStorage['$SOS$LANG'] = lang;
-    this.translate.setDefaultLang(lang);
-    this.translate.use(lang).subscribe((res) => {
+    this.translate.setFallbackLang(lang);
+    this.translate.use(lang).subscribe((res: any) => {
       const data = res.extra;
       data.locale = lang;
       data.DatePicker.lang.monthBeforeYear = true;

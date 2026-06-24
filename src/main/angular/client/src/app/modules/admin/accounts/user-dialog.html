@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     @if (!newUser && !copy) {
       <span>
-        <span translate>user.label.editUser</span>:
+        <span >{{ 'user.label.editUser' | translate }}</span>:
         <span [innerHtml]="currentUser.userName | decodeSpace"></span>
       </span>
       @if (preferences.showHelpPages) {
@@ -11,12 +11,12 @@
     }
     @if (!newUser && copy) {
       <span>
-        <span translate>user.label.copyUser</span> :
+        <span >{{ 'user.label.copyUser' | translate }}</span> :
         <span [innerHtml]="currentUser.userName | decodeSpace"></span>
       </span>
     }
     @if (newUser && !copy) {
-      <span translate>user.label.addUser</span>
+      <span >{{ 'user.label.addUser' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -30,7 +30,7 @@
     </div>
     <div [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}"
          class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.user
+      <label class="col-sm-4 form-control-label" >{{ 'user.label.user' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -41,20 +41,20 @@
         @if (account.invalid && (account.dirty || account.touched)) {
           <div class="text-danger help-block">
             @if (account.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div >{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
         @if (!isUnique) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div >{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
     </div>
     @if (isPasswordVisible) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>user.label.password</label>
+        <label class="col-sm-4 form-control-label" >{{ 'user.label.password' | translate }}</label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
           <input type="password"
                  class="form-control"
@@ -67,7 +67,7 @@
                  (blur)="checkPwdLength()"/>
           @if (!minimumPasswordLength && currentUser.fakePassword) {
             <div class="text-danger help-block">
-              <div translate>profile.message.minimumPasswordLength</div>
+              <div >{{ 'profile.message.minimumPasswordLength' | translate }}</div>
             </div>
           }
         </div>
@@ -75,7 +75,7 @@
     }
     @if (isPasswordVisible && !copy) {
       <div class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
+        <label class="col-sm-4 form-control-label" >{{ 'profile.label.confirmPassword' | translate }}</label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
           <input type="password"
                  [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false"
@@ -87,7 +87,7 @@
                  (blur)="checkPassword()"/>
           @if (!isPasswordMatch && currentUser.repeatedPassword) {
             <div class="text-danger help-block">
-              <div translate>profile.message.passwordNotMatch</div>
+              <div >{{ 'profile.message.passwordNotMatch' | translate }}</div>
             </div>
           }
         </div>
@@ -96,15 +96,15 @@
 
     @if (!copy && !secondFactor) {
       <div class="form-group row" [ngClass]="{'has-error': !isApprovalRoleValid}">
-        <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
+        <label class="col-sm-4 form-control-label" >{{ 'user.label.roles' | translate }}</label>
         <div class="col-sm-6">
           <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [name]="'roles'"
                 [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" (modelChange)="onRolesChange()"></app-select-input>
 
           @if (!isApprovalRoleValid && approvalRequestorRole) {
             <div class="text-danger help-block">
-              <div [translateParams]="{approvalRequestorRole: approvalRequestorRole}" translate>
-                user.message.invalidRole
+              <div [translateParams]="{approvalRequestorRole: approvalRequestorRole}" >
+                {{ 'user.message.invalidRole' | translate }}
               </div>
             </div>
           }
@@ -114,7 +114,7 @@
 
     @if ((identityServiceType === 'JOC')) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
+        <label class="col-sm-4" >{{ 'user.label.forcePasswordChange' | translate }}</label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
                  name="forcePasswordChange"></label>
@@ -123,7 +123,7 @@
     }
     @if (!newUser && !copy && identityServiceType) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>common.label.blocked</label>
+        <label class="col-sm-4" >{{ 'common.label.blocked' | translate }}</label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.blocked"
                  name="blocked"></label>
@@ -132,7 +132,7 @@
     }
     @if (!newUser && !copy) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>user.label.disabled</label>
+        <label class="col-sm-4" >{{ 'user.label.disabled' | translate }}</label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.disabled"
                  name="disabled"></label>
@@ -149,7 +149,7 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

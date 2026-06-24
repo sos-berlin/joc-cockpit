@@ -229,6 +229,7 @@ export class AddOrderModalComponent {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.displayModal = true;
+      this.cdr.detectChanges();
     }, 100);
   }
 
@@ -718,7 +719,6 @@ export class AddOrderModalComponent {
   // }
 
   getNewPositions(positions: any, index: number): void {
-    // Reset newPositions for the specific index
     this.newPositions = undefined;
 
     if (positions) {
@@ -729,6 +729,7 @@ export class AddOrderModalComponent {
 
       this.updatePositionsForIndex(index);
     }
+    this.cdr.detectChanges();
   }
 
   private updatePositionsForIndex(index: number): void {

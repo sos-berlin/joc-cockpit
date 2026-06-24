@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -14,7 +14,8 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   standalone: false,
   selector: 'app-manage-report',
-  templateUrl: './manage-report.component.html'
+  templateUrl: './manage-report.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageReportComponent {
   @Input() permission: any;
@@ -54,7 +55,7 @@ export class ManageReportComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -70,6 +71,7 @@ export class ManageReportComponent {
         this.sort(res.sortBy);
       } else if (res.search) {
         this.isSearchVisible = true;
+        this.cdr.detectChanges();
       } else if (res.run) {
         this.runAll();
       }
@@ -131,14 +133,16 @@ export class ManageReportComponent {
       }).subscribe({
         next: res => {
           this.isLoading = true;
+          this.cdr.markForCheck();
           this.tree = this.coreService.prepareTree(res, true);
           if (this.tree.length) {
             this.loadReports();
           }
-        }, error: () => this.isLoading = true
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
+      this.cdr.markForCheck();
     }
   }
 
@@ -176,6 +180,7 @@ export class ManageReportComponent {
     };
     this.reports = [];
     this.loading = true;
+    this.cdr.markForCheck();
     this.getReportList(obj);
   }
 
@@ -187,6 +192,7 @@ export class ManageReportComponent {
   getReports(data: any, recursive: boolean): void {
     data.isSelected = true;
     this.loading = true;
+    this.cdr.markForCheck();
     const obj = {
       folders: [{folder: data.path, recursive}]
     };
@@ -217,6 +223,7 @@ export class ManageReportComponent {
     };
     this.reports = [];
     this.loading = true;
+    this.cdr.markForCheck();
     let paths;
     if (this.child && !skipChild) {
       paths = this.child.defaultSelectedKeys;
@@ -233,6 +240,7 @@ export class ManageReportComponent {
     this.coreService.post('reporting/reports', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.loading = false;
+        this.cdr.markForCheck();
         this.reports = this.orderPipe.transform(res.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.reports.forEach((report) => {
           report.name = report.path.substring(report.path.lastIndexOf('/') + 1);
@@ -242,7 +250,7 @@ export class ManageReportComponent {
         });
         this.reset();
         this.searchInResult();
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -383,9 +391,11 @@ export class ManageReportComponent {
       this.data = [];
       this.reloadState = 'yes';
       this.loading = false;
+      this.cdr.markForCheck();
       this.pendingHTTPRequests$.next();
     } else if (this.reloadState === 'yes') {
       this.loading = true;
+      this.cdr.markForCheck();
       this.loadReports();
     }
   }

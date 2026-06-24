@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -27,7 +27,8 @@ interface CalendarItem {
 @Component({
   standalone: false,
   selector: 'app-frequency-modal-content',
-  templateUrl: './frequency-dialog.html'
+  templateUrl: './frequency-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FrequencyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -107,7 +108,7 @@ export class FrequencyModalComponent {
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService,
-              private datePipe: DatePipe, public calendarService: CalendarService) {
+              private datePipe: DatePipe, public calendarService: CalendarService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -126,6 +127,7 @@ export class FrequencyModalComponent {
     this.frequencyEditIndex = this.modalData.frequencyIndex;
     setTimeout(() => {
       this.isVisible = true;
+      this.cdr.markForCheck();
     }, 0);
 
     this.str = 'label.weekDays';
@@ -994,8 +996,9 @@ export class FrequencyModalComponent {
           }
 
           this.isCalendarLoading = false;
+          this.cdr.markForCheck();
           $('#full-calendar').data('calendar').setDataSource(this.planItems);
-        }, error: () => this.isCalendarLoading = false
+        }, error: () => { this.isCalendarLoading = false; this.cdr.markForCheck(); }
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
       this.planItems = clone(this.tempList);
@@ -1304,10 +1307,12 @@ export class FrequencyModalComponent {
         }, 100)
 
         this.isCalendarLoading = false;
+        this.cdr.markForCheck();
         setTimeout(() => {
           this.isCalendarDisplay = true;
+          this.cdr.markForCheck();
         }, 100);
-      }, error: () => this.isCalendarLoading = false
+      }, error: () => { this.isCalendarLoading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -1342,11 +1347,13 @@ export class FrequencyModalComponent {
 
         this.buildNonWorkingDayCalendarTree();
         this.initializeNonWorkingDayCalendarResources();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Failed to load calendars', err);
         this.availableNonWorkingDayCalendars = [];
         this.nonWorkingDayCalendarTree = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1488,6 +1495,7 @@ export class FrequencyModalComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent {
   @Input() schedulerId: any;
@@ -2260,6 +2268,7 @@ export class CalendarComponent {
       if (result && result.objectName) {
         if (this.calendar && this.calendar.hasNote) {
           this.calendar.hasNote.notified = false;
+          this.ref.markForCheck();
         }
       }
     });

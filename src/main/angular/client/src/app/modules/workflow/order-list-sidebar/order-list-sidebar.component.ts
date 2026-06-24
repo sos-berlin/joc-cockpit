@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -24,7 +26,8 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
 @Component({
   standalone: false,
   selector: 'app-order-list-sidebar',
-  templateUrl: './order-list-sidebar.component.html'
+  templateUrl: './order-list-sidebar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderListSidebarComponent implements OnChanges {
   @Input() orders;
@@ -66,7 +69,7 @@ export class OrderListSidebarComponent implements OnChanges {
   ];
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
-  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -100,6 +103,7 @@ export class OrderListSidebarComponent implements OnChanges {
   private refreshView(): void {
     if (!this.isDropdownOpen && this.setOfCheckedId.size === 0) {
       this.data = [...this.orders];
+      this.cdr.markForCheck();
     } else {
       setTimeout(() => {
         this.refreshView();
@@ -267,6 +271,7 @@ export class OrderListSidebarComponent implements OnChanges {
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     });
@@ -290,6 +295,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.isProcessing = true;
         this.resetAction(5000);
         this.resetCheckBox();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -313,6 +319,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.isProcessing = true;
         this.resetAction(5000);
         this.resetCheckBox();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -353,6 +360,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.isProcessing = true;
         this.resetAction(5000);
         this.resetCheckBox();
+        this.cdr.markForCheck();
       }
     });
   } else {
@@ -375,6 +383,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.isProcessing = true;
         this.resetAction(5000);
         this.resetCheckBox();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -428,6 +437,7 @@ export class OrderListSidebarComponent implements OnChanges {
           this.isProcessing = true;
           this.resetCheckBox();
           this.resetAction(5000);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -439,6 +449,7 @@ export class OrderListSidebarComponent implements OnChanges {
           next: () => {
             this.resetCheckBox();
             this.resetAction(5000);
+            this.cdr.markForCheck();
           }, error: () => this.resetAction()
         });
       }
@@ -460,10 +471,12 @@ export class OrderListSidebarComponent implements OnChanges {
     modal.afterClose.subscribe((result) => {
       if (result) {
         this.isProcessing = true;
+        this.cdr.markForCheck();
         this.coreService.post('orders/' + url, obj).subscribe({
           next: () => {
             this.resetCheckBox();
             this.resetAction(5000);
+            this.cdr.markForCheck();
           }, error: () => this.resetAction()
         });
       }

@@ -2,7 +2,7 @@
   <div class="text-center pos-rlt p-y-md">
     <nz-result [nzStatus]="code" [nzSubTitle]="'error.message.'+code | translate" [nzTitle]="code">
       <div nz-result-extra>
-        <button (click)="backHome()" class="btn btn-primary" translate type="button">error.button.backHome</button>
+        <button (click)="backHome()" class="btn btn-primary" type="button">{{ 'error.button.backHome' | translate }}</button>
       </div>
     </nz-result>
   </div>
