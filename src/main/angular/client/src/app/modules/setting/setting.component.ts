@@ -15,7 +15,7 @@ import {CommentModalComponent} from "../../components/comment-modal/comment.comp
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 import {KioskService} from "../../services/kiosk.service";
 
-type SettingPriority = 'critical' | 'frequent' | 'advanced';
+type SettingPriority = 'critical' | 'frequent' | 'advanced' | 'common';
 type SettingEntry = string | [string, SettingPriority];
 
 const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] } } = {
@@ -54,7 +54,7 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['joc_reverse_proxy_url', 'advanced'], ['encoding', 'advanced'],
       ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
       ['restore_suffix', 'advanced'], ['restore_prefix', 'advanced'],
-      ['import_suffix', 'advanced'], ['import_prefix', 'advanced']
+      ['import_suffix', 'advanced'], ['import_prefix', 'advanced'],['approval_requestor_role', 'advanced']
     ],
     view: [
       ['show_view_filetransfer', 'frequent'], ['show_view_dashboard', 'frequent'],
@@ -261,6 +261,7 @@ static generateChildStoreObject(children): any {
         for (const group of setting.groups) {
           group._hidden = false;
           group._searchShowAdvanced = false;
+          if (group.hasAdvanced) { group.showAdvanced = true; }
           for (const val of group.values) { val._hidden = false; }
         }
         continue;
@@ -279,11 +280,10 @@ static generateChildStoreObject(children): any {
         let groupHasMatch = false;
 
         for (const val of group.values) {
-          if (!val.value || val.name === 'approval_requestor_role') {
-            val._hidden = true;
-            continue;
-          }
-          const priorityOk = !priority || val.priority === priority;
+          const priorityOk = !priority ||
+            (priority === 'common'
+              ? (val.priority === 'critical' || val.priority === 'frequent')
+              : val.priority === priority);
           const changedOk = !changed || this.isChanged(val);
           let textOk = !term;
           if (term) {

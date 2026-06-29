@@ -429,6 +429,14 @@ export class MarkdownParserService {
       if (!text) return '';
 
       const transformPlain = (chunk: string): string => {
+        // Extract code spans first so backslash sequences inside them are treated as
+        // literal characters (per CommonMark: backslash escapes do not apply inside code spans).
+        const codeSpanSlots: string[] = [];
+        chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) => {
+          codeSpanSlots.push(`<code>${escapeHtml(code)}</code>`);
+          return `\x02${codeSpanSlots.length - 1}\x02`;
+        });
+
         chunk = chunk.replace(/\\([\\`*_{}\[\]()#+\-.!>|~])/g, (_m, ch: string) => {
           const map: Record<string, string> = {
             '\\': '&#92;', '`': '&#96;', '*': '&#42;', '_': '&#95;',
@@ -439,9 +447,6 @@ export class MarkdownParserService {
           };
           return map[ch] || ch;
         });
-
-        chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) =>
-          `<code>${escapeHtml(code)}</code>`);
 
         chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)({([^}]+)})?/g,
           (_m, alt: string, src: string, title?: string, attrs?: string) => {
@@ -536,6 +541,7 @@ export class MarkdownParserService {
         if (options.breaks) chunk = chunk.replace(/\n/g, br);
         else chunk = chunk.replace(/ {2,}\n/g, br);
 
+        if (codeSpanSlots.length) chunk = chunk.replace(/\x02(\d+)\x02/g, (_, i) => codeSpanSlots[+i]);
         return chunk;
       };
 

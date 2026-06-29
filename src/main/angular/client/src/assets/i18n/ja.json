@@ -2773,7 +2773,8 @@
         "includeDependencies": "Include Dependencies",
         "manageDependencies": "Manage Dependencies",
         "showRelatedObjects": "Show Related Objects",
-        "keepOrdersInDailyPlan":"Keep Orders in Daily Plan"
+        "keepOrdersInDailyPlan":"Keep Orders in Daily Plan",
+        "handleRecursively":"Include Sub-folders"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
@@ -4021,6 +4022,7 @@
     "filter.changed": "Changed",
     "filter.critical": "Critical",
     "filter.frequent": "Frequent",
+    "filter.common": "Common settings",
     "filter.advanced": "Advanced",
     "label.importSetting": "設定アップロード",
     "button.importSetting": "設定アップロード",
@@ -4150,6 +4152,7 @@
       "label.num_of_tags_displayed_as_order_id": "Max. Order Tags Displayed",
       "label.num_of_workflow_tags_displayed": "Max. Workflow Tags Displayed",
       "label.report_java_options": "Report Java Options",
+      "label.approval_requestor_role": "Approval Requestor Role",
       "force_comments_for_audit_log": "trueに設定すると、オーダーの追加、キャンセルなど、オブジェクトに適用される変更について、操作ログにコメントを強制できます。",
       "comments_for_audit_log": "操作ログにコメントを追加する際に利用できる、定義済コメントを設定します。",
       "default_profile_account": "新しいアカウントのプロファイルを作成する際に使用するアカウントを指定します。",

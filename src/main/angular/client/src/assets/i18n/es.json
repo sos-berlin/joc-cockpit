@@ -2775,7 +2775,8 @@
         "includeTodaysLateOrders": "Cancela las ^Órdenes^ del ^Plan Diario^ de hoy que están atrasadas.",
         "includeDependencies": "Recupera también objetos dependientes, por ejemplo, al recuperar un ^Calendario^ referenciado por una ^Planificación^.",
         "manageDependencies": "Muestra los objetos que referencian y los objetos referenciados por el objeto seleccionado.",
-        "showRelatedObjects": "Muestra objetos relacionados que no dependen directamente entre sí."
+        "showRelatedObjects": "Muestra objetos relacionados que no dependen directamente entre sí.",
+        "handleRecursively":"Include Sub-folders"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
@@ -4024,6 +4025,7 @@
     "filter.changed": "Configuraciones modificadas",
     "filter.critical": "Configuraciones críticas",
     "filter.frequent": "Configuraciones frecuentes",
+    "filter.common": "Common settings",
     "filter.advanced": "Configuraciones avanzadas",
     "button.importSetting": "Cargar configuración",
     "button.exportSetting": "Descargar configuración",
@@ -4152,6 +4154,7 @@
       "label.num_of_tags_displayed_as_order_id": "Número máximo de etiquetas de Orden a mostrar",
       "label.num_of_workflow_tags_displayed": "Número máximo de etiquetas de Workflow a mostrar",
       "label.report_java_options": "Opciones Java del Servicio de informes",
+      "label.approval_requestor_role": "Approval Requestor Role",
       "force_comments_for_audit_log": "Especifica que para cualquier cambio aplicado a un objeto, como agregar una ^Order^, cancelar una Orden, etc., se debe añadir un motivo al Registro de Auditoría.",
       "comments_for_audit_log": "Ofrece una lista extensible de motivos predefinidos de los cuales los usuarios pueden seleccionar al agregar motivos para intervención de usuario al Registro de Auditoría.",
       "default_profile_account": "Especifica la cuenta de usuario que se usa para completar los Perfiles de nuevas cuentas de usuario.",

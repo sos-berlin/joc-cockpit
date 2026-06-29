@@ -2773,7 +2773,8 @@
         "includeDependencies": "Retire les objets dépendants, par exemple, une ^Planification|schedule^ faisant référence à un ^Calendrier|calendar^.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers et sont retirés.\n\nLes options suivantes sont proposées :\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: seulement les objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix).",
         "manageDependencies": "Affiche les objets de référence et les objets référencés pour chaque objet sélectionné.\n\nLorsqu'on utilise cette fonction avec les options **Tous** ou **Obligatoires**, il est possible de désélectionner des objets.",
         "showRelatedObjects": "Affiche les objets associés qui ne dépendent pas directement les uns des autres, tels que les ^Workflow^s utilisant la même ^Ressource de Tâche|job-resource^.\n\nSi l'^Inventaire|inventory^ est volumineux, l'affichage peut prendre un certain temps.",
-        "keepOrdersInDailyPlan":"Si le ^Plan Quotidien|daily-plan^ contient des ^Ordres|order^ issues de ^Planifications|schedule^ ou de ^Calendriers|calendar^ qui doivent être supprimées ou retirées, cette option détermine si ces Ordres doivent être supprimées ou conservées dans le Plan Quotidien."
+        "keepOrdersInDailyPlan":"Si le ^Plan Quotidien|daily-plan^ contient des ^Ordres|order^ issues de ^Planifications|schedule^ ou de ^Calendriers|calendar^ qui doivent être supprimées ou retirées, cette option détermine si ces Ordres doivent être supprimées ou conservées dans le Plan Quotidien.",
+        "handleRecursively":"Include Sub-folders"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
@@ -4022,6 +4023,7 @@
     "filter.changed": "Réglages modifiés",
     "filter.critical": "Réglages critiques",
     "filter.frequent": "Réglages fréquents",
+    "filter.common": "Common settings",
     "filter.advanced": "Réglages avancés",
     "button.importSetting": "Charger les Réglages",
     "button.exportSetting": "Télécharger les Réglages",
@@ -4150,6 +4152,7 @@
       "label.num_of_tags_displayed_as_order_id": "Afficher le nombre max. de Tags d'Ordre",
       "label.num_of_workflow_tags_displayed": "Afficher le nombre max. de Tags de Workflow",
       "label.report_java_options": "Options Java du Service de Rapport",
+      "label.approval_requestor_role": "Approval Requestor Role",
       "force_comments_for_audit_log": "Spécifie que pour tout changement appliqué à un objet tel que l'ajout d'un ^Ordre|order^, l'annulation d'un Ordre etc., une justification doit être ajoutée au *Journal d'Audit*.",
       "comments_for_audit_log": "Propose une liste extensible de justifications prédéfinies pour les modifications apportées aux objets, parmi lesquelles les utilisateurs peuvent choisir lorsque des justifications de leur intervention doivent être consignées dans le Journal d'Audit.",
       "default_profile_account": "Spécifie le compte utilisateur qui est utilisé pour remplir les profils de tous les nouveaux comptes utilisateurs.",
