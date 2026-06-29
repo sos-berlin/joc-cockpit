@@ -2774,7 +2774,7 @@
         "manageDependencies": "Zeigt für ausgewählte Objekte die referenzierenden und referenzierten Objekte an.\n\nBei Verwendung der Optionen **Alle** und **Notwendige** können die Objekte abgewählt werden.",
         "showRelatedObjects": "Zeigt assoziierte Objekte an, die nicht im direkten Abhängigkeitsverhältnis stehen, z.B. ^Arbeitsabläufe|workflow^, die dieselbe ^Job-Ressource|job-resource^ verwenden.\n\nIm Fall eines großen ^Inventars|inventory^ kann die Anzeige einige Zeit in Anspruch nehmen.",
         "keepOrdersInDailyPlan":"Wenn im ^Tagesplan|daily-plan^ ^Aufträge|order^ vorhanden sind aus ^Zeitplänen|schedule^ oder ^Kalendern|calendar^, die entfernt oder zurücknommen werden sollen, legt diese Option fest, ob solche Aufträge entfernt werden oder im Tagesplan verbleiben sollen.",
-        "handleRecursively":"Include Sub-folders"
+        "handleRecursively":"Nimmt Objekte aus Unterordnern des ^Inventars|inventory^ zurück."
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
@@ -4023,7 +4023,7 @@
     "filter.changed": "Geänderte Einstellungen",
     "filter.critical": "Kritische Einstellungen",
     "filter.frequent": "Häufige Einstellungen",
-    "filter.common": "Common settings",
+    "filter.common": "Übliche Einstellungen",
     "filter.advanced": "Erweiterte Einstellungen",
     "button.importSetting": "Einstellungen hochladen",
     "button.exportSetting": "Einstellungen herunterladen",
@@ -4152,7 +4152,7 @@
       "label.num_of_tags_displayed_as_order_id": "Max. dargestellte Anzahl Kennzeichnungen für Aufträge",
       "label.num_of_workflow_tags_displayed": "Max. dargestellte Anzahl Kennzeichnungen für Arbeitsabläufe",
       "label.report_java_options": "Java Optionen des Berichtsdienstes",
-      "label.approval_requestor_role": "Approval Requestor Role",
+      "label.approval_requestor_role": "Rolle des Anfragers von Autorisierungen",
       "force_comments_for_audit_log": "Bestimmt, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines ^Auftrags|order^ vom Benutzer eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Bietet eine erweiterbare Liste vordefinierter Begründungen für Änderungen an Objekten, aus der die Benutzer auswählen können, wenn Begründungen für eine Benutzerintervention in das Prüfprotokoll aufgenommen werden.",
       "default_profile_account": "Bestimmt das Benutzeronto, das als Muster für Einstellungen neu hinzugefügter Benutzerkonten verwendet wird.",

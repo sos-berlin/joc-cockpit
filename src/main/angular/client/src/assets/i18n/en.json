@@ -2774,7 +2774,7 @@
         "manageDependencies": "Displays referencing objects and referenced objects per selected object.\n\nWhen used with the **All** or **Required** options, objects can be unselected.",
         "showRelatedObjects": "Displays related objects that are not directly dependent on each other, such as ^Workflow^s that use the same ^Job Resource^.\n\nIf the ^Inventory^ is large, display may take some time.",
         "keepOrdersInDailyPlan":"If ^Order^s exist in the ^Daily Plan^ for ^Schedule^s or ^Calendar^s that should be removed or recalled, then the option determines if such Orders should be removed or should remain with the Daily Plan.",
-        "handleRecursively":"Include Sub-folders"
+        "handleRecursively":"Recalls objects from ^Inventory^ sub-folders."
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
       "createObject": {
