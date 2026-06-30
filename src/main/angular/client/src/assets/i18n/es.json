@@ -4194,7 +4194,8 @@
       "num_of_tags_displayed_as_order_id": "Especifica el número de ^Tag^s mostradas con cada ^Order^.\n\nUn valor 0 suprimirá la visualización de Tags.",
       "num_of_workflow_tags_displayed": "Especifica el número de ^Tag^s mostradas con cada ^Workflow^.\n\nUn valor 0 suprimirá la visualización de Tags.",
       "report_java_options": "Los Reportes se crean desde una clase Java que puede configurarse para usar opciones Java.\n\nSe recomienda usar la opción `-Xmx<número>m` para aumentar la memoria heap.",
-      "approval_requestor_role": "Indica el nombre del rol asignado a las cuentas de usuario que pueden solicitar aprobación para operaciones que requieren los permisos especificados con el rol."
+      "approval_requestor_role": "Indica el nombre del rol asignado a las cuentas de usuario que pueden solicitar aprobación para operaciones que requieren los permisos especificados con el rol.",
+      "workflows_requiring_approval": "Workflows requiring approval"
     },
     "user": {
       "group.user": "Usuario",
