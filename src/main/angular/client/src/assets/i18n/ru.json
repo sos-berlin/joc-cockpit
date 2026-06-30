@@ -902,7 +902,7 @@
     "label.successfulOrders": "Успешные задания",
     "label.failedOrders": "Неудачные задания",
     "label.successfulJobs": "Успешные задачи",
-    "label.failedJobs": "Задачи с ошибкой",
+    "label.failedJobs": "Неудачные задачи",
     "label.orders": "Задания",
     "label.dailyPlan": "Дневной план",
     "label.clusterState": "Состояние кластера",
