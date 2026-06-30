@@ -54,7 +54,8 @@ const SETTING_GROUPS: { [section: string]: { [groupKey: string]: SettingEntry[] 
       ['joc_reverse_proxy_url', 'advanced'], ['encoding', 'advanced'],
       ['copy_paste_suffix', 'advanced'], ['copy_paste_prefix', 'advanced'],
       ['restore_suffix', 'advanced'], ['restore_prefix', 'advanced'],
-      ['import_suffix', 'advanced'], ['import_prefix', 'advanced'],['approval_requestor_role', 'advanced']
+      ['import_suffix', 'advanced'], ['import_prefix', 'advanced'],['approval_requestor_role', 'advanced'],
+      ['workflows_requiring_approval', 'advanced']
     ],
     view: [
       ['show_view_filetransfer', 'frequent'], ['show_view_dashboard', 'frequent'],

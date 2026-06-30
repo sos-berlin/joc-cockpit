@@ -4192,7 +4192,8 @@
       "num_of_tags_displayed_as_order_id": "オーダーID表示タグ数",
       "num_of_workflow_tags_displayed": "ワークフロー表示タグ数",
       "report_java_options": "Javaオプション表示",
-      "approval_requestor_role": "承認依頼者ロール"
+      "approval_requestor_role": "承認依頼者ロール",
+      "workflows_requiring_approval": "Workflows requiring approval"
     },
     "user": {
       "group.user": "User Settings",
