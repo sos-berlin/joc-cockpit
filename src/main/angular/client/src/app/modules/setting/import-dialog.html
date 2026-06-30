@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>settings.label.importSetting</span>
+    <span>{{ 'settings.label.importSetting' | translate }}</span>
   </h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,12 +13,12 @@
         <div class="col-md-12">
           <div ng2FileDrop (onFileDrop)="onFileSelected($event)" [uploader]="uploader" class="drop-box-full">
             <div><i class="icon-upload-icon"></i></div>
-            <div translate>common.button.dragAndDropFileToUpload</div>
+            <div>{{ 'common.button.dragAndDropFileToUpload' | translate }}</div>
           </div>
           <div class="p-l-sm p-t-sm" [hidden]="uploader.queue.length>0">
             <div class="upload-btn-wrapper">
               <button type="button" class="btn btn-grey btn-sm" >
-                <span translate>common.button.chooseFileToUpload</span>
+                <span>{{ 'common.button.chooseFileToUpload' | translate }}</span>
               </button>
               <input type="file" accept=".json" ng2FileSelect (onFileSelected)="onFileSelected($event)" [uploader]="uploader">
             </div>
@@ -31,12 +31,12 @@
             <table class="table table-hover table-bordered  ">
               <thead>
               <tr>
-                <th><span translate>common.label.name</span></th>
-                <th><span translate>common.label.size</span></th>
-                <th><span translate>common.label.progress</span></th>
-                <th><span translate>common.label.status</span></th>
+                <th><span>{{ 'common.label.name' | translate }}</span></th>
+                <th><span>{{ 'common.label.size' | translate }}</span></th>
+                <th><span>{{ 'common.label.progress' | translate }}</span></th>
+                <th><span>{{ 'common.label.status' | translate }}</span></th>
                 @if (uploader.queue[0].isError) {
-                  <th><span translate>common.label.action</span></th>
+                  <th><span>{{ 'common.label.action' | translate }}</span></th>
                 }
               </tr>
               </thead>
@@ -93,10 +93,10 @@
         @if (uploader.isUploading) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
-        <span translate>inventory.button.upload</span>
+        <span>{{ 'inventory.button.upload' | translate }}</span>
       </button>
-      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-        common.button.cancel
+      <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

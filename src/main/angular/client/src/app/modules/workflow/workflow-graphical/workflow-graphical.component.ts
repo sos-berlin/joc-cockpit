@@ -4,7 +4,9 @@ import {
   Input,
   Output,
   SimpleChanges,
-  ViewChild, ViewContainerRef
+  ViewChild, ViewContainerRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -42,7 +44,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-workflow-graphical-dialog',
-  templateUrl: './dependent-workflow-dialog.html'
+  templateUrl: './dependent-workflow-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DependentWorkflowComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -63,7 +66,7 @@ export class DependentWorkflowComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dataService: DataService,
-              private workflowService: WorkflowService, private modal: NzModalService) {
+              private workflowService: WorkflowService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -146,6 +149,7 @@ export class DependentWorkflowComponent {
       this.workFlowJson.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       this.workFlowJson.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.getOrders(this.workflow);
+      this.cdr.markForCheck();
     });
   }
 
@@ -183,6 +187,7 @@ export class DependentWorkflowComponent {
           }
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -210,7 +215,8 @@ export class DependentWorkflowComponent {
   standalone: false,
   selector: 'app-workflow-graphical',
   templateUrl: './workflow-graphical.component.html',
-  styleUrls: ['./workflow-graphical.component.css']
+  styleUrls: ['./workflow-graphical.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowGraphicalComponent {
   @Input() workFlowJson: any = {};
@@ -263,7 +269,8 @@ export class WorkflowGraphicalComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
               public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService,
-              private nzContextMenuService: NzContextMenuService, private viewContainerRef: ViewContainerRef) {
+              private nzContextMenuService: NzContextMenuService, private viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngAfterViewInit(): void {
@@ -506,6 +513,7 @@ export class WorkflowGraphicalComponent {
         this.isProcessing = true;
         this.resetAction(5000);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -516,6 +524,7 @@ export class WorkflowGraphicalComponent {
     }).subscribe((res: any) => {
       this.order.variables = res.variables || {};
       this.openModel(this.order);
+      this.cdr.markForCheck();
     });
   }
 
@@ -545,6 +554,7 @@ export class WorkflowGraphicalComponent {
           this.isProcessing = true;
           this.resetAction(5000);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -566,6 +576,7 @@ export class WorkflowGraphicalComponent {
       if (result) {
         this.restCall(false, 'Confirm', this.order, 'confirm');
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -1810,14 +1821,17 @@ export class WorkflowGraphicalComponent {
           this.isProcessing = true;
           this.resetAction(5000);
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.isProcessing = true;
       this.coreService.post('orders/' + url, obj).subscribe({
         next: () => {
           this.resetAction(5000);
+          this.cdr.markForCheck();
         }, error: () => {
           this.resetAction();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1853,6 +1867,7 @@ export class WorkflowGraphicalComponent {
             ticketLink: result.ticketLink
           })
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.isProcessing = true;
@@ -1875,8 +1890,10 @@ export class WorkflowGraphicalComponent {
     this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe({
       next: () => {
         this.resetAction(5000);
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetAction();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1968,6 +1985,7 @@ export class WorkflowGraphicalComponent {
       }).subscribe((res: any) => {
         order.obstacles = res.obstacles;
         cell.setAttribute('order', JSON.stringify(order));
+        this.cdr.markForCheck();
       });
     }
   }

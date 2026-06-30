@@ -5,13 +5,13 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>dailyPlan.section.customizationName</small>
+        <small class="_600 section-box-title">{{ 'dailyPlan.section.customizationName' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
              class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'dailyPlan.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.customizationName' | translate">{{ 'customization.label.customizationName' | translate }}</span>
             @if (!isSearch) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -24,13 +24,13 @@
             @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isUnique) {
               <div class="help-block text-danger">
-                <div translate>common.message.uniqueError</div>
+                <div>{{ 'common.message.uniqueError' | translate }}</div>
               </div>
             }
           </div>
@@ -39,18 +39,18 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>dailyPlan.section.filter</small>
+        <small class="_600 section-box-title">{{ 'dailyPlan.section.filter' | translate }}</small>
       </div>
       <div class="p-a-sm">
         @if (isSearch) {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4">
-              <span [appRichTooltip]="'dailyPlan.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.dateRange' | translate">{{ 'common.label.dateRange' | translate }}</span>
             </label>
             <div class="col-md-6">
               <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+                <label nz-radio nzValue="current"><span>{{ 'common.label.specificDate' | translate }}</span></label>
+                <label nz-radio nzValue="planned"><span>{{ 'common.label.relativeDate' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -58,7 +58,7 @@
         @if (filter.radio === 'current') {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.planned.from' | translate" translate>common.label.from</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.planned.from' | translate">{{ 'common.label.from' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -70,7 +70,7 @@
         @if (filter.radio === 'current') {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.planned.to' | translate" translate>common.label.to</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.planned.to' | translate">{{ 'common.label.to' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -82,7 +82,7 @@
         @if (filter.radio === 'planned') {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.specific.from' | translate" translate>common.label.from</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.specific.from' | translate">{{ 'common.label.from' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((from.dirty || from.touched) && from.invalid)}" class=" col-sm-6">
@@ -92,7 +92,7 @@
               @if (from.errors && (from.dirty || from.touched)) {
                 <div class="help-block text-danger">
                   @if (!from.valid) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -102,7 +102,7 @@
         @if (filter.radio === 'planned') {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.specific.to' | translate" translate>common.label.to</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.specific.to' | translate">{{ 'common.label.to' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}" class=" col-sm-6">
@@ -112,7 +112,7 @@
               @if (to.errors && (to.dirty || to.touched)) {
                 <div class="help-block text-danger">
                   @if (!to.valid) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -121,7 +121,7 @@
         }
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflows' | translate" translate>dailyPlan.label.workflows</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflows' | translate">{{ 'dailyPlan.label.workflows' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
@@ -132,7 +132,7 @@
         @if (filter.workflowFolders.length > 0) {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-              <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.filter.workflowFolders' | translate">{{ 'dailyPlan.label.workflowFolders' | translate }}</span>
             </label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               @for (path of filter.workflowFolders; track path) {
@@ -146,7 +146,7 @@
         }
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'dailyPlan.tooltip.filter.schedules' | translate" translate>dailyPlan.label.schedules</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.filter.schedules' | translate">{{ 'dailyPlan.label.schedules' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="filter" [list]="filter"
@@ -157,7 +157,7 @@
         @if (filter.scheduleFolders.length > 0) {
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-              <span [appRichTooltip]="'dailyPlan.tooltip.filter.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.filter.scheduleFolders' | translate">{{ 'dailyPlan.label.scheduleFolders' | translate }}</span>
             </label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               @for (path of filter.scheduleFolders; track path) {
@@ -171,19 +171,19 @@
         }
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-            <span [appRichTooltip]="'dailyPlan.tooltip.state' | translate" translate>common.label.state</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.state' | translate">{{ 'common.label.state' | translate }}</span>
           </label>
           <div [ngClass]="{'col-md-6': isSearch}" class="col-sm-8">
             <nz-radio-group name="state" [(ngModel)]="filter.state">
               @for (option of checkOptions; track option.status) {
-                <label nz-radio [nzValue]="option.status"><span translate>common.label.{{option.text}}</span></label>
+                <label nz-radio [nzValue]="option.status"><span>{{ 'common.label.' + option.text | translate }}</span></label>
               }
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row ">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-            <span [appRichTooltip]="'dailyPlan.tooltip.late' | translate" translate>dailyPlan.label.late</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.late' | translate">{{ 'dailyPlan.label.late' | translate }}</span>
           </label>
           <div class="col-sm-8">
             <label [(ngModel)]="filter.late" name="late" nz-checkbox></label>
@@ -192,7 +192,7 @@
         @if (permission.joc.administration.customization.share && !isSearch) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'dailyPlan.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.sharedCustomization' | translate">{{ 'customization.label.sharedCustomization' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
@@ -204,12 +204,12 @@
     @if(preferences.tagsEnabled) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>dailyPlan.section.tags</small>
+          <small class="_600 section-box-title">{{ 'dailyPlan.section.tags' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.workflowTagging' | translate">{{ 'inventory.tab.workflowTagging' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
@@ -223,7 +223,7 @@
           </div>
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.orderTagging' | translate">{{ 'inventory.tab.orderTagging' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
@@ -240,8 +240,8 @@
     }
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search()" [disabled]="submitted" class="btn btn-primary btn-sm" translate type="button">
-          common.button.search
+        <button (click)="search()" [disabled]="submitted" class="btn btn-primary btn-sm" type="button">
+          {{ 'common.button.search' | translate }}
         </button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
@@ -250,8 +250,8 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-          common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+          {{ 'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -264,8 +264,8 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

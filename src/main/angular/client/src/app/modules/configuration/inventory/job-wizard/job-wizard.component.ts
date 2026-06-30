@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -38,6 +39,7 @@ interface KeyValue {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-request',
   templateUrl: './api-request.component.html'
 })
@@ -845,6 +847,7 @@ export class ApiRequestComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'json-schema-field',
   templateUrl: './json-schema-field.component.html'
 })
@@ -1062,6 +1065,7 @@ export class JsonSchemaFieldComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-text-editor',
   templateUrl: './api-text-editor.html'
 })
@@ -2083,6 +2087,7 @@ export interface endPoint {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-request-dialog',
   templateUrl: './api-request-dialog.html'
 })
@@ -2343,6 +2348,7 @@ export class ApiRequestDialogComponent {
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-job-wizard',
   templateUrl: './job-wizard.component.html'
 })

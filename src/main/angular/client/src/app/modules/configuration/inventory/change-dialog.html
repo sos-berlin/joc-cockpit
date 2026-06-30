@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>{{'changes.label.'+ title}}</span>
+    <span>{{'changes.label.'+ title | translate}}</span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,11 +14,11 @@
       </div>
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>{{'changes.section.change' | translate}}</small>
+          <small class="_600 section-box-title">{{'changes.section.change' | translate}}</small>
         </div>
         <div class="p-a-sm">
           <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-            <label class="col-sm-3 form-control-label" translate [appRichTooltip]="(removeChange ? 'changes.tooltip.removeChange' : 'changes.tooltip.change') | translate">changes.label.change
+            <label class="col-sm-3 form-control-label" [appRichTooltip]="(removeChange ? 'changes.tooltip.removeChange' : 'changes.tooltip.change') | translate">{{ 'changes.label.change' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -31,7 +31,7 @@
               @if (name.invalid && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">
                   @if (name.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -117,23 +117,23 @@
               @if (node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)) {
                 <div class="m-l">
                   @if (!node.origin.deleted) {
-                    <i class="text-muted" translate>workflow.label.draft</i>
+                    <i class="text-muted">{{ 'workflow.label.draft' | translate }}</i>
                   }
                   @if (node.origin.deleted && node.origin.deploymentId) {
-                    <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                    <i class="text-danger">{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                   }
                   @if (node.origin.deleted && !node.origin.deploymentId) {
-                    <i class="text-danger" translate>inventory.label.markForDelete</i>
+                    <i class="text-danger">{{ 'inventory.label.markForDelete' | translate }}</i>
                   }
                 </div>
               }
               @if (!node.origin.type && !node.origin.object) {
                 <div class="m-l">
                   @if (node.origin.deleted && node.origin.deploymentId) {
-                    <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                    <i class="text-danger">{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                   }
                   @if (node.origin.deleted && !node.origin.deploymentId) {
-                    <i class="text-danger" translate>inventory.label.markForDelete</i>
+                    <i class="text-danger">{{ 'inventory.label.markForDelete' | translate }}</i>
                   }
                 </div>
               }
@@ -179,8 +179,8 @@
         {{'common.button.submit' | translate}}
       </button>
     }
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

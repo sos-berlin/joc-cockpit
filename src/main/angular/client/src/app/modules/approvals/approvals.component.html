@@ -19,29 +19,29 @@
               <div class="btn-group m-l-12">
                 <button (click)="changeRequestors('REQUESTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('REQUESTED')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.requested
+>{{ 'monitor.approvalRequest.button.requested' | translate }}
                 </button>
                 <button (click)="changeRequestors('WITHDRAWN')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('WITHDRAWN')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.withdrawn
+>{{ 'monitor.approvalRequest.button.withdrawn' | translate }}
                 </button>
                 <button (click)="changeRequestors('EXECUTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('EXECUTED')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.inProgress
+>{{ 'monitor.approvalRequest.button.inProgress' | translate }}
                 </button>
               </div>
               <div class="btn-group m-l-12">
                 <button (click)="changeApprover('PENDING')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('PENDING')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.pending
+>{{ 'monitor.approvalRequest.button.pending' | translate }}
                 </button>
                 <button (click)="changeApprover('APPROVED')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('APPROVED')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.approved
+>{{ 'monitor.approvalRequest.button.approved' | translate }}
                 </button>
                 <button (click)="changeApprover('REJECTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.approverStates.includes('REJECTED')}"
                         class="btn btn-grey btn-sm"
-                        translate>monitor.approvalRequest.button.rejected
+>{{ 'monitor.approvalRequest.button.rejected' | translate }}
                 </button>
               </div>
             </div>
@@ -51,21 +51,21 @@
               <button (click)="updateRequest('approve')"
                       class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-check"></i>&nbsp;
-                <span translate>common.button.approve</span>
+                <span>{{ 'common.button.approve' | translate }}</span>
               </button>
             }
             @if (approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isApprover) {
               <button (click)="updateRequest('reject')"
                       class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-times"></i>&nbsp;
-                <span translate>monitor.approvalRequest.button.reject</span>
+                <span>{{ 'monitor.approvalRequest.button.reject' | translate }}</span>
               </button>
             }
             @if (approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isRequestor) {
               <button (click)="updateRequest('withdraw')"
                       class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-caret-square-o-down"></i>&nbsp;
-                <span translate>monitor.approvalRequest.button.withdraw</span>
+                <span>{{ 'monitor.approvalRequest.button.withdraw' | translate }}</span>
               </button>
             }
           </div>
@@ -75,10 +75,10 @@
               <div class="btn-group m-l-12">
                 <button (click)="newApprover()"
                         class="btn btn-grey btn-sm"
-                        translate>
+>
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>
-                  monitor.approvers.button.newApprover
+                  <span>
+                  {{ 'monitor.approvers.button.newApprover' | translate }}
                   </span>
                 </button>
               </div>
@@ -104,7 +104,7 @@
                       class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                   }
                   <a (click)="onTabChange(0)" [ngClass]="{'active': approvalsFilters.tabIndex === 0}" class="nav-link">
-                    <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.approvalRequest</span></span>
+                    <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'monitor.label.approvalRequest' | translate }}</span></span>
                   </a>
                 </li>
                 @if (permission.joc && permission.joc.administration.accounts.view) {
@@ -120,7 +120,7 @@
                         class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                     }
                     <a (click)="onTabChange(1)" [ngClass]="{'active': approvalsFilters.tabIndex === 1}" class="nav-link">
-                      <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.approvers</span></span>
+                      <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'monitor.label.approvers' | translate }}</span></span>
                     </a>
                   </li>
                 }
@@ -137,7 +137,7 @@
                         class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                     }
                     <a (click)="onTabChange(2)" [ngClass]="{'active': approvalsFilters.tabIndex === 2}" class="nav-link">
-                      <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.emailSettings</span></span>
+                      <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'monitor.label.emailSettings' | translate }}</span></span>
                     </a>
                   </li>
                 }

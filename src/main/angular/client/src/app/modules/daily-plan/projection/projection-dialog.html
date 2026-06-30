@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>dailyPlan.tab.projection</span>
+    <span>{{ 'dailyPlan.tab.projection' | translate }}</span>
     :
     <i class="text-muted p-l-xs text">{{schedule.date}}</i>
   </h4>
@@ -66,7 +66,7 @@
           <thead>
           <tr>
             <th (click)="sort('workflow')">
-              <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
+              <a><span class="p-r-xs">{{ 'dailyPlan.label.workflow' | translate }}</span>
                 @if (filter.sortBy == 'workflow' && !filter.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -75,7 +75,7 @@
                 }</a>
             </th>
             <th (click)="sort('schedule')">
-              <a><span class="p-r-xs" translate>dailyPlan.label.schedule</span>
+              <a><span class="p-r-xs">{{ 'dailyPlan.label.schedule' | translate }}</span>
                 @if (filter.sortBy == 'schedule' && !filter.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -85,7 +85,7 @@
             </th>
             @if (schedule.numOfPeriods >= 0) {
               <th (click)="sort('period')">
-                <a><span class="p-r-xs" translate>runtime.label.period</span>
+                <a><span class="p-r-xs">{{ 'runtime.label.period' | translate }}</span>
                   @if (filter.sortBy == 'period' && !filter.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -96,7 +96,7 @@
             }
             @if (!isCurrentController) {
               <th (click)="sort('controllerId')">
-                <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                <a><span class="p-r-xs">{{ 'common.label.controllerId' | translate }}</span>
                   @if (filter.sortBy == 'controllerId' && !filter.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -162,12 +162,12 @@
           </tbody>
         </nz-table>
         @if (ajaxTable.data.length >0) {
-          <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+          <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span> {{data.length}}
             @if (ajaxTable.data.length >1) {
-              <span translate>inventory.label.entriesFound</span>
+              <span>{{ 'inventory.label.entriesFound' | translate }}</span>
             }
             @if (ajaxTable.data.length ==1) {
-              <span translate>inventory.label.entryFound</span>
+              <span>{{ 'inventory.label.entryFound' | translate }}</span>
             }
           </div>
         }
@@ -176,7 +176,7 @@
   }
 </div>
 <div class="modal-footer">
-  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-    common.button.close
+  <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+    {{ 'common.button.close' | translate }}
   </button>
 </div>

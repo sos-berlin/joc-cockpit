@@ -33,16 +33,16 @@
                   />
                 </div>
                 <button class="btn btn-grey btn-sm" style="margin-right: 12px"
-                        type="button" (click)="docs()" translate>
+                        type="button" (click)="docs()">
                   <i nz-icon class="font14" nzType="file-search" nzTheme="outline"></i>
                 </button>
                 <button class="btn btn-primary btn-sm"
-                        type="submit" translate>
-                  workflow.apiRequest.button.sendRequest
+                        type="submit">
+                  {{ 'workflow.apiRequest.button.sendRequest' | translate }}
                 </button>
               </div>
 
-              <nz-tabset>
+              <nz-tabs>
                 <!-- Params Tab -->
                 <nz-tab nzTitle="{{'workflow.apiRequest.label.params' | translate}}">
                   <nz-table
@@ -54,8 +54,8 @@
                   >
                     <thead>
                     <tr>
-                      <th translate>workflow.apiRequest.label.key</th>
-                      <th translate>workflow.apiRequest.label.value</th>
+                      <th>{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                      <th>{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       <th style="width:40px"></th>
                     </tr>
                     </thead>
@@ -106,7 +106,7 @@
                   <div class="form-group row">
                     <div class="col-sm-2">
                       <label nzFor="authType">
-                        <span [appRichTooltip]="'workflow.apiRequest.tooltip.type' | translate" translate>common.label.type</span>
+                        <span [appRichTooltip]="'workflow.apiRequest.tooltip.type' | translate">{{ 'common.label.type' | translate }}</span>
                       </label>
                     </div>
                     <div class="col-sm-5">
@@ -132,7 +132,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="apiKeyName">
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.keyName' | translate" translate>workflow.apiRequest.label.keyName</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.keyName' | translate">{{ 'workflow.apiRequest.label.keyName' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -144,7 +144,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="apiKeyValue">
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.value' | translate" translate>workflow.apiRequest.label.value</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.value' | translate">{{ 'workflow.apiRequest.label.value' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -157,16 +157,14 @@
 
                         <div class="col-sm-2">
                           <label>
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.in' | translate" translate>workflow.apiRequest.label.in</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.in' | translate">{{ 'workflow.apiRequest.label.in' | translate }}</span>
                           </label>
                         </div>
 
                         <div class="col-sm-5">
                           <nz-radio-group [(ngModel)]="auth.apiKey.in" name="apiKeyIn">
-                            <label nz-radio nzValue="header"
-                                   translate>{{ 'workflow.apiRequest.label.header' | translate }}</label>
-                            <label nz-radio nzValue="query"
-                                   translate>{{ 'workflow.apiRequest.label.query' | translate }}</label>
+                            <label nz-radio nzValue="header">{{ 'workflow.apiRequest.label.header' | translate }}</label>
+                            <label nz-radio nzValue="query">{{ 'workflow.apiRequest.label.query' | translate }}</label>
                           </nz-radio-group>
                         </div>
                       </div>
@@ -179,7 +177,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="bearerToken">
-                            <span [appRichTooltip]="'agent.tooltip.token' | translate" translate>agent.label.token</span>
+                            <span [appRichTooltip]="'agent.tooltip.token' | translate">{{ 'agent.label.token' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -196,7 +194,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="basicUser">
-                            <span [appRichTooltip]="'profile.tooltip.userName' | translate" translate>profile.label.userName</span>
+                            <span [appRichTooltip]="'profile.tooltip.userName' | translate">{{ 'profile.label.userName' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -212,7 +210,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="basicPass">
-                            <span [appRichTooltip]="'login.tooltip.password' | translate" translate>login.label.password</span>
+                            <span [appRichTooltip]="'login.tooltip.password' | translate">{{ 'login.label.password' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -236,7 +234,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="clientId">
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientId' | translate" translate>workflow.apiRequest.label.clientId</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientId' | translate">{{ 'workflow.apiRequest.label.clientId' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -247,7 +245,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="clientSecret">
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientSecret' | translate" translate>workflow.apiRequest.label.clientSecret</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.clientSecret' | translate">{{ 'workflow.apiRequest.label.clientSecret' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -258,7 +256,7 @@
                       <div class="form-group row">
                         <div class="col-sm-2">
                           <label nzFor="tokenUrl">
-                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.tokenUrl' | translate" translate>workflow.apiRequest.label.tokenUrl</span>
+                            <span [appRichTooltip]="'workflow.apiRequest.tooltip.tokenUrl' | translate">{{ 'workflow.apiRequest.label.tokenUrl' | translate }}</span>
                           </label>
                         </div>
                         <div class="col-sm-5">
@@ -276,8 +274,8 @@
                             [nzShowPagination]="false" nzSize="small">
                     <thead>
                     <tr>
-                      <th translate>workflow.apiRequest.label.key</th>
-                      <th translate>workflow.apiRequest.label.value</th>
+                      <th>{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                      <th>{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       <th style="width: 40px;"></th>
                     </tr>
                     </thead>
@@ -354,7 +352,7 @@
               placeholder="{{'workflow.apiRequest.placeholder.keyValue' | translate}}"
             ></textarea>
                 </nz-tab>
-              </nz-tabset>
+              </nz-tabs>
 
             </form>
 
@@ -395,7 +393,7 @@
                 }
                 @if (requestUrl) {
                   <div>
-                    <span translate>monitor.approvalRequest.label.requestUrl</span> - <span>{{requestUrl}}</span>
+                    <span>{{ 'monitor.approvalRequest.label.requestUrl' | translate }}</span> - <span>{{requestUrl}}</span>
                   </div>
                 }
                 <nz-divider></nz-divider>
@@ -405,8 +403,8 @@
                               nzSize="medium">
                       <thead>
                       <tr>
-                        <th translate>workflow.apiRequest.label.key</th>
-                        <th translate>workflow.apiRequest.label.value</th>
+                        <th>{{ 'workflow.apiRequest.label.key' | translate }}</th>
+                        <th>{{ 'workflow.apiRequest.label.value' | translate }}</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -426,11 +424,11 @@
           <div class="modal-footer p-l-0 p-b-0">
             <button (click)="storeConfig()"
                     class="btn btn-primary btn-sm"
-                    translate
+
                     type="submit">
               {{ 'common.button.submit' | translate }}
             </button>
-            <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+            <button (click)="close()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
             </button>
 
           </div>
@@ -443,9 +441,9 @@
           <div class="m-t-sm box border p-a">
             <json-editor #editor [data]="data" [options]="options"></json-editor>
             <button (click)="copyToClipboard()" class="btn btn-default btn-sm m-t-1"
-                    translate type="button">log.button.copyToClipboard
+ type="button">{{ 'log.button.copyToClipboard' | translate }}
             </button>
-            <button (click)="variableList()" class="btn btn-grey btn-sm m-t-1 m-l-sm pull-right" translate type="button">workflow.apiRequest.button.variableList
+            <button (click)="variableList()" class="btn btn-grey btn-sm m-t-1 m-l-sm pull-right" type="button">{{ 'workflow.apiRequest.button.variableList' | translate }}
             </button>
           </div>
         </div>

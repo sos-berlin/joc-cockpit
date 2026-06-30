@@ -1,20 +1,20 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!new) {
-      <span translate>
+      <span>
         @if (!isCopy) {
-          <span translate>agent.label.updateCluster</span>
+          <span>{{ 'agent.label.updateCluster' | translate }}</span>
         }
         @if (isCopy) {
-          <span translate>agent.label.duplicateCluster</span>
+          <span>{{ 'agent.label.duplicateCluster' | translate }}</span>
         }
         @if (isCopy) {
-          <span translate>: {{data.subagentClusterId}}</span>
+          <span>: {{data.subagentClusterId}}</span>
         }
       </span>
     }
     @if (new) {
-      <span translate>agent.label.createCluster</span>
+      <span>{{ 'agent.label.createCluster' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -28,7 +28,7 @@
     </div>
     <div class="form-group row">
       <label [appRichTooltip]="'agent.cluster.subagent.tooltip.clusterName' | translate" class="col-sm-3 form-control-label"
-             translate>agent.label.clusterName
+>{{ 'agent.label.clusterName' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((subagentClusterId.dirty || subagentClusterId.touched) && subagentClusterId.invalid) || !isUniqueId}"
@@ -40,23 +40,23 @@
         @if (subagentClusterId.invalid && (subagentClusterId.dirty || subagentClusterId.touched)) {
           <div class="text-danger help-block">
             @if (subagentClusterId.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
             @if (subagentClusterId.errors.invalidIdentifier) {
-              <div translate>common.message.invalid</div>
+              <div>{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
         @if (!isUniqueId) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div>{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
     </div>
     <div class="form-group row">
       <label [appRichTooltip]="'agent.cluster.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label"
-             translate>common.label.title</label>
+>{{ 'common.label.title' | translate }}</label>
       <div class="col-sm-8">
         <input [(ngModel)]="cluster.title" [maxLength]="255" class="form-control"
                name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
@@ -71,8 +71,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

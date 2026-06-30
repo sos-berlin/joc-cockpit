@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -12,7 +12,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-agent-cluster-status',
-  templateUrl: './agent-cluster-status.component.html'
+  templateUrl: './agent-cluster-status.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentClusterStatusComponent {
   @Input('layout') layout: any;
@@ -62,10 +63,15 @@ export class AgentClusterStatusComponent {
   public pieChartPlugins = [DatalabelsPlugin];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
-              private router: Router, public modal: NzModalService, private dataService: DataService) {
+              private router: Router, public modal: NzModalService, private dataService: DataService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -161,7 +167,8 @@ export class AgentClusterStatusComponent {
       next: res => {
         this.prepareAgentClusterData(res);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

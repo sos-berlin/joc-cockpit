@@ -5,12 +5,12 @@
     }
     @if (!new) {
       <span>
-        <span translate>agent.label.editSubAgent</span>:
+        <span>{{ 'agent.label.editSubAgent' | translate }}</span>:
         <span [innerHtml]="data.subagentId"></span>
       </span>
     }
     @if (new) {
-      <span translate>agent.label.addSubAgent</span>
+      <span>{{ 'agent.label.addSubAgent' | translate }}</span>
     }
     </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -24,7 +24,7 @@
     </div>
     @if (!new) {
       <div class="form-group row">
-        <label [appRichTooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" translate>agent.label.agentId</label>
+        <label [appRichTooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3">{{ 'agent.label.agentId' | translate }}</label>
         <div class="col-sm-8">
           {{clusterAgent.agentId}}
         </div>
@@ -33,7 +33,7 @@
 
     <div class="form-group row">
       <label [appRichTooltip]="'agent.subagent.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
-             translate>agent.label.subagentId
+>{{ 'agent.label.subagentId' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((subagentId.dirty || subagentId.touched) && subagentId.invalid)}"
@@ -45,24 +45,24 @@
         @if (subagentId.invalid && (subagentId.dirty || subagentId.touched)) {
           <div class="text-danger help-block">
             @if (subagentId.errors && subagentId.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
             @if (subagentId.errors.invalidIdentifier) {
-              <div translate>common.message.invalid</div>
+              <div>{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
       </div>
     </div>
     <div class="form-group row">
-      <label [appRichTooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label" translate>common.label.title</label>
+      <label [appRichTooltip]="'agent.subagent.tooltip.title' | translate" class="col-sm-3 form-control-label">{{ 'common.label.title' | translate }}</label>
       <div class=" col-sm-8">
         <input [(ngModel)]="subagent.title" [maxLength]="255" class="form-control"
                name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
       </div>
     </div>
     <div class="form-group row">
-      <label [appRichTooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label" translate>agent.label.url
+      <label [appRichTooltip]="'agent.subagent.tooltip.url' | translate" class="col-sm-3 form-control-label">{{ 'agent.label.url' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class=" col-sm-8">
@@ -71,7 +71,7 @@
         @if (url.invalid && (url.dirty || url.touched)) {
           <div class="text-danger help-block">
             @if (url.errors && url.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -79,7 +79,7 @@
     </div>
     @if (new) {
       <div class="form-group row">
-        <label [appRichTooltip]="'agent.subagent.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3" translate>agent.label.withGenerateSubagentCluster</label>
+        <label [appRichTooltip]="'agent.subagent.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3">{{ 'agent.label.withGenerateSubagentCluster' | translate }}</label>
         <div class="col-sm-6">
           <label [(ngModel)]="subagent.withGenerateSubagentCluster" name="withGenerateSubagentCluster"
                  nz-checkbox></label>
@@ -95,8 +95,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

@@ -1,23 +1,23 @@
 <div class="b-a m-b-sm section-box">
   <div class="section-box-header">
-    <small class="_600 section-box-title" translate>auditLog.section.audit</small>
+    <small class="_600 section-box-title">{{ 'auditLog.section.audit' | translate }}</small>
   </div>
   <div class="p-a-sm">
     <div class="form-group row">
       <label class="col-sm-{{sizeX}}">
-        <span [appRichTooltip]="'common.tooltip.selectComments' | translate" translate>common.label.selectComments</span>
+        <span [appRichTooltip]="'common.tooltip.selectComments' | translate">{{ 'common.label.selectComments' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <nz-radio-group name="radio" [(ngModel)]="comments.radio" (ngModelChange)="onChange($event)">
-          <label nz-radio nzValue="predefined"><span translate>common.label.predefined</span></label>
-          <label nz-radio nzValue="new"><span translate>common.label.individual</span></label>
+          <label nz-radio nzValue="predefined"><span>{{ 'common.label.predefined' | translate }}</span></label>
+          <label nz-radio nzValue="new"><span>{{ 'common.label.individual' | translate }}</span></label>
         </nz-radio-group>
       </div>
     </div>
     @if (comments.radio=='predefined') {
       <div class="form-group row">
         <label class="col-sm-{{sizeX}} form-control-label">
-          <span [appRichTooltip]="'common.tooltip.selectComment' | translate" translate>common.label.selectComment</span>
+          <span [appRichTooltip]="'common.tooltip.selectComment' | translate">{{ 'common.label.selectComment' | translate }}</span>
           @if (required) {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -33,7 +33,7 @@
       <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
           class="form-group row">
         <label class="col-sm-{{sizeX}} ">
-          <span [appRichTooltip]="'common.tooltip.comment' | translate" translate>common.label.comment</span>
+          <span [appRichTooltip]="'common.tooltip.comment' | translate">{{ 'common.label.comment' | translate }}</span>
           @if (required) {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -46,8 +46,8 @@
           @if (textComment.invalid && (textComment.dirty || textComment.touched)) {
             <div class="text-danger help-block">
               @if (textComment.errors && textComment.errors['required']) {
-                <div translate>
-                  common.message.requiredError
+                <div>
+                  {{ 'common.message.requiredError' | translate }}
                 </div>
               }
             </div>
@@ -57,7 +57,7 @@
     }
     <div class="form-group row">
       <label class="col-sm-{{sizeX}} form-control-label">
-        <span [appRichTooltip]="'common.tooltip.timeSpend' | translate" translate>common.label.timeSpend</span>
+        <span [appRichTooltip]="'common.tooltip.timeSpend' | translate">{{ 'common.label.timeSpend' | translate }}</span>
       </label>
       <div class="col-sm-{{sizeY}}">
         <nz-input-number name="timeSpend" [nzPlaceHolder]="'common.placeholder.timeSpend' | translate"
@@ -66,7 +66,7 @@
     </div>
     <div class="form-group row">
       <label class="col-sm-{{sizeX}} form-control-label">
-        <span [appRichTooltip]="'common.tooltip.ticketLink' | translate" translate>common.label.ticketLink</span>
+        <span [appRichTooltip]="'common.tooltip.ticketLink' | translate">{{ 'common.label.ticketLink' | translate }}</span>
       </label>
       <div class="col-sm-{{sizeY}}">
         <input type="text" class="form-control" name="ticketLink" placeholder="{{'common.placeholder.ticketLink' | translate}}"
@@ -76,7 +76,7 @@
     @if (router.url.match('/users/') || router.url.match('/settings')) {
       <div class="form-group row">
         <label class="col-sm-{{sizeX}}">
-          <span [appRichTooltip]="'user.tooltip.reuseReason' | translate" translate>user.label.reuseReason</span>
+          <span [appRichTooltip]="'user.tooltip.reuseReason' | translate">{{ 'user.label.reuseReason' | translate }}</span>
         </label>
         <div class="col-sm-{{sizeY}}">
           <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>

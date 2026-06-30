@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -19,7 +19,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-post-notice-modal',
-  templateUrl: './post-notice-dialog.html'
+  templateUrl: './post-notice-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -299,7 +300,8 @@ export class PostModalComponent {
 @Component({
   standalone: false,
   selector: 'app-single-board',
-  templateUrl: './single-board.component.html'
+  templateUrl: './single-board.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleBoardComponent {
   loading: boolean;
@@ -482,7 +484,8 @@ export class SingleBoardComponent {
 @Component({
   standalone: false,
   selector: 'app-board',
-  templateUrl: 'board.component.html'
+  templateUrl: 'board.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent {
   isLoading = false;
@@ -785,6 +788,7 @@ export class BoardComponent {
         if (boards && boards.length > 0) {
           this.updateBoardsDetail(boards);
         }
+        this.cdr.markForCheck();
       }, error: () => this.loading = false
     });
   }

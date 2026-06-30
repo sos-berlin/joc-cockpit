@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
-import {GridsterModule} from 'angular-gridster2';
-import {NgChartsModule} from 'ng2-charts';
-import {DashboardRoutingModule} from './dashboard-routing.module';
+import {Gridster, GridsterItem} from 'angular-gridster2';
+import {BaseChartDirective, provideCharts, withDefaultRegisterables} from 'ng2-charts';
 import {SharedModule} from '../shared/shared.module';
 import {DashboardComponent, AddWidgetModalComponent, UpdateUrlModalComponent} from './dashboard.component';
 import {DailyPlanComponent} from './daily-plan/daily-plan.component';
@@ -23,12 +22,13 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
     imports: [
-        NgChartsModule,
-        GridsterModule,
+        BaseChartDirective,
+        Gridster,
+        GridsterItem,
         SharedModule,
-        DashboardRoutingModule,
         NzTooltipDirective
     ],
+  providers: [provideCharts(withDefaultRegisterables())],
   declarations: [
     CommentModalComponent,
     AddWidgetModalComponent,

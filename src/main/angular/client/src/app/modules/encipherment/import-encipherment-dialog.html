@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (type === 'encipherment') {
-      <span translate>encipherment.label.importCertificate</span>
+      <span>{{ 'encipherment.label.importCertificate' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -18,13 +18,13 @@
     @if (type === 'encipherment') {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>{{'encipherment.section.certificate' | translate}}</small>
+          <small class="_600 section-box-title">{{'encipherment.section.certificate' | translate}}</small>
         </div>
         <div class="p-a-sm">
           <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
                class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.certAlias' | translate" translate>encipherment.label.certAlias</span>
+              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.certAlias' | translate">{{ 'encipherment.label.certAlias' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-9">
@@ -33,7 +33,7 @@
               @if (certAlias.invalid && (certAlias.dirty || certAlias.touched)) {
                 <div class="text-danger help-block">
                   @if (certAlias.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -42,7 +42,7 @@
           <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
                class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.privateKeyPath' | translate" translate>encipherment.label.privateKeyPath</span>
+              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.privateKeyPath' | translate">{{ 'encipherment.label.privateKeyPath' | translate }}</span>
             </label>
             <div class="col-sm-9">
               <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
@@ -50,7 +50,7 @@
               @if (privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)) {
                 <div class="text-danger help-block">
                   @if (privateKeyPath.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -58,7 +58,7 @@
           </div>
           <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.jobResourceFolder' | translate" translate>encipherment.label.jobResourceFolder</span>
+              <span [appRichTooltip]="'encipherment.tooltips.importEncipherment.jobResourceFolder' | translate">{{ 'encipherment.label.jobResourceFolder' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-9">
@@ -82,7 +82,7 @@
                       <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                       {{node.origin.name}}
                       @if (node.origin.notExist) {
-                        <span class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
+                        <span class="m-l-sm label bg-danger">{{ 'user.label.folderNotExist' | translate }}</span>
                       }
                     </div>
                   </div>
@@ -91,7 +91,7 @@
               @if (jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)) {
                 <div class="text-danger help-block">
                   @if (jobResourceFolder.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -112,7 +112,7 @@
       @if (fileList.length === 0) {
         <div>
           <i class="icon-upload-icon"></i>
-          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+          <div class="upload-text">{{ 'common.button.dragAndDropFileToUpload' | translate }}</div>
         </div>
       }
     </nz-upload>
@@ -128,7 +128,7 @@
         <div class="p-t-sm">
           <button class="btn btn-default btn-sm" type="button">
             <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>common.button.chooseFileToUpload</span>
+            <span>{{ 'common.button.chooseFileToUpload' | translate }}</span>
           </button>
         </div>
       </nz-upload>
@@ -143,8 +143,8 @@
         }
         {{'common.button.import' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

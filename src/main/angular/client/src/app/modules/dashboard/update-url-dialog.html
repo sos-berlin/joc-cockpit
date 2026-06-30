@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" translate>dashboard.button.updateURL</h4>
+  <h4 class="modal-title">{{ 'dashboard.button.updateURL' | translate }}</h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -8,7 +8,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-md-4 form-control-label">
-        <span [appRichTooltip]="'dashboard.tooltip.jocInstanceId' | translate" translate>deploymentService.joc.label.jocInstanceId</span>
+        <span [appRichTooltip]="'dashboard.tooltip.jocInstanceId' | translate">{{ 'deploymentService.joc.label.jocInstanceId' | translate }}</span>
       </label>
       <div class="col-md-8">
         <input type="text" class="form-control" readonly name="instanceId" [(ngModel)]="joc.instanceId"/>
@@ -16,7 +16,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-4 form-control-label">
-        <span [appRichTooltip]="'dashboard.tooltip.url' | translate" translate>dashboard.label.url</span>
+        <span [appRichTooltip]="'dashboard.tooltip.url' | translate">{{ 'dashboard.label.url' | translate }}</span>
       </label>
       <div class="col-md-8">
         <input type="url" class="form-control" name="url" [(ngModel)]="obj.url"
@@ -25,12 +25,12 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid" translate>
-      common.button.submit
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="!myForm.form.valid">
+      {{ 'common.button.submit' | translate }}
     </button>
     <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
-      common.button.cancel
+            (click)="activeModal.destroy()">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

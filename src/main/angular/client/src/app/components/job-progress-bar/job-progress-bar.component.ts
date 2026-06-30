@@ -1,9 +1,10 @@
-import {Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, DoCheck} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {interval, Subscription} from 'rxjs';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-job-progress-bar',
   templateUrl: './job-progress-bar.component.html',
   styleUrls: ['./job-progress-bar.component.css']

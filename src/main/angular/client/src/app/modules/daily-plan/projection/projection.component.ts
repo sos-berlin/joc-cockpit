@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {TranslateService} from "@ngx-translate/core";
 import {groupBy, isEmpty} from "underscore";
@@ -11,7 +11,8 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-projection-export-modal',
-  templateUrl: './export-dialog.html'
+  templateUrl: './export-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -27,7 +28,8 @@ export class ExportComponent {
   scheduleTree = [];
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private translate: TranslateService, private excelService: ExcelService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -49,6 +51,7 @@ export class ExportComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 
@@ -59,6 +62,7 @@ export class ExportComponent {
       types: ['SCHEDULE']
     }).subscribe((res) => {
       this.scheduleTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 
@@ -138,7 +142,8 @@ export class ExportComponent {
         this.submitted = false;
         const sortedDates = Array.from(allDates).sort();
         this.exportXsl(rows, sortedDates);
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -213,7 +218,8 @@ export class ExportComponent {
 @Component({
   standalone: false,
   selector: 'app-projection-dialog-modal-content',
-  templateUrl: './projection-dialog.html'
+  templateUrl: './projection-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowProjectionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -229,7 +235,7 @@ export class ShowProjectionModalComponent {
   searchableProperties = ['workflow', 'schedule', 'periods']
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService,
-              private searchPipe: SearchPipe) {
+              private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -326,8 +332,9 @@ export class ShowProjectionModalComponent {
         this.schedule.list = uniqueList;
         this.loading = false;
         this.searchInResult();
+        this.cdr.markForCheck();
       },
-      error: () => this.loading = false
+      error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -366,7 +373,8 @@ export class ShowProjectionModalComponent {
   standalone: false,
   selector: 'app-projection',
   templateUrl: './projection.component.html',
-  styleUrls: ['./projection.component.css']
+  styleUrls: ['./projection.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectionComponent {
   @Input() projectionData: any = [];
@@ -399,7 +407,7 @@ export class ProjectionComponent {
   submitted: boolean;
 
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -508,7 +516,7 @@ export class ProjectionComponent {
     const dom = $('#full-calendar-projection');
     const dateStr   = this.getDate(this.filters.calStartDate);
     if (!dom.data('calendar')) {
-      dom.calendar({
+      dom['calendar']({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         startYear: this.filters.currentYear,
@@ -563,6 +571,7 @@ export class ProjectionComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 
@@ -573,6 +582,7 @@ export class ProjectionComponent {
       types: ['SCHEDULE']
     }).subscribe((res) => {
       this.scheduleTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 

@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -72,7 +72,8 @@ export class AddBlocklistModalComponent {
 @Component({
   standalone: false,
   selector: 'app-blocklist',
-  templateUrl: './blocklist.component.html'
+  templateUrl: './blocklist.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlocklistComponent {
 
@@ -92,7 +93,7 @@ export class BlocklistComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private orderPipe: OrderPipe,
-              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_BLOCKS') {
         this.removeBlocks(null);
@@ -136,6 +137,7 @@ export class BlocklistComponent {
         this.blocklist = res.blockedAccounts;
         this.isLoaded = true;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoaded = true
@@ -314,6 +316,7 @@ export class BlocklistComponent {
       next: () => {
         this.loadBlocklist();
         this.reset();
+        this.cdr.markForCheck();
       }, error: () => {
         this.reset();
       }

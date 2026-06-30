@@ -5,12 +5,12 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }" >
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>auditLog.section.customizationName</small>
+        <small class="_600 section-box-title">{{ 'auditLog.section.customizationName' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row" [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            <span [appRichTooltip]="'auditLog.tooltip.customizationName' | translate">{{ 'customization.label.customizationName' | translate }}</span>
             @if (!isSearch) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -22,13 +22,13 @@
             @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isUnique) {
               <div class="help-block text-danger">
-                <div translate>common.message.uniqueError</div>
+                <div>{{ 'common.message.uniqueError' | translate }}</div>
               </div>
             }
           </div>
@@ -37,18 +37,18 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>auditLog.section.filter</small>
+        <small class="_600 section-box-title">{{ 'auditLog.section.filter' | translate }}</small>
       </div>
       <div class="p-a-sm">
         @if (isSearch) {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4">
-              <span [appRichTooltip]="'auditLog.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+              <span [appRichTooltip]="'auditLog.tooltip.dateRange' | translate">{{ 'common.label.dateRange' | translate }}</span>
             </label>
             <div class="col-md-6">
               <nz-radio-group name="radio" [(ngModel)]="filter.radio">
-                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+                <label nz-radio nzValue="current"><span>{{ 'common.label.specificDate' | translate }}</span></label>
+                <label nz-radio nzValue="planned"><span>{{ 'common.label.relativeDate' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -56,7 +56,7 @@
         @if (filter.radio === 'current') {
           <div class="form-group row ">
             <label class="col-sm-2 form-control-label">
-              <span [appRichTooltip]="'auditLog.tooltip.from' | translate" translate>common.label.from</span>
+              <span [appRichTooltip]="'auditLog.tooltip.from' | translate">{{ 'common.label.from' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
@@ -69,7 +69,7 @@
         @if (filter.radio === 'current') {
           <div class="form-group row">
             <label class="col-sm-2 form-control-label">
-              <span [appRichTooltip]="'auditLog.tooltip.to' | translate" translate>common.label.to</span>
+              <span [appRichTooltip]="'auditLog.tooltip.to' | translate">{{ 'common.label.to' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
@@ -82,7 +82,7 @@
         @if (filter.radio === 'planned') {
           <div class="form-group row" [ngClass]="{'has-error' : ((processExc.dirty || processExc.touched) && processExc.invalid)}">
             <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-              <span [appRichTooltip]="'auditLog.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+              <span [appRichTooltip]="'auditLog.tooltip.processExecuted' | translate">{{ 'common.label.processExecuted' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <input autocomplete="off" validateReqex class="form-control" #processExc="ngModel" type="text" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
@@ -90,7 +90,7 @@
               @if (processExc.errors && (processExc.dirty || processExc.touched)) {
                 <div class="help-block text-danger">
                   @if (!processExc.valid) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -99,7 +99,7 @@
         }
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.reason' | translate" translate>auditLog.search.label.reason</span>
+            <span [appRichTooltip]="'auditLog.tooltip.reason' | translate">{{ 'auditLog.search.label.reason' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterReason' | translate}}"
@@ -108,7 +108,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.ticketLink' | translate" translate>auditLog.search.label.ticketLink</span>
+            <span [appRichTooltip]="'auditLog.tooltip.ticketLink' | translate">{{ 'auditLog.search.label.ticketLink' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.ticketLink' | translate}}"
@@ -118,7 +118,7 @@
         @if (isSearch) {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4 form-control-label">
-              <span [appRichTooltip]="'auditLog.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+              <span [appRichTooltip]="'auditLog.tooltip.controllerId' | translate">{{ 'common.label.controllerId' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <nz-select nzAllowClear nzPlaceHolder="{{'common.label.selectController' | translate}}" [(ngModel)]="filter.controllerId" name="id">
@@ -131,7 +131,7 @@
         }
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.objectTypes' | translate" translate>auditLog.search.label.objectTypes</span>
+            <span [appRichTooltip]="'auditLog.tooltip.objectTypes' | translate">{{ 'auditLog.search.label.objectTypes' | translate }}</span>
           </label>
           <div class="col-sm-6" >
             <nz-select
@@ -148,7 +148,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.objectName' | translate" translate>auditLog.search.label.objectName</span>
+            <span [appRichTooltip]="'auditLog.tooltip.objectName' | translate">{{ 'auditLog.search.label.objectName' | translate }}</span>
           </label>
           <div class="col-sm-6" >
             <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterObjectName' | translate}}"
@@ -157,7 +157,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.categories' | translate" translate>auditLog.search.label.categories</span>
+            <span [appRichTooltip]="'auditLog.tooltip.categories' | translate">{{ 'auditLog.search.label.categories' | translate }}</span>
           </label>
           <div class="col-sm-6" >
             <nz-select
@@ -174,7 +174,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" [ngClass]="{'col-md-2': isSearch}">
-            <span [appRichTooltip]="'auditLog.tooltip.account' | translate" translate>auditLog.label.account</span>
+            <span [appRichTooltip]="'auditLog.tooltip.account' | translate">{{ 'auditLog.label.account' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <input autocomplete="off" type="text" class="form-control" placeholder="{{'auditLog.search.placeholder.enterAccount' | translate}}"
@@ -184,7 +184,7 @@
         @if (permission.joc.administration.customization.share && !isSearch) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'auditLog.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+              <span [appRichTooltip]="'auditLog.tooltip.sharedCustomization' | translate">{{ 'customization.label.sharedCustomization' | translate }}</span>
             </label>
             <div class="col-sm-8">
               <label nz-checkbox [(ngModel)]="filter.shared" name="shared"></label>
@@ -195,8 +195,8 @@
     </div>
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button type="button" class="btn btn-primary btn-sm" (click)="search()" translate>
-          common.button.search
+        <button type="button" class="btn btn-primary btn-sm" (click)="search()">
+          {{ 'common.button.search' | translate }}
         </button>
         <button type="submit" class="btn btn-default btn-sm m-l-sm"
                 [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted">
@@ -205,8 +205,8 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>
-          common.button.cancel
+        <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()">
+          {{ 'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -219,8 +219,8 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()" translate>
-        common.button.cancel
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

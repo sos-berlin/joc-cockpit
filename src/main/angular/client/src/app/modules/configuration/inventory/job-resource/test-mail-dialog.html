@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.testMail</span>
+    <span>{{ 'inventory.label.testMail' | translate }}</span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,7 +10,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.recipient' | translate" translate>user.label.recipient</span>
+        <span [appRichTooltip]="'user.tooltip.recipient' | translate">{{ 'user.label.recipient' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((recipient.dirty || recipient.touched) && recipient.invalid)}" class="col-md-8">
@@ -20,7 +20,7 @@
         @if (recipient.invalid && (recipient.dirty || recipient.touched)) {
           <div class="text-danger help-block">
             @if (recipient.errors && recipient.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -28,7 +28,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.subject' | translate" translate>user.label.subject</span>
+        <span [appRichTooltip]="'user.tooltip.subject' | translate">{{ 'user.label.subject' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{'has-error' : ((subject.dirty || subject.touched) && subject.invalid)}" class="col-md-8">
@@ -37,7 +37,7 @@
         @if (subject.invalid && (subject.dirty || subject.touched)) {
           <div class="text-danger help-block">
             @if (subject.errors && subject.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -52,8 +52,8 @@
       }
       {{'inventory.button.sendMail' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

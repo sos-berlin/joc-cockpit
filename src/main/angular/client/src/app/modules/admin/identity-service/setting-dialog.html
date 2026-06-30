@@ -4,11 +4,11 @@
       <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (!data) {
-      <span translate>user.label.generalSetting</span>
+      <span>{{ 'user.label.generalSetting' | translate }}</span>
     }
     @if (data) {
       <span>
-        <span translate>user.label.settingFor</span>:
+        <span>{{ 'user.label.settingFor' | translate }}</span>:
         {{data['identityServiceName']}}
       </span>
     }
@@ -26,7 +26,7 @@
       <div>
         <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}" class="form-group row">
           <label [appRichTooltip]="'user.tooltips.general.sessionTimeout' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.sessionTimeout
+                 class="col-sm-4 form-control-label">{{ 'user.label.sessionTimeout' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -36,7 +36,7 @@
             @if (timeout.invalid && (timeout.dirty || timeout.touched)) {
               <div class="text-danger help-block">
                 @if (timeout.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -45,7 +45,7 @@
         <div [ngClass]="{'has-error' : ((pwd.dirty || pwd.touched) && pwd.invalid) || !isLengthMatch}"
              class="form-group row">
           <label [appRichTooltip]="'user.tooltips.general.initialPassword' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.initialPassword
+                 class="col-sm-4 form-control-label">{{ 'user.label.initialPassword' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -60,13 +60,13 @@
             @if (pwd.invalid && (pwd.dirty || pwd.touched)) {
               <div class="text-danger help-block">
                 @if (pwd.errors && pwd.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isLengthMatch) {
               <div class="text-danger help-block">
-                <div translate>user.message.minPasswordLength</div>
+                <div>{{ 'user.message.minPasswordLength' | translate }}</div>
               </div>
             }
           </div>
@@ -75,7 +75,7 @@
           [ngClass]="{'has-error' : ((minPasswordLength.dirty || minPasswordLength.touched) && minPasswordLength.invalid)}"
           class="form-group row">
           <label [appRichTooltip]="'user.tooltips.general.minPasswordLength' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.minPasswordLength
+                 class="col-sm-4 form-control-label">{{ 'user.label.minPasswordLength' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -85,7 +85,7 @@
             @if (minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)) {
               <div class="text-danger help-block">
                 @if (minPasswordLength.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -98,7 +98,7 @@
       <div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakUrl
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamKeycloakUrl' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'has-error' : ((keycloakUrl.dirty || keycloakUrl.touched) && keycloakUrl.invalid)}"
@@ -110,7 +110,7 @@
             @if (keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)) {
               <div class="text-danger help-block">
                 @if (keycloakUrl.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -120,7 +120,7 @@
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
                    class="col-sm-4 form-control-label"
-                   translate>user.label.iamKeycloakAdminAccount
+>{{ 'user.label.iamKeycloakAdminAccount' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div
@@ -133,7 +133,7 @@
               @if (iamKeycloakAdminAccount.invalid && (iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched)) {
                 <div class="text-danger help-block">
                   @if (iamKeycloakAdminAccount.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -144,7 +144,7 @@
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
                    class="col-sm-4 form-control-label"
-                   translate>user.label.iamKeycloakAdminPassword</label>
+>{{ 'user.label.iamKeycloakAdminPassword' | translate }}</label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.iamKeycloakAdminPassword"
                      [placeholder]="'user.placeholder.iamKeycloakAdminPassword' | translate"
@@ -159,7 +159,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamKeycloakTrustStorePath</label>
+>{{ 'user.label.iamKeycloakTrustStorePath' | translate }}</label>
           <div class="col-sm-6">
             <input [(ngModel)]="currentObj.iamKeycloakTruststorePath"
                    [placeholder]="'user.placeholder.iamKeycloakTrustStorePath' | translate" class="form-control"
@@ -169,7 +169,7 @@
         </div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakTrustStorePassword</label>
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamKeycloakTrustStorePassword' | translate }}</label>
           <div class="col-sm-6">
             <input [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
                    [placeholder]="'user.placeholder.iamKeycloakTrustStorePassword' | translate"
@@ -184,7 +184,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamKeycloakTrustStoreType
+>{{ 'user.label.iamKeycloakTrustStoreType' | translate }}
             @if (currentObj.iamKeycloakTruststorePath) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -207,7 +207,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamKeycloakClientId</label>
+>{{ 'user.label.iamKeycloakClientId' | translate }}</label>
           <div class="col-sm-6">
             <input [(ngModel)]="currentObj.iamKeycloakClientId"
                    [placeholder]="'user.placeholder.iamKeycloakClientId' | translate" class="form-control"
@@ -218,7 +218,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamKeycloakClientSecret</label>
+>{{ 'user.label.iamKeycloakClientSecret' | translate }}</label>
           <div class="col-sm-6">
             <input [(ngModel)]="currentObj.iamKeycloakClientSecret"
                    [placeholder]="'user.placeholder.iamKeycloakClientSecret' | translate"
@@ -231,7 +231,7 @@
         </div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakRealm</label>
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamKeycloakRealm' | translate }}</label>
           <div class="col-sm-6">
             <input [(ngModel)]="currentObj.iamKeycloakRealm"
                    [placeholder]="'user.placeholder.iamKeycloakRealm' | translate" class="form-control"
@@ -241,7 +241,7 @@
         </div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamKeycloakVersionCompatibility' | translate }}</label>
           <div class="col-sm-6">
             <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
                    name="iamKeycloakVersionCompatibility"></label>
@@ -252,12 +252,12 @@
     <!------------------------------------BEGIN LDAP----------------------------------------------->
     @if (data && data['identityServiceType'].match('LDAP')) {
       <div>
-        <nz-tabset class="m-t-n-8">
+        <nz-tabs class="m-t-n-8">
           <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
             <div class="m-l-12 m-r-12">
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapHost' | translate"
-                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost
+                       class="col-sm-4 form-control-label">{{ 'user.usermode.label.iamLdapHost' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}" class="col-sm-6">
@@ -270,7 +270,7 @@
               </div>
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapProtocol' | translate"
-                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol
+                       class="col-sm-4 form-control-label">{{ 'user.usermode.label.iamLdapProtocol' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-6">
@@ -281,7 +281,7 @@
               </div>
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapPort' | translate"
-                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort
+                       class="col-sm-4 form-control-label">{{ 'user.usermode.label.iamLdapPort' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}" class="col-sm-6">
@@ -293,7 +293,7 @@
               </div>
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapAD' | translate"
-                       class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
+                       class="col-sm-4">{{ 'user.usermode.label.iamLdapAD' | translate }}</label>
                 <div class="col-sm-6">
                   <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"
                          (ngModelChange)="checkConfirmation($event, 'AD')"></label>
@@ -301,7 +301,7 @@
               </div>
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapADWithSamAccount' | translate"
-                       class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
+                       class="col-sm-4">{{ 'user.usermode.label.iamLdapADWithSamAccount' | translate }}</label>
                 <div class="col-sm-6">
                   <label nz-checkbox [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
                          name="iamLdapADWithSamAccount" (ngModelChange)="checkConfirmation($event, 'samAccount')"></label>
@@ -309,7 +309,7 @@
               </div>
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapWithMemberOf' | translate"
-                       class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
+                       class="col-sm-4">{{ 'user.usermode.label.iamLdapWithMemberOf' | translate }}</label>
                 <div class="col-sm-6">
                   <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
                          name="iamLdapWithMemberOf" (ngModelChange)="checkConfirmation($event, 'MemberOf')"></label>
@@ -318,7 +318,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
                        class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapUserDnTemplate
+>{{ 'user.label.iamLdapUserDnTemplate' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}"
@@ -332,7 +332,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
                        class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapSearchBase
+>{{ 'user.label.iamLdapSearchBase' | translate }}
                   @if (userObj.iamLdapWithMemberOf) {
                     <sup class="text-danger text-sm">*</sup>
                   }
@@ -349,7 +349,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
                        class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapUserSearchFilter</label>
+>{{ 'user.label.iamLdapUserSearchFilter' | translate }}</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
                          [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
@@ -362,13 +362,13 @@
           <nz-tab [nzTitle]="'user.tab.expertMode' | translate">
             <div class="m-l-12 m-r-12">
               <div class="form-group row">
-                <div class="col-md-12" translate>user.label.general</div>
+                <div class="col-md-12">{{ 'user.label.general' | translate }}</div>
               </div>
               <div class="p-a b-a">
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapServerUrl' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapServerUrl
+>{{ 'user.label.iamLdapServerUrl' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div
@@ -384,7 +384,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapReadTimeout' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapReadTimeout
+>{{ 'user.label.iamLdapReadTimeout' | translate }}
                   </label>
                   <div
                     [ngClass]="{'has-error' : ((iamLdapReadTimeout.dirty || iamLdapReadTimeout.touched) && iamLdapReadTimeout.invalid)}"
@@ -398,7 +398,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapConnectTimeout' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapConnectTimeout
+>{{ 'user.label.iamLdapConnectTimeout' | translate }}
                   </label>
                   <div
                     [ngClass]="{'has-error' : ((iamLdapConnectTimeout.dirty || iamLdapConnectTimeout.touched) && iamLdapConnectTimeout.invalid)}"
@@ -411,7 +411,7 @@
                 </div>
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
-                         class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
+                         class="col-sm-4">{{ 'user.label.iamLdapUseStartTls' | translate }}</label>
                   <div class="col-sm-6">
                     <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls"
                            name="iamLdapUseStartTls" (ngModelChange)="checkConfirmation($event, 'StartTls')"></label>
@@ -419,7 +419,7 @@
                 </div>
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
-                         class="col-sm-4" translate>user.label.iamLdapHostNameVerification</label>
+                         class="col-sm-4">{{ 'user.label.iamLdapHostNameVerification' | translate }}</label>
                   <div class="col-sm-6">
                     <label [(ngModel)]="currentObj.iamLdapHostNameVerification" name="iamLdapHostNameVerification"
                            nz-checkbox></label>
@@ -428,7 +428,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapTrustStorePath</label>
+>{{ 'user.label.iamLdapTrustStorePath' | translate }}</label>
                   <div class="col-sm-6">
                     <input [(ngModel)]="currentObj.iamLdapTruststorePath"
                            [placeholder]="'user.placeholder.iamLdapTrustStorePath' | translate" autocomplete="off"
@@ -439,7 +439,7 @@
                 </div>
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapTrustStorePassword' | translate"
-                         class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePassword</label>
+                         class="col-sm-4 form-control-label">{{ 'user.label.iamLdapTrustStorePassword' | translate }}</label>
                   <div class="col-sm-6">
                     <input [(ngModel)]="currentObj.iamLdapTruststorePassword"
                            [placeholder]="'user.placeholder.iamLdapTrustStorePassword' | translate"
@@ -454,7 +454,7 @@
                 <div class="row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapTrustStoreType' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapTrustStoreType
+>{{ 'user.label.iamLdapTrustStoreType' | translate }}
                     @if (currentObj.iamLdapTruststorePath) {
                       <sup class="text-danger text-sm">*</sup>
                     }
@@ -479,13 +479,13 @@
                 </div>
               </div>
               <div class="form-group row m-t">
-                <div class="col-md-12" translate>user.label.authentication</div>
+                <div class="col-md-12">{{ 'user.label.authentication' | translate }}</div>
               </div>
               <div class="p-a b-a">
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapUserDnTemplate
+>{{ 'user.label.iamLdapUserDnTemplate' | translate }}
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}"
@@ -499,7 +499,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapSysemUserDnTemplate
+>{{ 'user.label.iamLdapSysemUserDnTemplate' | translate }}
                   </label>
                   <div class="col-sm-6">
                     <input [(ngModel)]="currentObj.iamLdapSysemUserDnTemplate"
@@ -511,7 +511,7 @@
                 <div class="form-group row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapSystemUser</label>
+>{{ 'user.label.iamLdapSystemUser' | translate }}</label>
                   <div class="col-sm-6">
                     <input [(ngModel)]="currentObj.iamLdapSystemUser"
                            [placeholder]="'user.placeholder.iamLdapSystemUser' | translate" autocomplete="off"
@@ -523,7 +523,7 @@
                 <div class="row">
                   <label [appRichTooltip]="'user.tooltips.ldap.iamLdapSystemPassword' | translate"
                          class="col-sm-4 form-control-label"
-                         translate>user.label.iamLdapSystemPassword</label>
+>{{ 'user.label.iamLdapSystemPassword' | translate }}</label>
                   <div class="col-sm-6">
                     <input [(ngModel)]="currentObj.iamLdapSystemPassword"
                            [placeholder]="'user.placeholder.iamLdapSystemPassword' | translate"
@@ -537,7 +537,7 @@
               </div>
               @if (data['identityServiceType'] !== 'LDAP-JOC') {
                 <div class="form-group row m-t">
-                  <div class="col-md-12" translate>user.label.groupRolesMapping</div>
+                  <div class="col-md-12">{{ 'user.label.groupRolesMapping' | translate }}</div>
                 </div>
               }
               @if (data['identityServiceType'] !== 'LDAP-JOC') {
@@ -545,7 +545,7 @@
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
                            class="col-sm-4 form-control-label"
-                           translate>user.label.iamLdapSearchBase
+>{{ 'user.label.iamLdapSearchBase' | translate }}
                       @if (userObj.iamLdapWithMemberOf) {
                         <sup class="text-danger text-sm">*</sup>
                       }
@@ -561,7 +561,7 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapGroupSearchBase' | translate"
-                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
+                           class="col-sm-4 form-control-label">{{ 'user.label.iamLdapGroupSearchBase' | translate }}</label>
                     <div class="col-sm-6">
                       <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf"
                              [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
@@ -572,7 +572,7 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapGroupSearchFilter' | translate"
-                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
+                           class="col-sm-4 form-control-label">{{ 'user.label.iamLdapGroupSearchFilter' | translate }}</label>
                     <div class="col-sm-6">
                       <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf"
                              [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
@@ -583,7 +583,7 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
-                           class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
+                           class="col-sm-4 form-control-label">{{ 'user.label.iamLdapUserSearchFilter' | translate }}</label>
                     <div class="col-sm-6">
                       <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
                              [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
@@ -593,7 +593,7 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapGroupNameAttribute' | translate"
-                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
+                           class="col-sm-4 form-control-label">{{ 'user.label.iamLdapGroupNameAttribute' | translate }}</label>
                     <div class="col-sm-6">
                       <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute"
                              [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
@@ -604,7 +604,7 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapUserNameAttribute' | translate"
-                           class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
+                           class="col-sm-4 form-control-label">{{ 'user.label.iamLdapUserNameAttribute' | translate }}</label>
                     <div class="col-sm-6">
                       <input [(ngModel)]="currentObj.iamLdapUserNameAttribute"
                              [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate" class="form-control"
@@ -614,13 +614,13 @@
                   </div>
                   <div class="form-group row">
                     <label [appRichTooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
-                           class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
+                           class="col-sm-5 _600">{{ 'user.label.iamLdapGroupRolesMap' | translate }}</label>
                   </div>
                   @if (currentObj.iamLdapGroupRolesMap) {
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
                              class="col-sm-4"
-                             translate>user.label.disableNestedGroupSearch</label>
+>{{ 'user.label.disableNestedGroupSearch' | translate }}</label>
                       <div class="col-sm-6">
                         <label [(ngModel)]="currentObj.iamLdapGroupRolesMap.iamLdapDisableNestedGroupSearch" name="iamLdapDisableNestedGroupSearch" nz-checkbox>
                         </label>
@@ -629,8 +629,8 @@
                   }
                   @if (currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0) {
                     <div class="form-group row m-b-0">
-                      <div class="col-md-4 m-b-sm" translate>user.label.group</div>
-                      <div class="col-md-6 m-b-sm" translate>user.label.roles</div>
+                      <div class="col-md-4 m-b-sm">{{ 'user.label.group' | translate }}</div>
+                      <div class="col-md-6 m-b-sm">{{ 'user.label.roles' | translate }}</div>
                     </div>
                   }
                   @if (currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0) {
@@ -656,14 +656,14 @@
                   }
                   <div class="row">
                     <div class="col-sm-12">
-                      <a (click)="addGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
+                      <a (click)="addGroupRoles()" class="text-u-l">{{ 'user.button.addGroupRole' | translate }}</a>
                     </div>
                   </div>
                 </div>
               }
             </div>
           </nz-tab>
-        </nz-tabset>
+        </nz-tabs>
       </div>
     }
     <!------------------------------------BEGIN OIDC----------------------------------------------->
@@ -671,7 +671,7 @@
       <div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.oidc.iamOidcName' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamOidcName
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamOidcName' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}"
@@ -683,7 +683,7 @@
             @if (iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)) {
               <div class="text-danger help-block">
                 @if (iamOidcName.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -692,7 +692,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamOidcAuthenticationUrl
+>{{ 'user.label.iamOidcAuthenticationUrl' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div
@@ -705,7 +705,7 @@
             @if (iamOidcAuthenticationUrl.invalid && (iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched)) {
               <div class="text-danger help-block">
                 @if (iamOidcAuthenticationUrl.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -714,20 +714,20 @@
         <div class="m-b-12 row">
           <label [appRichTooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate"
                  class="col-sm-4"
-                 translate>user.label.iamOidcFlowType
+>{{ 'user.label.iamOidcFlowType' | translate }}
           </label>
           <div class="col-sm-8">
             <nz-radio-group [(ngModel)]="currentObj.iamOidcFlowType" name="type">
               <label nz-radio nzValue="AUTHENTICATION"><span
-                translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
-              <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
-              <label nz-radio nzValue="CLIENT-CREDENTIAL"><span translate>user.label.iamOidcClientCredentialsFlow</span></label>
+>{{ 'user.label.iamOidcAuthenticationCodeFlow' | translate }}</span></label>
+              <label nz-radio nzValue="IMPLICIT"><span>{{ 'user.label.iamOidcImplicitFlow' | translate }}</span></label>
+              <label nz-radio nzValue="CLIENT-CREDENTIAL"><span>{{ 'user.label.iamOidcClientCredentialsFlow' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.oidc.iamOidcClientId' | translate"
-                 class="col-sm-4 form-control-label" translate>user.label.iamOidcClientId
+                 class="col-sm-4 form-control-label">{{ 'user.label.iamOidcClientId' | translate }}
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}"
@@ -740,7 +740,7 @@
             @if (iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)) {
               <div class="text-danger help-block">
                 @if (iamOidcClientId.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -750,7 +750,7 @@
           <ng-container>
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate"
-                     class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
+                     class="col-sm-4 form-control-label">{{ 'user.label.iamOidcClientSecret' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div
@@ -767,7 +767,7 @@
                 @if (iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)) {
                   <div class="text-danger help-block">
                     @if (iamOidcClientSecret.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -778,7 +778,7 @@
         @if (currentObj.iamOidcFlowType !== 'CLIENT-CREDENTIAL') {
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate"
-                   class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
+                   class="col-sm-4 form-control-label">{{ 'user.label.iamOidcUserAttribute' | translate }}
             </label>
             <div
               [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}"
@@ -790,7 +790,7 @@
               @if (iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)) {
                 <div class="text-danger help-block">
                   @if (iamOidcUserAttribute.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -804,7 +804,7 @@
                 <div class="col-sm-4 form-control-label">
                   @if (i == 0) {
                     <label [appRichTooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
-                           translate>user.label.iamOidcGroupClaims</label>
+>{{ 'user.label.iamOidcGroupClaims' | translate }}</label>
                   }
                 </div>
                 <div class="col-sm-6">
@@ -826,7 +826,7 @@
                 <div class="col-sm-4 form-control-label">
                   @if (i == 0) {
                     <label [appRichTooltip]="'user.tooltips.oidc.iamOidcGroupScopes' | translate"
-                           translate>user.label.iamOidcGroupScopes</label>
+>{{ 'user.label.iamOidcGroupScopes' | translate }}</label>
                   }
                 </div>
                 <div class="col-sm-6">
@@ -845,12 +845,12 @@
             }
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate"
-                     class="col-sm-12 _600" translate>user.label.iamOidcGroupRolesMap</label>
+                     class="col-sm-12 _600">{{ 'user.label.iamOidcGroupRolesMap' | translate }}</label>
             </div>
             @if (currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0) {
               <div class="form-group row m-b-0">
-                <div class="col-md-4 m-b-sm" translate>user.label.group</div>
-                <div class="col-md-6 m-b-sm m-l-22" translate>user.label.roles</div>
+                <div class="col-md-4 m-b-sm">{{ 'user.label.group' | translate }}</div>
+                <div class="col-md-6 m-b-sm m-l-22">{{ 'user.label.roles' | translate }}</div>
               </div>
             }
             @if (currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0) {
@@ -877,14 +877,14 @@
             }
             <div class="form-group row">
               <div class="col-sm-12">
-                <a (click)="addOidcGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
+                <a (click)="addOidcGroupRoles()" class="text-u-l">{{ 'user.button.addGroupRole' | translate }}</a>
               </div>
             </div>
           </ng-container>
         }
         <div class="form-group row">
           <label [appRichTooltip]="'user.tooltips.oidc.iamOidcImage' | translate"
-                 class="col-sm-4" translate>user.label.iamOidcImage
+                 class="col-sm-4">{{ 'user.label.iamOidcImage' | translate }}
           </label>
           @if (!imageUrl && fileList.length === 0) {
             <div class="col-sm-6">
@@ -926,7 +926,7 @@
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate"
                    class="col-sm-4 form-control-label"
-                   translate>user.label.iamOidcTruststorePath
+>{{ 'user.label.iamOidcTruststorePath' | translate }}
             </label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.iamOidcTruststorePath"
@@ -938,7 +938,7 @@
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.oidc.iamOidcTruststoreType' | translate"
                    class="col-sm-4 form-control-label"
-                   translate>user.label.iamOidcTruststoreType
+>{{ 'user.label.iamOidcTruststoreType' | translate }}
             </label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto"
@@ -957,7 +957,7 @@
           <div class="form-group row">
             <label [appRichTooltip]="'user.tooltips.oidc.iamOidcTruststorePassword' | translate"
                    class="col-sm-4 form-control-label"
-                   translate>user.label.iamOidcTruststorePassword
+>{{ 'user.label.iamOidcTruststorePassword' | translate }}
             </label>
             <div class="col-sm-6">
               <input [(ngModel)]="currentObj.iamOidcTruststorePassword"
@@ -981,19 +981,19 @@
             <div class="m-b-12 row">
               <label [appRichTooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
                      class="col-sm-4"
-                     translate>user.label.iamFidoAuthenticatorType
+>{{ 'user.label.iamFidoAuthenticatorType' | translate }}
               </label>
               <div class="col-sm-6">
                 <nz-radio-group [(ngModel)]="currentObj.iamFidoProtocolType" name="type"
                                 (ngModelChange)="changeSettings($event)">
-                  <label nz-radio nzValue="FIDO2"><span translate>user.label.roaming</span></label>
-                  <label nz-radio nzValue="PASSKEY"><span translate>user.label.platform</span></label>
+                  <label nz-radio nzValue="FIDO2"><span>{{ 'user.label.roaming' | translate }}</span></label>
+                  <label nz-radio nzValue="PASSKEY"><span>{{ 'user.label.platform' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
-                     class="col-sm-4" translate>user.label.requireAccount</label>
+                     class="col-sm-4">{{ 'user.label.requireAccount' | translate }}</label>
               <div class="col-sm-6">
                 <label [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount" nz-checkbox>
                 </label>
@@ -1001,7 +1001,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.webauthn.iamTimeout' | translate"
-                     class="col-sm-4 form-control-label" translate>user.label.iamFidoTimeout
+                     class="col-sm-4 form-control-label">{{ 'user.label.iamFidoTimeout' | translate }}
               </label>
               <div [ngClass]="{'has-error' : ((iamFidoTimeout.dirty || iamFidoTimeout.touched) && iamFidoTimeout.invalid)}"
                    class="col-sm-6">
@@ -1013,7 +1013,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.webauthn.iamTransports' | translate"
-                     class="col-sm-4 form-control-label" translate>user.label.iamFidoTransports
+                     class="col-sm-4 form-control-label">{{ 'user.label.iamFidoTransports' | translate }}
               </label>
               <div class="col-sm-6">
                 <app-select-input  [isMultiple]="true" [name]="'iamFidoTransports'"
@@ -1023,7 +1023,7 @@
             <div class="form-group row">
               <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
                      [appRichTooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
-                     class="col-sm-4 " translate>user.label.iamFidoUserVerification
+                     class="col-sm-4 ">{{ 'user.label.iamFidoUserVerification' | translate }}
               </label>
               @if (currentObj.iamFidoProtocolType !== 'FIDO2') {
                 <div class="col-sm-6">
@@ -1037,25 +1037,25 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
-                     class="col-sm-4" translate>user.label.iamFidoResidentKey
+                     class="col-sm-4">{{ 'user.label.iamFidoResidentKey' | translate }}
               </label>
               <div class="col-sm-6">Required</div>
             </div>
             <div class="row">
               <div class="col-sm-12">
                 <label [appRichTooltip]="'user.tooltips.webauthn.emailSettings' | translate"
-                       class=" _500" translate>user.label.emailSettings
+                       class=" _500">{{ 'user.label.emailSettings' | translate }}
                 </label>
               </div>
             </div>
-            <nz-tabset [nzAnimated]="false">
+            <nz-tabs [nzAnimated]="false">
               <nz-tab [nzTitle]="'user.label.connection' | translate">
                 @if (currentObj.iamFidoEmailSettings) {
                   <div>
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.jobResource' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.jobResourceName
+>{{ 'user.label.jobResourceName' | translate }}
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
@@ -1075,7 +1075,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.contentType' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.contentType
+>{{ 'user.label.contentType' | translate }}
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
@@ -1087,7 +1087,7 @@
                         @if (contentType.invalid && (contentType.dirty || contentType.touched)) {
                           <div class="text-danger help-block">
                             @if (contentType.errors['required']) {
-                              <div translate>common.message.requiredError</div>
+                              <div>{{ 'common.message.requiredError' | translate }}</div>
                             }
                           </div>
                         }
@@ -1096,7 +1096,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.charset' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.charset
+>{{ 'user.label.charset' | translate }}
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
@@ -1108,7 +1108,7 @@
                         @if (charset.invalid && (charset.dirty || charset.touched)) {
                           <div class="text-danger help-block">
                             @if (charset.errors['required']) {
-                              <div translate>common.message.requiredError</div>
+                              <div>{{ 'common.message.requiredError' | translate }}</div>
                             }
                           </div>
                         }
@@ -1117,7 +1117,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.encoding' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.encoding
+>{{ 'user.label.encoding' | translate }}
                         <sup class="text-danger text-sm">*</sup>
                       </label>
                       <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
@@ -1129,7 +1129,7 @@
                         @if (encoding.invalid && (encoding.dirty || encoding.touched)) {
                           <div class="text-danger help-block">
                             @if (encoding.errors['required']) {
-                              <div translate>common.message.requiredError</div>
+                              <div>{{ 'common.message.requiredError' | translate }}</div>
                             }
                           </div>
                         }
@@ -1138,7 +1138,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.priority' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.priority
+>{{ 'user.label.priority' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <nz-select [(ngModel)]="currentObj.iamFidoEmailSettings.priority" name="priority">
@@ -1156,7 +1156,7 @@
                   <div>
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
-                             class="col-sm-4" translate>user.label.sendMailToConfirmEmail</label>
+                             class="col-sm-4">{{ 'user.label.sendMailToConfirmEmail' | translate }}</label>
                       <div class="col-sm-6">
                         <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm" name="sendMailToConfirmEmail"
                                nz-checkbox></label>
@@ -1165,7 +1165,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.cc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.cc
+>{{ 'user.label.cc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration"
@@ -1177,7 +1177,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.bcc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.bcc
+>{{ 'user.label.bcc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration"
@@ -1189,7 +1189,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.subject' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.subject
+>{{ 'user.label.subject' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration"
@@ -1201,15 +1201,15 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.body' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.body
+>{{ 'user.label.body' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <a (click)="previewRegistration = false;" [ngClass]="{'text-primary': previewRegistration !== true}"
                            class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                           translate>xml.button.sourceCode</a>
+>{{ 'xml.button.sourceCode' | translate }}</a>
                         <a (click)="previewRegistration = true;" [ngClass]="{'text-primary': previewRegistration === true}"
                            class="btn btn-xs btn-default b-l" style="box-shadow: none !important;"
-                           translate>xml.button.preview</a>
+>{{ 'xml.button.preview' | translate }}</a>
                         <a (click)="fullScreen = true" class="pull-right">
                           <i class="fa fa-arrows-alt text-hover-primary"></i>
                         </a>
@@ -1237,7 +1237,7 @@
                   <div>
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-                             class="col-sm-4" translate>user.label.sendMailToNotifyRegistrationEmail</label>
+                             class="col-sm-4">{{ 'user.label.sendMailToNotifyRegistrationEmail' | translate }}</label>
                       <div class="col-sm-6">
                         <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifySuccessfulRegistration"
                                name="sendMailToNotifyRegistrationEmail"
@@ -1247,7 +1247,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.cc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.cc
+>{{ 'user.label.cc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess"
@@ -1259,7 +1259,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.bcc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.bcc
+>{{ 'user.label.bcc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess"
@@ -1271,7 +1271,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.subject' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.subject
+>{{ 'user.label.subject' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess"
@@ -1283,14 +1283,14 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.body' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.body
+>{{ 'user.label.body' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
                            class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                           translate>xml.button.sourceCode</a>
+>{{ 'xml.button.sourceCode' | translate }}</a>
                         <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
-                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;">{{ 'xml.button.preview' | translate }}</a>
                         <a (click)="fullScreen2 = true" class="pull-right">
                           <i class="fa fa-arrows-alt text-hover-primary"></i>
                         </a>
@@ -1318,7 +1318,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
                              class="col-sm-4"
-                             translate>user.label.sendMailToNotifyConfirmationReceived</label>
+>{{ 'user.label.sendMailToNotifyConfirmationReceived' | translate }}</label>
                       <div class="col-sm-6">
                         <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived"
                                name="sendMailToNotifyConfirmationReceived"
@@ -1328,7 +1328,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.recipient' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.recipient
+>{{ 'user.label.recipient' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed"
@@ -1340,7 +1340,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.cc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.cc
+>{{ 'user.label.cc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed"
@@ -1352,7 +1352,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.bcc' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.bcc
+>{{ 'user.label.bcc' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed"
@@ -1364,7 +1364,7 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.subject' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.subject
+>{{ 'user.label.subject' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed"
@@ -1376,14 +1376,14 @@
                     <div class="form-group row">
                       <label [appRichTooltip]="'user.tooltips.webauthn.body' | translate"
                              class="col-sm-4 form-control-label"
-                             translate>user.label.body
+>{{ 'user.label.body' | translate }}
                       </label>
                       <div class="col-sm-6">
                         <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
                            class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                           translate>xml.button.sourceCode</a>
+>{{ 'xml.button.sourceCode' | translate }}</a>
                         <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
-                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;">{{ 'xml.button.preview' | translate }}</a>
                         <a (click)="fullScreen3 = true" class="pull-right">
                           <i class="fa fa-arrows-alt text-hover-primary"></i>
                         </a>
@@ -1405,7 +1405,7 @@
                   </div>
                 }
               </nz-tab>
-            </nz-tabset>
+            </nz-tabs>
           </ng-container>
         }
         @if (fullScreen || fullScreen2 || fullScreen3) {
@@ -1440,28 +1440,28 @@
       {{'common.button.submit' | translate}}
     </button>
     @if (data) {
-      <button (click)="copySetting()" class="btn btn-default btn-sm" translate
-              type="button">user.button.copySetting
+      <button (click)="copySetting()" class="btn btn-default btn-sm"
+              type="button">{{ 'user.button.copySetting' | translate }}
       </button>
     }
     @if (isEnable) {
-      <button (click)="pasteSetting()" class="btn btn-default btn-sm" translate
-              type="button">user.button.pasteSetting
+      <button (click)="pasteSetting()" class="btn btn-default btn-sm"
+              type="button">{{ 'user.button.pasteSetting' | translate }}
       </button>
     }
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
     @if (data) {
       <div class="w-full" style="display: flex;justify-content: end;">
-        <button (click)="downloadSetting()" class="btn btn-default btn-sm m-r-xxs" translate type="button">
+        <button (click)="downloadSetting()" class="btn btn-default btn-sm m-r-xxs" type="button">
           <i nz-icon nzTheme="outline" nzType="download"></i>&nbsp;
           inventory.button.download
         </button>
         <nz-upload [nzBeforeUpload]="beforeUpload2" nzAccept=".json">
           <button class="btn btn-default btn-sm m-l-sm" type="button">
             <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>inventory.button.upload</span>
+            <span>{{ 'inventory.button.upload' | translate }}</span>
           </button>
         </nz-upload>
       </div>

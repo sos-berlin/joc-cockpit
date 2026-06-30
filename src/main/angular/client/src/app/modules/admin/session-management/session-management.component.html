@@ -26,10 +26,10 @@
           </th>
         }
         @if (permission.joc && permission.joc.administration.accounts.manage) {
-          <th class="menu"><span translate>common.label.action</span></th>
+          <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
         }
         <th (click)="sort('accountName')"><a>
-          <span class="p-r-xs" translate>user.label.account</span>
+          <span class="p-r-xs">{{ 'user.label.account' | translate }}</span>
           @if (sessionFilter.filter.sortBy == 'accountName' && !sessionFilter.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -39,7 +39,7 @@
         </a>
         </th>
         <th (click)="sort('identityService')"><a>
-          <span class="p-r-xs" translate>user.label.identityService</span>
+          <span class="p-r-xs">{{ 'user.label.identityService' | translate }}</span>
           @if (sessionFilter.filter.sortBy == 'identityService' && sessionFilter.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -49,7 +49,7 @@
         </a>
         </th>
         <th (click)="sort('timeout')"><a>
-          <span class="p-r-xs" translate>common.label.remainingSessionTime</span>
+          <span class="p-r-xs">{{ 'common.label.remainingSessionTime' | translate }}</span>
         </a>
         </th>
       </tr>
@@ -70,13 +70,13 @@
                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                     <ul nz-menu>
                       <li (click)="addToBlocklist(account)" nz-menu-item>
-                        <a translate>user.button.addToBlocklist</a>
+                        <a>{{ 'user.button.addToBlocklist' | translate }}</a>
                       </li>
                       <li (click)="removeSessions(account)" nz-menu-item>
-                        <a translate>user.button.cancelFromSession</a>
+                        <a>{{ 'user.button.cancelFromSession' | translate }}</a>
                       </li>
                       <li (click)="removeSessionByAccount(account)" nz-menu-item>
-                        <a translate>user.button.cancelSessionByAccount</a>
+                        <a>{{ 'user.button.cancelSessionByAccount' | translate }}</a>
                       </li>
                     </ul>
                   </nz-dropdown-menu>
@@ -98,13 +98,13 @@
     </nz-table>
   </div>
   @if (ajaxTable.data.length >0) {
-    <div class="w-half label-top"><span translate>common.label.total</span>
+    <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span>
       {{data.length}}
       @if (ajaxTable.data.length >1) {
-        <span translate>user.label.sessionsFound</span>
+        <span>{{ 'user.label.sessionsFound' | translate }}</span>
       }
       @if (ajaxTable.data.length ==1) {
-        <span translate>user.label.sessionFound</span>
+        <span>{{ 'user.label.sessionFound' | translate }}</span>
       }
     </div>
   }

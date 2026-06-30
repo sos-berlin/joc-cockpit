@@ -7,16 +7,16 @@
       <i (click)="helpPage('configuration-inventory-operations-git-clone')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (operation === 'clone' && category === 'LOCAL') {
-      <span translate>inventory.label.cloneToLocal</span>
+      <span>{{ 'inventory.label.cloneToLocal' | translate }}</span>
     }
     @if (operation === 'push' && category === 'LOCAL') {
-      <span translate>inventory.label.pushToLocal</span>
+      <span>{{ 'inventory.label.pushToLocal' | translate }}</span>
     }
     @if (operation === 'clone' && category !== 'LOCAL') {
-      <span translate>inventory.label.cloneToRollout</span>
+      <span>{{ 'inventory.label.cloneToRollout' | translate }}</span>
     }
     @if (operation === 'push' && category !== 'LOCAL') {
-      <span translate>inventory.label.pushToRollout</span>
+      <span>{{ 'inventory.label.pushToRollout' | translate }}</span>
     }
     :
     {{data.path}}
@@ -33,7 +33,7 @@
     @if (operation === 'clone') {
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
-          <span [appRichTooltip]="'inventory.tooltip.gitUri' | translate" translate>inventory.label.gitUri</span>
+          <span [appRichTooltip]="'inventory.tooltip.gitUri' | translate">{{ 'inventory.label.gitUri' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}" class="col-md-8">
@@ -43,7 +43,7 @@
           @if (remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)) {
             <div class="text-danger help-block">
               @if (remoteUrl.errors && remoteUrl.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -53,7 +53,7 @@
     @if (operation === 'clone' && data.path === '/') {
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
-          <span [appRichTooltip]="'inventory.tooltip.folderName' | translate" translate>inventory.label.folderName</span>
+          <span [appRichTooltip]="'inventory.tooltip.folderName' | translate">{{ 'inventory.label.folderName' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}"
@@ -63,10 +63,10 @@
           @if (folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)) {
             <div class="text-danger help-block">
               @if (folderName.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
               @if (folderName.errors['invalidIdentifier']) {
-                <div translate>common.message.invalid</div>
+                <div>{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
@@ -76,7 +76,7 @@
     @if (operation === 'push') {
       <div class="form-group row">
         <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'inventory.tooltip.gitMessage' | translate" translate>inventory.label.gitMessage</span>
+          <span [appRichTooltip]="'inventory.tooltip.gitMessage' | translate">{{ 'inventory.label.gitMessage' | translate }}</span>
         </label>
         <div class="col-sm-8">
           <textarea [(ngModel)]="message" class="form-control" maxlength="255" name="message"
@@ -95,8 +95,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

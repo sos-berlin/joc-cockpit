@@ -7,7 +7,7 @@
       @if (preferences.showVideoHelpPages) {
         <i (click)="videoPage('workflows-deploy')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
       }
-      <span translate>inventory.label.deploy</span>
+      <span>{{ 'inventory.label.deploy' | translate }}</span>
     }
     @if (isRevoke) {
       @if (preferences.showHelpPages) {
@@ -16,19 +16,25 @@
       @if (preferences.showVideoHelpPages) {
         <i (click)="videoPage('workflows-revoke')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
       }
-      <span translate>inventory.label.revoke</span>
+      <span>{{ 'inventory.label.revoke' | translate }}</span>
     }
     @if (releasable && !isRemove && operation !== 'recall') {
       @if (preferences.showHelpPages) {
         <i (click)="helpPage('configuration-inventory-operations-release-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
-      <span translate>inventory.label.release</span>
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('schedule-release')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
+      <span>{{ 'inventory.label.release' | translate }}</span>
     }
     @if (operation === 'recall') {
       @if (preferences.showHelpPages) {
         <i (click)="helpPage('configuration-inventory-operations-recall-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
-      <span translate>inventory.label.recall</span>
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('schedule-recall')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
+      <span>{{ 'inventory.label.recall' | translate }}</span>
     }
     @if (isRemove) {
       @if (preferences.showHelpPages) {
@@ -37,7 +43,7 @@
       @if (preferences.showVideoHelpPages) {
         <i (click)="videoPage('workflows-remove')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
       }
-      <span translate>inventory.label.remove</span>
+      <span>{{ 'inventory.label.remove' | translate }}</span>
     }
     @if (path) {
     <span>: {{path}}</span>
@@ -54,12 +60,12 @@
         @if (!showMoreAdvanceOptions) {
           <a class="text-primary cursor" (click)="showMoreOptions()">
             <i class="fa fa-caret-right m-r-xs"></i>
-            <span translate>common.label.showMoreOptions</span>
+            <span>{{ 'common.label.showMoreOptions' | translate }}</span>
           </a>
         } @else {
           <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
             <i class="fa fa-caret-down m-r-xs"></i>
-            <span translate>common.label.showFewerOptions</span>
+            <span>{{ 'common.label.showFewerOptions' | translate }}</span>
           </a>
         }
       </div>
@@ -73,14 +79,14 @@
       {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.deploy.section.target</small>
+          <small class="_600 section-box-title">{{ 'inventory.deploy.section.target' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label><span
                   [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.controllers') | translate"
-                  translate>inventory.label.controllers</span></label>
+>{{ 'inventory.label.controllers' | translate }}</span></label>
             </label>
             <div class="col-md-6">
               <nz-select [(ngModel)]="selectedSchedulerIds" name="schedulerIds" nzMode="multiple" nzShowSearch>
@@ -102,7 +108,7 @@
       (!isRevoke && !isDeleted && !isRemove && !isSelectedObjects && (showMoreAdvanceOptions || includeLate)))) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.deploy.section.scheduling</small>
+          <small class="_600 section-box-title">{{ 'inventory.deploy.section.scheduling' | translate }}</small>
         </div>
         <div class="p-a-sm">
           @if (operation != 'recall' && !isRevoke && !isRemove && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object &&
@@ -113,13 +119,13 @@
             <div class="form-group row">
               <div
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.updateDailyPlan') | translate"
-                class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+                class="col-md-3">{{ 'inventory.addOrdersDateFrom.addOrders' | translate }}</div>
               <div class="col-md-9">
                 <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-                  <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+                  <label nz-radio nzValue="now"><span>{{ 'inventory.addOrdersDateFrom.now' | translate }}</span></label>
                   <label nz-radio nzValue="startingFrom"><span
-                      translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-                  <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+>{{ 'inventory.addOrdersDateFrom.startingFrom' | translate }}</span></label>
+                  <label nz-radio nzValue=""><span>{{ 'inventory.addOrdersDateFrom.no' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
@@ -128,7 +134,7 @@
             <div class="form-group row">
               <label class="col-md-3 form-control-label"
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.specificDate') | translate"
-                translate>common.label.specificDate
+>{{ 'common.label.specificDate' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-md-6">
@@ -142,7 +148,7 @@
             <div class="form-group row">
               <label
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeTodaysLateOrders') | translate"
-                class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+                class="col-md-3 ">{{ 'inventory.label.includeTodaysLateOrders' | translate }}</label>
               <div class="col-md-6">
                 <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
               </div>
@@ -150,7 +156,7 @@
           }
           @if (operation === 'recall') {
             <div class="form-group row">
-              <div class="col-md-3" translate [appRichTooltip]="('inventory.tooltips.recall.keepOrdersInDailyPlan') | translate" >inventory.label.keepOrders</div>
+              <div class="col-md-3" [appRichTooltip]="('inventory.tooltips.recall.keepOrdersInDailyPlan') | translate" >{{ 'inventory.label.keepOrders' | translate }}</div>
               <div class="col-md-9">
                 <label nz-checkbox [(ngModel)]="keepOrders" name="keepOrders"></label>
               </div>
@@ -165,18 +171,18 @@
            (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke)) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.scope</small>
+          <small class="_600 section-box-title">{{ 'inventory.export.section.scope' | translate }}</small>
         </div>
         <div class="p-a-sm">
           @if ((!data || !data.object) && !releasable && !isRemove && !isRevoke && (showMoreAdvanceOptions || object.deployType !== 'individual')) {
           <div class="row m-b-12">
             <div class="col-md-3"
               [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.deployType') | translate"
-              translate>inventory.label.deployType</div>
+>{{ 'inventory.label.deployType' | translate }}</div>
             <div class="col-md-6">
               <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
-                <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
-                <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
+                <label nz-radio nzValue="individual"><span>{{ 'inventory.label.individualObjects' | translate }}</span></label>
+                <label nz-radio nzValue="changes"><span>{{ 'inventory.label.changes' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -185,7 +191,7 @@
           <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}"
             class="form-group row">
             <label [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.change') | translate"
-              class="col-sm-3 form-control-label" translate>inventory.export.label.change
+              class="col-sm-3 form-control-label">{{ 'inventory.export.label.change' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -198,7 +204,7 @@
               @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
               <div class="text-danger help-block">
                 @if (changeName.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
               }
@@ -210,7 +216,7 @@
             <div class="col-md-3">
               <label
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.filter') | translate"
-                translate>inventory.export.label.filter</label>
+>{{ 'inventory.export.label.filter' | translate }}</label>
             </div>
             <div class="col-md-9">
               <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
@@ -230,14 +236,14 @@
       @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual' && (showMoreAdvanceOptions || object.isRecursive)) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.export.section.execution</small>
+          <small class="_600 section-box-title">{{ 'inventory.export.section.execution' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
             <div class="col-md-3">
               <label
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.handleRecursively') | translate"
-                translate>inventory.label.handleRecursively</label>
+>{{ 'inventory.label.handleRecursively' | translate }}</label>
             </div>
             <div class="col-md-6">
               <label [(ngModel)]="object.isRecursive" name="isRecursive" nz-checkbox
@@ -251,7 +257,7 @@
       @if ((nodes.length > 0 && (showMoreAdvanceOptions || dependencyMode !== 'all' || showDependencies)) || ((isRemove || isRevoke || operation === 'recall') && hasDependencies())) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>inventory.deploy.section.dependencies</small>
+          <small class="_600 section-box-title">{{ 'inventory.deploy.section.dependencies' | translate }}</small>
         </div>
         <div class="p-a-sm">
           @if ((isRemove || isRevoke || operation === 'recall') && hasDependencies()) {
@@ -279,14 +285,14 @@
             <div class="col-md-3">
               <label
                 [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.includeDependencies') | translate"
-                translate>inventory.label.includeDependencies</label>
+>{{ 'inventory.label.includeDependencies' | translate }}</label>
             </div>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode"
                 (ngModelChange)="onDependencyModeChange()">
-                <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-                <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+                <label nz-radio nzValue="all"><span>{{ 'inventory.label.all' | translate }}</span></label>
+                <label nz-radio nzValue="enforced"><span>{{ 'inventory.label.enforcedOnly' | translate }}</span></label>
+                <label nz-radio nzValue="none"><span>{{ 'inventory.label.none' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -296,7 +302,7 @@
           <div class="form-group row">
             <label
               [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.manageDependencies') | translate"
-              class="col-md-3" translate>inventory.label.manageDependencies</label>
+              class="col-md-3">{{ 'inventory.label.manageDependencies' | translate }}</label>
             <div class="col-md-6">
               <label nz-checkbox [(ngModel)]="showDependencies" name="showDependencies"></label>
             </div>
@@ -308,7 +314,7 @@
           <div class="form-group row">
             <label
               [appRichTooltip]="('inventory.tooltips.' + (isRevoke ? 'revoke' : isRemove ? 'remove' : (operation === 'recall') ? 'recall' : releasable ? 'release' : 'deploy') + '.showRelatedObjects') | translate"
-              class="col-md-3" translate>inventory.label.showRelatedObjects</label>
+              class="col-md-3">{{ 'inventory.label.showRelatedObjects' | translate }}</label>
             <div class="col-md-6">
               <nz-switch nzSize="small" [(ngModel)]="showRelatedObjects" name="showRelatedObjects" />
             </div>
@@ -413,7 +419,7 @@
                     <div>
                       <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' |
                       translate}}
-                      - <span class="label bg-orange" translate>inventory.label.notValid</span>
+                      - <span class="label bg-orange">{{ 'inventory.label.notValid' | translate }}</span>
                     </div>
                   </nz-option>
                   }
@@ -453,23 +459,23 @@
               node.origin.deployablesVersions.length ===0)) {
               <div class="m-l">
                 @if (!node.origin.deleted) {
-                <i class="text-muted" translate>workflow.label.draft</i>
+                <i class="text-muted">{{ 'workflow.label.draft' | translate }}</i>
                 }
                 @if (node.origin.deleted && node.origin.deploymentId) {
-                <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                <i class="text-danger">{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                 }
                 @if (node.origin.deleted && !node.origin.deploymentId) {
-                <i class="text-danger" translate>inventory.label.markForDelete</i>
+                <i class="text-danger">{{ 'inventory.label.markForDelete' | translate }}</i>
                 }
               </div>
               }
               @if (!isRemove && !node.origin.type && !node.origin.object) {
               <div class="m-l">
                 @if (node.origin.deleted && node.origin.deploymentId) {
-                <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                <i class="text-danger">{{ 'inventory.label.deployMarkDelete' | translate }}</i>
                 }
                 @if (node.origin.deleted && !node.origin.deploymentId) {
-                <i class="text-danger" translate>inventory.label.markForDelete</i>
+                <i class="text-danger">{{ 'inventory.label.markForDelete' | translate }}</i>
                 }
               </div>
               }
@@ -806,7 +812,7 @@
             [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
             (click)="toggleAllRelatedCollapse()"></i>
           <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-600 cursor"
-            translate>inventory.label.filteredAffectedItems</label>
+>{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
 
           @if (isRelatedCollapsed) {
           <div class="m-t-sm m-l-sm">
@@ -886,7 +892,7 @@
     </button>
     <ng-template #invalidTooltip>
       <div style="max-width: 300px; text-align: left;">
-        <strong translate>inventory.message.invalidEnforcedObjects</strong>
+        <strong>{{ 'inventory.message.invalidEnforcedObjects' | translate }}</strong>
         <ul style="margin: 4px 0 0 0; padding-left: 20px; list-style: disc;">
           @for (path of getInvalidObjects(); track path) {
           <li style="margin: 2px 0;">{{ path }}</li>
@@ -903,8 +909,8 @@
       <span>{{'common.button.remove' | translate}}</span>
     </button>
     }
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

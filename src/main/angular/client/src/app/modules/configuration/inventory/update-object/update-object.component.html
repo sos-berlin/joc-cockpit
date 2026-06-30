@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.updateObject.label.updateObject</span>: {{type | translate}}
+    <span>{{'inventory.updateObject.label.updateObject' | translate}}</span>: {{type | translate}}
   </h4>
   <button (click)="step === 3 ? activeModal.close('Close') : activeModal.destroy()" aria-label="Close" class="close"
           type="button">
@@ -14,7 +14,7 @@
         <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-4 form-control-label">
-              <span [appRichTooltip]="'workflow.tooltip.title' | translate" translate>workflow.label.title</span>
+              <span [appRichTooltip]="'workflow.tooltip.title' | translate">{{ 'workflow.label.title' | translate }}</span>
             </label>
             <div class="col-md-6">
               <input [(ngModel)]="object.title" (ngModelChange)="toggleCheckbox('title', $event)" autocomplete="off" class="form-control"
@@ -27,7 +27,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-4 form-control-label">
-              <span [appRichTooltip]="'inventory.tooltip.documentation' | translate" translate>inventory.label.documentation</span>
+              <span [appRichTooltip]="'inventory.tooltip.documentation' | translate">{{ 'inventory.label.documentation' | translate }}</span>
             </label>
             <div class="col-md-6">
               <app-select-document [data]="object" [documentationTree]="documentationTree" (onSelectDocument)="toggleCheckbox('documentation', $event)"></app-select-document>
@@ -40,15 +40,15 @@
             <ng-container>
               <div class="form-group row">
                 <div class="col-md-12">
-                  <nz-tabset>
+                  <nz-tabs>
                     <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                       <div class="row">
                         <div class="col-md-12">
                           @if (object.arguments && object.arguments.length > 0) {
                             <div class="form-group row m-b-0">
-                              <div class="col-md-6  m-b-sm" translate>common.label.name</div>
-                              <div class="col-md-6 m-b-sm" style="padding-left: 27px" translate>
-                                common.label.value
+                              <div class="col-md-6  m-b-sm">{{ 'common.label.name' | translate }}</div>
+                              <div class="col-md-6 m-b-sm" style="padding-left: 27px">
+                                {{ 'common.label.value' | translate }}
                               </div>
                             </div>
                           }
@@ -70,7 +70,7 @@
                                   @if (aname.invalid && aname.errors && (aname.dirty || aname.touched)) {
                                     <div class="text-danger help-block">
                                       @if (aname.errors['invalidIdentifier']) {
-                                        <div translate>common.message.invalid</div>
+                                        <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -87,7 +87,7 @@
                           </div>
                           <div class="form-group row">
                             <div class="col-sm-12">
-                              <a (click)="addArgu()" class="text-u-l" translate>workflow.button.addArgument</a>
+                              <a (click)="addArgu()" class="text-u-l">{{ 'workflow.button.addArgument' | translate }}</a>
                             </div>
                           </div>
                         </div>
@@ -98,9 +98,9 @@
                         @if (object.env && object.env.length > 0) {
                           <div class="col-md-12">
                             <div class="form-group row m-b-0">
-                              <div class="col-md-6 m-b-sm" translate>common.label.name</div>
-                              <div class="col-md-6 m-b-sm" style="padding-left: 27px" translate>
-                                common.label.value
+                              <div class="col-md-6 m-b-sm">{{ 'common.label.name' | translate }}</div>
+                              <div class="col-md-6 m-b-sm" style="padding-left: 27px">
+                                {{ 'common.label.value' | translate }}
                               </div>
                             </div>
                           </div>
@@ -121,7 +121,7 @@
                                   @if (ename.invalid && ename.errors && (ename.dirty || ename.touched)) {
                                     <div class="text-danger help-block">
                                       @if (ename.errors['invalidIdentifier']) {
-                                        <div translate>common.message.invalid</div>
+                                        <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -138,13 +138,13 @@
                           </div>
                           <div class="form-group row">
                             <div class="col-sm-12">
-                              <a (click)="addEnv()" class="text-u-l" translate>order.button.addVariable</a>
+                              <a (click)="addEnv()" class="text-u-l">{{ 'order.button.addVariable' | translate }}</a>
                             </div>
                           </div>
                         </div>
                       </div>
                     </nz-tab>
-                  </nz-tabset>
+                  </nz-tabs>
                 </div>
               </div>
             </ng-container>
@@ -153,7 +153,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'workflow.tooltip.jobResourceNames' | translate" translate>workflow.label.jobResourceNames</span>
+                  <span [appRichTooltip]="'workflow.tooltip.jobResourceNames' | translate">{{ 'workflow.label.jobResourceNames' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <app-multi-select [attribute]="'jobResourceNames'" [list]="object" (onChange)="toggleCheckbox('jobResourceNames', $event)"[nodes]="jobResourcesTree"
@@ -165,7 +165,7 @@
                 </div>
               </div>
               <div class="form-group row">
-                <div [appRichTooltip]="'common.tooltip.timeZone' | translate" class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
+                <div [appRichTooltip]="'common.tooltip.timeZone' | translate" class="col-md-4 form-control-label">{{ 'workflow.label.timeZone' | translate }}</div>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
                     @for (zone of zones; track zone) {
@@ -183,7 +183,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.workflowName' | translate" translate>inventory.label.workflowName</span>
+                  <span [appRichTooltip]="'inventory.tooltip.workflowName' | translate">{{ 'inventory.label.workflowName' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <input (click)="isTreeShow = true;" [(ngModel)]="object.workflowName" (ngModelChange)="toggleCheckbox('workflowName', $event)" autocomplete="off" class="form-control"
@@ -205,7 +205,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'workflow.tooltip.agent' | translate" translate>workflow.label.agent</span>
+                  <span [appRichTooltip]="'workflow.tooltip.agent' | translate">{{ 'workflow.label.agent' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <app-agent-selection [agents]="agentList" [data]="object" name="agent" (agentChanged)="toggleCheckbox('agent', $event)" [preferences]="preferences"
@@ -217,7 +217,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.directory' | translate" translate>inventory.label.directory</span>
+                  <span [appRichTooltip]="'inventory.tooltip.directory' | translate">{{ 'inventory.label.directory' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <input [(ngModel)]="object.directoryExpr" (ngModelChange)="toggleCheckbox('directoryExpr', $event)" autocomplete="off" class="form-control"
@@ -231,7 +231,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.pattern' | translate" translate>inventory.label.pattern</span>
+                  <span [appRichTooltip]="'inventory.tooltip.pattern' | translate">{{ 'inventory.label.pattern' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <input [(ngModel)]="object.pattern" (ngModelChange)="toggleCheckbox('pattern', $event)" autocomplete="off" class="form-control"
@@ -244,7 +244,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'common.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
+                  <span [appRichTooltip]="'common.tooltip.timeZone' | translate">{{ 'common.label.timeZone' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
@@ -259,7 +259,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'workflow.tooltip.delay' | translate" translate>workflow.label.delay</span>
+                  <span [appRichTooltip]="'workflow.tooltip.delay' | translate">{{ 'workflow.label.delay' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-input-number [(ngModel)]="object.delay"
@@ -275,7 +275,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.toNotice' | translate" translate>inventory.label.toNotice</span>
+                  <span [appRichTooltip]="'inventory.tooltip.toNotice' | translate">{{ 'inventory.label.toNotice' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
@@ -306,7 +306,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.readingOrderToNoticeId' | translate" translate>inventory.label.readingOrderToNoticeId</span>
+                  <span [appRichTooltip]="'inventory.tooltip.readingOrderToNoticeId' | translate">{{ 'inventory.label.readingOrderToNoticeId' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
@@ -337,7 +337,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.endOfLife' | translate" translate>inventory.label.endOfLife</span>
+                  <span [appRichTooltip]="'inventory.tooltip.endOfLife' | translate">{{ 'inventory.label.endOfLife' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-space-compact nzBlock>
@@ -375,7 +375,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.limit' | translate" translate>inventory.label.limit</span>
+                  <span [appRichTooltip]="'inventory.tooltip.limit' | translate">{{ 'inventory.label.limit' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-input-number [(ngModel)]="object.limit" (ngModelChange)="toggleCheckbox('limit', $event)" [nzMin]="0" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
@@ -397,8 +397,8 @@
                   @if (listVariables.list) {
                     <div class="p-a-sm b-a m-b">
                       <div class="form-group row m-b-0 m-l-12">
-                        <div class="col-md-4  m-b-sm" translate>common.label.name</div>
-                        <div class="col-md-6  m-b-sm m-l-n-23" translate>common.label.value</div>
+                        <div class="col-md-4  m-b-sm">{{ 'common.label.name' | translate }}</div>
+                        <div class="col-md-6  m-b-sm m-l-n-23">{{ 'common.label.value' | translate }}</div>
                       </div>
                       @for (actualListArr of listVariables.actualList; track $index; let i = $index) {
                         <div [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
@@ -427,7 +427,7 @@
                                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                         <div class="text-danger help-block m-l-n-23">
                                           @if (value.errors['required']) {
-                                            <div translate>common.message.requiredError</div>
+                                            <div>{{ 'common.message.requiredError' | translate }}</div>
                                           }
                                         </div>
                                       }
@@ -452,7 +452,7 @@
                                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                         <div class="text-danger help-block m-l-n-23">
                                           @if (value.errors['required']) {
-                                            <div translate>common.message.requiredError</div>
+                                            <div>{{ 'common.message.requiredError' | translate }}</div>
                                           }
                                         </div>
                                       }
@@ -478,7 +478,7 @@
                                       @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                         <div class="text-danger help-block m-l-n-23">
                                           @if (value.errors['required']) {
-                                            <div translate>common.message.requiredError</div>
+                                            <div>{{ 'common.message.requiredError' | translate }}</div>
                                           }
                                         </div>
                                       }
@@ -502,7 +502,7 @@
               </ng-template>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.workflowNames' | translate" translate>inventory.label.workflowNames</span>
+                  <span [appRichTooltip]="'inventory.tooltip.workflowNames' | translate">{{ 'inventory.label.workflowNames' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <app-multi-select (onSelectCall)="changeWorkflow($event)" (onChange)="toggleCheckbox('workflowNames', $event)" [attribute]="'workflowNames'" [list]="object"
@@ -515,7 +515,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 block-ellipsis-job">
-                  <span [appRichTooltip]="'inventory.tooltip.planOrderAutomatically' | translate" translate>inventory.label.planOrderAutomatically</span>
+                  <span [appRichTooltip]="'inventory.tooltip.planOrderAutomatically' | translate">{{ 'inventory.label.planOrderAutomatically' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <label [(ngModel)]="object.planOrderAutomatically" (ngModelChange)="toggleCheckbox('planOrderAutomatically', $event)" name="planOrderAutomatically" nz-checkbox></label>
@@ -527,7 +527,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-4 block-ellipsis-job">
-                  <span [appRichTooltip]="'inventory.tooltip.submitOrderToControllerWhenPlanned' | translate" translate>inventory.label.submitOrderToControllerWhenPlanned</span>
+                  <span [appRichTooltip]="'inventory.tooltip.submitOrderToControllerWhenPlanned' | translate">{{ 'inventory.label.submitOrderToControllerWhenPlanned' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <label [(ngModel)]="object.submitOrderToControllerWhenPlanned" (ngModelChange)="toggleCheckbox('submitOrderToControllerWhenPlanned', $event)" name="submitOrderToControllerWhenPlanned"
@@ -540,7 +540,7 @@
               </div>
               @if ((object.workflowNames && object.workflowNames.length ==1) || (object.orderParameterisations && object.orderParameterisations.length)) {
                 <div class="form-group row">
-                  <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
+                  <label class="col-md-12 _600">{{ 'inventory.label.orderParameterisations' | translate }}</label>
                 </div>
               }
               @if (workflow) {
@@ -549,7 +549,7 @@
                     <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
                       <div class="form-group row">
                         <label class="col-md-4 form-control-label">
-                          <span [appRichTooltip]="'order.tooltip.orderName' | translate" translate>order.label.orderName</span>
+                          <span [appRichTooltip]="'order.tooltip.orderName' | translate">{{ 'order.label.orderName' | translate }}</span>
                         </label>
                         <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
                              class="col-md-6">
@@ -562,7 +562,7 @@
                           @if (orderName.invalid && (orderName.dirty || orderName.touched)) {
                             <div class="text-danger help-block">
                               @if (orderName.errors['invalidIdentifier']) {
-                                <div translate>common.message.invalid</div>
+                                <div>{{ 'common.message.invalid' | translate }}</div>
                               }
                             </div>
                           }
@@ -576,7 +576,7 @@
                       @if (blockPositions?.size > 0) {
                         <div class="form-group row">
                           <label class="col-md-4 form-control-label">
-                            <span [appRichTooltip]="'order.tooltip.blockPosition' | translate" translate>order.label.blockPosition</span>
+                            <span [appRichTooltip]="'order.tooltip.blockPosition' | translate">{{ 'order.label.blockPosition' | translate }}</span>
                           </label>
                           <div class="col-md-6">
                             <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
@@ -586,7 +586,7 @@
                       }
                       <div class="form-group row">
                         <label class="col-md-4 form-control-label">
-                          <span [appRichTooltip]="'order.tooltip.startNode' | translate" translate>order.label.startNode</span>
+                          <span [appRichTooltip]="'order.tooltip.startNode' | translate">{{ 'order.label.startNode' | translate }}</span>
                         </label>
                         <div class="col-md-6">
                           <app-node-position [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
@@ -595,7 +595,7 @@
                       </div>
                       <div class="form-group row">
                         <label class="col-md-4 form-control-label">
-                          <span [appRichTooltip]="'order.tooltip.endNode' | translate" translate>order.label.endNode</span>
+                          <span [appRichTooltip]="'order.tooltip.endNode' | translate">{{ 'order.label.endNode' | translate }}</span>
                         </label>
                         <div class="col-md-6">
                           <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
@@ -607,7 +607,7 @@
 
                       <div class="form-group row">
                         <label class="col-md-4">
-                          <span [appRichTooltip]="'order.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                          <span [appRichTooltip]="'order.tooltip.ignoreAdmissionTimes' | translate">{{ 'order.label.ignoreAdmissionTimes' | translate }}</span>
                         </label>
                         <div class="col-md-6">
                           <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}">
@@ -617,10 +617,10 @@
                       @for (variable of variableSet.variables; track $index; let i = $index) {
                         <div class="form-group row m-b-0">
                           @if (i==0) {
-                            <div class="col-md-4 m-b-sm" translate>common.label.name</div>
+                            <div class="col-md-4 m-b-sm">{{ 'common.label.name' | translate }}</div>
                           }
                           @if (i==0) {
-                            <div class="col-md-6 m-b-sm" translate>common.label.value</div>
+                            <div class="col-md-6 m-b-sm">{{ 'common.label.value' | translate }}</div>
                           }
                           @if (variable.type === 'List') {
                             <ng-container>
@@ -665,7 +665,7 @@
                                         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                           <div class="text-danger help-block">
                                             @if (value.errors['required']) {
-                                              <div translate>common.message.requiredError</div>
+                                              <div>{{ 'common.message.requiredError' | translate }}</div>
                                             }
                                           </div>
                                         }
@@ -689,7 +689,7 @@
                                         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                           <div class="text-danger help-block">
                                             @if (value.errors['required']) {
-                                              <div translate>common.message.requiredError</div>
+                                              <div>{{ 'common.message.requiredError' | translate }}</div>
                                             }
                                           </div>
                                         }
@@ -719,10 +719,10 @@
                                         @if (value.invalid && value.errors && (value.dirty || value.touched)) {
                                           <div class="text-danger help-block">
                                             @if (value.errors['required']) {
-                                              <div translate>common.message.requiredError</div>
+                                              <div>{{ 'common.message.requiredError' | translate }}</div>
                                             }
                                             @if (value.errors['invalidFacet']) {
-                                              <div translate>common.message.invalid</div>
+                                              <div>{{ 'common.message.invalid' | translate }}</div>
                                             }
                                           </div>
                                         }
@@ -748,7 +748,7 @@
                                           <div>
                                             {{option.name}} @if (option.default) {<i>- </i>} @if (option.default) {
                                             <span class="label label-default"
-                                                  translate>default</span>
+>default</span>
                                           }
                                           </div>
                                         </nz-option>
@@ -758,7 +758,7 @@
                                   @if (list.invalid && list.errors && (list.dirty || list.touched)) {
                                     <div class="text-danger help-block">
                                       @if (list.errors['required']) {
-                                        <div translate>common.message.requiredError</div>
+                                        <div>{{ 'common.message.requiredError' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -776,13 +776,13 @@
                       <div class="form-group row">
                         @if (variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)) {
                           <div class="col-sm-12">
-                            <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.modifyVariable</a>
-                            <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
+                            <a (click)="addVariable(false, variableSet)" class="text-u-l">{{ 'order.button.modifyVariable' | translate }}</a>
+                            <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12">{{ 'order.button.modifyVariables' | translate }}</a>
                           </div>
                         }
                         @if (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared) {
                           <div class="col-sm-12" [ngClass]="{'m-t-sm': variableList.length > variableSet.variables.length}">
-                            <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
+                            <a class="text-u-l" (click)="addVariable(true, variableSet)">{{ 'order.button.addVariable' | translate }}</a>
                           </div>
                         }
                       </div>
@@ -791,7 +791,7 @@
                   <div class="form-group row">
                     @if (variableList.length > 0 || (object.workflowNames && object.workflowNames.length ==1)) {
                       <div class="col-sm-12">
-                        <a (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
+                        <a (click)="addVariableSet()" class="text-u-l">{{ 'inventory.button.addOrderParameter' | translate }}</a>
                       </div>
                     }
                   </div>
@@ -803,7 +803,7 @@
                           [ngClass]="{'btn-primary': object.configuration && (object.configuration.calendars?.length >0
             || object.configuration.nonWorkingDayCalendars?.length >0)}">
                     <i class="fa fa-clock-o p-r-xs"></i>
-                    <span translate>inventory.button.runTime</span>
+                    <span>{{ 'inventory.button.runTime' | translate }}</span>
                   </button>
                 </div>
               </div>
@@ -813,7 +813,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'common.tooltip.type' | translate" translate>common.label.type</span>
+                  <span [appRichTooltip]="'common.tooltip.type' | translate">{{ 'common.label.type' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <nz-select [(ngModel)]="object.type" name="cType" (ngModelChange)="toggleCheckbox('type', $event)">
@@ -828,7 +828,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-md-2 col-xl-2 col-xxl-2 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                 </label>
                 <div class="col-md-3 col-xl-3 col-xxl-3">
                   <nz-date-picker [(ngModel)]="object.from" (ngModelChange)="toggleCheckbox('validFrom', $event)"
@@ -836,7 +836,7 @@
                                   name="from"></nz-date-picker>
                 </div>
                 <label class="col-md-2 col-xl-2 col-xxl-2 form-control-label date-center">
-                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                 </label>
                 <div class="col-md-3 col-xl-3 col-xxl-3 date-right">
                   <nz-date-picker [(ngModel)]="object.validTo" (ngModelChange)="toggleCheckbox('validTo', $event)" [nzFormat]="dateFormat"
@@ -853,7 +853,7 @@
             <ng-container>
               <div class="form-group row">
                 <label class="col-md-4 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.script' | translate" translate>inventory.label.script</span>
+                  <span [appRichTooltip]="'inventory.tooltip.script' | translate">{{ 'inventory.label.script' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   @if (isDisplay) {
@@ -874,15 +874,15 @@
         <div class="col-md-12">
           <div class="min-ht-200" style="display: flex;justify-content: center;align-items: center;">
             <div class="text-md">
-              <span [translateParams]="{count: data.length}" class="_600" translate>inventory.updateObject.message.updateSuccessfully</span>
+              <span class="_600">{{ 'inventory.updateObject.message.updateSuccessfully' | translate: {count: data.length} }}</span>
               @if ((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')) {
                 <a (click)="step = 3;"
                    class="text-primary p-l-xs"
-                   translate>inventory.updateObject.button.clickHereToDeploy</a>
+>{{ 'inventory.updateObject.button.clickHereToDeploy' | translate }}</a>
               }
               @if ((type === 'SCHEDULE' || type === 'CALENDAR' || type === 'INCLUDESCRIPT' || type === 'JOBTEMPLATE')) {
                 <a (click)="preferences.auditLog ||type === 'SCHEDULE' || type === 'CALENDAR' ? step = 3 : deploy(false)"
-                   class="text-primary p-l-xs" translate>inventory.updateObject.button.clickHereToRelease</a>
+                   class="text-primary p-l-xs">{{ 'inventory.updateObject.button.clickHereToRelease' | translate }}</a>
               }
             </div>
           </div>
@@ -898,7 +898,7 @@
           @if ((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')) {
             <div class="form-group row">
               <label class="col-md-3 form-control-label">
-                <span [appRichTooltip]="'inventory.tooltip.controllers' | translate" translate>inventory.label.controllers</span>
+                <span [appRichTooltip]="'inventory.tooltip.controllers' | translate">{{ 'inventory.label.controllers' | translate }}</span>
               </label>
               <div class="col-md-6">
                 <nz-select
@@ -921,20 +921,20 @@
           }
           @if ((type == 'WORKFLOW' || type == 'SCHEDULE' || type == 'CALENDAR')) {
             <div class="form-group row">
-              <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+              <div class="col-md-3">{{ 'inventory.addOrdersDateFrom.addOrders' | translate }}</div>
               <div class="col-md-9">
                 <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-                  <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+                  <label nz-radio nzValue="now"><span>{{ 'inventory.addOrdersDateFrom.now' | translate }}</span></label>
                   <label nz-radio nzValue="startingFrom"><span
-                    translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-                  <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+>{{ 'inventory.addOrdersDateFrom.startingFrom' | translate }}</span></label>
+                  <label nz-radio nzValue=""><span>{{ 'inventory.addOrdersDateFrom.no' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
           }
           @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom' && (type == 'WORKFLOW' || type == 'SCHEDULE' || type == 'CALENDAR')) {
             <div class="form-group row">
-              <div class="col-md-3" translate>common.label.specificDate
+              <div class="col-md-3">{{ 'common.label.specificDate' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </div>
               <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-9">
@@ -943,7 +943,7 @@
                 @if (date.invalid && (date.dirty || date.touched)) {
                   <div class="text-danger help-block">
                     @if (date.errors.required) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -956,7 +956,7 @@
   </div>
   <div class="modal-footer">
     @if (step === 1) {
-      <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate
+      <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
               type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
@@ -967,28 +967,28 @@
     @if (step === 3) {
       <button (click)="deploy((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE'))"
               [disabled]="!myForm.form.valid || submitted"
-              class="btn btn-primary btn-sm" translate
+              class="btn btn-primary btn-sm"
               type="button">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
         @if (type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE') {
-          <span translate>inventory.button.deploy</span>
+          <span>{{ 'inventory.button.deploy' | translate }}</span>
         }
         @if (type === 'SCHEDULE'|| type === 'CALENDAR' || type === 'INCLUDESCRIPT' || type === 'JOBTEMPLATE') {
-          <span translate>inventory.button.release</span>
+          <span>{{ 'inventory.button.release' | translate }}</span>
         }
       </button>
     }
     @if (step === 2) {
-      <button (click)="activeModal.close('Close')" class="btn btn-grey btn-sm" translate type="button">
-        common.button.close
+      <button (click)="activeModal.close('Close')" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.close' | translate }}
       </button>
     }
     @if (step !== 2) {
       <button (click)="activeModal.destroy()" [disabled]="submitted" class="btn btn-grey btn-sm"
-              translate type="button">
-        common.button.cancel
+ type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     }
   </div>
@@ -999,7 +999,7 @@
     @if (isVisible) {
       <div>
         <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
-                                                                                   translate>runtime.label.runTime</span>
+>{{ 'runtime.label.runTime' | translate }}</span>
         </div>
         <app-run-time [permission]="permission" [preferences]="preferences" [schedule]="object"
                       [schedulerId]="controllerId"></app-run-time>

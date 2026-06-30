@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -27,7 +27,8 @@ interface CalendarItem {
 @Component({
   standalone: false,
   selector: 'app-frequency-modal-content',
-  templateUrl: './frequency-dialog.html'
+  templateUrl: './frequency-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FrequencyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -107,7 +108,7 @@ export class FrequencyModalComponent {
   ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService,
-              private datePipe: DatePipe, public calendarService: CalendarService) {
+              private datePipe: DatePipe, public calendarService: CalendarService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -126,6 +127,7 @@ export class FrequencyModalComponent {
     this.frequencyEditIndex = this.modalData.frequencyIndex;
     setTimeout(() => {
       this.isVisible = true;
+      this.cdr.markForCheck();
     }, 0);
 
     this.str = 'label.weekDays';
@@ -176,7 +178,7 @@ export class FrequencyModalComponent {
   }
 
   if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
-    $('#full-calendar').calendar({
+    $('#full-calendar')['calendar']({
       language: this.coreService.getLocale(),
       renderEnd: (e) => {
         this.calendarTitle = e.currentYear;
@@ -320,7 +322,7 @@ export class FrequencyModalComponent {
       if (domElem && domElem.data('calendar')) {
         domElem.data('calendar').setDataSource(this.tempItems);
       } else {
-        domElem.calendar({
+        domElem['calendar']({
           language: this.coreService.getLocale(),
           clickDay: (e) => {
             this.selectDate(e);
@@ -393,7 +395,7 @@ export class FrequencyModalComponent {
         if (domElem && domElem.data('calendar')) {
           domElem.data('calendar').setDataSource(this.tempItems);
         } else {
-          domElem.calendar({
+          domElem['calendar']({
             language: this.coreService.getLocale(),
             clickDay: (e) => {
               this.selectDate(e);
@@ -530,7 +532,7 @@ export class FrequencyModalComponent {
       if (domElem && domElem.data('calendar')) {
         domElem.data('calendar').setDataSource(this.tempItems);
       } else {
-        domElem.calendar({
+        domElem['calendar']({
           language: this.coreService.getLocale(),
           clickDay: (e) => {
             this.selectDate(e);
@@ -1284,7 +1286,7 @@ export class FrequencyModalComponent {
         if (domElem && domElem.data('calendar')) {
 
         } else {
-          $('#full-calendar').calendar({
+          $('#full-calendar')['calendar']({
             language: this.coreService.getLocale(),
             renderEnd: (e) => {
               this.calendarTitle = e.currentYear;
@@ -1488,6 +1490,7 @@ export class FrequencyModalComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent {
   @Input() schedulerId: any;

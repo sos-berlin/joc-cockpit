@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
 import { MarkdownParserService } from '../../services/markdown-parser.service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
@@ -59,6 +59,7 @@ interface ColorPreset {
   selector: 'app-note',
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoteComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -124,7 +125,8 @@ export class NoteComponent {
     private activeModal: NzModalRef,
     public coreService: CoreService,
     public authService: AuthService,
-    private dataService: DataService
+    private dataService: DataService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -157,10 +159,12 @@ export class NoteComponent {
         } else {
           this.mentionUsers = [];
         }
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error loading users:', err);
         this.mentionUsers = [];
+        this.cdr.markForCheck();
       }
     });
 
@@ -200,10 +204,12 @@ export class NoteComponent {
           objectType: this.objectType,
           action: 'viewed'
         });
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error loading note:', err);
         this.posts = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -239,10 +245,12 @@ export class NoteComponent {
             chatThread.scrollTop = chatThread.scrollHeight;
           }
         }, 100);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error adding post:', err);
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -262,6 +270,7 @@ export class NoteComponent {
           objectType: this.objectType,
           action: 'deleted'
         });
+        this.cdr.markForCheck();
         this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       },
       error: (err) => {
@@ -271,6 +280,7 @@ export class NoteComponent {
           objectType: this.objectType,
           action: 'deleted'
         });
+        this.cdr.markForCheck();
         this.activeModal.destroy({ action: 'deleted', objectName: this.objectName, objectType: this.objectType });
       }
     });

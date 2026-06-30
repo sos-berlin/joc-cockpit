@@ -20,7 +20,7 @@
     <ul class="nav navbar-nav pull-right ">
       <ng-template #notesEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearNotesEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          <a (click)="clearNotesEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
           @for(notesNotification of notesNotificationList; track notesNotification.id) {
@@ -33,13 +33,13 @@
 
       <ng-template #approvalEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
           <div  (click)="navToApprovalsApp(0, 'PENDING')" class="cursor primary-text-hover-color" >
             {{approvalEvent?.numOfPendingApprovals}} -
             @if (approvalEvent?.numOfPendingApprovals) {
-              <span translate>monitor.approvalRequest.label.ApproverNotification</span>
+              <span>{{ 'monitor.approvalRequest.label' | translate }}.ApproverNotification</span>
             }
           </div>
         </div>
@@ -47,20 +47,20 @@
 
       <ng-template #requestorEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
           <div (click)="navToApprovalsReq('APPROVED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfApprovedRequests}} - @if (requestorEvent?.numOfApprovedRequests) {<span translate>monitor.approvalRequest.label.numOfApprovedRequests</span>}
+            {{requestorEvent?.numOfApprovedRequests}} - @if (requestorEvent?.numOfApprovedRequests) {<span>{{ 'monitor.approvalRequest.label.numOfApprovedRequests' | translate }}</span>}
           </div>
           <div (click)="navToApprovalsReq('REJECTED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfRejectedRequests}} - @if (requestorEvent?.numOfRejectedRequests) {<span translate>monitor.approvalRequest.label.numOfRejectedRequests</span>}
+            {{requestorEvent?.numOfRejectedRequests}} - @if (requestorEvent?.numOfRejectedRequests) {<span>{{ 'monitor.approvalRequest.label.numOfRejectedRequests' | translate }}</span>}
           </div>
         </div>
       </ng-template>
       <ng-template #problemEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearProblemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          <a (click)="clearProblemEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
           <div>
@@ -74,7 +74,7 @@
       <ng-template #jocMonitorEvent>
         @if (jocMonitor.length > 0) {
           <div class="pos-abt" style="top:6px;right: 16px">
-            <a (click)="clearJocEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+            <a (click)="clearJocEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
           </div>
         }
         <div class="notification">
@@ -97,7 +97,7 @@
       <ng-template #systemMonitorEvent>
         @if (systemMonitor.length > 0) {
           <div class="pos-abt" style="top:6px;right: 16px">
-            <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+            <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
           </div>
         }
         <div class="notification">
@@ -307,7 +307,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/dashboard">
               <span class="nav-text">
                 <i class="icon2-dashboard text-white"></i>
-                <span class="ico text-white _600" translate>header.label.dashboard</span>
+                <span class="ico text-white _600">{{ 'header.label.dashboard' | translate }}</span>
               </span>
             </a>
           </li>
@@ -317,7 +317,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/monitor">
               <span class="nav-text">
                 <i class="icon-dashboard-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.monitor</span>
+                <span class="ico text-white _600">{{ 'header.label.monitor' | translate }}</span>
               </span>
             </a>
           </li>
@@ -327,7 +327,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/daily_plan">
               <span class="nav-text">
                 <i class="icon-daily-plan-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.dailyPlan</span>
+                <span class="ico text-white _600">{{ 'header.label.dailyPlan' | translate }}</span>
               </span>
             </a>
           </li>
@@ -337,7 +337,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/workflows">
               <span class="nav-text">
                 <i class="icon-workflows-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.workflows</span>
+                <span class="ico text-white _600">{{ 'header.label.workflows' | translate }}</span>
               </span>
             </a>
           </li>
@@ -347,7 +347,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/file_transfer">
               <span class="nav-text">
                 <i class="icon-file-transfers-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.fileTransfers</span>
+                <span class="ico text-white _600">{{ 'header.label.fileTransfers' | translate }}</span>
               </span>
             </a>
           </li>
@@ -357,7 +357,7 @@
             <a (click)="navigateToResource()" [routerLinkActive]="['active']" class="nav-link" routerLink="/resources">
               <span class="nav-text">
                 <i class="icon-resources-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.resources</span>
+                <span class="ico text-white _600">{{ 'header.label.resources' | translate }}</span>
               </span>
             </a>
           </li>
@@ -368,7 +368,7 @@
               <span class="nav-text">
                 <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>
                 <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>
-                <span class="ico text-white _600" translate>header.label.reports</span>
+                <span class="ico text-white _600">{{ 'header.label.reports' | translate }}</span>
               </span>
             </a>
           </li>
@@ -378,7 +378,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/history">
               <span class="nav-text">
                 <i class="icon-alarm-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.history</span>
+                <span class="ico text-white _600">{{ 'header.label.history' | translate }}</span>
               </span>
             </a>
           </li>
@@ -388,7 +388,7 @@
             <a [routerLinkActive]="['active']" class="nav-link" routerLink="/audit_log">
               <span class="nav-text">
                 <i class="icon-audit-log-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.auditLog</span>
+                <span class="ico text-white _600">{{ 'header.label.auditLog' | translate }}</span>
               </span>
             </a>
           </li>
@@ -399,7 +399,7 @@
                routerLink="/configuration">
               <span class="nav-text">
                 <i class="icon-configuration-icon text-white"></i>
-                <span class="ico text-white _600" translate>header.label.configuration</span>
+                <span class="ico text-white _600">{{ 'header.label.configuration' | translate }}</span>
               </span>
             </a>
           </li>

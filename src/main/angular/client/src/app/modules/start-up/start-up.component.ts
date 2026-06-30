@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -12,7 +12,8 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-start-up-modal',
-  templateUrl: './start-up.dialog.html'
+  templateUrl: './start-up.dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StartUpModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -33,7 +34,7 @@ export class StartUpModalComponent {
   preferences: any = {};
 
   constructor(public coreService: CoreService, private router: Router, private activeModal: NzModalRef,private modal: NzModalService,
-              public translate: TranslateService, private toasterService: ToastrService) {
+              public translate: TranslateService, private toasterService: ToastrService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -128,7 +129,11 @@ export class StartUpModalComponent {
       next: () => {
         this.activeModal.close('reload');
         this.submitted = false;
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -158,11 +163,13 @@ export class StartUpModalComponent {
             this.toasterService.success(msg);
           }
         }
+        this.cdr.markForCheck();
       }, error: () => {
         if (this.new) {
           this.error = true;
         }
         this.setFlag(type, false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -189,7 +196,8 @@ export class StartUpModalComponent {
 @Component({
   standalone: false,
   selector: 'app-start-up-component',
-  templateUrl: './start-up.component.html'
+  templateUrl: './start-up.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StartUpComponent {
   controller: any = {};
@@ -207,7 +215,8 @@ export class StartUpComponent {
   hasLicense = false;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router,
-              public translate: TranslateService, private dataService: DataService, private toasterService: ToastrService) {
+              public translate: TranslateService, private dataService: DataService, private toasterService: ToastrService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -285,7 +294,11 @@ export class StartUpComponent {
       next: () => {
         this.getSchedulerIds();
         this.submitted = false;
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -313,9 +326,11 @@ export class StartUpComponent {
             this.toasterService.success(msg);
           }
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.error = true;
         this.setFlag(type, false);
+        this.cdr.markForCheck();
       }
     });
   }

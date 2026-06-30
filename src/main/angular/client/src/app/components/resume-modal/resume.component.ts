@@ -1,4 +1,4 @@
-import {Component, inject, ElementRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ElementRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
@@ -9,6 +9,7 @@ import {WorkflowService} from "../../services/workflow.service";
   standalone: false,
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResumeOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -38,8 +39,8 @@ export class ResumeOrderModalComponent {
   isPositionChanged: boolean = false;
   isForced: boolean = false;
 
-  constructor(private elRef: ElementRef,public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService, private workflowService: WorkflowService) {
+  constructor(private elRef: ElementRef, public coreService: CoreService, private activeModal: NzModalRef,
+              private modal: NzModalService, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -151,7 +152,8 @@ export class ResumeOrderModalComponent {
           });
           this.positions = res.positions.map((pos) => pos.positionString);
         }
-      }, error: () => this.positions = []
+        this.cdr.markForCheck();
+      }, error: () => { this.positions = []; this.cdr.markForCheck(); }
     });
   }
 
@@ -168,6 +170,7 @@ export class ResumeOrderModalComponent {
       setTimeout(() => {
         this.scrollToElementById(elementId);
       }, 100);
+      this.cdr.markForCheck();
     });
   }
 

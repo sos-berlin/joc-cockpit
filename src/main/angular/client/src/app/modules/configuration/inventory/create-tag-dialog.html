@@ -5,21 +5,21 @@
         <i (click)="helpPage('configuration-inventory-operations-manage-tags')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
       @if (!filters) {
-        <span translate>inventory.label.addTags</span>
+        <span>{{ 'inventory.label.addTags' | translate }}</span>
       }
       @if (filters) {
-        <span translate>workflow.label.selectTags</span>
+        <span>{{ 'workflow.label.selectTags' | translate }}</span>
       }
     </h4>
   }
   @if (isRename) {
     <h4 class="modal-title">
-      <span translate>inventory.label.renameTag</span>
+      <span>{{ 'inventory.label.renameTag' | translate }}</span>
     </h4>
   }
   @if (data) {
     <h4 class="modal-title">
-      <span translate>inventory.label.addTagsToWorkflow</span>
+      <span>{{ 'inventory.label.addTagsToWorkflow' | translate }}</span>
       <span >: {{data.name}}</span>
     </h4>
   }
@@ -34,13 +34,13 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>inventory.section.tag</small>
+        <small class="_600 section-box-title">{{ 'inventory.section.tag' | translate }}</small>
       </div>
       <div class="p-a-sm">
     @if (data && !data.controller && !data.object && !data.type) {
       <div class="form-group row">
         <div class="col-md-3">
-          <label [appRichTooltip]="'inventory.tooltip.create.tag.handleRecursively' | translate" translate>inventory.label.handleRecursively</label>
+          <label [appRichTooltip]="'inventory.tooltip.create.tag.handleRecursively' | translate">{{ 'inventory.label.handleRecursively' | translate }}</label>
         </div>
         <div class="col-md-6">
           <label [(ngModel)]="object.isRecursive" name="isRecursive"
@@ -51,7 +51,7 @@
 
     @if (!isRename) {
       <div class="form-group row">
-        <label [appRichTooltip]="!filters ? ('inventory.tooltip.create.tag.new.tags' | translate) : ('inventory.tooltip.create.tag.filter.tags' | translate)" class="col-md-3 form-control-label" translate>inventory.label.tags
+        <label [appRichTooltip]="!filters ? ('inventory.tooltip.create.tag.new.tags' | translate) : ('inventory.tooltip.create.tag.filter.tags' | translate)" class="col-md-3 form-control-label">{{ 'inventory.label.tags' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         @if (!filters) {
@@ -119,7 +119,7 @@
     }
     @if (isRename) {
       <div class="form-group row">
-        <label [appRichTooltip]="'inventory.tooltip.create.tag.tagName' | translate" class="col-md-3 form-control-label" translate>inventory.label.tagName
+        <label [appRichTooltip]="'inventory.tooltip.create.tag.tagName' | translate" class="col-md-3 form-control-label">{{ 'inventory.label.tagName' | translate }}
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
@@ -128,16 +128,16 @@
           @if (name.invalid && (name.dirty || name.touched)) {
             <div class="text-danger help-block">
               @if (name.errors && name.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
               @if (name.errors.invalidIdentifier) {
-                <div translate>common.message.invalid</div>
+                <div>{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
           @if (!isUnique && !(name.errors && name.errors.required)) {
             <div class="help-block text-danger">
-              <div translate>common.message.uniqueError</div>
+              <div>{{ 'common.message.uniqueError' | translate }}</div>
             </div>
           }
         </div>
@@ -147,8 +147,8 @@
       <ng-container>
         <div class="row">
           <div class="col-md-12">
-            <span class="_600 m-r-xs" translate>
-              inventory.label.listOfTags
+            <span class="_600 m-r-xs">
+              {{ 'inventory.label.listOfTags' | translate }}
             </span>
             <a (click)="expandAll();" [appRichTooltip]="'common.tooltip.expandAll' | translate" class="text">
               <i class="fa fa-angle-double-down fa-lg"></i>
@@ -207,8 +207,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

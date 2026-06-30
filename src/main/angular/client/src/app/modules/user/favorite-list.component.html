@@ -3,7 +3,7 @@
     <div class="col-md-12 text-right">
       <button (click)="takeOver()" class="btn btn-grey btn-sm m-b-sm m-r-xs">
         <i class="fa fa-copy"></i>&nbsp;
-        <span translate>profile.favoriteManagement.button.takeOver</span>
+        <span>{{ 'profile.favoriteManagement.button.takeOver' | translate }}</span>
       </button>
     </div>
   }
@@ -20,11 +20,11 @@
       <button (click)="sharedWithMe()" [ngClass]="{'btn-primary': filter.sharedWithMe}"
               class="btn btn-grey btn-sm m-l-12">
         <i class="fa fa-share-alt"></i>&nbsp;
-        <span translate>profile.favoriteManagement.button.sharedWithMe</span>
+        <span>{{ 'profile.favoriteManagement.button.sharedWithMe' | translate }}</span>
       </button>
       <button (click)="add()" class="btn btn-grey btn-sm m-l-12 m-r-xs">
         <i class="fa fa-plus"></i>&nbsp;
-        <span translate>profile.favoriteManagement.button.addFavorite</span>
+        <span>{{ 'profile.favoriteManagement.button.addFavorite' | translate }}</span>
       </button>
     </div>
   }
@@ -34,7 +34,7 @@
     <label nz-checkbox [(nzChecked)]="object.checked"
            [nzIndeterminate]="object.indeterminate"
            class="m-l-sm" (nzCheckedChange)="checkAll($event)" >
-      <span class="p-l-xxs" translate>profile.favoriteManagement.label.checkAll</span>
+      <span class="p-l-xxs">{{ 'profile.favoriteManagement.label.checkAll' | translate }}</span>
     </label>
   </div>
 }
@@ -61,22 +61,22 @@
             <ul nz-menu>
               @if (account === item.account) {
                 <li (click)="edit(item)" nz-menu-item>
-                  <a translate>common.button.edit</a>
+                  <a>{{ 'common.button.edit' | translate }}</a>
                 </li>
               }
               @if (!item.shared && account === item.account) {
                 <li (click)="makeShare(item)" nz-menu-item>
-                  <a translate>customization.button.share</a>
+                  <a>{{ 'customization.button.share' | translate }}</a>
                 </li>
               }
               @if (item.shared && account === item.account) {
                 <li (click)="makePrivate(item)" nz-menu-item>
-                  <a translate>customization.button.makePrivate</a>
+                  <a>{{ 'customization.button.makePrivate' | translate }}</a>
                 </li>
               }
               @if (account !== item.account) {
                 <li (click)="takeOver(item)" nz-menu-item>
-                  <a translate>profile.favoriteManagement.button.takeOver</a>
+                  <a>{{ 'profile.favoriteManagement.button.takeOver' | translate }}</a>
                 </li>
               }
               @if (account === item.account) {
@@ -84,7 +84,7 @@
               }
               @if (account === item.account) {
                 <li (click)="delete(item)" class="bg-hover-color" nz-menu-item>
-                  <a translate>common.button.delete</a>
+                  <a>{{ 'common.button.delete' | translate }}</a>
                 </li>
               }
             </ul>

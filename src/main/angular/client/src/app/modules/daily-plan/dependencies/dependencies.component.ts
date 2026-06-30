@@ -6,7 +6,8 @@ import {
   ElementRef,
   Output,
   EventEmitter,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
@@ -43,7 +44,8 @@ declare const mxCellOverlay: any;
   standalone: false,
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
-  styleUrl: './dependencies.component.scss'
+  styleUrl: './dependencies.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;
@@ -165,7 +167,7 @@ export class DependenciesComponent {
     setTimeout(() => {
       const dom = $('#full-calendar2');
       if (!dom.data('calendar')) {
-        dom.calendar({
+        dom['calendar']({
           view: 'month',
           language: this.coreService.getLocale(),
           selectedDate: this.selectedDate,
@@ -221,6 +223,7 @@ export class DependenciesComponent {
       .subscribe((res) => {
         this.isLoaded = true;
         this.processData(res);
+        this.cd.markForCheck();
       });
   }
 
@@ -410,6 +413,7 @@ export class DependenciesComponent {
         if (result) {
           this._delete(board, notice, result);
         }
+        this.cd.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -429,6 +433,7 @@ export class DependenciesComponent {
         if (result) {
           this._delete(board, notice, {});
         }
+        this.cd.markForCheck();
       });
     }
   }
@@ -448,6 +453,7 @@ export class DependenciesComponent {
           }
         }
         board.notices = [...board.notices];
+        this.cd.markForCheck();
       });
     } else {
       this.deleteAll(board, comments);
@@ -501,6 +507,7 @@ export class DependenciesComponent {
       }).subscribe(() => {
         board.notices = board.notices.filter(item => item.state && item.state._text === 'EXPECTED');
         board.notices = [...board.notices];
+        this.cd.markForCheck();
       });
     }
   }
@@ -1221,6 +1228,7 @@ export class DependenciesComponent {
         this.noticeBoards = res.noticeBoards;
       }
       this.loadGraphData();
+      this.cd.markForCheck();
     });
   }
 
@@ -1238,6 +1246,7 @@ export class DependenciesComponent {
         this.noticeBoards = res.noticeBoards;
       }
       this.loadGraphData();
+      this.cd.markForCheck();
     });
   }
 
@@ -1300,6 +1309,7 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.initConf();
       this.loadAdditionalData();
+      this.cd.markForCheck();
     });
   }
 
@@ -1312,6 +1322,7 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.initConf();
       this.loadAdditionalData();
+      this.cd.markForCheck();
     });
   }
 

@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (operation === 'START') {
-      <span translate> order.label.startNode</span>
+      <span> {{ 'order.label.startNode' | translate }}</span>
     }
     @if (operation === 'END') {
-      <span translate> order.label.endNode</span>
+      <span> {{ 'order.label.endNode' | translate }}</span>
     }
     @if (operation === 'BLOCK_POSITION') {
-      <span translate> order.label.blockPosition</span>
+      <span> {{ 'order.label.blockPosition' | translate }}</span>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -66,6 +66,6 @@
     <button [disabled]="!position" class="btn btn-primary btn-sm" type="submit">
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
   </div>
 </form>

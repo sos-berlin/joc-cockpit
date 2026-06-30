@@ -28,10 +28,10 @@
               <div class="btn-group dropdown m-l-12">
                 <button [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
                         nzTrigger="click">
-                  <span translate>common.label.type</span>&nbsp;
+                  <span>{{ 'common.label.type' | translate }}</span>&nbsp;
                   @if (documentFilters.filter.type === 'ALL') {
                     <span class="text-primary"
-                          translate>common.label.all</span>
+>{{ 'common.label.all' | translate }}</span>
                   }
                   @if (documentFilters.filter.type !== 'ALL') {
                     <span [innerHTML]="documentFilters.filter.type"
@@ -45,7 +45,7 @@
                   <ul nz-menu>
                     <li (click)="documentFilters.filter.type = 'ALL';loadDocument();" [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == 'ALL'}"
                         nz-menu-item>
-                      <a translate>common.label.all</a>
+                      <a>{{ 'common.label.all' | translate }}</a>
                     </li>
                     @for (type of documentTypes; track type) {
                       <li (click)="documentFilters.filter.type = type;loadDocument();"
@@ -60,7 +60,7 @@
               <div class="btn-group dropdown">
                 <a [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                    nzTrigger="click">
-                  <span translate>common.label.sortBy</span>
+                  <span>{{ 'common.label.sortBy' | translate }}</span>
                   <span class="text-primary">
                       @if (documentFilters.filter.sortBy =='name') {
                         <span>
@@ -100,13 +100,13 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="sort('name')" nz-menu-item>
-                      <a translate>common.label.name</a>
+                      <a>{{ 'common.label.name' | translate }}</a>
                     </li>
                     <li (click)="sort('path1')" nz-menu-item>
-                      <a translate>common.label.path</a>
+                      <a>{{ 'common.label.path' | translate }}</a>
                     </li>
                     <li (click)="sort('type')" nz-menu-item>
-                      <a translate>common.label.type</a>
+                      <a>{{ 'common.label.type' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -188,42 +188,42 @@
                                 <ul nz-menu>
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="editDocument(document)" nz-menu-item>
-                                      <a translate>resource.documentation.button.editDocument</a>
+                                      <a>{{ 'resource.documentation.button.editDocument' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="previewDocument(document)" nz-menu-item>
-                                    <a translate>resource.documentation.button.previewDocument</a>
+                                    <a>{{ 'resource.documentation.button.previewDocument' | translate }}</a>
                                   </li>
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="exportDocument(document)" nz-menu-item>
-                                      <a translate>common.button.export</a>
+                                      <a>{{ 'common.button.export' | translate }}</a>
                                     </li>
                                   }
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="deleteDocumentations(document)" class="bg-hover-color"
                                         nz-menu-item>
-                                      <a translate>common.button.delete</a>
+                                      <a>{{ 'common.button.delete' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="showDocumentUsage(document)" nz-menu-item>
-                                    <a translate>resource.button.showUsage</a>
+                                    <a>{{ 'resource.button.showUsage' | translate }}</a>
                                   </li>
                                   <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm">
-                              <span translate>resource.documentation.label.reference </span>:
+                              <span>{{ 'resource.documentation.label.reference' | translate }} </span>:
                               <span [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></span>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm">
-                              <span translate>common.label.type </span>:
+                              <span>{{ 'common.label.type' | translate }} </span>:
                               <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
-                              <span translate>resource.documentation.label.lastUpdateTime </span>:
+                              <span>{{ 'resource.documentation.label.lastUpdateTime' | translate }} </span>:
                               <span [innerHtml]="document.modified | stringToDate"></span>
                             </div>
                           </div>
@@ -232,14 +232,14 @@
                               <a (click)="exportDocument(document)"
                                  class="text-left primary-text-hover-color ">
                                 <i class="fa fa-download text-black-lt p-r-xs"></i>
-                                <span class="text-black-lt" translate>common.button.export</span>
+                                <span class="text-black-lt">{{ 'common.button.export' | translate }}</span>
                               </a>
                             }
                             @if (permission.joc && permission.joc.documentations.manage) {
                               <a (click)="deleteDocumentations(document)"
                                  class="pull-right text-hover-color ">
                                 <i class="fa fa-trash text-black-lt p-r-xs"></i>
-                                <span class="text-black-lt" translate>common.button.delete</span>
+                                <span class="text-black-lt">{{ 'common.button.delete' | translate }}</span>
                               </a>
                             }
                           </div>
@@ -253,20 +253,20 @@
             @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)) {
               <div class="text-center font14 box p-a-10 m-b-12">
                 @if (object.mapOfCheckedId.size !== data.length) {
-                  <span [translateParams]="{count: object.mapOfCheckedId.size}"
-                        translate>common.label.selectAllEntriesOfCurrentPage</span>
+                  <span
+>{{ 'common.label.selectAllEntriesOfCurrentPage' | translate: {count: object.mapOfCheckedId.size} }}</span>
                 }
                 @if (object.mapOfCheckedId.size === data.length) {
-                  <span [translateParams]="{count: data.length}"
-                        translate>common.label.allEntriesSelected</span>
+                  <span
+>{{ 'common.label.allEntriesSelected' | translate: {count: data.length} }}</span>
                 }
                 @if (object.mapOfCheckedId.size !== data.length) {
-                  <a (click)="selectAll()" [translateParams]="{count: data.length}"
-                     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+                  <a (click)="selectAll()"
+                     class="text-primary p-l-xs">{{ 'common.label.selectAllEntries' | translate: {count: data.length} }}</a>
                 }
                 @if (object.mapOfCheckedId.size === data.length) {
                   <a (click)="reset()" class="text-primary p-l-xs"
-                     translate>common.label.clearSelection</a>
+>{{ 'common.label.clearSelection' | translate }}</a>
                 }
               </div>
             }
@@ -295,8 +295,8 @@
                           (nzCheckedChange)="checkAll($event)"
                           class="chk"
                       ></th>
-                      <th class="menu"><span translate>common.label.action</span></th>
-                      <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.documentation.label.documentName</span>
+                      <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
+                      <th (click)="sort('name')"><a><span class="p-r-xs">{{ 'resource.documentation.label.documentName' | translate }}</span>
                         @if (documentFilters.filter.sortBy == 'name' && !documentFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -305,7 +305,7 @@
                         }</a>
                       </th>
                       @if (isPathDisplay) {
-                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                        <th (click)="sort('path1')"><a><span class="p-r-xs">{{ 'common.label.path' | translate }}</span>
                           @if (documentFilters.filter.sortBy == 'path1' && !documentFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -314,7 +314,7 @@
                           }</a>
                         </th>
                       }
-                      <th (click)="sort('assignReference')"><a><span class="p-r-xs" translate>resource.documentation.label.reference</span>
+                      <th (click)="sort('assignReference')"><a><span class="p-r-xs">{{ 'resource.documentation.label.reference' | translate }}</span>
                         @if (documentFilters.filter.sortBy == 'assignReference' && !documentFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -322,7 +322,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
+                      <th (click)="sort('type')"><a><span class="p-r-xs">{{ 'common.label.type' | translate }}</span>
                         @if (documentFilters.filter.sortBy == 'type' && !documentFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -330,7 +330,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.documentation.label.lastUpdateTime</span>
+                      <th (click)="sort('modified')"><a><span class="p-r-xs">{{ 'resource.documentation.label.lastUpdateTime' | translate }}</span>
                         @if (documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -355,28 +355,28 @@
                                 <ul nz-menu>
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="editDocument(document)" nz-menu-item>
-                                      <a translate>resource.documentation.button.editDocument</a>
+                                      <a>{{ 'resource.documentation.button.editDocument' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="previewDocument(document)" nz-menu-item>
-                                    <a translate>resource.documentation.button.previewDocument</a>
+                                    <a>{{ 'resource.documentation.button.previewDocument' | translate }}</a>
                                   </li>
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="exportDocument(document)" nz-menu-item>
-                                      <a translate>common.button.export</a>
+                                      <a>{{ 'common.button.export' | translate }}</a>
                                     </li>
                                   }
                                   @if (permission.joc && permission.joc.documentations.manage) {
                                     <li (click)="deleteDocumentations(document)" class="bg-hover-color"
                                         nz-menu-item>
-                                      <a translate>common.button.delete</a>
+                                      <a>{{ 'common.button.delete' | translate }}</a>
                                     </li>
                                   }
                                   <li (click)="showDocumentUsage(document)" nz-menu-item>
-                                    <a translate>resource.button.showUsage</a>
+                                    <a>{{ 'resource.button.showUsage' | translate }}</a>
                                   </li>
                                   <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -394,12 +394,12 @@
                     </tbody>
                   </nz-table>
                   @if (ajaxTable.data.length >0) {
-                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                    <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                       @if (ajaxTable.data.length >1) {
-                        <span translate>resource.documentation.label.documentationsFound</span>
+                        <span>{{ 'resource.documentation.label.documentationsFound' | translate }}</span>
                       }
                       @if (ajaxTable.data.length ==1) {
-                        <span translate>resource.documentation.label.documentationFound</span>
+                        <span>{{ 'resource.documentation.label.documentationFound' | translate }}</span>
                       }
                     </div>
                   }

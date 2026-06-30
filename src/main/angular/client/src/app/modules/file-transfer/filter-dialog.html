@@ -1,13 +1,13 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (new) {
-      <span translate>customization.label.createCustomization</span>
+      <span>{{ 'customization.label.createCustomization' | translate }}</span>
     }
     @if (edit) {
-      <span translate>customization.label.updateCustomization</span>
+      <span>{{ 'customization.label.updateCustomization' | translate }}</span>
     }
     @if (!new && !edit) {
-      <span translate>customization.label.copyCustomization</span>
+      <span>{{ 'customization.label.copyCustomization' | translate }}</span>
     }
     @if (name) {
       <span>: {{name}}</span>

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
@@ -10,7 +10,8 @@ import {AuthService} from '../../../../components/guard';
 @Component({
   standalone: false,
   selector: 'app-update-job',
-  templateUrl: './update-job.component.html'
+  templateUrl: './update-job.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UpdateJobComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -44,7 +45,7 @@ export class UpdateJobComponent {
   required = false;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private translate: TranslateService,
-              private workflowService: WorkflowService, private authService: AuthService) {
+              private workflowService: WorkflowService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -70,6 +71,7 @@ export class UpdateJobComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       });
     }
     if (this.scriptTree.length === 0) {
@@ -79,6 +81,7 @@ export class UpdateJobComponent {
         types: [InventoryObject.INCLUDESCRIPT]
       }).subscribe((res) => {
         this.scriptTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       });
     }
     if (this.documentationTree.length === 0 && this.permission.joc.documentations.view) {
@@ -87,6 +90,7 @@ export class UpdateJobComponent {
         types: ['DOCUMENTATION']
       }).subscribe((res) => {
         this.documentationTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       });
     }
     if (this.agents.agentList.length === 0 && this.permission.joc.inventory.view) {
@@ -114,6 +118,7 @@ export class UpdateJobComponent {
       if (this.selectedNode.job) {
         this.step = 2;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -144,7 +149,8 @@ export class UpdateJobComponent {
     this.coreService.post('inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 

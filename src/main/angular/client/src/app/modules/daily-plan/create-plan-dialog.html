@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>dailyPlan.label.createPlan</span>
+    <span>{{ 'dailyPlan.label.createPlan' | translate }}</span>
     :
     @if (!(dateRanges && dateRanges.length > 0)) {
       <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1: true}}</i>
@@ -23,24 +23,24 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>dailyPlan.section.DailyPlan</small>
+        <small class="_600 section-box-title">{{ 'dailyPlan.section' | translate }}.DailyPlan</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label class="col-md-3">
-            <span [appRichTooltip]="'dailyPlan.tooltip.chooseTemplates' | translate" translate>dailyPlan.label.chooseTemplates</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.chooseTemplates' | translate">{{ 'dailyPlan.label.chooseTemplates' | translate }}</span>
           </label>
           <div class="col-md-6">
             <nz-radio-group [(ngModel)]="object.at" name="at">
-              <label nz-radio nzValue="all"><span translate>dailyPlan.label.all</span></label>
-              <label nz-radio nzValue="template"><span translate>dailyPlan.label.select</span></label>
+              <label nz-radio nzValue="all"><span>{{ 'dailyPlan.label.all' | translate }}</span></label>
+              <label nz-radio nzValue="template"><span>{{ 'dailyPlan.label.select' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
         @if (object.at === 'template') {
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate" translate>dailyPlan.label.schedules</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.schedules' | translate">{{ 'dailyPlan.label.schedules' | translate }}</span>
             </label>
             <div class="col-md-6">
               <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="selectedTemplates" [isPath]="true"
@@ -52,7 +52,7 @@
         @if (object.at === 'template' && selectedTemplates.paths.length > 0) {
           <div class="form-group row">
             <label class="col-md-3">
-              <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.scheduleFolders' | translate">{{ 'dailyPlan.label.scheduleFolders' | translate }}</span>
             </label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               @for (path of selectedTemplates.paths; track path) {
@@ -67,7 +67,7 @@
         @if (object.at === 'template') {
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.workflows' | translate">{{ 'dailyPlan.label.workflows' | translate }}</span>
             </label>
             <div class="col-md-6">
               <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="object" [isPath]="true"
@@ -80,7 +80,7 @@
         @if (object.at === 'template' && object.paths.length > 0) {
           <div class="form-group row">
             <label class="col-md-3">
-              <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+              <span [appRichTooltip]="'dailyPlan.tooltip.workflowFolders' | translate">{{ 'dailyPlan.label.workflowFolders' | translate }}</span>
             </label>
             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
               @for (path of object.paths; track path) {
@@ -94,7 +94,7 @@
         }
         <div class="form-group row">
           <label class="col-md-3">
-            <span [appRichTooltip]="'dailyPlan.tooltip.overwrite' | translate" translate>dailyPlan.label.overwrite</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.overwrite' | translate">{{ 'dailyPlan.label.overwrite' | translate }}</span>
           </label>
           <div class="col-md-6">
             <label [(ngModel)]="object.overwrite" name="overwrite" nz-checkbox></label>
@@ -102,7 +102,7 @@
         </div>
         <div class="form-group row">
           <label class="col-md-3">
-            <span [appRichTooltip]="'dailyPlan.tooltip.submitWith' | translate" translate>dailyPlan.label.submitWith</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.submitWith' | translate">{{ 'dailyPlan.label.submitWith' | translate }}</span>
           </label>
           <div class="col-md-6">
             <label [(ngModel)]="object.submitWith" name="submitWith" nz-checkbox></label>
@@ -110,7 +110,7 @@
         </div>
         <div class="form-group row">
           <label class="col-md-3">
-            <span [appRichTooltip]="'dailyPlan.tooltip.plannedAllAutomatically' | translate" translate>dailyPlan.label.plannedAllAutomatically</span>
+            <span [appRichTooltip]="'dailyPlan.tooltip.plannedAllAutomatically' | translate">{{ 'dailyPlan.label.plannedAllAutomatically' | translate }}</span>
           </label>
           <div class="col-md-6">
             <label [(ngModel)]="object.includeNonAutoPlannedOrders" name="includeNonAutoPlannedOrders" nz-checkbox></label>
@@ -129,8 +129,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

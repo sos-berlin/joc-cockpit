@@ -1,16 +1,16 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && (type == 'ca' || type === 'certificate')))) {
-      <span translate>profile.keyManagement.label.updateKeys</span>
+      <span>{{ 'profile.keyManagement.label.updateKeys' | translate }}</span>
     }
     @if (paste && securityLevel ==='HIGH' && type !== 'ca' && type !== 'certificate') {
-      <span translate>profile.keyManagement.label.updatePublicKey</span>
+      <span>{{ 'profile.keyManagement.label.updatePublicKey' | translate }}</span>
     }
     @if (!paste && type !== 'certificate') {
-      <span translate>profile.keyManagement.label.showKey</span>
+      <span>{{ 'profile.keyManagement.label.showKey' | translate }}</span>
     }
     @if (!paste && type === 'certificate') {
-      <span translate>profile.keyManagement.label.showCertificate</span>
+      <span>{{ 'profile.keyManagement.label.showCertificate' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -25,18 +25,18 @@
     @if (paste && type !== 'certificate') {
       <div class="form-group row">
         <div class="col-sm-3">
-          <span [appRichTooltip]="'profile.keyManagement.tooltip.keyAlgorithm' | translate" translate>profile.keyManagement.label.keyAlgorithm</span>
+          <span [appRichTooltip]="'profile.keyManagement.tooltip.keyAlgorithm' | translate">{{ 'profile.keyManagement.label.keyAlgorithm' | translate }}</span>
         </div>
         <div class="col-sm-9">
           <nz-radio-group [(ngModel)]="algorithm.keyAlg" name="alg">
-            <label nz-radio  nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
+            <label nz-radio  nzValue="ECDSA"><span>{{ 'profile.keyManagement.label.ecdsa' | translate }}</span></label>
             @if (type === 'key') {
               <label nz-radio nzValue="RSA"><span
-                translate>profile.keyManagement.label.rsa</span></label>
+>{{ 'profile.keyManagement.label.rsa' | translate }}</span></label>
             }
             @if (type === 'key') {
               <label nz-radio nzValue="PGP"><span
-                translate>profile.keyManagement.label.pgp</span></label>
+>{{ 'profile.keyManagement.label.pgp' | translate }}</span></label>
             }
           </nz-radio-group>
         </div>
@@ -45,7 +45,7 @@
     @if (!paste) {
       <div class="form-group row">
         <div class="col-sm-3">
-          <span [appRichTooltip]="'profile.keyManagement.tooltip.keyID' | translate" translate>profile.keyManagement.label.distinguishedName</span>:
+          <span [appRichTooltip]="'profile.keyManagement.tooltip.keyID' | translate">{{ 'profile.keyManagement.label.distinguishedName' | translate }}</span>:
         </div>
         <div class="col-sm-9">{{data.keyID}}</div>
       </div>
@@ -53,7 +53,7 @@
     @if (((securityLevel === 'HIGH' && type == 'ca') || securityLevel !== 'HIGH') && ((!paste && data.privateKey) || paste) && type !== 'certificate') {
       <div class="form-group row">
         <label class="col-sm-12 form-control-label">
-          <span [appRichTooltip]="'profile.keyManagement.tooltip.privateKey' | translate" translate>profile.keyManagement.label.privateKey</span>
+          <span [appRichTooltip]="'profile.keyManagement.tooltip.privateKey' | translate">{{ 'profile.keyManagement.label.privateKey' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((privateKey.dirty || privateKey.touched) && privateKey.invalid) }"
@@ -64,7 +64,7 @@
           @if (privateKey.invalid && (privateKey.dirty || privateKey.touched)) {
             <div class="text-danger help-block">
               @if (privateKey.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -74,7 +74,7 @@
     @if ((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && type !== 'ca' && algorithm.keyAlg === 'PGP' && paste)) {
       <div class="form-group row">
         <label class="col-sm-12 form-control-label">
-          <span [appRichTooltip]="'profile.keyManagement.tooltip.publicKey' | translate" translate>profile.keyManagement.label.publicKey</span>
+          <span [appRichTooltip]="'profile.keyManagement.tooltip.publicKey' | translate">{{ 'profile.keyManagement.label.publicKey' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }" class="col-sm-12">
@@ -85,7 +85,7 @@
           @if (publicKey.invalid && (publicKey.dirty || publicKey.touched)) {
             <div class="text-danger help-block">
               @if (publicKey.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -95,7 +95,7 @@
     @if ((!paste && data.keyAlgorithm !== 'PGP') || ((algorithm.keyAlg !== 'PGP') && paste)) {
       <div class="form-group row" [hidden]="(!data.certificate && !paste)">
         <label class="col-sm-12 form-control-label">
-          <span [appRichTooltip]="'profile.keyManagement.tooltip.x509Certificate' | translate" translate>profile.keyManagement.label.x509Certificate</span>
+          <span [appRichTooltip]="'profile.keyManagement.tooltip.x509Certificate' | translate">{{ 'profile.keyManagement.label.x509Certificate' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid) }"
@@ -107,7 +107,7 @@
           @if (certificate.invalid && (certificate.dirty || certificate.touched)) {
             <div class="text-danger help-block">
               @if (certificate.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -118,10 +118,10 @@
       <div class="row">
         <div class="col-sm-12">
           @if (type === 'key') {
-            <label><span [appRichTooltip]="'profile.keyManagement.tooltip.keyExpiredOn' | translate" translate>profile.keyManagement.label.keyExpiredOn</span></label>
+            <label><span [appRichTooltip]="'profile.keyManagement.tooltip.keyExpiredOn' | translate">{{ 'profile.keyManagement.label.keyExpiredOn' | translate }}</span></label>
           }
           @if (type !== 'key') {
-            <label><span [appRichTooltip]="'profile.keyManagement.tooltip.certificateExpiredOn' | translate" translate>profile.keyManagement.label.certificateExpiredOn</span></label>
+            <label><span [appRichTooltip]="'profile.keyManagement.tooltip.certificateExpiredOn' | translate">{{ 'profile.keyManagement.label.certificateExpiredOn' | translate }}</span></label>
           }:
           <span [ngClass]="{ 'text-danger': data.isKeyExpired}"
                 class="text-muted p-l-sm">{{data.validUntil | stringToDate}}</span>
@@ -141,10 +141,10 @@
     }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       @if (paste) {
-        <span translate>common.button.cancel</span>
+        <span>{{ 'common.button.cancel' | translate }}</span>
       }
       @if (!paste) {
-        <span translate>common.button.close</span>
+        <span>{{ 'common.button.close' | translate }}</span>
       }
     </button>
   </div>

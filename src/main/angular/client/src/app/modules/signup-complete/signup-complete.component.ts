@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {CoreService} from "../../services/core.service";
 
@@ -6,12 +6,14 @@ import {CoreService} from "../../services/core.service";
   standalone: false,
   selector: 'app-signup-complete',
   templateUrl: './signup-complete.component.html',
-  styleUrls: ['./signup-complete.component.scss']
+  styleUrls: ['./signup-complete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignupCompleteComponent {
   isVerified = false;
 
-  constructor(private coreService: CoreService, private router: Router, private route: ActivatedRoute) {
+  constructor(private coreService: CoreService, private router: Router, private route: ActivatedRoute,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -25,6 +27,7 @@ export class SignupCompleteComponent {
     }).subscribe({
       next: (res) => {
         this.isVerified = true;
+        this.cdr.markForCheck();
       }
     })
   }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../services/core.service";
 import {WorkflowService} from "../../services/workflow.service";
@@ -7,7 +7,8 @@ import {isArray} from "underscore";
 @Component({
   standalone: false,
   selector: 'app-priority-modal',
-  templateUrl: './priority-modal.component.html'
+  templateUrl: './priority-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PriorityModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -31,7 +32,7 @@ export class PriorityModalComponent {
   ];
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService) {
+              private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -69,7 +70,8 @@ export class PriorityModalComponent {
     this.coreService.post(url, obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 

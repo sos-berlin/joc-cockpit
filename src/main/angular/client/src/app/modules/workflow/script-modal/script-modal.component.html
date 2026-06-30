@@ -1,6 +1,6 @@
 <div class="modal-header" [hidden]="noticeBoardNames">
   <h4 class="modal-title" >
-    <span class="drag-text" translate>workflow.label.showConfiguration</span>
+    <span class="drag-text">{{ 'workflow.label.showConfiguration' | translate }}</span>
     @if (jobName) {
       <i>:</i>
     }
@@ -21,7 +21,7 @@
         <div class="form-group row">
           <label [appRichTooltip]="'inventory.tooltips.workflow.duration' | translate"
 
-                 class="col-lg-3 form-control-label" translate>workflow.label.duration
+                 class="col-lg-3 form-control-label">{{ 'workflow.label.duration' | translate }}
           </label>
           <div class="col-lg-8">
             <input nz-input [(ngModel)]="duration" name="name" readonly />
@@ -58,11 +58,11 @@
       <div class="row">
         @if (agentName) {
           <div class="col-sm-12 m-b-10">
-            <span class="_600" translate>agent.label.agentName</span>:&nbsp;
+            <span class="_600">{{ 'agent.label.agentName' | translate }}</span>:&nbsp;
             {{agentName}}
             @if (subagentClusterId) {
               <span>
-                <span class="m-l _600" translate>agent.label.subagentClusterId</span>:&nbsp;
+                <span class="m-l _600">{{ 'agent.label.subagentClusterId' | translate }}</span>:&nbsp;
                 {{subagentClusterId}}
               </span>
             }
@@ -71,10 +71,10 @@
         @if (isScript) {
           <div class="col-md-12">
             @if (!predicate) {
-              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.script' | translate" translate>workflow.label.script</span></label>
+              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.script' | translate">{{ 'workflow.label.script' | translate }}</span></label>
             }
             @if (predicate) {
-              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.predicate' | translate" translate>workflow.label.predicate</span></label>
+              <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.predicate' | translate">{{ 'workflow.label.predicate' | translate }}</span></label>
             }
             @if (permission && permission.joc.inventory.view) {
               <a class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
@@ -100,7 +100,7 @@
           </div>
         }
         @if (periodList.length > 0) {
-          <div class="col-sm-3" translate>workflow.label.workflowTimeZone</div>
+          <div class="col-sm-3">{{ 'workflow.label.workflowTimeZone' | translate }}</div>
         }
         @if (periodList.length > 0) {
           <div class="col-sm-8">
@@ -109,7 +109,7 @@
         }
         @if (schedule) {
           <div class="col-md-12 m-t-sm">
-            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.listOfSchemes' | translate" translate>workflow.label.listOfSchemes</span></label>
+            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.listOfSchemes' | translate">{{ 'workflow.label.listOfSchemes' | translate }}</span></label>
             @if (permission && permission.joc.inventory.view) {
               <a class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
             }
@@ -117,9 +117,9 @@
               <table class="table table-hover table-bordered ">
                 <thead>
                 <tr>
-                  <th style="border-right: none"><span translate>workflow.admissionTime.label.frequency</span></th>
-                  <th style="border-left: none"><span translate>workflow.admissionTime.label.period</span></th>
-                  <th><span translate>workflow.label.repeat</span></th>
+                  <th style="border-right: none"><span>{{ 'workflow.admissionTime.label.frequency' | translate }}</span></th>
+                  <th style="border-left: none"><span>{{ 'workflow.admissionTime.label.period' | translate }}</span></th>
+                  <th><span>{{ 'workflow.label.repeat' | translate }}</span></th>
                 </tr>
                 </thead>
                 <tbody >
@@ -131,10 +131,10 @@
                             <div class="row">
                               <div class="col-sm-5">
                                 @if (item.frequency) {
-                                  <span><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
+                                  <span><span>{{ 'workflow.admissionTime.label.on' | translate }}</span> {{item.frequency}}</span>
                                 }
                                 @if (!item.frequency) {
-                                  <span translate>workflow.admissionTime.label.everyDay</span>
+                                  <span>{{ 'workflow.admissionTime.label.everyDay' | translate }}</span>
                                 }
                               </div>
                               <div class="col-sm-7">
@@ -160,13 +160,13 @@
         }
         @if (periodList.length > 0) {
           <div class="col-md-12 m-t-sm">
-            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.admissionTime' | translate" translate>workflow.label.admissionTime</span></label>
+            <label class="_600 m-b-xs"><span [appRichTooltip]="'workflow.tooltip.admissionTime' | translate">{{ 'workflow.label.admissionTime' | translate }}</span></label>
             <div class="table-responsive">
               <table class="table table-hover table-bordered">
                 <thead>
                 <tr>
-                  <th><span translate>workflow.admissionTime.label.frequency</span></th>
-                  <th><span translate>workflow.admissionTime.label.period</span></th>
+                  <th><span>{{ 'workflow.admissionTime.label.frequency' | translate }}</span></th>
+                  <th><span>{{ 'workflow.admissionTime.label.period' | translate }}</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -191,12 +191,12 @@
           <div class="col-md-12">
             @if (tempPeriodList.length === 0) {
               <button type="button" class="btn btn-default btn-sm"
-                      (click)="showConvertTime()" translate>workflow.button.convertAdmissionTime
+                      (click)="showConvertTime()">{{ 'workflow.button.convertAdmissionTime' | translate }}
               </button>
             }
             @if (tempPeriodList.length > 0) {
               <button type="button" class="btn btn-default btn-sm"
-                      (click)="showOriginalTime()" translate>workflow.button.originalAdmissionTime
+                      (click)="showOriginalTime()">{{ 'workflow.button.originalAdmissionTime' | translate }}
               </button>
             }
           </div>
@@ -206,12 +206,12 @@
   </div>
   <div class="modal-footer" [hidden]="noticeBoardNames">
     <button type="button" class="btn btn-grey btn-sm"
-            (click)="activeModal.destroy()" translate>
-      common.button.close
+            (click)="activeModal.destroy()">
+      {{ 'common.button.close' | translate }}
     </button>
     @if (data) {
       <button type="button" class="btn btn-default btn-sm"
-              (click)="copyToClipboard()" translate>log.button.copyToClipboard
+              (click)="copyToClipboard()">{{ 'log.button.copyToClipboard' | translate }}
       </button>
     }
   </div>

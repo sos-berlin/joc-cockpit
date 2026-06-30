@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -8,7 +8,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-scheduler-instance',
-  templateUrl: './scheduler-instance.component.html'
+  templateUrl: './scheduler-instance.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchedulerInstanceComponent {
   @Input('sizeY') ybody: number;
@@ -20,12 +21,16 @@ export class SchedulerInstanceComponent {
   subscription: Subscription;
   preferences: any = {};
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -35,6 +40,7 @@ export class SchedulerInstanceComponent {
       this.getInstances();
     } else {
       this.isLoaded = true;
+      this.cdr.markForCheck();
     }
   }
 
@@ -64,7 +70,8 @@ export class SchedulerInstanceComponent {
         let controllerIds = this.controllersList.map(item => item.controllerId);
         this.getVesrions(controllerIds);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -79,8 +86,8 @@ export class SchedulerInstanceComponent {
               break;
             }
           }
-        })
-
+        });
+        this.cdr.markForCheck();
       }
     });
   }

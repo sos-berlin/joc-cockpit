@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>agent.label.addCertificateAlias</span>
+    <span>{{ 'agent.label.addCertificateAlias' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -15,13 +15,13 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>agent.section.certificate</small>
+        <small class="_600 section-box-title">{{ 'agent.section.certificate' | translate }}</small>
       </div>
       <div class="p-a-sm">
     <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
          class="form-group row">
       <label class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'agent.tooltip.agentId' | translate" translate>encipherment.label.agentId</span>
+        <span [appRichTooltip]="'agent.tooltip.agentId' | translate">{{ 'encipherment.label.agentId' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -30,7 +30,7 @@
         @if (agentId.invalid && (agentId.dirty || agentId.touched)) {
           <div class="text-danger help-block">
             @if (agentId.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -39,7 +39,7 @@
     <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
          class="form-group row">
       <label class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certAlias' | translate" translate>encipherment.label.certAlias</span>
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certAlias' | translate">{{ 'encipherment.label.certAlias' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9">
@@ -53,7 +53,7 @@
         @if (certAlias.invalid && (certAlias.dirty || certAlias.touched)) {
           <div class="text-danger help-block">
             @if (certAlias.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -71,7 +71,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.cancel</span>
+      <span>{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 </form>

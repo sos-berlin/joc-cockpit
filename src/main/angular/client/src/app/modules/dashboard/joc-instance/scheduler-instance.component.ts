@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -7,7 +7,8 @@ import {DataService} from '../../../services/data.service';
 @Component({
   standalone: false,
   selector: 'app-scheduler-instance',
-  templateUrl: './scheduler-instance.component.html'
+  templateUrl: './scheduler-instance.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchedulerInstanceComponent {
   @Input('sizeY') ybody: number;
@@ -18,12 +19,17 @@ export class SchedulerInstanceComponent {
   isLoaded = false;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -61,7 +67,8 @@ export class SchedulerInstanceComponent {
         let controllerIds = this.controllersList.map(item => item.controllerId);
         this.getVesrions(controllerIds);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -76,8 +83,8 @@ export class SchedulerInstanceComponent {
               break;
             }
           }
-        })
-
+        });
+        this.cdr.markForCheck();
       }
     });
   }

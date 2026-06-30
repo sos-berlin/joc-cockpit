@@ -10,8 +10,8 @@
     @if (!filter.showReport) {
       <div class="inline pull-right text-center">
         <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
-                class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-                type="button">monitor.button.filterBy
+                class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                type="button">{{ 'monitor.button.filterBy' | translate }}
           @if (filteredFrequency) {
             <span>: </span>
           }
@@ -38,8 +38,8 @@
           </ul>
         </nz-dropdown-menu>
         <button [nzDropdownMenu]="addReports" [nzPlacement]="'bottomRight'"
-                class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-                type="button" >reporting.label.manageCards
+                class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                type="button" >{{ 'reporting.label.manageCards' | translate }}
           <span class="text-primary"></span>
           <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
         </button>
@@ -68,7 +68,7 @@
         <button (click)="exportTheReport()"
                 class="btn btn-sm btn-grey m-l-12">
           <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
-          <span translate>inventory.button.export</span>
+          <span>{{ 'inventory.button.export' | translate }}</span>
         </button>
       </div>
     }
@@ -162,14 +162,14 @@
                                           @if (i == 0) {
                                             <div class="flex-container">
                                               <div class="flex-item" style="width: 100%;font-weight: bold;"><span
-                                                translate>history.label.workflow</span></div>
+>{{ 'history.label.workflow' | translate }}</span></div>
                                               @if (item.jobName) {
-                                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.job</span>
+                                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.job' | translate }}</span>
                                                 </div>
                                               }
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.startTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.endTime' | translate }}</span>
                                               </div>
                                             </div>
                                           }
@@ -202,12 +202,12 @@
                                         <div class="table-color" style="padding-bottom: 0px !important;">
                                           @if (i == 0) {
                                             <div class="flex-container">
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.startTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.endTime' | translate }}</span>
                                               </div>
                                               @if (item.duration) {
-                                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
+                                                <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.duration' | translate }}</span>
                                                 </div>
                                               }
                                             </div>
@@ -239,11 +239,11 @@
                                         <div class="table-color" style="padding-bottom: 0px !important;">
                                           @if (i == 0) {
                                             <div class="flex-container">
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.startTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.endTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.duration' | translate }}</span>
                                               </div>
                                             </div>
                                           }
@@ -269,11 +269,11 @@
                                     <div>
                                       <div class="table-color" style="padding-bottom: 0 !important;">
                                         <div class="flex-container">
-                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.startTime' | translate }}</span>
                                           </div>
-                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.endTime' | translate }}</span>
                                           </div>
-                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
+                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.duration' | translate }}</span>
                                           </div>
                                         </div>
                                         <div class="flex-container">
@@ -298,7 +298,7 @@
                                     <div>
                                       <div class="table-color" style="padding-bottom: 0px !important;">
                                         <div class="flex-container">
-                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>agent.label.agentName</span>
+                                          <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'agent.label.agentName' | translate }}</span>
                                           </div>
                                         </div>
                                         <div class="flex-container">
@@ -322,11 +322,11 @@
                                         <div class="table-color" class="p-a-sm" style="padding-bottom: 4px !important;">
                                           @if (i == 0) {
                                             <div class="flex-container">
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.startTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.startTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.endTime</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.endTime' | translate }}</span>
                                               </div>
-                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span translate>history.label.duration</span>
+                                              <div class="flex-item" style="width: 100%;font-weight: bold;"><span>{{ 'history.label.duration' | translate }}</span>
                                               </div>
                                             </div>
                                           }
@@ -349,9 +349,9 @@
                                 <nz-collapse-panel [nzHeader]="'Low Parallelism'">
                                   <div class="table-color">
                                     <div class="flex-container" style="font-weight: bold;">
-                                      <div class="flex-item" style="width: 50%;"><span translate>history.label.startTime</span></div>
-                                      <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
-                                      <div class="flex-item" style="width: 25%;"><span translate>history.label.job</span></div>
+                                      <div class="flex-item" style="width: 50%;"><span>{{ 'history.label.startTime' | translate }}</span></div>
+                                      <div class="flex-item" style="width: 25%;"><span>{{ 'history.label.workflow' | translate }}</span></div>
+                                      <div class="flex-item" style="width: 25%;"><span>{{ 'history.label.job' | translate }}</span></div>
                                     </div>
                                     @for (period of item.data[0]?.topLowParallelismPeriods; track period) {
                                       <div>
@@ -370,9 +370,9 @@
                                 <nz-collapse-panel [nzHeader]="'High Parallelism'">
                                   <div class="table-color">
                                     <div class="flex-container" style="font-weight: bold;">
-                                      <div class="flex-item" style="width: 50%;"><span translate>history.label.startTime</span></div>
-                                      <div class="flex-item" style="width: 25%;"><span translate>history.label.workflow</span></div>
-                                      <div class="flex-item" style="width: 25%;"><span translate>history.label.job</span></div>
+                                      <div class="flex-item" style="width: 50%;"><span>{{ 'history.label.startTime' | translate }}</span></div>
+                                      <div class="flex-item" style="width: 25%;"><span>{{ 'history.label.workflow' | translate }}</span></div>
+                                      <div class="flex-item" style="width: 25%;"><span>{{ 'history.label.job' | translate }}</span></div>
                                     </div>
                                     @for (period of item.data[0]?.topHighParallelismPeriods; track period) {
                                       <div>

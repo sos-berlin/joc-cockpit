@@ -5,7 +5,7 @@
         <form (ngSubmit)="onSubmit()">
           <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
             <h4 class="modal-title">
-              <span translate="">inventory.search.label.filterBy</span>
+              <span>inventory.search.label.filterBy</span>
               @if (filter.submit && isHide && (filter.workflowPaths.length > 0 || filter.workflowFolders.length > 0 ||
                 filter.schedulePaths.length > 0 || filter.scheduleFolders.length > 0)) {
                 <i class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>
@@ -24,7 +24,7 @@
             <div class="modal-body p-a p-t p-b-xs">
               <div class="form-group row">
                 <label class="col-md-2 form-control-label">
-                  <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.workflows' | translate" translate>dailyPlan.label.workflows</span>
+                  <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.workflows' | translate">{{ 'dailyPlan.label.workflows' | translate }}</span>
                 </label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
@@ -35,7 +35,7 @@
               @if (filter.workflowFolders?.length > 0) {
                 <div class="form-group row">
                   <label class="col-md-2">
-                    <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+                    <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.workflowFolders' | translate">{{ 'dailyPlan.label.workflowFolders' | translate }}</span>
                   </label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.workflowFolders; track path) {
@@ -49,7 +49,7 @@
               }
               <div class="form-group row">
                 <label class="col-md-2 form-control-label">
-                  <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.schedules' | translate" translate>dailyPlan.label.schedules</span>
+                  <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.schedules' | translate">{{ 'dailyPlan.label.schedules' | translate }}</span>
                 </label>
                 <div class="col-sm-6">
                   <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
@@ -60,7 +60,7 @@
               @if (filter.scheduleFolders?.length > 0) {
                 <div class="form-group row">
                   <label class="col-md-2">
-                    <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+                    <span [appRichTooltip]="'dailyPlan.tooltip.projection.filter.scheduleFolders' | translate">{{ 'dailyPlan.label.scheduleFolders' | translate }}</span>
                   </label>
                   <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     @for (path of filter.scheduleFolders; track path) {
@@ -83,8 +83,8 @@
                 }
                 {{'common.button.search' | translate}}
               </button>
-              <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-                common.button.cancel
+              <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+                {{ 'common.button.cancel' | translate }}
               </button>
             </div>
           }

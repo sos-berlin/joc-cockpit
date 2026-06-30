@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
@@ -16,7 +16,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-show-modal-content',
-  templateUrl: './show-dialog.html'
+  templateUrl: './show-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -33,7 +34,8 @@ export class ShowModalComponent {
 @Component({
   standalone: false,
   selector: 'app-edit-modal-content',
-  templateUrl: './edit-dialog.html'
+  templateUrl: './edit-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -80,7 +82,8 @@ export class EditModalComponent {
 @Component({
   standalone: false,
   selector: 'app-single-document',
-  templateUrl: './single-documentation.component.html'
+  templateUrl: './single-documentation.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleDocumentationComponent {
   loading = false;
@@ -245,7 +248,8 @@ export class SingleDocumentationComponent {
 @Component({
   standalone: false,
   selector: 'app-document',
-  templateUrl: 'documentation.component.html'
+  templateUrl: 'documentation.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentationComponent {
   isLoading = false;
@@ -278,7 +282,8 @@ export class DocumentationComponent {
   @ViewChild(TreeComponent, {static: false}) child!: any;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -339,7 +344,8 @@ export class DocumentationComponent {
             this.loadDocument();
           }
           this.isLoading = true;
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -406,6 +412,7 @@ export class DocumentationComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -432,6 +439,7 @@ export class DocumentationComponent {
               this.resetAction();
             }
           });
+          this.cdr.markForCheck();
         }
       });
     }
@@ -563,6 +571,7 @@ export class DocumentationComponent {
     modal.afterClose.subscribe(res => {
       if (res) {
         document.assignReference = res.assignReference;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -628,6 +637,7 @@ export class DocumentationComponent {
         this.selectedPath = path;
         this.initTree();
         this.resetAction(3000);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -691,6 +701,7 @@ export class DocumentationComponent {
         this.reset();
         this.searchInResult();
         this.resetAction(5000);
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetAction();
       }
@@ -732,8 +743,10 @@ export class DocumentationComponent {
         res.documentations = this.orderPipe.transform(res.documentations, this.documentFilters.filter.sortBy, this.documentFilters.reverse);
         this.documents = res.documentations;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -770,6 +783,7 @@ export class DocumentationComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.deleteDocument(obj, document);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -791,6 +805,7 @@ export class DocumentationComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.deleteDocument(obj, document);
+          this.cdr.markForCheck();
         }
       });
     }

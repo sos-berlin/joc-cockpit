@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
 import { AuthService } from 'src/app/components/guard';
 import { CoreService } from 'src/app/services/core.service';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -19,7 +19,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-encipherment-modal',
-  templateUrl: './add-encipherment-dialog.html'
+  templateUrl: './add-encipherment-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -42,7 +43,7 @@ export class AddEnciphermentModalComponent {
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,private modal: NzModalService, private clipboardService: ClipboardService,){}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,private modal: NzModalService, private clipboardService: ClipboardService, private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
@@ -75,6 +76,7 @@ export class AddEnciphermentModalComponent {
       }).subscribe(res => {
         const folderPath = res.deployable.folder;
         this.certificateObj.jobResourceFolder = folderPath;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -89,6 +91,7 @@ export class AddEnciphermentModalComponent {
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -113,6 +116,7 @@ export class AddEnciphermentModalComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
       }
+      this.cdr.markForCheck();
     });
   }
   onSubmit() {
@@ -134,8 +138,9 @@ export class AddEnciphermentModalComponent {
     this.coreService.post('encipherment/certificate/store', this.certificateObj).subscribe({
       next: () => {
         this.activeModal.close('Done');
+        this.cdr.markForCheck();
       },
-      error: () => this.submitted = false
+      error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -153,6 +158,7 @@ export class AddEnciphermentModalComponent {
     this.coreService.post('encipherment/encrypt', obj).subscribe({
       next: (res: any) => {
       this.encryptedText = res.encryptedValue;
+      this.cdr.markForCheck();
       }
     });
   }
@@ -168,7 +174,8 @@ export class AddEnciphermentModalComponent {
 @Component({
   standalone: false,
   selector: 'app-import-encipherment-modal',
-  templateUrl: './import-encipherment-dialog.html'
+  templateUrl: './import-encipherment-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -194,7 +201,7 @@ export class ImportEnciphermentModalComponent {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
-              public translate: TranslateService, public toasterService: ToastrService) {
+              public translate: TranslateService, public toasterService: ToastrService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -323,10 +330,12 @@ export class ImportEnciphermentModalComponent {
         if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === file.name) {
           this.activeModal.close('success');
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.uploading = false;
         this.uploadError = true;
-        this.submitted = false
+        this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -344,6 +353,7 @@ export class ImportEnciphermentModalComponent {
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -356,6 +366,7 @@ export class ImportEnciphermentModalComponent {
   standalone: false,
   selector: 'app-encipherment-update-modal',
   templateUrl: './update-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EnciphermentUpdateKeyComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -374,6 +385,7 @@ export class EnciphermentUpdateKeyComponent {
   standalone: false,
   selector: 'app-encipherment',
   templateUrl: './encipherment.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EnciphermentComponent {
   permission: any = {};
@@ -388,7 +400,7 @@ export class EnciphermentComponent {
   };
 
   constructor(private authService: AuthService, public coreService: CoreService,
-    private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
+    private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService, private cdr: ChangeDetectorRef) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 
@@ -418,9 +430,11 @@ export class EnciphermentComponent {
         }
         this.isLoading = true;
         this.data = res.certificates;
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoading = true;
         this.data = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -444,6 +458,7 @@ export class EnciphermentComponent {
       if (result) {
         this.getEnciphermentCertificate();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -467,6 +482,7 @@ export class EnciphermentComponent {
       if (result) {
         this.getEnciphermentCertificate();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -489,6 +505,7 @@ export class EnciphermentComponent {
       if (result) {
         this.getEnciphermentCertificate();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -538,6 +555,7 @@ export class EnciphermentComponent {
           };
           this._deleteCertificate(obj);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -557,6 +575,7 @@ export class EnciphermentComponent {
         if (result) {
           this._deleteCertificate(obj);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -565,6 +584,7 @@ export class EnciphermentComponent {
      this.coreService.post('encipherment/certificate/delete', certAliasesObj).subscribe({
       next: (res: any) => {
         this.getEnciphermentCertificate();
+        this.cdr.markForCheck();
       }, error: () => {}
     });
   }
@@ -584,6 +604,7 @@ export class EnciphermentComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {}
+      this.cdr.markForCheck();
     });
   }
 

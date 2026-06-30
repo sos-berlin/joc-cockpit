@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>common.label.writeComment</span>
+    <span>{{ 'common.label.writeComment' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -11,27 +11,27 @@
     <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>inventory.section.operation</small>
+        <small class="_600 section-box-title">{{ 'inventory.section.operation' | translate }}</small>
       </div>
       <div class="p-a-sm">
     @if (comments.node) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'common.tooltip.node' | translate" translate>common.label.node</span>
+          <span [appRichTooltip]="'common.tooltip.node' | translate">{{ 'common.label.node' | translate }}</span>
         </label>
         <label class="col-sm-8">{{comments.node}}</label>
       </div>
     }
     @if (comments.name) {
       <div class="form-group row">
-        <label class="col-sm-4" translate>{{comments.type | translate}}</label>
+        <label class="col-sm-4">{{comments.type | translate}}</label>
         <label class="col-sm-8">{{comments.name}} @if (comments.title) {<i>-</i>} <span
           class="text-muted">{{comments.title}}</span></label>
       </div>
     }
     <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'common.tooltip.operation' | translate" translate>common.label.operation</span>
+          <span [appRichTooltip]="'common.tooltip.operation' | translate">{{ 'common.label.operation' | translate }}</span>
         </label>
       <label class="col-sm-8">{{comments.operation | translate}}</label>
     </div>
@@ -45,8 +45,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

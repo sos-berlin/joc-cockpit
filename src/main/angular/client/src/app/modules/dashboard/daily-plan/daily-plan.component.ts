@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-daily-plan',
-  templateUrl: './daily-plan.component.html'
+  templateUrl: './daily-plan.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyPlanComponent {
   schedulerIds: any = {};
@@ -26,12 +27,17 @@ export class DailyPlanComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private router: Router, private dataService: DataService,private modal: NzModalService) {
+              private router: Router, private dataService: DataService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -66,8 +72,9 @@ export class DailyPlanComponent {
       next: (res) => {
         this.filterData(res);
         this.isLoaded = true;
+        this.cdr.markForCheck();
       },
-      error: () => this.isLoaded = true
+      error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

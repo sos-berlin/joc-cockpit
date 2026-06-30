@@ -6,7 +6,7 @@
           <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
         </span>
       }
-      <span translate>dashboard.label.agentClusterStatus</span>
+      <span>{{ 'dashboard.label.agentClusterStatus' | translate }}</span>
     </h3>
   </div>
   <div [hidden]="!isLoaded" class="row">

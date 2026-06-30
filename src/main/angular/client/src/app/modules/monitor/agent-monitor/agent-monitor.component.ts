@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import * as moment from 'moment-timezone';
@@ -13,7 +13,8 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   standalone: false,
   selector: 'app-agent-monitor',
   templateUrl: './agent-monitor.component.html',
-  styleUrls: ['./agent-monitor.component.scss']
+  styleUrls: ['./agent-monitor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentMonitorComponent {
   @Input() permission: any;
@@ -47,7 +48,7 @@ export class AgentMonitorComponent {
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
-              private groupByPipe: GroupByPipe, private dataService: DataService) {
+              private groupByPipe: GroupByPipe, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -85,6 +86,7 @@ export class AgentMonitorComponent {
   ngOnInit(): void {
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
+      this.cdr.markForCheck();
     });
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.init();
@@ -121,6 +123,7 @@ export class AgentMonitorComponent {
         this.data = res.controllers;
         this.checkMissingDates();
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => this.isLoaded = true
     });
   }

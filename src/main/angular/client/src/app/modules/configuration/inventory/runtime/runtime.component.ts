@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject, HostListener} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject, HostListener} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from './tree-modal/tree.component';
@@ -25,7 +25,8 @@ interface CalendarItem {
 @Component({
   standalone: false,
   selector: 'app-restriction',
-  templateUrl: './add-restriction-dialog.html'
+  templateUrl: './add-restriction-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddRestrictionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -94,7 +95,7 @@ export class AddRestrictionComponent {
   showMonthRange = false;
   selectedDays: string[] = [];
   selectedMonthChk: string[] = [];
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -292,7 +293,7 @@ export class AddRestrictionComponent {
       if (domElem && domElem.data('calendar')) {
         domElem.data('calendar').setDataSource(this.tempItems);
       } else {
-        domElem.calendar({
+        domElem['calendar']({
           language: this.coreService.getLocale(),
           clickDay: (e) => {
             this.selectDate(e);
@@ -373,7 +374,7 @@ export class AddRestrictionComponent {
         if (domElem && domElem.data('calendar')) {
           domElem.data('calendar').setDataSource(this.tempItems);
         } else {
-          domElem.calendar({
+          domElem['calendar']({
             language: this.coreService.getLocale(),
             clickDay: (e) => {
               this.selectDate(e);
@@ -443,7 +444,7 @@ export class AddRestrictionComponent {
       if (domElem && domElem.data('calendar')) {
         domElem.data('calendar').setDataSource(this.tempItems);
       } else {
-        domElem.calendar({
+        domElem['calendar']({
           language: this.coreService.getLocale(),
           clickDay: (e) => {
             this.selectDate(e);
@@ -1026,11 +1027,13 @@ export class AddRestrictionComponent {
 
         this.buildNonWorkingDayCalendarTree();
         this.initializeNonWorkingDayCalendarResources();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Failed to load calendars', err);
         this.availableNonWorkingDayCalendars = [];
         this.nonWorkingDayCalendarTree = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1168,6 +1171,7 @@ export class AddRestrictionComponent {
   standalone: false,
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeriodComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -1190,7 +1194,7 @@ export class PeriodComponent {
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 
-  @HostListener('window:click', ['$event'])
+  @HostListener('window:click')
   onClick(): void {
     // if (this.isDisplay) {
     //   setTimeout(() => {
@@ -1304,6 +1308,7 @@ export class PeriodComponent {
   standalone: false,
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RunTimeComponent implements OnChanges, OnDestroy {
   @Input() schedule: any;
@@ -1528,7 +1533,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   showCalendar(): void {
     setTimeout(() => {
-      const cal = $('#full-calendar').calendar({
+      const cal = $('#full-calendar')['calendar']({
         language: this.coreService.getLocale(),
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;

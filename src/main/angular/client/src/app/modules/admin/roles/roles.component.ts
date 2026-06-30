@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -330,7 +330,8 @@ export class ControllerModalComponent {
   standalone: false,
   selector: 'app-roles',
   templateUrl: 'roles.component.html',
-  styleUrls: ['./roles.component.css']
+  styleUrls: ['./roles.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RolesComponent {
   accounts: any = [];
@@ -352,7 +353,7 @@ export class RolesComponent {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
-              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         if (isArray(res)) {
@@ -405,6 +406,7 @@ export class RolesComponent {
       this.roles = res.roles;
       this.controllerRoles = res.roles;
       this.checkUrl(null, true);
+      this.cdr.markForCheck();
     })
   }
 
@@ -606,6 +608,7 @@ export class RolesComponent {
     this.coreService.post('iam/roles/delete', obj).subscribe(() => {
       this.getList();
       this.reset();
+      this.cdr.markForCheck();
     });
   }
 
@@ -722,6 +725,7 @@ export class RolesComponent {
       }
       this.coreService.post('iam/permissions/delete', request).subscribe(() => {
         this.getList();
+        this.cdr.markForCheck();
       });
     });
   }
@@ -814,6 +818,7 @@ export class RolesComponent {
         return !this.object.mapOfCheckedId.has(item.roleName);
       });
       this.reset();
+      this.cdr.markForCheck();
     });
   }
 
@@ -863,6 +868,7 @@ export class RolesComponent {
             }
           });
           this.saveRoles(json);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -987,6 +993,7 @@ export class RolesComponent {
           if (index === roles.length - 1) {
             this.getList();
           }
+          this.cdr.markForCheck();
         }
       });
     })

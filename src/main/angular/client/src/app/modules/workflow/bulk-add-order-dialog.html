@@ -1,7 +1,7 @@
 <ng-container>
     <div class="modal-header">
         <h4 class="modal-title">
-            <span translate>workflow.label.addBulkOrderToWorkflows</span>
+            <span>{{ 'workflow.label.addBulkOrderToWorkflows' | translate }}</span>
         </h4>
         <button (click)="cancel()" aria-label="Close" class="close" type="button">
             <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -16,7 +16,7 @@
 
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label">
-                    <span [appRichTooltip]="'workflow.tooltip.orderName' | translate" translate>order.label.orderName</span>
+                    <span [appRichTooltip]="'workflow.tooltip.orderName' | translate">{{ 'order.label.orderName' | translate }}</span>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
                     <input #orderId="ngModel" [(ngModel)]="orders[0].orderId" [appAutofocus]="true" autocomplete="off"
@@ -25,7 +25,7 @@
                     @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
                         <div class="text-danger help-block">
                             @if (orderId.errors['invalidIdentifier']) {
-                                <div translate>common.message.invalid</div>
+                                <div>{{ 'common.message.invalid' | translate }}</div>
                             }
                         </div>
                     }
@@ -35,7 +35,7 @@
             <!-- Force Job Admission -->
             <div class="form-group row">
                 <label class="col-sm-4 ">
-                    <span [appRichTooltip]="'workflow.tooltip.ignoreAdmissionTimes' | translate" translate>order.label.ignoreAdmissionTimes</span>
+                    <span [appRichTooltip]="'workflow.tooltip.ignoreAdmissionTimes' | translate">{{ 'order.label.ignoreAdmissionTimes' | translate }}</span>
                 </label>
                 <div class="col-md-8">
                     <label [(ngModel)]="orders[0].forceJobAdmission" name="ignoreAdmissionTimes0" nz-checkbox>
@@ -47,14 +47,14 @@
             <!-- @if (orders.length < 2) { -->
               <div class="form-group row">
                     <label class="col-sm-4 ">
-                        <span [appRichTooltip]="'workflow.tooltip.startTime' | translate" translate>common.label.startTime</span>
+                        <span [appRichTooltip]="'workflow.tooltip.startTime' | translate">{{ 'common.label.startTime' | translate }}</span>
                     </label>
                     <div class="col-md-8">
                         <nz-radio-group [(ngModel)]="orders[0].at" name="at" (ngModelChange)="onTimeChange($event, 0)">
-                            <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
-                            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-                            <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
-                            <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                            <label nz-radio nzValue="now"><span>{{ 'common.label.now' | translate }}</span></label>
+                            <label nz-radio nzValue="date"><span>{{ 'common.label.specificDate' | translate }}</span></label>
+                            <label nz-radio nzValue="later"><span>{{ 'common.label.relativeTime' | translate }}</span></label>
+                            <label nz-radio nzValue="never"><span>{{ 'common.label.never' | translate }}</span></label>
                         </nz-radio-group>
                     </div>
               </div>
@@ -64,7 +64,7 @@
             @if (orders[0].at == 'later') {
               <div class="form-group row">
                     <label class="col-sm-4 form-control-label">
-                        <span [appRichTooltip]="'workflow.tooltip.time' | translate" translate>common.label.time</span>
+                        <span [appRichTooltip]="'workflow.tooltip.time' | translate">{{ 'common.label.time' | translate }}</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
@@ -74,7 +74,7 @@
                         @if (time.errors && (time.dirty || time.touched)) {
                             <div class="help-block text-danger">
                                 @if (!time.valid) {
-                                    <div translate>common.message.invalid</div>
+                                    <div>{{ 'common.message.invalid' | translate }}</div>
                                 }
                             </div>
                         }
@@ -86,7 +86,7 @@
             @if (orders[0].at == 'date') {
               <div class="form-group row">
                     <label class="col-sm-4 form-control-label">
-                        <span [appRichTooltip]="'workflow.tooltip.enterDateAndTime' | translate" translate>workflow.label.enterDateAndTime</span>
+                        <span [appRichTooltip]="'workflow.tooltip.enterDateAndTime' | translate">{{ 'workflow.label.enterDateAndTime' | translate }}</span>
                         <sup class="text-danger text-sm">*</sup>
                     </label>
                     <div class="col-sm-6">
@@ -101,7 +101,7 @@
             <!-- Time Zone for 'date' option -->
             @if (orders[0].at =='date') {
               <div class="form-group row">
-                    <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+                    <div class="col-sm-4 form-control-label">{{ 'common.label.timeZone' | translate }}</div>
                     <div class="col-sm-6">
                         <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
                                             [listArray]="zones" [name]="'timeZone0'" [ignoreTranslate]="true"
@@ -113,7 +113,7 @@
             <div class="form-group row">
                 <label [appRichTooltip]="'workflow.tooltip.priority' | translate"
                         class="col-sm-4 form-control-label"
-                        translate>order.label.priority</label>
+>{{ 'order.label.priority' | translate }}</label>
                 <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
                     class="col-sm-6">
                     <nz-space-compact nzBlock>
@@ -133,7 +133,7 @@
                     @if (priority.invalid && (priority.dirty || priority.touched)) {
                         <div class="text-danger help-block">
                             @if (priority.errors['required']) {
-                            <div translate>common.message.requiredError</div>
+                            <div>{{ 'common.message.requiredError' | translate }}</div>
                             }
                         </div>
                     }
@@ -150,6 +150,6 @@
                 }
                 {{'common.button.submit' | translate}}
             </button>
-            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+            <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
         </div>
     </form>

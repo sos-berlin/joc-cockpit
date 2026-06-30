@@ -10,7 +10,7 @@
             <div class="btn-group dropdown">
               <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click">
-                <span translate>common.label.sortBy</span>
+                <span>{{ 'common.label.sortBy' | translate }}</span>
                 <span class="text-primary">
                   @if (locksFilters.filter.sortBy =='id') {
                     <span>
@@ -39,10 +39,10 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="sort('id')" nz-menu-item>
-                    <a translate>resource.lock.label.name</a>
+                    <a>{{ 'resource.lock.label.name' | translate }}</a>
                   </li>
                   <li (click)="sort('path1')" nz-menu-item>
-                    <a translate>common.label.path</a>
+                    <a>{{ 'common.label.path' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -72,7 +72,7 @@
       </button>
       <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
         <i class="fa fa-search"></i>&nbsp;
-        <span translate>common.button.search</span>
+        <span>{{ 'common.button.search' | translate }}</span>
       </button>
       <div class="search-box-field pull-right">
         <label>
@@ -130,18 +130,18 @@
                               <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li (click)="coreService.copyLink('lock',lock.id)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
-                              <span translate>resource.lock.label.deploymentDate </span>:
+                              <span>{{ 'resource.lock.label.deploymentDate' | translate }} </span>:
                               <span [innerHtml]="lock.versionDate | stringToDate | highlight : locksFilters.searchText"
                                     class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
-                              <span translate>common.label.status </span>:
+                              <span>{{ 'common.label.status' | translate }} </span>:
                               <span [innerHtml]="lock.state._text | translate | highlight : locksFilters.searchText"
                                     [ngClass]="coreService.getColor(lock.state.severity, 'text')"></span>
                             </div>
@@ -189,8 +189,8 @@
                   >
                     <thead>
                     <tr>
-                      <th nzWidth="55px"><span translate>common.label.action</span></th>
-                      <th (click)="sort('id')"><a><span class="p-r-xs" translate>resource.lock.label.name</span>
+                      <th nzWidth="55px"><span>{{ 'common.label.action' | translate }}</span></th>
+                      <th (click)="sort('id')"><a><span class="p-r-xs">{{ 'resource.lock.label.name' | translate }}</span>
                         @if (locksFilters.filter.sortBy == 'id' && !locksFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -199,7 +199,7 @@
                         }</a>
                       </th>
                       @if (isPathDisplay) {
-                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                        <th (click)="sort('path1')"><a><span class="p-r-xs">{{ 'common.label.path' | translate }}</span>
                           @if (locksFilters.filter.sortBy == 'path1' && !locksFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -209,7 +209,7 @@
                         </th>
                       }
                       <th (click)="sort('versionDate')" rowspan="2">
-                        <a><span class="p-r-xs" translate>resource.lock.label.deploymentDate</span>
+                        <a><span class="p-r-xs">{{ 'resource.lock.label.deploymentDate' | translate }}</span>
                           @if (locksFilters.filter.sortBy == 'versionDate' && !locksFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -218,7 +218,7 @@
                           }</a>
                       </th>
                       <th (click)="sort('state._text')" rowspan="2">
-                        <a><span class="p-r-xs" translate>common.label.status</span>
+                        <a><span class="p-r-xs">{{ 'common.label.status' | translate }}</span>
                           @if (locksFilters.filter.sortBy == 'state._text' && !locksFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -226,7 +226,7 @@
                             <i class="fa fa-caret-down "></i>
                           }</a>
                       </th>
-                      <th (click)="sort('acquiredLockCount')"><a><span class="p-r-xs" translate>resource.lock.label.acquiredLockCount</span>
+                      <th (click)="sort('acquiredLockCount')"><a><span class="p-r-xs">{{ 'resource.lock.label.acquiredLockCount' | translate }}</span>
                         @if (locksFilters.filter.sortBy == 'acquiredLockCount' && !locksFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -234,7 +234,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('ordersHoldingLocksCount')"><a><span class="p-r-xs" translate>resource.lock.label.ordersHoldingLocks</span>
+                      <th (click)="sort('ordersHoldingLocksCount')"><a><span class="p-r-xs">{{ 'resource.lock.label.ordersHoldingLocks' | translate }}</span>
                         @if (locksFilters.filter.sortBy == 'ordersHoldingLocksCount' && !locksFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -242,7 +242,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('ordersWaitingForLocksCount')"><a><span class="p-r-xs" translate>resource.lock.label.ordersWaitingForLocks</span>
+                      <th (click)="sort('ordersWaitingForLocksCount')"><a><span class="p-r-xs">{{ 'resource.lock.label.ordersWaitingForLocks' | translate }}</span>
                         @if (locksFilters.filter.sortBy == 'ordersWaitingForLocksCount' && !locksFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -250,7 +250,7 @@
                           <i class="fa fa-caret-down "></i>
                         }</a>
                       </th>
-                      <th (click)="sort('limit')"><a><span class="p-r-xs" translate>resource.lock.label.limit</span>
+                      <th (click)="sort('limit')"><a><span class="p-r-xs">{{ 'resource.lock.label.limit' | translate }}</span>
                         @if (locksFilters.filter.sortBy == 'limit' && !locksFilters.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -272,7 +272,7 @@
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   <li (click)="coreService.copyLink('lock',lock.id)" nz-menu-item>
-                                    <a translate>common.button.copyLinkToObject</a>
+                                    <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
@@ -345,7 +345,7 @@
                                         [nzFrontPagination]="false" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
                                 <thead>
                                 <tr>
-                                  <th class="text-left" colspan="9"><span translate>order.label.workflow</span></th>
+                                  <th class="text-left" colspan="9"><span>{{ 'order.label.workflow' | translate }}</span></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -382,10 +382,10 @@
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td class="custom-th" colspan="4"><span class="p-l" translate>order.label.orderId</span></td>
-                                          <td class="custom-th" colspan="3"><span translate>workflow.label.label</span></td>
-                                          <td class="custom-th"><span translate>order.label.state</span></td>
-                                          <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                                          <td class="custom-th" colspan="4"><span class="p-l">{{ 'order.label.orderId' | translate }}</span></td>
+                                          <td class="custom-th" colspan="3"><span>{{ 'workflow.label.label' | translate }}</span></td>
+                                          <td class="custom-th"><span>{{ 'order.label.state' | translate }}</span></td>
+                                          <td class="custom-th"><span>{{ 'order.label.scheduledFor' | translate }}</span></td>
                                         </tr>
                                         @for (item of workflow.ordersWaitingForLocks; track item) {
                                           <tr>
@@ -412,10 +412,10 @@
                                           </td>
                                         </tr>
                                         <tr>
-                                          <td class="custom-th" colspan="4"><span class="p-l" translate>order.label.orderId</span></td>
-                                          <td class="custom-th" colspan="3"><span translate>workflow.label.label</span></td>
-                                          <td class="custom-th"><span translate>order.label.state</span></td>
-                                          <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                                          <td class="custom-th" colspan="4"><span class="p-l">{{ 'order.label.orderId' | translate }}</span></td>
+                                          <td class="custom-th" colspan="3"><span>{{ 'workflow.label.label' | translate }}</span></td>
+                                          <td class="custom-th"><span>{{ 'order.label.state' | translate }}</span></td>
+                                          <td class="custom-th"><span>{{ 'order.label.scheduledFor' | translate }}</span></td>
                                         </tr>
                                         @for (item of workflow.ordersHoldingLocks; track item) {
                                           <tr>
@@ -446,12 +446,12 @@
                     </tbody>
                   </nz-table>
                   @if (ajaxTable.data.length >0) {
-                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                    <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                       @if (ajaxTable.data.length >1) {
-                        <span translate>resource.lock.label.locksFound</span>
+                        <span>{{ 'resource.lock.label.locksFound' | translate }}</span>
                       }
                       @if (ajaxTable.data.length ==1) {
-                        <span translate>resource.lock.label.lockFound</span>
+                        <span>{{ 'resource.lock.label.lockFound' | translate }}</span>
                       }
                     </div>
                   }
@@ -483,7 +483,7 @@
           @if (preferences.showHelpPages) {
             <i (click)="helpPage('resources-resource-locks-search')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
           }
-          <span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+          <span class="_600 b-b p-b-sm m-l-sm">{{ 'inventory.search.label.searchHeading' | translate }}</span>
         </div>
         <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
                               [isLock]="true"></app-inventory-search>

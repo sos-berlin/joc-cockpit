@@ -5,13 +5,13 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>fileTransfer.section.customizationName</small>
+        <small class="_600 section-box-title">{{ 'fileTransfer.section.customizationName' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
              class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.customizationName' | translate">{{ 'customization.label.customizationName' | translate }}</span>
             @if (!isSearch) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -24,13 +24,13 @@
             @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors.required) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isUnique) {
               <div class="help-block text-danger">
-                <div translate>common.message.uniqueError</div>
+                <div>{{ 'common.message.uniqueError' | translate }}</div>
               </div>
             }
           </div>
@@ -39,12 +39,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>fileTransfer.section.filter</small>
+        <small class="_600 section-box-title">{{ 'fileTransfer.section.filter' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.profileNames' | translate" translate>fileTransfer.search.label.profileNames</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.profileNames' | translate">{{ 'fileTransfer.search.label.profileNames' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             @for (profile of filter.profiles; track $index; let i = $index) {
@@ -65,12 +65,12 @@
         @if (isSearch) {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4">
-              <span [appRichTooltip]="'fileTransfer.tooltip.dateRange' | translate" translate>common.label.dateRange</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.dateRange' | translate">{{ 'common.label.dateRange' | translate }}</span>
             </label>
             <div class="col-md-6">
               <nz-radio-group [(ngModel)]="filter.radio" name="radio">
-                <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-                <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+                <label nz-radio nzValue="current"><span>{{ 'common.label.specificDate' | translate }}</span></label>
+                <label nz-radio nzValue="planned"><span>{{ 'common.label.relativeDate' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -78,7 +78,7 @@
         @if (filter.radio == 'current') {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4 form-control-label">
-              <span [appRichTooltip]="'fileTransfer.tooltip.from' | translate" translate>common.label.from</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.from' | translate">{{ 'common.label.from' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
@@ -91,7 +91,7 @@
         @if (filter.radio == 'current') {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4 form-control-label">
-              <span [appRichTooltip]="'fileTransfer.tooltip.to' | translate" translate>common.label.to</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.to' | translate">{{ 'common.label.to' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
@@ -105,7 +105,7 @@
           <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
                class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'fileTransfer.tooltip.processExecuted' | translate" translate>common.label.processExecuted</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.processExecuted' | translate">{{ 'common.label.processExecuted' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <input #processExc1="ngModel" [(ngModel)]="filter.planned" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
@@ -113,7 +113,7 @@
               @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
                 <div class="help-block text-danger">
                   @if (!processExc1.valid) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -123,7 +123,7 @@
         @if (isSearch) {
           <div class="form-group row">
             <label class="col-md-2 col-sm-4 form-control-label">
-              <span [appRichTooltip]="'fileTransfer.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.controllerId' | translate">{{ 'common.label.controllerId' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <app-select-input [attributeName]="'controllerId'" [isAllowClear]="true" [ignoreTranslate]="true"
@@ -135,7 +135,7 @@
         }
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.workflows' | translate" translate>dailyPlan.label.workflows</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.workflows' | translate">{{ 'dailyPlan.label.workflows' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <app-multi-select [attribute]="'workflowNames'" [list]="filter" [nodes]="workflowTree"
@@ -144,7 +144,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4">
-            <span [appRichTooltip]="'fileTransfer.tooltip.status' | translate" translate>fileTransfer.label.status</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.status' | translate">{{ 'fileTransfer.label.status' | translate }}</span>
           </label>
           <div class="col-sm-8">
             <nz-checkbox-group
@@ -153,7 +153,7 @@
               (ngModelChange)="stateChange($event)">
               @for (option of stateOptions; track option) {
                 <label [nzValue]="option.status" nz-checkbox>
-                  <span translate>common.label.{{option.text}}</span>
+                  <span>{{ 'common.label.' + option.text | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -161,7 +161,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-            <span [appRichTooltip]="'fileTransfer.tooltip.operations' | translate" translate>fileTransfer.search.label.operations</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.operations' | translate">{{ 'fileTransfer.search.label.operations' | translate }}</span>
           </label>
           <div class="col-sm-8">
             <nz-checkbox-group
@@ -170,7 +170,7 @@
               (ngModelChange)="operationChange($event)">
               @for (option of operationOptions; track option) {
                 <label [nzValue]="option.status" nz-checkbox>
-                  <span translate>fileTransfer.search.label.{{option.text}}</span>
+                  <span>{{ 'fileTransfer.search.label.' + option.text | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -178,7 +178,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesFrom' | translate" translate>fileTransfer.search.label.numOfFilesFrom</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesFrom' | translate">{{ 'fileTransfer.search.label.numOfFilesFrom' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <nz-input-number name="numOfFilesFrom" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesFrom' | translate"
@@ -187,7 +187,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 ">
-            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesTo' | translate" translate>fileTransfer.search.label.numOfFilesTo</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.numOfFilesTo' | translate">{{ 'fileTransfer.search.label.numOfFilesTo' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <nz-input-number name="numOfFilesTo" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesTo' | translate"
@@ -198,12 +198,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>fileTransfer.section.source</small>
+        <small class="_600 section-box-title">{{ 'fileTransfer.section.source' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.sourceFilePaths' | translate" translate>fileTransfer.search.label.sourceFilePaths</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceFilePaths' | translate">{{ 'fileTransfer.search.label.sourceFilePaths' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             @for (sourceFile of filter.sourceFiles; track $index; let i = $index) {
@@ -223,7 +223,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.sourceHost' | translate" translate>fileTransfer.search.label.sourceHost</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceHost' | translate">{{ 'fileTransfer.search.label.sourceHost' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             <input [(ngModel)]="filter.sourceHost" class="form-control"
@@ -232,7 +232,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.sourceProtocol' | translate" translate>fileTransfer.search.label.sourceProtocol</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.sourceProtocol' | translate">{{ 'fileTransfer.search.label.sourceProtocol' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <app-select-input [attributeName]="'sourceProtocol'" [isAllowClear]="true" [isMultiple]="true"
@@ -246,12 +246,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>fileTransfer.section.target</small>
+        <small class="_600 section-box-title">{{ 'fileTransfer.section.target' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.targetFilePaths' | translate" translate>fileTransfer.search.label.targetFilePaths</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetFilePaths' | translate">{{ 'fileTransfer.search.label.targetFilePaths' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             @for (targetFile of filter.targetFiles; track $index; let i = $index) {
@@ -271,7 +271,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.targetHost' | translate" translate>fileTransfer.search.label.targetHost</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetHost' | translate">{{ 'fileTransfer.search.label.targetHost' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             <input [(ngModel)]="filter.targetHost" class="form-control"
@@ -280,7 +280,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'fileTransfer.tooltip.targetProtocol' | translate" translate>fileTransfer.search.label.targetProtocol</span>
+            <span [appRichTooltip]="'fileTransfer.tooltip.targetProtocol' | translate">{{ 'fileTransfer.search.label.targetProtocol' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             <app-select-input [attributeName]="'targetProtocol'" [isAllowClear]="true" [isSearchable]="true"
@@ -292,7 +292,7 @@
         @if (permission.joc.administration.customization.share && !isSearch) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'fileTransfer.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+              <span [appRichTooltip]="'fileTransfer.tooltip.sharedCustomization' | translate">{{ 'customization.label.sharedCustomization' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
@@ -303,7 +303,7 @@
     </div>
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search();" class="btn btn-primary btn-sm" translate type="button">common.button.search</button>
+        <button (click)="search();" class="btn btn-primary btn-sm" type="button">{{ 'common.button.search' | translate }}</button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
           @if (submitted) {
@@ -311,7 +311,7 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">{{ 'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -324,7 +324,7 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel</button>
+      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
     </div>
   }
 </form>

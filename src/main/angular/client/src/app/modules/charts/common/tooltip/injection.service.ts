@@ -1,6 +1,5 @@
 import {
   ApplicationRef,
-  ComponentFactoryResolver,
   ComponentRef,
   Injectable,
   Injector,
@@ -39,7 +38,6 @@ export class InjectionService {
 
   constructor(
     private applicationRef: ApplicationRef,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private injector: Injector
   ) {
   }

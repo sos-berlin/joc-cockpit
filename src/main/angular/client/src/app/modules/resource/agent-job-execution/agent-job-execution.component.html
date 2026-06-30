@@ -19,7 +19,7 @@
                     @if (agentFilters.filter.date) {
                       <span> {{ selectedDateLabel | translate }} </span>
                     } @else {
-                      <span translate> common.label.dateFilter </span>
+                      <span> {{ 'common.label.dateFilter' | translate }} </span>
                     }
                     <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </button>
@@ -29,7 +29,7 @@
                         <li (click)="loadAgentTasks(opt.date)"
                             [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date === opt.date, 'disable-link': savedFilter.selected}"
                             nz-menu-item>
-                          <a translate>{{opt.text}}</a>
+                          <a>{{opt.text}}</a>
                         </li>
                       }
                     </ul>
@@ -48,12 +48,12 @@
                       <ul nz-menu>
                         @if (permission.joc && permission.joc.administration.customization.manage) {
                           <li (click)="createCustomization()" nz-menu-item>
-                            <a translate>customization.label.createCustomization</a>
+                            <a>{{ 'customization.label.createCustomization' | translate }}</a>
                           </li>
                         }
                         @if (filterList.length>0) {
                           <li (click)="editFilters()" nz-menu-item>
-                            <a translate>customization.label.editExistingCustomizations</a>
+                            <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                           </li>
                         }
                         @if (filterList.length>0) {
@@ -95,13 +95,13 @@
     <div class="col-md-4 text-right">
       @if (!showSearchPanel) {
         <button (click)="advancedSearch()" class="btn btn-sm btn-grey pull-right m-l-12">
-          <span translate>common.button.advancedSearch</span>&nbsp;
+          <span>{{ 'common.button.advancedSearch' | translate }}</span>&nbsp;
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
       }
       @if (showSearchPanel) {
         <button (click)="cancel()" class="btn btn-sm btn-grey pull-right m-l-12">
-          <span translate>common.button.advancedSearch</span>&nbsp;
+          <span>{{ 'common.button.advancedSearch' | translate }}</span>&nbsp;
           <i class="fa fa-caret-down p-l-xs"></i>
         </button>
       }
@@ -151,7 +151,7 @@
               <tr>
                 @if (!agentFilters.current) {
                   <th (click)="sort('controllerId')">
-                    <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                    <a><span class="p-r-xs">{{ 'common.label.controllerId' | translate }}</span>
                       @if (agentFilters.filter.sortBy == 'controllerId' && !agentFilters.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -160,7 +160,7 @@
                       }</a>
                   </th>
                 }
-                <th (click)="sort('agentId')"><a><span class="p-r-xs" translate>agent.label.agentId</span>
+                <th (click)="sort('agentId')"><a><span class="p-r-xs">{{ 'agent.label.agentId' | translate }}</span>
                   @if (agentFilters.filter.sortBy == 'agentId' && !agentFilters.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -168,7 +168,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
+                <th (click)="sort('url')"><a><span class="p-r-xs">{{ 'agent.label.url' | translate }}</span>
                   @if (agentFilters.filter.sortBy == 'url' && !agentFilters.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -176,7 +176,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('numOfSuccessfulTasks')"><a><span class="p-r-xs" translate>resource.agentJobExecution.label.numberOfSuccessfullyExecutedTask</span>
+                <th (click)="sort('numOfSuccessfulTasks')"><a><span class="p-r-xs">{{ 'resource.agentJobExecution.label.numberOfSuccessfullyExecutedTask' | translate }}</span>
                   @if (agentFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentFilters.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -184,7 +184,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('numOfJobs')"><a><span class="p-r-xs" translate>resource.agentJobExecution.label.numberOfJobsExecuted</span>
+                <th (click)="sort('numOfJobs')"><a><span class="p-r-xs">{{ 'resource.agentJobExecution.label.numberOfJobsExecuted' | translate }}</span>
                   @if (agentFilters.filter.sortBy == 'numOfJobs' && !agentFilters.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -214,14 +214,14 @@
             @if (ajaxTable.data.length >0) {
               <div class="w-half label-top"> {{data.length}}
                 @if (ajaxTable.data.length >1) {
-                  <span translate>resource.agentJobExecution.label.agentTasksFound</span>
+                  <span>{{ 'resource.agentJobExecution.label.agentTasksFound' | translate }}</span>
                 }
                 @if (ajaxTable.data.length ==1) {
-                  <span translate>resource.agentJobExecution.label.agentTaskFound</span>
+                  <span>{{ 'resource.agentJobExecution.label.agentTaskFound' | translate }}</span>
                 }.
-                <span translate>resource.agentJobExecution.label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
+                <span>{{ 'resource.agentJobExecution.label.totalNumberOfExecutions' | translate }}</span>: {{totalJobExecution}}.
                 @if (totalNumOfJobs) {
-                  <span translate>resource.agentJobExecution.label.totalNumberOfJobExecutions</span>: {{totalNumOfJobs}}
+                  <span>{{ 'resource.agentJobExecution.label.totalNumberOfJobExecutions' | translate }}</span>: {{totalNumOfJobs}}
                 }
               </div>
             }

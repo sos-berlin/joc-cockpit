@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -11,6 +11,7 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-logging2',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div class="p-a">
     @for (log of clientLogs; track log) {
@@ -32,7 +33,7 @@ export class Logging2Component {
   subscription: Subscription;
   clientLogFilter: any = {};
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -41,6 +42,7 @@ export class Logging2Component {
     // Create an Observable that will publish a value on an interval
     this.subscription = interval(3000).subscribe(() => {
       this.clientLogs = JSON.parse(localStorage['logging']);
+      this.cdr.markForCheck();
     });
   }
 
@@ -57,7 +59,8 @@ export class Logging2Component {
 @Component({
   standalone: false,
   selector: 'app-logging',
-  templateUrl: './logging.component.html'
+  templateUrl: './logging.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoggingComponent {
   clientLogs = [];
@@ -75,7 +78,8 @@ export class LoggingComponent {
   preferences: any = {};
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private clipboardService: ClipboardService, private message: NzMessageService, private modal: NzModalService) {
+              private clipboardService: ClipboardService, private message: NzMessageService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     if (sessionStorage['clientLogFilter']) {
       this.clientLogFilter = JSON.parse(sessionStorage['clientLogFilter']);
     } else {
@@ -104,6 +108,7 @@ ngOnInit(): void {
       } catch (e) {
       }
     }
+    this.cdr.markForCheck();
   });
 
   if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {
@@ -145,6 +150,7 @@ ngOnInit(): void {
       };
       this.coreService.post('configuration/save', configObj).subscribe(() => {
         sessionStorage['clientLogFilter'] = JSON.stringify(this.clientLogFilter);
+        this.cdr.markForCheck();
       });
     }
   }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -14,7 +14,8 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   standalone: false,
   selector: 'app-manage-report',
-  templateUrl: './manage-report.component.html'
+  templateUrl: './manage-report.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageReportComponent {
   @Input() permission: any;
@@ -54,7 +55,7 @@ export class ManageReportComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
-              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService) {
+              private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe, private sharingDataService: SharingDataService, private translate: TranslateService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -135,7 +136,8 @@ export class ManageReportComponent {
           if (this.tree.length) {
             this.loadReports();
           }
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -242,7 +244,8 @@ export class ManageReportComponent {
         });
         this.reset();
         this.searchInResult();
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -342,6 +345,7 @@ export class ManageReportComponent {
         next: () => {
           this.coreService.startReport();
           this.reset();
+          this.cdr.markForCheck();
         }
       })
     } else {
@@ -357,6 +361,7 @@ export class ManageReportComponent {
         if (result) {
           this.reset();
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -374,6 +379,7 @@ export class ManageReportComponent {
       if (result) {
         this.reset();
       }
+      this.cdr.markForCheck();
     });
   }
 

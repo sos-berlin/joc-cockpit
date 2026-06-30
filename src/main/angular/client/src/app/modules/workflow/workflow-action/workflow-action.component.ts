@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -83,6 +83,7 @@ export class ShowDependencyComponent {
   standalone: false,
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -232,6 +233,7 @@ export class AddOrderModalComponent {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.displayModal = true;
+      this.cdr.markForCheck();
     }, 100);
   }
 
@@ -721,17 +723,17 @@ export class AddOrderModalComponent {
   // }
 
   getNewPositions(positions: any, index: number): void {
-    // Reset newPositions for the specific index
-    this.newPositions = undefined;
-
-    if (positions) {
-      this.newPositions = new Map();
-      positions.forEach(item => {
-        this.newPositions.set(item.positionString, item.position);
-      });
-
-      this.updatePositionsForIndex(index);
-    }
+    setTimeout(() => {
+      this.newPositions = undefined;
+      if (positions) {
+        this.newPositions = new Map();
+        positions.forEach(item => {
+          this.newPositions.set(item.positionString, item.position);
+        });
+        this.updatePositionsForIndex(index);
+      }
+      this.cdr.markForCheck();
+    }, 0);
   }
 
   private updatePositionsForIndex(index: number): void {

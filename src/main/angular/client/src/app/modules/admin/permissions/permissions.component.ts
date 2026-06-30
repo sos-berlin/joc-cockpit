@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {Component, inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -16,7 +16,8 @@ declare var d3: any;
 @Component({
   standalone: false,
   selector: 'app-permission-modal-content',
-  templateUrl: 'permission-modal.html'
+  templateUrl: 'permission-modal.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -35,7 +36,8 @@ export class PermissionModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private dataService: DataService, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private dataService: DataService, public coreService: CoreService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -113,8 +115,10 @@ export class PermissionModalComponent {
     this.coreService.post(URL, request).subscribe({
       next: () => {
         this.activeModal.close('DONE');
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -124,7 +128,8 @@ export class PermissionModalComponent {
 @Component({
   standalone: false,
   selector: 'app-folder-modal-content',
-  templateUrl: 'folder-modal.html'
+  templateUrl: 'folder-modal.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FolderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -147,7 +152,7 @@ export class FolderModalComponent {
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService,
-              private authService: AuthService) {
+              private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -207,8 +212,10 @@ export class FolderModalComponent {
     this.coreService.post(URL, request).subscribe({
       next: () => {
         this.activeModal.close('DONE');
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -260,6 +267,7 @@ export class FolderModalComponent {
       if (this.nodes.length > 0) {
         this.nodes[0].expanded = true;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -287,7 +295,8 @@ export class FolderModalComponent {
 @Component({
   standalone: false,
   selector: 'app-permissions',
-  templateUrl: './permissions.component.html'
+  templateUrl: './permissions.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsComponent {
   controllerName;
@@ -326,7 +335,8 @@ export class PermissionsComponent {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute,
-              private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
+              private modal: NzModalService, private dataService: DataService, private authService: AuthService,
+              private cdr: ChangeDetectorRef) {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_FOLDER') {
@@ -356,6 +366,7 @@ export class PermissionsComponent {
         this.controllerName = '';
       }
       this.roleName = params['role.role'];
+      this.cdr.markForCheck();
     });
     this.getPermissions();
   }
@@ -372,6 +383,7 @@ export class PermissionsComponent {
       roleName: this.roleName
     }).subscribe((res: any) => {
       this.folderArr = res.folders;
+      this.cdr.markForCheck();
     });
   }
 
@@ -386,6 +398,7 @@ export class PermissionsComponent {
       this.preparePermissionJSON();
       this.preparePermissionOptions();
       this.switchTree();
+      this.cdr.markForCheck();
     })
   }
 
@@ -403,6 +416,7 @@ export class PermissionsComponent {
 
       this.getFolderList();
       this.getPermissionList();
+      this.cdr.markForCheck();
     });
   }
 
@@ -432,6 +446,7 @@ export class PermissionsComponent {
           this.getFolderList();
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -463,6 +478,7 @@ export class PermissionsComponent {
           this.getFolderList();
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -491,6 +507,7 @@ export class PermissionsComponent {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
           this.deleteFolderAPI(folder.folder, result);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -512,6 +529,7 @@ export class PermissionsComponent {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
           this.deleteFolderAPI(folder.folder, this.dataService.comments);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -556,6 +574,7 @@ export class PermissionsComponent {
       if (result === 'DONE') {
         this.getPermissionList();
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -583,6 +602,7 @@ export class PermissionsComponent {
       if (result === 'DONE') {
         this.getPermissionList();
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -613,6 +633,7 @@ export class PermissionsComponent {
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData();
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -636,6 +657,7 @@ export class PermissionsComponent {
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData();
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -894,6 +916,7 @@ export class PermissionsComponent {
     }
     this.coreService.post('authentication/auth/store', request).subscribe(() => {
       this.dataService.announceFunction('RELOAD');
+      this.cdr.markForCheck();
     });
   }
 
@@ -966,6 +989,7 @@ export class PermissionsComponent {
         if (result) {
           this._undoPermission(result);
         }
+        this.cdr.markForCheck();
       });
     } else {
       this._undoPermission(this.dataService.comments);
@@ -1004,6 +1028,7 @@ export class PermissionsComponent {
         if (result) {
           this._resetPermission(result);
         }
+        this.cdr.markForCheck();
       });
     } else {
       this._resetPermission(this.dataService.comments);

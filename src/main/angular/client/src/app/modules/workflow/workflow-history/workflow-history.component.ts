@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   HostListener,
@@ -20,14 +22,16 @@ import {NzMessageService} from "ng-zorro-antd/message";
 @Component({
   standalone: false,
   selector: 'app-order-history-template',
-  templateUrl: './workflow-history-template.html'
+  templateUrl: './workflow-history-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowTemplateComponent {
   @Input() history: any;
   @Input() schedulerId: any;
   @Input() permission: any;
 
-  constructor(public coreService: CoreService, public viewContainerRef: ViewContainerRef) {
+  constructor(public coreService: CoreService, public viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
   }
 
   showPanelFuc(data, count): void {
@@ -45,8 +49,10 @@ export class WorkflowTemplateComponent {
         data.states = res.states;
         data.loading = false;
         this.coreService.calRowWidth(null);
+        this.cdr.markForCheck();
       }, error: () => {
         data.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -59,7 +65,8 @@ export class WorkflowTemplateComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow-history',
-  templateUrl: './workflow-history.component.html'
+  templateUrl: './workflow-history.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   @Input() workflow: any;
@@ -82,7 +89,8 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private expandedJobState: Map<string, any> = new Map();
 
   constructor(public coreService: CoreService, private authService: AuthService, public message: NzMessageService,
-              private router: Router, private dataService: DataService, public viewContainerRef: ViewContainerRef) {
+              private router: Router, private dataService: DataService, public viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -124,7 +132,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.coreService.calRowWidth(null);
   }
@@ -277,8 +285,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.level = 1;
         data.loading = false;
         this.coreService.calRowWidth(null);
+        this.cdr.markForCheck();
       }, error: () => {
         data.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -297,8 +307,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         // Restore expanded state after loading
         this.orderHistory = this.restoreExpandedState(res.history, this.expandedOrderState, 'historyId');
         this.loading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -329,8 +341,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.states = res.states;
         data.loading = false;
         this.coreService.calRowWidth(null);
+        this.cdr.markForCheck();
       }, error: () => {
         data.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -356,8 +370,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.states = res.states;
         data.loading = false;
         this.coreService.calRowWidth(null);
+        this.cdr.markForCheck();
       }, error: () => {
         data.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -383,6 +399,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     this.coreService.post('tasks/history', obj).subscribe((res: any) => {
       // Restore expanded state after loading
       this.taskHistory = this.restoreExpandedState(res.history, this.expandedTaskState, 'taskId');
+      this.cdr.markForCheck();
     });
   }
 
@@ -400,8 +417,10 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       next: (res: any) => {
         // Restore expanded state after loading
         this.jobHistory = this.restoreExpandedState(res.history, this.expandedJobState, 'taskId');
+        this.cdr.markForCheck();
       }, error: () => {
         this.jobHistory = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -415,6 +434,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     };
     this.coreService.post('audit_log', obj).subscribe((res: any) => {
       this.auditLogs = res.auditLog;
+      this.cdr.markForCheck();
     });
   }
 

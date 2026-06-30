@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -28,7 +28,8 @@ const convert = require('xml-js');
 @Component({
   standalone: false,
   selector: 'app-show-child-modal',
-  templateUrl: './show-child-dialog.html'
+  templateUrl: './show-child-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowChildModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -565,7 +566,8 @@ export class ShowChildModalComponent {
 @Component({
   standalone: false,
   selector: 'app-show-modal',
-  templateUrl: './show-dialog.html'
+  templateUrl: './show-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -723,7 +725,8 @@ export class ShowModalComponent {
 @Component({
   standalone: false,
   selector: 'app-confirmation-modal',
-  templateUrl: './confirmation-dialog.html'
+  templateUrl: './confirmation-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmationModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -777,7 +780,8 @@ export class ConfirmationModalComponent {
   standalone: false,
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
-  styleUrls: ['./xml-editor.component.scss']
+  styleUrls: ['./xml-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XmlEditorComponent {
   schedulerIds: any = {};
@@ -872,7 +876,8 @@ export class XmlEditorComponent {
     public toasterService: ToastrService,
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
     this.subscription1 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
@@ -950,7 +955,7 @@ export class XmlEditorComponent {
 
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload')
   beforeunload(): void {
     if (this.nodes && this.nodes.length > 0 && !this.isStore) {
       this.isChange = true;
@@ -1055,6 +1060,7 @@ export class XmlEditorComponent {
           this.isLoading = false;
           this.schemaIdentifier = '';
           this.createNewTab();
+          this.cdr.markForCheck();
         });
       }
     });
@@ -1275,10 +1281,12 @@ export class XmlEditorComponent {
           };
           this.validConfig = true;
         }
+        this.cdr.markForCheck();
       }, error: (error) => {
         if (error && error.error) {
           this.showErrorToast(error.error.message, '');
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1340,10 +1348,12 @@ export class XmlEditorComponent {
         } else {
           this.setDeploymentState(res.released);
         }
+        this.cdr.markForCheck();
       }, error: (error) => {
         if (error && error.error) {
           this.showErrorToast(error.error.message, '');
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1447,6 +1457,7 @@ export class XmlEditorComponent {
             this.readOthersXSD(this.activeTab.id);
           }
         }
+        this.cdr.markForCheck();
       }, error: (error) => {
         this.isLoading = false;
         this.tabsArray = [];
@@ -1454,6 +1465,7 @@ export class XmlEditorComponent {
         if (error && error.error) {
           this.showErrorToast(error.error.message, '');
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1529,6 +1541,7 @@ export class XmlEditorComponent {
                     delete _tempArrToExpand[i].loading;
                   }
                   this.nodes = [...this.nodes];
+                  this.cdr.markForCheck();
                 }, 0);
               }
             } else {
@@ -1553,6 +1566,7 @@ export class XmlEditorComponent {
           }
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.submitXsd = false;
         this.isLoading = false;
@@ -1561,6 +1575,7 @@ export class XmlEditorComponent {
         if (err.data && err.data.error) {
           this.showErrorToast(err.data.error.message, '');
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1680,9 +1695,11 @@ export class XmlEditorComponent {
           this.submitXsd = false;
           this.isLoading = false;
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoading = false;
         this.submitXsd = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1715,6 +1732,7 @@ export class XmlEditorComponent {
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, true);
         this.matchJobResourceList(node);
+        this.cdr.markForCheck();
       });
     } else {
       this.matchJobResourceList(node);

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {HttpHeaders} from '@angular/common/http';
 import {NzUploadFile} from 'ng-zorro-antd/upload';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -12,6 +12,7 @@ import {AuthService} from '../guard';
   standalone: false,
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileUploaderComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -85,7 +86,8 @@ export class FileUploaderComponent {
   controller: any;
 
   constructor(private activeModal: NzModalRef, private toasterService: ToastrService, private authService: AuthService,
-              private coreService: CoreService, private translate: TranslateService, private modal: NzModalService) {
+              private coreService: CoreService, private translate: TranslateService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
 
   }
 
@@ -170,6 +172,7 @@ export class FileUploaderComponent {
           res.folders.push({name: '', path: '/'});
         }
         this.nodes = this.coreService.prepareTree(res, true);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -181,6 +184,7 @@ export class FileUploaderComponent {
     }).subscribe({
       next: (res: any) => {
         this.calendarTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -540,6 +544,7 @@ export class FileUploaderComponent {
           this.uploading = false;
           this.showProgressBar = false;
           this.uploadError = true;
+          this.cdr.markForCheck();
           //  this.toasterService.error(err.error.code, err.error.message);
         }
       })

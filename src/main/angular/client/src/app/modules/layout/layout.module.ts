@@ -2,10 +2,7 @@ import {NgModule} from '@angular/core';
 import {LayoutRoutingModule} from './layout-routing.module';
 import {LayoutComponent} from './layout.component';
 import {HeaderComponent} from '../../components/header/header.component';
-import {LogModule} from '../log/log.module';
-import {LoggingModule} from '../logging/logging.module';
 import {DashboardModule} from '../dashboard/dashboard.module';
-import {UserModule} from '../user/user.module';
 import {Shared2Module} from '../shared/shared2.module';
 import {SaveService} from '../../services/save.service';
 import {ExcelService} from '../../services/excel.service';
@@ -19,10 +16,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
     imports: [
         Shared2Module,
         LayoutRoutingModule,
-        LogModule,
-        LoggingModule,
         DashboardModule,
-        UserModule,
         NzTooltipDirective
     ],
   declarations: [

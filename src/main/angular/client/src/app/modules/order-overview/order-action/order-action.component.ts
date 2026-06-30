@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ViewContainerRef} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -16,7 +16,8 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
 @Component({
   standalone: false,
   selector: 'app-order-action',
-  templateUrl: './order-action.component.html'
+  templateUrl: './order-action.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderActionComponent {
   @Input() order: any;
@@ -30,7 +31,7 @@ export class OrderActionComponent {
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public message: NzMessageService) {
+              public message: NzMessageService, private cdr: ChangeDetectorRef) {
   }
 
   change(value: boolean): void {
@@ -63,6 +64,7 @@ export class OrderActionComponent {
           this.isChanged.emit(true);
           this.resetAction();
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -143,6 +145,7 @@ export class OrderActionComponent {
         if (result) {
 
         }
+        this.cdr.markForCheck();
       });
     });
   }
@@ -183,13 +186,15 @@ export class OrderActionComponent {
           this.isChanged.emit(true);
           this.resetAction();
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.isChanged.emit(true);
       this.coreService.post('orders/' + url, obj).subscribe({
         next: () => {
           this.resetAction();
-        }, error: () => this.isChanged.emit(false)
+          this.cdr.markForCheck();
+        }, error: () => { this.isChanged.emit(false); this.cdr.markForCheck(); }
       });
     }
   }
@@ -210,6 +215,7 @@ export class OrderActionComponent {
       if (result) {
         this.restCall(false, 'Confirm', this.order, 'confirm');
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -232,6 +238,7 @@ export class OrderActionComponent {
         this.isChanged.emit(true);
         this.resetAction();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -243,7 +250,8 @@ export class OrderActionComponent {
       next: (res: any) => {
         order.requirements = res.workflow.orderPreparation;
         cb(res.workflow);
-      }, error: () => cb()
+        this.cdr.markForCheck();
+      }, error: () => { cb(); this.cdr.markForCheck(); }
     });
   }
 

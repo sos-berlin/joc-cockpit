@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {forkJoin, map, Observable, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -717,7 +717,8 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
-  styleUrls: ['./daily-plan.component.css']
+  styleUrls: ['./daily-plan.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DailyPlanComponent {
   objectType = 'DAILYPLAN';
@@ -729,7 +730,7 @@ export class DailyPlanComponent {
   planOrders: any = [];
   isLoaded = false;
   isRefreshed = false;
-  dailyPlanFilters: any = {filter: {}, index: 0};
+  dailyPlanFilters: any = {filter: {}, index: 0, tabIndex: 0};
   pageView = '';
   pageView2 = '';
   savedFilter: any = {};
@@ -1024,9 +1025,11 @@ export class DailyPlanComponent {
           }
         }
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.projectionData = [];
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1107,12 +1110,14 @@ export class DailyPlanComponent {
           this.filterData(res.plannedOrderItems);
           this.isLoaded = true;
           this.isRefreshed = false;
+          this.cdr.markForCheck();
         }, error: () => {
           this.isLoaded = true;
           this.isRefreshed = false;
           this.plans = [];
           this.planOrders = [];
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -2768,7 +2773,7 @@ export class DailyPlanComponent {
     setTimeout(() => {
       const dom = $('#full-calendar');
       if (!dom.data('calendar')) {
-        dom.calendar({
+        dom['calendar']({
           view: 'month',
           rangeSelection: true,
           language: this.coreService.getLocale(),

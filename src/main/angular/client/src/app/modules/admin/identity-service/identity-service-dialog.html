@@ -5,12 +5,12 @@
     }
     @if (identityService) {
       <span>
-        <span translate>user.label.editIdentityService</span>:
+        <span>{{ 'user.label.editIdentityService' | translate }}</span>:
         <span [innerHtml]="identityService.identityServiceName"></span>
       </span>
     }
     @if (!identityService) {
-      <span translate>user.label.addIdentityService</span>
+      <span>{{ 'user.label.addIdentityService' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -24,12 +24,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>user.section.identityService</small>
+        <small class="_600 section-box-title">{{ 'user.section.identityService' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="form-group row">
           <label class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'user.tooltip.identityServiceName' | translate" translate>user.label.identityServiceName</span>
+            <span [appRichTooltip]="'user.tooltip.identityServiceName' | translate">{{ 'user.label.identityServiceName' | translate }}</span>
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -38,20 +38,20 @@
             @if (name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isUnique) {
               <div class="help-block text-danger">
-                <div translate>common.message.uniqueError</div>
+                <div>{{ 'common.message.uniqueError' | translate }}</div>
               </div>
             }
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'user.tooltip.identityServiceType' | translate" translate>user.label.identityServiceType</span>
+            <span [appRichTooltip]="'user.tooltip.identityServiceType' | translate">{{ 'user.label.identityServiceType' | translate }}</span>
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -64,7 +64,7 @@
         </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'user.tooltip.identityServiceOrdering' | translate" translate>user.label.identityServiceOrdering</span>
+            <span [appRichTooltip]="'user.tooltip.identityServiceOrdering' | translate">{{ 'user.label.identityServiceOrdering' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <nz-input-number [(ngModel)]="currentObj.ordering" [nzMin]="0" [nzStep]="1"
@@ -74,7 +74,7 @@
         @if (currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'user.tooltip.identityServiceRequired' | translate" translate>user.label.identityServiceRequired</span>
+              <span [appRichTooltip]="'user.tooltip.identityServiceRequired' | translate">{{ 'user.label.identityServiceRequired' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <label [(ngModel)]="currentObj.required" name="serviceRequired"
@@ -85,7 +85,7 @@
         @if ((currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'user.tooltip.usedAsSecondFactor' | translate" translate>user.label.usedAsSecondFactor</span>
+              <span [appRichTooltip]="'user.tooltip.usedAsSecondFactor' | translate">{{ 'user.label.usedAsSecondFactor' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
@@ -96,7 +96,7 @@
         @if (identityService) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'user.tooltip.disable' | translate" translate>user.label.disable</span>
+              <span [appRichTooltip]="'user.tooltip.disable' | translate">{{ 'user.label.disable' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <label nz-checkbox [(ngModel)]="currentObj.disabled"
@@ -107,7 +107,7 @@
         @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
           <div class="form-group row p-t">
             <label class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate" translate>user.label.serviceAuthenticationScheme</span>
+              <span [appRichTooltip]="'user.tooltip.serviceAuthenticationScheme' | translate">{{ 'user.label.serviceAuthenticationScheme' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -120,7 +120,7 @@
         @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO') {
           <div class="form-group row">
             <label class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'user.tooltip.listOfFido' | translate" translate>user.label.listOfFido</span>
+              <span [appRichTooltip]="'user.tooltip.listOfFido' | translate">{{ 'user.label.listOfFido' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-select-input [name]="'fidoName'"
@@ -133,7 +133,7 @@
         @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE') {
           <div class="form-group row">
             <label class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'user.tooltip.listOfCert' | translate" translate>user.label.listOfCert</span>
+              <span [appRichTooltip]="'user.tooltip.listOfCert' | translate">{{ 'user.label.listOfCert' | translate }}</span>
             </label>
             <div class="col-sm-6">
               <app-select-input [name]="'certName'"
@@ -154,7 +154,7 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

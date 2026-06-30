@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectorRef} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from "@angular/core";
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -11,7 +11,8 @@ import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
 @Component({
   standalone: false,
   selector: 'app-change-modal',
-  templateUrl: './add-change-dialog.html'
+  templateUrl: './add-change-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddChangesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -705,6 +706,7 @@ export class AddChangesModalComponent {
   standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangesComponent {
   permission: any = {};
@@ -716,7 +718,7 @@ export class ChangesComponent {
     entryPerPage: 25,
   };
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 
@@ -741,20 +743,23 @@ export class ChangesComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-      this.changes()
+        this.changes();
       }
+      this.cdr.markForCheck();
     });
   }
 
   changes():void{
     this.coreService.post('inventory/changes', {details: true}).subscribe({
       next: (res) => {
-        this.data = res.changes
+        this.data = res.changes;
         this.isLoading = true;
+        this.cdr.markForCheck();
       },
       error: ()=> {
         this.isLoading = true;
-    }
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -787,6 +792,7 @@ export class ChangesComponent {
       if (result) {
         this.changes();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -809,6 +815,7 @@ export class ChangesComponent {
       if (result) {
         this.changes();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -845,6 +852,7 @@ export class ChangesComponent {
           };
           this._deleteChanges(obj);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -864,6 +872,7 @@ export class ChangesComponent {
         if (result) {
           this._deleteChanges(obj);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -872,6 +881,7 @@ export class ChangesComponent {
     this.coreService.post('inventory/changes/delete', obj).subscribe({
       next: (res: any) => {
         this.changes();
+        this.cdr.markForCheck();
       }, error: () => {}
     });
   }

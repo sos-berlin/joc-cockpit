@@ -38,27 +38,27 @@
             @if ((route === '/users' || route === '/users/identity_service') && adminFilter.isBlocklist && !isBlockButtonShow) {
               <div class="btn-group m-l-12 hidden-btn-group">
                 <button (click)="loadBlocklist('all')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='all'}"
-                        class="btn btn-grey btn-sm" translate>filters.button.all
+                        class="btn btn-grey btn-sm">{{ 'filters.button.all' | translate }}
                 </button>
                 <button (click)="loadBlocklist('today')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='today'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.today
+                        class="btn btn-grey btn-sm">
+                  {{ 'filters.button.today' | translate }}
                 </button>
                 <button (click)="loadBlocklist('-1h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-1h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last1
+                        class="btn btn-grey btn-sm">
+                  {{ 'filters.button.last1' | translate }}
                 </button>
                 <button (click)="loadBlocklist('-12h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-12h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last12
+                        class="btn btn-grey btn-sm">
+                  {{ 'filters.button.last12' | translate }}
                 </button>
                 <button (click)="loadBlocklist('-24h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-24h'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.last24
+                        class="btn btn-grey btn-sm">
+                  {{ 'filters.button.last24' | translate }}
                 </button>
                 <button (click)="loadBlocklist('-7d')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-7d'}"
-                        class="btn btn-grey btn-sm" translate>
-                  filters.button.lastWeak
+                        class="btn btn-grey btn-sm">
+                  {{ 'filters.button.lastWeak' | translate }}
                 </button>
               </div>
             }
@@ -71,7 +71,7 @@
                   (click)="exportObject()"
                   class="btn btn-sm btn-grey m-l-12">
                   <i class="fa fa-download"></i>&nbsp;
-                  <span translate>inventory.button.export</span>
+                  <span>{{ 'inventory.button.export' | translate }}</span>
                 </button>
               }
               @if (!isSelected && ((route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') || route.match('/users/identity_service/role'))) {
@@ -79,42 +79,42 @@
                   (click)="importObject()"
                   class="btn btn-sm btn-grey m-l-12">
                   <i class="fa fa-upload"></i>&nbsp;
-                  <span translate>inventory.button.import</span>
+                  <span>{{ 'inventory.button.import' | translate }}</span>
                 </button>
               }
               @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
                 <button (click)="approveRequest()"
                         class="btn btn-sm btn-grey m-l-12">
                   <i class="fa fa-check"></i>&nbsp;
-                  <span translate>common.button.approve</span>
+                  <span>{{ 'common.button.approve' | translate }}</span>
                 </button>
               }
               @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
                 <button (click)="rejectRequest()"
                         class="btn btn-sm btn-grey m-l-12">
                   <i class="fa fa-times"></i>&nbsp;
-                  <span translate>common.button.reject</span>
+                  <span>{{ 'common.button.reject' | translate }}</span>
                 </button>
               }
               @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
                 <button (click)="deleteRequest()"
                         class="btn btn-sm btn-grey m-l-12">
                   <i class="fa fa-trash"></i>&nbsp;
-                  <span translate>common.button.delete</span>
+                  <span>{{ 'common.button.delete' | translate }}</span>
                 </button>
               }
 <!--            <button-->
 <!--              (click)="manageSetting()"-->
 <!--              @if ((route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession) {" class="btn btn-grey btn-sm m-l-12">-->
 <!--              <i class="fa fa-plus"></i>&nbsp;-->
-<!--              <span translate>user.button.manageGeneralSetting</span>-->
+<!--              <span>{{ 'user.button.manageGeneralSetting' | translate }}</span>-->
 <!--            </button>-->
               @if ((route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession) {
                 <button
                   (click)="addAccount()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>user.button.addIdentityService</span>
+                  <span>{{ 'user.button.addIdentityService' | translate }}</span>
                 </button>
               }
               @if (!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
@@ -122,7 +122,7 @@
                   (click)="pasteList()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-paste"></i>&nbsp;
-                  <span translate>common.button.paste</span>
+                  <span>{{ 'common.button.paste' | translate }}</span>
                 </button>
               }
               @if (!isSelected && route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') {
@@ -130,7 +130,7 @@
                   (click)="addAccount()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>user.button.addUser</span>
+                  <span>{{ 'user.button.addUser' | translate }}</span>
                 </button>
               }
               @if (isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
@@ -138,7 +138,7 @@
                   (click)="copyList()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-copy"></i>&nbsp;
-                  <span translate>common.button.copy</span>
+                  <span>{{ 'common.button.copy' | translate }}</span>
                 </button>
               }
               @if (isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))) {
@@ -146,7 +146,7 @@
                   (click)="resetPassword()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-refresh"></i>&nbsp;
-                  <span translate>user.button.resetPassword</span>
+                  <span>{{ 'user.button.resetPassword' | translate }}</span>
                 </button>
               }
               @if (isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))) {
@@ -154,7 +154,7 @@
                   (click)="forcePasswordChange()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-key"></i>&nbsp;
-                  <span translate>user.button.forcePasswordChange</span>
+                  <span>{{ 'user.button.forcePasswordChange' | translate }}</span>
                 </button>
               }
               @if (isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))) {
@@ -162,7 +162,7 @@
                   (click)="disableList()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-ban"></i>&nbsp;
-                  <span translate>user.button.disable</span>
+                  <span>{{ 'user.button.disable' | translate }}</span>
                 </button>
               }
               @if (isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))) {
@@ -170,7 +170,7 @@
                   (click)="disableList(true)"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-check"></i>&nbsp;
-                  <span translate>user.button.enable</span>
+                  <span>{{ 'user.button.enable' | translate }}</span>
                 </button>
               }
               @if (isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
@@ -178,21 +178,21 @@
                   (click)="deleteList()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-trash"></i>&nbsp;
-                  <span translate>user.button.delete</span>
+                  <span>{{ 'user.button.delete' | translate }}</span>
                 </button>
               }
               @if (!isSelected && route && route.match('/users/identity_service/role')) {
                 <button (click)="addController()"
                         class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>user.button.addController</span>
+                  <span>{{ 'user.button.addController' | translate }}</span>
                 </button>
               }
               @if (!isSelected && route && route.match('/users/identity_service/role')) {
                 <button (click)="addRole()"
                         class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>user.button.addRole</span>
+                  <span>{{ 'user.button.addRole' | translate }}</span>
                 </button>
               }
               @if (route === '/users/identity_service/profiles' && isButtonShow) {
@@ -200,7 +200,7 @@
                         class="btn btn-sm btn-grey m-l-12"
                         type="button">
                   <i class="fa fa-trash-o"></i>&nbsp;
-                  <span translate>user.button.deleteProfile</span>
+                  <span>{{ 'user.button.deleteProfile' | translate }}</span>
                 </button>
               }
               @if (isBlockButtonShow && adminFilter.isBlocklist) {
@@ -208,7 +208,7 @@
                         class="btn btn-sm btn-grey m-l-12"
                         type="button">
                   <i class="fa fa-trash-o"></i>&nbsp;
-                  <span translate>user.button.deleteBlockedAccounts</span>
+                  <span>{{ 'user.button.deleteBlockedAccounts' | translate }}</span>
                 </button>
               }
               @if (isSessionButtonShow && adminFilter.isSession) {
@@ -216,7 +216,7 @@
                         class="btn btn-sm btn-grey m-l-12"
                         type="button">
                   <i class="fa fa-times"></i>&nbsp;
-                  <span translate>user.button.cancelSessions</span>
+                  <span>{{ 'user.button.cancelSessions' | translate }}</span>
                 </button>
               }
               @if (route === '/users/identity_service/profiles' && isButtonShow) {
@@ -224,7 +224,7 @@
                         class="btn btn-sm btn-grey m-l-12"
                         type="button">
                   <i class="fa fa-trash"></i>&nbsp;
-                  <span translate>user.button.deleteProfileAndCustomization</span>
+                  <span>{{ 'user.button.deleteProfileAndCustomization' | translate }}</span>
                 </button>
               }
               @if (route && route.match('/users/identity_service/permissions')) {
@@ -248,7 +248,7 @@
                   (click)="addToBlocklist()"
                   class="btn btn-grey btn-sm m-l-12">
                   <i aria-hidden="true" class="fa fa-plus"></i>&nbsp;
-                  <span translate>user.button.addToBlocklist</span>
+                  <span>{{ 'user.button.addToBlocklist' | translate }}</span>
                 </button>
               }
             </div>
@@ -279,7 +279,7 @@
                       class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                   }
                   <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
-                    <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
+                    <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'user.label.manageRoles' | translate }}</span></span>
                   </a>
                 </li>
               }
@@ -296,7 +296,7 @@
                       class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                   }
                   <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
-                    <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
+                    <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'user.label.users' | translate }}</span></span>
                   </a>
                 </li>
               }
@@ -310,7 +310,7 @@
                     class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
                 }
                 <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
-                  <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
+                  <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'user.label.profiles' | translate }}</span></span>
                 </a>
               </li>
               @if (identityServiceType == 'FIDO') {
@@ -321,7 +321,7 @@
                   <li class="nav-item">
                     <a class="nav-link" routerLink="identity_service/pending_requests" routerLinkActive="active">
                       <span class="nav-text text-dark p-b-sm"><span class="text"
-                                                                    translate>user.label.pendingRequests</span></span>
+>{{ 'user.label.pendingRequests' | translate }}</span></span>
                     </a>
                   </li>
                 </ng-container>

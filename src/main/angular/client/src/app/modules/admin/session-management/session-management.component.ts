@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
@@ -11,7 +11,8 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 @Component({
   standalone: false,
   selector: 'app-session-management',
-  templateUrl: './session-management.component.html'
+  templateUrl: './session-management.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SessionManagementComponent {
   @Input() permission: any = {};
@@ -30,7 +31,7 @@ export class SessionManagementComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private orderPipe: OrderPipe,
-              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService) {
+              private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'DELETE_BULK_ACTIVE_SESSION') {
         this.removeSessions(null);
@@ -167,6 +168,7 @@ export class SessionManagementComponent {
         this.sessions = res.activeSessions;
         this.isLoaded = true;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
       }
@@ -241,6 +243,7 @@ export class SessionManagementComponent {
       next: () => {
         this.loadSession();
         this.reset();
+        this.cdr.markForCheck();
       }, error: () => {
         this.reset();
       }

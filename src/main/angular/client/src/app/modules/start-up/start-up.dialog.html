@@ -4,10 +4,10 @@
       <i (click)="helpPage('initial-operation-register-controller')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (new) {
-      <span translate>controller.label.newController</span>
+      <span>{{ 'controller.label.newController' | translate }}</span>
     }
     @if (!new) {
-      <span translate>controller.label.registerController</span>
+      <span>{{ 'controller.label.registerController' | translate }}</span>
     }
   </h4>
   <button (click)="close()" aria-label="Close" class="close" type="button">
@@ -25,15 +25,15 @@
     @if (hasLicense) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>common.label.type</small>
+          <small class="_600 section-box-title">{{ 'common.label.type' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
-            <label [appRichTooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
+            <label [appRichTooltip]="'controller.tooltip.type' | translate" class="col-sm-4">{{ 'common.label.type' | translate }}</label>
             <div class="col-sm-8">
               <nz-radio-group [(ngModel)]="controller.type" name="type">
-                <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
-                <label nz-radio nzValue="CLUSTER"><span translate>controller.label.cluster</span></label>
+                <label nz-radio nzValue="STANDALONE"><span>{{ 'controller.label.standalone' | translate }}</span></label>
+                <label nz-radio nzValue="CLUSTER"><span>{{ 'controller.label.cluster' | translate }}</span></label>
               </nz-radio-group>
             </div>
           </div>
@@ -43,12 +43,12 @@
     @if (controller.type === 'STANDALONE') {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>controller.label.standaloneController</small>
+          <small class="_600 section-box-title">{{ 'controller.label.standaloneController' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
             <label [appRichTooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.caption
+>{{ 'controller.label.caption' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}"
@@ -58,7 +58,7 @@
               @if (title.invalid && (title.dirty || title.touched)) {
                 <div class="text-danger help-block">
                   @if (title.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -66,7 +66,7 @@
           </div>
           <div class="form-group row">
             <label [appRichTooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                   translate>controller.label.standaloneUrl
+>{{ 'controller.label.standaloneUrl' | translate }}
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}"
@@ -77,10 +77,10 @@
               @if (remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)) {
                 <div class="text-danger help-block">
                   @if (remoteUrl.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (remoteUrl.errors['invalidUrl']) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -104,12 +104,12 @@
       <div>
         <div class="b-a m-b-sm section-box">
           <div class="section-box-header">
-            <small class="_600 section-box-title" translate>controller.label.primaryController</small>
+            <small class="_600 section-box-title">{{ 'controller.label.primaryController' | translate }}</small>
           </div>
           <div class="p-a-sm">
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.primaryTitle' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.caption
+>{{ 'controller.label.caption' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : ((primaryTitle.dirty || primaryTitle.touched) && primaryTitle.invalid)}"
@@ -120,7 +120,7 @@
                 @if (primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)) {
                   <div class="text-danger help-block">
                     @if (primaryTitle.errors['required']) {
-                      <div translate>message.requiredError</div>
+                      <div>{{ 'message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -128,7 +128,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.primaryUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.jocUrlForPrimary
+>{{ 'controller.label.jocUrlForPrimary' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : ((primaryUrl.dirty || primaryUrl.touched) && primaryUrl.invalid)}"
@@ -138,10 +138,10 @@
                 @if (primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)) {
                   <div class="text-danger help-block">
                     @if (primaryUrl.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                     @if (primaryUrl.errors['invalidUrl']) {
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -149,7 +149,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.urlForBackup' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.backupUrl</label>
+>{{ 'controller.label.backupUrl' | translate }}</label>
               <div [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}"
                    class="col-sm-8">
                 <input #primaryClusterUrl="ngModel" [(ngModel)]="controller.primaryClusterUrl" class="form-control" name="primaryClusterUrl"
@@ -157,7 +157,7 @@
                 @if (primaryClusterUrl.invalid && (primaryClusterUrl.dirty || primaryClusterUrl.touched)) {
                   <div class="text-danger help-block">
                     @if (primaryClusterUrl.errors['invalidUrl']) {
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -179,12 +179,12 @@
         </div>
         <div class="b-a m-b-sm section-box">
           <div class="section-box-header">
-            <small class="_600 section-box-title" translate>controller.label.backupController</small>
+            <small class="_600 section-box-title">{{ 'controller.label.backupController' | translate }}</small>
           </div>
           <div class="p-a-sm">
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.backupTitle' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.caption
+>{{ 'controller.label.caption' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : ((backupTitle.dirty || backupTitle.touched) && backupTitle.invalid)}"
@@ -195,7 +195,7 @@
                 @if (backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)) {
                   <div class="text-danger help-block">
                     @if (backupTitle.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -203,7 +203,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.backupUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.jocUrlForBackup
+>{{ 'controller.label.jocUrlForBackup' | translate }}
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : ((backupUrl.dirty || backupUrl.touched) && backupUrl.invalid)}"
@@ -213,10 +213,10 @@
                 @if (backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)) {
                   <div class="text-danger help-block">
                     @if (backupUrl.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                     @if (backupUrl.errors['invalidUrl']) {
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -224,7 +224,7 @@
             </div>
             <div class="form-group row">
               <label [appRichTooltip]="'controller.tooltip.urlForPrimary' | translate" class="col-sm-4 form-control-label"
-                     translate>controller.label.primaryUrl</label>
+>{{ 'controller.label.primaryUrl' | translate }}</label>
               <div [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}"
                    class="col-sm-8">
                 <input #backupClusterUrl="ngModel" [(ngModel)]="controller.backupClusterUrl" class="form-control" name="backupClusterUrl"
@@ -232,7 +232,7 @@
                 @if (backupClusterUrl.invalid && (backupClusterUrl.dirty || backupClusterUrl.touched)) {
                   <div class="text-danger help-block">
                     @if (backupClusterUrl.errors['invalidUrl']) {
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     }
                   </div>
                 }
@@ -262,8 +262,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="close()" translate>
-      common.button.cancel
+    <button type="button" class="btn btn-grey btn-sm" (click)="close()">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

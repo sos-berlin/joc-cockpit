@@ -13,7 +13,7 @@
                   class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b>{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -31,11 +31,11 @@
                 <span [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'"
                       class="badge m-r-12">
                     @if (calendar.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span>{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!calendar.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span>{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
                       </span>
                   }
@@ -45,10 +45,10 @@
                 <span [ngClass]="!data.released ? 'badge-danger':'badge-success'"
                       class="badge">
                     @if (!data.released) {
-                      <span translate>inventory.label.notReleased</span>
+                      <span>{{ 'inventory.label.notReleased' | translate }}</span>
                     }
                   @if (data.released) {
-                    <span translate>inventory.label.released</span>
+                    <span>{{ 'inventory.label.released' | translate }}</span>
                   }
                   </span>
               }
@@ -57,7 +57,7 @@
                   (click)="release()"
                   [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.release</span>
+                  <span>{{ 'inventory.button.release' | translate }}</span>
                 </button>
               }
             </div>
@@ -70,12 +70,12 @@
                 @if (!showMoreAdvanceOptions) {
                   <a class="text-primary cursor" (click)="showMoreOptions()">
                     <i class="fa fa-caret-right m-r-xs"></i>
-                    <span translate>common.label.showMoreOptions</span>
+                    <span>{{ 'common.label.showMoreOptions' | translate }}</span>
                   </a>
                 } @else {
                   <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                     <i class="fa fa-caret-down m-r-xs"></i>
-                    <span translate>common.label.showFewerOptions</span>
+                    <span>{{ 'common.label.showFewerOptions' | translate }}</span>
                   </a>
                 }
               </div>
@@ -85,7 +85,7 @@
                 <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
                      class="form-group row">
                   <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.calendar.name' | translate" translate>common.label.name</span>
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.name' | translate">{{ 'common.label.name' | translate }}</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -97,10 +97,10 @@
                     @if (cname.invalid && (cname.dirty || cname.touched)) {
                       <div class="text-danger help-block">
                         @if (cname.errors['required']) {
-                          <div translate>common.message.requiredError</div>
+                          <div>{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (cname.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div>{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -108,7 +108,7 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.calendar.title' | translate" translate>common.label.title</span>
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.title' | translate">{{ 'common.label.title' | translate }}</span>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
@@ -119,7 +119,7 @@
                 @if (showMoreAdvanceOptions) {
                   <div class="form-group row">
                     <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                      <span [appRichTooltip]="'inventory.tooltips.calendar.documentation' | translate" translate>inventory.label.documentation</span>
+                      <span [appRichTooltip]="'inventory.tooltips.calendar.documentation' | translate">{{ 'inventory.label.documentation' | translate }}</span>
                     </label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
                       <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
@@ -129,7 +129,7 @@
                 }
                 <div class="form-group row">
                   <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.calendar.type' | translate" translate>common.label.type</span>
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.type' | translate">{{ 'common.label.type' | translate }}</span>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
@@ -140,7 +140,7 @@
                 </div>
                 <div class="form-group row">
                   <label class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.calendar.validFrom' | translate" translate>runtime.label.validFrom</span>
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                   </label>
                   <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
                     <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
@@ -149,7 +149,7 @@
                                     name="from"></nz-date-picker>
                   </div>
                   <label class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center">
-                    <span [appRichTooltip]="'inventory.tooltips.calendar.validTo' | translate" translate>runtime.label.validTo</span>
+                    <span [appRichTooltip]="'inventory.tooltips.calendar.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                   </label>
                   <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
                        class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
@@ -165,25 +165,25 @@
                 <div class="btn-group">
                   <button (click)="changeFrequencyType('INCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
                           class="btn btn-grey btn-sm button-group-ellipsis"
-                          translate type="button">
-                    runtime.button.includedFrequencies
+ type="button">
+                    {{ 'runtime.button.includedFrequencies' | translate }}
                   </button>
                   <button (click)="changeFrequencyType('EXCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
                           class="btn btn-grey btn-sm button-group-ellipsis"
-                          translate type="button">
-                    runtime.button.excludedFrequencies
+ type="button">
+                    {{ 'runtime.button.excludedFrequencies' | translate }}
                   </button>
                 </div>
                 <button (click)="createNewFrequency()" [disabled]="isTrash || !permission.joc.inventory.manage"
-                        class="btn btn-sm pull-right btn-grey" translate type="button">
+                        class="btn btn-sm pull-right btn-grey" type="button">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>runtime.button.addNewFrequency</span>
+                  <span>{{ 'runtime.button.addNewFrequency' | translate }}</span>
                 </button>
                 <button (click)="showYearView()" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
                         class="btn btn-sm pull-right btn-grey m-r-12 m-b"
-                        translate type="button">
+ type="button">
                   <i class="fa fa-television"></i>&nbsp;
-                  <span translate>runtime.button.showYearView</span>
+                  <span>{{ 'runtime.button.showYearView' | translate }}</span>
                 </button>
               </div>
               <div class="col-lg-12 col-xl-11 col-xxl-9 max-ht-n-554">
@@ -191,10 +191,10 @@
                   <table class="table table-hover table-bordered ">
                     <thead>
                     <tr>
-                      <th><span translate>runtime.label.listOfFrequencies</span></th>
-                      <th><span translate>runtime.label.validFrom</span></th>
-                      <th><span translate>runtime.label.validTo</span></th>
-                      <th style="width: 80px"><span translate>runtime.label.action</span></th>
+                      <th><span>{{ 'runtime.label.listOfFrequencies' | translate }}</span></th>
+                      <th><span>{{ 'runtime.label.validFrom' | translate }}</span></th>
+                      <th><span>{{ 'runtime.label.validTo' | translate }}</span></th>
+                      <th style="width: 80px"><span>{{ 'runtime.label.action' | translate }}</span></th>
                     </tr>
                     </thead>
                     <tbody>

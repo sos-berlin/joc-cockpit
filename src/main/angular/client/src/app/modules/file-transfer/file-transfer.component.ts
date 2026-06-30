@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -19,6 +19,7 @@ declare const $;
   standalone: false,
   selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -32,7 +33,7 @@ export class FilterModalComponent {
   permission: any = {};
   name: string;
 
-  constructor(private authService: AuthService, public activeModal: NzModalRef) {
+  constructor(private authService: AuthService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -68,6 +69,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
@@ -104,7 +106,7 @@ export class FileTransferSearchComponent {
     {status: 'RENAME', text: 'rename', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -187,6 +189,7 @@ export class FileTransferSearchComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
+      this.cdr.markForCheck();
     });
   }
 
@@ -325,7 +328,8 @@ export class FileTransferSearchComponent {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -345,7 +349,8 @@ export class FileTransferSearchComponent {
 @Component({
   standalone: false,
   selector: 'app-single-file-transfer',
-  templateUrl: './single-file-transfer.component.html'
+  templateUrl: './single-file-transfer.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleFileTransferComponent {
   controllerId: any;
@@ -360,7 +365,7 @@ export class SingleFileTransferComponent {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private route: ActivatedRoute, private dataService: DataService) {
+              private route: ActivatedRoute, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -392,7 +397,8 @@ export class SingleFileTransferComponent {
         this.fileTransfers = [result];
         this.loading = true;
         this.setHeaderWidth();
-      }, error: () => this.loading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -411,6 +417,7 @@ export class SingleFileTransferComponent {
           $(this).css('width', self.widthArr[i] + 'px');
         });
       }, 0);
+      this.cdr.markForCheck();
     });
   }
 
@@ -453,7 +460,8 @@ export class SingleFileTransferComponent {
 @Component({
   standalone: false,
   selector: 'app-file-transfer',
-  templateUrl: './file-transfer.component.html'
+  templateUrl: './file-transfer.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileTransferComponent {
   schedulerIds: any = {};
@@ -492,7 +500,7 @@ export class FileTransferComponent {
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {
+              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -603,7 +611,8 @@ export class FileTransferComponent {
         }
         this.searchInResult();
         this.setHeaderWidth();
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -622,6 +631,7 @@ export class FileTransferComponent {
         transfer.profile = res.transfers[0].profile;
         transfer.taskId = res.transfers[0].taskId;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -643,8 +653,8 @@ export class FileTransferComponent {
             $(this).css('width', self.widthArr[i] + 'px');
           });
         }, 0);
-
-      }, error: () => value.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { value.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -658,6 +668,7 @@ export class FileTransferComponent {
       };
       this.coreService.post('yade/transfer', obj).subscribe((res: any) => {
         value = extend(value, res);
+        this.cdr.markForCheck();
       });
     }
     this.getFiles(value);
@@ -680,7 +691,8 @@ export class FileTransferComponent {
         this.fileTransfers = res.transfers;
         this.searchInResult();
         this.setHeaderWidth();
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -697,9 +709,11 @@ export class FileTransferComponent {
           this.filterList = res.configurations;
         }
         this.getYadeCustomizations();
+        this.cdr.markForCheck();
       }, error: () => {
         this.filterList = [];
         this.getYadeCustomizations();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -746,6 +760,7 @@ export class FileTransferComponent {
                 this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                 this.selectedFiltered.account = value.account;
                 this.load();
+                this.cdr.markForCheck();
               });
             }
           });
@@ -759,10 +774,12 @@ export class FileTransferComponent {
           this.savedFilter.selected = undefined;
           this.load();
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.loadConfig = true;
         this.savedFilter.selected = undefined;
         this.load();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -852,6 +869,7 @@ export class FileTransferComponent {
           this.copyFilter(obj);
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -899,6 +917,7 @@ export class FileTransferComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.load();
+        this.cdr.markForCheck();
       });
     } else {
       this.isCustomizationSelected(false);
@@ -1003,10 +1022,12 @@ export class FileTransferComponent {
         nzClosable: false,
         nzMaskClosable: false
       });
+      this.cdr.markForCheck();
       modal.afterClose.subscribe(obj => {
         if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
           this.changeFilter(filterObj);
         }
+        this.cdr.markForCheck();
       });
     });
   }

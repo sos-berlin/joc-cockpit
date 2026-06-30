@@ -5,18 +5,18 @@
     }
     @if (!newUser && !copy) {
       <span>
-        <span translate>user.label.editUser</span>:
+        <span>{{ 'user.label.editUser' | translate }}</span>:
         <span [innerHtml]="currentUser.userName | decodeSpace"></span>
       </span>
     }
     @if (!newUser && copy) {
       <span>
-        <span translate>user.label.copyUser</span> :
+        <span>{{ 'user.label.copyUser' | translate }}</span> :
         <span [innerHtml]="currentUser.userName | decodeSpace"></span>
       </span>
     }
     @if (newUser && !copy) {
-      <span translate>user.label.addUser</span>
+      <span>{{ 'user.label.addUser' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -31,7 +31,7 @@
     <div [ngClass]="{'has-error' : ((account.dirty || account.touched) && account.invalid) || !isUnique}"
          class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'user.tooltip.user' | translate" translate>user.label.user</span>
+        <span [appRichTooltip]="'user.tooltip.user' | translate">{{ 'user.label.user' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -42,13 +42,13 @@
         @if (account.invalid && (account.dirty || account.touched)) {
           <div class="text-danger help-block">
             @if (account.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
         @if (!isUnique) {
           <div class="help-block text-danger">
-            <div translate>common.message.uniqueError</div>
+            <div>{{ 'common.message.uniqueError' | translate }}</div>
           </div>
         }
       </div>
@@ -56,7 +56,7 @@
     @if (isPasswordVisible) {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.password' | translate" translate>user.label.password</span>
+          <span [appRichTooltip]="'user.tooltip.password' | translate">{{ 'user.label.password' | translate }}</span>
         </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
           <input type="password"
@@ -70,7 +70,7 @@
                  (blur)="checkPwdLength()"/>
           @if (!minimumPasswordLength && currentUser.fakePassword) {
             <div class="text-danger help-block">
-              <div translate>profile.message.minimumPasswordLength</div>
+              <div>{{ 'profile.message.minimumPasswordLength' | translate }}</div>
             </div>
           }
         </div>
@@ -79,7 +79,7 @@
     @if (isPasswordVisible && !copy) {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'profile.tooltip.confirmPassword' | translate" translate>profile.label.confirmPassword</span>
+          <span [appRichTooltip]="'profile.tooltip.confirmPassword' | translate">{{ 'profile.label.confirmPassword' | translate }}</span>
         </label>
         <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
           <input type="password"
@@ -92,7 +92,7 @@
                  (blur)="checkPassword()"/>
           @if (!isPasswordMatch && currentUser.repeatedPassword) {
             <div class="text-danger help-block">
-              <div translate>profile.message.passwordNotMatch</div>
+              <div>{{ 'profile.message.passwordNotMatch' | translate }}</div>
             </div>
           }
         </div>
@@ -102,7 +102,7 @@
     @if (!copy && !secondFactor) {
       <div class="form-group row" [ngClass]="{'has-error': !isApprovalRoleValid}">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.roles' | translate" translate>user.label.roles</span>
+          <span [appRichTooltip]="'user.tooltip.roles' | translate">{{ 'user.label.roles' | translate }}</span>
         </label>
         <div class="col-sm-6">
           <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [name]="'roles'"
@@ -110,8 +110,8 @@
 
           @if (!isApprovalRoleValid && approvalRequestorRole) {
             <div class="text-danger help-block">
-              <div [translateParams]="{approvalRequestorRole: approvalRequestorRole}" translate>
-                user.message.invalidRole
+              <div>
+                {{ 'user.message.invalidRole' | translate: {approvalRequestorRole: approvalRequestorRole} }}
               </div>
             </div>
           }
@@ -122,7 +122,7 @@
     @if ((identityServiceType === 'JOC')) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.forcePasswordChange' | translate" translate>user.label.forcePasswordChange</span>
+          <span [appRichTooltip]="'user.tooltip.forcePasswordChange' | translate">{{ 'user.label.forcePasswordChange' | translate }}</span>
         </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.forcePasswordChange" [nzDisabled]="currentUser.isDisabled || newUser"
@@ -133,7 +133,7 @@
     @if (!newUser && !copy && identityServiceType) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.banned' | translate" translate>user.label.banned</span>
+          <span [appRichTooltip]="'user.tooltip.banned' | translate">{{ 'user.label.banned' | translate }}</span>
         </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.blocked"
@@ -144,7 +144,7 @@
     @if (!newUser && !copy) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'user.tooltip.disabled' | translate" translate>user.label.disabled</span>
+          <span [appRichTooltip]="'user.tooltip.disabled' | translate">{{ 'user.label.disabled' | translate }}</span>
         </label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="currentUser.disabled"
@@ -162,7 +162,7 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

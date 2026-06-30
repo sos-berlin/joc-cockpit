@@ -68,18 +68,18 @@
       }
       @if (controllerPermission && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')) {
         <li (click)="clusterAction('abort', controller, false)" nz-menu-item>
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" translate>dashboard.button.abort</a>
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{ 'dashboard.button.abort' | translate }}</a>
         </li>
       }
       @if (controllerPermission && controllerPermission.restart && controllerPermission.terminate && controller && (controller.role === 'STANDALONE' || controller.clusterNodeState._text !== 'active')) {
         <li (click)="clusterAction('abortAndRestart', controller, false)" nz-menu-item>
-          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}" translate>dashboard.button.abortAndRestart</a>
+          <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}">{{ 'dashboard.button.abortAndRestart' | translate }}</a>
         </li>
       }
       @if (controller && controllerPermission && controllerPermission.getLog) {
         <li (click)="logs(controller)" nz-menu-item>
           <a [ngClass]="{'disable-link': controller.componentState._text !== 'operational'}"
-             translate>dashboard.button.logs</a>
+>{{ 'dashboard.button.logs' | translate }}</a>
         </li>
       }
     </ul>

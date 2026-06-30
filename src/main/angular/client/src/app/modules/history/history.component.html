@@ -15,45 +15,45 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button (click)="loadHistory('STATE','ALL')" [disabled]="savedHistoryFilter.selected"
                       [ngClass]="{'btn-primary': order.filter.historyStates=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.allStatus' | translate }}
               </button>
               <button (click)="loadHistory('STATE','SUCCESSFUL')" [disabled]="savedHistoryFilter.selected"
                       [ngClass]="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.successful
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'common.button.successful' | translate }}
               </button>
               <button (click)="loadHistory('STATE','FAILED')" [disabled]="savedHistoryFilter.selected"
                       [ngClass]="{'btn-primary': order.filter.historyStates=='FAILED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.failed' | translate }}
               </button>
               <button (click)="loadHistory('STATE','INCOMPLETE')" [disabled]="savedHistoryFilter.selected"
                       [ngClass]="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.incomplete
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'common.button.incomplete' | translate }}
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate>common.label.state
+                      nzTrigger="click">{{ 'common.label.state' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="loadHistory('STATE','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='ALL', 'disable-link':savedHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.allStatus</a>
+                    <a>{{ 'common.button.allStatus' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','SUCCESSFUL')" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='SUCCESSFUL', 'disable-link':savedHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.successful</a>
+                    <a>{{ 'common.button.successful' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','FAILED')" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='FAILED', 'disable-link':savedHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.failed</a>
+                    <a>{{ 'common.button.failed' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','INCOMPLETE')" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.historyStates=='INCOMPLETE', 'disable-link':savedHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.incomplete</a>
+                    <a>{{ 'common.button.incomplete' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -68,7 +68,7 @@
                   @if (order.filter.date) {
                     <span> {{ selectedOrderDateLabel | translate }} </span>
                   } @else {
-                    <span translate> common.label.dateFilter </span>
+                    <span> {{ 'common.label.dateFilter' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -77,7 +77,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date==btn.date, 'disable-link':savedHistoryFilter.selected}"
                           nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
+                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                       </li>
                     }
                   </ul>
@@ -86,7 +86,7 @@
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
                   <button [appRichTooltip]="selectedFiltered1.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">{{'customization.label.customizations' | translate}}
                     <span [innerHtml]="selectedFiltered1.name" class="text-primary"></span>
                     <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
@@ -95,12 +95,12 @@
                     <ul nz-menu>
                       @if (permission.joc && permission.joc.administration.customization.manage) {
                         <li (click)="createCustomization()" nz-menu-item>
-                          <a translate>customization.label.createCustomization</a>
+                          <a>{{ 'customization.label.createCustomization' | translate }}</a>
                         </li>
                       }
                       @if (orderHistoryFilterList && orderHistoryFilterList.length>0) {
                         <li (click)="editFilters()" nz-menu-item>
-                          <a translate>customization.label.editExistingCustomizations</a>
+                          <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                         </li>
                       }
                       @if (orderHistoryFilterList && orderHistoryFilterList.length>0) {
@@ -130,45 +130,45 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button (click)="loadHistory('STATE','ALL')" [disabled]="savedJobHistoryFilter.selected"
                       [ngClass]="{'btn-primary': task.filter.historyStates=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.allStatus' | translate }}
               </button>
               <button (click)="loadHistory('STATE','SUCCESSFUL')" [disabled]="savedJobHistoryFilter.selected"
                       [ngClass]="{'btn-primary': task.filter.historyStates=='SUCCESSFUL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.successful
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'common.button.successful' | translate }}
               </button>
               <button (click)="loadHistory('STATE','FAILED')" [disabled]="savedJobHistoryFilter.selected"
                       [ngClass]="{'btn-primary': task.filter.historyStates=='FAILED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.failed' | translate }}
               </button>
               <button (click)="loadHistory('STATE','INCOMPLETE')" [disabled]="savedJobHistoryFilter.selected"
                       [ngClass]="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.incomplete
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'common.button.incomplete' | translate }}
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate>common.label.state
+                      nzTrigger="click">{{ 'common.label.state' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="loadHistory('STATE','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='ALL', 'disable-link':savedJobHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.allStatus</a>
+                    <a>{{ 'common.button.allStatus' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','SUCCESSFUL')" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.successful</a>
+                    <a>{{ 'common.button.successful' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','FAILED')" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.failed</a>
+                    <a>{{ 'common.button.failed' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','INCOMPLETE')" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.incomplete</a>
+                    <a>{{ 'common.button.incomplete' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -183,7 +183,7 @@
                   @if (task.filter.date) {
                     <span> {{ selectedTaskDateLabel | translate }} </span>
                   } @else {
-                    <span translate> common.label.dateFilter </span>
+                    <span> {{ 'common.label.dateFilter' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -192,7 +192,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date==btn.date, 'disable-link':savedJobHistoryFilter.selected}"
                           nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
+                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                       </li>
                     }
                   </ul>
@@ -201,7 +201,7 @@
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
                   <button [appRichTooltip]="selectedFiltered2.account" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered2.name"
                                                                                class="text-primary"></span>
@@ -211,12 +211,12 @@
                     <ul nz-menu>
                       @if (permission.joc && permission.joc.administration.customization.manage) {
                         <li (click)="createCustomization()" nz-menu-item>
-                          <a translate>customization.label.createCustomization</a>
+                          <a>{{ 'customization.label.createCustomization' | translate }}</a>
                         </li>
                       }
                       @if (jobHistoryFilterList && jobHistoryFilterList.length>0) {
                         <li (click)="editFilters()" nz-menu-item>
-                          <a translate>customization.label.editExistingCustomizations</a>
+                          <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                         </li>
                       }
                       @if (jobHistoryFilterList && jobHistoryFilterList.length>0) {
@@ -246,43 +246,43 @@
             <div class="btn-group m-l-12 hidden-btn-group">
               <button (click)="loadHistory('STATE','ALL')" [disabled]="savedYadeHistoryFilter.selected"
                       [ngClass]="{'btn-primary': yade.filter.states=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.allStatus' | translate }}
               </button>
               <button (click)="loadHistory('STATE','SUCCESSFUL')" [disabled]="savedYadeHistoryFilter.selected"
                       [ngClass]="{'btn-primary': yade.filter.states=='SUCCESSFUL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.successful
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.successful' | translate }}
               </button>
               <button (click)="loadHistory('STATE','FAILED')" [disabled]="savedYadeHistoryFilter.selected"
                       [ngClass]="{'btn-primary': yade.filter.states=='FAILED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.failed' | translate }}
               </button>
               <button (click)="loadHistory('STATE','INCOMPLETE')" [disabled]="savedYadeHistoryFilter.selected"
                       [ngClass]="{'btn-primary': yade.filter.states=='INCOMPLETE'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.incomplete
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.incomplete' | translate }}
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="state3" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate>label.state
+                      nzTrigger="click">{{ 'label.state' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #state3="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="loadHistory('STATE','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='ALL', 'disable-link':savedYadeHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.allStatus</a>
+                    <a>{{ 'common.button.allStatus' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','SUCCESSFUL')" [ngClass]="{'ant-select-dropdown-menu-item-active':yade.filter.states=='SUCCESSFUL', 'disable-link':savedYadeHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.successful</a>
+                    <a>{{ 'common.button.successful' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','FAILED')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='FAILED', 'disable-link':savedYadeHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.failed</a>
+                    <a>{{ 'common.button.failed' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','INCOMPLETE')" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.states=='INCOMPLETE', 'disable-link':savedYadeHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.incomplete</a>
+                    <a>{{ 'common.button.incomplete' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -294,7 +294,7 @@
                 @if (yade.filter.date) {
                   <span> {{ selectedYadeDateLabel | translate }} </span>
                 } @else {
-                  <span translate> common.label.dateFilter </span>
+                  <span> {{ 'common.label.dateFilter' | translate }} </span>
                 }
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
@@ -303,7 +303,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.date==btn.date, 'disable-link':savedYadeHistoryFilter.selected}"
                         nz-menu-item>
-                      <a translate>filters.button.{{btn.text}}</a>
+                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                     </li>
                   }
                 </ul>
@@ -315,7 +315,7 @@
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
                   <button [appRichTooltip]="selectedFiltered3.account" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered3.name"
                                                                                class="text-primary"></span>
@@ -325,12 +325,12 @@
                     <ul nz-menu>
                       @if (permission.joc && permission.joc.administration.customization.manage) {
                         <li (click)="createCustomization()" nz-menu-item>
-                          <a translate>customization.label.createCustomization</a>
+                          <a>{{ 'customization.label.createCustomization' | translate }}</a>
                         </li>
                       }
                       @if (yadeHistoryFilterList && yadeHistoryFilterList.length>0) {
                         <li (click)="editFilters()" nz-menu-item>
-                          <a translate>customization.label.editExistingCustomizations</a>
+                          <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                         </li>
                       }
                       @if (yadeHistoryFilterList && yadeHistoryFilterList.length>0) {
@@ -361,38 +361,38 @@
               <button (click)="loadHistory('STATE','ALL')"
                       [disabled]="savedDeploymentHistoryFilter.selected"
                       [ngClass]="{'btn-primary': deployment.filter.state=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>history.button.allState
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'history.button.allState' | translate }}
               </button>
               <button (click)="loadHistory('STATE','DEPLOYED')"
                       [disabled]="savedDeploymentHistoryFilter.selected"
                       [ngClass]="{'btn-primary': deployment.filter.state=='DEPLOYED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>history.button.deployed
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'history.button.deployed' | translate }}
               </button>
               <button (click)="loadHistory('STATE','NOT_DEPLOYED')"
                       [disabled]="savedDeploymentHistoryFilter.selected"
                       [ngClass]="{'btn-primary': deployment.filter.state=='NOT_DEPLOYED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                history.button.notDeployed
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'history.button.notDeployed' | translate }}
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate>common.label.state
+                      nzTrigger="click">{{ 'common.label.state' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #state="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="loadHistory('STATE','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='ALL', 'disable-link':savedDeploymentHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>history.button.allState</a>
+                    <a>{{ 'history.button.allState' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','DEPLOYED')" [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>history.button.deployed</a>
+                    <a>{{ 'history.button.deployed' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('STATE','NOT_DEPLOYED')" [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.state=='NOT_DEPLOYED', 'disable-link':savedDeploymentHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>history.button.notDeployed</a>
+                    <a>{{ 'history.button.notDeployed' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -407,7 +407,7 @@
                   @if (deployment.filter.date) {
                     <span> {{ selectedDeploymentDateLabel | translate }} </span>
                   } @else {
-                    <span translate> common.label.dateFilter </span>
+                    <span> {{ 'common.label.dateFilter' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -416,7 +416,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date==btn.date, 'disable-link':savedDeploymentHistoryFilter.selected}"
                           nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
+                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                       </li>
                     }
                   </ul>
@@ -425,7 +425,7 @@
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
                   <button [appRichTooltip]="selectedFiltered4.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered4.name"
                                                                                class="text-primary"></span>
@@ -435,12 +435,12 @@
                     <ul nz-menu>
                       @if (permission.joc && permission.joc.administration.customization.manage) {
                         <li (click)="createCustomization()" nz-menu-item>
-                          <a translate>customization.label.createCustomization</a>
+                          <a>{{ 'customization.label.createCustomization' | translate }}</a>
                         </li>
                       }
                       @if (deploymentHistoryFilterList && deploymentHistoryFilterList.length>0) {
                         <li (click)="editFilters()" nz-menu-item>
-                          <a translate>customization.label.editExistingCustomizations</a>
+                          <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                         </li>
                       }
                       @if (deploymentHistoryFilterList && deploymentHistoryFilterList.length>0) {
@@ -471,39 +471,39 @@
               <button (click)="loadHistory('CATEGORY','ALL')"
                       [disabled]="savedSubmissionHistoryFilter.selected"
                       [ngClass]="{'btn-primary': submission.filter.category=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.all
+                      class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.all' | translate }}
               </button>
               <button (click)="loadHistory('CATEGORY','SUBMITTED')"
                       [disabled]="savedSubmissionHistoryFilter.selected"
                       [ngClass]="{'btn-primary': submission.filter.category=='SUBMITTED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                history.button.submitted
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'history.button.submitted' | translate }}
               </button>
               <button (click)="loadHistory('CATEGORY','NOT_SUBMITTED')"
                       [disabled]="savedSubmissionHistoryFilter.selected"
                       [ngClass]="{'btn-primary': submission.filter.category=='NOT_SUBMITTED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                history.button.notSubmitted
+                      class="btn btn-grey btn-sm button-group-ellipsis">
+                {{ 'history.button.notSubmitted' | translate }}
               </button>
             </div>
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="state2" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate>common.label.type
+                      nzTrigger="click">{{ 'common.label.type' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #state2="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="loadHistory('CATEGORY','ALL')" [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='ALL', 'disable-link':savedSubmissionHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>common.button.all</a>
+                    <a>{{ 'common.button.all' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('CATEGORY','SUBMITTED')" [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>history.button.submitted</a>
+                    <a>{{ 'history.button.submitted' | translate }}</a>
                   </li>
                   <li (click)="loadHistory('CATEGORY','NOT_SUBMITTED')" [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.category=='NOT_SUBMITTED', 'disable-link':savedSubmissionHistoryFilter.selected}"
                       nz-menu-item>
-                    <a translate>history.button.notSubmitted</a>
+                    <a>{{ 'history.button.notSubmitted' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -518,7 +518,7 @@
                   @if (submission.filter.date) {
                     <span> {{ selectedSubmissionDateLabel | translate }} </span>
                   } @else {
-                    <span translate> common.label.dateFilter </span>
+                    <span> {{ 'common.label.dateFilter' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -527,7 +527,7 @@
                     @for (btn of subMissionFilterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}"
                           nz-menu-item>
-                        <a translate>filters.button.{{btn.text}}</a>
+                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                       </li>
                     }
                   </ul>
@@ -536,7 +536,7 @@
               @if (permission.joc && permission.joc.administration.customization.view) {
                 <div class="btn-group dropdown">
                   <button [appRichTooltip]="selectedFiltered5.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
                           type="button">
                     {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered5.name"
                                                                                class="text-primary"></span>
@@ -546,12 +546,12 @@
                     <ul nz-menu>
                       @if (permission.joc && permission.joc.administration.customization.manage) {
                         <li (click)="createCustomization()" nz-menu-item>
-                          <a translate>customization.label.createCustomization</a>
+                          <a>{{ 'customization.label.createCustomization' | translate }}</a>
                         </li>
                       }
                       @if (submissionHistoryFilterList && submissionHistoryFilterList.length>0) {
                         <li (click)="editFilters()" nz-menu-item>
-                          <a translate>customization.label.editExistingCustomizations</a>
+                          <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                         </li>
                       }
                       @if (submissionHistoryFilterList && submissionHistoryFilterList.length>0) {
@@ -591,26 +591,26 @@
                 <ul nz-menu>
                   @if (savedIgnoreList.workflows.length > 0 && historyFilters.type == 'ORDER') {
                     <li (click)="editIgnoreList()" nz-menu-item>
-                      <a translate>history.button.editIgnoreList</a>
+                      <a>{{ 'history.button.editIgnoreList' | translate }}</a>
                     </li>
                   }
                   @if (savedIgnoreList.jobs.length > 0 && historyFilters.type == 'TASK') {
                     <li (click)="editIgnoreList()" nz-menu-item>
-                      <a translate>history.button.editIgnoreList</a>
+                      <a>{{ 'history.button.editIgnoreList' | translate }}</a>
                     </li>
                   }
                   @if (!savedIgnoreList.isEnable) {
                     <li (click)="enableDisableIgnoreList()" nz-menu-item>
-                      <a translate>history.button.enableIgnoreList</a>
+                      <a>{{ 'history.button.enableIgnoreList' | translate }}</a>
                     </li>
                   }
                   @if (savedIgnoreList.isEnable) {
                     <li (click)="enableDisableIgnoreList()" nz-menu-item>
-                      <a translate>history.button.disableIgnoreList</a>
+                      <a>{{ 'history.button.disableIgnoreList' | translate }}</a>
                     </li>
                   }
                   <li (click)="resetIgnoreList()" nz-menu-item>
-                    <a translate>history.button.resetIgnoreList</a>
+                    <a>{{ 'history.button.resetIgnoreList' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -637,7 +637,7 @@
                   class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
               }
               <a (click)="orderHistory(null,false)" [ngClass]="{'active': historyFilters.type=='ORDER'}" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.orders</span></span>
+                <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.orders' | translate }}</span></span>
               </a>
             </li>
           }
@@ -654,7 +654,7 @@
                   class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
               }
               <a (click)="taskHistory(null, false)" [ngClass]="{'active': historyFilters.type=='TASK'}" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.tasks</span></span>
+                <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.tasks' | translate }}</span></span>
               </a>
             </li>
           }
@@ -671,7 +671,7 @@
                   class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
               }
               <a (click)="yadeHistory(null, false)" [ngClass]="{'active': historyFilters.type=='YADE'}" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.fileTransfers</span></span>
+                <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.fileTransfers' | translate }}</span></span>
               </a>
             </li>
           }
@@ -689,7 +689,7 @@
               }
               <a (click)="deploymentHistory(null,false)" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}"
                  class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.deployments</span></span>
+                <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.deployments' | translate }}</span></span>
               </a>
             </li>
           }
@@ -707,7 +707,7 @@
               }
               <a (click)="submissionHistory(null, false)" [ngClass]="{'active': historyFilters.type=='SUBMISSION'}"
                  class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span class="text" translate>history.tab.dailyPlan</span></span>
+                <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.dailyPlan' | translate }}</span></span>
               </a>
             </li>
           }
@@ -729,13 +729,13 @@
         @if (!showSearchPanel) {
           <button (click)="advancedSearch()"
                   class="btn btn-sm inline pull-right m-l-12 btn-grey">
-            <span translate>common.button.advancedSearch</span>
+            <span>{{ 'common.button.advancedSearch' | translate }}</span>
             <i class="fa fa-caret-down p-l-xs"></i>
           </button>
         }
         @if (showSearchPanel) {
           <button (click)="cancel()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
-            <span translate>common.button.advancedSearch</span>
+            <span>{{ 'common.button.advancedSearch' | translate }}</span>
             <i class="fa fa-caret-down p-l-xs"></i>
           </button>
         }
@@ -839,7 +839,7 @@
             <div>
               <div class="editor-tree">
                 <div class="pl-20" style="padding-right:20px">
-                  <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="historyFilters.selectedIndex" [nzType]="'line'">
+                  <nz-tabs class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="historyFilters.selectedIndex" [nzType]="'line'">
                     <nz-tab class="ctm-pd" (nzClick)="switchToTagging('workflowTags');historyFilters.selectedIndex = 1;" [nzTitle]="workflowTagsTitle">
                       <ng-template #workflowTagsTitle>
                         <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
@@ -850,7 +850,7 @@
                         <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
                       </ng-template>
                     </nz-tab>
-                  </nz-tabset>
+                  </nz-tabs>
                 </div>
                 @if (historyFilters.tagType === 'workflowTags') {
                   <div class="pl-20">
@@ -1058,10 +1058,10 @@
                 >
                   <thead>
                   <tr>
-                    <th class=" menu"><span translate>common.label.action</span></th>
+                    <th class=" menu"><span>{{ 'common.label.action' | translate }}</span></th>
                     @if (!historyFilters.current) {
                       <th (click)="sort('controllerId')" class="dynamic-thead-o">
-                        <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                        <a><span class="p-r-xs">{{ 'common.label.controllerId' | translate }}</span>
                           @if (order.filter.sortBy == 'controllerId' && !order.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -1071,7 +1071,7 @@
                       </th>
                     }
                     <th (click)="sort('orderId')" class="dynamic-thead"><a><span class="p-r-xs"
-                                                                                 translate>history.label.orderId</span>
+>{{ 'history.label.orderId' | translate }}</span>
                       @if (order.filter.sortBy == 'orderId' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1079,7 +1079,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('workflow')" class="dynamic-thead"><a><span class="p-r-xs" translate>history.label.workflow</span>
+                    <th (click)="sort('workflow')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'history.label.workflow' | translate }}</span>
                       @if (order.filter.sortBy == 'workflow' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1087,7 +1087,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('label')" class="dynamic-thead"><a><span class="p-r-xs" translate>workflow.label.label</span>
+                    <th (click)="sort('label')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'workflow.label.label' | translate }}</span>
                       @if (order.filter.sortBy == 'label' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1095,7 +1095,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('state._text')" class="dynamic-thead"><a><span class="p-r-xs" translate>history.label.status</span>
+                    <th (click)="sort('state._text')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'history.label.status' | translate }}</span>
                       @if (order.filter.sortBy == 'state._text' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1103,7 +1103,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('orderState._text')" class="dynamic-thead"><a><span class="p-r-xs" translate>history.label.orderState</span>
+                    <th (click)="sort('orderState._text')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'history.label.orderState' | translate }}</span>
                       @if (order.filter.sortBy == 'orderState._text' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1111,7 +1111,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('plannedTime')" class="dynamic-thead"><a><span class="p-r-xs" translate>history.label.plannedTime</span>
+                    <th (click)="sort('plannedTime')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'history.label.plannedTime' | translate }}</span>
                       @if (order.filter.sortBy == 'plannedTime' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1119,7 +1119,7 @@
                         <i class="fa fa-caret-down "></i>
                       }</a>
                     </th>
-                    <th (click)="sort('startTime')" class="dynamic-thead"><a><span class="p-r-xs" translate>history.label.startTime</span>
+                    <th (click)="sort('startTime')" class="dynamic-thead"><a><span class="p-r-xs">{{ 'history.label.startTime' | translate }}</span>
                       @if (order.filter.sortBy == 'startTime' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1128,7 +1128,7 @@
                       }</a>
                     </th>
                     <th (click)="sort('endTime')" class="dynamic-thead"><a><span class="p-r-xs"
-                                                                                 translate>history.label.endTime</span>
+>{{ 'history.label.endTime' | translate }}</span>
                       @if (order.filter.sortBy == 'endTime' && !order.reverse) {
                         <i class="fa fa-caret-up "></i>
                       }
@@ -1137,7 +1137,7 @@
                       }</a>
                     </th>
                     <th (click)="sort('duration')" class="dynamic-thead">
-                      <a><span class="p-r-xs" translate>history.label.duration</span>
+                      <a><span class="p-r-xs">{{ 'history.label.duration' | translate }}</span>
                         @if (order.filter.sortBy == 'duration' && !order.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1160,24 +1160,24 @@
                               <ul nz-menu>
                                 <li (click)="addWorkflowToIgnoreList(history.workflow)" [nzDisabled]="(schedulerIds.selected != history.controllerId && history.controllerId)"
                                     nz-menu-item>
-                                  <a translate>history.button.addWorkflowToIgnoreList</a>
+                                  <a>{{ 'history.button.addWorkflowToIgnoreList' | translate }}</a>
                                 </li>
                                 <li nz-menu-divider></li>
                                 <li (click)="showAllPanelFuc(history)" nz-menu-item>
-                                  <a translate>history.button.expandAll</a>
+                                  <a>{{ 'history.button.expandAll' | translate }}</a>
                                 </li>
                                 <li (click)="hideAllPanelFuc(history)" nz-menu-item>
-                                  <a translate>history.button.collapseAll</a>
+                                  <a>{{ 'history.button.collapseAll' | translate }}</a>
                                 </li>
                                 <li (click)="coreService.copyArguments(history, 'arguments', message)" nz-menu-item [nzDisabled]="!history.arguments">
-                                  <a translate>common.button.copyArguments</a>
+                                  <a>{{ 'common.button.copyArguments' | translate }}</a>
                                 </li>
                                 <li nz-menu-divider></li>
                                 <li (click)="coreService.copyLink('order',history.orderId, history.workflow)" nz-menu-item>
-                                  <a translate>common.button.copyLinkToObject</a>
+                                  <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                                 </li>
                                 <li (click)="copyOrderId(history.orderId)" nz-menu-item>
-                                  <a translate>common.button.copyOrderId</a>
+                                  <a>{{ 'common.button.copyOrderId' | translate }}</a>
                                 </li>
                               </ul>
                             </nz-dropdown-menu>
@@ -1301,12 +1301,12 @@
                 </nz-table>
                 @if (ajaxOrderTable.data.length >0) {
                   <div class="w-half label-top">
-                    <span translate>common.label.total</span> {{data.length}}
+                    <span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                     @if (ajaxOrderTable.data.length >1) {
-                      <span translate>history.label.historiesFound</span>
+                      <span>{{ 'history.label.historiesFound' | translate }}</span>
                     }
                     @if (ajaxOrderTable.data.length === 1) {
-                      <span translate>history.label.historyFound</span>
+                      <span>{{ 'history.label.historyFound' | translate }}</span>
                     }
                   </div>
                 }
@@ -1332,10 +1332,10 @@
                 >
                   <thead>
                   <tr>
-                    <th class=" menu"><span translate>common.label.action</span></th>
+                    <th class=" menu"><span>{{ 'common.label.action' | translate }}</span></th>
                     @if (!historyFilters.current) {
                       <th (click)="sort1('controllerId')">
-                        <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                        <a><span class="p-r-xs">{{ 'common.label.controllerId' | translate }}</span>
                           @if (task.filter.sortBy == 'controllerId' && !task.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -1345,7 +1345,7 @@
                       </th>
                     }
                     <th (click)="sort1('job')">
-                      <a><span class="p-r-xs" translate>history.label.job</span>
+                      <a><span class="p-r-xs">{{ 'history.label.job' | translate }}</span>
                         @if (task.filter.sortBy == 'job' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1354,7 +1354,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('workflow')">
-                      <a><span class="p-r-xs" translate>history.label.workflow</span>
+                      <a><span class="p-r-xs">{{ 'history.label.workflow' | translate }}</span>
                         @if (task.filter.sortBy == 'workflow' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1363,7 +1363,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('label')">
-                      <a><span class="p-r-xs" translate>workflow.label.label</span>
+                      <a><span class="p-r-xs">{{ 'workflow.label.label' | translate }}</span>
                         @if (task.filter.sortBy == 'label' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1372,7 +1372,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('state._text')">
-                      <a><span class="p-r-xs" translate>history.label.status</span>
+                      <a><span class="p-r-xs">{{ 'history.label.status' | translate }}</span>
                         @if (task.filter.sortBy == 'state._text' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1381,7 +1381,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('startTime')">
-                      <a><span class="p-r-xs" translate>history.label.startTime</span>
+                      <a><span class="p-r-xs">{{ 'history.label.startTime' | translate }}</span>
                         @if (task.filter.sortBy == 'startTime' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1390,7 +1390,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('endTime')">
-                      <a><span class="p-r-xs" translate>history.label.endTime</span>
+                      <a><span class="p-r-xs">{{ 'history.label.endTime' | translate }}</span>
                         @if (task.filter.sortBy == 'endTime' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1399,7 +1399,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('duration')">
-                      <a><span class="p-r-xs" translate>history.label.duration</span>
+                      <a><span class="p-r-xs">{{ 'history.label.duration' | translate }}</span>
                         @if (task.filter.sortBy == 'duration' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1408,7 +1408,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('criticality')">
-                      <a><span class="p-r-xs" translate>history.label.criticality</span>
+                      <a><span class="p-r-xs">{{ 'history.label.criticality' | translate }}</span>
                         @if (task.filter.sortBy == 'criticality' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1417,7 +1417,7 @@
                         }</a>
                     </th>
                     <th (click)="sort1('returnCode')">
-                      <a><span class="p-r-xs" translate>history.label.returnCode</span>
+                      <a><span class="p-r-xs">{{ 'history.label.returnCode' | translate }}</span>
                         @if (task.filter.sortBy == 'returnCode' && !task.reverse) {
                           <i class="fa fa-caret-up "></i>
                         }
@@ -1440,11 +1440,11 @@
                               <ul nz-menu>
                                 <li (click)="addJobToIgnoreList(jobHistory.job, jobHistory.workflow)" [nzDisabled]="(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)"
                                     nz-menu-item>
-                                  <a translate>history.button.addJobToIgnoreList</a>
+                                  <a>{{ 'history.button.addJobToIgnoreList' | translate }}</a>
                                 </li>
                                 <li (click)="addJobToIgnoreList(null, jobHistory.workflow)" [nzDisabled]="(schedulerIds.selected != jobHistory.controllerId && jobHistory.controllerId)"
                                     nz-menu-item>
-                                  <a translate>history.button.addWorkflowToIgnoreList</a>
+                                  <a>{{ 'history.button.addWorkflowToIgnoreList' | translate }}</a>
                                 </li>
                               </ul>
                             </nz-dropdown-menu>
@@ -1525,12 +1525,12 @@
                 </nz-table>
                 @if (ajaxTable.data.length >0) {
                   <div class="w-half label-top">
-                    <span translate>common.label.total</span> {{data.length}}
+                    <span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                     @if (ajaxTable.data.length >1) {
-                      <span translate>history.label.historiesFound</span>
+                      <span>{{ 'history.label.historiesFound' | translate }}</span>
                     }
                     @if (ajaxTable.data.length === 1) {
-                      <span translate>history.label.historyFound</span>
+                      <span>{{ 'history.label.historyFound' | translate }}</span>
                     }
                   </div>
                 }
@@ -1562,7 +1562,7 @@
             <tr class="main-header-row">
               @if (!historyFilters.current) {
                 <th (click)="sort2('controllerId')"><a><span
-                  translate>common.label.controllerId</span>
+>{{ 'common.label.controllerId' | translate }}</span>
                   @if (yade.filter.sortBy == 'controllerId' && !yade.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -1572,7 +1572,7 @@
                 </th>
               }
               <th (click)="sort2('state._text')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.status</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.status' | translate }}</span>
                 @if (yade.filter.sortBy == 'state._text' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1581,7 +1581,7 @@
                 }</a>
               </th>
               <th (click)="sort2('profile')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.profileName</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.profileName' | translate }}</span>
                 @if (yade.filter.sortBy == 'profile' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1590,7 +1590,7 @@
                 }</a>
               </th>
               <th (click)="sort2('operation')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.operation</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.operation' | translate }}</span>
                 @if (yade.filter.sortBy == 'operation' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1599,7 +1599,7 @@
                 }</a>
               </th>
               <th (click)="sort2('workflow')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.workflow</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.workflow' | translate }}</span>
                 @if (yade.filter.sortBy == 'workflow' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1608,7 +1608,7 @@
                 }</a>
               </th>
               <th (click)="sort2('orderId')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.order</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.order' | translate }}</span>
                 @if (yade.filter.sortBy == 'orderId' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1617,7 +1617,7 @@
                 }</a>
               </th>
               <th (click)="sort2('numOfFiles')" nzWidth="65px"><a>
-                <span [appRichTooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs" translate>fileTransfer.label.total</span>
+                <span [appRichTooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs">{{ 'fileTransfer.label.total' | translate }}</span>
                 @if (yade.filter.sortBy == 'numOfFiles' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1627,7 +1627,7 @@
 
               </th>
               <th (click)="sort2('error.message')" nzWidth="20%" style="width: 20% !important;"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.lastErrorMessage</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.lastErrorMessage' | translate }}</span>
                 @if (yade.filter.sortBy == 'error.message' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1636,7 +1636,7 @@
                 }</a>
               </th>
               <th (click)="sort2('start')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.startTime</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.startTime' | translate }}</span>
                 @if (yade.filter.sortBy == 'start' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1645,7 +1645,7 @@
                 }</a>
               </th>
               <th (click)="sort2('end')"><a>
-                <span class="p-r-xs" translate>fileTransfer.label.endTime</span>
+                <span class="p-r-xs">{{ 'fileTransfer.label.endTime' | translate }}</span>
                 @if (yade.filter.sortBy == 'end' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1654,7 +1654,7 @@
                 }</a>
               </th>
               <th (click)="sort2('duration')" nzWidth="100px"><a>
-                <span class="p-r-xs" translate>common.label.duration</span>
+                <span class="p-r-xs">{{ 'common.label.duration' | translate }}</span>
                 @if (yade.filter.sortBy == 'duration' && !yade.reverse) {
                   <i class="fa fa-caret-up "></i>
                 }
@@ -1741,26 +1741,26 @@
                                 id="fileTransferTable" nzSize="small">
                         <thead>
                         <tr>
-                          <th class="order-history-template0" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.source</span>
+                          <th class="order-history-template0" colspan="4" style="border-bottom: 1px solid #eee;"><span>{{ 'fileTransfer.label.source' | translate }}</span>
                           </th>
-                          <th class="order-history-template1" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.target</span>
+                          <th class="order-history-template1" colspan="4" style="border-bottom: 1px solid #eee;"><span>{{ 'fileTransfer.label.target' | translate }}</span>
                           </th>
-                          <th class="order-history-template2" colspan="4" style="border-bottom: 1px solid #eee;"><span translate>fileTransfer.label.jump</span>
+                          <th class="order-history-template2" colspan="4" style="border-bottom: 1px solid #eee;"><span>{{ 'fileTransfer.label.jump' | translate }}</span>
                           </th>
                         </tr>
                         <tr class="sub-header">
-                          <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                          <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                          <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                          <th class="order-history-template0 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                          <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                          <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                          <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                          <th class="order-history-template1 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
-                          <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.host</span></th>
-                          <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.account</span></th>
-                          <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.port</span></th>
-                          <th class="order-history-template2 dynamic-thead"><span translate>fileTransfer.label.protocol</span></th>
+                          <th class="order-history-template0 dynamic-thead"><span>{{ 'fileTransfer.label.host' | translate }}</span></th>
+                          <th class="order-history-template0 dynamic-thead"><span>{{ 'fileTransfer.label.account' | translate }}</span></th>
+                          <th class="order-history-template0 dynamic-thead"><span>{{ 'fileTransfer.label.port' | translate }}</span></th>
+                          <th class="order-history-template0 dynamic-thead"><span>{{ 'fileTransfer.label.protocol' | translate }}</span></th>
+                          <th class="order-history-template1 dynamic-thead"><span>{{ 'fileTransfer.label.host' | translate }}</span></th>
+                          <th class="order-history-template1 dynamic-thead"><span>{{ 'fileTransfer.label.account' | translate }}</span></th>
+                          <th class="order-history-template1 dynamic-thead"><span>{{ 'fileTransfer.label.port' | translate }}</span></th>
+                          <th class="order-history-template1 dynamic-thead"><span>{{ 'fileTransfer.label.protocol' | translate }}</span></th>
+                          <th class="order-history-template2 dynamic-thead"><span>{{ 'fileTransfer.label.host' | translate }}</span></th>
+                          <th class="order-history-template2 dynamic-thead"><span>{{ 'fileTransfer.label.account' | translate }}</span></th>
+                          <th class="order-history-template2 dynamic-thead"><span>{{ 'fileTransfer.label.port' | translate }}</span></th>
+                          <th class="order-history-template2 dynamic-thead"><span>{{ 'fileTransfer.label.protocol' | translate }}</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1833,13 +1833,13 @@
                                 [nzWidthConfig]="transfer.widthArr" class="m-a-0 inner-table" nzSize="small">
                         <thead>
                         <tr>
-                          <th><span translate>fileTransfer.label.sourceFileName</span></th>
-                          <th><span translate>fileTransfer.label.sourceFilePath</span></th>
-                          <th><span translate>fileTransfer.label.targetFileName</span></th>
-                          <th><span translate>fileTransfer.label.targetFilePath</span></th>
-                          <th><span translate>fileTransfer.label.status</span></th>
-                          <th><span translate>fileTransfer.label.size</span></th>
-                          <th><span translate>fileTransfer.label.integrityHash</span></th>
+                          <th><span>{{ 'fileTransfer.label.sourceFileName' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.sourceFilePath' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.targetFileName' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.targetFilePath' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.status' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.size' | translate }}</span></th>
+                          <th><span>{{ 'fileTransfer.label.integrityHash' | translate }}</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1874,12 +1874,12 @@
           </nz-table>
           @if (ajaxYadeTable.data.length >0) {
             <div class="w-half label-top">
-              <span translate>common.label.total</span> {{data.length}}
+              <span>{{ 'common.label.total' | translate }}</span> {{data.length}}
               @if (ajaxYadeTable.data.length >1) {
-                <span translate>history.label.historiesFound</span>
+                <span>{{ 'history.label.historiesFound' | translate }}</span>
               }
               @if (ajaxYadeTable.data.length === 1) {
-                <span translate>history.label.historyFound</span>
+                <span>{{ 'history.label.historyFound' | translate }}</span>
               }
             </div>
           }
@@ -1907,7 +1907,7 @@
             <tr>
               @if (!historyFilters.current) {
                 <th (click)="sort3('controllerId')" nzWidth="20%">
-                  <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                  <a><span class="p-r-xs">{{ 'common.label.controllerId' | translate }}</span>
                     @if (deployment.filter.sortBy == 'controllerId' && !deployment.reverse) {
                       <i class="fa fa-caret-up "></i>
                     }
@@ -1917,7 +1917,7 @@
                 </th>
               }
               <th (click)="sort3('deploymentDate')" nzWidth="20%">
-                <a><span class="p-r-xs" translate>history.label.deploymentDate</span>
+                <a><span class="p-r-xs">{{ 'history.label.deploymentDate' | translate }}</span>
                   @if (deployment.filter.sortBy == 'deploymentDate' && !deployment.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -1926,7 +1926,7 @@
                   }</a>
               </th>
               <th (click)="sort3('account')" nzWidth="20%">
-                <a><span class="p-r-xs" translate>common.label.account</span>
+                <a><span class="p-r-xs">{{ 'common.label.account' | translate }}</span>
                   @if (deployment.filter.sortBy == 'account' && !deployment.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -1935,7 +1935,7 @@
                   }</a>
               </th>
               <th (click)="sort3('state')" nzWidth="20%">
-                <a><span class="p-r-xs" translate>history.label.state</span>
+                <a><span class="p-r-xs">{{ 'history.label.state' | translate }}</span>
                   @if (deployment.filter.sortBy == 'state' && !deployment.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -1944,7 +1944,7 @@
                   }</a>
               </th>
               <th [nzWidth]="historyFilters.current ? '40%' : '20%'">
-                <span translate>history.label.numberOfItems</span>
+                <span>{{ 'history.label.numberOfItems' | translate }}</span>
               </th>
             </tr>
             </thead>
@@ -1990,31 +1990,31 @@
                   <td>
                     @if (depHistory.workflowCount) {
                       <span class="p-r-sm">
-                  <span translate>Workflows</span>:
+                  <span>Workflows</span>:
                         {{depHistory.workflowCount}}
                 </span>
                     }
                     @if (depHistory.fileOrderSourceCount) {
                       <span class="p-r-sm">
-                  <span translate>File Order Sources</span>:
+                  <span>File Order Sources</span>:
                         {{depHistory.fileOrderSourceCount}}
                 </span>
                     }
                     @if (depHistory.jobResourceCount) {
                       <span class="p-r-sm">
-                  <span translate>Job Resources</span>:
+                  <span>Job Resources</span>:
                         {{depHistory.jobResourceCount}}
                 </span>
                     }
                     @if (depHistory.boardCount) {
                       <span class="p-r-sm">
-                  <span translate>Boards</span>:
+                  <span>Boards</span>:
                         {{depHistory.boardCount}}
                 </span>
                     }
                     @if (depHistory.lockCount) {
                       <span>
-                  <span translate>Locks</span>:
+                  <span>Locks</span>:
                         {{depHistory.lockCount}}
                 </span>
                     }
@@ -2032,10 +2032,10 @@
                                 [nzShowPagination]="false" class="m-a-0 inner-table" nzSize="small">
                         <thead>
                         <tr>
-                          <th nzWidth="19.95%"><span translate>history.label.deployType</span></th>
-                          <th nzWidth="39.97%"><span translate>common.label.path</span></th>
-                          <th nzWidth="19.95%"><span translate>history.label.operation</span></th>
-                          <th nzWidth="19.95%"><span translate>history.label.date</span></th>
+                          <th nzWidth="19.95%"><span>{{ 'history.label.deployType' | translate }}</span></th>
+                          <th nzWidth="39.97%"><span>{{ 'common.label.path' | translate }}</span></th>
+                          <th nzWidth="19.95%"><span>{{ 'history.label.operation' | translate }}</span></th>
+                          <th nzWidth="19.95%"><span>{{ 'history.label.date' | translate }}</span></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -2069,12 +2069,12 @@
           </nz-table>
           @if (ajaxTable.data.length >0) {
             <div class="w-half label-top">
-              <span translate>common.label.total</span> {{data.length}}
+              <span>{{ 'common.label.total' | translate }}</span> {{data.length}}
               @if (ajaxTable.data.length >1) {
-                <span translate>history.label.historiesFound</span>
+                <span>{{ 'history.label.historiesFound' | translate }}</span>
               }
               @if (ajaxTable.data.length === 1) {
-                <span translate>history.label.historyFound</span>
+                <span>{{ 'history.label.historyFound' | translate }}</span>
               }
             </div>
           }
@@ -2102,7 +2102,7 @@
             <thead>
             <tr>
               <th (click)="sort4('date')" style="width: 50%">
-                <a><span class="p-r-xs" translate>history.label.dailyPlanDate</span>
+                <a><span class="p-r-xs">{{ 'history.label.dailyPlanDate' | translate }}</span>
                   @if (submission.filter.sortBy == 'date' && !submission.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -2111,7 +2111,7 @@
                   }</a>
               </th>
               <th (click)="sort4('countTotal')">
-                <a><span class="p-r-xs" translate>history.label.countTotal</span>
+                <a><span class="p-r-xs">{{ 'history.label.countTotal' | translate }}</span>
                   @if (submission.filter.sortBy == 'countTotal' && !submission.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -2120,7 +2120,7 @@
                   }</a>
               </th>
               <th (click)="sort4('countSubmitted')">
-                <a><span class="p-r-xs" translate>history.label.countSubmitted</span>
+                <a><span class="p-r-xs">{{ 'history.label.countSubmitted' | translate }}</span>
                   @if (submission.filter.sortBy == 'countSubmitted' && !submission.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -2165,16 +2165,16 @@
                             @if (!historyFilters.current) {
                               <tr>
                                 <td class="custom-th" colspan="9">
-                                  <span class="p-l" translate>common.label.controllerId</span>:
+                                  <span class="p-l">{{ 'common.label.controllerId' | translate }}</span>:
                                   <span [innerHtml]="controller.controllerId"></span>
                                 </td>
                               </tr>
                             }
                             <tr>
                               <td class="custom-th" colspan="3"><span [ngClass]="{'p-l-md' : !historyFilters.current }" class="p-l"
-                                                                      translate>history.label.submission</span></td>
-                              <td class="custom-th" colspan="3"><span translate>history.label.submissionTotal</span></td>
-                              <td class="custom-th" colspan="3"><span translate>history.label.countSubmitted</span></td>
+>{{ 'history.label.submission' | translate }}</span></td>
+                              <td class="custom-th" colspan="3"><span>{{ 'history.label.submissionTotal' | translate }}</span></td>
+                              <td class="custom-th" colspan="3"><span>{{ 'history.label.countSubmitted' | translate }}</span></td>
                             </tr>
                             @for (child of controller.submissions | orderBy: 'submissionTime' : true; track child) {
                               <tr>
@@ -2209,11 +2209,11 @@
                                 @if (child.orderIds && child.orderIds.length > 0) {
                                   <tr>
                                     <td class="custom-th" colspan="3">
-                                      <span [ngClass]="{'p-l-lg' : !historyFilters.current }" class="p-l-md" translate>history.label.orderId</span>
+                                      <span [ngClass]="{'p-l-lg' : !historyFilters.current }" class="p-l-md">{{ 'history.label.orderId' | translate }}</span>
                                     </td>
-                                    <td class="custom-th" colspan="3"><span translate>order.label.workflow</span></td>
-                                    <td class="custom-th" colspan="2"><span translate>order.label.scheduledFor</span></td>
-                                    <td class="custom-th"><span translate>common.label.status</span></td>
+                                    <td class="custom-th" colspan="3"><span>{{ 'order.label.workflow' | translate }}</span></td>
+                                    <td class="custom-th" colspan="2"><span>{{ 'order.label.scheduledFor' | translate }}</span></td>
+                                    <td class="custom-th"><span>{{ 'common.label.status' | translate }}</span></td>
                                   </tr>
                                   @for (order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true; track order) {
                                     <tr>
@@ -2233,10 +2233,10 @@
                                       <td colspan="2"><span>{{order.scheduledFor | stringToDate}}</span></td>
                                       <td>
                                         @if (order.submitted) {
-                                          <span class="label bg-orange" translate>{{'submitted' | translate}}</span>
+                                          <span class="label bg-orange">{{'submitted' | translate}}</span>
                                         }
                                         @if (!order.submitted && order.workflowPath) {
-                                          <span class="label bg-red" translate>{{'notSubmitted' | translate}}</span>
+                                          <span class="label bg-red">{{'notSubmitted' | translate}}</span>
                                         }
                                       </td>
                                     </tr>
@@ -2244,7 +2244,7 @@
                                   @if ((child.orderIds | filter: submission.searchText : ['workflowPath', 'orderId']).length === 0) {
                                     <tr>
                                       <td class="text-center" colspan="9">
-                                        <span class="text-uppercase m-t-sm" translate>common.message.noDataMatched</span>
+                                        <span class="text-uppercase m-t-sm">{{ 'common.message.noDataMatched' | translate }}</span>
                                       </td>
                                     </tr>
                                   }
@@ -2252,7 +2252,7 @@
                                 @if (child.warnMessages && child.warnMessages.length > 0) {
                                   <tr>
                                     <td class="custom-th" colspan="9"><span [ngClass]="{'p-l-lg' : !historyFilters.current }"
-                                                                            class="p-l-md" translate>history.label.warnMessages</span>
+                                                                            class="p-l-md">{{ 'history.label.warnMessages' | translate }}</span>
                                     </td>
                                   </tr>
                                 }
@@ -2265,7 +2265,7 @@
                                 @if (child.errorMessages && child.errorMessages.length > 0) {
                                   <tr>
                                     <td class="custom-th" colspan="9"><span [ngClass]="{'p-l-lg' : !historyFilters.current }"
-                                                                            class="p-l-md" translate>history.label.errorMessages</span>
+                                                                            class="p-l-md">{{ 'history.label.errorMessages' | translate }}</span>
                                     </td>
                                   </tr>
                                 }
@@ -2288,12 +2288,12 @@
           </nz-table>
           @if (ajaxTable.data.length >0) {
             <div class="w-half label-top">
-              <span translate>common.label.total</span> {{data.length}}
+              <span>{{ 'common.label.total' | translate }}</span> {{data.length}}
               @if (ajaxTable.data.length >1) {
-                <span translate>history.label.historiesFound</span>
+                <span>{{ 'history.label.historiesFound' | translate }}</span>
               }
               @if (ajaxTable.data.length === 1) {
-                <span translate>history.label.historyFound</span>
+                <span>{{ 'history.label.historyFound' | translate }}</span>
               }
             </div>
           }

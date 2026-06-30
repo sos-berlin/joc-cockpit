@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>deploymentService.button.bulkUpdate</span>
+    <span>{{ 'deploymentService.button.bulkUpdate' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,7 +14,7 @@
           <div class="row">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate" translate>deploymentService.label.operationType</span>
+                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate">{{ 'deploymentService.label.operationType' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -31,7 +31,7 @@
           <div class="row">
             <div class="col-md-4">
               <label>
-                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate" translate>deploymentService.label.operationType</span>
+                <span [appRichTooltip]="'deploymentService.tooltip.operationType' | translate">{{ 'deploymentService.label.operationType' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -43,17 +43,17 @@
             </div>
           </div>
         }
-        <h6 class="m-t-12" translate>deploymentService.label.target
+        <h6 class="m-t-12">{{ 'deploymentService.label.target' | translate }}
           <i (click)="data.isTargetExpanded = !data.isTargetExpanded" [ngClass]="{'fa-caret-up': !data.isTargetExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
         </h6>
         <div [ngClass]="{'fade-in show': !data.isTargetExpanded}" class="p-a b-a hide">
-          <h6 translate>deploymentService.label.connection </h6>
+          <h6>{{ 'deploymentService.label.connection' | translate }} </h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.host' | translate" translate>deploymentService.joc.label.host</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.host' | translate">{{ 'deploymentService.joc.label.host' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -69,7 +69,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.port' | translate" translate>deploymentService.joc.label.port</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.port' | translate">{{ 'deploymentService.joc.label.port' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -82,12 +82,12 @@
               </div>
             </div>
           </div>
-          <h6 class="m-t-12" translate>deploymentService.label.authentication </h6>
+          <h6 class="m-t-12">{{ 'deploymentService.label.authentication' | translate }} </h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.method' | translate" translate>deploymentService.joc.label.method</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.method' | translate">{{ 'deploymentService.joc.label.method' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -102,7 +102,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.user' | translate" translate>deploymentService.joc.label.user</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.user' | translate">{{ 'deploymentService.joc.label.user' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -117,7 +117,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyFile' | translate" translate>deploymentService.joc.label.keyFile</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyFile' | translate">{{ 'deploymentService.joc.label.keyFile' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -133,7 +133,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.packageLocation' | translate" translate>deploymentService.joc.label.packageLocation</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.packageLocation' | translate">{{ 'deploymentService.joc.label.packageLocation' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -149,7 +149,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPre' | translate" translate>deploymentService.joc.label.execPre</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPre' | translate">{{ 'deploymentService.joc.label.execPre' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -164,7 +164,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPost' | translate" translate>deploymentService.joc.label.execPost</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.execPost' | translate">{{ 'deploymentService.joc.label.execPost' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -180,7 +180,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.makeService' | translate" translate>deploymentService.joc.label.makeService</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.makeService' | translate">{{ 'deploymentService.joc.label.makeService' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -193,7 +193,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.forceSudo' | translate" translate>deploymentService.joc.label.forceSudo</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.forceSudo' | translate">{{ 'deploymentService.joc.label.forceSudo' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -206,7 +206,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceName' | translate" translate>deploymentService.joc.label.serviceName</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceName' | translate">{{ 'deploymentService.joc.label.serviceName' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -222,7 +222,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceDir' | translate" translate>deploymentService.joc.label.serviceDir</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.serviceDir' | translate">{{ 'deploymentService.joc.label.serviceDir' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -236,7 +236,7 @@
             </div>
           </div>
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.media
+        <h6 class="m-t-12">{{ 'deploymentService.label.media' | translate }}
           <i (click)="data.isMediaExpanded = !data.isMediaExpanded" [ngClass]="{'fa-caret-up': data.isMediaExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
         </h6>
@@ -244,7 +244,7 @@
           <div class="row">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.release' | translate" translate>deploymentService.joc.label.release</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.release' | translate">{{ 'deploymentService.joc.label.release' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -260,7 +260,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.tarball' | translate" translate>deploymentService.joc.label.tarball</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.tarball' | translate">{{ 'deploymentService.joc.label.tarball' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -275,7 +275,7 @@
           </div>
 
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.installation
+        <h6 class="m-t-12">{{ 'deploymentService.label.installation' | translate }}
           <i (click)="data.isInstallationExpanded = !data.isInstallationExpanded"
              [ngClass]="{'fa-caret-up': data.isInstallationExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -285,7 +285,7 @@
             <div class="row">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.setupDir' | translate" translate>deploymentService.joc.label.setupDir</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.setupDir' | translate">{{ 'deploymentService.joc.label.setupDir' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6">
@@ -301,7 +301,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.home' | translate" translate>deploymentService.joc.label.home</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.home' | translate">{{ 'deploymentService.joc.label.home' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -316,7 +316,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.data' | translate" translate>deploymentService.joc.label.data</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.data' | translate">{{ 'deploymentService.joc.label.data' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -331,7 +331,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.homeOwner' | translate" translate>deploymentService.joc.label.homeOwner</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.homeOwner' | translate">{{ 'deploymentService.joc.label.homeOwner' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -347,7 +347,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.dataOwner' | translate" translate>deploymentService.joc.label.dataOwner</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.dataOwner' | translate">{{ 'deploymentService.joc.label.dataOwner' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -363,7 +363,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.runUser' | translate" translate>deploymentService.joc.label.runUser</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.runUser' | translate">{{ 'deploymentService.joc.label.runUser' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -379,7 +379,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.title' | translate" translate>deploymentService.joc.label.title</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.title' | translate">{{ 'deploymentService.joc.label.title' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 ">
@@ -396,7 +396,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.securityLevel' | translate" translate>deploymentService.joc.label.securityLevel</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.securityLevel' | translate">{{ 'deploymentService.joc.label.securityLevel' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 ">
@@ -415,7 +415,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate" translate>deploymentService.joc.label.dbmsConfig</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate">{{ 'deploymentService.joc.label.dbmsConfig' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 ">
@@ -432,7 +432,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate" translate>deploymentService.joc.label.dbmsDriver</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate">{{ 'deploymentService.joc.label.dbmsDriver' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 ">
@@ -449,7 +449,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate" translate>deploymentService.joc.label.dbmsInit</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate">{{ 'deploymentService.joc.label.dbmsInit' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 ">
@@ -468,7 +468,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpPort' | translate" translate>deploymentService.joc.label.httpPort</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpPort' | translate">{{ 'deploymentService.joc.label.httpPort' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -484,7 +484,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4 form-control-label">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsPort' | translate" translate>deploymentService.joc.label.httpsPort</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsPort' | translate">{{ 'deploymentService.joc.label.httpsPort' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6 ">
@@ -500,7 +500,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaHome' | translate" translate>deploymentService.joc.label.javaHome</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaHome' | translate">{{ 'deploymentService.joc.label.javaHome' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -516,7 +516,7 @@
           <div class="row m-t-sm">
             <div class="col-md-4">
               <label>
-                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaOptions' | translate" translate>deploymentService.joc.label.javaOptions</span>
+                <span [appRichTooltip]="'deploymentService.joc.tooltip.javaOptions' | translate">{{ 'deploymentService.joc.label.javaOptions' | translate }}</span>
               </label>
             </div>
             <div class="col-md-6">
@@ -533,7 +533,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isUser' | translate" translate>deploymentService.joc.label.isUser</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isUser' | translate">{{ 'deploymentService.joc.label.isUser' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6">
@@ -548,7 +548,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate" translate>deploymentService.joc.label.isPreserveEnv</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate">{{ 'deploymentService.joc.label.isPreserveEnv' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6">
@@ -561,7 +561,7 @@
             </div>
           }
         </div>
-        <h6 class="m-t-12" translate>deploymentService.label.configuration
+        <h6 class="m-t-12">{{ 'deploymentService.label.configuration' | translate }}
           <i (click)="data.isConfigurationExpanded = !data.isConfigurationExpanded"
              [ngClass]="{'fa-caret-up': data.isConfigurationExpanded}"
              class="fa fa-caret-down p-l-xs text-hover-primary"></i>
@@ -571,7 +571,7 @@
             <div class="row">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.responseDir' | translate" translate>deploymentService.joc.label.responseDir</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.responseDir' | translate">{{ 'deploymentService.joc.label.responseDir' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6">
@@ -584,12 +584,12 @@
               </div>
             </div>
           }
-          <h6 class="m-t-12" translate>deploymentService.label.certificates </h6>
+          <h6 class="m-t-12">{{ 'deploymentService.label.certificates' | translate }} </h6>
           <div class="p-a b-a">
             <div class="row">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStore' | translate" translate>deploymentService.joc.label.keyStore</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStore' | translate">{{ 'deploymentService.joc.label.keyStore' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -604,7 +604,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate" translate>deploymentService.joc.label.keyStorePassword</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate">{{ 'deploymentService.joc.label.keyStorePassword' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -621,7 +621,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyPassword' | translate" translate>deploymentService.joc.label.keyPassword</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyPassword' | translate">{{ 'deploymentService.joc.label.keyPassword' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -636,7 +636,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyAlias' | translate" translate>deploymentService.joc.label.keyAlias</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.keyAlias' | translate">{{ 'deploymentService.joc.label.keyAlias' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -651,7 +651,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStore' | translate" translate>deploymentService.joc.label.trustStore</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStore' | translate">{{ 'deploymentService.joc.label.trustStore' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -667,7 +667,7 @@
             <div class="row m-t-sm">
               <div class="col-md-4 form-control-label">
                 <label>
-                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate" translate>deploymentService.joc.label.trustStorePassword</span>
+                  <span [appRichTooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate">{{ 'deploymentService.joc.label.trustStorePassword' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-6 p-l-6 p-r-0">
@@ -682,14 +682,14 @@
             </div>
           </div>
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
-            <h6 class="m-t-12" translate>deploymentService.label.startFiles </h6>
+            <h6 class="m-t-12">{{ 'deploymentService.label.startFiles' | translate }} </h6>
           }
           @if (selectObject.operationType == 'ALL' || selectObject.operationType == 'JOC') {
             <div class="p-a b-a">
               <div class="row">
                 <div class="col-md-4 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpIni' | translate" translate>deploymentService.joc.label.httpIni</span>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpIni' | translate">{{ 'deploymentService.joc.label.httpIni' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
@@ -705,7 +705,7 @@
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsIni' | translate" translate>deploymentService.joc.label.httpsIni</span>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.httpsIni' | translate">{{ 'deploymentService.joc.label.httpsIni' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
@@ -721,7 +721,7 @@
               <div class="row m-t-sm">
                 <div class="col-md-4 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'deploymentService.joc.tooltip.sslIni' | translate" translate>deploymentService.joc.label.sslIni</span>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.sslIni' | translate">{{ 'deploymentService.joc.label.sslIni' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-6 p-l-6 p-r-0">
@@ -741,7 +741,7 @@
               <div class="col-md-4 form-control-label">
                 @if ($index == 0) {
                   <label>
-                    <span [appRichTooltip]="'deploymentService.joc.tooltip.templates' | translate" translate>deploymentService.joc.label.templates</span>
+                    <span [appRichTooltip]="'deploymentService.joc.tooltip.templates' | translate">{{ 'deploymentService.joc.label.templates' | translate }}</span>
                   </label>
                 }
               </div>
@@ -768,10 +768,10 @@
       @if (submitted) {
         <i class="fa fa-spin fa-spinner p-r-xs"></i>
       }
-      <span translate>common.button.submit</span>
+      <span>{{ 'common.button.submit' | translate }}</span>
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

@@ -1,6 +1,6 @@
 <div id="jobSchedulerStatus2">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.apiServerStatus</h3>
+    <h3>{{ 'dashboard.label.apiServerStatus' | translate }}</h3>
   </div>
   <div [ngClass]="{'p-t-0' : list && list.length==0}" [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}"
        class="box-body overflow-y">
@@ -31,10 +31,10 @@
                     <nz-dropdown-menu #action="nzDropdownMenu">
                       <ul nz-menu>
                         <li (click)="updateURL(item)" nz-menu-item>
-                          <a translate>dashboard.button.updateURL</a>
+                          <a>{{ 'dashboard.button.updateURL' | translate }}</a>
                         </li>
                         <li (click)="removeInstance(item.instanceId)" nz-menu-item>
-                          <a translate>dashboard.button.removeRepository</a>
+                          <a>{{ 'dashboard.button.removeRepository' | translate }}</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>

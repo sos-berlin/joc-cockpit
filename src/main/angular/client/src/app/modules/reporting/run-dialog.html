@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>reporting.label.runReport</span>
+    <span>{{ 'reporting.label.runReport' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -14,8 +14,8 @@
     </div>
     @if (!display) {
       <div class="row text-center">
-        <div class="col-sm-12 m-t m-b" translate>
-          reporting.message.confirmRunReport
+        <div class="col-sm-12 m-t m-b">
+          {{ 'reporting.message.confirmRunReport' | translate }}
         </div>
       </div>
     }
@@ -28,7 +28,7 @@
       }
       {{ 'reporting.button.run' | translate }}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       {{ 'common.button.cancel' | translate }}
     </button>
   </div>

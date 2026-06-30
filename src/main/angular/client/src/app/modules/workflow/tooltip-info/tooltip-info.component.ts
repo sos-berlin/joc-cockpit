@@ -1,16 +1,17 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 
 @Component({
   standalone: false,
   selector: 'app-tooltip-info',
-  templateUrl: './tooltip-info.component.html'
+  templateUrl: './tooltip-info.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TooltipInfoComponent {
   @Input() workflow;
   @Input() controllerId;
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   getTooltipInfo(workflow): void {
@@ -23,6 +24,7 @@ export class TooltipInfoComponent {
     }).subscribe({
       next: (res: any) => {
         workflow.info = res;
+        this.cdr.markForCheck();
       }
     });
   }

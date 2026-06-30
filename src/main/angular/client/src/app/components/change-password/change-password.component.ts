@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {isEqual} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
@@ -7,7 +7,8 @@ import {CoreService} from '../../services/core.service';
 @Component({
   standalone: false,
   selector: 'app-change-password',
-  templateUrl: './change-password-dialog.html'
+  templateUrl: './change-password-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePasswordComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -30,7 +31,7 @@ export class ChangePasswordComponent {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.username = this.modalData.username;
@@ -38,6 +39,7 @@ export class ChangePasswordComponent {
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         this.comments = {comment: translatedValue};
+        this.cdr.markForCheck();
       });
     }
     this.getConfiguration();
@@ -53,6 +55,7 @@ export class ChangePasswordComponent {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -95,6 +98,7 @@ export class ChangePasswordComponent {
           this.activeModal.close('DONE');
         }, error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     }

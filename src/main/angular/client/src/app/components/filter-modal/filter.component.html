@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>customization.label.editCustomizations</span>
+    <span>{{ 'customization.label.editCustomizations' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy('Cross click')" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,10 +12,10 @@
       <table class="table table-hover table-bordered">
         <thead>
         <tr>
-          <th><span translate>common.label.srNo</span></th>
-          <th><span translate>customization.label.customizationName</span></th>
-          <th><span translate>common.label.account</span></th>
-          <th><span translate>common.label.action</span></th>
+          <th><span>{{ 'common.label.srNo' | translate }}</span></th>
+          <th><span>{{ 'customization.label.customizationName' | translate }}</span></th>
+          <th><span>{{ 'common.label.account' | translate }}</span></th>
+          <th><span>{{ 'common.label.action' | translate }}</span></th>
         </tr>
         </thead>
         <tbody>
@@ -32,7 +32,7 @@
                      [appRichTooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
                 }
                 {{filter.name}} @if (filter.shared) {
-                <label class="label label-info" translate>customization.label.share</label>
+                <label class="label label-info">{{ 'customization.label.share' | translate }}</label>
               }
               </td>
               <td>{{filter.account}}</td>
@@ -45,27 +45,27 @@
                     <ul nz-menu>
                       @if (permission.joc.administration.customization.manage || filter.account==username) {
                         <li (click)="editFilter(filter)" nz-menu-item>
-                          <a translate>customization.button.edit</a>
+                          <a>{{ 'customization.button.edit' | translate }}</a>
                         </li>
                       }
                       @if (permission.joc.administration.customization.manage) {
                         <li (click)="copyFilter(filter)" nz-menu-item>
-                          <a translate>customization.button.copy</a>
+                          <a>{{ 'customization.button.copy' | translate }}</a>
                         </li>
                       }
                       @if (permission.joc.administration.customization.share && filter.account==username && !filter.shared) {
                         <li (click)="makeShare(filter)" nz-menu-item>
-                          <a translate>customization.button.share</a>
+                          <a>{{ 'customization.button.share' | translate }}</a>
                         </li>
                       }
                       @if (filterList.length==1 && (permission.joc.administration.customization.manage || filter.account==username)) {
                         <li (click)="deleteFilter(filter)" class="bg-hover-color" nz-menu-item>
-                          <a translate>customization.button.delete</a>
+                          <a>{{ 'customization.button.delete' | translate }}</a>
                         </li>
                       }
                       @if (filterList.length>1 && (permission.joc.administration.customization.manage || filter.account==username)) {
                         <li (click)="deleteFilter(filter)" class="bg-hover-color" nz-menu-item>
-                          <a translate>customization.button.delete</a>
+                          <a>{{ 'customization.button.delete' | translate }}</a>
                         </li>
                       }
                     </ul>

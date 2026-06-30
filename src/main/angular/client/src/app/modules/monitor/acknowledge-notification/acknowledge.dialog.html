@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>monitor.notification.label.acknowledge</span>
+    <span>{{ 'monitor.notification.label.acknowledge' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,7 +13,7 @@
     </div>
     <div class="form-group row">
       <label class="col-sm-3 form-control-label">
-        <span [appRichTooltip]="'monitor.notification.tooltip.comment' | translate" translate>monitor.notification.label.comment</span>
+        <span [appRichTooltip]="'monitor.notification.tooltip.comment' | translate">{{ 'monitor.notification.label.comment' | translate }}</span>
       </label>
       <div class=" col-sm-8">
         <textarea [(ngModel)]="comment" [appAutofocus]="true" class="form-control" maxlength="2000" name="textComment"
@@ -30,8 +30,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

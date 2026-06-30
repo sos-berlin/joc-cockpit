@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>agent.button.metricsPriority</span>
+    <span>{{ 'agent.button.metricsPriority' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,7 +10,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label [appRichTooltip]="'agent.subagent.tooltip.priority' | translate" class="col-sm-3 form-control-label"
-             translate>inventory.label.priority
+>{{ 'inventory.label.priority' | translate }}
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -21,7 +21,7 @@
     </div>
     <div class="form-group row">
       <div class="p-l-xs" nz-dropdown [nzDropdownMenu]="menu">
-        <a class="cursor text-u-l" translate>agent.label.indicatorVariable</a>
+        <a class="cursor text-u-l">{{ 'agent.label.indicatorVariable' | translate }}</a>
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
@@ -37,16 +37,16 @@
       </nz-dropdown-menu>
     </div>
     <div class="form-group row">
-      <a class="cursor p-l-xs text-u-l" (click)="toggleTableVisibility()" translate>
-        agent.label.examples
+      <a class="cursor p-l-xs text-u-l" (click)="toggleTableVisibility()">
+        {{ 'agent.label.examples' | translate }}
       </a>
 
       @if (isTableVisible) {
         <nz-table class="m-t-sm" [nzData]="dataSource" [nzBordered]="true" [nzShowPagination]="false">
           <thead>
           <tr>
-            <th translate>agent.label.expression</th>
-            <th translate>agent.label.description</th>
+            <th>{{ 'agent.label.expression' | translate }}</th>
+            <th>{{ 'agent.label.description' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -86,7 +86,7 @@
     <button
       (click)="activeModal.destroy()"
       class="btn btn-grey btn-sm"
-      translate
+
       type="button">
       common.button.cancel
     </button>

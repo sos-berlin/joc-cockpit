@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.keyManagement.label.showCertificate</span>
+    <span>{{ 'profile.keyManagement.label.showCertificate' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,7 +10,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-12 form-control-label">
-        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certificate' | translate" translate>encipherment.label.certificate</span>
+        <span [appRichTooltip]="'encipherment.tooltips.addEncipherment.certificate' | translate">{{ 'encipherment.label.certificate' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-12">
@@ -22,7 +22,7 @@
   </div>
   <div class="modal-footer">
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.close</span>
+      <span>{{ 'common.button.close' | translate }}</span>
     </button>
   </div>
 </form>

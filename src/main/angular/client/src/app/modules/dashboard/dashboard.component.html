@@ -10,11 +10,11 @@
             <div class="inline">
               <button (click)="editLayout()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-pencil"></i>&nbsp;
-                <span translate>dashboard.button.editLayout</span>
+                <span>{{ 'dashboard.button.editLayout' | translate }}</span>
               </button>
               <button (click)="resetLayout()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-refresh"></i>&nbsp;
-                <span translate>dashboard.button.resetLayout</span>
+                <span>{{ 'dashboard.button.resetLayout' | translate }}</span>
               </button>
             </div>
           }
@@ -22,15 +22,15 @@
             <div class="inline">
               <button (click)="addWidgetDialog()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-plus"></i>&nbsp;
-                <span translate>dashboard.button.widget</span>
+                <span>{{ 'dashboard.button.widget' | translate }}</span>
               </button>
               <button (click)="saveWidget()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-save"></i>&nbsp;
-                <span translate>common.button.save</span>
+                <span>{{ 'common.button.save' | translate }}</span>
               </button>
               <button (click)="cancelWidget()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-times"></i>&nbsp;
-                <span translate>common.button.cancel</span>
+                <span>{{ 'common.button.cancel' | translate }}</span>
               </button>
             </div>
           }
@@ -43,7 +43,7 @@
   @if (dashboard.length == 0 && isLoading) {
     <div class="m-a">
       <div class="m-a-sm emtpy-text">
-        <a (click)="addWidgetDialog()" class="cursor" translate>dashboard.button.addNewWidget</a>
+        <a (click)="addWidgetDialog()" class="cursor">{{ 'dashboard.button.addNewWidget' | translate }}</a>
       </div>
     </div>
   }

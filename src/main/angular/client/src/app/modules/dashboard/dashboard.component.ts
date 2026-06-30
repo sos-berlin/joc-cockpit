@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -70,7 +70,8 @@ export class AddWidgetModalComponent {
   standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
   options: GridsterConfig = {};
@@ -87,7 +88,7 @@ export class DashboardComponent {
   isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService) {
+              private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -203,6 +204,7 @@ export class DashboardComponent {
         this.initWidgets();
         this.setWidgetPreference();
         DashboardComponent.calculateHeight();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -286,10 +288,12 @@ export class DashboardComponent {
       if (!this.permission.joc) {
         this.checkPermission(50);
       } else {
-        this.isLoading = true;
         this.initConfig(false);
         this.initWidgets();
         DashboardComponent.calculateHeight();
+        this.isLoading = true;
+        this.cdr.markForCheck();
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       }
     }, timeout)
   }

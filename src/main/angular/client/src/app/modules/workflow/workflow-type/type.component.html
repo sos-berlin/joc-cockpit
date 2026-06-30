@@ -8,7 +8,7 @@
 <ng-template #itemTemplate let-order>
   <ng-template #contentTemplate>
     <div class="p-l-sm">
-      <span translate> order.label.state </span>:
+      <span> {{ 'order.label.state' | translate }} </span>:
       <span [ngClass]="coreService.getColor(order.state.severity, 'text')" class="_600"> {{order.state._text |  translate}}</span>
       @if (order.marked) {
         <span [ngClass]="coreService.getColor(order.marked.severity, 'text')"
@@ -17,13 +17,13 @@
     </div>
     @if (order.state._reason) {
       <div class="p-l-sm">
-        <span translate> common.label.comment </span>:
+        <span> {{ 'common.label.comment' | translate }} </span>:
         <span class="_600"> {{order.state._reason}}</span>
       </div>
     }
     @if (order.question) {
       <div class="p-l-sm">
-        <span translate> workflow.label.prompt </span>:
+        <span> {{ 'workflow.label.prompt' | translate }} </span>:
         <span class="_600"> {{order.question}}</span>
       </div>
     }
@@ -31,7 +31,7 @@
       <div class="p-l-sm">
         @for (obstacle of order.obstacles; track obstacle) {
           <div>
-            <span translate> {{obstacle.type | translate}} </span>
+            <span> {{obstacle.type | translate}} </span>
             @if (obstacle['until']) {
               <span class="_600">:&nbsp;{{obstacle['until'] | stringToDate}}</span>
             }
@@ -41,18 +41,18 @@
     }
     @if (order.lastOutcome) {
       <div class="p-l-sm">
-        <span translate> order.label.lastOutcome </span>:
+        <span> {{ 'order.label.lastOutcome' | translate }} </span>:
         <span class="_600">{{order.lastOutcome.TYPE}}</span>
       </div>
     }
     @if (!order.cyclicOrder) {
       <div class="p-l-sm">
-        <span translate> order.label.scheduledFor </span>:
+        <span> {{ 'order.label.scheduledFor' | translate }} </span>:
         @if (!order.scheduledNever) {
           <span class="_600">{{order.scheduledFor | stringToDate}}</span>
         }
         @if (order.scheduledNever) {
-          <span class="_600" translate>common.label.never</span>
+          <span class="_600">{{ 'common.label.never' | translate }}</span>
         }
       </div>
     }
@@ -69,57 +69,57 @@
 
     @if (order.cyclicOrder) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+        <div class="_600 m-b-xs">{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+        <span class="_600 p-l-sm">{{ 'dailyPlan.label.begin' | translate }}</span>:
         {{order.cyclicOrder.firstStart | stringToDate}}
         <br>
-        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+        <span class="_600 p-l-sm">{{ 'dailyPlan.label.end' | translate }}</span>:
         {{order.cyclicOrder.lastStart | stringToDate}}
         <br>
-        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+        <span class="_600 p-l-sm">{{ 'order.label.orders' | translate }}</span>:
         {{order.cyclicOrder.count}}
       </div>
     }
     @if (order.cycleState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+        <div class="_600 m-b-xs">{{ 'order.cycleState.label.cycleState' | translate }}</div>
         @if (order.cycleState.since) {
           <span>
-            <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+            <span class="_600 p-l-sm">{{ 'order.cycleState.label.since' | translate }}</span>:
             {{order.cycleState.since | stringToDate}}
           </span>
         }
         @if (order.cycleState.next) {
           <span>
-            <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+            <span class="_600 p-l-sm">{{ 'order.cycleState.label.next' | translate }}</span>:
             {{order.cycleState.next | stringToDate}}
           </span>
         }
         <br>
-        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+        <span class="_600 p-l-sm">{{ 'order.cycleState.label.index' | translate }}</span>:
         {{order.cycleState.index}}
       </div>
     }
     @if (order.retryState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+        <div class="_600 m-b-xs">{{ 'order.retryState.label.retryState' | translate }}</div>
         @if (order.retryState.next) {
           <span>
-                            <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                            <span class="_600 p-l-sm">{{ 'order.retryState.label.next' | translate }}</span>:
             {{ order.retryState.next | stringToDate }}
                           </span>
         }
         <br>
-        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+        <span class="_600 p-l-sm">{{ 'order.retryState.label.attempt' | translate }}</span>:
         {{ order.retryState.attempt }}
       </div>
     }
     @if (order.sleepState) {
       <div class="m-a-sm m-t-0">
-        <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
+        <div class="_600 m-b-xs">{{ 'order.sleepState.label.sleepState' | translate }}</div>
         @if (order.sleepState.until) {
           <span>
-                            <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
+                            <span class="_600 p-l-sm">{{ 'order.sleepState.label.until' | translate }}</span>:
             {{ order.sleepState.until | stringToDate }}
                           </span>
         }
@@ -127,7 +127,7 @@
     }
     @if (order.priority) {
       <div class="p-l-sm">
-        <span translate> order.label.priority </span>:
+        <span> {{ 'order.label.priority' | translate }} </span>:
         <span class="_600">{{order.priority}}</span>
       </div>
     }
@@ -162,7 +162,7 @@
         <i class="text-sm text-muted">{{order.scheduledFor | stringToDate}}</i>
       }
       @if (order.scheduledNever) {
-        <i class="text-sm text-muted" translate>common.label.never</i>
+        <i class="text-sm text-muted">{{ 'common.label.never' | translate }}</i>
       }
     </span>
   </div>
@@ -175,8 +175,8 @@
           <a class="hover">
             <ng-template #contentTemplate>
               <div>
-                <b translate>workflow.label.maxTries</b> : {{instruction.maxTries}} <br>
-                <b translate>workflow.label.delay</b> : {{instruction.retryDelays}}
+                <b>{{ 'workflow.label.maxTries' | translate }}</b> : {{instruction.maxTries}} <br>
+                <b>{{ 'workflow.label.delay' | translate }}</b> : {{instruction.retryDelays}}
               </div>
             </ng-template>
             @if (instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] && instruction['TYPE'] !== 'AdmissionTime' && instruction['TYPE'] !== 'When' && instruction['TYPE'] !== 'ElseWhen') {
@@ -190,28 +190,28 @@
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.skip</span>
+                          <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unskip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unskip</span>
+                          <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.stop</span>
+                          <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unstop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unstop</span>
+                          <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
                       </li>
                     }
@@ -230,34 +230,34 @@
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.skip</span>
+                          <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unskip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unskip</span>
+                          <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.stop</span>
+                          <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unstop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unstop</span>
+                          <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
                       </li>
                     }
                     <li nz-menu-item>
                       <a (click)="showConfiguration(instruction);">
-                        <span translate>common.button.showConfiguration</span>
+                        <span>{{ 'common.button.showConfiguration' | translate }}</span>
                       </a>
                     </li>
                   </ul>
@@ -303,7 +303,7 @@
                       <ng-template #lockItemTemplate>
                         <div>
                           <div class="p-l-sm">
-                            <span translate> workflow.label.count </span>:
+                            <span> {{ 'workflow.label.count' | translate }} </span>:
                             <span class="_600">{{item.count}}</span>
                           </div>
                         </div>
@@ -336,7 +336,7 @@
                 }
                 @if (instruction.orders.length > 3) {
                   <span (click)="showOrders(instruction)" class="remaining-order-count">
-                    <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                    <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                     <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
                   </span>
                 }
@@ -360,46 +360,46 @@
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.skip</span>
+                          <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unskip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unskip</span>
+                          <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.stop</span>
+                          <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unstop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unstop</span>
+                          <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
                       </li>
                     }
                     <li (click)="showConfiguration(instruction);" nz-menu-item>
                       <a>
-                        <span translate>common.button.showConfiguration</span>
+                        <span>{{ 'common.button.showConfiguration' | translate }}</span>
                       </a>
                     </li>
                     <li (click)="coreService.showDocumentation(instruction.documentationName, preferences)" [nzDisabled]="!instruction.documentationName"
                         nz-menu-item>
                       <a>
-                        <span translate>common.button.viewDocumentation</span>
+                        <span>{{ 'common.button.viewDocumentation' | translate }}</span>
                       </a>
                     </li>
                     @if (instruction['TYPE'] === 'Job' && permission.currentController && permission.currentController.orders.view) {
                       <li (click)="viewHistory(instruction)" nz-menu-item>
                         <a>
-                          <span translate>common.button.showHistory</span>
+                          <span>{{ 'common.button.showHistory' | translate }}</span>
                         </a>
                       </li>
                     }
@@ -418,35 +418,35 @@
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.skip</span>
+                          <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unskip(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unskip</span>
+                          <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.stop</span>
+                          <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="unstop(instruction);" nz-menu-item>
                         <a>
-                          <span translate>workflow.button.unstop</span>
+                          <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction['TYPE'] === 'Sleep') {
                       <li (click)="showConfiguration(instruction);" nz-menu-item>
                         <a>
-                          <span translate>common.button.showConfiguration</span>
+                          <span>{{ 'common.button.showConfiguration' | translate }}</span>
                         </a>
                       </li>
                     }
@@ -546,7 +546,7 @@
                }
                 @if (instruction.orders.length > 3) {
                   <span (click)="showOrders(instruction)" class="remaining-order-count">
-                    <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                    <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                     <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
                   </span>
                 }
@@ -572,7 +572,7 @@
                }
                 @if (instruction.orders.length > 3) {
                   <span (click)="showOrders(instruction)" class="remaining-order-count">
-                    <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                    <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                     <span class="remaining-order-count-span">{{instruction.orders.length - 3}}</span>
                   </span>
                 }
@@ -597,7 +597,7 @@
                       }
                       @if (branch.orders.length > 3) {
                         <span (click)="showOrders(branch)" class="remaining-order-count">
-                          <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                          <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                           <span class="remaining-order-count-span">{{branch.orders.length - 3}}</span>
                         </span>
                       }
@@ -650,7 +650,7 @@
                       }
                       @if (instruction.else.orders.length > 3) {
                         <span (click)="showOrders(instruction.else)" class="remaining-order-count">
-                          <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                          <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                           <span class="remaining-order-count-span">{{instruction.else.orders.length - 3}}</span>
                         </span>
                       }
@@ -692,7 +692,7 @@
                   @if (instruction.catch.instructions && instruction.catch.instructions.length > 0) {
                     <i [ngClass]="{'fa-minus' : (instruction.catch.show)}" class="fa fa-plus pr-2"></i>
                   }
-                  <span class="_600" translate>workflow.label.catch</span>
+                  <span class="_600">{{ 'workflow.label.catch' | translate }}</span>
                 </a>
               }
               @if (instruction.catch && instruction.catch.orders && instruction.catch.orders.length>0) {
@@ -703,7 +703,7 @@
                 }
                   @if (instruction.catch.orders.length > 3) {
                     <span (click)="showOrders(instruction.catch)" class="remaining-order-count">
-                      <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                      <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                       <span class="remaining-order-count-span">{{instruction.catch.orders.length - 3}}</span>
                     </span>
                   }
@@ -756,7 +756,7 @@
                }
                 @if (instruction.join.orders.length > 3) {
                   <span (click)="showOrders(instruction)" class="remaining-order-count">
-                    <i class="remaining-order-count-i" translate>workflow.label.showOther</i>
+                    <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
                     <span class="remaining-order-count-span">{{instruction.join.orders.length - 3}}</span>
                   </span>
                 }
@@ -785,7 +785,7 @@
   <ul nz-menu>
     @if (permission && permission.currentController && permission.currentController.noticeBoards.post) {
       <li (click)="post()" nz-menu-item>
-        <a translate>resource.board.button.post</a>
+        <a>{{ 'resource.board.button.post' | translate }}</a>
       </li>
     }
   </ul>

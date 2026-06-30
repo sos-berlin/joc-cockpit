@@ -24,7 +24,7 @@
           <div class="m-t-72"></div>
           <div [ngClass]="{'show':errorMsg}" class="hide b-a p-a-sm m-t-sm error-input">
             @if (!errorMsgText) {
-              <span translate>login.message.loginError</span>
+              <span>{{ 'login.message.loginError' | translate }}</span>
             }
             @if (errorMsgText) {
               <span class="m-b-sm">{{errorMsgText}}</span>
@@ -41,7 +41,7 @@
                 @if (userName.invalid && (userName.dirty || userName.touched)) {
                   <div class="text-danger help-block">
                     @if (userName.errors.required) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -57,7 +57,7 @@
                 @if (email.invalid && (email.dirty || email.touched)) {
                   <div class="text-danger help-block">
                     @if (email.errors.required) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -119,7 +119,7 @@
 
           @if (!showRegister && !showLogin) {
             @if ((oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0) && needAccountPassword) {
-              <div class="horz-line-text text-u-c" translate>common.label.or
+              <div class="horz-line-text text-u-c">{{ 'common.label.or' | translate }}
               </div>
             }
 
@@ -134,8 +134,8 @@
                           <img class="m-r-sm" height="24px" src="./api/iam/icon/{{item.identityServiceName}}"
                                width="24px"/>
                         }
-                        <span [translateParams]="{identityServiceName: item.iamOidcName}"
-                              translate>login.button.loginWith</span>
+                        <span
+>{{ 'login.button.loginWith' | translate: {identityServiceName: item.iamOidcName} }}</span>
                       </button>
                     }
                   </div>
@@ -143,7 +143,7 @@
               </div>
             }
             @if (fidoIdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0) {
-              <div class="horz-line-text text-u-c" translate>common.label.or
+              <div class="horz-line-text text-u-c">{{ 'common.label.or' | translate }}
               </div>
             }
             @if (fidoIdentityServiceItems?.length > 0) {
@@ -153,7 +153,7 @@
                     @if (item.identityServiceName) {
                       <button (click)="onSign(item.identityServiceName)" class="btn btn-default btn-block btn-sm m-b-sm">
                         <img class="m-r-sm" height="24px" src="./assets/images/fido2.png" width="24px"/>
-                        <span [translateParams]="{identityServiceName: item.identityServiceName}" translate>login.button.loginWith</span>
+                        <span>{{ 'login.button.loginWith' | translate: {identityServiceName: item.identityServiceName} }}</span>
                       </button>
                       <a (click)="registerDevice(item.identityServiceName)"
                          class="float-right font-14 text-primary m-b-12 m-t-xxs">{{'login.button.registerDevice' | translate}}</a>
@@ -163,8 +163,8 @@
               </div>
             }
             @if (fido2ndFactorServiceItems?.length > 0) {
-              <div class="horz-line-text text-u-c" translate>
-                register.button.register
+              <div class="horz-line-text text-u-c">
+                {{ 'register.button.register' | translate }}
               </div>
             }
             @if (fido2ndFactorServiceItems?.length > 0) {
@@ -175,8 +175,8 @@
                       <button (click)="registerDevice(item.identityServiceName)"
                               class="btn btn-default btn-block btn-sm m-b-sm">
                         <i aria-hidden="true" class="fa fa-usb p-a-xs font14"></i>
-                        <span [translateParams]="{identityServiceName: item.identityServiceName}"
-                              translate>register.button.registerKeyFor</span>
+                        <span
+>{{ 'register.button.registerKeyFor' | translate: {identityServiceName: item.identityServiceName} }}</span>
                       </button>
                     }
                   </div>

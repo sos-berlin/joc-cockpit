@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Directive,
   EventEmitter, forwardRef,
@@ -205,6 +207,7 @@ export class OrderPieChartComponent {
   standalone: false,
   selector: 'app-all-order-resume',
   templateUrl: './all-order-resume-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AllOrderResumeModelComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -238,7 +241,7 @@ export class AllOrderResumeModelComponent {
     startPosition: ''
   }
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef){}
 
   ngOnInit(): void {
     this.preferences = this.modalData.preferences;
@@ -289,6 +292,7 @@ export class AllOrderResumeModelComponent {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
       this.workflow.configuration = {instructions: res.workflow.instructions};
+      this.cdr.markForCheck();
     });
   }
 
@@ -361,7 +365,8 @@ export class AllOrderResumeModelComponent {
             this.positions.set(item.positionString, item.position);
           });
         }
-      }, error: () => this.positions = []
+        this.cdr.markForCheck();
+      }, error: () => { this.positions = []; this.cdr.markForCheck(); }
     });
   }
 
@@ -536,7 +541,8 @@ export class AllOrderResumeModelComponent {
   standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
-  styleUrls: ['./order-overview.component.css']
+  styleUrls: ['./order-overview.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderOverviewComponent {
   loading: boolean;
@@ -654,7 +660,7 @@ export class OrderOverviewComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private route: ActivatedRoute, private dataService: DataService, private searchPipe: SearchPipe,
               private translate: TranslateService, private excelService: ExcelService,
-              public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
+              public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -776,6 +782,7 @@ export class OrderOverviewComponent {
           if (this.tree.length) {
             this.loadOrder();
           }
+          this.cdr.markForCheck();
         }, error: () => this.loading = true
       });
     } else {
@@ -826,6 +833,7 @@ export class OrderOverviewComponent {
         this.orderOverview = res.orders;
         this.loading = true;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.orderOverview = {};
         this.loading = true;
@@ -842,6 +850,7 @@ export class OrderOverviewComponent {
         orderId: order.orderId
       }).subscribe((res: any) => {
         order.obstacles = res.obstacles;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -1036,6 +1045,7 @@ export class OrderOverviewComponent {
         this.isLoaded = true;
         this.loading = true;
         this.resetAction();
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetCheckBox();
         this.isLoaded = true;
@@ -1118,6 +1128,7 @@ export class OrderOverviewComponent {
     };
     this.coreService.post('orders/history', obj).subscribe((res: any) => {
       this.history = res.history;
+      this.cdr.markForCheck();
     });
   }
 
@@ -1133,6 +1144,7 @@ export class OrderOverviewComponent {
       next: (res: any) => {
         this.auditLogs = res.auditLog;
         this.showPanelObj.loading = false;
+        this.cdr.markForCheck();
       }, error: () => this.showPanelObj.loading = false
     });
   }
@@ -1476,6 +1488,7 @@ export class OrderOverviewComponent {
         nzClosable: false,
         nzMaskClosable: false
       });
+      this.cdr.markForCheck();
     });
   }
 
@@ -1694,6 +1707,7 @@ export class OrderOverviewComponent {
             }
             this.resetCheckBox();
             this.resetAction(5000);
+            this.cdr.markForCheck();
           }, error: () => this.resetAction()
         });
       }
@@ -1798,6 +1812,7 @@ export class OrderOverviewComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.tags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -1807,6 +1822,7 @@ export class OrderOverviewComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.orderTags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -1843,6 +1859,7 @@ export class OrderOverviewComponent {
           controllerId: this.schedulerIds.selected,
           states: this.getState()
         });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1898,6 +1915,7 @@ export class OrderOverviewComponent {
           controllerId: this.schedulerIds.selected,
           states: this.getState()
         });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2084,6 +2102,7 @@ export class OrderOverviewComponent {
     }).subscribe((res) => {
       this.searchTag.tags = res.results;
       this.searchTag.loading = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -2095,6 +2114,7 @@ export class OrderOverviewComponent {
     }).subscribe((res) => {
       this.searchOrderTag.tags = res.results;
       this.searchOrderTag.loading = false;
+      this.cdr.markForCheck();
     });
   }
 

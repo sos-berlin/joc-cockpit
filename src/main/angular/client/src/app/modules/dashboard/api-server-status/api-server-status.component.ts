@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-api-server-status',
-  templateUrl: './api-server-status.component.html'
+  templateUrl: './api-server-status.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class APIServerStatusComponent {
   @Input('sizeY') ybody: number;
@@ -21,12 +22,17 @@ export class APIServerStatusComponent {
   joc: any;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService, public modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
+              public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -60,7 +66,8 @@ export class APIServerStatusComponent {
       next: (res: any) => {
         this.list = res.jocs;
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

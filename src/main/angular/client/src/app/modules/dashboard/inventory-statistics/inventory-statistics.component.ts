@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -8,7 +8,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-inventory-statistics',
-  templateUrl: './inventory-statistics.component.html'
+  templateUrl: './inventory-statistics.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InventoryStatisticsComponent {
   @Input('sizeX') xbody: number;
@@ -20,12 +21,17 @@ export class InventoryStatisticsComponent {
   subscription: Subscription;
   preferences: any = {};
 
-  constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
+  constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService,
+              private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -63,6 +69,7 @@ export class InventoryStatisticsComponent {
       next: res => {
         this.statistics = res;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
         this.isLoaded = true;

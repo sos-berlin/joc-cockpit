@@ -4,11 +4,11 @@
       <div>
         <div class="row m-b-sm">
           <label class="col-sm-12" [hidden]="!editor.create">
-            <span class="text-primary " translate>runtime.label.addFrequencies</span>
+            <span class="text-primary ">{{ 'runtime.label.addFrequencies' | translate }}</span>
             : <span class="text-muted">{{'runtime.' + str | translate}}</span>
           </label>
           <label class="col-sm-12" [hidden]="editor.create">
-            <span class="text-primary " translate>runtime.label.editFrequencies</span>
+            <span class="text-primary ">{{ 'runtime.label.editFrequencies' | translate }}</span>
             : <span class="text-muted">{{_temp?.str | translate}}</span>
           </label>
         </div>
@@ -17,7 +17,7 @@
             @if (isVisible) {
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.frequencyType' | translate" translate>runtime.label.frequencyType</span>
+                  <span [appRichTooltip]="'runtime.tooltip.frequencyType' | translate">{{ 'runtime.label.frequencyType' | translate }}</span>
                 </label>
                 <div class="col-sm-6">
                   <app-select-input [attributeName]="'tab'" [isSearchable]="true"
@@ -33,12 +33,12 @@
                  [ngClass]="{'active':frequency.tab == 'weekDays'}">
               <div class="form-group row">
                 <label class="col-sm-3">
-                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate" translate>runtime.label.weekDays</span>
+                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate">{{ 'runtime.label.weekDays' | translate }}</span>
                 </label>
                 <div class="col-sm-9">
                   <label nz-checkbox class="w" [(ngModel)]="frequency.all" name="week"
                          (ngModelChange)="selectAllWeek()">
-                    <span translate>runtime.label.everyDay</span>
+                    <span>{{ 'runtime.label.everyDay' | translate }}</span>
                   </label><br>
                   <nz-checkbox-group
                     name="calendarDays"
@@ -46,14 +46,14 @@
                     (ngModelChange)="dayChange($event)">
                     @for (option of daysOptions; track option.value) {
                       <label nz-checkbox [nzValue]="option.value">
-                        <span translate>runtime.label.{{option.label}}</span>
+                        <span>{{ 'runtime.label' | translate }}.{{option.label}}</span>
                       </label>
                     }
                   </nz-checkbox-group>                </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
@@ -64,7 +64,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                 </label>
 
                 <div class="col-sm-5">
@@ -79,7 +79,7 @@
                  [ngClass]="{'active':frequency.tab == 'specificWeekDays'}">
               <div class="form-group row">
                 <label class="col-sm-3">
-                  <span [appRichTooltip]="'runtime.tooltip.dayNumber' | translate" translate>runtime.label.dayNumber</span>
+                  <span [appRichTooltip]="'runtime.tooltip.dayNumber' | translate">{{ 'runtime.label.dayNumber' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'which'" [isSearchable]="true"
@@ -89,7 +89,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate" translate>runtime.label.weekDays</span>
+                  <span [appRichTooltip]="'runtime.tooltip.weekDays' | translate">{{ 'runtime.label.weekDays' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'specificWeekDay'"  [isSearchable]="true"
@@ -99,7 +99,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                 </label>
 
                 <div class="col-sm-5">
@@ -112,7 +112,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnS'"
@@ -128,7 +128,7 @@
               <div>
                 <div class="form-group row b-b p-b">
                   <label class="col-sm-3 form-control-label">
-                    <span [appRichTooltip]="'history.tooltip.date' | translate" translate>history.label.date</span>
+                    <span [appRichTooltip]="'history.tooltip.date' | translate">{{ 'history.label.date' | translate }}</span>
                   </label>
                   <div class="col-sm-2">
                     <app-date-input [object]="frequency" [attributeDate]="'specificDate'"
@@ -149,12 +149,12 @@
                  [ngClass]="{'active':frequency.tab == 'monthDays'}">
               <div class="form-group row">
                 <label class="col-sm-3">
-                  <span [appRichTooltip]="'runtime.tooltip.monthDays' | translate" translate>runtime.label.monthDays</span>
+                  <span [appRichTooltip]="'runtime.tooltip.monthDays' | translate">{{ 'runtime.label.monthDays' | translate }}</span>
                 </label>
                 <div class="col-sm-9">
                   <nz-radio-group name="radio" [(ngModel)]="frequency.isUltimos" (ngModelChange)="onFrequencyChange()">
-                    <label nz-radio nzValue="months"><span translate>runtime.label.countFromFirstDay</span></label>
-                    <label nz-radio nzValue="ultimos"><span translate>runtime.label.countFromTheLastDay</span></label>
+                    <label nz-radio nzValue="months"><span>{{ 'runtime.label.countFromFirstDay' | translate }}</span></label>
+                    <label nz-radio nzValue="ultimos"><span>{{ 'runtime.label.countFromTheLastDay' | translate }}</span></label>
                   </nz-radio-group>
                 </div>
                 <div class="col-sm-offset-3 col-sm-6 m-t-sm p-t-xs">
@@ -194,7 +194,7 @@
                     <tbody>
                     <tr>
                       <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
-                        translate>runtime.label.lastDay</a></td>
+>{{ 'runtime.label.lastDay' | translate }}</a></td>
                       <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
                       >-1</a></td>
                       <td (click)="selectMonthDaysUFunc('3')" [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
@@ -249,7 +249,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
@@ -261,7 +261,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOnM'"
@@ -276,7 +276,7 @@
                  [ngClass]="{'active':frequency.tab == 'every'}">
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.every' | translate" translate>runtime.label.every</span>
+                  <span [appRichTooltip]="'runtime.tooltip.every' | translate">{{ 'runtime.label.every' | translate }}</span>
                 </label>
                 <div class="col-sm-2">
                   <nz-input-number [nzMin]="1" [nzMax]="31" [nzStep]="1" name="interval"
@@ -292,7 +292,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate" translate>runtime.label.validFrom</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validFrom' | translate">{{ 'runtime.label.validFrom' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-sm-5">
@@ -305,7 +305,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate" translate>runtime.label.validTo</span>
+                  <span [appRichTooltip]="'runtime.tooltip.validTo' | translate">{{ 'runtime.label.validTo' | translate }}</span>
                   <!-- <sup class="text-danger text-sm">*</sup> -->
                 </label>
                 <div class="col-sm-5">
@@ -322,14 +322,14 @@
               @if (countryField) {
                 <div class="form-group row">
                   <label class="col-sm-12">
-                    <span translate>runtime.label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
+                    <span>{{ 'runtime.label.updateNationalHoliday' | translate }}</span>&nbsp;{{frequency.year}}
                   </label>
                 </div>
               }
               @if (!countryField) {
                 <div class="form-group row">
                   <label class="col-sm-3">
-                    <span [appRichTooltip]="'runtime.tooltip.country' | translate" translate>runtime.label.country</span>
+                    <span [appRichTooltip]="'runtime.tooltip.country' | translate">{{ 'runtime.label.country' | translate }}</span>
                   </label>
                   <div class="col-sm-6">
                     <app-select-input [attributeName]="'country'"  [isSearchable]="true"
@@ -341,7 +341,7 @@
               @if (!countryField) {
                 <div class="form-group row">
                   <label class="col-sm-3 form-control-label">
-                    <span [appRichTooltip]="'runtime.tooltip.year' | translate" translate>runtime.label.year</span>
+                    <span [appRichTooltip]="'runtime.tooltip.year' | translate">{{ 'runtime.label.year' | translate }}</span>
                   </label>
                   <div class="col-sm-6">
                     <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
@@ -352,7 +352,7 @@
               @if (holidayList.length) {
                 <div class="row m-b-sm">
                   <label class="col-sm-3">
-                    <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate" translate>runtime.label.selectAll</span>
+                    <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate">{{ 'runtime.label.selectAll' | translate }}</span>
                   </label>
                   <div class="col-sm-6">
                     <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
@@ -392,7 +392,7 @@
               @if (frequencyType === 'EXCLUDE' && calendarData.type === 'WORKINGDAYSCALENDAR') {
                 <div class="form-group row">
                   <label class="col-sm-3">
-                    <span [appRichTooltip]="'runtime.tooltip.nonWorkingDayCalendars' | translate" translate>runtime.label.nonWorkingDayCalendars</span>
+                    <span [appRichTooltip]="'runtime.tooltip.nonWorkingDayCalendars' | translate">{{ 'runtime.label.nonWorkingDayCalendars' | translate }}</span>
                   </label>
                   <div class="col-sm-9">
                     <app-multi-select
@@ -411,7 +411,7 @@
           </div>
           <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars'  || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
             <label class="col-sm-3">
-              <span [appRichTooltip]="'runtime.tooltip.monthRange' | translate" translate>runtime.label.monthRange</span>
+              <span [appRichTooltip]="'runtime.tooltip.monthRange' | translate">{{ 'runtime.label.monthRange' | translate }}</span>
               <a class="cursor">
                 <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
                    (click)="showMonthRange=true"></i>
@@ -422,7 +422,7 @@
             <div class="col-sm-9" [hidden]="!showMonthRange">
               <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
                      (ngModelChange)="selectAllMonth()">
-                <span translate>runtime.label.everyMonth</span>
+                <span>{{ 'runtime.label.everyMonth' | translate }}</span>
               </label><br>
               <nz-checkbox-group
                 name="calendarMonths"
@@ -430,7 +430,7 @@
                 (ngModelChange)="monthChange($event)">
                 @for (option of monthsOptions; track option.value) {
                   <label nz-checkbox [nzValue]="option.value">
-                    <span translate>runtime.label.{{option.label}}</span>
+                    <span>{{ 'runtime.label.' + option.label | translate }}</span>
                   </label>
                 }
               </nz-checkbox-group>            </div>
@@ -443,11 +443,11 @@
             <table class="table table-hover table-bordered">
               <thead>
               <tr>
-                <th><span translate>runtime.label.srNo</span></th>
-                <th><span translate>runtime.label.frequency</span></th>
-                <th><span translate>runtime.label.validFrom</span></th>
-                <th><span translate>runtime.label.validTo</span></th>
-                <th style="width: 80px"><span translate>runtime.label.action</span></th>
+                <th><span>{{ 'runtime.label.srNo' | translate }}</span></th>
+                <th><span>{{ 'runtime.label.frequency' | translate }}</span></th>
+                <th><span>{{ 'runtime.label.validFrom' | translate }}</span></th>
+                <th><span>{{ 'runtime.label.validTo' | translate }}</span></th>
+                <th style="width: 80px"><span>{{ 'runtime.label.action' | translate }}</span></th>
               </tr>
               </thead>
               <tbody>
@@ -516,7 +516,7 @@
       <div class="row">
         <div class="col-sm-7">
           <label class="pos-rel t-3 text-md">
-            <span class="text _600" translate>runtime.label.previewCalendar</span>
+            <span class="text _600">{{ 'runtime.label.previewCalendar' | translate }}</span>
           </label>
         </div>
         <div class="col-sm-5">
@@ -545,10 +545,10 @@
               [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith))"
               (click)="addFrequency()">
         @if (editor.create) {
-          <span translate>runtime.button.addNewFrequency</span>
+          <span>{{ 'runtime.button.addNewFrequency' | translate }}</span>
         }
         @if (!editor.create) {
-          <span translate>runtime.button.updateFrequency</span>
+          <span>{{ 'runtime.button.updateFrequency' | translate }}</span>
         }
       </button>
     }
@@ -556,22 +556,22 @@
   <div class="modal-footer">
     @if (!editor.showYearView) {
       <button type="submit" class="btn btn-default btn-secondary btn-sm">
-        <span translate>common.button.close</span>
+        <span>{{ 'common.button.close' | translate }}</span>
       </button>
     }
     @if (!editor.showYearView) {
       <button type="button" class="btn btn-grey btn-sm" (click)="cancel()"
-              translate>common.button.cancel
+>{{ 'common.button.cancel' | translate }}
       </button>
     }
     <!--    @if (editor.showYearView) {-->
     <!--      <button type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">-->
-    <!--        <span translate>common.button.close</span>-->
+    <!--        <span>{{ 'common.button.close' | translate }}</span>-->
     <!--      </button>-->
     <!--    }-->
     @if (editor.showYearView) {
       <button type="button" class="btn btn-grey btn-sm" (click)="back()"
-              translate>common.button.close
+>{{ 'common.button.close' | translate }}
       </button>
     }
   </div>

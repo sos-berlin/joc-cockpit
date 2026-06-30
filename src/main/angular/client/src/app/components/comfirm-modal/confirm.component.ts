@@ -1,11 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from "../../services/core.service";
 
 @Component({
   standalone: false,
   selector: 'app-confirm-modal-content',
-  templateUrl: './confirm.component.html'
+  templateUrl: './confirm.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -41,7 +42,7 @@ export class ConfirmModalComponent {
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   isPathDisplay = false;
 
-  constructor(public activeModal: NzModalRef,  public coreService: CoreService,) {
+  constructor(public activeModal: NzModalRef,  public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -98,6 +99,7 @@ export class ConfirmModalComponent {
         this.dependencies = res;
         this.updateNodeDependencies(res, requestedKeys);
         this.prepareObject(res);
+        this.cdr.markForCheck();
       },
       error: (err) => {
       }

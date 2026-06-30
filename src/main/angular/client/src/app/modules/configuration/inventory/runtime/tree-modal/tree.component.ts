@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
 import {debounceTime, Subject} from 'rxjs';
@@ -7,7 +7,8 @@ import {CoreService} from '../../../../../services/core.service';
 @Component({
   standalone: false,
   selector: 'app-tree-modal-content',
-  templateUrl: './tree.component.html'
+  templateUrl: './tree.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -34,7 +35,7 @@ export class TreeModalComponent {
 
   private searchTerm = new Subject<string>();
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -64,8 +65,10 @@ export class TreeModalComponent {
           this.selectNode(this.tree[0]);
         }
         this.loading = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = true;
+        this.cdr.markForCheck();
       }
     });
 
@@ -117,6 +120,7 @@ export class TreeModalComponent {
               data.calendars[i].path = e.key + (e.key === '/' ? '' : '/') + data.calendars[i].name;
             }
           }
+          this.cdr.markForCheck();
         });
       }
     } else {
@@ -173,6 +177,7 @@ export class TreeModalComponent {
         this.coreService.post('inventory/search', request).subscribe({
           next: (res: any) => {
             this.objectList = res.results || [];
+            this.cdr.markForCheck();
           }
         });
       }

@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!edit) {
-      <span translate>monitor.approvers.label.addNewApprover</span>
+      <span>{{ 'monitor.approvers.label.addNewApprover' | translate }}</span>
     }
     @if (edit) {
-      <span translate>common.button.edit</span>
+      <span>{{ 'common.button.edit' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -15,12 +15,12 @@
   <div class="modal-body p-a">
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>monitor.approvers.section.approverProfile</small>
+        <small class="_600 section-box-title">{{ 'monitor.approvers.section.approverProfile' | translate }}</small>
       </div>
       <div class="p-a-sm">
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'profile.tooltip.userName' | translate" translate>profile.label.userName</span>
+        <span [appRichTooltip]="'profile.tooltip.userName' | translate">{{ 'profile.label.userName' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -33,7 +33,7 @@
         @if (userName.invalid && (userName.dirty || userName.touched)) {
           <div class="text-danger help-block">
             @if (userName.errors?.['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -42,7 +42,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'monitor.approvers.tooltip.firstName' | translate" translate>monitor.approvers.label.firstName</span>
+        <span [appRichTooltip]="'monitor.approvers.tooltip.firstName' | translate">{{ 'monitor.approvers.label.firstName' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -55,7 +55,7 @@
         @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
           <div class="text-danger help-block">
             @if (firstName.errors?.['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -64,7 +64,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'monitor.approvers.tooltip.lastName' | translate" translate>monitor.approvers.label.lastName</span>
+        <span [appRichTooltip]="'monitor.approvers.tooltip.lastName' | translate">{{ 'monitor.approvers.label.lastName' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -77,7 +77,7 @@
         @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
           <div class="text-danger help-block">
             @if (lastName.errors?.['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -86,7 +86,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'monitor.approvers.tooltip.email' | translate" translate>monitor.approvers.label.email</span>
+        <span [appRichTooltip]="'monitor.approvers.tooltip.email' | translate">{{ 'monitor.approvers.label.email' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <div class="row">
@@ -107,8 +107,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

@@ -43,9 +43,9 @@
                   @if (priorityFilter) {
                     <span> {{ 'settings.filter.' + priorityFilter | translate }} </span>
                   } @else if (changedFilter) {
-                    <span translate> settings.filter.changed </span>
+                    <span> {{ 'settings.filter.changed' | translate }} </span>
                   } @else {
-                    <span translate> settings.filter.all </span>
+                    <span> {{ 'settings.filter.all' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -54,22 +54,22 @@
                     <li (click)="clearFilter()"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': !priorityFilter && !changedFilter}"
                         nz-menu-item>
-                      <a translate>settings.filter.all</a>
+                      <a>{{ 'settings.filter.all' | translate }}</a>
                     </li>
                     <li (click)="toggleChanged()"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': changedFilter}"
                         nz-menu-item>
-                      <a translate>settings.filter.changed</a>
+                      <a>{{ 'settings.filter.changed' | translate }}</a>
                     </li>
                     <li (click)="togglePriority('critical')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'critical'}"
                         nz-menu-item>
-                      <a translate>settings.filter.critical</a>
+                      <a>{{ 'settings.filter.critical' | translate }}</a>
                     </li>
                     <li (click)="togglePriority('frequent')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'frequent'}"
                         nz-menu-item>
-                      <a translate>settings.filter.frequent</a>
+                      <a>{{ 'settings.filter.frequent' | translate }}</a>
                     </li>
                     <li (click)="togglePriority('common')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'common'}"
@@ -79,7 +79,7 @@
                     <li (click)="togglePriority('advanced')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'advanced'}"
                         nz-menu-item>
-                      <a translate>settings.filter.advanced</a>
+                      <a>{{ 'settings.filter.advanced' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -109,10 +109,10 @@
                       <div class="m-l-md">
                         <div class="row m-t m-b">
                           <div class="col-sm-4 col-lg-3 _600 font14">
-                            <span class="p-l" translate>settings.label.name</span>
+                            <span class="p-l">{{ 'settings.label.name' | translate }}</span>
                           </div>
-                          <div class="col-sm-2 col-lg-2 _600 font14" translate>settings.label.default</div>
-                          <div class="col-sm-4 col-lg-3 _600 font14" translate>settings.label.value</div>
+                          <div class="col-sm-2 col-lg-2 _600 font14">{{ 'settings.label.default' | translate }}</div>
+                          <div class="col-sm-4 col-lg-3 _600 font14">{{ 'settings.label.value' | translate }}</div>
                         </div>
                         @for (group of setting.groups; track group) {
                           @if (group.key && (!isFilterActive || !group._hidden)) {
@@ -144,11 +144,11 @@
                                     @if (val.value.type === 'PASSWORD' && !val.value.edit && (!val.value.value && val.value.value !== '')) {
                                       <a (click)="showHashValue(val)"
                                         [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l"
-                                        nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                                        nz-popover nzPopoverTrigger="click">{{ 'settings.button.showHashValue' | translate }}</a>
                                     }
                                     <ng-template #contentTemplate>
                                     <div>
-                                      <b translate>settings.label.hash</b> :
+                                      <b>{{ 'settings.label.hash' | translate }}</b> :
                                       <span>{{val.value.hash}} <i (click)="showCopyMessage()" [cbContent]="val.value.hash"
                                                                   class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                   ngxClipboard></i></span>
@@ -376,10 +376,10 @@
                                       }
                                       <div class="pos-abt w-full" style="top: 0; left: 420px">
                                         <a (click)="showHashValue(val)" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs"
-                                          nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                                          nz-popover nzPopoverTrigger="click">{{ 'settings.button.showHashValue' | translate }}</a>
                                         <ng-template #contentTemplate>
                                           <div>
-                                            <b translate>settings.label.hash</b> :
+                                            <b>{{ 'settings.label.hash' | translate }}</b> :
                                             <span>{{val.value.hash}} <i (click)="showCopyMessage()" [cbContent]="val.value.hash"
                                                                         class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                         ngxClipboard></i></span>
@@ -427,11 +427,11 @@
                                               @if (child.value.type === 'PASSWORD' && !child.value.edit && (!child.value.value && child.value.value !== '')) {
                                                 <a (click)="showHashValue(child)"
                                                   [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l"
-                                                  nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                                                  nz-popover nzPopoverTrigger="click">{{ 'settings.button.showHashValue' | translate }}</a>
                                               }
                                               <ng-template #contentTemplate>
                                           <div>
-                                            <b translate>settings.label.hash</b> :
+                                            <b>{{ 'settings.label.hash' | translate }}</b> :
                                           <span>{{child.value.hash}} <i (click)="showCopyMessage()" [cbContent]="child.value.hash"
                                                                         class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                         ngxClipboard></i></span>
@@ -643,10 +643,10 @@
                                                 }
                                                 <div class="pos-abt w-full" style="top: 0; left: 420px">
                                                   <a (click)="showHashValue(child)" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs"
-                                                    nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                                                    nz-popover nzPopoverTrigger="click">{{ 'settings.button.showHashValue' | translate }}</a>
                                                   <ng-template #contentTemplate>
                                                     <div>
-                                                      <b translate>settings.label.hash</b> :
+                                                      <b>{{ 'settings.label.hash' | translate }}</b> :
                                                       <span>{{child.value.hash}} <i (click)="showCopyMessage()" [cbContent]="child.value.hash"
                                                                                     class="cursor primary-text-hover-color p-l-sm fa fa-copy"
                                                                                     ngxClipboard></i></span>

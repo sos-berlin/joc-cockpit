@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
@@ -8,6 +8,7 @@ import { VideoEntry } from './videos.config';
   standalone: false,
   selector: 'app-video-viewer',
   templateUrl: './video-viewer.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VideoViewerComponent implements OnInit {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -21,6 +22,7 @@ export class VideoViewerComponent implements OnInit {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly modalRef = inject(NzModalRef);
   private readonly http = inject(HttpClient);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.videoKey = this.modalData.videoKey;
@@ -32,14 +34,17 @@ export class VideoViewerComponent implements OnInit {
 
         if (!this.entry) {
           this.notFound = true;
+          this.cdr.markForCheck();
           return;
         }
 
         this.buildEmbedUrl();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading = false;
         this.notFound = true;
+        this.cdr.markForCheck();
       }
     });
   }

@@ -2,10 +2,10 @@
   <div class="modal-header">
     <h4 class="modal-title">
       @if (isNew) {
-        <span translate>workflow.repeat.label.addRepeat</span>
+        <span>{{ 'workflow.repeat.label.addRepeat' | translate }}</span>
       }
       @if (!isNew) {
-        <span translate>workflow.repeat.label.editRepeat</span>
+        <span>{{ 'workflow.repeat.label.editRepeat' | translate }}</span>
       }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -20,7 +20,7 @@
             <div class="form-group row">
               <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.cycleType' | translate) : ''"
                      class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.cycleType</label>
+>{{ 'workflow.repeat.label.cycleType' | translate }}</label>
               <div class="col-sm-6">
                 <nz-select [(ngModel)]="object.TYPE" name="_value">
                   <nz-option [nzLabel]="'workflow.repeat.label.periodical' | translate" nzValue="Periodic"></nz-option>
@@ -34,7 +34,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
                        class="col-sm-3 form-control-label"
-                       translate>workflow.repeat.label.period
+>{{ 'workflow.repeat.label.period' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}" class="col-sm-6">
@@ -44,10 +44,10 @@
                   @if (period.invalid && (period.dirty || period.touched)) {
                     <div class="text-danger help-block">
                       @if (period.errors.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (period.errors.invalidDuration) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -58,7 +58,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
                        class="col-sm-3 form-control-label"
-                       translate>workflow.repeat.label.offsets
+>{{ 'workflow.repeat.label.offsets' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}"
@@ -69,10 +69,10 @@
                   @if (offsets.invalid && (offsets.dirty || offsets.touched)) {
                     <div class="text-danger help-block">
                       @if (offsets.errors.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (offsets.errors.invalidOffset) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -83,7 +83,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
                        class="col-sm-3 form-control-label"
-                       translate>workflow.repeat.label.pause
+>{{ 'workflow.repeat.label.pause' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}" class="col-sm-6">
@@ -93,10 +93,10 @@
                   @if (pause.invalid && (pause.dirty || pause.touched)) {
                     <div class="text-danger help-block">
                       @if (pause.errors.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (pause.errors.invalidDuration) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -107,7 +107,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
                        class="col-sm-3 form-control-label"
-                       translate>workflow.repeat.label.limit</label>
+>{{ 'workflow.repeat.label.limit' | translate }}</label>
                 <div class="col-sm-6">
                   <nz-input-number [(ngModel)]="object.limit" [nzMin]="1" [nzStep]="1"
                                    name="limit"></nz-input-number>
@@ -118,7 +118,7 @@
               <div class="form-group row">
                 <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
                        class="col-sm-3 form-control-label"
-                       translate>workflow.repeat.label.interval
+>{{ 'workflow.repeat.label.interval' | translate }}
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}"
@@ -129,10 +129,10 @@
                   @if (interval.invalid && (interval.dirty || interval.touched)) {
                     <div class="text-danger help-block">
                       @if (interval.errors.required) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (interval.errors.invalidDuration) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -142,10 +142,10 @@
           </div>
           <div>
             <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-              <span translate>common.button.save</span>
+              <span>{{ 'common.button.save' | translate }}</span>
             </button>
-            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-              common.button.cancel
+            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+              {{ 'common.button.cancel' | translate }}
             </button>
           </div>
         </form>

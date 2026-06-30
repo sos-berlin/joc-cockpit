@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -134,7 +134,8 @@ for (const section in SETTING_GROUPS) {
 @Component({
   standalone: false,
   selector: 'app-setting',
-  templateUrl: './setting.component.html'
+  templateUrl: './setting.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingComponent {
   zones: any = {};
@@ -163,7 +164,7 @@ export class SettingComponent {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
-              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe, private kioskService: KioskService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe, private kioskService: KioskService, private cdr: ChangeDetectorRef) {
   }
 
   static checkTime(time): string {
@@ -516,6 +517,7 @@ static generateChildStoreObject(children): any {
         this.changeConfiguration(null, null, null);
         this.loadSetting();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -552,9 +554,10 @@ static generateChildStoreObject(children): any {
             this.loading = true;
 
           }
-
+          this.cdr.markForCheck();
         }, error: () => {
           this.loading = true;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -811,6 +814,7 @@ static generateChildStoreObject(children): any {
             this.settings = this.coreService.clone(this.orignalSetting);
             this.mergeData(this.defaultGlobals);
           }
+          this.cdr.markForCheck();
         });
       } else {
         this._savePreferences(tempSetting, isJoc, this.auditLog, isKiosk);
@@ -832,6 +836,7 @@ static generateChildStoreObject(children): any {
         if (isJoc || isKiosk) {
           this.getProperties(isKiosk);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -840,6 +845,7 @@ static generateChildStoreObject(children): any {
     this.coreService.post('joc/properties', {}).subscribe((result: any) => {
       this.coreService.setProperties(result, isKiosk);
       this.dataService.isProfileReload.next(true);
+      this.cdr.markForCheck();
     });
   }
 

@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>workflow.label.references</span>
+    <span class="drag-text">{{ 'workflow.label.references' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close"
           type="button">
@@ -18,16 +18,16 @@
             <thead>
             <tr>
               <th>
-                <span translate>common.label.path</span>
+                <span>{{ 'common.label.path' | translate }}</span>
               </th>
               <th>
-                <span translate>workflow.label.agent</span>
+                <span>{{ 'workflow.label.agent' | translate }}</span>
               </th>
               <th>
-                <span translate>inventory.label.directory</span>
+                <span>{{ 'inventory.label.directory' | translate }}</span>
               </th>
               <th>
-                <span translate>inventory.label.pattern</span>
+                <span>{{ 'inventory.label.pattern' | translate }}</span>
               </th>
             </tr>
             </thead>
@@ -70,9 +70,9 @@
                 <table class="table table-hover ">
                   <thead>
                   <tr>
-                    <th><span translate>runtime.label.listOfCalendars</span></th>
-                    <th><span translate>runtime.label.period</span></th>
-                    <th><span translate>runtime.label.restrictions</span></th>
+                    <th><span>{{ 'runtime.label.listOfCalendars' | translate }}</span></th>
+                    <th><span>{{ 'runtime.label.period' | translate }}</span></th>
+                    <th><span>{{ 'runtime.label.restrictions' | translate }}</span></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -147,7 +147,7 @@
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-          translate type="button">
-    common.button.close
+ type="button">
+    {{ 'common.button.close' | translate }}
   </button>
 </div>

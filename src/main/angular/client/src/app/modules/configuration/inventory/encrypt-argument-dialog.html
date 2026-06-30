@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>encipherment.label.encryptValue</span>
+    <span>{{ 'encipherment.label.encryptValue' | translate }}</span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -37,19 +37,19 @@
     }
     <div class="form-group row">
       <div class="col-md-4 col-lg-4">
-        <label class="form-control-label" translate></label>
+        <label class="form-control-label"></label>
       </div>
       <div class="col-md-8 col-lg-8">
         <nz-radio-group [(ngModel)]="certificateMode" name="certificateMode">
-          <label nz-radio nzValue="alias"><span translate>encipherment.label.selectCertAlias</span></label>
-          <label nz-radio nzValue="paste"><span translate>encipherment.label.pasteCertificate</span></label>
+          <label nz-radio nzValue="alias"><span>{{ 'encipherment.label.selectCertAlias' | translate }}</span></label>
+          <label nz-radio nzValue="paste"><span>{{ 'encipherment.label.pasteCertificate' | translate }}</span></label>
         </nz-radio-group>
       </div>
     </div>
     @if (certificateMode === 'alias') {
       <div class="form-group row">
         <div class="col-md-4 col-lg-4">
-          <label class="form-control-label" translate>encipherment.label.certAlias</label>
+          <label class="form-control-label">{{ 'encipherment.label.certAlias' | translate }}</label>
         </div>
         <div class="col-md-8 col-lg-8">
           <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [(ngModel)]="selectedCert" name="selectedCert" (ngModelChange)="changeCertificate($event)">
@@ -64,7 +64,7 @@
       <div class="form-group row">
         <div class="col-sm-12">
           @if (selectedCert) {
-            <a (click)="showAssignedAgents(selectedCert)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+            <a (click)="showAssignedAgents(selectedCert)" class="text-u-l">{{ 'encipherment.label.showAssignedAgents' | translate }}</a>
           }
         </div>
       </div>
@@ -72,7 +72,7 @@
     @if (certificateMode === 'paste') {
       <div class="form-group row">
         <div class="col-md-4 col-lg-4">
-          <label class="form-control-label" translate>encipherment.label.certificate</label>
+          <label class="form-control-label">{{ 'encipherment.label.certificate' | translate }}</label>
         </div>
         <div class="col-md-8 col-lg-8">
           <textarea [(ngModel)]="certificate" (keyup)="onFocusCertificate()" autocomplete="false" class="form-control" name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
@@ -87,8 +87,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

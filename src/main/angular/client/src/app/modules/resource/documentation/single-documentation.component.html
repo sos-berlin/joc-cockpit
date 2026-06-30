@@ -29,14 +29,14 @@
             >
               <thead>
               <tr>
-                <th class="menu"><span translate>common.label.action</span></th>
-                <th><span translate>resource.documentation.label.documentName</span></th>
+                <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
+                <th><span>{{ 'resource.documentation.label.documentName' | translate }}</span></th>
                 @if (isPathDisplay) {
-                  <th><span translate>common.label.path</span></th>
+                  <th><span>{{ 'common.label.path' | translate }}</span></th>
                 }
-                <th><span translate>resource.documentation.label.reference</span></th>
-                <th><span translate>common.label.type</span></th>
-                <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
+                <th><span>{{ 'resource.documentation.label.reference' | translate }}</span></th>
+                <th><span>{{ 'common.label.type' | translate }}</span></th>
+                <th><span>{{ 'resource.documentation.label.lastUpdateTime' | translate }}</span></th>
               </tr>
               </thead>
               <tbody>
@@ -51,25 +51,25 @@
                           <ul nz-menu>
                             @if (permission.joc && permission.joc.documentations.manage) {
                               <li nz-menu-item>
-                                <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                                <a (click)="editDocument(document)">{{ 'resource.documentation.button.editDocument' | translate }}</a>
                               </li>
                             }
                             <li nz-menu-item>
                               <a (click)="previewDocument(document)"
-                                 translate>resource.documentation.button.previewDocument</a>
+>{{ 'resource.documentation.button.previewDocument' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.documentations.manage) {
                               <li nz-menu-item>
-                                <a (click)="exportDocument(document)" translate>common.button.export</a>
+                                <a (click)="exportDocument(document)">{{ 'common.button.export' | translate }}</a>
                               </li>
                             }
                             @if (permission.joc && permission.joc.documentations.manage) {
                               <li class="bg-hover-color" nz-menu-item>
-                                <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
+                                <a (click)="deleteDocumentation(document)">{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
                             <li nz-menu-item>
-                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                              <a (click)="showDocumentUsage(document)">{{ 'resource.button.showUsage' | translate }}</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>

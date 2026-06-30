@@ -13,7 +13,7 @@
                 <button (click)="addChange()"
                         class="btn btn-grey btn-sm m-l-12">
                   <i class="fa fa-plus"></i>&nbsp;
-                  <span translate>changes.button.addChange</span>
+                  <span>{{ 'changes.button.addChange' | translate }}</span>
                 </button>
               </ng-container>
             </div>
@@ -43,15 +43,15 @@
           <thead>
           <tr>
             <th class="menu" rowspan="2">
-              <span translate>common.label.action</span>
+              <span>{{ 'common.label.action' | translate }}</span>
             </th>
-            <th rowspan="2"><span translate>common.label.name</span></th>
-            <th rowspan="2"><span translate>common.label.title</span></th>
-            <th rowspan="2"><span translate>changes.label.state</span></th>
-            <th rowspan="2"><span translate>changes.label.owner</span></th>
-            <th rowspan="2"><span translate>changes.label.created</span></th>
-            <th rowspan="2"><span translate>changes.label.modified</span></th>
-            <th rowspan="2"><span translate>changes.label.changesFound</span></th>
+            <th rowspan="2"><span>{{ 'common.label.name' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'common.label.title' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'changes.label.state' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'changes.label.owner' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'changes.label.created' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'changes.label.modified' | translate }}</span></th>
+            <th rowspan="2"><span>{{ 'changes.label.changesFound' | translate }}</span></th>
           </tr>
           </thead>
           <tbody>
@@ -66,11 +66,11 @@
                     <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
                       <ul nz-menu>
                         <li (click)="updateChanges(changes,'updateChange')" nz-menu-item>
-                          <a translate>common.button.edit</a>
+                          <a>{{ 'common.button.edit' | translate }}</a>
                         </li>
                         <li nz-menu-divider></li>
                         <li (click)="deleteChanges(changes?.name)" nz-menu-item>
-                          <a translate>common.button.delete</a>
+                          <a>{{ 'common.button.delete' | translate }}</a>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
@@ -129,12 +129,12 @@
         </nz-table>
         @if (changesTable.data.length > 0) {
           <div class="w-half label-top">
-            <span translate>common.label.total</span> {{ data.length }}
+            <span>{{ 'common.label.total' | translate }}</span> {{ data.length }}
             @if (changesTable.data.length > 1) {
-              <span translate>changes.label.changesFound</span>
+              <span>{{ 'changes.label.changesFound' | translate }}</span>
             }
             @if (changesTable.data.length === 1) {
-              <span translate>changes.label.changeFound</span>
+              <span>{{ 'changes.label.changeFound' | translate }}</span>
             }
           </div>
         }

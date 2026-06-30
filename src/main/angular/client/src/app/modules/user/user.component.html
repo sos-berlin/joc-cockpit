@@ -23,34 +23,34 @@
     <div class="row m-t-sm">
       <div class="col-sm-12">
         <div class="box p-a p-b-md">
-          <h5 translate>profile.label.userDetails</h5>
+          <h5>{{ 'profile.label.userDetails' | translate }}</h5>
           <div class="row m-t">
-            <div class="col-md-4 col-lg-3"><span class="text-dark" translate [appRichTooltip]="'profile.tooltip.accountName' | translate">profile.label.userName</span></div>
+            <div class="col-md-4 col-lg-3"><span class="text-dark" [appRichTooltip]="'profile.tooltip.accountName' | translate">{{ 'profile.label.userName' | translate }}</span></div>
             <div class="col-md-8 col-lg-9">
               <span [innerHtml]="authService.currentUserData | decodeSpace" class="text-black-lt"></span>
             </div>
           </div>
           @if (identityServiceType === 'JOC') {
             <div class="row m-t">
-              <div class="col-md-4 col-lg-3"><span class="text-dark" translate [appRichTooltip]="'profile.tooltip.password' | translate">user.label.password</span></div>
+              <div class="col-md-4 col-lg-3"><span class="text-dark" [appRichTooltip]="'profile.tooltip.password' | translate">{{ 'user.label.password' | translate }}</span></div>
               <div class="col-md-8 col-lg-9">
                 <a (click)="changePassword()" class="text-u-l text-hover-primary"
-                   translate>profile.button.changePassword</a>
+>{{ 'profile.button.changePassword' | translate }}</a>
               </div>
             </div>
           }
           @if (identityServiceType == 'FIDO') {
             <div class="row m-t">
-              <div class="col-md-4 col-lg-3"><span class="text-dark" translate>user.button.addAuthenticatorDevice</span>
+              <div class="col-md-4 col-lg-3"><span class="text-dark">{{ 'user.button.addAuthenticatorDevice' | translate }}</span>
               </div>
               <div class="col-md-8 col-lg-9">
                 <a (click)="addDevice()" class="text-u-l text-hover-primary"
-                   translate><i class="fa fa-plus"></i></a>
+><i class="fa fa-plus"></i></a>
               </div>
             </div>
           }
           <hr>
-          <h5 translate>profile.label.roles</h5>
+          <h5>{{ 'profile.label.roles' | translate }}</h5>
           <div class="row m-t-sm">
             <div class="col-sm-6">
               @for (role of permission.roles; track role) {
@@ -61,7 +61,7 @@
             </div>
           </div>
           <hr>
-          <nz-tabset (nzSelectChange)="tabChange($event)">
+          <nz-tabs (nzSelectChange)="tabChange($event)">
             <nz-tab [nzTitle]="tabTitle1">
               <ng-template #tabTitle1>
                  @if (preferences.showHelpPages) {
@@ -78,13 +78,13 @@
                 <!-- Browser related Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.browser</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.browser' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.language' | translate">
-                          profile.label.language
+                        <span [appRichTooltip]="'profile.preferences.tooltip.language' | translate">
+                          {{ 'profile.label.language' | translate }}
                         </span>
                       </div>
                       <div class="col-md-8 col-lg-9">
@@ -95,8 +95,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.timeZone' | translate">
-                          profile.label.timeZone
+                        <span [appRichTooltip]="'profile.preferences.tooltip.timeZone' | translate">
+                          {{ 'profile.label.timeZone' | translate }}
                         </span>
                       </div>
                       <div class="col-md-8 col-lg-9">
@@ -108,8 +108,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.dateTimeFormat' | translate">
-                          profile.label.dateTimeFormat
+                        <span [appRichTooltip]="'profile.preferences.tooltip.dateTimeFormat' | translate">
+                          {{ 'profile.label.dateTimeFormat' | translate }}
                         </span>
                       </div>
                       <div class="col-md-8 col-lg-9">
@@ -131,13 +131,13 @@
                 <!-- Theme Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.theme</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.theme' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.changeTheme' | translate">
-                          profile.label.theme
+                        <span [appRichTooltip]="'profile.preferences.tooltip.changeTheme' | translate">
+                          {{ 'profile.label.theme' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6" style="display: flex">
@@ -155,7 +155,7 @@
                           <!-- Pending -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.pending' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[0].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -169,7 +169,7 @@
                           <!-- Scheduled -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.scheduled' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[1].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -183,7 +183,7 @@
                           <!-- In Progress -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.incomplete' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[2].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -197,7 +197,7 @@
                           <!-- Running -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.running' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[3].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -211,7 +211,7 @@
                           <!-- Suspended -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.suspended' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[4].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -227,7 +227,7 @@
                           <!-- Completed -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.completed' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[5].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -241,7 +241,7 @@
                           <!-- Prompting -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.prompting' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[6].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -255,7 +255,7 @@
                           <!-- Waiting -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.waiting' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[7].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -269,7 +269,7 @@
                           <!-- Blocked -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.blocked' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[8].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -283,7 +283,7 @@
                           <!-- Failed -->
                           <div class="col-md-2 col-sm-4">
                             <div class="row">
-                              <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
+                              <div class="col-4 text-dark form-control-label">{{ 'common.label.failed' | translate }}</div>
                               <div class="col-8" style="position: relative;">
                                 <input [(ngModel)]="orderStateColors[9].color"  class="form-control w-sm color-input" type="text"
                                        placeholder="{{'profile.label.enterColor' | translate}}">
@@ -295,15 +295,15 @@
                           </div>
                         </div>
 
-                        <a (click)="resetDefault()" class="text-u-l rev" translate>profile.label.resetDefault</a>
+                        <a (click)="resetDefault()" class="text-u-l rev">{{ 'profile.label.resetDefault' | translate }}</a>
                       </div>
                     }
 
                     @if (this.preferences.theme === 'light') {
                       <div class="row m-t">
                         <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                          <span translate [appRichTooltip]="'profile.preferences.tooltip.menuBarColor' | translate">
-                            profile.label.menuBarTheme
+                          <span [appRichTooltip]="'profile.preferences.tooltip.menuBarColor' | translate">
+                            {{ 'profile.label.menuBarTheme' | translate }}
                           </span>
                         </div>
                         <div class="col-md-6">
@@ -317,8 +317,8 @@
 
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.themeTitle' | translate">
-                          profile.label.themeTitle
+                        <span [appRichTooltip]="'profile.preferences.tooltip.themeTitle' | translate">
+                          {{ 'profile.label.themeTitle' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -332,13 +332,13 @@
                 <!-- List related Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.list</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.list' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfHistoryEntries' | translate">
-                          profile.label.maxNumberOfHistoryEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfHistoryEntries' | translate">
+                          {{ 'profile.label.maxNumberOfHistoryEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -348,14 +348,14 @@
                           <i (click)="isGroupBtnActive = false" class="fa fa-times p-l-sm"></i>
                         }
                         @if (!isGroupBtnActive) {
-                          <a (click)="groupLimit()" class="text-hover-primary p-l-sm" translate>profile.button.groupLimit</a>
+                          <a (click)="groupLimit()" class="text-hover-primary p-l-sm">{{ 'profile.button.groupLimit' | translate }}</a>
                         }
                       </div>
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogPerObject' | translate">
-                          profile.label.maxNumberOfAuditLogEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogPerObject' | translate">
+                          {{ 'profile.label.maxNumberOfAuditLogEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -373,8 +373,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfNotificationEntries' | translate">
-                          profile.label.maxNumberOfNotificationEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfNotificationEntries' | translate">
+                          {{ 'profile.label.maxNumberOfNotificationEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -392,8 +392,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderOverviewEntries' | translate">
-                          profile.label.maxNumberOfOverviewEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderOverviewEntries' | translate">
+                          {{ 'profile.label.maxNumberOfOverviewEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -411,8 +411,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfDailyPlanEntries' | translate">
-                          profile.label.maxNumberOfDailyPlanEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfDailyPlanEntries' | translate">
+                          {{ 'profile.label.maxNumberOfDailyPlanEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -430,8 +430,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerWorkflow' | translate">
-                          profile.label.maxNumberOfWorkflowEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerWorkflow' | translate">
+                          {{ 'profile.label.maxNumberOfWorkflowEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -449,8 +449,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFileTransferEntries' | translate">
-                          profile.label.maxNumberOfFileTransferEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFileTransferEntries' | translate">
+                          {{ 'profile.label.maxNumberOfFileTransferEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -468,8 +468,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerResourceLock' | translate">
-                          profile.label.maxNumberOfResourceLockEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerResourceLock' | translate">
+                          {{ 'profile.label.maxNumberOfResourceLockEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -487,8 +487,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerNoticeBoard' | translate">
-                          profile.label.maxNumberOfNoticeBoardEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrdersPerNoticeBoard' | translate">
+                          {{ 'profile.label.maxNumberOfNoticeBoardEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -511,13 +511,13 @@
                 <!-- Pagination Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.pagination</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.pagination' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
-                          profile.label.maxEntryPerPage
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfEntriesPerPage' | translate">
+                          {{ 'profile.label.maxEntryPerPage' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -529,8 +529,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
-                          profile.label.entryPerPage
+                        <span [appRichTooltip]="'profile.preferences.tooltip.defaultNumberOfEntriesPerPage' | translate">
+                          {{ 'profile.label.entryPerPage' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -546,12 +546,12 @@
                 <!-- Workflow View Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.workflowView</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.workflowView' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate
+                        <span
                           [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfOrderHistoryEntriesPerWorkflow' | translate">
                           profile.label.maxNumberOfHistoryEntriesPerOrder
                         </span>
@@ -563,8 +563,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfJobHistoryEntriesPerWorkflow' | translate">
-                          profile.label.maxNumberOfHistoryEntriesPerTask
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfJobHistoryEntriesPerWorkflow' | translate">
+                          {{ 'profile.label.maxNumberOfHistoryEntriesPerTask' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -574,8 +574,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogEntriesPerObject' | translate">
-                          profile.label.maxNumberOfAuditLogPerObject
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfAuditLogEntriesPerObject' | translate">
+                          {{ 'profile.label.maxNumberOfAuditLogPerObject' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -590,13 +590,13 @@
                 <!-- Configuration - Inventory View Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.inventoryView</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.inventoryView' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFavoriteEntries' | translate">
-                          profile.label.maxNumberOfFavoriteEntries
+                        <span [appRichTooltip]="'profile.preferences.tooltip.maxNumberOfFavoriteEntries' | translate">
+                          {{ 'profile.label.maxNumberOfFavoriteEntries' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -606,19 +606,19 @@
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">profile.label.showSubFolderAndFolderContents</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showSubFoldersAndFolderContents' | translate">{{ 'profile.label.showSubFolderAndFolderContents' | translate }}</div>
                       <div class="col-md-6">
                         <nz-radio-group [(ngModel)]="preferences.expandOption" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="single"><span translate>profile.label.folderContents</span></label>
+                          <label nz-radio nzValue="single"><span>{{ 'profile.label.folderContents' | translate }}</span></label>
                           <label nz-radio nzValue="both"><span
-                            translate>profile.label.subFolderAndFolderContents</span></label>
+>{{ 'profile.label.subFolderAndFolderContents' | translate }}</span></label>
                         </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
-                          profile.label.tabSize
+                        <span [appRichTooltip]="'profile.preferences.tooltip.tabSize' | translate">
+                          {{ 'profile.label.tabSize' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -627,8 +627,8 @@
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.collapseListVariable' | translate">
-                        profile.label.listVariableCollapse
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.collapseListVariable' | translate">
+                        {{ 'profile.label.listVariableCollapse' | translate }}
                       </div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.listVariableCollapse"
@@ -641,11 +641,11 @@
                 <!-- Configuration - Log View Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.logView</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.logView' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.useTimeZoneForLogTimestamps' | translate">profile.label.useTimezoneForLog</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.useTimeZoneForLogTimestamps' | translate">{{ 'profile.label.useTimezoneForLog' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.logTimezone"
                                (ngModelChange)="changeConfiguration()"></label>
@@ -653,8 +653,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.numOfLogLines' | translate">
-                          profile.label.numOfLogLines
+                        <span [appRichTooltip]="'profile.preferences.tooltip.numOfLogLines' | translate">
+                          {{ 'profile.label.numOfLogLines' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -664,8 +664,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.numOfNextLogLines' | translate">
-                          profile.label.numOfNextLogLines
+                        <span [appRichTooltip]="'profile.preferences.tooltip.numOfNextLogLines' | translate">
+                          {{ 'profile.label.numOfNextLogLines' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -679,54 +679,54 @@
                 <!-- View Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.view</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.view' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
-                          profile.label.showLogs
+                        <span [appRichTooltip]="'profile.preferences.tooltip.showLogs' | translate">
+                          {{ 'profile.label.showLogs' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
                         <nz-radio-group [(ngModel)]="preferences.isNewWindow" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
-                          <label nz-radio nzValue="download"><span translate>profile.label.download</span></label>
+                          <label nz-radio nzValue="newWindow"><span>{{ 'profile.label.newWindow' | translate }}</span></label>
+                          <label nz-radio nzValue="newTab"><span>{{ 'profile.label.newTab' | translate }}</span></label>
+                          <label nz-radio nzValue="download"><span>{{ 'profile.label.download' | translate }}</span></label>
                         </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">profile.label.showDocumentations</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showDocumentations' | translate">{{ 'profile.label.showDocumentations' | translate }}</div>
                       <div class="col-md-6">
                         <nz-radio-group [(ngModel)]="preferences.isDocNewWindow" (ngModelChange)="changeConfiguration()" >
-                          <label nz-radio nzValue="newWindow"><span translate>profile.label.newWindow</span></label>
-                          <label nz-radio nzValue="newTab"><span translate>profile.label.newTab</span></label>
+                          <label nz-radio nzValue="newWindow"><span>{{ 'profile.label.newWindow' | translate }}</span></label>
+                          <label nz-radio nzValue="newTab"><span>{{ 'profile.label.newTab' | translate }}</span></label>
                         </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">profile.label.showView</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showView' | translate">{{ 'profile.label.showView' | translate }}</div>
                       <div class="col-md-6">
                         <nz-radio-group [(ngModel)]="preferences.pageView" (ngModelChange)="changeConfiguration();changeView()">
-                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
+                          <label nz-radio nzValue="grid"><span>{{ 'profile.label.asCard' | translate }}</span></label>
+                          <label nz-radio nzValue="list"><span>{{ 'profile.label.asList' | translate }}</span></label>
                         </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">profile.label.orderOverviewPageView</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showOrdersOverview' | translate">{{ 'profile.label.orderOverviewPageView' | translate }}</div>
                       <div class="col-md-6">
                         <nz-radio-group [(ngModel)]="preferences.orderOverviewPageView" (ngModelChange)="changeConfiguration();changeView()">
-                          <label nz-radio nzValue="grid"><span translate>profile.label.asCard</span></label>
-                          <label nz-radio nzValue="list"><span translate>profile.label.asList</span></label>
-                          <label nz-radio nzValue="bulk"><span translate>profile.label.asBulk</span></label>
+                          <label nz-radio nzValue="grid"><span>{{ 'profile.label.asCard' | translate }}</span></label>
+                          <label nz-radio nzValue="list"><span>{{ 'profile.label.asList' | translate }}</span></label>
+                          <label nz-radio nzValue="bulk"><span>{{ 'profile.label.asBulk' | translate }}</span></label>
                         </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
-                        profile.label.currentController
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
+                        {{ 'profile.label.currentController' | translate }}
                       </div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.currentController"
@@ -734,7 +734,7 @@
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showFilesImmediatelyInFileTransferView' | translate">profile.label.showFilesImmediately</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showFilesImmediatelyInFileTransferView' | translate">{{ 'profile.label.showFilesImmediately' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showFiles"
                                (ngModelChange)="changeConfiguration()"></label>
@@ -746,12 +746,12 @@
                 <!-- User Experience Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.userExperience</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.userExperience' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showMoreOptions' | translate">
-                        profile.label.showMoreOptions
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showMoreOptions' | translate">
+                        {{ 'profile.label.showMoreOptions' | translate }}
                       </div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showMoreOptions"
@@ -760,8 +760,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.tooltipDelay' | translate">
-                          profile.label.tooltipDelay
+                        <span [appRichTooltip]="'profile.preferences.tooltip.tooltipDelay' | translate">
+                          {{ 'profile.label.tooltipDelay' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -773,7 +773,7 @@
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showGlossary' | translate">profile.label.showGlossary</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showGlossary' | translate">{{ 'profile.label.showGlossary' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showGlossary"
                                (ngModelChange)="changeConfiguration()"></label>
@@ -785,19 +785,19 @@
                 <!-- Mixed -> Global Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.global</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.global' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableReasonsForAuditLog' | translate">profile.label.enableCommentsForAuditLog</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.enableReasonsForAuditLog' | translate">{{ 'profile.label.enableCommentsForAuditLog' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.auditLog" (ngModelChange)="changeConfiguration()" [disabled]="forceLoging"
                         ></label>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
-                        profile.label.licenseWarningGotIt
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.licenseWarningAcknowledged' | translate">
+                        {{ 'profile.label.licenseWarningGotIt' | translate }}
                       </div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.licenseExpirationWarning"
@@ -810,25 +810,25 @@
                 <!-- Features -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.section.features</small>
+                    <small class="_600 section-box-title">{{ 'profile.section.features' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">profile.label.showHelpPages</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showContextHelp' | translate">{{ 'profile.label.showHelpPages' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showHelpPages"
                                (ngModelChange)="changeConfiguration()"></label>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.showVideoContextHelp' | translate">profile.label.showVideoHelpPages</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.showVideoContextHelp' | translate">{{ 'profile.label.showVideoHelpPages' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.showVideoHelpPages"
                                (ngModelChange)="changeConfiguration()"></label>
                       </div>
                     </div>
                     <div class="row m-t">
-                      <div class="col-md-4 col-lg-3 text-dark" translate [appRichTooltip]="'profile.preferences.tooltip.enableTagging' | translate">profile.label.enableTagging</div>
+                      <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.enableTagging' | translate">{{ 'profile.label.enableTagging' | translate }}</div>
                       <div class="col-md-6">
                         <label nz-checkbox [(ngModel)]="preferences.enableTagging"
                                (ngModelChange)="changeConfiguration()"></label>
@@ -840,13 +840,13 @@
                 <!-- Workflow Layout Preferences -->
                 <div class="b-a m-b-sm section-box">
                   <div class="section-box-header">
-                    <small class="_600 section-box-title" translate>profile.label.customizeWorkflowLayout</small>
+                    <small class="_600 section-box-title">{{ 'profile.label.customizeWorkflowLayout' | translate }}</small>
                   </div>
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
-                          profile.label.orientation
+                        <span [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
+                          {{ 'profile.label.orientation' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -861,7 +861,7 @@
                     -->
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
-                        <span translate
+                        <span
                           [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnAdjacentLayers' | translate">
                           profile.label.interRankCellSpacing
                         </span>
@@ -878,8 +878,8 @@
                     -->
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnTheSameLayer' | translate">
-                          profile.label.intraCellSpacing
+                        <span [appRichTooltip]="'profile.preferences.tooltip.spacingBetweenInstructionsOnTheSameLayer' | translate">
+                          {{ 'profile.label.intraCellSpacing' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -891,8 +891,8 @@
                     </div>
                     <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark">
-                        <span translate [appRichTooltip]="'profile.preferences.tooltip.roundEdgesForConnections' | translate">
-                          profile.label.edgeRounded
+                        <span [appRichTooltip]="'profile.preferences.tooltip.roundEdgesForConnections' | translate">
+                          {{ 'profile.label.edgeRounded' | translate }}
                         </span>
                       </div>
                       <div class="col-md-6">
@@ -941,30 +941,30 @@
                         <div class="m-t-xs">
                           <div class="row">
                             <div class="col-md-2">
-                              <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
+                              <span class="text-dark _600">{{ 'profile.keyManagement.label.keysAndCertificates' | translate }}</span>
                             </div>
                             <div class="col-md-10">
                               @if (keys.keyID || keys.keyAlgorithm) {
                                 <span>
-                                  <span class="text-dark _600" style="padding-right: 10%" translate>{{keys.keyID}}</span>
+                                  <span class="text-dark _600" style="padding-right: 10%">{{keys.keyID}}</span>
                                   <span class="text-black-lt">
                                     <i [ngClass]="{'fa-times text-danger': keys.isKeyExpired}"
                                        class="fa fa-check text-success"></i>&nbsp;
                                     @if (!keys.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.valid</span>
+                                      <span>{{ 'profile.keyManagement.label.valid' | translate }}</span>
                                     }
                                     @if (keys.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.expiredKey</span>
+                                      <span>{{ 'profile.keyManagement.label.expiredKey' | translate }}</span>
                                     }
                                     @if (keys.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                        <span class="m-l">{{ 'profile.keyManagement.label.validUntil' | translate }}</span>:
                                         <span class="text-muted p-l-sm">{{keys.validUntil | stringToDate}}</span>
                                       </span>
                                     }
                                     @if (!keys.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                                        <span class="m-l">{{ 'profile.keyManagement.label.noValidDate' | translate }}</span>
                                       </span>
                                     }
                                   </span>
@@ -974,8 +974,8 @@
                                 </span>
                               }
                               @if (!keys.keyID && !keys.keyAlgorithm) {
-                                <span translate>
-                                  profile.keyManagement.message.noKeyFound
+                                <span>
+                                  {{ 'profile.keyManagement.message.noKeyFound' | translate }}
                                 </span>
                               }
                               <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
@@ -1037,31 +1037,31 @@
                         <div class="m-t-xs">
                           <div class="row">
                             <div class="col-md-2">
-                              <span class="text-dark _600" translate>profile.keyManagement.label.keysAndCertificates</span>
+                              <span class="text-dark _600">{{ 'profile.keyManagement.label.keysAndCertificates' | translate }}</span>
                             </div>
                             <div class="col-md-10">
                               @if (certificates.keyID || certificates.keyAlgorithm) {
                                 <span>
                                   <span class="text-dark _600" style="padding-right: 10%"
-                                        translate>{{certificates.keyID}}</span>
+>{{certificates.keyID}}</span>
                                   <span class="text-black-lt">
                                     <i [ngClass]="{'fa-times text-danger': certificates.isKeyExpired}"
                                        class="fa fa-check text-success"></i>&nbsp;
                                     @if (!certificates.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.valid</span>
+                                      <span>{{ 'profile.keyManagement.label.valid' | translate }}</span>
                                     }
                                     @if (certificates.isKeyExpired) {
-                                      <span translate>profile.keyManagement.label.expiredKey</span>
+                                      <span>{{ 'profile.keyManagement.label.expiredKey' | translate }}</span>
                                     }
                                     @if (certificates.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.validUntil</span>:
+                                        <span class="m-l">{{ 'profile.keyManagement.label.validUntil' | translate }}</span>:
                                         <span class="text-muted p-l-sm">{{certificates.validUntil | stringToDate}}</span>
                                       </span>
                                     }
                                     @if (!certificates.validUntil) {
                                       <span>
-                                        <span class="m-l" translate>profile.keyManagement.label.noValidDate</span>
+                                        <span class="m-l">{{ 'profile.keyManagement.label.noValidDate' | translate }}</span>
                                       </span>
                                     }
                                   </span>
@@ -1071,8 +1071,8 @@
                                 </span>
                               }
                               @if (!certificates.keyID && !certificates.keyAlgorithm) {
-                                <span translate>
-                                  profile.keyManagement.message.noCAFound
+                                <span>
+                                  {{ 'profile.keyManagement.message.noCAFound' | translate }}
                                 </span>
                               }
                               @if (permission.joc.administration.certificates.manage) {
@@ -1126,7 +1126,7 @@
                             </div>
                           </div>
                           <div class="col-md-12">
-                            <span class="text-dark _600 font14" translate>profile.gitManagement.label.credentials</span>
+                            <span class="text-dark _600 font14">{{ 'profile.gitManagement.label.credentials' | translate }}</span>
                           </div>
                           @if (gitCredentials.credentials) {
                             <div class="col-md-12 m-t-sm">
@@ -1134,15 +1134,15 @@
                                 <table class="table table-hover">
                                   <thead>
                                   <tr>
-                                    <th class="no-borders" style="width: 60px"><span translate>common.label.action</span>
+                                    <th class="no-borders" style="width: 60px"><span>{{ 'common.label.action' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitServer</span>
+                                    <th class="no-borders" style="width: 22%"><span>{{ 'profile.gitManagement.label.gitServer' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.gitAccount</span>
+                                    <th class="no-borders" style="width: 22%"><span>{{ 'profile.gitManagement.label.gitAccount' | translate }}</span>
                                     </th>
-                                    <th class="no-borders" style="width: 22%"><span translate>profile.gitManagement.label.userName</span>
+                                    <th class="no-borders" style="width: 22%"><span>{{ 'profile.gitManagement.label.userName' | translate }}</span>
                                     </th>
-                                    <th class="no-borders"><span translate>profile.gitManagement.label.emailAddress</span>
+                                    <th class="no-borders"><span>{{ 'profile.gitManagement.label.emailAddress' | translate }}</span>
                                     </th>
                                   </tr>
                                   </thead>
@@ -1157,10 +1157,10 @@
                                             <nz-dropdown-menu #option="nzDropdownMenu">
                                               <ul nz-menu>
                                                 <li (click)="editCredential(cred)" nz-menu-item>
-                                                  <a translate>common.button.edit</a>
+                                                  <a>{{ 'common.button.edit' | translate }}</a>
                                                 </li>
                                                 <li (click)="deleteCredential(cred)" class="bg-hover-color" nz-menu-item>
-                                                  <a translate>common.button.delete</a>
+                                                  <a>{{ 'common.button.delete' | translate }}</a>
                                                 </li>
                                               </ul>
                                             </nz-dropdown-menu>
@@ -1178,7 +1178,7 @@
                             </div>
                           }
                           @if (!gitCredentials.credentials || gitCredentials.credentials.length === 0) {
-                            <div class="col-md-12" translate>
+                            <div class="col-md-12">
                               <div class="text-center">
                                 <app-empty-data title="profile.gitManagement.message.noCredentialFound"></app-empty-data>
                               </div>
@@ -1203,7 +1203,7 @@
                 {{ 'profile.label.favoriteManagement' | translate }}
               </ng-template>
               <div class="p-l-sm p-r-rm m-t-n-sm">
-                <nz-tabset (nzSelectChange)="innnerTabChange($event)">
+                <nz-tabs (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.agents' | translate">
                     <app-manage-favorite-list (reload)="reload($event)" [account]="authService.currentUserData" [favList]="favList"
                                               [filter]="favFilter.agent" [schedulerId]="schedulerIds"
@@ -1216,10 +1216,10 @@
                                               [sharedList]="sharedList"
                                               [type]="'FACET'"></app-manage-favorite-list>
                   </nz-tab>
-                </nz-tabset>
+                </nz-tabs>
               </div>
             </nz-tab>
-          </nz-tabset>
+          </nz-tabs>
         </div>
       </div>
     </div>

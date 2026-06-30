@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>Share</span>
+    <span>Share</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,7 +12,7 @@
     <div class="form-group row">
       <label [appRichTooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
              class="col-sm-4 form-control-label"
-             translate>user.label.to
+>{{ 'user.label.to' | translate }}
       </label>
       <div class="col-sm-6">
         <input
@@ -24,7 +24,7 @@
     <div class="form-group row">
       <label [appRichTooltip]="'user.tooltips.webauthn.cc' | translate"
              class="col-sm-4 form-control-label"
-             translate>user.label.cc
+>{{ 'user.label.cc' | translate }}
       </label>
       <div class="col-sm-6">
         <input
@@ -58,7 +58,7 @@
       }
       {{ 'Share' | translate }}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       {{ 'common.button.cancel' | translate }}
     </button>
   </div>

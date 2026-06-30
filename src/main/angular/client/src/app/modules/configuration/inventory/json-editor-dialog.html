@@ -1,10 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (edit) {
-      <span translate>inventory.label.editJson</span>
+      <span>{{ 'inventory.label.editJson' | translate }}</span>
     }
     @if (!edit) {
-      <span translate>inventory.label.showJson</span>
+      <span>{{ 'inventory.label.showJson' | translate }}</span>
     }:
     <span class="text-muted">{{name}}</span>
   </h4>
@@ -47,14 +47,14 @@
         {{'common.button.forceSubmit' | translate}}
       </button>
     }
-    <button (click)="copyToClipboard()" class="btn btn-default btn-sm" translate type="button">log.button.copyToClipboard
+    <button (click)="copyToClipboard()" class="btn btn-default btn-sm" type="button">{{ 'log.button.copyToClipboard' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       @if (edit) {
-        <span translate>common.button.cancel</span>
+        <span>{{ 'common.button.cancel' | translate }}</span>
       }
       @if (!edit) {
-        <span translate>common.button.close</span>
+        <span>{{ 'common.button.close' | translate }}</span>
       }
     </button>
   </div>

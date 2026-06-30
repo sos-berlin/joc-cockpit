@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -9,7 +9,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-file-transfer-history-summary',
-  templateUrl: './file-transfer-history-summary.component.html'
+  templateUrl: './file-transfer-history-summary.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileTransferHistorySummaryComponent {
   summary: any;
@@ -21,12 +22,17 @@ export class FileTransferHistorySummaryComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, private coreService: CoreService,
-              private router: Router, private dataService: DataService, public modal: NzModalService) {
+              private router: Router, private dataService: DataService, public modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
@@ -70,6 +76,7 @@ export class FileTransferHistorySummaryComponent {
       next: (res: any) => {
         this.summary = res.files || {};
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
         this.isLoaded = true;
@@ -85,6 +92,7 @@ export class FileTransferHistorySummaryComponent {
       timeZone: this.preferences.zone
     }).subscribe((res: any) => {
       this.summary = res.files || {};
+      this.cdr.markForCheck();
     });
   }
 

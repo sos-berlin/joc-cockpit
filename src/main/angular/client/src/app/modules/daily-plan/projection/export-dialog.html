@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>inventory.label.export</span>
+    <span>{{ 'inventory.label.export' | translate }}</span>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -11,7 +11,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.startDate' | translate" translate>common.placeholder.startDate</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.startDate' | translate">{{ 'common.placeholder.startDate' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-2">
@@ -19,7 +19,7 @@
                         name="from" required></nz-date-picker>
       </div>
       <label class="col-md-2 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.endDate' | translate" translate>common.placeholder.endDate</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.endDate' | translate">{{ 'common.placeholder.endDate' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-2">
@@ -29,7 +29,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflows' | translate" translate>dailyPlan.label.workflows</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflows' | translate">{{ 'dailyPlan.label.workflows' | translate }}</span>
       </label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
@@ -40,7 +40,7 @@
     @if (filter.workflowFolders?.length > 0) {
       <div class="form-group row">
         <label class="col-md-3">
-          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflowFolders' | translate" translate>dailyPlan.label.workflowFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.workflowFolders' | translate">{{ 'dailyPlan.label.workflowFolders' | translate }}</span>
         </label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.workflowFolders; track path) {
@@ -54,7 +54,7 @@
     }
     <div class="form-group row">
       <label class="col-md-3 form-control-label">
-        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.schedules' | translate" translate>dailyPlan.label.schedules</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.schedules' | translate">{{ 'dailyPlan.label.schedules' | translate }}</span>
       </label>
       <div class="col-md-6">
         <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
@@ -65,7 +65,7 @@
     @if (filter.scheduleFolders?.length > 0) {
       <div class="form-group row">
         <label class="col-md-3">
-          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.scheduleFolders' | translate" translate>dailyPlan.label.scheduleFolders</span>
+          <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.scheduleFolders' | translate">{{ 'dailyPlan.label.scheduleFolders' | translate }}</span>
         </label>
         <div class="col-md-6" style="max-height: 140px; overflow: auto">
           @for (path of filter.scheduleFolders; track path) {
@@ -79,7 +79,7 @@
     }
     <div class="form-group row ">
       <label class="col-md-3">
-        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.invertProjection' | translate" translate>dailyPlan.label.invertProjection</span>
+        <span [appRichTooltip]="'dailyPlan.tooltip.projection.export.invertProjection' | translate">{{ 'dailyPlan.label.invertProjection' | translate }}</span>
       </label>
       <div class="col-md-6">
         <label [(ngModel)]="filter.withoutStartTime" name="late" nz-checkbox></label>
@@ -94,8 +94,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

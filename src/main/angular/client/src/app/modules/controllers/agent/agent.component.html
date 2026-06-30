@@ -15,25 +15,25 @@
             }
           <div class="inline">
             @if (object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage) {
-              <button (click)="createCluster()" class="btn btn-grey btn-sm" translate>
+              <button (click)="createCluster()" class="btn btn-grey btn-sm">
                 <i class="fa fa-plus"></i>&nbsp;
                 agent.button.createCluster
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
-              <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-rocket"></i>&nbsp;
                 inventory.button.deploy
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
-              <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-refresh m-r-xs"></i>
                 agent.button.revoke
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
-              <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-trash"></i>&nbsp;
                 common.button.delete
               </button>
@@ -93,28 +93,28 @@
                         <nz-dropdown-menu #option="nzDropdownMenu">
                           <ul nz-menu>
                             <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                              <a translate>common.button.edit</a>
+                              <a>{{ 'common.button.edit' | translate }}</a>
                             </li>
                             <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                              <a translate>common.button.duplicate</a>
+                              <a>{{ 'common.button.duplicate' | translate }}</a>
                             </li>
                             <li nz-menu-divider></li>
                             <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                              <a translate>inventory.button.deploy</a>
+                              <a>{{ 'inventory.button.deploy' | translate }}</a>
                             </li>
                             <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                              <a translate>agent.button.revoke</a>
+                              <a>{{ 'agent.button.revoke' | translate }}</a>
                             </li>
                             <li nz-menu-divider></li>
                             <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                              <a translate>common.button.delete</a>
+                              <a>{{ 'common.button.delete' | translate }}</a>
                             </li>
                           </ul>
                         </nz-dropdown-menu>
                       </div>
                     }
                     <div class="text-sm text-left text-muted p-t-xs">
-                      <span translate>agent.label.syncStatus </span>:
+                      <span>{{ 'agent.label.syncStatus' | translate }} </span>:
                       @if (cluster.syncState) {
                         <span [innerHtml]="cluster.syncState._text | translate | highlight : clusterFilter.searchText"
                               [ngClass]="coreService.getColor(cluster.syncState.severity, 'text')"></span>
@@ -125,11 +125,11 @@
                     <div class="box-footer b-t">
                       <a (click)="deploy(cluster)" class="text-left primary-text-hover-color">
                         <i class="fa fa-rocket text-black-lt p-r-xs"></i>
-                        <span class="text-black-lt" translate>inventory.button.deploy</span>
+                        <span class="text-black-lt">{{ 'inventory.button.deploy' | translate }}</span>
                       </a>
                       <a (click)="delete(cluster)" class="pull-right text-hover-color">
                         <i class="fa fa-trash text-black-lt p-r-xs"></i>
-                        <span class="text-black-lt" translate>common.button.delete</span>
+                        <span class="text-black-lt">{{ 'common.button.delete' | translate }}</span>
                       </a>
                     </div>
                   }
@@ -141,16 +141,16 @@
         @if (pageView !== 'grid' && object.checked && object.mapOfCheckedId.size > 0 && data.length > (clusterFilter.entryPerPage || preferences.entryPerPage)) {
           <div class="text-center font14 box p-a-10 m-b-12">
             @if (object.mapOfCheckedId.size !== data.length) {
-              <span [translateParams]="{count: object.mapOfCheckedId.size}" translate>common.label.selectAllEntriesOfCurrentPage</span>
+              <span>{{ 'common.label.selectAllEntriesOfCurrentPage' | translate: {count: object.mapOfCheckedId.size} }}</span>
             }
             @if (object.mapOfCheckedId.size === data.length) {
-              <span [translateParams]="{count: data.length}" translate>common.label.allEntriesSelected</span>
+              <span>{{ 'common.label.allEntriesSelected' | translate: {count: data.length} }}</span>
             }
             @if (object.mapOfCheckedId.size !== data.length) {
-              <a (click)="selectAll()" [translateParams]="{count: data.length}" class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+              <a (click)="selectAll()" class="text-primary p-l-xs">{{ 'common.label.selectAllEntries' | translate: {count: data.length} }}</a>
             }
             @if (object.mapOfCheckedId.size === data.length) {
-              <a (click)="reset()" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+              <a (click)="reset()" class="text-primary p-l-xs">{{ 'common.label.clearSelection' | translate }}</a>
             }
           </div>
         }
@@ -182,9 +182,9 @@
                     ></th>
                   }
                   @if (permission.joc && permission.joc.administration.controllers.manage) {
-                    <th class="menu"><span translate>common.label.action</span></th>
+                    <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
                   }
-                  <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
+                  <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs">{{ 'agent.label.clusterName' | translate }}</span>
                     @if (clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse) {
                       <i class="fa fa-caret-up "></i>
                     }
@@ -192,7 +192,7 @@
                       <i class="fa fa-caret-down "></i>
                     }</a>
                   </th>
-                  <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
+                  <th (click)="sort('syncState._text')"><a><span class="p-r-xs">{{ 'common.label.status' | translate }}</span>
                     @if (clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse) {
                       <i class="fa fa-caret-up "></i>
                     }
@@ -224,21 +224,21 @@
                           <nz-dropdown-menu #option="nzDropdownMenu">
                             <ul nz-menu>
                               <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                                <a translate>common.button.edit</a>
+                                <a>{{ 'common.button.edit' | translate }}</a>
                               </li>
                               <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                                <a translate>common.button.duplicate</a>
+                                <a>{{ 'common.button.duplicate' | translate }}</a>
                               </li>
                               <li nz-menu-divider></li>
                               <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                                <a translate>inventory.button.deploy</a>
+                                <a>{{ 'inventory.button.deploy' | translate }}</a>
                               </li>
                               <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                                <a translate>agent.button.revoke</a>
+                                <a>{{ 'agent.button.revoke' | translate }}</a>
                               </li>
                               <li nz-menu-divider></li>
                               <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                                <a translate>common.button.delete</a>
+                                <a>{{ 'common.button.delete' | translate }}</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
@@ -263,12 +263,12 @@
                 </tbody>
               </nz-table>
               @if (ajaxTable.data.length >0) {
-                <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                   @if (ajaxTable.data.length >1) {
-                    <span translate>agent.label.noClusterFound</span>
+                    <span>{{ 'agent.label.noClusterFound' | translate }}</span>
                   }
                   @if (ajaxTable.data.length ==1) {
-                    <span translate>agent.label.noClustersFound</span>
+                    <span>{{ 'agent.label.noClustersFound' | translate }}</span>
                   }
                 </div>
               }
@@ -281,8 +281,8 @@
       <div class="row m-t-xs">
         <div class="col-sm-12">
           <div class="text-center m-t-md text-md">
-            <span translate>agent.message.noClusterFound</span>.
-            <a (click)="createCluster()" class="text-hover-primary text-u-l" translate>agent.message.clickHereToAdd</a>
+            <span>{{ 'agent.message.noClusterFound' | translate }}</span>.
+            <a (click)="createCluster()" class="text-hover-primary text-u-l">{{ 'agent.message.clickHereToAdd' | translate }}</a>
           </div>
         </div>
       </div>
@@ -341,7 +341,7 @@
                 </span>
                 <button (click)="deploy(selectedCluster)" class="btn btn-sm btn-grey m-l-12" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.deploy</span>
+                  <span>{{ 'inventory.button.deploy' | translate }}</span>
                 </button>
               </div>
             </div>
@@ -380,7 +380,7 @@
                  id="graph">
             </div>
             <div class="dropContainer" id="dropContainer">
-              <div class="dropContainer" translate>agent.message.dropHereToDetach</div>
+              <div class="dropContainer">{{ 'agent.message.dropHereToDetach' | translate }}</div>
             </div>
             <div id="outlineContainer"></div>
           </div>
@@ -408,22 +408,22 @@
       <div>
         @if (object.mapOfCheckedId.size > 0) {
           <div class="pos-abt" style="top:12px;right:8px">
-            <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>
+            <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-rocket m-r-xs"></i>
               inventory.button.deploy
             </button>
-            <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>
+            <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-refresh m-r-xs"></i>
               agent.button.revoke
             </button>
-            <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>
+            <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-trash m-r-xs"></i>
               common.button.delete
             </button>
           </div>
         }
         <div class="text-center m-t-md m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm"
-                                                          translate>agent.label.clusterAgents</span></div>
+>{{ 'agent.label.clusterAgents' | translate }}</span></div>
         <div class="p-a">
           <perfect-scrollbar style="max-height: calc(100vh - 109px); overflow: auto">
             <nz-table
@@ -441,8 +441,8 @@
                     [nzShowCheckbox]="true" (nzCheckedChange)="onAllChecked($event)"
                     class="chk"
                 ></th>
-                <th class="menu"><span translate>common.label.action</span></th>
-                <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
+                <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
+                <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs">{{ 'agent.label.clusterName' | translate }}</span>
                   @if (clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -450,7 +450,7 @@
                     <i class="fa fa-caret-down "></i>
                   }</a>
                 </th>
-                <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
+                <th (click)="sort('syncState._text')"><a><span class="p-r-xs">{{ 'common.label.status' | translate }}</span>
                   @if (clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse) {
                     <i class="fa fa-caret-up "></i>
                   }
@@ -475,21 +475,21 @@
                       <nz-dropdown-menu #option="nzDropdownMenu">
                         <ul nz-menu>
                           <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                            <a translate>common.button.edit</a>
+                            <a>{{ 'common.button.edit' | translate }}</a>
                           </li>
                           <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                            <a translate>common.button.duplicate</a>
+                            <a>{{ 'common.button.duplicate' | translate }}</a>
                           </li>
                           <li nz-menu-divider></li>
                           <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                            <a translate>inventory.button.deploy</a>
+                            <a>{{ 'inventory.button.deploy' | translate }}</a>
                           </li>
                           <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                            <a translate>agent.button.revoke</a>
+                            <a>{{ 'agent.button.revoke' | translate }}</a>
                           </li>
                           <li nz-menu-divider></li>
                           <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                            <a translate>common.button.delete</a>
+                            <a>{{ 'common.button.delete' | translate }}</a>
                           </li>
                         </ul>
                       </nz-dropdown-menu>
@@ -522,12 +522,12 @@
   <ul nz-menu>
     <li (click)="deleteNode();closeMenu()" nz-menu-item>
       <a><i nz-icon nzTheme="outline" nzType="delete"></i>&nbsp;
-        <span translate>common.button.remove</span>
+        <span>{{ 'common.button.remove' | translate }}</span>
       </a>
     </li>
     <li (click)="addPriority();closeMenu()" nz-menu-item>
       <a><span nz-icon nzType="exclamation" nzTheme="outline"></span>&nbsp;
-        <span translate>agent.button.metricsPriority</span>
+        <span>{{ 'agent.button.metricsPriority' | translate }}</span>
       </a>
     </li>
   </ul>

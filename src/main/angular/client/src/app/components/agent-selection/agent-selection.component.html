@@ -7,16 +7,16 @@
     @if (favorite.list.length > 0) {
       <div class="text-right text-sm m-r-12">
         @if (!favorite.show) {
-          <a class="primary-text-hover-color cursor" (click)="showFav(true);generateFavList()" translate>favorite.button.filterByFavorites</a>
+          <a class="primary-text-hover-color cursor" (click)="showFav(true);generateFavList()">{{ 'favorite.button.filterByFavorites' | translate }}</a>
         }
         @if (favorite.show) {
-          <a class="primary-text-hover-color cursor" (click)="showFav(false);" translate>favorite.button.backToList</a>
+          <a class="primary-text-hover-color cursor" (click)="showFav(false);">{{ 'favorite.button.backToList' | translate }}</a>
         }
       </div>
     }
     @for (agent of nonExistAgents; track agent) {
       <nz-auto-option (click)="selectAgent(null)" [nzValue]="agent" [nzLabel]="agent">
-        <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger" translate>inventory.label.objectNotExist</span>
+        <span class="p-l-xs">{{agent}}</span> <span class="m-l-sm label bg-danger">{{ 'inventory.label.objectNotExist' | translate }}</span>
       </nz-auto-option>
     }
     @if (favorite.show) {
@@ -116,7 +116,7 @@
   @if (obj.agent || agentName.invalid && (agentName.dirty || agentName.touched)) {
     <div class="text-danger help-block">
       @if ((agentName.errors && agentName.errors.required) || obj.agent) {
-        <div translate>common.message.requiredError</div>
+        <div>{{ 'common.message.requiredError' | translate }}</div>
       }
     </div>
   }

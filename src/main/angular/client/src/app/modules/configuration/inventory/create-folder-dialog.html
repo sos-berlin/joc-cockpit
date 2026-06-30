@@ -1,6 +1,6 @@
 <div class="modal-header">
   @if (!rename) {
-    <h4 class="modal-title" translate>inventory.label.createFolder</h4>
+    <h4 class="modal-title">{{ 'inventory.label.createFolder' | translate }}</h4>
   }
   @if (rename && origin) {
     <h4 class="modal-title">
@@ -10,7 +10,7 @@
       @if(folder.deepRename === 'rename' && origin.type && preferences.showHelpPages){
       <i (click)="helpPage('configuration-inventory-operations-rename-object')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
-      <span translate>inventory.label.rename</span>:
+      <span>{{ 'inventory.label.rename' | translate }}</span>:
       {{origin.path}}
       @if (origin.type) {
         <span>{{origin.path === '/' ? '' : '/'}}{{origin.name}}</span>
@@ -28,13 +28,13 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>{{'inventory.section.folder' | translate}}</small>
+        <small class="_600 section-box-title">{{'inventory.section.folder' | translate}}</small>
       </div>
       <div class="p-a-sm">
         @if (!rename) {
           <div class="row">
             <label class="col-md-3 form-control-label">
-              <span [appRichTooltip]="'inventory.tooltip.folderName' | translate" translate>inventory.label.folderName</span>
+              <span [appRichTooltip]="'inventory.tooltip.folderName' | translate">{{ 'inventory.label.folderName' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div [ngClass]="{'has-error' : !isUnique || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -43,16 +43,16 @@
               @if (name.invalid && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">
                   @if (name.errors && name.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (name.errors['invalidIdentifier']) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
               @if (!isUnique) {
                 <div class="help-block text-danger">
-                  <div translate>common.message.uniqueError</div>
+                  <div>{{ 'common.message.uniqueError' | translate }}</div>
                 </div>
               }
             </div>
@@ -63,12 +63,12 @@
             @if (!origin.type && !origin.object && !origin.controller && !origin.dailyPlan && origin.path !== '/' && type != 'DEPLOYMENTDESCRIPTOR') {
               <div class="form-group row">
                 <label class="col-md-3">
-                  <span [appRichTooltip]="'inventory.tooltip.rename' | translate" translate>inventory.label.rename</span>
+                  <span [appRichTooltip]="'inventory.tooltip.rename' | translate">{{ 'inventory.label.rename' | translate }}</span>
                 </label>
                 <div class="col-md-9">
                   <nz-radio-group [(ngModel)]="folder.deepRename" name="deepRename">
-                    <label nz-radio nzValue="rename"><span translate>inventory.label.renameFolder</span></label>
-                    <label nz-radio nzValue="replace"><span translate>inventory.label.renameObjectsRecursively</span></label>
+                    <label nz-radio nzValue="rename"><span>{{ 'inventory.label.renameFolder' | translate }}</span></label>
+                    <label nz-radio nzValue="replace"><span>{{ 'inventory.label.renameObjectsRecursively' | translate }}</span></label>
                   </nz-radio-group>
                 </div>
               </div>
@@ -76,7 +76,7 @@
             @if (folder.deepRename === 'rename' && origin.type) {
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.newName' | translate" translate>inventory.label.newName</span>
+                  <span [appRichTooltip]="'inventory.tooltip.newName' | translate">{{ 'inventory.label.newName' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -87,13 +87,13 @@
                   @if (name.invalid && (name.dirty || name.touched)) {
                     <div class="text-danger help-block">
                       @if (name.errors && name.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }
                   @if (!isValid) {
                     <div class="help-block text-danger">
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     </div>
                   }
                 </div>
@@ -102,7 +102,7 @@
             @if (folder.deepRename === 'rename' && !origin.type) {
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.newPath' | translate" translate>inventory.label.newPath</span>
+                  <span [appRichTooltip]="'inventory.tooltip.newPath' | translate">{{ 'inventory.label.newPath' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
@@ -112,7 +112,7 @@
                   @if (name.invalid && (name.dirty || name.touched)) {
                     <div class="text-danger help-block">
                       @if (name.errors && name.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }
@@ -122,7 +122,7 @@
             @if (folder.deepRename === 'replace') {
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.search' | translate" translate>inventory.label.search</span>
+                  <span [appRichTooltip]="'inventory.tooltip.search' | translate">{{ 'inventory.label.search' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div [ngClass]="{'has-error' :  ((search.dirty || search.touched) && search.invalid)}" class="col-md-6">
@@ -132,7 +132,7 @@
                   @if (search.invalid && (search.dirty || search.touched)) {
                     <div class="text-danger help-block">
                       @if (search.errors && search.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }
@@ -142,7 +142,7 @@
             @if (folder.deepRename === 'replace') {
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltip.replace' | translate" translate>inventory.label.replace</span>
+                  <span [appRichTooltip]="'inventory.tooltip.replace' | translate">{{ 'inventory.label.replace' | translate }}</span>
                 </label>
                 <div class="col-md-6">
                   <input [(ngModel)]="folder.replace" autocomplete="off" class="form-control"
@@ -165,8 +165,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

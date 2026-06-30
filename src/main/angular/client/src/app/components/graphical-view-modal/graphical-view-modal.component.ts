@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {WorkflowService} from '../../services/workflow.service';
 import {CoreService} from '../../services/core.service';
@@ -18,7 +18,8 @@ declare const $: any;
   standalone: false,
   selector: 'app-graphical-view-modal',
   templateUrl: './graphical-view-modal.component.html',
-  styleUrls: ['./graphical-view-modal.component.css']
+  styleUrls: ['./graphical-view-modal.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphicalViewModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -37,7 +38,7 @@ export class GraphicalViewModalComponent {
   @ViewChild('outlineContainer', {static: true}) outlineContainer: ElementRef;
 
   constructor(public coreService: CoreService, private modal: NzModalService, private activeModal: NzModalRef,
-              private workflowService: WorkflowService) {
+              private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
 
   }
 
@@ -139,6 +140,7 @@ export class GraphicalViewModalComponent {
     this.updateWorkflow();
     setTimeout(() => {
       this.isLoading = false;
+      this.cdr.markForCheck();
       this.actual();
     }, 10);
   }

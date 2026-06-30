@@ -12,7 +12,7 @@
             <span class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b>{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -31,11 +31,11 @@
                 <span [ngClass]="!script.valid ? 'badge-danger':'badge-success'"
                       class="badge m-r-12">
                     @if (script.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span>{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!script.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span>{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
                       </span>
                   }
@@ -44,10 +44,10 @@
               @if (script.configuration) {
                 <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
                     @if (!data.released) {
-                      <span translate>inventory.label.notReleased</span>
+                      <span>{{ 'inventory.label.notReleased' | translate }}</span>
                     }
                   @if (data.released) {
-                    <span translate>inventory.label.released</span>
+                    <span>{{ 'inventory.label.released' | translate }}</span>
                   }
                   </span>
               }
@@ -56,7 +56,7 @@
                   (click)="release()"
                   [disabled]="!script.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.release</span>
+                  <span>{{ 'inventory.button.release' | translate }}</span>
                 </button>
               }
             </div>
@@ -69,12 +69,12 @@
                 @if (!showMoreAdvanceOptions) {
                   <a class="text-primary cursor" (click)="showMoreOptions()">
                     <i class="fa fa-caret-right m-r-xs"></i>
-                    <span translate>common.label.showMoreOptions</span>
+                    <span>{{ 'common.label.showMoreOptions' | translate }}</span>
                   </a>
                 } @else {
                   <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                     <i class="fa fa-caret-down m-r-xs"></i>
-                    <span translate>common.label.showFewerOptions</span>
+                    <span>{{ 'common.label.showFewerOptions' | translate }}</span>
                   </a>
                 }
               </div>
@@ -82,7 +82,7 @@
             <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                  class="form-group row">
               <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                <span [appRichTooltip]="'inventory.tooltips.script.name' | translate" translate>common.label.name</span>
+                <span [appRichTooltip]="'inventory.tooltips.script.name' | translate">{{ 'common.label.name' | translate }}</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -92,10 +92,10 @@
                 @if (name.invalid && (name.dirty || name.touched)) {
                   <div class="text-danger help-block">
                     @if (name.errors['invalidIdentifier']) {
-                      <div translate>common.message.invalid</div>
+                      <div>{{ 'common.message.invalid' | translate }}</div>
                     }
                     @if (name.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }
@@ -103,7 +103,7 @@
             </div>
             <div class="form-group row">
               <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                <span [appRichTooltip]="'inventory.tooltips.script.title' | translate" translate>common.label.title</span>
+                <span [appRichTooltip]="'inventory.tooltips.script.title' | translate">{{ 'common.label.title' | translate }}</span>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="script.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -114,7 +114,7 @@
             @if (showMoreAdvanceOptions) {
               <div class="form-group row">
                 <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltips.script.documentation' | translate" translate>inventory.label.documentation</span>
+                  <span [appRichTooltip]="'inventory.tooltips.script.documentation' | translate">{{ 'inventory.label.documentation' | translate }}</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-select-document (funcCall)="saveJSON($event)" [data]="script.configuration"
@@ -124,7 +124,7 @@
             }
             <div class="form-group row">
               <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                <span [appRichTooltip]="'inventory.tooltips.script.script' | translate" translate>inventory.label.script</span>
+                <span [appRichTooltip]="'inventory.tooltips.script.script' | translate">{{ 'inventory.label.script' | translate }}</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -139,7 +139,7 @@
                 @if ((cm.invalid && (cm.dirty && cm.touched)) && !script.configuration.script) {
                   <div class="text-danger help-block">
                     @if (cm.errors && cm.errors['required']) {
-                      <div translate>common.message.requiredError</div>
+                      <div>{{ 'common.message.requiredError' | translate }}</div>
                     }
                   </div>
                 }

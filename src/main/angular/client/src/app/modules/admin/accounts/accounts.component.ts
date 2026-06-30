@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -134,7 +134,8 @@ export class ConfirmationModalComponent {
 @Component({
   standalone: false,
   selector: 'app-user-modal-content',
-  templateUrl: './user-dialog.html'
+  templateUrl: './user-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -162,7 +163,7 @@ export class AccountModalComponent {
   isApprovalRoleValid = true;
   approvalRequestorRole = '';
 
-  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -226,6 +227,7 @@ export class AccountModalComponent {
       for (const i in res.roles) {
         this.allRoles.push(res.roles[i].roleName);
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -243,6 +245,7 @@ export class AccountModalComponent {
     this.coreService.post('configuration', obj).subscribe((res) => {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -296,7 +299,10 @@ export class AccountModalComponent {
   }
 
   onRolesChange(): void {
-    this.checkApprovalRoleValidation();
+    setTimeout(() => {
+      this.checkApprovalRoleValidation();
+      this.cdr.markForCheck();
+    }, 0);
   }
 
   sanitizeInput(event: Event, field: 'password' | 'confirmPassword'): void {
@@ -401,7 +407,8 @@ export class AccountModalComponent {
 @Component({
   standalone: false,
   selector: 'app-accounts-all',
-  templateUrl: 'accounts.component.html'
+  templateUrl: 'accounts.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccountsComponent {
   loading = true;
@@ -431,7 +438,7 @@ export class AccountsComponent {
   subscription2: Subscription;
 
   constructor(private router: Router, private authService: AuthService, private coreService: CoreService, private searchPipe: SearchPipe,
-              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private modal: NzModalService, private dataService: DataService, private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
@@ -479,6 +486,7 @@ export class AccountsComponent {
       this.accounts = res.accountItems;
       this.loading = false;
       this.searchInResult();
+      this.cdr.markForCheck();
     })
   }
 
@@ -635,6 +643,7 @@ export class AccountsComponent {
           this.reset();
         }
         this.getList();
+        this.cdr.markForCheck();
       }, error: () => {
         this.getList();
       }
@@ -892,6 +901,7 @@ export class AccountsComponent {
     this.coreService.post('iam/blockedAccounts/delete', obj).subscribe({
       next: () => {
         this.getList();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -958,6 +968,7 @@ export class AccountsComponent {
           if (index === accounts.length - 1) {
             this.getList();
           }
+          this.cdr.markForCheck();
         }
       });
     })
@@ -1099,6 +1110,7 @@ export class AccountsComponent {
         identityServiceName: this.identityServiceName
       }).subscribe((res) => {
         this.createRequestObject(res, account);
+        this.cdr.markForCheck();
       });
     }
   }

@@ -86,7 +86,7 @@
             <div class="btn-group dropdown">
               <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" type="button">
-                <span translate>workflow.label.orderFilter</span>: <span
+                <span>{{ 'workflow.label.orderFilter' | translate }}</span>: <span
                 class="text-primary">{{'filters.button.' + workflowFilters.filter.label | translate}}</span>... <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
@@ -94,7 +94,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadOrders(btn.date);workflowFilters.filter.label = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}"
                         nz-menu-item>
-                      <a translate>filters.button.{{btn.text}}</a>
+                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
                     </li>
                   }
                 </ul>
@@ -103,16 +103,16 @@
             @if (showMoreAdvanceOptions) {
               <button (click)="suspendAll(true)" class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-stop p-r-xs"></i>
-                <span class="hidden-sm-down" translate>workflow.button.suspendAll</span></button>
+                <span class="hidden-sm-down">{{ 'workflow.button.suspendAll' | translate }}</span></button>
               <button (click)="resumeAll(true)" class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
-                                                             translate>workflow.button.resumeAll</span>
+>{{ 'workflow.button.resumeAll' | translate }}</span>
               </button>
             }
             <div class="btn-group dropdown">
               <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click">
-                <span translate>common.label.sortBy</span>
+                <span>{{ 'common.label.sortBy' | translate }}</span>
                 <span class="text-primary">
                   @if (workflowFilters.filter.sortBy ==='name') {
                     <span>
@@ -141,10 +141,10 @@
               <nz-dropdown-menu #sortBy="nzDropdownMenu">
                 <ul nz-menu>
                   <li (click)="sort('name')" nz-menu-item>
-                    <a translate>common.label.name</a>
+                    <a>{{ 'common.label.name' | translate }}</a>
                   </li>
                   <li (click)="sort('path1')" nz-menu-item>
-                    <a translate>common.label.path</a>
+                    <a>{{ 'common.label.path' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -161,12 +161,12 @@
                   <ul nz-menu>
                     @if (permission.joc && permission.joc.administration.customization.manage) {
                       <li (click)="createCustomization()" nz-menu-item>
-                        <a translate>customization.label.createCustomization</a>
+                        <a>{{ 'customization.label.createCustomization' | translate }}</a>
                       </li>
                     }
                     @if (filterList.length>0) {
                       <li (click)="editFilters()" nz-menu-item>
-                        <a translate>customization.label.editExistingCustomizations</a>
+                        <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                       </li>
                     }
                     @if (filterList.length>0) {
@@ -197,14 +197,14 @@
           <div [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}" class="hide">
             <button (click)="addBulkOrder()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-plus p-r-xs"></i>
-              <span class="hidden-sm-down" translate>workflow.button.addOrder</span>
+              <span class="hidden-sm-down">{{ 'workflow.button.addOrder' | translate }}</span>
             </button>
             <button (click)="suspendAll()" [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span></button>
+              <span class="hidden-sm-down">{{ 'order.button.suspend' | translate }}</span></button>
             <button (click)="resumeAll()" [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
-                                                           translate>order.button.resume</span>
+>{{ 'order.button.resume' | translate }}</span>
             </button>
           </div>
           @if (broadNames.size > 0) {
@@ -227,7 +227,7 @@
           <div>
             <div class="editor-tree">
               <div class="pl-20" style="padding-right:20px">
-                <nz-tabset class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
+                <nz-tabs class="custom-tab" [nzAnimated]="false" [(nzSelectedIndex)]="workflowFilters.selectedIndex" [nzType]="'line'">
                   <nz-tab class="ctm-pd" (nzClick)="switchToTagging('folders');workflowFilters.selectedIndex = 0" [nzTitle]="foldersTitle">
                     <ng-template #foldersTitle>
                       <span>{{ 'inventory.tab.folders' | translate }}</span>
@@ -247,7 +247,7 @@
                     </ng-template>
                   </nz-tab>
                 }
-                </nz-tabset>
+                </nz-tabs>
               </div>
 
               @if (workflowFilters.tagType === 'workflowTags') {
@@ -452,18 +452,18 @@
 
                 <button (click)="inventorySearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
                   <i class="fa fa-search"></i>&nbsp;
-                  <span translate>common.button.search</span>
+                  <span>{{ 'common.button.search' | translate }}</span>
                 </button>
                 @if (!showSearchPanel) {
                   <button [hidden]="workflowFilters.tagType === 'workflowTags' && workflowFilters.tagType === 'orderTags'" (click)="advancedSearch()"
                           class="btn btn-sm inline pull-right m-l-12 btn-grey">
-                    <span translate>common.button.advancedSearch</span>
+                    <span>{{ 'common.button.advancedSearch' | translate }}</span>
                     <i class="fa fa-caret-down p-l-xs"></i>
                   </button>
                 }
                 @if (showSearchPanel) {
                   <button [hidden]="workflowFilters.tagType === 'workflowTags' && workflowFilters.tagType === 'orderTags'" (click)="cancel()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
-                    <span translate>common.button.advancedSearch</span>
+                    <span>{{ 'common.button.advancedSearch' | translate }}</span>
                     <i class="fa fa-caret-down p-l-xs"></i>
                   </button>
                 }
@@ -493,7 +493,7 @@
           }
           <div [ngClass]="{'show': isLoading}" class="hide">
             @if (data.length>0) {
-              <h3 class="orders"><span translate>dashboard.label.orders</span></h3>
+              <h3 class="orders"><span>{{ 'dashboard.label.orders' | translate }}</span></h3>
             }
             @if (data.length>0) {
               <div class="box p-t-sm p-b-6 text-overflow m-b-12">
@@ -501,37 +501,37 @@
                   <table class="w-full">
                     <tr class="text-center text-sm">
                       <td [width]="'9.09%'">
-                        <span translate>order.label.allOrders</span>
+                        <span>{{ 'order.label.allOrders' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.pending</span>
+                        <span>{{ 'common.label.pending' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.scheduled</span>
+                        <span>{{ 'common.label.scheduled' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.incomplete</span>
+                        <span>{{ 'common.label.incomplete' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.running</span>
+                        <span>{{ 'common.label.running' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.suspended</span>
+                        <span>{{ 'common.label.suspended' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.completed</span>
+                        <span>{{ 'common.label.completed' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.prompting</span>
+                        <span>{{ 'common.label.prompting' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.waiting</span>
+                        <span>{{ 'common.label.waiting' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span translate>common.label.blocked</span>
+                        <span>{{ 'common.label.blocked' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <div translate>common.label.failed</div>
+                        <div>{{ 'common.label.failed' | translate }}</div>
                       </td>
                     </tr>
                     <tr class="text-center">
@@ -656,12 +656,12 @@
                               </div>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
-                              <span translate>inventory.label.deploymentDate </span>:
+                              <span>{{ 'inventory.label.deploymentDate' | translate }} </span>:
                               <span [innerHtml]="workflow.versionDate | stringToDate | highlight : workflowFilters.searchText"
                                     class="text-black-dk"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
-                              <span translate>common.label.status </span>:
+                              <span>{{ 'common.label.status' | translate }} </span>:
                               @if (workflow.state) {
                                 <span [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"
                                       [ngClass]="coreService.getColor(workflow.state.severity, 'text')"></span>
@@ -677,10 +677,10 @@
                                    [innerHtml]="workflow.numOfOrders || 0"
                                    class="text-black _600 m-l text-hover-primary p-r-xs"></a>
                                 @if (workflow.numOfOrders>1) {
-                                  <span translate>order.label.orders</span>
+                                  <span>{{ 'order.label.orders' | translate }}</span>
                                 }
                                 @if (!workflow.numOfOrder || workflow.numOfOrders < 2) {
-                                  <span translate>workflow.label.order</span>
+                                  <span>{{ 'workflow.label.order' | translate }}</span>
                                 }
                               </span>
                             </div>
@@ -733,7 +733,7 @@
                                  [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create, 'disable-link': (!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC')}"
                                  class="hide text-left primary-text-hover-color">
                                 <i class="fa fa-plus-square-o text-black-lt p-r-xs"></i>
-                                <span class="text-black-lt" translate>workflow.button.addOrder</span>
+                                <span class="text-black-lt">{{ 'workflow.button.addOrder' | translate }}</span>
                               </a>
                             </div>
                           </div>
@@ -747,20 +747,20 @@
             @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (workflowFilters.entryPerPage || preferences.entryPerPage)) {
               <div class="text-center font14 box p-a-10 m-b-12">
                 @if (object.mapOfCheckedId.size !== data.length) {
-                  <span [translateParams]="{count: object.mapOfCheckedId.size}"
-                        translate>common.label.selectAllEntriesOfCurrentPage</span>
+                  <span
+>{{ 'common.label.selectAllEntriesOfCurrentPage' | translate: {count: object.mapOfCheckedId.size} }}</span>
                 }
                 @if (object.mapOfCheckedId.size === data.length) {
-                  <span [translateParams]="{count: data.length}"
-                        translate>common.label.allEntriesSelected</span>
+                  <span
+>{{ 'common.label.allEntriesSelected' | translate: {count: data.length} }}</span>
                 }
                 @if (object.mapOfCheckedId.size !== data.length) {
-                  <a (click)="selectAll()" [translateParams]="{count: data.length}"
-                     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+                  <a (click)="selectAll()"
+                     class="text-primary p-l-xs">{{ 'common.label.selectAllEntries' | translate: {count: data.length} }}</a>
                 }
                 @if (object.mapOfCheckedId.size === data.length) {
                   <a (click)="resetCheckBox()"
-                     class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+                     class="text-primary p-l-xs">{{ 'common.label.clearSelection' | translate }}</a>
                 }
               </div>
             }
@@ -787,9 +787,9 @@
                     <tr>
                       <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                           [nzShowCheckbox]="true" class="chk" (nzCheckedChange)="checkAll($event)"  rowspan="2"></th>
-                      <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
+                      <th class="menu" rowspan="2"><span>{{ 'common.label.action' | translate }}</span></th>
                       <th (click)="sort('name')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
-                        <a><span class="p-r-xs" translate>common.label.name</span>
+                        <a><span class="p-r-xs">{{ 'common.label.name' | translate }}</span>
                           @if (workflowFilters.filter.sortBy == 'name' && !workflowFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -799,7 +799,7 @@
                       </th>
                       @if (isPathDisplay) {
                         <th (click)="sort('path1')" [nzWidth]="!workflowFilters.isCompact ? '150px' : 'auto'" rowspan="2">
-                          <a><span class="p-r-xs" translate>common.label.path</span>
+                          <a><span class="p-r-xs">{{ 'common.label.path' | translate }}</span>
                             @if (workflowFilters.filter.sortBy == 'path1' && !workflowFilters.reverse) {
                               <i class="fa fa-caret-up "></i>
                             }
@@ -810,7 +810,7 @@
                       }
                       <th (click)="sort('versionDate')" [nzWidth]="workflowFilters.isCompact ? '150px' : 'auto'"
                           rowspan="2">
-                        <a><span class="p-r-xs" translate>inventory.label.deploymentDate</span>
+                        <a><span class="p-r-xs">{{ 'inventory.label.deploymentDate' | translate }}</span>
                           @if (workflowFilters.filter.sortBy == 'versionDate' && !workflowFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -820,7 +820,7 @@
                       </th>
                       <th (click)="sort('state._text')" [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'"
                           rowspan="2">
-                        <a><span class="p-r-xs" translate>common.label.status</span>
+                        <a><span class="p-r-xs">{{ 'common.label.status' | translate }}</span>
                           @if (workflowFilters.filter.sortBy == 'state._text' && !workflowFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -830,7 +830,7 @@
                       </th>
                       <th (click)="sort('numOfOrders')" [nzWidth]="workflowFilters.isCompact ? '100px' : 'auto'"
                           rowspan="2">
-                        <a><span class="p-r-xs" translate>workflow.label.noOfOrders</span>
+                        <a><span class="p-r-xs">{{ 'workflow.label.noOfOrders' | translate }}</span>
                           @if (workflowFilters.filter.sortBy == 'numOfOrders' && !workflowFilters.reverse) {
                             <i class="fa fa-caret-up "></i>
                           }
@@ -839,13 +839,13 @@
                           }</a>
                       </th>
                       @if (!workflowFilters.isCompact) {
-                        <th colspan="10"><span translate>workflow.label.order</span></th>
+                        <th colspan="10"><span>{{ 'workflow.label.order' | translate }}</span></th>
                       }
                     </tr>
                       @if (!workflowFilters.isCompact) {
                         <tr>
                           <th (click)="sort('ordersSummary.pending')">
-                            <a><span class="p-r-xs" translate>common.label.pending</span>
+                            <a><span class="p-r-xs">{{ 'common.label.pending' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.pending' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -854,7 +854,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.scheduled')">
-                            <a><span class="p-r-xs" translate>common.label.scheduled</span>
+                            <a><span class="p-r-xs">{{ 'common.label.scheduled' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.scheduled' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -863,7 +863,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.inprogress')">
-                            <a><span class="p-r-xs" translate>common.label.incomplete</span>
+                            <a><span class="p-r-xs">{{ 'common.label.incomplete' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.inprogress' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -872,7 +872,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.running')">
-                            <a><span class="p-r-xs" translate>common.label.running</span>
+                            <a><span class="p-r-xs">{{ 'common.label.running' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.running' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -881,7 +881,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.suspended')">
-                            <a><span class="p-r-xs" translate>common.label.suspended</span>
+                            <a><span class="p-r-xs">{{ 'common.label.suspended' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.suspended' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -890,7 +890,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.prompting')">
-                            <a><span class="p-r-xs" translate>common.label.prompting</span>
+                            <a><span class="p-r-xs">{{ 'common.label.prompting' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.prompting' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -899,7 +899,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.waiting')">
-                            <a><span class="p-r-xs" translate>common.label.waiting</span>
+                            <a><span class="p-r-xs">{{ 'common.label.waiting' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.waiting' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -908,7 +908,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.blocked')">
-                            <a><span class="p-r-xs" translate>common.label.blocked</span>
+                            <a><span class="p-r-xs">{{ 'common.label.blocked' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.blocked' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -917,7 +917,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.failed')">
-                            <a><span class="p-r-xs" translate>common.label.failed</span>
+                            <a><span class="p-r-xs">{{ 'common.label.failed' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'failed' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -926,7 +926,7 @@
                               }</a>
                           </th>
                           <th (click)="sort('ordersSummary.terminated')">
-                            <a><span class="p-r-xs" translate>common.label.completed</span>
+                            <a><span class="p-r-xs">{{ 'common.label.completed' | translate }}</span>
                               @if (workflowFilters.filter.sortBy == 'ordersSummary.terminated' && !workflowFilters.reverse) {
                                 <i class="fa fa-caret-up "></i>
                               }
@@ -1107,14 +1107,14 @@
                                         nzSize="small">
                                 <thead>
                                 <tr>
-                                  <th><span class="m-l-sm" translate>common.label.path</span></th>
-                                  <th><span translate>inventory.label.deploymentDate</span></th>
-                                  <th><span translate>common.label.status</span></th>
-                                  <th><span translate>workflow.label.agent</span></th>
-                                  <th><span translate>inventory.label.directory</span></th>
-                                  <th><span translate>inventory.label.pattern</span></th>
-                                  <th><span translate>common.label.timeZone</span></th>
-                                  <th><span translate>workflow.label.delay</span></th>
+                                  <th><span class="m-l-sm">{{ 'common.label.path' | translate }}</span></th>
+                                  <th><span>{{ 'inventory.label.deploymentDate' | translate }}</span></th>
+                                  <th><span>{{ 'common.label.status' | translate }}</span></th>
+                                  <th><span>{{ 'workflow.label.agent' | translate }}</span></th>
+                                  <th><span>{{ 'inventory.label.directory' | translate }}</span></th>
+                                  <th><span>{{ 'inventory.label.pattern' | translate }}</span></th>
+                                  <th><span>{{ 'common.label.timeZone' | translate }}</span></th>
+                                  <th><span>{{ 'workflow.label.delay' | translate }}</span></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -1164,7 +1164,7 @@
                             <td colspan="17">
                               <div class="m-a-sm">
                                 <div class="hover">
-                                  <a class="text-primary noExl" translate>workflow.label.start</a>
+                                  <a class="text-primary noExl">{{ 'workflow.label.start' | translate }}</a>
                                   <span class="expand-collapse-btn">
                                       <i (click)="workflow.isExpand = true;"
                                          [appRichTooltip]="'common.tooltip.expandAll' | translate"
@@ -1195,12 +1195,12 @@
                     </tbody>
                   </nz-table>
                   @if (ajaxTable.data.length >0) {
-                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                    <div class="w-half label-top"><span>{{ 'common.label.total' | translate }}</span> {{data.length}}
                       @if (ajaxTable.data.length >1) {
-                        <span translate>workflow.label.workflowsFound</span>
+                        <span>{{ 'workflow.label.workflowsFound' | translate }}</span>
                       }
                       @if (ajaxTable.data.length ==1) {
-                        <span translate>workflow.label.workflowFound</span>
+                        <span>{{ 'workflow.label.workflowFound' | translate }}</span>
                       }
                     </div>
                   }
@@ -1266,7 +1266,7 @@
           @if (preferences.showHelpPages) {
             <i (click)="helpPage('workflows-search')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
           }
-          <span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+          <span class="_600 b-b p-b-sm m-l-sm">{{ 'inventory.search.label.searchHeading' | translate }}</span>
         </div>
         <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
                               [isWorkflow]="true"></app-inventory-search>

@@ -11,7 +11,7 @@
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click">
-                  <span translate>common.label.sortBy</span>
+                  <span>{{ 'common.label.sortBy' | translate }}</span>
                   <span class="text-primary">
                     @if (filter.manageList.filter.sortBy =='name') {
                       <span>
@@ -40,16 +40,16 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="sort('name')" nz-menu-item>
-                      <a translate>resource.lock.label.name</a>
+                      <a>{{ 'resource.lock.label.name' | translate }}</a>
                     </li>
                     <li (click)="sort('path1')" nz-menu-item>
-                      <a translate>common.label.path</a>
+                      <a>{{ 'common.label.path' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
               </div>
               @if (display) {
-                <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
+                <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()">
                   <span nz-icon nzType="play-circle" nzTheme="outline"></span>
                   reporting.button.runReport
                 </button>
@@ -62,21 +62,21 @@
               <div class="btn-group m-l-12 ">
                 <button (click)="changeState('ALL')"
                         [ngClass]="{'btn-primary': filter.runHistory.filter.state=='ALL'}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.allStatus' | translate }}
                 </button>
                 <button (click)="changeState('SUCCESSFUL')"
                         [ngClass]="{'btn-primary': filter.runHistory.filter.state=='SUCCESSFUL'}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                  common.button.successful
+                        class="btn btn-grey btn-sm button-group-ellipsis">
+                  {{ 'common.button.successful' | translate }}
                 </button>
                 <button (click)="changeState('FAILED')"
                         [ngClass]="{'btn-primary': filter.runHistory.filter.state=='FAILED'}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.failed' | translate }}
                 </button>
                 <button (click)="changeState('IN_PROGRESS')"
                         [ngClass]="{'btn-primary': filter.runHistory.filter.state=='IN_PROGRESS'}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                  common.button.incomplete
+                        class="btn btn-grey btn-sm button-group-ellipsis">
+                  {{ 'common.button.incomplete' | translate }}
                 </button>
               </div>
             </div>
@@ -89,7 +89,7 @@
                   @if (filter.generateReport.filter.state) {
                     <span> {{ selectedDateLabel | translate }} </span>
                   } @else {
-                    <span translate> common.label.dateFilter </span>
+                    <span> {{ 'common.label.dateFilter' | translate }} </span>
                   }
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
@@ -99,15 +99,15 @@
                       <li (click)="filterBy({state: opt.state})"
                           [ngClass]="{'ant-select-dropdown-menu-item-active': filter.generateReport.filter.state === opt.state}"
                           nz-menu-item>
-                        <a translate>{{opt.text}}</a>
+                        <a>{{opt.text}}</a>
                       </li>
                     }
                   </ul>
                 </nz-dropdown-menu>
               </div>
               <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
-                      class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-                      type="button">monitor.button.filterBy
+                      class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                      type="button">{{ 'monitor.button.filterBy' | translate }}
                 @if (filteredTemplate) {
                   <span>: </span>
                 }
@@ -127,7 +127,7 @@
                 <ul nz-menu>
                   @for (item of templates; track item) {
                     <li nz-menu-item (click)="filterBy(item)">
-                      <label translate>
+                      <label>
                         {{ 'reporting.templates.' +  item.templateName | translate }}
                       </label>
                     </li>
@@ -159,7 +159,7 @@
                 class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
             }
             <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
-              <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRuns</span></span>
+              <span class="nav-text text-dark p-b-sm"><span>{{ 'reporting.tab.reportRuns' | translate }}</span></span>
             </a>
           </li>
         }
@@ -175,7 +175,7 @@
                class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
           <a (click)="index = 2" class="nav-link" [ngClass]="{'active': index == 2}">
-            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reports</span></span>
+            <span class="nav-text text-dark p-b-sm"><span>{{ 'reporting.tab.reports' | translate }}</span></span>
           </a>
         </li>
         <li class="nav-item dropdown-separator">
@@ -188,7 +188,7 @@
                class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
           <a (click)="index = 1" class="nav-link" [ngClass]="{'active': index == 1}">
-            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRunHistory</span></span>
+            <span class="nav-text text-dark p-b-sm"><span>{{ 'reporting.tab.reportRunHistory' | translate }}</span></span>
           </a>
         </li>
       </ul>
@@ -197,7 +197,7 @@
       @if (index == 0) {
         <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
           <i class="fa fa-search"></i>&nbsp;
-          <span translate>common.button.search</span>
+          <span>{{ 'common.button.search' | translate }}</span>
         </button>
         <div class="search-box-field pull-right">
           <label>
@@ -237,10 +237,10 @@
             <i class="fa fa-compress text"></i>
           </button>
           <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
-            <span translate>reporting.button.groupByName</span>
+            <span>{{ 'reporting.button.groupByName' | translate }}</span>
           </button>
           <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
-            <span translate>reporting.button.groupByTemplate</span>
+            <span>{{ 'reporting.button.groupByTemplate' | translate }}</span>
           </button>
         </div>
       }

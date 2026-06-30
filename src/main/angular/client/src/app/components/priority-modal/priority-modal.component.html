@@ -1,14 +1,14 @@
 <div class="modal-header">
   @if (!orders) {
     <h4 class="modal-title">
-      <span translate> inventory.button.modifyPriority</span>
+      <span> {{ 'inventory.button.modifyPriority' | translate }}</span>
       :
       <i class="text-muted p-l-xs text">{{order.orderId}}</i>
     </h4>
   }
   @if (orders) {
     <h4 class="modal-title">
-      <span translate> order.label.modifyAllSelectedOrderPriority</span>
+      <span> {{ 'order.label.modifyAllSelectedOrderPriority' | translate }}</span>
     </h4>
   }
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -25,7 +25,7 @@
       <label [appRichTooltip]="'inventory.tooltips.schedule.priority' | translate"
 
              class="col-sm-3 form-control-label"
-             translate>order.label.priority</label>
+>{{ 'order.label.priority' | translate }}</label>
       <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
            class="col-sm-7">
         <nz-space-compact nzBlock>
@@ -43,7 +43,7 @@
         @if (priority.invalid && (priority.dirty || priority.touched)) {
           <div class="text-danger help-block">
             @if (priority.errors['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -58,6 +58,6 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}</button>
   </div>
 </form>

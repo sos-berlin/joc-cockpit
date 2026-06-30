@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -12,7 +12,8 @@ import {LogConsoleModalComponent} from '../../../components/log-console/log-cons
 @Component({
   standalone: false,
   selector: 'app-confirm-node-modal',
-  templateUrl: './confirm-node-dialog.html'
+  templateUrl: './confirm-node-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmNodeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -63,7 +64,8 @@ export class ConfirmNodeModalComponent {
 @Component({
   standalone: false,
   selector: 'app-agent-cluster',
-  templateUrl: 'agent.component.html'
+  templateUrl: 'agent.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentComponent {
   loading: boolean;

@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../../services/data.service";
@@ -9,6 +9,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-add-approver-dialog',
   templateUrl: './add-approver-dialog.html',
 })
@@ -50,6 +51,7 @@ export class AddApproverModalComponent {
 }
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-approvers',
   templateUrl: './approvers.component.html',
   styleUrl: './approvers.component.scss'
@@ -69,7 +71,7 @@ export class ApproversComponent {
     indeterminate: false
   };
   constructor(public coreService: CoreService,
-              private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
+              private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
 
   }
 
@@ -93,8 +95,10 @@ export class ApproversComponent {
         this.isLoaded = true;
                this.approversData = res.approvers
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -214,8 +218,9 @@ export class ApproversComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.fetchApprovers()
+        this.fetchApprovers();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -227,9 +232,11 @@ export class ApproversComponent {
     this.coreService.post('approval/approver/delete', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
-      this.fetchApprovers()
+      this.fetchApprovers();
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

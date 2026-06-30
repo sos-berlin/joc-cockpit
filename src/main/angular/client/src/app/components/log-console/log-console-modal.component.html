@@ -9,19 +9,19 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'logConsole.tooltip.dateType' | translate" translate>logConsole.label.dateType</span>
+        <span [appRichTooltip]="'logConsole.tooltip.dateType' | translate">{{ 'logConsole.label.dateType' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <nz-radio-group [(ngModel)]="form.dateMode" name="dateMode">
-          <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
-          <label nz-radio nzValue="specific" class="m-l-sm"><span translate>common.label.specificDate</span></label>
+          <label nz-radio nzValue="relative"><span>{{ 'common.label.relativeDate' | translate }}</span></label>
+          <label nz-radio nzValue="specific" class="m-l-sm"><span>{{ 'common.label.specificDate' | translate }}</span></label>
         </nz-radio-group>
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'logConsole.tooltip.dateFrom' | translate" translate>logConsole.label.dateFrom</span>
+        <span [appRichTooltip]="'logConsole.tooltip.dateFrom' | translate">{{ 'logConsole.label.dateFrom' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -32,10 +32,10 @@
                    relativeDateValidatorRegex
                    [placeholder]="'logConsole.placeholder.relativeDateFrom' | translate" />
             @if ((dateFrom.dirty || dateFrom.touched) && dateFrom.errors?.['required']) {
-              <div class="help-block text-danger" translate>error.message.requiredError</div>
+              <div class="help-block text-danger">{{ 'error.message.requiredError' | translate }}</div>
             }
             @if ((dateFrom.dirty || dateFrom.touched) && dateFrom.errors?.['validateRelativeDateRegex']) {
-              <div class="help-block text-danger" translate>common.message.invalid</div>
+              <div class="help-block text-danger">{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
@@ -48,7 +48,7 @@
                               [nzPlaceHolder]="'logConsole.placeholder.selectDate' | translate">
               </nz-date-picker>
               @if (dateFromDate.touched && !form.dateFromDate) {
-                <div class="help-block text-danger" translate>error.message.requiredError</div>
+                <div class="help-block text-danger">{{ 'error.message.requiredError' | translate }}</div>
               }
             </div>
             <div class="p-l-xs">
@@ -64,7 +64,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'logConsole.tooltip.dateTo' | translate" translate>logConsole.label.dateTo</span>
+        <span [appRichTooltip]="'logConsole.tooltip.dateTo' | translate">{{ 'logConsole.label.dateTo' | translate }}</span>
       </label>
       <div class="col-sm-8">
         @if (form.dateMode === 'relative') {
@@ -74,7 +74,7 @@
                    relativeDateValidatorRegex
                    [placeholder]="'logConsole.placeholder.relativeDateTo' | translate" />
             @if ((dateTo.dirty || dateTo.touched) && dateTo.errors?.['validateRelativeDateRegex']) {
-              <div class="help-block text-danger" translate>common.message.invalid</div>
+              <div class="help-block text-danger">{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
@@ -100,7 +100,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'logConsole.tooltip.level' | translate" translate>logConsole.label.level</span>
+        <span [appRichTooltip]="'logConsole.tooltip.level' | translate">{{ 'logConsole.label.level' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <nz-select [(ngModel)]="form.level" name="level" class="w-full">
@@ -109,14 +109,14 @@
           }
         </nz-select>
         <div class="help-block log-modal-hint">
-          <span translate>logConsole.label.levelDescription</span>
+          <span>{{ 'logConsole.label.levelDescription' | translate }}</span>
         </div>
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'logConsole.tooltip.numOfLines' | translate" translate>logConsole.label.numOfLines</span>
+        <span [appRichTooltip]="'logConsole.tooltip.numOfLines' | translate">{{ 'logConsole.label.numOfLines' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <nz-input-number [(ngModel)]="form.numOfLines" name="numOfLines"
@@ -131,7 +131,7 @@
   <div class="modal-footer">
     <button class="btn btn-primary btn-sm" (click)="showLogs()" [disabled]="isShowDisabled">
       <i class="fa fa-eye p-r-xs"></i>
-      <span translate>logConsole.button.showLogs</span>
+      <span>{{ 'logConsole.button.showLogs' | translate }}</span>
     </button>
     <button class="btn btn-default btn-sm" (click)="download()" [disabled]="isDownloadDisabled">
       @if (isDownloading) {
@@ -139,9 +139,9 @@
       } @else {
           <i class="fa fa-download p-r-xs"></i>
       }
-      <span translate>logConsole.button.download</span>
+      <span>{{ 'logConsole.button.download' | translate }}</span>
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button" translate>logConsole.button.cancel</button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'logConsole.button.cancel' | translate }}</button>
   </div>
 </form>
 

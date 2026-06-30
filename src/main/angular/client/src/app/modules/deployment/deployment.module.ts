@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {NgJsonEditorModule} from "ang-jsoneditor";
+import {JsonEditorComponent} from "ang-jsoneditor";
 import {DeploymentRoutingModule} from './deployment-routing.module';
 import {
   BulkUpdateModalComponent,
@@ -17,7 +17,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
   ],
     imports: [
         DeploymentRoutingModule,
-        NgJsonEditorModule,
+        JsonEditorComponent,
         SharedModule,
         NzTooltipDirective
     ]

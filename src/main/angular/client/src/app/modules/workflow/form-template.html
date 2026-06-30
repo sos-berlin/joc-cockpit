@@ -5,13 +5,13 @@
   <div [ngClass]="{'modal-body p-a' : !isSearch }">
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>workflow.section.customizationName</small>
+        <small class="_600 section-box-title">{{ 'workflow.section.customizationName' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
              class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'workflow.tooltip.customizationName' | translate" translate>customization.label.customizationName</span>
+            <span [appRichTooltip]="'workflow.tooltip.customizationName' | translate">{{ 'customization.label.customizationName' | translate }}</span>
             @if (!isSearch) {
               <sup class="text-danger text-sm">*</sup>
             }
@@ -24,13 +24,13 @@
             @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
             @if (!isUnique) {
               <div class="help-block text-danger">
-                <div translate>common.message.uniqueError</div>
+                <div>{{ 'common.message.uniqueError' | translate }}</div>
               </div>
             }
           </div>
@@ -39,12 +39,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>workflow.section.filter</small>
+        <small class="_600 section-box-title">{{ 'workflow.section.filter' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'workflow.tooltip.regex' | translate" translate>workflow.label.regex</span>
+            <span [appRichTooltip]="'workflow.tooltip.regex' | translate">{{ 'workflow.label.regex' | translate }}</span>
           </label>
           <div class="col-sm-6">
             <input [(ngModel)]="filter.regex" class="form-control" name="regex"
@@ -53,7 +53,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'workflow.tooltip.folders' | translate" translate>common.label.folders</span>
+            <span [appRichTooltip]="'workflow.tooltip.folders' | translate">{{ 'common.label.folders' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             <nz-tree-select
@@ -92,7 +92,7 @@
         @if (filter.paths?.length > 0) {
           <div class="m-b-xs row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'workflow.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+              <span [appRichTooltip]="'workflow.tooltip.handleRecursively' | translate">{{ 'inventory.label.handleRecursively' | translate }}</span>
             </label>
             <div class="col-sm-2">
               <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
@@ -101,7 +101,7 @@
         }
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-            <span [appRichTooltip]="'workflow.tooltip.agents' | translate" translate>deploymentService.label.agents</span>
+            <span [appRichTooltip]="'workflow.tooltip.agents' | translate">{{ 'deploymentService.label.agents' | translate }}</span>
           </label>
           <div class=" col-sm-6">
             <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
@@ -146,12 +146,12 @@
     @if (preferences.enableTagging) {
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>workflow.section.tags</small>
+          <small class="_600 section-box-title">{{ 'workflow.section.tags' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'workflow.tooltip.workflowTagging' | translate" translate>inventory.tab.workflowTagging</span>
+              <span [appRichTooltip]="'workflow.tooltip.workflowTagging' | translate">{{ 'inventory.tab.workflowTagging' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
@@ -165,7 +165,7 @@
           </div>
           <div class="form-group row">
             <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label">
-              <span [appRichTooltip]="'workflow.tooltip.orderTagging' | translate" translate>inventory.tab.orderTagging</span>
+              <span [appRichTooltip]="'workflow.tooltip.orderTagging' | translate">{{ 'inventory.tab.orderTagging' | translate }}</span>
             </label>
             <div class=" col-sm-6">
               <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
@@ -182,12 +182,12 @@
     }
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>workflow.section.availability</small>
+        <small class="_600 section-box-title">{{ 'workflow.section.availability' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis">
-            <span [appRichTooltip]="'workflow.tooltip.workflowAvailabilityStatus' | translate" translate>inventory.search.label.workflowAvailabilityStatus</span>
+            <span [appRichTooltip]="'workflow.tooltip.workflowAvailabilityStatus' | translate">{{ 'inventory.search.label.workflowAvailabilityStatus' | translate }}</span>
           </label>
           <div class="col-sm-8">
             <nz-checkbox-group
@@ -196,7 +196,7 @@
               (ngModelChange)="synchronizationStatusChange($event)">
               @for (option of synchronizationStatusOptions; track option) {
                 <label [nzValue]="option.value" nz-checkbox>
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -211,7 +211,7 @@
               (ngModelChange)="availabilityStatusChange($event)">
               @for (option of availabilityStatusOptions; track option) {
                 <label [nzValue]="option.value" nz-checkbox>
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -219,7 +219,7 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis">
-            <span [appRichTooltip]="'workflow.tooltip.jobAvailabilityStatus' | translate" translate>inventory.search.label.jobAvailabilityStatus</span>
+            <span [appRichTooltip]="'workflow.tooltip.jobAvailabilityStatus' | translate">{{ 'inventory.search.label.jobAvailabilityStatus' | translate }}</span>
           </label>
           <div class="col-sm-8">
             <nz-checkbox-group
@@ -228,7 +228,7 @@
               (ngModelChange)="jobAvailabilityStatusChange($event)">
               @for (option of jobAvailabilityStatusOptions; track option) {
                 <label [nzValue]="option.value" nz-checkbox>
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -237,7 +237,7 @@
         @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
           <div class="form-group row">
             <label class="col-sm-4">
-              <span [appRichTooltip]="'workflow.tooltip.sharedCustomization' | translate" translate>customization.label.sharedCustomization</span>
+              <span [appRichTooltip]="'workflow.tooltip.sharedCustomization' | translate">{{ 'customization.label.sharedCustomization' | translate }}</span>
             </label>
             <div class="col-sm-8">
               <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
@@ -248,8 +248,8 @@
     </div>
     @if (isSearch) {
       <div class="form-group m-t m-b-xs">
-        <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
-          common.button.search
+        <button (click)="search()" class="btn btn-primary btn-sm" type="button">
+          {{ 'common.button.search' | translate }}
         </button>
         <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
                 type="submit">
@@ -258,8 +258,8 @@
           }
           {{'customization.button.saveAsCustomization' | translate}}
         </button>
-        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-          common.button.cancel
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+          {{ 'common.button.cancel' | translate }}
         </button>
       </div>
     }
@@ -272,8 +272,8 @@
         }
         {{'common.button.submit' | translate}}
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

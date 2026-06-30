@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
 import {WorkflowService} from "../../services/workflow.service";
@@ -7,7 +7,8 @@ import {CoreService} from "../../services/core.service";
 @Component({
   standalone: false,
   selector: 'app-node-position',
-  templateUrl: './node-position.component.html'
+  templateUrl: './node-position.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodePositionComponent {
   @Input() obj: any;
@@ -26,7 +27,7 @@ export class NodePositionComponent {
 
   @Output() onBlur = new EventEmitter<string>();
 
-  constructor(public workflowService: WorkflowService, private modal: NzModalService, private coreService: CoreService) {
+  constructor(public workflowService: WorkflowService, private modal: NzModalService, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -359,6 +360,7 @@ export class NodePositionComponent {
           this.selectBlockPosition(result);
         }
       }
+      this.cdr.markForCheck();
     });
   }
 }

@@ -2,10 +2,10 @@
   <div class="modal-header">
     <h4 class="modal-title">
       @if (isNew) {
-        <span translate>runtime.label.addPeriod</span>
+        <span>{{ 'runtime.label.addPeriod' | translate }}</span>
       }
       @if (!isNew) {
-        <span translate>runtime.label.editPeriod</span>
+        <span>{{ 'runtime.label.editPeriod' | translate }}</span>
       }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -18,13 +18,13 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>runtime.section.period</small>
+              <small class="_600 section-box-title">{{ 'runtime.section.period' | translate }}</small>
             </div>
             <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.repeatInterval' | translate" translate>
-                    runtime.label.repeatInterval
+                  <span [appRichTooltip]="'runtime.tooltip.repeatInterval' | translate">
+                    {{ 'runtime.label.repeatInterval' | translate }}
                   </span>
                 </label>
                 <div class="col-sm-8">
@@ -37,7 +37,7 @@
               @if (period.frequency=='singleStart') {
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label">
-                    <span [appRichTooltip]="'runtime.tooltip.startTime' | translate" translate>runtime.label.startTime</span>
+                    <span [appRichTooltip]="'runtime.tooltip.startTime' | translate">{{ 'runtime.label.startTime' | translate }}</span>
                   </label>
                   <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
                        class="col-sm-3">
@@ -47,7 +47,7 @@
                     @if (startTime.errors && (startTime.dirty || startTime.touched)) {
                       <div class="help-block text-danger">
                         @if (!startTime.valid) {
-                          <div translate>common.message.invalid</div>
+                          <div>{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -57,7 +57,7 @@
               @if (period.frequency=='repeat') {
                 <div class="form-group row">
                   <label class="col-sm-4 form-control-label">
-                    <span [appRichTooltip]="'runtime.tooltip.repeatTime' | translate" translate>runtime.label.repeatTime</span>
+                    <span [appRichTooltip]="'runtime.tooltip.repeatTime' | translate">{{ 'runtime.label.repeatTime' | translate }}</span>
                     @if (isDisplay) {
                       <i id="repeatId" [appRichTooltip]="'workflow.tooltip.warningMessageForShortIntervalSelection' | translate"
                          [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
@@ -69,7 +69,7 @@
                     @if (repeat.errors && (repeat.dirty || repeat.touched)) {
                       <div class="help-block text-danger">
                         @if (!repeat.valid) {
-                          <div translate>common.message.invalid</div>
+                          <div>{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -78,7 +78,7 @@
               }
               <div [hidden]="period.frequency=='singleStart'" class="form-group row">
                 <label class="col-sm-4 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.begin' | translate" translate>runtime.label.begin</span>
+                  <span [appRichTooltip]="'runtime.tooltip.begin' | translate">{{ 'runtime.label.begin' | translate }}</span>
                 </label>
                 <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                   <input #begin="ngModel" [(ngModel)]="period.period.begin" (blur)="onBlur(begin, 'begin')" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
@@ -86,13 +86,13 @@
                   @if (begin.errors && (begin.dirty || begin.touched)) {
                     <div class="help-block text-danger">
                       @if (!begin.valid) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
                 </div>
                 <label class="col-sm-2 form-control-label text-right">
-                  <span [appRichTooltip]="'runtime.tooltip.end' | translate" translate>runtime.label.end</span>
+                  <span [appRichTooltip]="'runtime.tooltip.end' | translate">{{ 'runtime.label.end' | translate }}</span>
                 </label>
                 <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                   <input #end="ngModel" [(ngModel)]="period.period.end" (blur)="onBlur(end, 'end')" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
@@ -100,7 +100,7 @@
                   @if (end.errors && (end.dirty || end.touched)) {
                     <div class="help-block text-danger">
                       @if (!end.valid) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -108,7 +108,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-sm-4 form-control-label">
-                  <span [appRichTooltip]="'runtime.tooltip.onHoliday' | translate" translate>runtime.label.onHoliday</span>
+                  <span [appRichTooltip]="'runtime.tooltip.onHoliday' | translate">{{ 'runtime.label.onHoliday' | translate }}</span>
                 </label>
                 <div class="col-sm-8">
                   <nz-select [(ngModel)]="period.period.whenHoliday" name="holidayOption">
@@ -123,10 +123,10 @@
           </div>
           <div>
             <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-              <span translate>common.button.save</span>
+              <span>{{ 'common.button.save' | translate }}</span>
             </button>
-            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-              common.button.cancel
+            <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" type="button">
+              {{ 'common.button.cancel' | translate }}
             </button>
           </div>
         </form>

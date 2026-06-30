@@ -1,9 +1,10 @@
 import {isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {
-  ElementRef,
-  NgZone,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  NgZone,
   Input,
   Output,
   EventEmitter,
@@ -27,7 +28,8 @@ import {ViewDimensions} from './types/view-dimension.interface';
 @Component({
   standalone: false,
   selector: 'base-chart',
-  template: ` <div></div> `
+  template: ` <div></div> `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BaseChartComponent implements OnChanges, AfterViewInit, OnDestroy, OnInit {
   @Input() results: any;

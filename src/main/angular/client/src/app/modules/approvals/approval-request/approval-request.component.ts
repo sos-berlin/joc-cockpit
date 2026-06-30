@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
@@ -11,6 +11,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-approval-request',
   templateUrl: './approval-request.component.html',
   styleUrl: './approval-request.component.scss'
@@ -36,7 +37,7 @@ export class ApprovalRequestComponent {
   subscription2: Subscription;
 
   constructor(public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
+              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
       setTimeout(() =>{
         if (res) {
@@ -57,6 +58,7 @@ export class ApprovalRequestComponent {
     this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -116,9 +118,11 @@ export class ApprovalRequestComponent {
         );
         this.approversList = approvers;
         this.searchInResult();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
 
@@ -255,9 +259,11 @@ export class ApprovalRequestComponent {
       next: () => {
        this.fetchRequests()
         this.isLoaded = true;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -320,21 +326,26 @@ export class ApprovalRequestComponent {
           this.coreService.post(`approval/${action}`, payload).subscribe({
             next: () => {
               this.isLoaded = true;
+              this.cdr.markForCheck();
             },
             error: () => {
               this.isLoaded = true;
+              this.cdr.markForCheck();
             }
           });
         }
+        this.cdr.markForCheck();
       });
     }else{
       payload = {id}
       this.coreService.post(`approval/${action}`, payload).subscribe({
         next: () => {
           this.isLoaded = true;
+          this.cdr.markForCheck();
         },
         error: () => {
           this.isLoaded = true;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -379,13 +390,16 @@ export class ApprovalRequestComponent {
               next: () => {
                 this.isLoaded = true;
                 this.filters.mapOfCheckedId.clear();
-                this.refreshCheckedStatus()
+                this.refreshCheckedStatus();
+                this.cdr.markForCheck();
               },
               error: () => {
                 this.isLoaded = true;
+                this.cdr.markForCheck();
               }
             });
           }
+          this.cdr.markForCheck();
         });
       }else{
         payload = {ids:ids};
@@ -393,10 +407,12 @@ export class ApprovalRequestComponent {
           next: () => {
             this.isLoaded = true;
             this.filters.mapOfCheckedId.clear();
-            this.refreshCheckedStatus()
+            this.refreshCheckedStatus();
+            this.cdr.markForCheck();
           },
           error: () => {
             this.isLoaded = true;
+            this.cdr.markForCheck();
           }
         });
       }

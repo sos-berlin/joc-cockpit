@@ -140,7 +140,7 @@
             <label class="log-context-toggle"
                    [appRichTooltip]="'logConsole.tooltip.contextMode' | translate">
               <nz-switch nzSize="small" [ngModel]="contextMode" (ngModelChange)="toggleContextMode()"></nz-switch>
-              <span class="log-context-label" translate>logConsole.label.context</span>
+              <span class="log-context-label">{{ 'logConsole.label.context' | translate }}</span>
             </label>
             @if (contextMode) {
               <div class="log-context-select" [appRichTooltip]="'logConsole.tooltip.contextLines' | translate">
@@ -215,7 +215,7 @@
             <button class="log-level-btn log-level-btn-info"
                     [class.log-level-btn--active]="levelLastDir.get('info') !== undefined"
                     (click)="jumpToLevel('info')">
-              <span class="log-badge log-badge-info" translate>log.label.info</span>
+              <span class="log-badge log-badge-info">{{ 'log.label.info' | translate }}</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('info', 'prev')"
                     [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
@@ -235,7 +235,7 @@
             <button class="log-level-btn log-level-btn-warn"
                     [class.log-level-btn--active]="levelLastDir.get('warn') !== undefined"
                     (click)="jumpToLevel('warn')">
-              <span class="log-badge log-badge-warn" translate>log.label.warn</span>
+              <span class="log-badge log-badge-warn">{{ 'log.label.warn' | translate }}</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('warn', 'prev')"
                     [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
@@ -255,7 +255,7 @@
             <button class="log-level-btn log-level-btn-error"
                     [class.log-level-btn--active]="levelLastDir.get('error') !== undefined"
                     (click)="jumpToLevel('error')">
-              <span class="log-badge log-badge-error" translate>log.label.error</span>
+              <span class="log-badge log-badge-error">{{ 'log.label.error' | translate }}</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('error', 'prev')"
                     [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
@@ -275,7 +275,7 @@
             <button class="log-level-btn log-level-btn-debug"
                     [class.log-level-btn--active]="levelLastDir.get('debug') !== undefined"
                     (click)="jumpToLevel('debug')">
-              <span class="log-badge log-badge-debug" translate>log.label.debug</span>
+              <span class="log-badge log-badge-debug">{{ 'log.label.debug' | translate }}</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('debug', 'prev')"
                     [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
@@ -295,7 +295,7 @@
             <button class="log-level-btn log-level-btn-trace"
                     [class.log-level-btn--active]="levelLastDir.get('trace') !== undefined"
                     (click)="jumpToLevel('trace')">
-              <span class="log-badge log-badge-trace" translate>log.label.trace</span>
+              <span class="log-badge log-badge-trace">{{ 'log.label.trace' | translate }}</span>
             </button>
             <button class="log-nav-btn" (click)="jumpToLevel('trace', 'prev')"
                     [attr.aria-label]="'logConsole.tooltip.prevOccurrence' | translate">
@@ -348,7 +348,7 @@
 
       <!-- Status notes -->
       @if (isLoading && allLines.length > 0) {
-        <span class="log-summary-note"><span translate>common.label.loading</span></span>
+        <span class="log-summary-note"><span>{{ 'common.label.loading' | translate }}</span></span>
       }
 
       <!-- Jump to start / end + line counter (right side, merged) -->
@@ -378,14 +378,14 @@
     @if (isLoading && allLines.length === 0) {
       <div class="log-console-loading">
         <nz-spin nzSimple></nz-spin>
-        <span translate>common.label.loading</span>
+        <span>{{ 'common.label.loading' | translate }}</span>
       </div>
     }
 
     @if (!isLoading && allLines.length === 0) {
       <div class="log-console-empty">
         <i nz-icon nzType="file-text" nzTheme="outline" class="log-state-icon"></i>
-        <span translate>logConsole.message.noEntries</span>
+        <span>{{ 'logConsole.message.noEntries' | translate }}</span>
       </div>
     }
 

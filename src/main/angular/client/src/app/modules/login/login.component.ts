@@ -1,4 +1,4 @@
-  import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
+  import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
   import {ActivatedRoute, Router} from '@angular/router';
   import {ToastrService} from 'ngx-toastr';
   import {TranslateService} from '@ngx-translate/core';
@@ -16,7 +16,8 @@
     standalone: false,
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css']
+    styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
   })
   export class LoginComponent {
     isLoading = true;
@@ -46,7 +47,8 @@
 
     constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
                 private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
-                private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService,private kioskService: KioskService) {
+                private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService,
+                private kioskService: KioskService, private cdr: ChangeDetectorRef) {
     }
 
     ngOnInit(): void {
@@ -62,8 +64,10 @@
             this.onSign(res.data.secondFactoridentityService);
             setTimeout(() => {
               this.isLoading = false;
+              this.cdr.markForCheck();
             }, 100)
           }
+          this.cdr.markForCheck();
         }
       });
       if (localStorage['$SOS$REMEMBER'] === 'true' || localStorage['$SOS$REMEMBER'] === true) {
@@ -90,6 +94,7 @@
     }
 
     ngAfterViewInit(): void {
+      this.cdr.detectChanges();
       if (this.user.userName && this.user.password) {
         setTimeout(() => {
           this.loginButton.nativeElement.focus();
@@ -107,6 +112,7 @@
         next: (res) => {
           this.isLoading = false;
           this.defaultSetting = res;
+          this.cdr.markForCheck();
           if (!res.enableRememberMe) {
             localStorage.removeItem('$SOS$FOO');
             localStorage.removeItem('$SOS$BOO');
@@ -142,6 +148,7 @@
         },
         error: () => {
           this.isLoading = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -155,6 +162,7 @@
           this.fido2ndFactorServiceItems = res.fido2ndFactorServiceItems || [];
           this.needAccountPassword = res.needAccountPassword;
           this.needLoginButton = res.needLoginButton;
+          this.cdr.markForCheck();
         }, error(err) {
           console.error(err)
         },
@@ -225,6 +233,7 @@
         }, error: () => {
           this.submitted = false;
           this.errorMsg = true;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -318,6 +327,7 @@
           } else {
             this.errorMsgText = err.message;
           }
+          this.cdr.markForCheck();
         }
       });
     }
@@ -351,6 +361,7 @@
             });
             this.toasterService.success(msg, title)
             this.back();
+            this.cdr.markForCheck();
           }, error: (err) => {
             this.submitted1 = false;
             if (err.error && err.error.error) {
@@ -358,12 +369,14 @@
             } else {
               this.toasterService.error(err.message);
             }
+            this.cdr.markForCheck();
           }
         })
       }).catch((error) => {
         this.submitted1 = false;
         this.errorMsg = true;
         this.errorMsgText = error;
+        this.cdr.markForCheck();
       })
     }
 
@@ -392,6 +405,7 @@
         } else {
           this.showLogin = true;
         }
+        this.cdr.markForCheck();
       });
     }
 
@@ -413,6 +427,7 @@
             } else {
               this.errorMsgText = err.message;
             }
+            this.cdr.markForCheck();
           }
         })
       }
@@ -445,6 +460,7 @@
         .catch((error) => {
           this.errorMsg = true;
           this.errorMsgText = error;
+          this.cdr.markForCheck();
         })
     }
 
@@ -481,6 +497,7 @@
           this.submitted = false;
           this.errorMsg = true;
           sessionStorage.clear();
+          this.cdr.markForCheck();
         }
       });
     }

@@ -3,7 +3,7 @@
     @if((title === 'addChange' || title === 'updateChange') && preferences.showHelpPages) {
       <i (click)="helpPage('changes-properties')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
-    <span translate>{{'changes.label.'+ title}}</span>
+    <span>{{'changes.label.'+ title}}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -19,13 +19,13 @@
       </div>
       <div class="b-a m-b-sm section-box">
         <div class="section-box-header">
-          <small class="_600 section-box-title" translate>user.section.change</small>
+          <small class="_600 section-box-title">{{ 'user.section.change' | translate }}</small>
         </div>
         <div class="p-a-sm">
           <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
+              <span [appRichTooltip]="'changes.tooltip.name' | translate">{{ 'common.label.name' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6">
@@ -34,7 +34,7 @@
               @if (name.invalid && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">
                   @if (name.errors['required']) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -42,7 +42,7 @@
           </div>
           <div class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'changes.tooltip.title' | translate" translate>common.label.title</span>
+              <span [appRichTooltip]="'changes.tooltip.title' | translate">{{ 'common.label.title' | translate }}</span>
             </label>
             <div class="col-sm-9">
               <input [(ngModel)]="changesObj.title" autocomplete="off" class="form-control"
@@ -51,7 +51,7 @@
           </div>
           <div class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'changes.tooltip.state' | translate" translate>common.label.state</span>
+              <span [appRichTooltip]="'changes.tooltip.state' | translate">{{ 'common.label.state' | translate }}</span>
             </label>
             <div class="col-sm-9">
               <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
@@ -72,7 +72,7 @@
         {{'common.button.submit' | translate}}
       </button>
       <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-        <span translate>common.button.cancel</span>
+        <span>{{ 'common.button.cancel' | translate }}</span>
       </button>
     </div>
   </form>
@@ -86,14 +86,14 @@
         <div class="form-group row m-b-sm">
           <div class="col-md-3">
             <label>
-              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+              <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate">{{ 'inventory.label.includeDependencies' | translate }}</span>
             </label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-              <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+              <label nz-radio nzValue="all"><span>{{ 'inventory.label.all' | translate }}</span></label>
+              <label nz-radio nzValue="enforced"><span>{{ 'inventory.label.enforcedOnly' | translate }}</span></label>
+              <label nz-radio nzValue="none"><span>{{ 'inventory.label.none' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -306,7 +306,7 @@
       </button>
     }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.cancel</span>
+      <span>{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 }
@@ -318,12 +318,12 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>user.section.change</small>
+        <small class="_600 section-box-title">{{ 'user.section.change' | translate }}</small>
       </div>
       <div class="p-a-sm">
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
           <label class="col-sm-3 form-control-label">
-            <span [appRichTooltip]="'changes.tooltip.name' | translate" translate>common.label.name</span>
+            <span [appRichTooltip]="'changes.tooltip.name' | translate">{{ 'common.label.name' | translate }}</span>
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div class="col-sm-6">
@@ -336,7 +336,7 @@
             @if (name.invalid && (name.dirty || name.touched)) {
               <div class="text-danger help-block">
                 @if (name.errors['required']) {
-                  <div translate>common.message.requiredError</div>
+                  <div>{{ 'common.message.requiredError' | translate }}</div>
                 }
               </div>
             }
@@ -347,14 +347,14 @@
             <div class="form-group row m-b-sm">
               <div class="col-md-3">
                 <label>
-                  <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate" translate>inventory.label.includeDependencies</span>
+                  <span [appRichTooltip]="'changes.tooltip.includeDependencies' | translate">{{ 'inventory.label.includeDependencies' | translate }}</span>
                 </label>
               </div>
               <div class="col-md-9">
                 <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-                  <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-                  <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-                  <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+                  <label nz-radio nzValue="all"><span>{{ 'inventory.label.all' | translate }}</span></label>
+                  <label nz-radio nzValue="enforced"><span>{{ 'inventory.label.enforcedOnly' | translate }}</span></label>
+                  <label nz-radio nzValue="none"><span>{{ 'inventory.label.none' | translate }}</span></label>
                 </nz-radio-group>
               </div>
             </div>
@@ -561,7 +561,7 @@
   </div>
   <div class="modal-footer">
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.close</span>
+      <span>{{ 'common.button.close' | translate }}</span>
     </button>
   </div>
 }

@@ -5,11 +5,12 @@ import {registerLocaleData} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {ToastrModule} from 'ngx-toastr';
 import {PortalModule} from '@angular/cdk/portal';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {enUS} from 'date-fns/locale';
+import {RouterOutlet} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
 import {LoginModule} from './modules/login/login.module';
 import {SignupCompleteModule} from "./modules/signup-complete/signup-complete.module";
@@ -17,14 +18,6 @@ import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
-
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  const lang = localStorage['$SOS$LANG'] || 'en';
-  import(`../../node_modules/@angular/common/locales/${lang}.js`).then(locale => {
-    registerLocaleData(locale.default);
-  });
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json?v=1659421544261');
-}
 
 @Injectable()
 export class MyErrorHandler implements ErrorHandler {
@@ -45,6 +38,7 @@ export class MyErrorHandler implements ErrorHandler {
   imports: [
     BrowserModule,
     AppRoutingModule,
+    RouterOutlet,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -55,13 +49,6 @@ export class MyErrorHandler implements ErrorHandler {
       maxOpened: 1,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
-    }),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
     })
   ],
   providers: [
@@ -78,7 +65,11 @@ export class MyErrorHandler implements ErrorHandler {
     {
       provide: NZ_I18N, useValue: en_US
     },
-    {provide: NZ_DATE_LOCALE, useValue: enUS},  { provide: NZ_DATE_CONFIG, useValue: { firstDayOfWeek: 1 } },],
+    {provide: NZ_DATE_LOCALE, useValue: enUS},  { provide: NZ_DATE_CONFIG, useValue: { firstDayOfWeek: 1 } },
+    provideTranslateService({
+      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json?v=1659421544261' })
+    }),
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

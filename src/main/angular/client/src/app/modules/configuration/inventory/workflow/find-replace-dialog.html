@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>workflow.findAndReplace.label.findAndReplace</span>
+    <span class="drag-text">{{ 'workflow.findAndReplace.label.findAndReplace' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close"
           type="button">
@@ -11,7 +11,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label">
-        <span [appRichTooltip]="'workflow.findAndReplace.tooltips.find' | translate" translate>workflow.findAndReplace.label.find</span>
+        <span [appRichTooltip]="'workflow.findAndReplace.tooltips.find' | translate">{{ 'workflow.findAndReplace.label.find' | translate }}</span>
       </label>
       <div class="col-md-8 col-lg-9">
         <nz-select #selectBox (keydown)="onKeyPress($event)" (nzBlur)="focusOut()" [(ngModel)]="object.finds" [nzDropdownClassName]="'group-list'"
@@ -78,7 +78,7 @@
     </div>
     <div class="form-group row">
       <label class="col-md-4 col-lg-3 form-control-label">
-        <span [appRichTooltip]="'workflow.findAndReplace.tooltips.replace' | translate" translate>workflow.findAndReplace.label.replace</span>
+        <span [appRichTooltip]="'workflow.findAndReplace.tooltips.replace' | translate">{{ 'workflow.findAndReplace.label.replace' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-md-8 col-lg-9">
@@ -89,12 +89,12 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
-      common.button.submit
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+      {{ 'common.button.submit' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-            translate type="button">
-      common.button.cancel
+ type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

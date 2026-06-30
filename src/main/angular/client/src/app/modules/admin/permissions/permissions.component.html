@@ -31,7 +31,7 @@
 <div>
   <div class="row m-t folder">
     <div class="col-md-12">
-      <span class="text _600" translate>user.label.folder</span>&nbsp;
+      <span class="text _600">{{ 'user.label.folder' | translate }}</span>&nbsp;
       <i (click)="showPanel2=true" [hidden]="showPanel2" class="cursor fa fa-caret-down m-l-xs"></i>
       @if (showPanel2) {
         <i (click)="showPanel2=false" class="cursor fa fa-caret-up m-l-xs"></i>
@@ -52,7 +52,7 @@
             }
             @if (folderArr.length == 0) {
               <div class="col-md-12 text-center">
-                <span translate>user.message.noFolderFound</span>
+                <span>{{ 'user.message.noFolderFound' | translate }}</span>
               </div>
             }
           </div>
@@ -66,7 +66,7 @@
   @if (pageView =='list') {
     <div class="row m-t">
       <div class="col-md-12">
-        <span class="text _600" translate>user.label.permissions</span>&nbsp;
+        <span class="text _600">{{ 'user.label.permissions' | translate }}</span>&nbsp;
         <i (click)="showPanel1=true" [hidden]="showPanel1" class="cursor fa fa-caret-down m-l-xs"></i>
         @if (showPanel1) {
           <i (click)="showPanel1=false" class="cursor fa fa-caret-up m-l-xs"></i>
@@ -93,7 +93,7 @@
               }
               @if (rolePermissions.length == 0) {
                 <div class="col-md-12 text-center">
-                  <span translate>user.message.noPermissionFound</span>
+                  <span>{{ 'user.message.noPermissionFound' | translate }}</span>
                 </div>
               }
             </div>
@@ -116,19 +116,19 @@
       <div>
         <button (click)="expandAll()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
           <i class="fa fa fa-caret-down"></i>&nbsp;
-          <span translate>user.button.expandAll</span>
+          <span>{{ 'user.button.expandAll' | translate }}</span>
         </button>
         <button (click)="collapseAll()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
           <i class="fa fa fa-caret-up"></i>&nbsp;
-          <span translate>user.button.collapseAll</span>
+          <span>{{ 'user.button.collapseAll' | translate }}</span>
         </button>
         <button (click)="expandSelected()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
           <i class="fa fa fa-caret-down"></i>&nbsp;
-          <span translate>user.button.expandSelected</span>
+          <span>{{ 'user.button.expandSelected' | translate }}</span>
         </button>
         <button (click)="collapseUnselected()" class="btn btn-sm btn-grey show-block m-t m-l-sm">
           <i class="fa fa fa-caret-up"></i>&nbsp;
-          <span translate>user.button.collapseUnselected</span>
+          <span>{{ 'user.button.collapseUnselected' | translate }}</span>
         </button>
       </div>
       <div class="text-overflow m-t-12" id="mainTree"></div>

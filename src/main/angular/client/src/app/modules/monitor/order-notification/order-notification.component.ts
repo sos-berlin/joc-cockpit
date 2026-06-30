@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -14,7 +14,8 @@ import {ExcelService} from "../../../services/excel.service";
 @Component({
   standalone: false,
   selector: 'app-order-notification',
-  templateUrl: './order-notification.component.html'
+  templateUrl: './order-notification.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderNotificationComponent {
   @Input() permission: any;
@@ -40,7 +41,7 @@ export class OrderNotificationComponent {
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
               private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private translate: TranslateService, private excelService: ExcelService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -123,6 +124,7 @@ export class OrderNotificationComponent {
         }
         this.notifications = res.notifications;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => this.isLoaded = true
     });
   }
@@ -158,6 +160,7 @@ export class OrderNotificationComponent {
         next: (res: any) => {
           data.monitors = res.monitors;
           data.isLoaded = true;
+          this.cdr.markForCheck();
         }, error: () => data.isLoaded = true
       });
     }

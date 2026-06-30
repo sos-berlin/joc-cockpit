@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>profile.gitManagement.label.manageGitCredentials</span>
+    <span>{{ 'profile.gitManagement.label.manageGitCredentials' | translate }}</span>
     @if (data) {
       <span>:</span>
     }
@@ -20,7 +20,7 @@
     <div [ngClass]="{'has-error' : ((server.dirty || server.touched) && server.invalid)}"
          class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitServer' | translate" translate>profile.gitManagement.label.gitServer</span>
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitServer' | translate">{{ 'profile.gitManagement.label.gitServer' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -29,7 +29,7 @@
         @if (server.invalid && (server.dirty || server.touched)) {
           <div class="text-danger help-block">
             @if (server.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -38,7 +38,7 @@
     <div [ngClass]="{'has-error' : ((accountName.dirty || accountName.touched) && accountName.invalid)}"
          class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccount' | translate" translate>profile.gitManagement.label.gitAccount</span>
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccount' | translate">{{ 'profile.gitManagement.label.gitAccount' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -47,7 +47,7 @@
         @if (accountName.invalid && (accountName.dirty || accountName.touched)) {
           <div class="text-danger help-block">
             @if (accountName.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -56,7 +56,7 @@
     <div [ngClass]="{'has-error' : ((username.dirty || username.touched) && username.invalid)}"
          class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'profile.gitManagement.tooltip.userName' | translate" translate>profile.gitManagement.label.userName</span>
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.userName' | translate">{{ 'profile.gitManagement.label.userName' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -65,7 +65,7 @@
         @if (username.invalid && (username.dirty || username.touched)) {
           <div class="text-danger help-block">
             @if (username.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -74,7 +74,7 @@
     <div [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}"
          class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'profile.gitManagement.tooltip.emailAddress' | translate" translate>profile.gitManagement.label.emailAddress</span>
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.emailAddress' | translate">{{ 'profile.gitManagement.label.emailAddress' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
@@ -83,7 +83,7 @@
         @if (email.invalid && (email.dirty || email.touched)) {
           <div class="text-danger help-block">
             @if (email.errors.required) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -91,20 +91,20 @@
     </div>
     <div class="form-group row">
       <label class="col-sm-4 ">
-        <span [appRichTooltip]="'profile.gitManagement.tooltip.authenticationType' | translate" translate>profile.gitManagement.label.authenticationType</span>
+        <span [appRichTooltip]="'profile.gitManagement.tooltip.authenticationType' | translate">{{ 'profile.gitManagement.label.authenticationType' | translate }}</span>
       </label>
       <div class="col-md-8">
         <nz-radio-group [(ngModel)]="object.type" name="at">
-          <label nz-radio nzValue="password"><span translate>profile.gitManagement.label.password</span></label>
-          <label nz-radio nzValue="key"><span translate>profile.gitManagement.label.key</span></label>
-          <label nz-radio nzValue="accessToken"><span translate>profile.gitManagement.label.accessToken</span></label>
+          <label nz-radio nzValue="password"><span>{{ 'profile.gitManagement.label.password' | translate }}</span></label>
+          <label nz-radio nzValue="key"><span>{{ 'profile.gitManagement.label.key' | translate }}</span></label>
+          <label nz-radio nzValue="accessToken"><span>{{ 'profile.gitManagement.label.accessToken' | translate }}</span></label>
         </nz-radio-group>
       </div>
     </div>
     @if (object.type === 'password') {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitPassword' | translate" translate>profile.gitManagement.label.gitPassword</span>
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitPassword' | translate">{{ 'profile.gitManagement.label.gitPassword' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((gitPswd.dirty || gitPswd.touched) && gitPswd.invalid)}" class="col-sm-6">
@@ -115,7 +115,7 @@
           @if (gitPswd.invalid && (gitPswd.dirty || gitPswd.touched)) {
             <div class="text-danger help-block">
               @if (gitPswd.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -125,7 +125,7 @@
     @if (object.type === 'key') {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'profile.gitManagement.tooltip.keyfilePath' | translate" translate>profile.gitManagement.label.keyfilePath</span>
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.keyfilePath' | translate">{{ 'profile.gitManagement.label.keyfilePath' | translate }}</span>
         </label>
         <div class="col-sm-6">
           <input [(ngModel)]="gitObject.keyfilePath" autocomplete="off" class="form-control" name="keyfilePath"
@@ -136,7 +136,7 @@
     @if (object.type === 'accessToken') {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
-          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccessToken' | translate" translate>profile.gitManagement.label.gitAccessToken</span>
+          <span [appRichTooltip]="'profile.gitManagement.tooltip.gitAccessToken' | translate">{{ 'profile.gitManagement.label.gitAccessToken' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((accessToken.dirty || accessToken.touched) && accessToken.invalid)}"
@@ -146,7 +146,7 @@
           @if (accessToken.invalid && (accessToken.dirty || accessToken.touched)) {
             <div class="text-danger help-block">
               @if (accessToken.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -163,7 +163,7 @@
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span translate>common.button.cancel</span>
+      <span>{{ 'common.button.cancel' | translate }}</span>
     </button>
   </div>
 </form>

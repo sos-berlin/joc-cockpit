@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {registerLocaleData} from '@angular/common';
 import {HttpHeaders} from "@angular/common/http";
@@ -805,7 +805,8 @@ export class RemoveKeyModalComponent {
 @Component({
   standalone: false,
   selector: 'app-user',
-  templateUrl: './user.component.html'
+  templateUrl: './user.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserComponent {
   zones: any = [];
@@ -989,7 +990,7 @@ export class UserComponent {
   selectedTheme: string;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
-              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
+              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.setPreferences();
@@ -1150,7 +1151,7 @@ export class UserComponent {
     import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.js`).then(locale => {
       registerLocaleData(locale.default);
     });
-    this.translate.use(this.preferences.locale).subscribe((res) => {
+    this.translate.use(this.preferences.locale).subscribe((res: any) => {
       const data = res.extra;
       data.DatePicker.lang.monthBeforeYear = true;
       data.Calendar.lang.monthBeforeYear = true;
@@ -1165,6 +1166,7 @@ export class UserComponent {
         }
       }
       this.i18n.setLocale(data);
+      this.cdr.markForCheck();
     });
     this.savePreferences();
   }
@@ -1278,6 +1280,7 @@ export class UserComponent {
       } else {
         this.dataService.isProfileReload.next(true);
       }
+      this.cdr.markForCheck();
     });
     setTimeout(()=>{
       this.initializeOrderStateColors();
@@ -1302,7 +1305,9 @@ export class UserComponent {
         };
         this.coreService.post('profile/prefs/store', config).subscribe((res: any) => {
           this.dataService.isProfileReload.next(true);
+          this.cdr.markForCheck();
         });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1316,6 +1321,7 @@ export class UserComponent {
         if (this.keys.validUntil) {
           this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.keys = {};
       }
@@ -1330,6 +1336,7 @@ export class UserComponent {
         if (this.certificates.validUntil) {
           this.certificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.certificates.validUntil) < 0;
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.certificates = {};
       }
@@ -1340,6 +1347,7 @@ export class UserComponent {
     this.coreService.post('inventory/repository/git/credentials', {}).subscribe({
       next: (res: any) => {
         this.gitCredentials = res;
+        this.cdr.markForCheck();
       }, error: () => {
         this.gitCredentials = {};
       }
@@ -1568,6 +1576,7 @@ export class UserComponent {
       next: (res: any) => {
         this.sharedList = res.sharedFavorites;
         this.favList = res.favorites;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1584,6 +1593,7 @@ export class UserComponent {
         identityServiceName: this.identityServiceName
       }).subscribe((res) => {
         this.createRequestObject(res);
+        this.cdr.markForCheck();
       });
     }
   }

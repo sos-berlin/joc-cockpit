@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -1139,7 +1140,8 @@ export class SingleHistoryComponent {
 @Component({
   standalone: false,
   selector: 'app-history',
-  templateUrl: './history.component.html'
+  templateUrl: './history.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent {
   schedulerIds: any = {};
@@ -1430,6 +1432,7 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
@@ -1437,7 +1440,7 @@ export class HistoryComponent {
     });
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.coreService.calRowWidth(this.historyFilters.current);
@@ -1544,6 +1547,7 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
@@ -1618,6 +1622,7 @@ export class HistoryComponent {
           this.searchInResult();
         }
         this.setHeaderWidth();
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
@@ -1712,6 +1717,7 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
@@ -1799,6 +1805,7 @@ export class HistoryComponent {
         this.submissionHistorys = res.dates || [];
         this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
@@ -1845,6 +1852,7 @@ export class HistoryComponent {
       next: (res) => {
         controller.submissions = res.submissionTimes || [];
         history.loading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         controller.submissions = [];
         history.loading = false;
@@ -1876,6 +1884,7 @@ export class HistoryComponent {
           submission.errorMessages = res.errorMessages;
           submission.warnMessages = res.warnMessages;
           this.isSubmissionLoading = false;
+          this.cdr.markForCheck();
         }, error: () => {
           submission.orderIds = [];
           submission.errorMessages = [];
@@ -1959,6 +1968,7 @@ export class HistoryComponent {
           this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
           this.isLoading = true;
           this.searchInResult();
+          this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
@@ -2034,6 +2044,7 @@ export class HistoryComponent {
           this.taskHistorys = this.setDuration(res);
           this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
           this.searchInResult();
+          this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
@@ -2065,6 +2076,7 @@ export class HistoryComponent {
           this.deploymentHistorys = res.depHistory || [];
           this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
           this.searchInResult();
+          this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
@@ -2107,6 +2119,7 @@ export class HistoryComponent {
           this.submissionHistorys = res.dates || [];
           this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
           this.searchInResult();
+          this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
@@ -2124,6 +2137,7 @@ export class HistoryComponent {
           this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
           this.searchInResult();
           this.setHeaderWidth();
+          this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
           this.isLoading = true;
@@ -2490,6 +2504,7 @@ export class HistoryComponent {
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
+        this.cdr.markForCheck();
       }, error: () => data.loading = false
     });
   }
@@ -2514,6 +2529,7 @@ export class HistoryComponent {
       next: (res: any) => {
         data.children = res.depHistory;
         data.loading = false;
+        this.cdr.markForCheck();
       }, error: () => data.loading = false
     });
   }
@@ -2546,6 +2562,7 @@ export class HistoryComponent {
             $(this).css('width', self.widthArr[i] + 'px');
           });
         }, 0);
+        this.cdr.markForCheck();
       }, error: () => data.loading = false
     });
   }
@@ -3037,6 +3054,7 @@ export class HistoryComponent {
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
+        this.cdr.markForCheck();
       }, error: () => data.loading = false
     });
   }
@@ -3125,6 +3143,7 @@ export class HistoryComponent {
         data.children = res.children;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyFilters.current);
+        this.cdr.markForCheck();
       }, error: () => data.loading = false
     });
   }
@@ -4004,6 +4023,7 @@ export class HistoryComponent {
       this.coreService.post('configurations', obj).subscribe({
         next: (res: any) => {
           this.checkCurrentTab(type, res, obj);
+          this.cdr.markForCheck();
         }, error: () => this.checkCurrentTab(type, null, obj)
       });
     } else {
@@ -4029,6 +4049,7 @@ export class HistoryComponent {
         } else {
           this.checkYadeCustomization(result);
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.savedHistoryFilter.selected = undefined;
         this.loadConfig = true;
@@ -4360,6 +4381,7 @@ export class HistoryComponent {
                 }
                 this.loadIgnoreList = true;
                 this.init(false);
+                this.cdr.markForCheck();
               }, error: () => {
                 this.loadIgnoreList = true;
                 this.init(false);
@@ -4369,6 +4391,7 @@ export class HistoryComponent {
             this.loadIgnoreList = true;
             this.init(false);
           }
+          this.cdr.markForCheck();
         }, error: () => {
           this.loadIgnoreList = true;
           this.init(false);
@@ -4629,6 +4652,7 @@ export class HistoryComponent {
           });
         }
         this.searchByOrderTags(obj);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -4693,6 +4717,7 @@ export class HistoryComponent {
             this.searchOrderTag.tags = res.results;
             this.searchOrderTag.token = res.token;
             this.searchOrderTag.loading = false;
+            this.cdr.markForCheck();
           }, error: () => this.searchOrderTag.loading = true
         });
       }
@@ -4799,6 +4824,7 @@ export class HistoryComponent {
             this.searchTag.tags = res.results;
             this.searchTag.token = res.token;
             this.searchTag.loading = false;
+            this.cdr.markForCheck();
           }, error: () => this.searchTag.loading = true
         });
       }
@@ -4903,6 +4929,7 @@ export class HistoryComponent {
           });
         }
         this.searchByTags(obj);
+        this.cdr.markForCheck();
       }
     });
   }

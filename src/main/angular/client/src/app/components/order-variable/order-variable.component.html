@@ -10,10 +10,10 @@
         <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
           <ul nz-menu>
             <li (click)="changeParameter(order, variable)" nz-menu-item>
-              <a translate>dailyPlan.button.setParameter</a>
+              <a>{{ 'dailyPlan.button.setParameter' | translate }}</a>
             </li>
             <li (click)="removeParameter(order, variable)" nz-menu-item>
-              <a translate>dailyPlan.button.removeParameter</a>
+              <a>{{ 'dailyPlan.button.removeParameter' | translate }}</a>
             </li>
           </ul>
         </nz-dropdown-menu>
@@ -59,12 +59,12 @@
 }
 @if ((order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')) {
   <div class="p-l">
-    <span translate>order.message.noVariableAvailable</span>
+    <span>{{ 'order.message.noVariableAvailable' | translate }}</span>
   </div>
 }
 @if (!order[type] && type === 'variables') {
   <div class="p-l p-t-xs">
     <i class="fa fa-spin fa-spinner"></i>
-    <span class="p-l-xs" translate>common.label.loading</span>
+    <span class="p-l-xs">{{ 'common.label.loading' | translate }}</span>
   </div>
 }

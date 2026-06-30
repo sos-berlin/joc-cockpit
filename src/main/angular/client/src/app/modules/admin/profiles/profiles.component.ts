@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -11,7 +11,8 @@ import {AuthService} from '../../../components/guard';
 @Component({
   standalone: false,
   selector: 'app-profiles',
-  templateUrl: './profiles.component.html'
+  templateUrl: './profiles.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfilesComponent {
   preferences: any = {};
@@ -32,7 +33,7 @@ export class ProfilesComponent {
   subscription1: Subscription;
 
   constructor(private dataService: DataService, private modal: NzModalService, private coreService: CoreService,
-              private router: Router, private authService: AuthService) {
+              private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef) {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'RESET_PROFILES') {
@@ -62,6 +63,7 @@ export class ProfilesComponent {
       next: (res: any) => {
         this.profiles = res.profiles;
         this.loading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
       }
@@ -171,6 +173,7 @@ export class ProfilesComponent {
     };
     this.coreService.post('authentication/auth/store', obj).subscribe(() => {
       this.profiles = [...this.profiles];
+      this.cdr.markForCheck();
     });
   }
 
@@ -207,6 +210,7 @@ export class ProfilesComponent {
       this.indeterminate = false;
       this.setOfCheckedId.clear();
       this.profiles = [...this.profiles];
+      this.cdr.markForCheck();
     });
   }
 }

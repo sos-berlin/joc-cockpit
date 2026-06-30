@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef } from '@angular/core';
+import {ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -7,7 +7,8 @@ import {NzModalService} from "ng-zorro-antd/modal";
 @Component({
   standalone: false,
   selector: 'app-monitor',
-  templateUrl: './monitor.component.html'
+  templateUrl: './monitor.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonitorComponent {
   monitor: Array<any> = [];

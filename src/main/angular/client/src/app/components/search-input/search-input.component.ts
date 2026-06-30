@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -17,7 +18,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-search-input',
-  templateUrl: './search-input.component.html'
+  templateUrl: './search-input.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchInputComponent {
   @Input() type: string;

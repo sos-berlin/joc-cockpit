@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
@@ -17,7 +17,8 @@ import {SearchPipe} from "../../pipes/core.pipe";
 @Component({
   standalone: false,
   selector: 'app-export-modal',
-  templateUrl: './export-dialog.html'
+  templateUrl: './export-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -37,7 +38,7 @@ export class ExportComponent {
   {value: 'TAR_GZ' , name:'TAR_GZ'}
 ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -62,6 +63,7 @@ export class ExportComponent {
     }).subscribe({
       next: (data: any) => {
         controller.agents = data.agents;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -73,6 +75,7 @@ export class ExportComponent {
     }).subscribe({
       next: (data: any) => {
         controller.agentClusters = data.agents;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -135,7 +138,8 @@ export class ExportComponent {
 @Component({
   standalone: false,
   selector: 'app-export-bulk-modal',
-  templateUrl: './export-bulk-dialog.html'
+  templateUrl: './export-bulk-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportBulkComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -155,7 +159,7 @@ export class ExportBulkComponent {
   {value: 'TAR_GZ' , name:'TAR_GZ'}
 ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -218,7 +222,8 @@ export class ExportBulkComponent {
 @Component({
   standalone: false,
   selector: 'app-create-token-modal',
-  templateUrl: './create-token.dialog.html'
+  templateUrl: './create-token.dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateTokenModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -239,7 +244,7 @@ export class CreateTokenModalComponent {
   viewDate = new Date();
   zones = [];
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -304,7 +309,8 @@ export class CreateTokenModalComponent {
     this.coreService.post('token/create', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -313,7 +319,8 @@ export class CreateTokenModalComponent {
 @Component({
   standalone: false,
   selector: 'app-controllers',
-  templateUrl: './controllers.component.html'
+  templateUrl: './controllers.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControllersComponent {
   data: any = [];
@@ -341,7 +348,7 @@ export class ControllersComponent {
 
   constructor(public coreService: CoreService, private modal: NzModalService, private message: NzMessageService,
               private searchPipe: SearchPipe,
-              private authService: AuthService, private dataService: DataService, private router: Router) {
+              private authService: AuthService, private dataService: DataService, private router: Router, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -414,10 +421,12 @@ export class ControllersComponent {
           } else {
             this.getData();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           if (flag) {
             this.getData();
           }
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -436,7 +445,8 @@ export class ControllersComponent {
           this.coreService.preferences.controllers.add(data.selected);
         }
         this.getSecurity();
-      }, error: () => this.loading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -460,12 +470,14 @@ export class ControllersComponent {
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           controller.agents = [];
           controller.loading = false;
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }
       });
     } else if (cb) {
@@ -500,9 +512,11 @@ export class ControllersComponent {
           }
         });
         this.filterAgentList(controller);
+        this.cdr.markForCheck();
       }, error: () => {
         controller.agentClusters = [];
         controller.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -651,6 +665,7 @@ export class ControllersComponent {
         this.isLoaded = false;
         this.getSchedulerIds();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -670,12 +685,14 @@ export class ControllersComponent {
           nzClosable: false,
           nzMaskClosable: false
         });
+        this.cdr.markForCheck();
         modalInstance.afterClose.subscribe(result => {
           if (result && this.controllers.length === 0) {
             if (!this.isLoaded) {
               this.getSchedulerIds();
             }
           }
+          this.cdr.markForCheck();
         });
       });
     }
@@ -705,6 +722,7 @@ export class ControllersComponent {
         if (result) {
           this._deleteController(matser, result);
         }
+        this.cdr.markForCheck();
       });
     }else {
       const modal = this.modal.create({
@@ -725,6 +743,7 @@ export class ControllersComponent {
         if (result) {
           this._deleteController(matser);
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -759,6 +778,7 @@ export class ControllersComponent {
         this.resetCheckbox();
         this.getTokens(false);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -786,6 +806,7 @@ export class ControllersComponent {
         if (result) {
           this._deleteAll(result);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -806,6 +827,7 @@ export class ControllersComponent {
         if (result) {
           this._deleteAll();
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -866,6 +888,7 @@ export class ControllersComponent {
         if (result) {
           this._revokeAndDeploy(type, result);
         }
+        this.cdr.markForCheck();
       });
     } else {
       this._revokeAndDeploy(type);
@@ -938,6 +961,7 @@ export class ControllersComponent {
             this.coreService.post('agents/inventory/store', req).subscribe();
           })
         }
+        this.cdr.markForCheck();
       });
     } else {
       reqArr.forEach((req) => {
@@ -995,6 +1019,7 @@ export class ControllersComponent {
             this.coreService.post('agents/inventory/store', req).subscribe();
           })
         }
+        this.cdr.markForCheck();
       });
     } else {
       reqArr.forEach((req) => {
@@ -1057,6 +1082,7 @@ export class ControllersComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       });
     } else {
       if (subagent) {
@@ -1134,6 +1160,7 @@ export class ControllersComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       });
     } else {
       if (subagent) {
@@ -1216,6 +1243,7 @@ export class ControllersComponent {
           }
           this.resetCheckbox();
         }
+        this.cdr.markForCheck();
       });
     } else if (force) {
       const modal = this.modal.create({
@@ -1258,6 +1286,7 @@ export class ControllersComponent {
           }
           this.resetCheckbox();
         }
+        this.cdr.markForCheck();
       });
 
     } else {
@@ -1340,6 +1369,7 @@ export class ControllersComponent {
               this.getAgents(controller, null);
             }
           }
+          this.cdr.markForCheck();
         });
       });
     }
@@ -1391,6 +1421,7 @@ export class ControllersComponent {
         if (result) {
           this.coreService.post('agent/delete', obj).subscribe();
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -1415,6 +1446,7 @@ export class ControllersComponent {
         if (result) {
           this.getClusterAgents(controller);
         }
+        this.cdr.markForCheck();
       });
     });
   }
@@ -1438,6 +1470,7 @@ export class ControllersComponent {
       if (result) {
         this.getClusterAgents(controller);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -1460,6 +1493,7 @@ export class ControllersComponent {
       if (result) {
         this.getClusterAgents(controller);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -1493,6 +1527,7 @@ export class ControllersComponent {
         if (result) {
           this.getClusterAgents(controller);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const modal = this.modal.create({
@@ -1513,8 +1548,10 @@ export class ControllersComponent {
         if (result) {
           this.coreService.post('agents/inventory/cluster/subagents/delete', obj).subscribe(() => {
             this.getClusterAgents(controller);
+            this.cdr.markForCheck();
           });
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -1578,6 +1615,7 @@ export class ControllersComponent {
         if (result) {
           this.coreService.post(subagent ? 'agents/inventory/cluster/subagent/reset' : 'agent/reset', obj).subscribe();
         }
+        this.cdr.markForCheck();
       });
 
     } else {
@@ -1622,11 +1660,14 @@ export class ControllersComponent {
           agent.hidden = flag;
           obj.auditLog = result;
           this.coreService.post('agents/inventory/store', obj).subscribe({
+            next: () => { this.cdr.markForCheck(); },
             error: () => {
               agent.hidden = !flag;
+              this.cdr.markForCheck();
             }
           });
         }
+        this.cdr.markForCheck();
       });
     } else {
       agent.hidden = flag;
@@ -1673,6 +1714,7 @@ export class ControllersComponent {
           obj.auditLog = result;
           this.coreService.post(URL, obj).subscribe();
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.coreService.post(URL, obj).subscribe();
@@ -1715,6 +1757,7 @@ export class ControllersComponent {
           };
           this.coreService.post(isAgent ? 'agents/inventory/revoke' : 'agents/inventory/cluster/revoke', obj).subscribe();
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.coreService.post(isAgent ? 'agents/inventory/revoke' : 'agents/inventory/cluster/revoke', obj).subscribe();
@@ -1755,8 +1798,9 @@ export class ControllersComponent {
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
           };
-          this.coreService.post(isAgent ? 'agents/inventory/deploy' : 'agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
+          this.coreService.post(isAgent ? 'agents/inventory/deploy' : 'agents/inventory/cluster/deploy', obj).subscribe(() => { this.getClusterAgents(controller); this.cdr.markForCheck(); });
         }
+        this.cdr.markForCheck();
       });
     } else {
       this.coreService.post(isAgent ? 'agents/inventory/deploy' : 'agents/inventory/cluster/deploy', obj).subscribe(() => this.getClusterAgents(controller));
@@ -1767,8 +1811,10 @@ export class ControllersComponent {
     this.coreService.post('controllers/security_level', {}).subscribe({
       next: (data: any) => {
         this.mergeData(data);
+        this.cdr.markForCheck();
       }, error: () => {
         this.mergeData(null);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1951,7 +1997,8 @@ export class ControllersComponent {
               break;
             }
           }
-        })
+        });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2022,7 +2069,8 @@ export class ControllersComponent {
         this.authService.setIds(res);
         this.authService.save();
         this.dataService.isProfileReload.next(true);
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -2086,6 +2134,7 @@ export class ControllersComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -2106,6 +2155,7 @@ export class ControllersComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -2126,6 +2176,7 @@ export class ControllersComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
       }
+      this.cdr.markForCheck();
     });
   }
 

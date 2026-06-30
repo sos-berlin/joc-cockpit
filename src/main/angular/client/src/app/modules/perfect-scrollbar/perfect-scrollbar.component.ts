@@ -4,7 +4,7 @@ import {mapTo, takeUntil, distinctUntilChanged} from 'rxjs/operators';
 import {PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {
-  NgZone, Inject, Component,
+  NgZone, Inject, Component, ChangeDetectionStrategy,
   Input, Output, EventEmitter, HostBinding,
   ViewChild, ViewEncapsulation, ChangeDetectorRef
 } from '@angular/core';
@@ -23,7 +23,8 @@ import {
   styleUrls: [
     './perfect-scrollbar.component.css'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PerfectScrollbarComponent {
   public states: any = {};

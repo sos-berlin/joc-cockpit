@@ -4,7 +4,7 @@
       <label class="col-md-4 col-lg-3 form-control-label"
              [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
 
-             translate>workflow.label.label
+>{{ 'workflow.label.label' | translate }}
       </label>
       <div class="col-md-8 col-lg-9">
         <label class="w-full">
@@ -15,7 +15,7 @@
         @if (label.invalid && (label.dirty || label.touched)) {
           <div class="text-danger help-block">
             @if (label.errors && label.errors.invalidIdentifier) {
-              <div translate>common.message.invalid</div>
+              <div>{{ 'common.message.invalid' | translate }}</div>
             }
           </div>
         }
@@ -25,7 +25,7 @@
       <label class="col-md-4 col-lg-3"
              [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.cycle.onlyOnePeriod' | translate) : ''"
 
-             translate>workflow.label.onlyOnePeriod
+>{{ 'workflow.label.onlyOnePeriod' | translate }}
       </label>
       <div class="col-md-8 col-lg-9">
         <label name="onlyOnePeriod" nz-checkbox [(ngModel)]="selectedNode.obj.onlyOnePeriod"></label>
@@ -36,17 +36,17 @@
 @if (!selectedNode.obj.show) {
   <div class="form-group row">
     <div class="col-md-12 m-b text-center">
-      <label class="_600 b-b" translate>workflow.label.listOfSchemes</label>
+      <label class="_600 b-b">{{ 'workflow.label.listOfSchemes' | translate }}</label>
     </div>
     <div class="col-md-12">
       <div class="table-responsive">
         <table class="table table-hover table-bordered ">
           <thead>
           <tr>
-            <th><span translate>common.label.action</span></th>
-            <th style="border-right: none"><span translate>workflow.admissionTime.label.frequency</span></th>
-            <th style="border-left: none"><span translate>workflow.admissionTime.label.period</span></th>
-            <th><span translate>workflow.label.repeat</span></th>
+            <th><span>{{ 'common.label.action' | translate }}</span></th>
+            <th style="border-right: none"><span>{{ 'workflow.admissionTime.label.frequency' | translate }}</span></th>
+            <th style="border-left: none"><span>{{ 'workflow.admissionTime.label.period' | translate }}</span></th>
+            <th><span>{{ 'workflow.label.repeat' | translate }}</span></th>
           </tr>
           </thead>
           <tbody >
@@ -60,8 +60,8 @@
                     </button>
                     <nz-dropdown-menu #exportMenu="nzDropdownMenu" role="menu">
                       <ul nz-menu>
-                        <!--                  <li nz-menu-item (click)="editFrequency(list, i);"><a translate>common.button.edit</a></li>-->
-                        <li nz-menu-item (click)="removeRepeat(i)"><a translate>inventory.button.delete</a></li>
+                        <!--                  <li nz-menu-item (click)="editFrequency(list, i);"><a>{{ 'common.button.edit' | translate }}</a></li>-->
+                        <li nz-menu-item (click)="removeRepeat(i)"><a>{{ 'inventory.button.delete' | translate }}</a></li>
                       </ul>
                     </nz-dropdown-menu>
                   </div>
@@ -163,8 +163,8 @@
       <div class="form-group row">
         <div class="col-sm-12 p-t-xs">
           <button class="btn btn-sm btn-primary"
-                  (click)="addScheme(selectedNode.obj)" translate>
-            workflow.button.addScheme
+                  (click)="addScheme(selectedNode.obj)">
+            {{ 'workflow.button.addScheme' | translate }}
           </button>
         </div>
       </div>

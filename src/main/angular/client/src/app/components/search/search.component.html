@@ -3,7 +3,7 @@
     <div class="p-a">
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label"
-               [appRichTooltip]="'inventory.search.tooltips.search' | translate" translate>inventory.search.label.search</label>
+               [appRichTooltip]="'inventory.search.tooltips.search' | translate">{{ 'inventory.search.label.search' | translate }}</label>
         <div class="col-md-8 col-lg-9">
           <label class="w-full">
             <input type="text" [appAutofocus]="true" autocomplete="off" class="form-control"
@@ -15,7 +15,7 @@
       <div class="form-group row">
         <label class="col-md-4 col-lg-3 form-control-label"
                [appRichTooltip]="'inventory.search.tooltips.folders' | translate"
-               translate>inventory.search.label.folders</label>
+>{{ 'inventory.search.label.folders' | translate }}</label>
         <div class="col-md-8 col-lg-9">
           <nz-tree-select name="folder" [nzNodes]="folders" [nzHideUnMatched]="true"
                           [nzDropdownStyle]="{ 'max-height': '300px' }" nzShowSearch [nzMultiple]="true" [nzDisplayWith]="displayWith"
@@ -42,14 +42,14 @@
       </div>
       @if (isWorkflow) {
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis" translate  [appRichTooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">inventory.search.label.workflowAvailabilityStatus</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis"  [appRichTooltip]="'inventory.search.tooltips.workflowAvailabilityStatus' | translate">{{ 'inventory.search.label.workflowAvailabilityStatus' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <nz-checkbox-group
               [(ngModel)]="selectedSynchronizationStatuses"
               (ngModelChange)="synchronizationStatusChange($event)" name="synchronizationStatus">
               @for (option of synchronizationStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -65,7 +65,7 @@
               (ngModelChange)="availabilityStatusChange($event)"  name="availabilityStatus">
               @for (option of availabilityStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -75,14 +75,14 @@
       }
       @if (isWorkflow) {
         <div class="form-group row">
-          <label class="col-md-4 col-lg-3 block-ellipsis" translate [appRichTooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate">inventory.search.label.jobAvailabilityStatus</label>
+          <label class="col-md-4 col-lg-3 block-ellipsis" [appRichTooltip]="'inventory.search.tooltips.jobAvailabilityStatus' | translate">{{ 'inventory.search.label.jobAvailabilityStatus' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <nz-checkbox-group
               [(ngModel)]="selectedJobAvailabilityStatuses"
               (ngModelChange)="jobAvailabilityStatusChange($event)" name="jobAvailabilityStatus">
               @for (option of jobAvailabilityStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span translate>filters.button.{{option.label}}</span>
+                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -95,12 +95,12 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job"
                  [appRichTooltip]="'inventory.search.tooltips.deployedOrReleased' | translate"
-                 translate>inventory.search.label.filterBy</label>
+>{{ 'inventory.search.label.filterBy' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group name="deployedOrReleased" [(ngModel)]="searchObj.deployedOrReleased" >
-              <label nz-radio nzValue="all"><span translate>inventory.search.label.all</span></label>
-              <label nz-radio nzValue="deployed"><span translate>inventory.search.label.deployedOrReleased</span></label>
-              <label nz-radio nzValue="undeployed"><span translate>inventory.search.label.undeployedOrUnreleased</span></label>
+              <label nz-radio nzValue="all"><span>{{ 'inventory.search.label.all' | translate }}</span></label>
+              <label nz-radio nzValue="deployed"><span>{{ 'inventory.search.label.deployedOrReleased' | translate }}</span></label>
+              <label nz-radio nzValue="undeployed"><span>{{ 'inventory.search.label.undeployedOrUnreleased' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -108,7 +108,7 @@
       @if (!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport && searchObj.deployedOrReleased === 'deployed') {
         <div class="form-group row">
           <label class="col-md-3 col-lg-3 block-ellipsis-job"
-                 translate>inventory.search.label.currentController</label>
+>{{ 'inventory.search.label.currentController' | translate }}</label>
           <div class="col-md-3 col-lg-9">
             <label nz-checkbox [(ngModel)]="searchObj.currentController" name="currentController"></label>
           </div>
@@ -118,12 +118,12 @@
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 block-ellipsis-job"
                  [appRichTooltip]="'inventory.search.tooltips.validOrInvalid' | translate"
-                 translate>inventory.search.label.validOrInvalid</label>
+>{{ 'inventory.search.label.validOrInvalid' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <nz-radio-group name="validOrInvalid" [(ngModel)]="searchObj.validOrInvalid" >
-              <label nz-radio nzValue="all"><span translate>inventory.search.label.all</span></label>
-              <label nz-radio nzValue="valid"><span translate>inventory.search.label.valid</span></label>
-              <label nz-radio nzValue="invalid"><span translate>inventory.search.label.invalid</span></label>
+              <label nz-radio nzValue="all"><span>{{ 'inventory.search.label.all' | translate }}</span></label>
+              <label nz-radio nzValue="valid"><span>{{ 'inventory.search.label.valid' | translate }}</span></label>
+              <label nz-radio nzValue="invalid"><span>{{ 'inventory.search.label.invalid' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -131,7 +131,7 @@
       @if (!isWorkflow && !isLock && !isBoard && !isCalendar && !isReport) {
         <div class="form-group row">
           <label class="col-md-4 col-lg-3 form-control-label"
-                 [appRichTooltip]="'inventory.search.tooltips.return' | translate" translate>inventory.search.label.return</label>
+                 [appRichTooltip]="'inventory.search.tooltips.return' | translate">{{ 'inventory.search.label.return' | translate }}</label>
           <div class="col-md-8 col-lg-9">
             <app-select-input [name]="'returnType'" [object]="searchObj" [attributeName]="'returnType'"
                               [listArray]="deployTypes"></app-select-input>
@@ -146,7 +146,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.agent' | translate"
-                       translate>inventory.search.label.agent</label>
+>{{ 'inventory.search.label.agent' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <app-agent-selection [skipSubagents]="true" [required]="false" [preferences]="preferences"
                                        [agents]="agentList" [data]="searchObj.advanced"></app-agent-selection>
@@ -156,7 +156,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.workflow' | translate"
-                         translate>inventory.search.label.workflow</label>
+>{{ 'inventory.search.label.workflow' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="workflow"
@@ -169,7 +169,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.fileOrderSource' | translate"
-                         translate>inventory.search.label.fileOrderSource</label>
+>{{ 'inventory.search.label.fileOrderSource' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="fileOrderSource"
@@ -182,7 +182,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.jobResources' | translate"
-                         translate>inventory.search.label.jobResources</label>
+>{{ 'inventory.search.label.jobResources' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="jobResources"
@@ -195,7 +195,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.boards' | translate"
-                         translate>inventory.search.label.boards</label>
+>{{ 'inventory.search.label.boards' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="boards"
@@ -208,7 +208,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.lock' | translate"
-                         translate>inventory.search.label.lock</label>
+>{{ 'inventory.search.label.lock' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="lock"
@@ -221,7 +221,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.includeScript' | translate"
-                         translate>inventory.search.label.includeScript</label>
+>{{ 'inventory.search.label.includeScript' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="includeScript"
                            [(ngModel)]="searchObj.advanced.includeScripts">
@@ -232,7 +232,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.schedule' | translate"
-                         translate>inventory.search.label.schedule</label>
+>{{ 'inventory.search.label.schedule' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <label class="w-full">
                       <input type="text" autocomplete="off" class="form-control" name="schedule"
@@ -245,7 +245,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.calendar' | translate"
-                         translate>inventory.search.label.calendar</label>
+>{{ 'inventory.search.label.calendar' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="calendar"
                            [(ngModel)]="searchObj.advanced.calendar">
@@ -256,7 +256,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.jobTemplate' | translate"
-                         translate>inventory.search.label.jobTemplate</label>
+>{{ 'inventory.search.label.jobTemplate' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="jobTemplate"
                            [(ngModel)]="searchObj.advanced.jobTemplate">
@@ -267,16 +267,16 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.countJobs' | translate"
-                       translate>inventory.search.label.countJobs</label>
+>{{ 'inventory.search.label.countJobs' | translate }}</label>
                 <label class="col-md-2 col-lg-2 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.from' | translate" translate>inventory.search.label.from
+                       [appRichTooltip]="'inventory.search.tooltips.from' | translate">{{ 'inventory.search.label.from' | translate }}
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom">
                   </nz-input-number>
                 </div>
                 <label class="col-md-2 col-lg-2 text-center form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.to' | translate" translate>inventory.search.label.to
+                       [appRichTooltip]="'inventory.search.tooltips.to' | translate">{{ 'inventory.search.label.to' | translate }}
                 </label>
                 <div class="col-md-2 col-lg-2">
                   <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
@@ -285,7 +285,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.jobName' | translate"
-                       translate>inventory.search.label.jobName</label>
+>{{ 'inventory.search.label.jobName' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <label class="w-full">
                     <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()"
@@ -296,7 +296,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 block-ellipsis w-full"
                        [appRichTooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
-                       translate>inventory.search.label.jobNameExactMatch</label>
+>{{ 'inventory.search.label.jobNameExactMatch' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch"
                          (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()"
@@ -306,7 +306,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.jobCriticality' | translate"
-                       translate>inventory.search.label.jobCriticality</label>
+>{{ 'inventory.search.label.jobCriticality' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <app-select-input [isAllowClear]="true" [placeholder]="'inventory.placeholder.selectCriticality'"
                                     [name]="'criticality'" [classNames]="'w-full'" [object]="searchObj.advanced"
@@ -319,7 +319,7 @@
                 <div class="form-group row">
                   <label class="col-md-4 col-lg-3 form-control-label"
                          [appRichTooltip]="'inventory.search.tooltips.jobScript' | translate"
-                         translate>inventory.search.label.jobScript</label>
+>{{ 'inventory.search.label.jobScript' | translate }}</label>
                   <div class="col-md-8 col-lg-9">
                     <input autocomplete="off" type="text" class="form-control" name="jobScript"
                            [(ngModel)]="searchObj.advanced.jobScript">
@@ -329,7 +329,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.argumentName' | translate"
-                       translate>inventory.search.label.argumentName</label>
+>{{ 'inventory.search.label.argumentName' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="name"
                          [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
@@ -338,7 +338,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.argumentValue' | translate"
-                       translate>inventory.search.label.argumentValue</label>
+>{{ 'inventory.search.label.argumentValue' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="value"
                          [(ngModel)]="searchObj.advanced.argumentValue"
@@ -348,7 +348,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.environmentName' | translate"
-                       translate>inventory.search.label.environmentName</label>
+>{{ 'inventory.search.label.environmentName' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envName"
                          [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
@@ -357,7 +357,7 @@
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 form-control-label"
                        [appRichTooltip]="'inventory.search.tooltips.environmentValue' | translate"
-                       translate>inventory.search.label.environmentValue</label>
+>{{ 'inventory.search.label.environmentValue' | translate }}</label>
                 <div class="col-md-8 col-lg-9">
                   <input autocomplete="off" type="text" class="form-control" name="envValue"
                          [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
@@ -375,8 +375,8 @@
         }
         {{'common.button.search' | translate}}
       </button>
-      <button class="btn btn-grey btn-sm" translate type="button" (click)="onCancel.emit()">common.button.close</button>
-      <button class="btn btn-grey btn-sm" translate type="button" (click)="clear()">common.button.clear</button>
+      <button class="btn btn-grey btn-sm" type="button" (click)="onCancel.emit()">{{ 'common.button.close' | translate }}</button>
+      <button class="btn btn-grey btn-sm" type="button" (click)="clear()">{{ 'common.button.clear' | translate }}</button>
     </div>
   </form>
   @if (results) {
@@ -384,26 +384,26 @@
       <div class="form-group row">
         @if (object.mapOfCheckedId.size > 0) {
           <div class="col-sm-12 m-b-sm">
-            <button class="btn btn-grey btn-sm" translate type="button"
+            <button class="btn btn-grey btn-sm" type="button"
                     (click)="updateObject()">inventory.search.button.updateObject</button>
-            <span class="p-l-sm" translate
-                  [translateParams]="{objectCount: object.mapOfCheckedId.size}">inventory.search.message.updateSelectedObjects</span>
+            <span class="p-l-sm"
+                 >{{ 'inventory.search.message.updateSelectedObjects' | translate: {objectCount: object.mapOfCheckedId.size} }}</span>
           </div>
         }
         @if (object.mapOfCheckedId.size > 0 && isJobSearch) {
           <div class="col-sm-12 m-b-sm">
             @if (searchObj.advanced.jobNameExactMatch) {
-              <button class="btn btn-grey btn-sm" translate type="button"
+              <button class="btn btn-grey btn-sm" type="button"
                       (click)="propagateJob()">inventory.search.button.propagateJob</button>
             }
-            <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}" translate
-                    type="button" (click)="updateJob()">inventory.search.button.updateJob</button>
-            <span class="p-l-sm" translate
-                  [translateParams]="{jobName: searchObj.advanced.jobName || '*',workflowsCount: object.mapOfCheckedId.size}">inventory.search.message.updateJobForSelectedWorkflows</span>
+            <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}"
+                    type="button" (click)="updateJob()">{{ 'inventory.search.button.updateJob' | translate }}</button>
+            <span class="p-l-sm"
+                 >{{ 'inventory.search.message.updateJobForSelectedWorkflows' | translate: {jobName: searchObj.advanced.jobName || '*',workflowsCount: object.mapOfCheckedId.size} }}</span>
           </div>
         }
         <div class="col-sm-12">
-          <span class="text-muted" translate>inventory.search.label.searchResult</span>:
+          <span class="text-muted">{{ 'inventory.search.label.searchResult' | translate }}</span>:
           @if (results.length > 0) {
             <b>{{results.length}}
               @if (results.length > 1) {
@@ -428,12 +428,12 @@
                       (nzCheckedChange)="checkAll($event)"></th>
                 }
                 @if (isControllerId) {
-                  <th nowrap><span translate>common.label.controllerId</span></th>
+                  <th nowrap><span>{{ 'common.label.controllerId' | translate }}</span></th>
                 }
-                <th><span translate>common.label.name</span></th>
-                <th><span translate>common.label.path</span></th>
+                <th><span>{{ 'common.label.name' | translate }}</span></th>
+                <th><span>{{ 'common.label.path' | translate }}</span></th>
                 @if (searchObj.returnType === 'CALENDAR') {
-                  <th><span translate>common.label.type</span></th>
+                  <th><span>{{ 'common.label.type' | translate }}</span></th>
                 }
               </tr>
               </thead>

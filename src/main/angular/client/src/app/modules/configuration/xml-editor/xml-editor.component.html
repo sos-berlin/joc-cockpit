@@ -10,43 +10,43 @@
             @if (nodes && nodes.length > 0) {
               <span [ngClass]="validConfig ? 'badge-success':'badge-danger'" class="badge">
                 @if (validConfig) {
-                  <span translate>xml.label.validate</span>
+                  <span>{{ 'xml.label.validate' | translate }}</span>
                 }
                 @if (!validConfig) {
-                  <span translate>xml.label.nonValidate</span>
+                  <span>{{ 'xml.label.nonValidate' | translate }}</span>
                 }
               </span>
             }
             @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0) {
               <span [ngClass]="extraInfo.released ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
                 @if (extraInfo.released) {
-                  <span translate>xml.label.released</span>
+                  <span>{{ 'xml.label.released' | translate }}</span>
                 }
                 @if (!extraInfo.released) {
-                  <span translate>xml.label.notReleased</span>
+                  <span>{{ 'xml.label.notReleased' | translate }}</span>
                 }
               </span>
             }
             @if (objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist) {
               <span [ngClass]="extraInfo.sync ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
                 @if (extraInfo.sync) {
-                  <span translate>xml.label.sync</span>
+                  <span>{{ 'xml.label.sync' | translate }}</span>
                 }
                 @if (extraInfo.sync == false) {
-                  <span translate>xml.label.notSync</span>
+                  <span>{{ 'xml.label.notSync' | translate }}</span>
                 }
                 @if (extraInfo.sync === undefined) {
-                  <span translate>xml.label.unknownSyncState</span>
+                  <span>{{ 'xml.label.unknownSyncState' | translate }}</span>
                 }
               </span>
             }
             @if (objectType === 'YADE' && nodes && nodes.length > 0) {
               <span [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
                 @if (extraInfo.deployed) {
-                  <span translate>xml.label.deployed</span>
+                  <span>{{ 'xml.label.deployed' | translate }}</span>
                 }
                 @if (!extraInfo.deployed) {
-                  <span translate>xml.label.notDeployed</span>
+                  <span>{{ 'xml.label.notDeployed' | translate }}</span>
                 }
               </span>
             }
@@ -54,77 +54,77 @@
              (objectType === 'OTHER' && permission.joc.others.manage))) {
               <button (click)="newFile()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-file m-r-xs"></i>
-                <span translate>xml.button.new</span>
+                <span>{{ 'xml.button.new' | translate }}</span>
               </button>
             }
             @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage) {
               <button (click)="removeConf()" [disabled]="!extraInfo.hasReleases" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-trash m-r-xs"></i>
-                <span translate>xml.button.remove</span>
+                <span>{{ 'xml.button.remove' | translate }}</span>
               </button>
             }
             @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage) {
               <button (click)="deleteConf()" [disabled]="extraInfo.released" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-trash-o m-r-xs"></i>
-                <span translate>xml.button.deleteDraft</span>
+                <span>{{ 'xml.button.deleteDraft' | translate }}</span>
               </button>
             }
             @if (objectType === 'OTHER' && nodes && nodes.length > 0 && permission.joc && permission.joc.others.manage) {
               <button (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-recycle m-r-xs"></i>
-                <span translate>xml.button.reassignSchema</span>
+                <span>{{ 'xml.button.reassignSchema' | translate }}</span>
               </button>
             }
             @if (nodes && nodes.length > 0 && objectType !== 'NOTIFICATION' && permission.joc && ((objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
               (objectType === 'OTHER' && permission.joc.others.manage))) {
               <button (click)="deleteAllConf()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-trash m-r-xs"></i>
-                <span translate>xml.button.deleteAll</span>
+                <span>{{ 'xml.button.deleteAll' | translate }}</span>
               </button>
             }
             @if (permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
               (objectType === 'OTHER' && permission.joc.others.manage))) {
               <button (click)="importXML()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-upload m-r-xs"></i>
-                <span translate>xml.button.import</span>
+                <span>{{ 'xml.button.import' | translate }}</span>
               </button>
             }
             @if (nodes && nodes.length > 0) {
               <button (click)="save()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-download m-r-xs"></i>
-                <span translate>xml.button.export</span>
+                <span>{{ 'xml.button.export' | translate }}</span>
               </button>
             }
             @if (nodes && nodes.length > 0 && permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
                     (objectType === 'OTHER' && permission.joc.others.manage))) {
               <button (click)="showXml()" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-pencil m-r-xs"></i>
-                <span translate>xml.button.editXML</span>
+                <span>{{ 'xml.button.editXML' | translate }}</span>
               </button>
             }
             @if (nodes && nodes.length > 0) {
               <button (click)="validate()" [ngClass]="validConfig ? 'btn-badge-success' : 'btn-badge-danger'" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-check m-r-xs"></i>
-                <span translate>xml.button.validate</span>
+                <span>{{ 'xml.button.validate' | translate }}</span>
               </button>
             }
             @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0
               && permission.joc && permission.joc.notification.manage) {
               <button (click)="releaseXML()" [disabled]="extraInfo.released" [ngClass]="extraInfo.released ? 'btn-badge-success' : 'btn-badge-danger'" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-rocket m-r-xs"></i>
-                <span translate>xml.button.release</span>
+                <span>{{ 'xml.button.release' | translate }}</span>
               </button>
             }
 <!--            @if (objectType === 'YADE' && nodes && nodes.length > 0) {-->
 <!--              <button (click)="checkXML()" [disabled]="!extraInfo.isExist" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" class="btn btn-sm btn-grey m-l-12">-->
 <!--                <i class="fa fa-check m-r-xs"></i>-->
-<!--                <span translate>xml.button.check</span>-->
+<!--                <span>{{ 'xml.button.check' | translate }}</span>-->
 <!--              </button>-->
 <!--            }-->
             @if (objectType === 'YADE' && nodes && nodes.length > 0 && permission.joc && permission.joc.fileTransfer.manage) {
               <button (click)="deployXML()" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''" class="btn btn-sm btn-grey m-l-12">
                 <i class="fa fa-rocket m-r-xs"></i>
-                <span translate>xml.button.deploy</span>
+                <span>{{ 'xml.button.deploy' | translate }}</span>
               </button>
             }
           </div>
@@ -146,7 +146,7 @@
                   class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
               }
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
+                <span class="nav-text text-dark p-b-sm"><span>{{ 'configuration.tab.inventory' | translate }}</span></span>
               </a>
             </li>
           }
@@ -158,7 +158,7 @@
           @if (permission.joc && permission.joc.fileTransfer.view) {
             <li class="nav-item">
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/file_transfer']" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
+                <span class="nav-text text-dark p-b-sm"><span>{{ 'configuration.tab.fileTransfer' | translate }}</span></span>
               </a>
             </li>
           }
@@ -175,7 +175,7 @@
                   class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
               }
               <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
-                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
+                <span class="nav-text text-dark p-b-sm"><span>{{ 'configuration.tab.notification' | translate }}</span></span>
               </a>
             </li>
           }
@@ -184,7 +184,7 @@
       <div class="pos-abt" style="right: 13px;top: 4px">
         @if (!isLoading && schemaIdentifier) {
           <a>
-            <span translate>xml.label.assignedSchema</span>:
+            <span>{{ 'xml.label.assignedSchema' | translate }}</span>:
             <i (click)="downloadSchema(objectType, schemaIdentifier)" class="cursor fa fa-download p-l-sm"></i>
             <span (click)="showXSD(objectType, schemaIdentifier)" class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
           </a>
@@ -200,7 +200,7 @@
     }
     @if (objectType !== 'NOTIFICATION' && tabsArray.length>0) {
       <div>
-        <nz-tabset [nzAnimated]="false" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzType]="'line'">
+        <nz-tabs [nzAnimated]="false" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzType]="'line'">
           @for (tab of tabsArray; track $index; let index = $index) {
             <nz-tab (nzClick)="tabChange(tab, index)" [nzForceRender]="true" [nzTitle]="titleTemplate">
               <ng-template #titleTemplate>
@@ -224,7 +224,7 @@
               </ng-template>
             </nz-tab>
           }
-        </nz-tabset>
+        </nz-tabs>
       </div>
     }
     @if (!isLoading) {
@@ -233,7 +233,7 @@
           <div>
             @if (showSelectSchema) {
               <div class="col-md-offset-2 col-md-8 m-t-md">
-                <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
+                <h1 class="text-center"><strong>{{ 'xml.label.assignSchema' | translate }}</strong></h1>
                 <hr>
               </div>
             }
@@ -252,10 +252,10 @@
               </span>
             </div>
             <div class="col-md-offset-2 col-md-8 m-t-md">
-              <button (click)="(!reassignSchema) ? othersSubmit(null) : changeSchema(null)" [disabled]="!selectedXsd" class="btn btn-primary btn-sm" translate>xml.button.assign
+              <button (click)="(!reassignSchema) ? othersSubmit(null) : changeSchema(null)" [disabled]="!selectedXsd" class="btn btn-primary btn-sm">{{ 'xml.button.assign' | translate }}
               </button>
               @if (reassignSchema) {
-                <button (click)="cancelReassignSchema()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel
+                <button (click)="cancelReassignSchema()" class="btn btn-grey btn-sm m-l-sm" type="button">{{ 'common.button.cancel' | translate }}
                 </button>
               }
             </div>
@@ -411,13 +411,13 @@
                 <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref || selectedNode.name}}
                   @if (extraInfo.configurationDate) {
                     <span class="text-dark text-sm _400"> -
-                        <b translate>xml.label.configurationDate</b>
+                        <b>{{ 'xml.label.configurationDate' | translate }}</b>
                         <i class="text-muted p-l-xs">{{extraInfo.configurationDate | stringToDate}}</i>
                     </span>
                   }
                   @if (extraInfo.modified) {
                     <span class="text-dark text-sm _400"> -
-                        <b translate>xml.label.modified</b>
+                        <b>{{ 'xml.label.modified' | translate }}</b>
                         <i class="text-muted p-l-xs">{{extraInfo.modified | stringToDate}}</i>
                     </span>
                   }
@@ -428,7 +428,7 @@
               @if (selectedNode && (selectedNode.ref || selectedNode.name) && selectedNodeDoc && selectedNodeDoc.doc) {
                 <div class="p-a box documents">
                   <div class="text _600">
-                    <span translate>xml.label.documentation</span>
+                    <span>{{ 'xml.label.documentation' | translate }}</span>
                     <i (click)="hideDocumentation(selectedNode)" [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'" aria-hidden="true" class="fa fa-lg pull-left p-t-xs pointer" id="expandIcon"></i>
                   </div>
                   @if (selectedNode.show) {
@@ -448,7 +448,7 @@
                   @if (selectedNode.attributes && selectedNode.attributes.length>0) {
                     <div class="box p-a attr">
                       @if (selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id) {
-                        <div class="_600 text m-b-sm" translate>xml.label.attributes</div>
+                        <div class="_600 text m-b-sm">{{ 'xml.label.attributes' | translate }}</div>
                       }
                       @for (node of selectedNode.attributes; track $index; let i = $index) {
                         <div class="form-group">
@@ -510,7 +510,7 @@
                                   @if (aname.invalid && aname.errors && (aname.dirty || aname.touched)) {
                                     <div class="text-danger help-block">
                                       @if (aname.errors.invalidIdentifier) {
-                                        <div translate>common.message.invalid</div>
+                                        <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
@@ -522,19 +522,19 @@
                                   @if (envname.invalid && envname.errors && (envname.dirty || envname.touched)) {
                                     <div class="text-danger help-block">
                                       @if (envname.errors.invalidIdentifier) {
-                                        <div translate>common.message.invalid</div>
+                                        <div>{{ 'common.message.invalid' | translate }}</div>
                                       }
                                     </div>
                                   }
                                 </ng-container>
                               }
                               @if (getYADEHandler() && node.name && node.type === 'xs:NMTOKEN' && node.parent === 'DecryptionFragment' && node.name === 'encryption_key') {
-                                <input 
-                                  nz-input 
+                                <input
+                                  nz-input
                                   [(ngModel)]="node.data"
                                   (click)="getYADEHandler().setDecryptionFragmentEncryptionKeysValues(selectedNode, node)"
                                   (ngModelChange)="getYADEHandler().submitEncryptionKeyData(selectedNode, node.data, node)"
-                                  [nzAutocomplete]="auto" 
+                                  [nzAutocomplete]="auto"
                                   class="w-full"
                                   />
                                   <nz-autocomplete #auto>
@@ -569,11 +569,11 @@
                               @if (node.values && node.values.length==0 && node.name && (node.type === 'xs:boolean' || node.type === 'BooleanOrVarType')) {
                                 <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
                                 @if (node.type === 'BooleanOrVarType') {
-                                  <input 
-                                    nz-input 
+                                  <input
+                                    nz-input
                                     [(ngModel)]="node.data"
                                     (ngModelChange)="submitData(node.data, node)"
-                                    [nzAutocomplete]="auto" 
+                                    [nzAutocomplete]="auto"
                                     placeholder="true, false or ${VAR}" />
                                   <nz-autocomplete #auto>
                                     <nz-auto-option nzValue="true">true</nz-auto-option>
@@ -608,10 +608,10 @@
                             </div>
                             <div class="col-sm-3 p-l-xs">
                               @if (node.refer) {
-                                <span (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"><a translate>xml.button.gotoKeyElement</a></span>
+                                <span (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"><a>{{ 'xml.button.gotoKeyElement' | translate }}</a></span>
                               }
                               @if (node.refElement) {
-                                <span (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)" [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"><a translate>xml.button.gotoRefElement</a></span>
+                                <span (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)" [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"><a>{{ 'xml.button.gotoRefElement' | translate }}</a></span>
                               }
                               @if (node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML) {
                                 <span (mouseover)="getPos(node.id)" [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" data-placement="bottom" data-toggle="tooltip" id="{{node.id}}" title="{{node.text.doc[0].innerHTML}}">
@@ -628,7 +628,7 @@
                     <div class="box p-a val">
                       <div class="row">
                         <div class="col-md-12">
-                          <span translate>xml.label.value</span>
+                          <span>{{ 'xml.label.value' | translate }}</span>
                           @if (!(selectedNode.values[0].use)) {
                             <sup class="text-danger text-sm">*</sup>
                           }
@@ -649,8 +649,8 @@
                           }
                           @if (selectedNode.values[0].base === 'html') {
                             <div [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}" class="form-group">
-                              <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}" class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
-                              <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}" class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                              <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}" class="btn btn-xs btn-default" style="box-shadow: none !important;">{{ 'xml.button.sourceCode' | translate }}</a>
+                              <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}" class="btn btn-xs btn-default b-l" style="box-shadow: none !important;">{{ 'xml.button.preview' | translate }}</a>
                               <textarea #myckeditor="ngModel" (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [hidden]="selectedNode.preview" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 5, maxRows:22}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input required></textarea>
                               @if (selectedNode.preview) {
                                 <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
@@ -660,8 +660,8 @@
                                 </div>
                               }
                               @if (!selectedNode.preview && myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)) {
-                                <div class="help-block" translate>
-                                  xml.message.requiredField
+                                <div class="help-block">
+                                  {{ 'xml.message.requiredField' | translate }}
                                 </div>
                               }
                             </div>
@@ -669,11 +669,11 @@
                           @if (selectedNode.values[0].base === 'xs:boolean' || selectedNode.values[0].base === 'BooleanOrVarType') {
                             <!-- BooleanOrVarType = editable, xs:boolean = not editable -->
                             @if (selectedNode.values[0].base === 'BooleanOrVarType') {
-                              <input 
-                                nz-input 
+                              <input
+                                nz-input
                                 [(ngModel)]="selectedNode.values[0].data"
                                 (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
-                                [nzAutocomplete]="auto" 
+                                [nzAutocomplete]="auto"
                                 placeholder="true, false or ${VAR}" />
                               <nz-autocomplete #auto>
                                 <nz-auto-option nzValue="true">true</nz-auto-option>
@@ -691,11 +691,11 @@
                           @if (selectedNode.values[0].values) {
                             @if (selectedNode.values[0].base === 'combobox') {
                               <!-- Editable Combobox mit Autocomplete -->
-                              <input 
-                                nz-input 
+                              <input
+                                nz-input
                                 [(ngModel)]="selectedNode.values[0].data"
                                 (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
-                                [nzAutocomplete]="auto" 
+                                [nzAutocomplete]="auto"
                                 class="w-full"
                                 placeholder="select or enter value" />
                                 <nz-autocomplete #auto>
@@ -709,7 +709,7 @@
                                     <nz-option [nzLabel]="value.value" [nzValue]="value.value"></nz-option>
                                   }
                               </nz-select>
-                            }                           
+                            }
                           }
                           @if (error && errorName === (selectedNode.ref || selectedNode.name)) {
                             <div [innerText]="text" class="help-block text-danger" id="{{nodes.ref || nodes.ref}}Alert" role="alert"></div>
@@ -745,21 +745,21 @@
       </li>
       <li nz-menu-divider>
       <li (click)="showAllChildNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)" nz-menu-item>
-        <a translate>xml.button.showAllChildNodes</a>
+        <a>{{ 'xml.button.showAllChildNodes' | translate }}</a>
       </li>
       <li nz-menu-divider>
       @if (menuNode.origin && menuNode.origin.parent !=='#') {
         <li (click)="cutNode(menuNode.origin)" [nzDisabled]="cutData && menuNode.origin.uuid === copyItem.uuid" nz-menu-item>
-          <a translate>xml.button.cut</a>
+          <a>{{ 'xml.button.cut' | translate }}</a>
         </li>
       }
-      <li (click)="copyNode(menuNode.origin)" nz-menu-item><a translate>xml.button.copy</a></li>
+      <li (click)="copyNode(menuNode.origin)" nz-menu-item><a>{{ 'xml.button.copy' | translate }}</a></li>
       <li (click)="pasteNode(menuNode.origin)" [nzDisabled]="!checkRule" nz-menu-item>
-        <a translate>xml.button.paste</a>
+        <a>{{ 'xml.button.paste' | translate }}</a>
       </li>
       <li nz-menu-divider>
       <li (click)="removeNode(menuNode)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')" nz-menu-item>
-        <a translate>xml.button.remove</a>
+        <a>{{ 'xml.button.remove' | translate }}</a>
       </li>
     </ul>
   }

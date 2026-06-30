@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, NgZone , Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone, Input, Output, ViewChild} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
@@ -11,7 +11,8 @@ import {TranslateService} from '@ngx-translate/core';
   standalone: false,
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
-  styleUrls: ['./frequency-report.component.scss']
+  styleUrls: ['./frequency-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FrequencyReportComponent {
   @Input({required: true}) readonly templates: any;
@@ -56,7 +57,7 @@ export class FrequencyReportComponent {
   @ViewChild('content') content: ElementRef;
 
   constructor(private modal: NzModalService, private coreService: CoreService,private ngZone: NgZone,
-              private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService) {
+              private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService, private cdr: ChangeDetectorRef) {
 
   }
 
@@ -139,8 +140,9 @@ export class FrequencyReportComponent {
           this.generateDonutCharts();
         }, 100);
       }
+      this.cdr.markForCheck();
     },
-    error: () => this.isLoading = true
+    error: () => { this.isLoading = true; this.cdr.markForCheck(); }
   });
 }
 

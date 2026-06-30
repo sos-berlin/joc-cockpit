@@ -2,10 +2,10 @@
   <div class="row">
     <div class="col-md-12 m-b-12 text-md">
       @if (!isFavorite) {
-        <b class="text" translate>favorite.button.addFavorite</b>
+        <b class="text">{{ 'favorite.button.addFavorite' | translate }}</b>
       }
       @if (isFavorite) {
-        <b class="text" translate>favorite.button.editFavorite</b>
+        <b class="text">{{ 'favorite.button.editFavorite' | translate }}</b>
       }
       <i (click)="isVisible = false" aria-hidden="true"
          class="fa fa-times-circle pos-abt cursor r-12 m-t-n-1 text-20"></i>
@@ -17,17 +17,17 @@
              type="text">
       @if (!unique) {
         <div class="help-block text-danger">
-          <div translate>common.message.uniqueError</div>
+          <div>{{ 'common.message.uniqueError' | translate }}</div>
         </div>
       }
     </div>
     <div class="col-md-12">
-      <button (click)="addFavorite()" [disabled]="!obj.name || !unique" class="btn btn-primary btn-sm" translate
-              type="button">common.button.done
+      <button (click)="addFavorite()" [disabled]="!obj.name || !unique" class="btn btn-primary btn-sm"
+              type="button">{{ 'common.button.done' | translate }}
       </button>
       @if (isFavorite) {
-        <button (click)="removeFavorite()" class="btn btn-danger btn-sm m-l-12" translate
-                type="button">common.button.remove
+        <button (click)="removeFavorite()" class="btn btn-danger btn-sm m-l-12"
+                type="button">{{ 'common.button.remove' | translate }}
         </button>
       }
     </div>
@@ -42,7 +42,7 @@
 }
 @if (list.length > 0) {
   <div class="text-right">
-    <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor" translate>favorite.button.addFromFavorite</a>
+    <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor">{{ 'favorite.button.addFromFavorite' | translate }}</a>
   </div>
 }
 <nz-select #myinput nzShowSearch class="fav-list-search-box" [(ngModel)]="obj.selected" (ngModelChange)="onChangeValue($event)"

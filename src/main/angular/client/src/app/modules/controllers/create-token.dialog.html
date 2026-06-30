@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>agent.button.createToken</span>
+    <span>{{ 'agent.button.createToken' | translate }}</span>
     @if (agent || controllerId) {
       <i>:</i>
     }
@@ -22,23 +22,23 @@
     </div>
     <div class="b-a m-b-sm section-box">
       <div class="section-box-header">
-        <small class="_600 section-box-title" translate>Token Details</small>
+        <small class="_600 section-box-title">Token Details</small>
       </div>
       <div class="p-a-sm">
         <div class="form-group row">
           <label class="col-sm-3">
-            <span [appRichTooltip]="'agent.tooltip.validityPeriod' | translate" translate>agent.label.validityPeriod</span>
+            <span [appRichTooltip]="'agent.tooltip.validityPeriod' | translate">{{ 'agent.label.validityPeriod' | translate }}</span>
           </label>
           <div class="col-md-8">
             <nz-radio-group [(ngModel)]="token.at" name="at">
-              <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-              <label nz-radio nzValue="relative"><span translate>common.label.relativeDate</span></label>
+              <label nz-radio nzValue="date"><span>{{ 'common.label.specificDate' | translate }}</span></label>
+              <label nz-radio nzValue="relative"><span>{{ 'common.label.relativeDate' | translate }}</span></label>
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 form-control-label">
-            <span [appRichTooltip]="'agent.tooltip.validUntil' | translate" translate>agent.label.validUntil</span>
+            <span [appRichTooltip]="'agent.tooltip.validUntil' | translate">{{ 'agent.label.validUntil' | translate }}</span>
             <sup class="text-danger text-sm">*</sup>
           </label>
           @if (token.at === 'date') {
@@ -56,10 +56,10 @@
               @if (time.errors && (time.dirty || time.touched)) {
                 <div class="help-block text-danger">
                   @if (!time.valid && !time.errors.required) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                   @if (time.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -68,7 +68,7 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-3 form-control-label">
-            <span [appRichTooltip]="'agent.tooltip.timeZone' | translate" translate>common.label.timeZone</span>
+            <span [appRichTooltip]="'agent.tooltip.timeZone' | translate">{{ 'common.label.timeZone' | translate }}</span>
             <sup class="text-danger text-sm">*</sup>
           </div>
           <div class="col-sm-8">
@@ -87,8 +87,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

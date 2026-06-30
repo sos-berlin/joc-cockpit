@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,6 +12,7 @@ import { NoteComponent } from '../notes/note.component';
 
 @Component({
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
@@ -50,15 +51,17 @@ export class HeaderComponent {
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService,
-              private modal: NzModalService, private router: Router, private dataService: DataService, private kioskService: KioskService) {
+              private modal: NzModalService, private router: Router, private dataService: DataService, private kioskService: KioskService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
+        this.cdr.markForCheck();
       }
     });
     this.subscription2 = dataService.isThemeReload.subscribe(res => {
       if (res) {
         this.preferences = JSON.parse(sessionStorage['preferences']);
+        this.cdr.markForCheck();
       }
     });
     this.subscription3 = dataService.functionAnnounced$.subscribe(res => {
@@ -66,11 +69,13 @@ export class HeaderComponent {
         if(res){
           this.isBackUp = res;
         }
+        this.cdr.markForCheck();
       }
     });
     this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
       if (res && sessionStorage['preferences']) {
         this.preferences = JSON.parse(sessionStorage['preferences']);
+        this.cdr.markForCheck();
       }
     });
   }

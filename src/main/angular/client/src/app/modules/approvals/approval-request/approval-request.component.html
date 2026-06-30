@@ -26,20 +26,20 @@
 @if (object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)) {
   <div class="text-center font14 box p-a-sm m-b-12">
     @if (filters.mapOfCheckedId.size !== totalApprovalRequests) {
-      <span [translateParams]="{count: filters.mapOfCheckedId.size}"
-            translate>common.label.selectAllEntriesOfCurrentPage</span>
+      <span
+>{{ 'common.label.selectAllEntriesOfCurrentPage' | translate: {count: filters.mapOfCheckedId.size} }}</span>
     }
     @if (filters.mapOfCheckedId.size === totalApprovalRequests) {
-      <span [translateParams]="{count: totalApprovalRequests}"
-            translate>common.label.allEntriesSelected</span>
+      <span
+>{{ 'common.label.allEntriesSelected' | translate: {count: totalApprovalRequests} }}</span>
     }
     @if (filters.mapOfCheckedId.size !== totalApprovalRequests) {
-      <a (click)="selectAll()" [translateParams]="{count: totalApprovalRequests}"
-         class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+      <a (click)="selectAll()"
+         class="text-primary p-l-xs">{{ 'common.label.selectAllEntries' | translate: {count: totalApprovalRequests} }}</a>
     }
     @if (filters.mapOfCheckedId.size === totalApprovalRequests) {
       <a (click)="resetCheckBox()" class="text-primary p-l-xs"
-         translate>common.label.clearSelection</a>
+>{{ 'common.label.clearSelection' | translate }}</a>
     }
   </div>
 }
@@ -69,9 +69,9 @@
           class="chk"
         ></th>
         <th class="menu"><span
-          translate>common.label.action</span></th>
+>{{ 'common.label.action' | translate }}</span></th>
         <th (click)="sort('requestorStateDate')">
-          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorStateDate</span>
+          <a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.requestorStateDate' | translate }}</span>
             @if (filters.filter.sortBy == 'requestorStateDate' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -80,7 +80,7 @@
             }</a>
         </th>
         <th (click)="sort('title')">
-          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.title</span>
+          <a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.title' | translate }}</span>
             @if (filters.filter.sortBy == 'title' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -89,7 +89,7 @@
             }</a>
         </th>
         <th (click)="sort('requestor')">
-          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestor</span>
+          <a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.requestor' | translate }}</span>
             @if (filters.filter.sortBy == 'requestor' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -97,7 +97,7 @@
               <i class="fa fa-caret-down "></i>
             }</a>
         </th>
-        <th (click)="sort('requestorState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorState</span>
+        <th (click)="sort('requestorState')"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.requestorState' | translate }}</span>
           @if (filters.filter.sortBy == 'requestorState' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -105,7 +105,7 @@
             <i class="fa fa-caret-down "></i>
           }</a>
         </th>
-        <th (click)="sort('approver ')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approver</span>
+        <th (click)="sort('approver ')"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.approver' | translate }}</span>
           @if (filters.filter.sortBy == 'approver' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -113,7 +113,7 @@
             <i class="fa fa-caret-down "></i>
           }</a>
         </th>
-        <th (click)="sort('approverState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverState</span>
+        <th (click)="sort('approverState')"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.approverState' | translate }}</span>
           @if (filters.filter.sortBy == 'approverState' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -122,7 +122,7 @@
           }</a>
         </th>
         <th (click)="sort('approverStateDate')">
-          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
+          <a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.approverStateDate' | translate }}</span>
             @if (filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse) {
               <i class="fa fa-caret-up "></i>
             }
@@ -130,7 +130,7 @@
               <i class="fa fa-caret-down "></i>
             }</a>
         </th>
-        <th (click)="sort('requestUrl')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestUrl</span>
+        <th (click)="sort('requestUrl')"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.requestUrl' | translate }}</span>
           @if (filters.filter.sortBy == 'requestUrl' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -139,7 +139,7 @@
           }</a>
         </th>
 
-        <th (click)="sort('category')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.category</span>
+        <th (click)="sort('category')"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.category' | translate }}</span>
           @if (filters.filter.sortBy == 'category' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -147,7 +147,7 @@
             <i class="fa fa-caret-down "></i>
           }</a>
         </th>
-        <th (click)="sort('reason')" nzWidth="20%"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.reason</span>
+        <th (click)="sort('reason')" nzWidth="20%"><a><span class="p-r-xs">{{ 'monitor.approvalRequest.label.reason' | translate }}</span>
           @if (filters.filter.sortBy == 'reason' && !filters.filter.reverse) {
             <i class="fa fa-caret-up "></i>
           }
@@ -175,12 +175,12 @@
                   <ul nz-menu>
                     @if (isApprover) {
                       <li [nzDisabled]="approval.approverState != 'PENDING'" (click)="approve(approval.id)" nz-menu-item>
-                        <a translate>monitor.approvalRequest.button.approve</a>
+                        <a>{{ 'monitor.approvalRequest.button.approve' | translate }}</a>
                       </li>
                     }
                     @if (isApprover) {
                       <li [nzDisabled]="approval.approverState != 'PENDING'" (click)="reject(approval.id)" nz-menu-item>
-                        <a translate>monitor.approvalRequest.button.reject</a>
+                        <a>{{ 'monitor.approvalRequest.button.reject' | translate }}</a>
                       </li>
                     }
                     @if (isApprover && isRequestor) {
@@ -188,17 +188,17 @@
                     }
                     @if (isRequestor) {
                       <li [nzDisabled]="approval.requestorState !== 'REQUESTED'" (click)="withdraw(approval.id)" nz-menu-item>
-                        <a translate>monitor.approvalRequest.button.withdraw</a>
+                        <a>{{ 'monitor.approvalRequest.button.withdraw' | translate }}</a>
                       </li>
                     }
                     @if (isRequestor) {
                       <li [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'PENDING')" (click)="edit(approval)" nz-menu-item>
-                        <a translate>common.button.edit</a>
+                        <a>{{ 'common.button.edit' | translate }}</a>
                       </li>
                     }
                     @if (isRequestor) {
                       <li [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'APPROVED')" (click)="execute(approval)" nz-menu-item>
-                        <a translate>monitor.approvalRequest.label.execute</a>
+                        <a>{{ 'monitor.approvalRequest.label.execute' | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -272,7 +272,7 @@
                 <td></td>
                 <td colspan="10">
                   <div class="m-a-0">
-                    <span class="_500" translate>auditLog.label.requestBody</span>
+                    <span class="_500">{{ 'auditLog.label.requestBody' | translate }}</span>
                     :
                     <span>{{ approval.requestBody  | json}}</span>
                   </div>
@@ -286,12 +286,12 @@
   </div>
   @if (ajaxTable.data.length >0) {
     <div class="w-half label-top"><span
-      translate>common.label.total</span> {{data.length}}
+>{{ 'common.label.total' | translate }}</span> {{data.length}}
       @if (ajaxTable.data.length >1) {
-        <span translate>monitor.approvalRequest.label.approvalsFound</span>
+        <span>{{ 'monitor.approvalRequest.label.approvalsFound' | translate }}</span>
       }
       @if (ajaxTable.data.length ==1) {
-        <span translate>monitor.approvalRequest.label.approvalFound</span>
+        <span>{{ 'monitor.approvalRequest.label.approvalFound' | translate }}</span>
       }
     </div>
   }

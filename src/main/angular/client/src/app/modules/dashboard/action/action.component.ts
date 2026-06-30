@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -8,6 +8,7 @@ import { LogConsoleModalComponent } from 'src/app/components/log-console/log-con
   standalone: false,
   selector: 'app-comment-modal',
   templateUrl: './dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -21,7 +22,7 @@ export class CommentModalComponent {
   required = false;
   show = false;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -53,7 +54,8 @@ export class CommentModalComponent {
 @Component({
   standalone: false,
   selector: 'app-action',
-  templateUrl: './action.component.html'
+  templateUrl: './action.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionComponent {
   @Input() controller: any;
@@ -62,7 +64,7 @@ export class ActionComponent {
   schedulerIds: any;
   controllerPermission: any = {};
 
-  constructor(public modal: NzModalService, private coreService: CoreService, private authService: AuthService) {
+  constructor(public modal: NzModalService, private coreService: CoreService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   static setControllerPermission(permissions, controllerId): any {

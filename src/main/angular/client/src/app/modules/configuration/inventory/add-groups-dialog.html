@@ -1,12 +1,12 @@
 <div class="modal-header">
   @if (!data && !isRename) {
     <h4 class="modal-title">
-      <span translate>inventory.label.addGroups</span>
+      <span>{{ 'inventory.label.addGroups' | translate }}</span>
     </h4>
   }
   @if (isRename) {
     <h4 class="modal-title">
-      <span translate>inventory.label.renameGroup</span>
+      <span>{{ 'inventory.label.renameGroup' | translate }}</span>
     </h4>
   }
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -21,7 +21,7 @@
     @if (!isRename) {
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
-          <span [appRichTooltip]="'inventory.tooltip.groups' | translate" translate>inventory.label.groups</span>
+          <span [appRichTooltip]="'inventory.tooltip.groups' | translate">{{ 'inventory.label.groups' | translate }}</span>
           <!-- <sup class="text-danger text-sm">*</sup> -->
         </label>
         <div class="col-md-8">
@@ -66,7 +66,7 @@
     @if (isRename) {
       <div class="form-group row">
         <label class="col-md-3 form-control-label">
-          <span [appRichTooltip]="'inventory.tooltip.groupName' | translate" translate>inventory.label.groupName</span>
+          <span [appRichTooltip]="'inventory.tooltip.groupName' | translate">{{ 'inventory.label.groupName' | translate }}</span>
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
@@ -75,16 +75,16 @@
           @if (name.invalid && (name.dirty || name.touched)) {
             <div class="text-danger help-block">
               @if (name.errors && name.errors.required) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
               @if (name.errors.invalidIdentifier) {
-                <div translate>common.message.invalid</div>
+                <div>{{ 'common.message.invalid' | translate }}</div>
               }
             </div>
           }
           @if (!isUnique && !(name.errors && name.errors.required)) {
             <div class="help-block text-danger">
-              <div translate>common.message.uniqueError</div>
+              <div>{{ 'common.message.uniqueError' | translate }}</div>
             </div>
           }
         </div>
@@ -99,8 +99,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

@@ -4,7 +4,7 @@
       <a (click)="activeModal.destroy()"><i
         class="fa fa-arrow-circle-left config-back-btn" [appRichTooltip]="'inventory.button.backToObject' | translate"></i></a>
     }
-    <span translate>workflow.label.showDependency</span> {{workflow.path}}
+    <span>{{ 'workflow.label.showDependency' | translate }}</span> {{workflow.path}}
   </h4>
   <button (click)="closeAll();" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -38,7 +38,7 @@
       @if (pageView === 'list') {
         <div>
           <div class="hover">
-            <a class="text-primary noExl" translate>workflow.label.start</a>
+            <a class="text-primary noExl">{{ 'workflow.label.start' | translate }}</a>
             <span class="expand-collapse-btn">
               <i (click)="expandAll()" [appRichTooltip]="'common.tooltip.expandAll' | translate"
                  class="cursor fa fa-lg fa-angle-double-down"></i>

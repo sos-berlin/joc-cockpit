@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -15,7 +15,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-single-lock',
-  templateUrl: './single-lock.component.html'
+  templateUrl: './single-lock.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleLockComponent {
   loading = false;
@@ -131,7 +132,8 @@ export class SingleLockComponent {
 @Component({
   standalone: false,
   selector: 'app-lock',
-  templateUrl: 'lock.component.html'
+  templateUrl: 'lock.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LockComponent {
   isLoading = false;
@@ -159,7 +161,8 @@ export class LockComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
-              private dataService: DataService, private orderPipe: OrderPipe, private modal: NzModalService) {
+              private dataService: DataService, private orderPipe: OrderPipe, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -178,6 +181,7 @@ export class LockComponent {
             lock.hasNote.notified = false;
           }
         });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -430,6 +434,7 @@ export class LockComponent {
         if (locks && locks.length > 0) {
           this.updateLocksDetail(locks);
         }
+        this.cdr.markForCheck();
       }, error: () => this.loading = false
     });
   }

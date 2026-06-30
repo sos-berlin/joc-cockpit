@@ -21,7 +21,7 @@
       @if (item.value.actions?.changes) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.changedProperties</span>:</li>
+            <li class="m-b-xs"><span class="_600 text">{{ 'workflow.label.changedProperties' | translate }}</span>:</li>
             @for (item of item.value.actions.changes; track $index) {
               <li class="m-l-sm p-l-xs">
                 {{item}}
@@ -33,7 +33,7 @@
       @if (item.value.actions?.addRequiredArguments) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.addRequiredArguments</span>:</li>
+            <li class="m-b-xs"><span class="_600 text">{{ 'workflow.label.addRequiredArguments' | translate }}</span>:</li>
             <li class="m-l-sm p-l-xs">
               {{item.value.actions.addRequiredArguments | json}}
             </li>
@@ -43,7 +43,7 @@
       @if (item.value.actions?.deleteArguments) {
         <div>
           <ul class="m-b-sm p-t-xxs">
-            <li class="m-b-xs"><span class="_600 text" translate>workflow.label.deleteArguments</span>:</li>
+            <li class="m-b-xs"><span class="_600 text">{{ 'workflow.label.deleteArguments' | translate }}</span>:</li>
             <li class="m-l-sm p-l-xs">
               {{item.value.actions.deleteArguments | json}}
             </li>
@@ -57,25 +57,25 @@
   <h4 class="modal-title">
     @if (treeObj) {
       <span>
-        <span translate>inventory.label.updateWorkflowsFromJobTemplates</span>:
+        <span>{{ 'inventory.label.updateWorkflowsFromJobTemplates' | translate }}</span>:
         {{treeObj.type ? treeObj.name : treeObj.path}}
       </span>
     }
     @if (job) {
       <span>
-        <span translate>inventory.button.updateFromJobTemplate</span>:
+        <span>{{ 'inventory.button.updateFromJobTemplate' | translate }}</span>:
         {{job.jobName}}
       </span>
     }
     @if (data) {
       <span>
-        <span translate>inventory.label.updateJobs</span>:
+        <span>{{ 'inventory.label.updateJobs' | translate }}</span>:
         {{data.name}}
       </span>
     }
     @if (folder) {
       <span>
-        <span translate>inventory.label.updateJobs</span>:
+        <span>{{ 'inventory.label.updateJobs' | translate }}</span>:
         {{folder.path}}
       </span>
     }
@@ -94,14 +94,14 @@
           </div>
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.section.update</small>
+              <small class="_600 section-box-title">{{ 'inventory.section.update' | translate }}</small>
             </div>
             <div class="p-a-sm">
               @if (data || folder) {
                 <div class="form-group row">
                   <div class="col-md-3">
                     <label>
-                      <span [appRichTooltip]="'inventory.tooltip.filter' | translate" translate>inventory.export.label.filter</span>
+                      <span [appRichTooltip]="'inventory.tooltip.filter' | translate">{{ 'inventory.export.label.filter' | translate }}</span>
                     </label>
                   </div>
                   <div class="col-md-9">
@@ -118,7 +118,7 @@
                 <div class="form-group row">
                   <div class="col-md-3">
                     <label>
-                      <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate" translate>inventory.label.handleRecursively</span>
+                      <span [appRichTooltip]="'inventory.tooltip.handleRecursively' | translate">{{ 'inventory.label.handleRecursively' | translate }}</span>
                     </label>
                   </div>
                   <div class="col-md-9">
@@ -129,7 +129,7 @@
               <div class="form-group row">
                 <div class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwriteNotification' | translate" translate>inventory.label.overwriteNotification</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteNotification' | translate">{{ 'inventory.label.overwriteNotification' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-9">
@@ -139,7 +139,7 @@
               <div class="form-group row">
                 <div class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwriteAdmissionTime' | translate" translate>inventory.label.overwriteAdmissionTime</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteAdmissionTime' | translate">{{ 'inventory.label.overwriteAdmissionTime' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-9">
@@ -149,7 +149,7 @@
               <div class="form-group row">
                 <div class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwriteRequiredArguments' | translate" translate>inventory.label.overwriteRequiredArguments</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteRequiredArguments' | translate">{{ 'inventory.label.overwriteRequiredArguments' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-9">
@@ -159,7 +159,7 @@
               <div class="form-group row">
                 <div class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwriteOptionalArguments' | translate" translate>inventory.label.overwriteOptionalArguments</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteOptionalArguments' | translate">{{ 'inventory.label.overwriteOptionalArguments' | translate }}</span>
                   </label>
                 </div>
                 <div class="col-md-9">
@@ -175,7 +175,7 @@
                 <label nz-checkbox [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
                        (nzCheckedChange)="selectAll($event)"></label>
                 <label class="p-l-sm _600">
-                  <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate" translate>runtime.label.selectAll</span>
+                  <span [appRichTooltip]="'runtime.tooltip.selectAll' | translate">{{ 'runtime.label.selectAll' | translate }}</span>
                 </label>
               </div>
             </div>
@@ -260,7 +260,7 @@
       <div>
         @if (updatedList.length > 0) {
           <ul>
-            <li class="m-b-xs"><span class="_600 text" translate>inventory.label.workflows</span>:</li>
+            <li class="m-b-xs"><span class="_600 text">{{ 'inventory.label.workflows' | translate }}</span>:</li>
             @for (workflow of updatedList | orderBy: 'path'; track workflow.path) {
               <li class="p-l-sm">
                 @if (!workflow.show) {
@@ -278,7 +278,7 @@
                       class="label m-l"></span>
                 @if (workflow.jobs && workflow.show) {
                   <ul class="m-b-sm p-t-xxs">
-                    <li class="m-b-xs"><span class="_600 text" translate>dashboard.label.jobs</span>:</li>
+                    <li class="m-b-xs"><span class="_600 text">{{ 'dashboard.label.jobs' | translate }}</span>:</li>
                     @for (job of workflow.jobs | orderBy: 'name'; track job.name) {
                       <li class="m-l-sm p-l-xs">
                         <ng-container [ngTemplateOutletContext]="{ $implicit: job}"
@@ -311,17 +311,17 @@
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
-        <span translate>common.button.submit</span>
+        <span>{{ 'common.button.submit' | translate }}</span>
       </button>
     }
     @if (!isUpdated) {
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     }
     @if (isUpdated) {
-      <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.close
+      <button (click)="close()" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.close' | translate }}
       </button>
     }
   </div>

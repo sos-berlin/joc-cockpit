@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ElementRef, HostListener, NgZone, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
@@ -28,7 +28,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-controller-cluster',
-  templateUrl: './controller-cluster.component.html'
+  templateUrl: './controller-cluster.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
@@ -52,10 +53,14 @@ export class ControllerClusterComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
               private elementRef: ElementRef, private translate: TranslateService, public modal: NzModalService,
-              private nzContextMenuService: NzContextMenuService) {
+              private nzContextMenuService: NzContextMenuService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   static colorCode(severity): string {
@@ -72,7 +77,7 @@ export class ControllerClusterComponent {
     }
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     setTimeout(() => {
       this.alignCenter();
@@ -125,6 +130,7 @@ export class ControllerClusterComponent {
                     this.dataService.announceFunction(isBackUp);
                   }
                   sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
+                  this.cdr.markForCheck();
                 });
 
             }
@@ -135,7 +141,8 @@ export class ControllerClusterComponent {
         } else {
           this.createEditor();
         }
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -243,22 +250,24 @@ export class ControllerClusterComponent {
         $('[data-toggle="popover"]').popover('hide');
         const cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
-          self.cluster = null;
-          self.controller = null;
-          self.joc = null;
-          let data = cell.getAttribute('data');
-          data = JSON.parse(data);
-          if (cell.value.tagName === 'Cluster') {
-            self.cluster = data;
-          } else if (cell.value.tagName === 'Controller') {
-            self.controller = data;
-          } else {
-            self.joc = data;
-          }
-
-          setTimeout(() => {
-            self.nzContextMenuService.create(event, self.menu);
-          }, 0);
+          self.ngZone.run(() => {
+            self.cluster = null;
+            self.controller = null;
+            self.joc = null;
+            let data = cell.getAttribute('data');
+            data = JSON.parse(data);
+            if (cell.value.tagName === 'Cluster') {
+              self.cluster = data;
+            } else if (cell.value.tagName === 'Controller') {
+              self.controller = data;
+            } else {
+              self.joc = data;
+            }
+            self.cdr.markForCheck();
+            setTimeout(() => {
+              self.nzContextMenuService.create(event, self.menu);
+            }, 0);
+          });
           evt.consume();
         }
       }
@@ -461,6 +470,7 @@ export class ControllerClusterComponent {
           this.createWorkflowDiagram(this.editor.graph);
         }
         this.isDataLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => this.isDataLoaded = true
     });
   }
@@ -625,6 +635,7 @@ export class ControllerClusterComponent {
       // Updates the display
       graph.getModel().endUpdate();
     }
+    this.cdr.markForCheck();
     setTimeout(() => {
       this.alignCenter();
     }, 0);

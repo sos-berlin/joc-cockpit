@@ -4,7 +4,7 @@
       @if (preferences.showHelpPages) {
         <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
-      <span translate>dashboard.label.fileTransferSummary</span>
+      <span>{{ 'dashboard.label.fileTransferSummary' | translate }}</span>
     </h3>
   </div>
   <div class="row m-b-sm box-tool t-10">
@@ -22,23 +22,23 @@
                 <ul nz-menu>
                   <li (click)="getSummaryByDate('0d');filters.label='filters.button.today'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='0d'}"
                       nz-menu-item>
-                    <a translate>filters.button.today</a>
+                    <a>{{ 'filters.button.today' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-1h');filters.label='filters.button.last1'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-1h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last1</a>
+                    <a>{{ 'filters.button.last1' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-12h');filters.label='filters.button.last12'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-12h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last12</a>
+                    <a>{{ 'filters.button.last12' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-24h');filters.label='filters.button.last24'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-24h'}"
                       nz-menu-item>
-                    <a translate>filters.button.last24</a>
+                    <a>{{ 'filters.button.last24' | translate }}</a>
                   </li>
                   <li (click)="getSummaryByDate('-7d');filters.label='filters.button.lastWeak'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='-7d'}"
                       nz-menu-item>
-                    <a translate>filters.button.lastWeak</a>
+                    <a>{{ 'filters.button.lastWeak' | translate }}</a>
                   </li>
                 </ul>
               </nz-dropdown-menu>
@@ -54,13 +54,13 @@
         <tr class="text-center">
           <td style="width: 50%">
             <a (click)="showSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulTransfers' | translate">
-              <div translate>common.label.successful</div>
+              <div>{{ 'common.label.successful' | translate }}</div>
               <div [innerHtml]="summary.successful || 0" [ngClass]="{'dark-blue':summary.successful >0}" class="text-lg _600"></div>
             </a>
           </td>
           <td style="width: 50%">
             <a (click)="showSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedTransfers' | translate">
-              <div translate>common.label.failed</div>
+              <div>{{ 'common.label.failed' | translate }}</div>
               <div [innerHtml]="summary.failed || 0" [ngClass]="{'red':summary.failed >0}" class="text-lg _600"></div>
             </a>
           </td>

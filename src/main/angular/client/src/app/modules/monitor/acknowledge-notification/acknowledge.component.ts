@@ -1,11 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 
 @Component({
   standalone: false,
   selector: 'app-acknowledge-modal',
-  templateUrl: './acknowledge.dialog.html'
+  templateUrl: './acknowledge.dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AcknowledgeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -17,7 +18,7 @@ export class AcknowledgeModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -40,7 +41,8 @@ export class AcknowledgeModalComponent {
     }).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 }

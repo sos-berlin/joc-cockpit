@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewChild} from '@angular/core';
+import {Component, HostListener, inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
@@ -13,7 +13,8 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-script-modal',
-  templateUrl: './script-modal.component.html'
+  templateUrl: './script-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScriptModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -55,7 +56,8 @@ export class ScriptModalComponent {
   @ViewChild('codeEditor', {static: false}) cm: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private translate: TranslateService, private authService: AuthService,
-              private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService, private dragDrop: DragDrop) {
+              private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService, private dragDrop: DragDrop,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

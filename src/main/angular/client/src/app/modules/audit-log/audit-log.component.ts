@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -18,7 +18,8 @@ import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component
 @Component({
   standalone: false,
   selector: 'app-filter-log-content',
-  templateUrl: './filter-dialog.html'
+  templateUrl: './filter-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -71,6 +72,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -208,7 +210,8 @@ export class SearchComponent {
 @Component({
   standalone: false,
   selector: 'app-audit-log',
-  templateUrl: './audit-log.component.html'
+  templateUrl: './audit-log.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditLogComponent {
   objectType = 'AUDITLOG';
@@ -250,7 +253,7 @@ export class AuditLogComponent {
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe,
               private translate: TranslateService, private toasterService: ToastrService, private excelService: ExcelService, private router: Router,
-              private orderPipe: OrderPipe) {
+              private orderPipe: OrderPipe, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -376,6 +379,7 @@ export class AuditLogComponent {
           this.filterList = res.configurations;
         }
         this.getCustomizations();
+        this.cdr.markForCheck();
       }, error: () => this.getCustomizations()
     });
   }
@@ -437,6 +441,7 @@ export class AuditLogComponent {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
                   this.load(null);
+                  this.cdr.markForCheck();
                 }, error: () => {
                   this.savedFilter.selected = undefined;
                   this.load(null);
@@ -452,6 +457,7 @@ export class AuditLogComponent {
           this.savedFilter.selected = undefined;
           this.load(null);
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.savedFilter.selected = undefined;
         this.load(null);
@@ -512,9 +518,11 @@ export class AuditLogComponent {
         }
         this.isLoaded = true;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -540,12 +548,14 @@ export class AuditLogComponent {
           this.historyLogin.currentPage = 1;
         }
 
-        this.loginHistory = res.loginHistoryItems
+        this.loginHistory = res.loginHistoryItems;
         this.isLoaded = true;
         this.searchInResult();
+        this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -727,7 +737,8 @@ export class AuditLogComponent {
         next: (res: any) => {
           auditLog.details = res.auditLogDetails;
           auditLog.isLoaded = true;
-        }, error: () => auditLog.isLoaded = true
+          this.cdr.markForCheck();
+        }, error: () => { auditLog.isLoaded = true; this.cdr.markForCheck(); }
       });
     }
   }
@@ -918,7 +929,8 @@ export class AuditLogComponent {
         this.auditLogs = res.auditLog;
         this.isLoaded = true;
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -967,6 +979,7 @@ export class AuditLogComponent {
           this.copyFilter(obj);
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -981,6 +994,7 @@ export class AuditLogComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.load(null);
+        this.cdr.markForCheck();
       });
     } else {
       this.isCustomizationSelected(false);
@@ -1036,7 +1050,9 @@ export class AuditLogComponent {
           if (obj && this.savedFilter.selected && filterObj.id == this.savedFilter.selected) {
             this.changeFilter(filterObj);
           }
+          this.cdr.markForCheck();
         });
+        this.cdr.markForCheck();
       });
     }
   }

@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -16,7 +16,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-single-calendar',
-  templateUrl: 'single-calendar.component.html'
+  templateUrl: 'single-calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleCalendarComponent {
   loading: boolean;
@@ -88,7 +89,8 @@ export class SingleCalendarComponent {
 @Component({
   standalone: false,
   selector: 'app-calendar',
-  templateUrl: 'calendar.component.html'
+  templateUrl: 'calendar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent {
   isLoading = false;
@@ -114,7 +116,8 @@ export class CalendarComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private searchPipe: SearchPipe, private dataService: DataService) {
+              private modal: NzModalService, private searchPipe: SearchPipe, private dataService: DataService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -152,7 +155,8 @@ export class CalendarComponent {
           this.loadCalendar(null);
         }
         this.isLoading = true;
-      }, error: () => this.isLoading = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -321,7 +325,8 @@ export class CalendarComponent {
         }
         this.calendars = res.calendars || [];
         this.searchInResult();
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -357,6 +362,7 @@ export class CalendarComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       });
     }
   }

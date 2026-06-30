@@ -1053,7 +1053,7 @@ export class MaximumDirective {
   constructor(public el: ElementRef) {
   }
 
-  @HostListener('click', ['$event.target'])
+  @HostListener('click')
   onClick(): void {
     const hostElem = this.el.nativeElement;
     this.isMax = !this.isMax;

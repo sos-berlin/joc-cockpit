@@ -1,9 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!flag) {
-      <span class="drag-text" translate>encipherment.label.assignedAgents</span>
+      <span class="drag-text">{{ 'encipherment.label.assignedAgents' | translate }}</span>
     } @else {
-      <span class="drag-text" translate>encipherment.label.assignAgents</span>
+      <span class="drag-text">{{ 'encipherment.label.assignAgents' | translate }}</span>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -15,7 +15,7 @@
   <!-- Standalone Agents -->
   @if (agents.length > 0) {
     <div>
-      <div class="m-t p-b-xs" translate>agent.label.agents</div>
+      <div class="m-t p-b-xs">{{ 'agent.label.agents' | translate }}</div>
       <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
                 [nzFrontPagination]="false"
                 [nzShowPagination]="false"
@@ -25,8 +25,8 @@
           @if (flag) {
             <th nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
           }
-          <th nzWidth="150px" translate>agent.label.agentName</th>
-          <th nzWidth="250px" translate>agent.label.url</th>
+          <th nzWidth="150px">{{ 'agent.label.agentName' | translate }}</th>
+          <th nzWidth="250px">{{ 'agent.label.url' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -47,7 +47,7 @@
   <!-- Cluster Agents -->
   @if (clusterAgents.length > 0) {
     <div>
-      <div class="m-t p-b-xs" translate>agent.label.agentGroups</div>
+      <div class="m-t p-b-xs">{{ 'agent.label.agentGroups' | translate }}</div>
       <nz-table #clusterAgentsTable [nzData]="clusterAgents" [nzBordered]="true"
                 [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
         <thead>
@@ -55,8 +55,8 @@
           @if (flag) {
             <th nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
           }
-          <th nzWidth="150px" translate>agent.label.agentName</th>
-          <th nzWidth="250px" translate>agent.label.url</th>
+          <th nzWidth="150px">{{ 'agent.label.agentName' | translate }}</th>
+          <th nzWidth="250px">{{ 'agent.label.url' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -81,8 +81,8 @@
                         @if (flag) {
                           <th nzShowCheckbox [(nzChecked)]="clusterAgent.checked" [nzIndeterminate]="clusterAgent.indeterminate" (nzCheckedChange)="onClusterAgentChecked(clusterAgent)" class="chk"></th>
                         }
-                        <th nzWidth="150px" translate>agent.label.subagentId</th>
-                        <th nzWidth="250px" translate>agent.label.url</th>
+                        <th nzWidth="150px">{{ 'agent.label.subagentId' | translate }}</th>
+                        <th nzWidth="250px">{{ 'agent.label.url' | translate }}</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -114,11 +114,11 @@
 }
 <div class="modal-footer">
   @if (flag) {
-    <button (click)="submit()" class="btn btn-primary btn-sm" translate type="button">
-      common.button.submit
+    <button (click)="submit()" class="btn btn-primary btn-sm" type="button">
+      {{ 'common.button.submit' | translate }}
     </button>
   }
-  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-    common.button.cancel
+  <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+    {{ 'common.button.cancel' | translate }}
   </button>
 </div>

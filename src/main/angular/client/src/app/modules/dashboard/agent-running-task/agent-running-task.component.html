@@ -4,7 +4,7 @@
       @if (preferences.showHelpPages) {
         <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
-      <span translate>dashboard.label.agentRunningJobs</span>
+      <span>{{ 'dashboard.label.agentRunningJobs' | translate }}</span>
     </h3>
   </div>
   <div [hidden]="!isLoaded" [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) * 20 -50)) + 4 +'px'}"

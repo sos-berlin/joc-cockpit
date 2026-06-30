@@ -4,44 +4,44 @@
       <i (click)="helpPage('configuration-inventory-operations-import')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (type === 'DOCUMENTATION') {
-      <span translate>resource.documentation.label.importDocument</span>
+      <span>{{ 'resource.documentation.label.importDocument' | translate }}</span>
     }
     @if (type === 'DEPLOYMENT' || type === 'USER' || (type == 'INVENTORY' && !isDeploy)) {
-      <span translate>inventory.label.import</span>
+      <span>{{ 'inventory.label.import' | translate }}</span>
     }
     @if (isDeploy) {
-      <span translate>inventory.label.importAndDeploy</span>
+      <span>{{ 'inventory.label.importAndDeploy' | translate }}</span>
     }
     @if (type === 'XML_EDITOR') {
       <span>
         @if (!importXsd) {
-          <span translate>xml.label.importXML</span>
+          <span>{{ 'xml.label.importXML' | translate }}</span>
         }
         @if (importXsd) {
-          <span translate>xml.label.importXSD</span>
+          <span>{{ 'xml.label.importXSD' | translate }}</span>
         }
       </span>
     }
     @if (type === 'INVENTORY_OBJECT') {
       <span>
-        <span translate>inventory.label.uploadJSON</span>
+        <span>{{ 'inventory.label.uploadJSON' | translate }}</span>
         <span class="text-muted">{{name}}</span>
       </span>
     }
     @if (type === 'CONTROLLER') {
       <span>
-        <span translate>agent.label.importAgentConfiguration</span>:
+        <span>{{ 'agent.label.importAgentConfiguration' | translate }}</span>:
         {{controller.controllerId}}
       </span>
     }
     @if (type === 'CRON') {
-      <span translate>inventory.cronTab.label.convertCron</span>
+      <span>{{ 'inventory.cronTab.label.convertCron' | translate }}</span>
     }
     @if (type === 'SETTING') {
-      <span translate>settings.label.importSetting</span>
+      <span>{{ 'settings.label.importSetting' | translate }}</span>
     }
     @if (type === 'WORKFLOW') {
-      <span translate>workflow.label.importWorkflow</span>
+      <span>{{ 'workflow.label.importWorkflow' | translate }}</span>
     }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
@@ -58,13 +58,13 @@
         <div class="col-md-12">
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.section.crontab</small>
+              <small class="_600 section-box-title">{{ 'inventory.section.crontab' | translate }}</small>
             </div>
             <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
-                <span [appRichTooltip]="'inventory.cronTab.tooltip.folder' | translate" translate>inventory.cronTab.label.folder</span>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.folder' | translate">{{ 'inventory.cronTab.label.folder' | translate }}</span>
               </label>
             </label>
             <div class="col-md-9">
@@ -94,7 +94,7 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
-                <span [appRichTooltip]="'inventory.cronTab.tooltip.calendarName' | translate" translate>inventory.cronTab.label.calendarName</span>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.calendarName' | translate">{{ 'inventory.cronTab.label.calendarName' | translate }}</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -111,7 +111,7 @@
               @if (calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)) {
                 <div class="text-danger help-block">
                   @if (calendarName.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                 </div>
               }
@@ -120,7 +120,7 @@
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
-                <span [appRichTooltip]="'inventory.cronTab.tooltip.agentName' | translate" translate>inventory.cronTab.label.agentName</span>
+                <span [appRichTooltip]="'inventory.cronTab.tooltip.agentName' | translate">{{ 'inventory.cronTab.label.agentName' | translate }}</span>
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
@@ -132,7 +132,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-3">
-              <label [appRichTooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
+              <label [appRichTooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate">{{ 'inventory.cronTab.label.systemCrontab' | translate }}</label>
             </label>
             <div class="col-md-9">
               <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
@@ -146,12 +146,12 @@
         <div class="col-md-12">
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>inventory.section.documentation</small>
+              <small class="_600 section-box-title">{{ 'inventory.section.documentation' | translate }}</small>
             </div>
             <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-sm-3 form-control-label">
-              <span [appRichTooltip]="'common.tooltip.path' | translate" translate>common.label.path</span>
+              <span [appRichTooltip]="'common.tooltip.path' | translate">{{ 'common.label.path' | translate }}</span>
             </label>
             <div class="col-sm-9">
               <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
@@ -186,13 +186,13 @@
             <div class="col-md-12">
               <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
-                  <small class="_600 section-box-title" translate>inventory.section.import</small>
+                  <small class="_600 section-box-title">{{ 'inventory.section.import' | translate }}</small>
                 </div>
                 <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.signatureAlgorithm' | translate" translate>inventory.label.signatureAlgorithm</span>
+                    <span [appRichTooltip]="'inventory.tooltip.signatureAlgorithm' | translate">{{ 'inventory.label.signatureAlgorithm' | translate }}</span>
                     <sup class="text-danger text-sm">*</sup>
                   </label>
                 </label>
@@ -204,7 +204,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate">{{ 'inventory.label.fileFormat' | translate }}</span>
                   </label>
                 </label>
                 <div class="col-md-9">
@@ -220,13 +220,13 @@
             <div class="col-md-12">
               <div class="b-a m-b-sm section-box">
                 <div class="section-box-header">
-                  <small class="_600 section-box-title" translate>inventory.section.import</small>
+                  <small class="_600 section-box-title">{{ 'inventory.section.import' | translate }}</small>
                 </div>
                 <div class="p-a-sm">
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.folder' | translate" translate>inventory.label.folder</span>
+                    <span [appRichTooltip]="'inventory.tooltip.folder' | translate">{{ 'inventory.label.folder' | translate }}</span>
                   </label>
                 </label>
                 <div class="col-md-9">
@@ -256,7 +256,7 @@
               <div class="form-group row">
                 <label class="col-md-3 form-control-label">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+                    <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate">{{ 'inventory.label.fileFormat' | translate }}</span>
                   </label>
                 </label>
                 <div class="col-md-9">
@@ -267,7 +267,7 @@
               <div class="form-group row">
                 <label class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate" translate>inventory.label.overwrite</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate">{{ 'inventory.label.overwrite' | translate }}</span>
                   </label>
                 </label>
                 <div class="col-md-9">
@@ -278,7 +278,7 @@
               <div class="form-group row">
                 <label class="col-md-3">
                   <label>
-                    <span [appRichTooltip]="'inventory.tooltip.overwriteTags' | translate" translate>inventory.label.overwriteTags</span>
+                    <span [appRichTooltip]="'inventory.tooltip.overwriteTags' | translate">{{ 'inventory.label.overwriteTags' | translate }}</span>
                   </label>
                 </label>
                 <div class="col-md-9">
@@ -289,13 +289,13 @@
               @if (!requestObj.overwrite) {
                 <div class="form-group row">
                   <label class="col-md-3">
-                    <span [appRichTooltip]="'inventory.tooltip.objectName' | translate" translate>inventory.label.objectName</span>
+                    <span [appRichTooltip]="'inventory.tooltip.objectName' | translate">{{ 'inventory.label.objectName' | translate }}</span>
                   </label>
                   <div class="col-md-9">
                     <nz-radio-group [(ngModel)]="requestObj.type" name="type">
-                      <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
-                      <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
-                      <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+                      <label nz-radio nzValue="ignore"><span>{{ 'inventory.label.ignoreIfExist' | translate }}</span></label>
+                      <label nz-radio nzValue="prefix"><span>{{ 'inventory.label.prefix' | translate }}</span></label>
+                      <label nz-radio nzValue="suffix"><span>{{ 'inventory.label.suffix' | translate }}</span></label>
                     </nz-radio-group>
                   </div>
                 </div>
@@ -311,10 +311,10 @@
                     @if (suffix.invalid && (suffix.dirty || suffix.touched)) {
                       <div class="text-danger help-block">
                         @if ((suffix.errors && suffix.errors['required'])) {
-                          <div translate>common.message.requiredError</div>
+                          <div>{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (suffix.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div>{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -332,10 +332,10 @@
                     @if (prefix.invalid && (prefix.dirty || prefix.touched)) {
                       <div class="text-danger help-block">
                         @if ((prefix.errors && prefix.errors['required'])) {
-                          <div translate>common.message.requiredError</div>
+                          <div>{{ 'common.message.requiredError' | translate }}</div>
                         }
                         @if (prefix.errors['invalidIdentifier']) {
-                          <div translate>common.message.invalid</div>
+                          <div>{{ 'common.message.invalid' | translate }}</div>
                         }
                       </div>
                     }
@@ -352,13 +352,13 @@
         <div class="col-md-12">
           <div class="b-a m-b-sm section-box">
             <div class="section-box-header">
-              <small class="_600 section-box-title" translate>agent.section.controller</small>
+              <small class="_600 section-box-title">{{ 'agent.section.controller' | translate }}</small>
             </div>
             <div class="p-a-sm">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label>
-                <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate" translate>inventory.label.fileFormat</span>
+                <span [appRichTooltip]="'inventory.tooltip.fileFormat' | translate">{{ 'inventory.label.fileFormat' | translate }}</span>
               </label>
             </label>
             <div class="col-md-9">
@@ -369,7 +369,7 @@
           <div class="form-group row">
             <label class="col-md-3">
               <label>
-                <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate" translate>inventory.label.overwrite</span>
+                <span [appRichTooltip]="'inventory.tooltip.overwrite' | translate">{{ 'inventory.label.overwrite' | translate }}</span>
               </label>
             </label>
             <div class="col-md-9">
@@ -393,7 +393,7 @@
       @if (fileList.length === 0) {
         <div>
           <i class="icon-upload-icon"></i>
-          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+          <div class="upload-text">{{ 'common.button.dragAndDropFileToUpload' | translate }}</div>
         </div>
       }
     </nz-upload>
@@ -409,7 +409,7 @@
         <div class="p-t-sm">
           <button class="btn btn-default btn-sm" type="button">
             <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-            <span translate>common.button.chooseFileToUpload</span>
+            <span>{{ 'common.button.chooseFileToUpload' | translate }}</span>
           </button>
         </div>
       </nz-upload>
@@ -423,14 +423,14 @@
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
         @if (type !== 'CRON') {
-          <span translate>common.button.import</span>
+          <span>{{ 'common.button.import' | translate }}</span>
         }
         @if (type === 'CRON') {
-          <span translate>inventory.cronTab.button.convert</span>
+          <span>{{ 'inventory.cronTab.button.convert' | translate }}</span>
         }
       </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-        common.button.cancel
+      <button (click)="cancel()" class="btn btn-grey btn-sm" type="button">
+        {{ 'common.button.cancel' | translate }}
       </button>
     </div>
   }

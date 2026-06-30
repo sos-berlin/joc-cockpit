@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>inventory.label.result</span>
+    <span class="drag-text">{{ 'inventory.label.result' | translate }}</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -17,16 +17,16 @@
               <thead>
               <tr>
                 <th>
-                  <span translate>common.label.name</span>
+                  <span>{{ 'common.label.name' | translate }}</span>
                 </th>
                 <th>
-                  <span translate>common.label.path</span>
+                  <span>{{ 'common.label.path' | translate }}</span>
                 </th>
                 <th>
-                  <span translate>inventory.label.objectType</span>
+                  <span>{{ 'inventory.label.objectType' | translate }}</span>
                 </th>
                 <th>
-                  <span translate>inventory.label.errorText</span>
+                  <span>{{ 'inventory.label.errorText' | translate }}</span>
                 </th>
               </tr>
               </thead>
@@ -74,7 +74,7 @@
   </nz-collapse>
 </div>
 <div class="modal-footer">
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-    common.button.close
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+    {{ 'common.button.close' | translate }}
   </button>
 </div>

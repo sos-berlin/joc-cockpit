@@ -14,7 +14,7 @@
                     class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
               @if (lastModified) {
                 <span class="text-dark text-sm _400"> -
-                  <b translate>inventory.label.lastModified</b>
+                  <b>{{ 'inventory.label.lastModified' | translate }}</b>
                   <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
                 </span>
               }
@@ -31,15 +31,15 @@
               <div class="inline pull-right">
                 @if (lock.valid) {
                   <span class="badge badge-success m-r-12">
-                      <span translate>inventory.label.valid</span>
+                      <span>{{ 'inventory.label.valid' | translate }}</span>
                   </span>
                 }
                 <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
                   @if (!data.deployed) {
-                    <span translate>inventory.label.notDeployed</span>
+                    <span>{{ 'inventory.label.notDeployed' | translate }}</span>
                   }
                   @if (data.deployed) {
-                    <span translate>inventory.label.deployed</span>
+                    <span>{{ 'inventory.label.deployed' | translate }}</span>
                   }
                 </span>
                 @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
@@ -54,7 +54,7 @@
                     [disabled]="!lock.valid && !lock.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs"
                     type="button">
                     <i class="fa fa-rocket p-r-xs"></i>
-                    <span translate>inventory.button.deploy</span>
+                    <span>{{ 'inventory.button.deploy' | translate }}</span>
                   </button>
                 }
               </div>
@@ -67,12 +67,12 @@
                   @if (!showMoreAdvanceOptions) {
                     <a class="text-primary cursor" (click)="showMoreOptions()">
                       <i class="fa fa-caret-right m-r-xs"></i>
-                      <span translate>common.label.showMoreOptions</span>
+                      <span>{{ 'common.label.showMoreOptions' | translate }}</span>
                     </a>
                   } @else {
                     <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                       <i class="fa fa-caret-down m-r-xs"></i>
-                      <span translate>common.label.showFewerOptions</span>
+                      <span>{{ 'common.label.showFewerOptions' | translate }}</span>
                     </a>
                   }
                 </div>
@@ -80,7 +80,7 @@
               <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                    class="form-group row">
                 <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltips.lock.name' | translate" translate>common.label.name</span>
+                  <span [appRichTooltip]="'inventory.tooltips.lock.name' | translate">{{ 'common.label.name' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -90,10 +90,10 @@
                   @if (name.invalid && (name.dirty || name.touched)) {
                     <div class="text-danger help-block">
                       @if (name.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                       @if (name.errors['invalidIdentifier']) {
-                        <div translate>common.message.invalid</div>
+                        <div>{{ 'common.message.invalid' | translate }}</div>
                       }
                     </div>
                   }
@@ -101,7 +101,7 @@
               </div>
               <div class="form-group row">
                 <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltips.lock.title' | translate" translate>common.label.title</span>
+                  <span [appRichTooltip]="'inventory.tooltips.lock.title' | translate">{{ 'common.label.title' | translate }}</span>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <input (blur)="saveJSON()" [(ngModel)]="lock.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
@@ -112,7 +112,7 @@
               @if (showMoreAdvanceOptions) {
                 <div class="form-group row">
                   <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                    <span [appRichTooltip]="'inventory.tooltips.lock.documentation' | translate" translate>inventory.label.documentation</span>
+                    <span [appRichTooltip]="'inventory.tooltips.lock.documentation' | translate">{{ 'inventory.label.documentation' | translate }}</span>
                   </label>
                   <div class="col-lg-9 col-xl-8 col-xxl-6">
                     <app-select-document (funcCall)="saveJSON($event)" [data]="lock.configuration"
@@ -122,7 +122,7 @@
               }
               <div [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}" class="form-group row">
                 <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                  <span [appRichTooltip]="'inventory.tooltips.lock.limit' | translate" translate>inventory.label.limit</span>
+                  <span [appRichTooltip]="'inventory.tooltips.lock.limit' | translate">{{ 'inventory.label.limit' | translate }}</span>
                   <sup class="text-danger text-sm">*</sup>
                 </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -133,7 +133,7 @@
                   @if (limit.invalid && (limit.dirty || limit.touched)) {
                     <div class="text-danger help-block">
                       @if (limit.errors['required']) {
-                        <div translate>common.message.requiredError</div>
+                        <div>{{ 'common.message.requiredError' | translate }}</div>
                       }
                     </div>
                   }

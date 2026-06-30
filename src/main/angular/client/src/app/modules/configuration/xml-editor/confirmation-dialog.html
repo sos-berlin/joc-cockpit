@@ -1,20 +1,20 @@
 <div class="modal-header">
   <h4 class="modal-title">
     @if (!delete && !deleteAll && !remove) {
-      <span translate>xml.label.saveXml</span>
+      <span>{{ 'xml.label.saveXml' | translate }}</span>
     }
     @if (!delete && deleteAll && objectType !== 'NOTIFICATION') {
-      <span translate>xml.label.deleteDraft</span>
+      <span>{{ 'xml.label.deleteDraft' | translate }}</span>
     }
     @if (delete && objectType === 'NOTIFICATION') {
-      <span translate>xml.label.deleteDraft</span>
+      <span>{{ 'xml.label.deleteDraft' | translate }}</span>
     }
     @if (remove) {
-      <span translate>common.label.remove</span>
+      <span>{{ 'common.label.remove' | translate }}</span>
     }
     @if (delete && !deleteAll && objectType !== 'NOTIFICATION') {
       <span>
-        <span translate>common.button.delete</span>
+        <span>{{ 'common.button.delete' | translate }}</span>
         @if (objectType !== 'NOTIFICATION') {
           <span class="m-l-xs">{{activeTab.name}}</span>
         }
@@ -30,21 +30,21 @@
   <div class="row text-center">
     <div class="col-sm-12 text m-t m-b">
       @if (!delete && !deleteAll && !remove) {
-        <span translate>xml.message.wouldYouLikeToSaveCurrentXml</span>
+        <span>{{ 'xml.message.wouldYouLikeToSaveCurrentXml' | translate }}</span>
       }
       @if (!delete && deleteAll) {
-        <span translate>xml.message.deleteAllDraft</span>
+        <span>{{ 'xml.message.deleteAllDraft' | translate }}</span>
       }
       @if (remove) {
-        <span translate>xml.message.removeXML</span>
+        <span>{{ 'xml.message.removeXML' | translate }}</span>
       }
       @if (delete && !deleteAll) {
         <span>
           @if (objectType === 'NOTIFICATION') {
-            <span translate>xml.message.wouldYouLikeToDeleteCurrentXml</span>
+            <span>{{ 'xml.message.wouldYouLikeToDeleteCurrentXml' | translate }}</span>
           }
           @if (objectType !== 'NOTIFICATION') {
-            <span translate>xml.message.wouldYouLikeToDeleteThisConfiguration</span>
+            <span>{{ 'xml.message.wouldYouLikeToDeleteThisConfiguration' | translate }}</span>
           }
         </span>
       }
@@ -64,7 +64,7 @@
       <span>{{'common.button.confirm' | translate}}</span>
     }
   </button>
-  <button (click)="confirmMessage('no')" class="btn btn-grey btn-sm" translate
-          type="button">common.button.cancel
+  <button (click)="confirmMessage('no')" class="btn btn-grey btn-sm"
+          type="button">{{ 'common.button.cancel' | translate }}
   </button>
 </div>

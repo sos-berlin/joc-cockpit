@@ -12,14 +12,14 @@
     <ng-template #tooltipTemplate>
       @if (value.cyclicOrder) {
         <div class="m-a-sm">
-          <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-          <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+          <div class="_600 m-b-xs">{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+          <span class="_600 p-l-sm">{{ 'dailyPlan.label.begin' | translate }}</span>:
           {{value.cyclicOrder.firstStart | stringToDate}}
           <br>
-          <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+          <span class="_600 p-l-sm">{{ 'dailyPlan.label.end' | translate }}</span>:
           {{value.cyclicOrder.lastStart | stringToDate}}
           <br>
-          <span class="_600 p-l-sm" translate>order.label.orders</span>:
+          <span class="_600 p-l-sm">{{ 'order.label.orders' | translate }}</span>:
           {{value.cyclicOrder.count}}
         </div>
       }
@@ -62,7 +62,7 @@
                   <li (click)="cancelOrder(value, null )"
                       [nzDisabled]="value.state && (value.state._text === 'FINISHED' || value.state._text === 'PLANNED')"
                       nz-menu-item>
-                    <a translate>dailyPlan.button.cancel</a>
+                    <a>{{ 'dailyPlan.button.cancel' | translate }}</a>
                   </li>
                 }
                 @if (permission.currentController.orders.modify) {
@@ -82,24 +82,24 @@
                   <li (click)="changeParameter(null, value)"
                       [nzDisabled]="value.state && value.state._text === 'FINISHED'"
                       nz-menu-item>
-                    <a translate>{{'dailyPlan.button.setParameters' | translate}} ..</a>
+                    <a>{{'dailyPlan.button.setParameters' | translate}} ..</a>
                   </li>
                 }
                 @if (permission.currentController.orders.modify) {
                   <li (click)="copyOrder(value, null)" nz-menu-item>
-                    <a translate>{{'common.button.copy' | translate}} ..</a>
+                    <a>{{'common.button.copy' | translate}} ..</a>
                   </li>
                 }
                 <li (click)="coreService.copyArguments(value, 'variables', message)" nz-menu-item [nzDisabled]="!value.variables || value.variables?.length == 0">
-                  <a translate>common.button.copyArguments</a>
+                  <a>{{ 'common.button.copyArguments' | translate }}</a>
                 </li>
                 <li nz-menu-divider></li>
                 <li (click)="coreService.copyLink('order',value.orderId, value.workflowPath)" [nzDisabled]="value.state && value.state._text !== 'FINISHED'"
                     nz-menu-item>
-                  <a translate>common.button.copyLinkToObject</a>
+                  <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
                 </li>
                 <li (click)="copyOrderId(value.orderId)" nz-menu-item>
-                  <a translate>common.button.copyOrderId</a>
+                  <a>{{ 'common.button.copyOrderId' | translate }}</a>
                 </li>
               </ul>
             }
@@ -199,7 +199,7 @@
       </td>
       <td>
         @if (value.late==true) {
-          <span translate>dailyPlan.label.late</span>
+          <span>{{ 'dailyPlan.label.late' | translate }}</span>
         }
       </td>
       <td><span [innerHtml]="value.plannedStartTime | highlight : dailyPlanFilters.searchText"></span></td>
@@ -240,14 +240,14 @@
     <ng-template #tooltipTemplate>
       @if (plan?.value[0]?.cyclicOrder) {
         <div class="m-a-sm">
-          <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-          <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+          <div class="_600 m-b-xs">{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+          <span class="_600 p-l-sm">{{ 'dailyPlan.label.begin' | translate }}</span>:
           {{plan?.value[0]?.cyclicOrder.firstStart | stringToDate}}
           <br>
-          <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+          <span class="_600 p-l-sm">{{ 'dailyPlan.label.end' | translate }}</span>:
           {{plan?.value[0]?.cyclicOrder.lastStart | stringToDate}}
           <br>
-          <span class="_600 p-l-sm" translate>order.label.orders</span>:
+          <span class="_600 p-l-sm">{{ 'order.label.orders' | translate }}</span>:
           {{plan?.value[0]?.cyclicOrder.count}}
         </div>
       }
@@ -289,7 +289,7 @@
                 @if (permission.currentController.orders.cancel) {
                   <li (click)="cancelOrder(null, plan )" [nzDisabled]="plan.isCancel"
                       nz-menu-item>
-                    <a translate>dailyPlan.button.cancel</a>
+                    <a>{{ 'dailyPlan.button.cancel' | translate }}</a>
                   </li>
                 }
                 @if (permission.currentController.orders.modify) {
@@ -308,7 +308,7 @@
                 }
                 @if (permission.currentController.orders.modify) {
                   <li (click)="copyOrder(plan, null)" nz-menu-item>
-                    <a translate>{{'common.button.copy' | translate}} ..</a>
+                    <a>{{'common.button.copy' | translate}} ..</a>
                   </li>
                 }
               </ul>
@@ -404,7 +404,7 @@
       @if (!plan.order && plan?.value?.length === 1 && plan.value[0]) {
         <td>
           @if (plan.value[0].late==true) {
-            <span translate>dailyPlan.label.late</span>
+            <span>{{ 'dailyPlan.label.late' | translate }}</span>
           }
         </td>
       }
@@ -459,7 +459,7 @@
                 @for (btn of filterBtn; track btn.status) {
                   <button (click)="getPlansCalRange(btn.status)" [disabled]="savedFilter.selected"
                           [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
-                          class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+                          class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button' | translate }}.{{btn.text}}
                   </button>
                 }
               </div>
@@ -471,14 +471,14 @@
                 @for (btn of filterBtn; track btn.status) {
                   <button (click)="getPlans(btn.status)" [disabled]="savedFilter.selected"
                           [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
-                          class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+                          class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button' | translate }}.{{btn.text}}
                   </button>
                 }
               </div>
               <div class="btn-group dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="state" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12"
-                        nz-dropdown nzTrigger="click" translate type="button">
-                  common.label.state
+                        nz-dropdown nzTrigger="click" type="button">
+                  {{ 'common.label.state' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #state="nzDropdownMenu">
@@ -486,7 +486,7 @@
                     @for (btn of filterBtn; track btn.status) {
                       <li (click)="getPlans(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status=== btn.status, 'disable-link':savedFilter.selected}"
                           nz-menu-item>
-                        <a translate>common.button.{{btn.text}}</a>
+                        <a>{{ 'common.button' | translate }}.{{btn.text}}</a>
                       </li>
                     }
                   </ul>
@@ -499,7 +499,7 @@
               <div class="btn-group m-l-12">
                 <button (click)="changeLate()" [disabled]="savedFilter.selected"
                         [ngClass]="{'btn-primary': dailyPlanFilters.filter.late}" class="btn btn-grey btn-sm button-group-ellipsis">
-                  <span translate>dailyPlan.button.late</span>
+                  <span>{{ 'dailyPlan.button.late' | translate }}</span>
                 </button>
               </div>
             }
@@ -514,8 +514,8 @@
             @if (dailyPlanFilters.tabIndex == 0) {
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
-                        nz-dropdown nzTrigger="click" translate type="button">
-                  <span translate>common.label.sortBy</span>
+                        nz-dropdown nzTrigger="click" type="button">
+                  <span>{{ 'common.label.sortBy' | translate }}</span>
                   <span class="text-primary">
                     @if (dailyPlanFilters.filter.sortBy ==='orderId') {
                       <span>
@@ -566,16 +566,16 @@
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
                   <ul nz-menu>
                     <li (click)="sort('orderId')" nz-menu-item>
-                      <a translate>dailyPlan.label.order</a>
+                      <a>{{ 'dailyPlan.label.order' | translate }}</a>
                     </li>
                     <li (click)="sort('workflowPath')" nz-menu-item>
-                      <a translate>dailyPlan.label.workflow</a>
+                      <a>{{ 'dailyPlan.label.workflow' | translate }}</a>
                     </li>
                     <li (click)="sort( 'plannedStartTime')" nz-menu-item>
-                      <a translate>dailyPlan.label.plannedStart</a>
+                      <a>{{ 'dailyPlan.label.plannedStart' | translate }}</a>
                     </li>
                     <li (click)="sort('status')" nz-menu-item>
-                      <a translate>dailyPlan.label.state</a>
+                      <a>{{ 'dailyPlan.label.state' | translate }}</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -586,7 +586,7 @@
                 <button [ngClass]="{'btn-primary': selectedFiltered.name}" [appRichTooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                         [nzPlacement]="'bottomRight'"
                         class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                        nzTrigger="click" translate type="button">
+                        nzTrigger="click" type="button">
                   {{'customization.label.customizations' | translate}}
                   <span>{{selectedFiltered.name}}</span>
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
@@ -595,12 +595,12 @@
                   <ul nz-menu>
                     @if (permission.joc && permission.joc.administration.customization.manage) {
                       <li (click)="createCustomization()" nz-menu-item>
-                        <a translate>customization.label.createCustomization</a>
+                        <a>{{ 'customization.label.createCustomization' | translate }}</a>
                       </li>
                     }
                     @if (filterList.length>0) {
                       <li (click)="editFilters()" nz-menu-item>
-                        <a translate>customization.label.editExistingCustomizations</a>
+                        <a>{{ 'customization.label.editExistingCustomizations' | translate }}</a>
                       </li>
                     }
                     @if (filterList.length>0) {
@@ -634,7 +634,7 @@
             @if (dailyPlanFilters.tabIndex === 1) {
               <button (click)="exportObject(null)" class="btn btn-sm btn-grey m-l-12">
                 <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
-                <span translate>inventory.button.export</span>
+                <span>{{ 'inventory.button.export' | translate }}</span>
               </button>
             }
             @if (dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && setOfCheckedId?.size > 0) {
@@ -656,41 +656,41 @@
                 <button (click)="modifyOrderStartTime()"
                         [disabled]="!object.isModifyStartTime" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-clock-o"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
+                  <span class="hidden-sm-down">{{ 'dailyPlan.button.setStartTime' | translate }}</span>
                 </button>
               }
               @if (permission.currentController && permission.currentController.orders.modify) {
                 <button (click)="modifySelectedOrder()"
                         [disabled]="!object.isModify" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-edit"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
+                  <span class="hidden-sm-down">{{ 'dailyPlan.button.setParameters' | translate }}</span>
                 </button>
               }
               @if (permission.currentController.orders.modify) {
                 <button (click)="modifyAllPriority()" [disabled]="!object.isModify"
                         class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-signal"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>inventory.button.modifyPriority</span>
+                  <span class="hidden-sm-down">{{ 'inventory.button.modifyPriority' | translate }}</span>
                 </button>
               }
               @if (permission.currentController && permission.currentController.orders.modify) {
                 <button (click)="copySelectedOrder()" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-copy"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>common.button.copy</span>
+                  <span class="hidden-sm-down">{{ 'common.button.copy' | translate }}</span>
                 </button>
               }
               @if (permission.currentController && permission.currentController.orders.create) {
                 <button (click)="submitSelectedOrder()"
                         [disabled]="!object.isPlanned" class="btn btn-grey btn-sm m-l-12"><i
                   class="fa fa-rocket"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.submitOrder</span>
+                  <span class="hidden-sm-down">{{ 'dailyPlan.button.submitOrder' | translate }}</span>
                 </button>
               }
               @if (permission.currentController && permission.currentController.orders.cancel) {
                 <button (click)="removeSelectedOrder()"
                         [disabled]="!object.isPlanned" class="btn btn-grey btn-sm m-l-12 bg-hover-color"><i
                   class="fa fa-trash"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
+                  <span class="hidden-sm-down">{{ 'dailyPlan.button.removeOrder' | translate }}</span>
                 </button>
               }
               @if (object.isLetRun) {
@@ -699,7 +699,7 @@
                           [appRichTooltip]="'dailyPlan.tooltip.letRun' | translate"
                           class="btn btn-grey btn-sm m-l-12">
                     <i class="fa fa-refresh"></i>&nbsp;
-                    <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
+                    <span class="hidden-sm-down">{{ 'dailyPlan.button.continueOrder' | translate }}</span>
                   </button>
                 }
               }
@@ -710,7 +710,7 @@
                           [disabled]="true"
                           class="btn btn-grey btn-sm m-l-12">
                     <i class="fa fa-refresh"></i>&nbsp;
-                    <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
+                    <span class="hidden-sm-down">{{ 'dailyPlan.button.continueOrder' | translate }}</span>
                   </button>
                 }
               }
@@ -721,7 +721,7 @@
                           [disabled]="true"
                           class="btn btn-grey btn-sm m-l-12">
                     <i class="fa fa-refresh"></i>&nbsp;
-                    <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
+                    <span class="hidden-sm-down">{{ 'dailyPlan.button.continueOrder' | translate }}</span>
                   </button>
                 }
               </ng-template>
@@ -729,7 +729,7 @@
               @if (permission.currentController && permission.currentController.orders.cancel) {
                 <button (click)="cancelSelectedOrder()"
                         [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
-                  <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
+                  <span class="hidden-sm-down">{{ 'dailyPlan.button.cancel' | translate }}</span>
                 </button>
               }
             </div>
@@ -738,13 +738,13 @@
             <button (click)="removeSelectedOrder()"
                     class="btn btn-grey btn-sm m-l-12 bg-hover-color"><i
               class="fa fa-trash"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
+              <span class="hidden-sm-down">{{ 'dailyPlan.button.removeOrder' | translate }}</span>
             </button>
             @if (permission.currentController && permission.currentController.orders.cancel) {
               <button (click)="cancelSelectedOrder()"
                       class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-times"></i>&nbsp;
-                <span class="hidden-sm-down" translate>dailyPlan.button.cancel</span>
+                <span class="hidden-sm-down">{{ 'dailyPlan.button.cancel' | translate }}</span>
               </button>
             }
           </div>
@@ -755,7 +755,7 @@
 </div>
 <div class='scroll-y max-ht'>
   <div class="padding p-t-sm p-b-0">
-    <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
+    <nz-tabs (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
       <nz-tab [nzTitle]="dailyPlanTabTitle">
         <div class="row">
           <div class="col-lg-12">
@@ -764,9 +764,9 @@
                 <div class="p-b b-b icon-hover">
                   <ng-template #tooltipTemplate>
                     <div class="m-a-xs">
-                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep1</span><br>
-                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep2</span><br>
-                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
+                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span>{{ 'dailyPlan.tooltip.dateRangeSelectStep1' | translate }}</span><br>
+                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span>{{ 'dailyPlan.tooltip.dateRangeSelectStep2' | translate }}</span><br>
+                      <i class="fa fa-circle circle daily-plan-step-icon"></i><span>{{ 'dailyPlan.tooltip.dateRangeSelectStep3' | translate }}</span>
                     </div>
                   </ng-template>
                   @if (preferences.showHelpPages) {
@@ -781,21 +781,21 @@
                     <button (click)="createPlan()"
                             [disabled]="isPastDate" class="btn btn-grey btn-sm m-b-sm">
                       <i class="fa fa-plus"></i>&nbsp;
-                      <span translate>dailyPlan.button.createPlan</span>
+                      <span>{{ 'dailyPlan.button.createPlan' | translate }}</span>
                     </button>
                   }
                   @if (permission.joc && permission.joc.dailyPlan.manage) {
                     <button (click)="deleteSubmission()"
                             class="btn btn-grey btn-sm m-l-xs m-b-sm">
                       <i class="fa fa-trash"></i>&nbsp;
-                      <span translate>dailyPlan.button.deleteSubmissions</span>
+                      <span>{{ 'dailyPlan.button.deleteSubmissions' | translate }}</span>
                     </button>
                   }
                   @if (submissionHistory.length > 0 && dateRanges.length == 0) {
                     <div class="m-t-sm p-a-sm p-l-0">
                       <div class="_600 m-b-sm text-left p-l font14">
                         <a (click)="navToHistory()" class="text-hover-primary"
-                           translate>dailyPlan.label.submissionHistory</a>
+>{{ 'dailyPlan.label.submissionHistory' | translate }}</a>
                       </div>
                       <ul class="text-left p-l max-ht-n-560">
                         @for (history of submissionHistory; track history.submissionHistoryId) {
@@ -803,7 +803,7 @@
                             <a (click)="selectSubmissionHistory(history.submissionHistoryId)"
                                [ngClass]="{ 'text-primary' : selectedSubmissionId === history.submissionHistoryId }">
                               <i class="fa fa-circle p-r-xs"></i>
-                              <span translate>dailyPlan.label.created</span> -
+                              <span>{{ 'dailyPlan.label.created' | translate }}</span> -
                               <i class="text-muted">{{history.submissionTime | stringToDate}}</i>
                             </a>
                           </li>
@@ -814,13 +814,13 @@
                   @if (dateRanges.length > 0) {
                     <div class="m-t-sm p-a-sm p-l-0">
                       <div class="_600 m-b-sm text-left p-l font14">
-                        <a translate>common.label.dateRange</a>
+                        <a>{{ 'common.label.dateRange' | translate }}</a>
                       </div>
                       <ul class="text-left p-l">
                         <li>
                           <a>
                             <div class="w inline">
-                              <span translate>common.label.from</span>
+                              <span>{{ 'common.label.from' | translate }}</span>
                               <i> -</i>
                             </div>
                             <i class="text-muted pos-rel t-n-xs">{{dateRanges[0] | stringToDate1: true}}</i>
@@ -829,7 +829,7 @@
                         <li>
                           <a>
                             <div class="w inline">
-                              <span translate>common.label.to</span>
+                              <span>{{ 'common.label.to' | translate }}</span>
                               <i> -</i>
                             </div>
                             <i class="text-muted pos-rel t-n-xs">{{dateRanges[1] | stringToDate1: true}}</i>
@@ -846,7 +846,7 @@
                 @if (preferences?.enableTagging) {
                 <div class="col-lg-2 col-sm-3 p-r-xs">
                   <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
-                    <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
+                    <nz-tabs class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="dailyPlanFilters.selectedIndex">
                       <nz-tab (nzClick)="switchToTagging('workflowTags');dailyPlanFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
                         <ng-template #workflowTagsTitle>
                           <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
@@ -857,7 +857,7 @@
                           <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
                         </ng-template>
                       </nz-tab>
-                    </nz-tabset>
+                    </nz-tabs>
                     @if (dailyPlanFilters.tagType === 'workflowTags') {
                       <div>
                         <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm daily-plan-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
@@ -1021,43 +1021,43 @@
                                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
                                   class="btn btn-grey btn-sm hidden-btn-text">
                             <i class="icon icon-orders-icon"></i>
-                            <span translate>dailyPlan.button.groupByOrder</span>
+                            <span>{{ 'dailyPlan.button.groupByOrder' | translate }}</span>
                           </button>
                           <button (click)="groupByWorkflow('ORDER')"
                                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
                                   class="btn btn-grey btn-sm hidden-btn-text">
                             <i class="icon icon-calendar-icon"></i>
-                            <span translate>dailyPlan.button.groupByScheduleTemplate</span>
+                            <span>{{ 'dailyPlan.button.groupByScheduleTemplate' | translate }}</span>
                           </button>
                           <button (click)="groupByWorkflow('WORKFLOW')"
                                   [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
                                   class="btn btn-grey btn-sm hidden-btn-text">
                             <i class="icon icon-workflows-icon"></i>
-                            <span translate>dailyPlan.button.groupByWorkflow</span>
+                            <span>{{ 'dailyPlan.button.groupByWorkflow' | translate }}</span>
                           </button>
                           @if (showMoreAdvanceOptions) {
                             <button (click)="filterByOrders('')"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
                                     class="btn btn-grey btn-sm hidden-btn-text m-l-12">
                               <i class="icon icon-orders-icon"></i>
-                              <span translate>dailyPlan.label.all</span>
+                              <span>{{ 'dailyPlan.label.all' | translate }}</span>
                             </button>
                             <button (click)="filterByOrders('ONETIMEORDERS')"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
                                     class="btn btn-grey btn-sm hidden-btn-text">
                               <i class="icon icon-calendar-icon"></i>
-                              <span translate>dailyPlan.label.oneTimeOrders</span>
+                              <span>{{ 'dailyPlan.label.oneTimeOrders' | translate }}</span>
                             </button>
                             <button (click)="filterByOrders('CYCLICORDER')"
                                     [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
                                     class="btn btn-grey btn-sm hidden-btn-text">
                               <i class="icon icon-workflows-icon"></i>
-                              <span translate>dailyPlan.label.cyclicOrders</span>
+                              <span>{{ 'dailyPlan.label.cyclicOrders' | translate }}</span>
                             </button>
                           }
                           <button (click)="showSearchPanel ? cancel() : advancedSearch()"
                                   class="btn btn-sm inline pull-right m-l btn-grey">
-                            <span translate>common.button.advancedSearch</span>
+                            <span>{{ 'common.button.advancedSearch' | translate }}</span>
                             <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
                           </button>
                           <div class="search-box-field pull-right">
@@ -1104,31 +1104,31 @@
                     @if (object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage)) {
                       <div class="text-center font14 box p-a-sm m-b-12">
                         @if (object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && !isAllOrderSelected) {
-                          <span [translateParams]="{count: object.mapOfCheckedId.size}"
-                                translate>common.label.selectAllEntriesOfCurrentPage</span>
+                          <span
+>{{ 'common.label.selectAllEntriesOfCurrentPage' | translate: {count: object.mapOfCheckedId.size} }}</span>
                         }
                         @if (object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders) && !isAllOrderSelected) {
-                          <span [translateParams]="{count: (totalOrders - totalFinishedOrders)}"
-                                translate>common.label.allEntriesSelected</span>
+                          <span
+>{{ 'common.label.allEntriesSelected' | translate: {count: (totalOrders - totalFinishedOrders)} }}</span>
                         }
                         @if (object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status === 'ALL' && !isAllOrderSelected) {
                           <a (click)="selectAll()"
-                             [translateParams]="{count: (totalOrders)}" class="text-primary p-l-xs"
-                             translate>common.label.selectAllEntries</a>
+                             class="text-primary p-l-xs"
+>{{ 'common.label.selectAllEntries' | translate: {count: (totalOrders)} }}</a>
                         }
                         @if (object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status != 'FINISHED' && dailyPlanFilters.filter.status != 'ALL' && !isAllOrderSelected) {
                           <a (click)="selectAll()"
-                             [translateParams]="{count: (totalOrders - totalFinishedOrders)}" class="text-primary p-l-xs"
-                             translate>common.label.selectAllEntries</a>
+                             class="text-primary p-l-xs"
+>{{ 'common.label.selectAllEntries' | translate: {count: (totalOrders - totalFinishedOrders)} }}</a>
                         }
                         @if (object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status === 'FINISHED' && !isAllOrderSelected) {
                           <a (click)="selectAll()"
-                             [translateParams]="{count: (totalFinishedOrders)}" class="text-primary p-l-xs"
-                             translate>common.label.selectAllEntries</a>
+                             class="text-primary p-l-xs"
+>{{ 'common.label.selectAllEntries' | translate: {count: (totalFinishedOrders)} }}</a>
                         }
                         @if (isAllOrderSelected) {
                           <a (click)="isAllSelected = false;resetCheckBox();isAllOrderSelected = false"
-                             class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+                             class="text-primary p-l-xs">{{ 'common.label.clearSelection' | translate }}</a>
                         }
                       </div>
                     }
@@ -1157,10 +1157,10 @@
                                   (nzCheckedChange)="checkAll()"
                                   class="chk">
                               </th>
-                              <th class="menu"><span translate>common.label.action</span></th>
+                              <th class="menu"><span>{{ 'common.label.action' | translate }}</span></th>
                               @if (dailyPlanFilters.filter.groupBy === 'ORDER') {
                                 <th (click)="sort('orderId')">
-                                  <a><span class="p-r-xs" translate>dailyPlan.label.scheduleAndOrder</span>
+                                  <a><span class="p-r-xs">{{ 'dailyPlan.label.scheduleAndOrder' | translate }}</span>
                                     @if (dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse) {
                                       <i class="fa fa-caret-up "></i>
                                     }
@@ -1172,7 +1172,7 @@
                               @if (dailyPlanFilters.filter.groupBy === '') {
                                 <th (click)="sort('orderId')">
                                   <a>
-                                    <span class="p-r-xs" translate>dailyPlan.label.order</span>
+                                    <span class="p-r-xs">{{ 'dailyPlan.label.order' | translate }}</span>
                                     @if (dailyPlanFilters.filter.sortBy == 'orderId' && !dailyPlanFilters.reverse) {
                                       <i class="fa fa-caret-up "></i>
                                     }
@@ -1184,7 +1184,7 @@
                               @if (dailyPlanFilters.filter.groupBy === '') {
                                 <th (click)="sort('schedulePath')">
                                   <a>
-                                    <span class="p-r-xs" translate>dailyPlan.label.schedule</span>
+                                    <span class="p-r-xs">{{ 'dailyPlan.label.schedule' | translate }}</span>
                                     @if (dailyPlanFilters.filter.sortBy == 'schedulePath' && !dailyPlanFilters.reverse) {
                                       <i class="fa fa-caret-up "></i>
                                     }
@@ -1196,10 +1196,10 @@
                               <th (click)="sort('workflowPath')">
                                 <a>
                                   @if (dailyPlanFilters.filter.groupBy !== 'WORKFLOW') {
-                                    <span class="p-r-xs" translate>dailyPlan.label.workflow</span>
+                                    <span class="p-r-xs">{{ 'dailyPlan.label.workflow' | translate }}</span>
                                   }
                                   @if (dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-                                    <span class="p-r-xs" translate>dailyPlan.label.workflowAndOrder</span>
+                                    <span class="p-r-xs">{{ 'dailyPlan.label.workflowAndOrder' | translate }}</span>
                                   }
                                   @if (dailyPlanFilters.filter.sortBy == 'workflowPath' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
@@ -1209,7 +1209,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('status')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.state</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.state' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'status' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1218,7 +1218,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('late')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.late</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.late' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1227,7 +1227,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('plannedStartTime')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.plannedStart</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.plannedStart' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'plannedStartTime' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1236,7 +1236,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('expectedEndTime')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.expectedEnd</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.expectedEnd' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'expectedEndTime' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1245,7 +1245,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('expectedDuration')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.expectedDuration</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.expectedDuration' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'duration' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1254,7 +1254,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('startTime')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.startTime</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.startTime' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'startTime' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1263,7 +1263,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('endTime')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.endTime</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.endTime' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'endTime' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1272,7 +1272,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('duration')">
-                                <a><span class="p-r-xs" translate>common.label.duration</span>
+                                <a><span class="p-r-xs">{{ 'common.label.duration' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'duration1' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1281,7 +1281,7 @@
                                   }</a>
                               </th>
                               <th (click)="sort('period.repeat')">
-                                <a><span class="p-r-xs" translate>dailyPlan.label.repeatInterval</span>
+                                <a><span class="p-r-xs">{{ 'dailyPlan.label.repeatInterval' | translate }}</span>
                                   @if (dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse) {
                                     <i class="fa fa-caret-up "></i>
                                   }
@@ -1310,16 +1310,16 @@
                         @if (ajaxTable.data.length >0) {
                           <div class="w-half label-top">
                             @if (dailyPlanFilters.filter.groupBy === 'ORDER') {
-                              <span [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
-                                    translate>dailyPlan.label.totalEntry</span>
+                              <span
+>{{ 'dailyPlan.label.totalEntry' | translate: {total: planOrders.length, orderCount: totalOrders} }}</span>
                             }
                             @if (dailyPlanFilters.filter.groupBy === 'WORKFLOW') {
-                              <span [translateParams]="{total: planOrders.length, orderCount: totalOrders}"
-                                    translate>dailyPlan.label.totalWorkflowEntry</span>
+                              <span
+>{{ 'dailyPlan.label.totalWorkflowEntry' | translate: {total: planOrders.length, orderCount: totalOrders} }}</span>
                             }
                             @if (dailyPlanFilters.filter.groupBy === '') {
-                              <span [translateParams]="{total: planOrders.length}"
-                                    translate>dailyPlan.label.totalOrderEntry</span>
+                              <span
+>{{ 'dailyPlan.label.totalOrderEntry' | translate: {total: planOrders.length} }}</span>
                             }
                           </div>
                         }
@@ -1338,7 +1338,7 @@
               [appRichTooltip]="'common.tooltip.help' | translate"
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
-          <span translate>dailyPlan.tab.dailyPlan</span>
+          <span>{{ 'dailyPlan.tab.dailyPlan' | translate }}</span>
         </div>
       </ng-template>
       <nz-tab [nzTitle]="projectionTabTitle">
@@ -1347,13 +1347,13 @@
             <div class="inline btn-group">
               <div (click)="setView('Month')"
                    [class.primary]="dailyPlanFilters.projection.calView === 'Month'"
-                   class="btn btn-default btn-sm" translate>
-                runtime.label.monthly
+                   class="btn btn-default btn-sm">
+                {{ 'runtime.label.monthly' | translate }}
               </div>
               <div (click)="setView('Year')"
                    [class.primary]="dailyPlanFilters.projection.calView === 'Year'"
-                   class="btn btn-default btn-sm" translate>
-                runtime.label.yearly
+                   class="btn btn-default btn-sm">
+                {{ 'runtime.label.yearly' | translate }}
               </div>
             </div>
             <div class="inline m-l-12 b-l p-l-12" style="height: 26px">
@@ -1365,11 +1365,11 @@
               </div>
             </div>
             <button (click)="showSearchPanel ? cancel() : advancedSearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
-              <span translate>common.button.advancedSearch</span>
+              <span>{{ 'common.button.advancedSearch' | translate }}</span>
               <i class="fa p-l-xs" [ngClass]="!showSearchPanel ? 'fa-caret-down' : 'fa-caret-up'"></i>
             </button>
             <button (click)="recreateProjection()" class="btn btn-grey btn-sm button-group-ellipsis pull-right">
-              <span translate>dailyPlan.button.recreate</span>
+              <span>{{ 'dailyPlan.button.recreate' | translate }}</span>
             </button>
             <div class="inline pull-right m-r-12 pos-rel t-xxs">
               <label [appRichTooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
@@ -1379,8 +1379,8 @@
             @if (projectionData && surveyDate) {
               <div class="inline pull-right b-r m-r-12" style="height: 26px">
                 <div class="m-r-12 pos-rel t-3">
-                  <label translate>dashboard.label.surveyDate</label>:
-                  <label class="text-muted p-l-xs" translate>{{surveyDate | stringToDate}}</label>
+                  <label>{{ 'dashboard.label.surveyDate' | translate }}</label>:
+                  <label class="text-muted p-l-xs">{{surveyDate | stringToDate}}</label>
                 </div>
               </div>
             }
@@ -1401,7 +1401,7 @@
               [appRichTooltip]="'common.tooltip.help' | translate"
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
-          <span translate>dailyPlan.tab.projection</span>
+          <span>{{ 'dailyPlan.tab.projection' | translate }}</span>
         </div>
       </ng-template>
       <nz-tab [nzTitle]="dependenciesTabTitle">
@@ -1418,10 +1418,10 @@
               [appRichTooltip]="'common.tooltip.help' | translate"
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
-          <span translate>dailyPlan.tab.dependencies</span>
+          <span>{{ 'dailyPlan.tab.dependencies' | translate }}</span>
         </div>
       </ng-template>
-    </nz-tabset>
+    </nz-tabs>
 
   </div>
 </div>

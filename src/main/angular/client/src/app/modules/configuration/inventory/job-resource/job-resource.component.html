@@ -12,7 +12,7 @@
             <span class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
             @if (lastModified) {
               <span class="text-dark text-sm _400"> -
-                <b translate>inventory.label.lastModified</b>
+                <b>{{ 'inventory.label.lastModified' | translate }}</b>
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
@@ -31,11 +31,11 @@
                 <span [ngClass]="!jobResource.valid ? 'badge-danger':'badge-success'"
                       class="badge badge-success m-r-12">
                     @if (jobResource.valid) {
-                      <span translate>inventory.label.valid</span>
+                      <span>{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!jobResource.valid) {
                     <span>
-                        <span translate>inventory.label.notValid</span>
+                        <span>{{ 'inventory.label.notValid' | translate }}</span>
                         <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
                       </span>
                   }
@@ -43,10 +43,10 @@
               }
               <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
                 @if (!data.deployed) {
-                  <span translate>inventory.label.notDeployed</span>
+                  <span>{{ 'inventory.label.notDeployed' | translate }}</span>
                 }
                 @if (data.deployed) {
-                  <span translate>inventory.label.deployed</span>
+                  <span>{{ 'inventory.label.deployed' | translate }}</span>
                 }
               </span>
               @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
@@ -61,7 +61,7 @@
                   [disabled]="!jobResource.valid && !jobResource.hasDeployments"
                   class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
-                  <span translate>inventory.button.deploy</span>
+                  <span>{{ 'inventory.button.deploy' | translate }}</span>
                 </button>
               }
             </div>
@@ -73,19 +73,19 @@
               @if (!showMoreAdvanceOptions) {
                 <a class="text-primary cursor" (click)="showMoreOptions()">
                   <i class="fa fa-caret-right m-r-xs"></i>
-                  <span translate>common.label.showMoreOptions</span>
+                  <span>{{ 'common.label.showMoreOptions' | translate }}</span>
                 </a>
               } @else {
                 <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
                   <i class="fa fa-caret-down m-r-xs"></i>
-                  <span translate>common.label.showFewerOptions</span>
+                  <span>{{ 'common.label.showFewerOptions' | translate }}</span>
                 </a>
               }
             </div>
           </div>
           <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label">
-              <span [appRichTooltip]="'inventory.tooltips.jobResource.name' | translate" translate>common.label.name</span>
+              <span [appRichTooltip]="'inventory.tooltips.jobResource.name' | translate">{{ 'common.label.name' | translate }}</span>
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -96,10 +96,10 @@
               @if (name.invalid && (name.dirty || name.touched)) {
                 <div class="text-danger help-block">
                   @if (name.errors.required) {
-                    <div translate>common.message.requiredError</div>
+                    <div>{{ 'common.message.requiredError' | translate }}</div>
                   }
                   @if (name.errors.invalidIdentifier) {
-                    <div translate>common.message.invalid</div>
+                    <div>{{ 'common.message.invalid' | translate }}</div>
                   }
                 </div>
               }
@@ -107,7 +107,7 @@
           </div>
           <div class="form-group row">
             <label class="col-md-4 col-lg-3 form-control-label">
-              <span [appRichTooltip]="'inventory.tooltips.jobResource.title' | translate" translate>common.label.title</span>
+              <span [appRichTooltip]="'inventory.tooltips.jobResource.title' | translate">{{ 'common.label.title' | translate }}</span>
             </label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="jobResource.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
@@ -123,7 +123,7 @@
           @if (showMoreAdvanceOptions) {
             <div class="form-group row">
               <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label">
-                <span [appRichTooltip]="'inventory.tooltips.jobResource.documentation' | translate" translate>inventory.label.documentation</span>
+                <span [appRichTooltip]="'inventory.tooltips.jobResource.documentation' | translate">{{ 'inventory.label.documentation' | translate }}</span>
               </label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-document (funcCall)="saveJSON($event)" [data]="jobResource.configuration"
@@ -133,24 +133,24 @@
           }
           <div class="form-group row">
             <div class="col-md-12">
-              <nz-tabset>
+              <nz-tabs>
                 <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
                   <div class="pos-abt r-t-12">
-                    <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate type="button">
+                    <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" [appRichTooltip]="'encipherment.label.encryptAll' | translate" type="button">
                       <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                     </button>
                     <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.cut' | translate" translate type="button">
+                            [appRichTooltip]="'common.button.cut' | translate" type="button">
                       <i class="fa fa-scissors"></i>
                     </button>
                     <button (click)="copyParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0"
                             class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.copy' | translate" translate type="button">
+                            [appRichTooltip]="'common.button.copy' | translate" type="button">
                       <i class="fa fa-copy"></i>
                     </button>
                     <button (click)="pasteParam('arguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
                             class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.paste' | translate" translate
+                            [appRichTooltip]="'common.button.paste' | translate"
                             type="button">
                       <i class="fa fa-paste"></i>
                     </button>
@@ -165,8 +165,8 @@
                       }
                       @if (jobResource.configuration.arguments.length > 0) {
                         <div class="form-group row m-b-0 m-l-md">
-                          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">{{ 'common.label.name' | translate }}</div>
+                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm">{{ 'common.label.value' | translate }}</div>
                         </div>
                       }
                     </div>
@@ -191,7 +191,7 @@
                               @if (aname.invalid && aname.errors && (aname.dirty || aname.touched)) {
                                 <div class="text-danger help-block">
                                   @if (aname.errors.invalidIdentifier) {
-                                    <div translate>common.message.invalid</div>
+                                    <div>{{ 'common.message.invalid' | translate }}</div>
                                   }
                                 </div>
                               }
@@ -219,9 +219,9 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-12">
-                          <a (click)="addArgu()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                          <a (click)="addArgu()" class="text-u-l m-l-11">{{ 'workflow.button.addArgument' | translate }}</a>
                           @if (hasMailProperty) {
-                            <a (click)="testMail()" class="text-u-l m-l-12" translate>inventory.button.testMail</a>
+                            <a (click)="testMail()" class="text-u-l m-l-12">{{ 'inventory.button.testMail' | translate }}</a>
                           }
                         </div>
                       </div>
@@ -230,21 +230,21 @@
                 </nz-tab>
                 <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
                   <div class="pos-abt r-t-12">
-                    <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" [appRichTooltip]="'encipherment.label.encryptAll' | translate" translate type="button">
+                    <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" [appRichTooltip]="'encipherment.label.encryptAll' | translate" type="button">
                       <span nz-icon nzType="file-protect" nzTheme="outline"></span>
                     </button>
                     <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.cut' | translate" translate type="button">
+                            [appRichTooltip]="'common.button.cut' | translate" type="button">
                       <i class="fa fa-scissors"></i>
                     </button>
                     <button (click)="copyParam('env')" [disabled]="object.setOfCheckedEnv.size === 0"
                             class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.copy' | translate" translate type="button">
+                            [appRichTooltip]="'common.button.copy' | translate" type="button">
                       <i class="fa fa-copy"></i>
                     </button>
                     <button (click)="pasteParam('env')" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
                             class="btn btn-grey btn-sm m-l-sm"
-                            [appRichTooltip]="'common.button.paste' | translate" translate type="button">
+                            [appRichTooltip]="'common.button.paste' | translate" type="button">
                       <i class="fa fa-paste"></i>
                     </button>
                   </div>
@@ -256,8 +256,8 @@
                                  (nzCheckedChange)="onAllChecked('env', $event)" ></label>
                         </div>
                         <div class="form-group row m-b-0 m-l-md">
-                          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">{{ 'common.label.name' | translate }}</div>
+                          <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm">{{ 'common.label.value' | translate }}</div>
                         </div>
                       </div>
                     }
@@ -281,7 +281,7 @@
                               @if (ename.invalid && ename.errors && (ename.dirty || ename.touched)) {
                                 <div class="text-danger help-block">
                                   @if (ename.errors.invalidIdentifier) {
-                                    <div translate>common.message.invalid</div>
+                                    <div>{{ 'common.message.invalid' | translate }}</div>
                                   }
                                 </div>
                               }
@@ -309,13 +309,13 @@
                       </div>
                       <div class="form-group row">
                         <div class="col-sm-12">
-                          <a (click)="addEnv()" class="text-u-l m-l-11" translate>order.button.addVariable</a>
+                          <a (click)="addEnv()" class="text-u-l m-l-11">{{ 'order.button.addVariable' | translate }}</a>
                         </div>
                       </div>
                     </div>
                   </div>
                 </nz-tab>
-              </nz-tabset>
+              </nz-tabs>
             </div>
           </div>
         }

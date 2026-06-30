@@ -2,12 +2,12 @@
   <h4 class="modal-title">
     @if (!newFolder) {
       <span>
-        <span translate>user.label.editFolder</span>:
+        <span>{{ 'user.label.editFolder' | translate }}</span>:
         <span>{{currentFolder.folderName}}</span>
       </span>
     }
     @if (newFolder) {
-      <span translate>user.label.addFolder</span>
+      <span>{{ 'user.label.addFolder' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -22,7 +22,7 @@
     @if (!newFolder) {
       <div class="form-group row">
         <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.folders' | translate" translate>user.label.folders</span>
+          <span [appRichTooltip]="'user.tooltip.folders' | translate">{{ 'user.label.folders' | translate }}</span>
           @if (folderObj.paths.length===0) {
             <sup class="text-danger text-sm">*</sup>
           }
@@ -34,7 +34,7 @@
           @if (folder.invalid && (folder.dirty || folder.touched)) {
             <div class="text-danger help-block">
               @if (folder.errors['required']) {
-                <div translate>common.message.requiredError</div>
+                <div>{{ 'common.message.requiredError' | translate }}</div>
               }
             </div>
           }
@@ -44,7 +44,7 @@
     @if (newFolder) {
       <div class="form-group row">
         <label class="col-sm-3 form-control-label">
-          <span [appRichTooltip]="'user.tooltip.folders' | translate" translate>user.label.folders</span>
+          <span [appRichTooltip]="'user.tooltip.folders' | translate">{{ 'user.label.folders' | translate }}</span>
         </label>
         <div class="col-sm-8">
           <nz-tree-select
@@ -67,7 +67,7 @@
                   <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                   {{node.origin.name}}
                   @if (node.origin.notExist) {
-                    <span class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
+                    <span class="m-l-sm label bg-danger">{{ 'user.label.folderNotExist' | translate }}</span>
                   }
                   @if (folderObj.paths && folderObj.paths.indexOf(node.origin.path) === -1) {
                     <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
@@ -88,7 +88,7 @@
     }
     <div class="form-group row">
       <label class="col-sm-3">
-        <span [appRichTooltip]="'user.tooltip.recursive' | translate" translate>user.label.recursive</span>
+        <span [appRichTooltip]="'user.tooltip.recursive' | translate">{{ 'user.label.recursive' | translate }}</span>
       </label>
       <div class="col-sm-6">
         <label nz-checkbox [(ngModel)]="currentFolder.recursive" name="recursive"></label>
@@ -103,8 +103,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

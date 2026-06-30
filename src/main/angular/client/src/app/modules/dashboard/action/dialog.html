@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>common.label.writeComment</span>
+    <span>{{ 'common.label.writeComment' | translate }}</span>
     @if (controllerID) {
       <span>: {{controllerID}}</span>
     }
@@ -14,7 +14,7 @@
     @if (comments.name) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'dashboard.tooltip.controllerId' | translate" translate>common.label.controllerId</span>
+          <span [appRichTooltip]="'dashboard.tooltip.controllerId' | translate">{{ 'common.label.controllerId' | translate }}</span>
         </label>
         <label class="col-sm-8">{{comments.name}}</label>
       </div>
@@ -22,7 +22,7 @@
     @if (comments.operation) {
       <div class="form-group row">
         <label class="col-sm-4">
-          <span [appRichTooltip]="'dashboard.tooltip.operation' | translate" translate>common.label.operation</span>
+          <span [appRichTooltip]="'dashboard.tooltip.operation' | translate">{{ 'common.label.operation' | translate }}</span>
         </label>
         <label class="col-sm-8">{{comments.operation}}</label>
       </div>
@@ -41,8 +41,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>

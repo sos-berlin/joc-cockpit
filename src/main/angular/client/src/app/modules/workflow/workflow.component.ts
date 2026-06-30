@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -28,6 +28,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-filter-workflow-content',
   templateUrl: './filter-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -77,6 +78,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -323,7 +325,8 @@ ngOnInit(): void {
 @Component({
   standalone: false,
   selector: 'app-bulk-add-order',
-  templateUrl: './bulk-add-order-dialog.html'
+  templateUrl: './bulk-add-order-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BulkAddOrderComponent {
 
@@ -486,7 +489,8 @@ export class BulkAddOrderComponent {
 @Component({
   standalone: false,
   selector: 'app-single-workflow',
-  templateUrl: './single-workflow.component.html'
+  templateUrl: './single-workflow.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SingleWorkflowComponent {
   loading = true;
@@ -717,7 +721,8 @@ export class SingleWorkflowComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  templateUrl: './workflow.component.html'
+  templateUrl: './workflow.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowComponent {
   isLoading = false;
@@ -1028,6 +1033,7 @@ export class WorkflowComponent {
         this.clearCheckboxes = !this.clearCheckboxes;
         this.broadNames.clear();
       }
+      this.cdr.detectChanges();
     });
 
   }
@@ -1410,6 +1416,7 @@ export class WorkflowComponent {
           this.traverseTreeForSearchData();
         }
         this.updatePanelHeight();
+        this.cdr.detectChanges();
       }, error: () => this.loading = false
     });
   }
@@ -1630,6 +1637,7 @@ export class WorkflowComponent {
         this.loadWorkflow();
         this.resetCheckBox();
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -1829,6 +1837,7 @@ export class WorkflowComponent {
         obj.workflowTags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
+      this.cdr.detectChanges();
     });
 
   }
@@ -2003,6 +2012,7 @@ export class WorkflowComponent {
             this.saveService.save();
           }
         }
+        this.cdr.detectChanges();
       });
     }
   }
@@ -2032,6 +2042,7 @@ export class WorkflowComponent {
           this.copyFilter(obj);
         }
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -2552,6 +2563,7 @@ export class WorkflowComponent {
           }
         }
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -2639,6 +2651,7 @@ export class WorkflowComponent {
             cb();
           }
           this.resetAction();
+          this.cdr.detectChanges();
         }, error: () => {
           if (cb) {
             cb();
@@ -2903,6 +2916,7 @@ export class WorkflowComponent {
           obj.orderTags = Array.from(this.coreService.checkedOrderTags);
           this.searchByOrderTags(obj);
         }
+        this.cdr.detectChanges();
       });
 
     }
@@ -3122,6 +3136,7 @@ export class WorkflowComponent {
         }
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'WORKFLOW', action: 'read' });
       }
+      this.cdr.detectChanges();
     });
   }
 

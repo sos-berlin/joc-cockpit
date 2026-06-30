@@ -47,15 +47,15 @@
     <div class="col-sm-12 m-t m-b">
       @if (lossNode) {
         <span class="text">
-          <span [translateParams]="{lossNode: lossNode}" class="text"
-                translate>dashboard.message.confirmNodeLoss</span>
+          <span class="text"
+>{{ 'dashboard.message.confirmNodeLoss' | translate: {lossNode: lossNode} }}</span>
         </span>
       }
       @if (updateFromJobTemplate) {
-        <span class="text" translate>inventory.message.updateFromJobTemplate</span>
+        <span class="text">{{ 'inventory.message.updateFromJobTemplate' | translate }}</span>
       }
       @if (message === 'closedPlanType') {
-        <span class="text"  [translateParams]="{planId: planId}" translate>common.message.closedPlanType</span>
+        <span class="text" >{{ 'common.message.closedPlanType' | translate: {planId: planId} }}</span>
       }
       @if (question) {
         <span class="text">{{question | translate}}</span>
@@ -71,8 +71,8 @@
         </span>
       }
       @if (countMessage && count > 0) {
-        <span [translateParams]="{count: count}" class="text"
-              translate>{{'common.message.' + countMessage}}</span>
+        <span class="text"
+>{{ 'common.message.' + countMessage | translate: {count: count} }}</span>
       }
       @if (countMessage && count === 0) {
         <span class="text">
@@ -99,7 +99,7 @@
         @for (document of documentArr; track document.name || $index; let i = $index) {
           <div [ngClass]="{'b-t p-t': i !=0}" class="row">
             <div class="col-sm-12">
-              <span class="col-md-3" translate>resource.documentation.label.documentation</span>
+              <span class="col-md-3">{{ 'resource.documentation.label.documentation' | translate }}</span>
               <label class="col-md-9">{{document.name}}</label>
             </div>
             <div class="col-sm-12">
@@ -122,8 +122,8 @@
       <div class="col-sm-12 text-left m-t-sm">
         <div class="row">
           <label class="col-md-3 col-md-offset-3">
-            <span [appRichTooltip]="'user.tooltip.account' | translate" translate>
-            user.label.account
+            <span [appRichTooltip]="'user.tooltip.account' | translate">
+            {{ 'user.label.account' | translate }}
           </span>
           </label>
           <div class="col-md-6  text-left">
@@ -148,7 +148,7 @@
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
            (click)="toggleAllAffectedCollapse()"></i>
         <label class="m-l-sm">
-          <span translate>inventory.label.affectedObjects</span>
+          <span>{{ 'inventory.label.affectedObjects' | translate }}</span>
         </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllAffected()"></i>
@@ -202,7 +202,7 @@
         <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
            (click)="toggleAllReferencedCollapse()"></i>
         <label class="m-l-sm">
-          <span translate>inventory.label.referencedObjects</span>
+          <span>{{ 'inventory.label.referencedObjects' | translate }}</span>
         </label>
         <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
            (click)="expandAllReferenced()"></i>
@@ -315,7 +315,7 @@
       <span>{{'common.button.confirm' | translate}}</span>
     }
   </button>
-  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-    common.button.cancel
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+    {{ 'common.button.cancel' | translate }}
   </button>
 </div>

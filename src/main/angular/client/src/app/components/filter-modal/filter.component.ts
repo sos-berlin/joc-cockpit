@@ -1,11 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   standalone: false,
   selector: 'app-edit-filter-modal',
-  templateUrl: './filter.component.html'
+  templateUrl: './filter.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditFilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -16,7 +17,7 @@ export class EditFilterModalComponent {
   action: any;
   self: any;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -44,6 +45,7 @@ export class EditFilterModalComponent {
       id: configObj.id
     }).subscribe(() => {
       configObj.shared = true;
+      this.cdr.markForCheck();
     });
   }
 
@@ -69,6 +71,7 @@ export class EditFilterModalComponent {
         }
       }
       this.action('DELETE', filter, this.self);
+      this.cdr.markForCheck();
     });
   }
 }

@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -24,7 +26,8 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
 @Component({
   standalone: false,
   selector: 'app-order-list-sidebar',
-  templateUrl: './order-list-sidebar.component.html'
+  templateUrl: './order-list-sidebar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OrderListSidebarComponent implements OnChanges {
   @Input() orders;
@@ -66,7 +69,8 @@ export class OrderListSidebarComponent implements OnChanges {
   ];
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
-  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -268,7 +272,9 @@ export class OrderListSidebarComponent implements OnChanges {
           this.resetAction(5000);
           this.resetCheckBox();
         }
+        this.cdr.markForCheck();
       });
+      this.cdr.markForCheck();
     });
   }
 
@@ -291,6 +297,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.resetAction(5000);
         this.resetCheckBox();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -314,6 +321,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.resetAction(5000);
         this.resetCheckBox();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -354,6 +362,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.resetAction(5000);
         this.resetCheckBox();
       }
+      this.cdr.markForCheck();
     });
   } else {
     const modal = this.modal.create({
@@ -376,6 +385,7 @@ export class OrderListSidebarComponent implements OnChanges {
         this.resetAction(5000);
         this.resetCheckBox();
       }
+      this.cdr.markForCheck();
     });
   }
 }

@@ -3,7 +3,7 @@ import {NzMentionModule} from 'ng-zorro-antd/mention';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzSwitchModule} from "ng-zorro-antd/switch";
-import {NgJsonEditorModule} from 'ang-jsoneditor';
+import {JsonEditorComponent} from 'ang-jsoneditor';
 import {DatePipe} from '@angular/common';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {InventoryService} from './inventory.service';
@@ -104,7 +104,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
         NzTabsModule,
         NzDrawerModule,
         NzSwitchModule,
-        NgJsonEditorModule,
+        JsonEditorComponent,
         ReactiveFormsModule,
         NzDividerModule,
         NzCardModule,

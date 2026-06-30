@@ -1,11 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   standalone: false,
   selector: 'app-comment-modal-content',
-  templateUrl: './comment.component.html'
+  templateUrl: './comment.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -15,7 +16,7 @@ export class CommentModalComponent {
   submitted = false;
   required = false;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -40,7 +41,8 @@ export class CommentModalComponent {
       this.coreService.post(this.url, this.obj).subscribe({
         next: () => {
           this.activeModal.close(auditLog);
-        }, error: () => this.submitted = false
+          this.cdr.markForCheck();
+        }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
     } else {
       this.activeModal.close(auditLog);

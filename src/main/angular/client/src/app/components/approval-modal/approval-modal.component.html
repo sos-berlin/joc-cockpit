@@ -4,10 +4,10 @@
       <i (click)="helpPage('approval-request')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if (!edit) {
-      <span translate>common.label.requestApproval</span>
+      <span>{{ 'common.label.requestApproval' | translate }}</span>
     }
     @if (edit) {
-      <span translate>common.button.edit</span>
+      <span>{{ 'common.button.edit' | translate }}</span>
     }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -18,7 +18,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'common.tooltip.title' | translate" translate>common.label.title</span>
+        <span [appRichTooltip]="'common.tooltip.title' | translate">{{ 'common.label.title' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -31,7 +31,7 @@
         @if (titleField.invalid && (titleField.dirty || titleField.touched)) {
           <div class="text-danger help-block">
             @if (titleField.errors?.['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -40,7 +40,7 @@
 
     <div  class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'common.tooltip.approver' | translate" translate>common.label.approver</span>
+        <span [appRichTooltip]="'common.tooltip.approver' | translate">{{ 'common.label.approver' | translate }}</span>
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
@@ -67,7 +67,7 @@
         @if (approverField.invalid && (approverField.dirty || approverField.touched)) {
           <div class="text-danger help-block">
             @if (approverField.errors?.['required']) {
-              <div translate>common.message.requiredError</div>
+              <div>{{ 'common.message.requiredError' | translate }}</div>
             }
           </div>
         }
@@ -77,7 +77,7 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
-        <span [appRichTooltip]="'auditLog.tooltip.reason' | translate" translate>auditLog.search.label.reason</span>
+        <span [appRichTooltip]="'auditLog.tooltip.reason' | translate">{{ 'auditLog.search.label.reason' | translate }}</span>
       </label>
       <div class="col-sm-8">
         <div class="row">
@@ -96,8 +96,8 @@
       }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      {{ 'common.button.cancel' | translate }}
     </button>
   </div>
 </form>
