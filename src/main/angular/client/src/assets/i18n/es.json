@@ -2775,7 +2775,7 @@
         "includeTodaysLateOrders": "Cancela las ^Órdenes^ del ^Plan Diario^ de hoy que están atrasadas.",
         "includeDependencies": "Recupera también objetos dependientes, por ejemplo, al recuperar un ^Calendario^ referenciado por una ^Planificación^.",
         "manageDependencies": "Muestra los objetos que referencian y los objetos referenciados por el objeto seleccionado.",
-        "showRelatedObjects": "Muestra objetos relacionados que no dependen directamente entre sí.",
+        "showRelatedObjects": "Muestra objetos relacionados que no dependen directamente entre sí."
         "handleRecursively":"Include Sub-folders"
       },
       "--------CREATE OBJECT DIALOG TOOLTIPS------------": "Page: Configuration, Sub-tab: Inventory, Pop-up: Create/Copy/Restore Object, Source: create-object-dialog.html",
@@ -4194,7 +4194,7 @@
       "num_of_tags_displayed_as_order_id": "Especifica el número de ^Tag^s mostradas con cada ^Order^.\n\nUn valor 0 suprimirá la visualización de Tags.",
       "num_of_workflow_tags_displayed": "Especifica el número de ^Tag^s mostradas con cada ^Workflow^.\n\nUn valor 0 suprimirá la visualización de Tags.",
       "report_java_options": "Los Reportes se crean desde una clase Java que puede configurarse para usar opciones Java.\n\nSe recomienda usar la opción `-Xmx<número>m` para aumentar la memoria heap.",
-      "approval_requestor_role": "Indica el nombre del rol asignado a las cuentas de usuario que pueden solicitar aprobación para operaciones que requieren los permisos especificados con el rol.",
+      "approval_requestor_role": "Indica el nombre del rol asignado a las cuentas de usuario que pueden solicitar aprobación para operaciones que requieren los permisos especificados con el rol."
       "workflows_requiring_approval": "Workflows requiring approval"
     },
     "user": {
