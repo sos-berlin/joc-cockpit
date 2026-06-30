@@ -4193,7 +4193,7 @@
       "num_of_workflow_tags_displayed": "Gibt die Anzahl ^Kennzeichnungen|tag^ an, die mit jedem ^Arbeitsablauf|workflow^ angezeigt werden.\n\nDer Wert 0 unterdrückt die Anzeige von Kennzeichnungen.",
       "report_java_options": "Berichte werden aus einer Java-Klasse erstellt, die für die Verwendung von Java Optionen konfiguriert werden kann.\n\nEs wird empfohlen, die Option `-Xmx<number>m` zu verwenden, um die Speichernutzung zu begrenzen, z.B. `-Xmx256m`.",
       "approval_requestor_role": "Gibt den Namen der Rolle an, die Benutzerkonten zugewiesen ist, die eine Autoriserung für Operationen beantragen können, die die mit der Rolle festgelegten Berechtigungen benötigen.",
-      "workflows_requiring_approval": "Workflows requiring approval"
+      "workflows_requiring_approval": "Gibt die ^Kennzeichnungen|tag^ für ^Arbeitsabläufe|workflow^ an, die eine Autorisierung für Operationen benötigen."
     },
     "user": {
       "group.user": "Benutzer",

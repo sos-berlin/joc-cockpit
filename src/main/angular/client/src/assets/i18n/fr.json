@@ -4193,7 +4193,7 @@
       "num_of_workflow_tags_displayed": "Spécifie le nombre de ^Tag^s affichés lors de chaque ^Workflow^.\n\nLa valeur 0 supprime l'affichage des Tags.",
       "report_java_options": "Les rapports sont créés à partir d'une classe Java qui peut être configurée pour utiliser des options Java. Il est recommandé d'utiliser l'option `-Xmx<nombre>m` pour limiter l'utilisation de la mémoire, par ex. `-Xmx256m`.",
       "approval_requestor_role": "Spécifie le nom du rôle auquel sont attribués les comptes utilisateurs qui peuvent demander l'autorisation d'opérations nécessitant des autorisations spécifiées avec le rôle.",
-      "workflows_requiring_approval": "Workflows requiring approval"
+      "workflows_requiring_approval": "Indique les ^Annonces|tag^ correspondant aux ^Workflow^s qui nécessitent une autorisation pour certaines opérations."
     },
     "user": {
       "group.user": "Utilisateur",

@@ -4193,7 +4193,7 @@
       "num_of_workflow_tags_displayed": "Specifies the number of ^Tag^s displayed with each ^Workflow^.\n\nA value 0 will suppress display of Tags.",
       "report_java_options": "Reports are created from a Java class that can be configured to use Java options.\n\nIt is recommended to use the `-Xmx<number>m` option to limit memory usage, for example, `-Xmx256m`.",
       "approval_requestor_role": "Indicates the name of the role that is assigned user accounts who can request approval for operations that require permissions specified with the role",
-      "workflows_requiring_approval": "Workflows requiring approval"
+      "workflows_requiring_approval": "Specifies the ^Tag^s for ^Workflow^s that require authorization for operations."
     },
     "user": {
       "group.user": "User",
