@@ -4153,6 +4153,7 @@
       "label.num_of_workflow_tags_displayed": "Display max. number of Workflow Tags",
       "label.report_java_options": "Report Service Java options",
       "label.approval_requestor_role": "Approval Requestor Role",
+      "label.workflows_requiring_approval": "Workflows requiring approval",
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as adding an ^Order^, cancelling an Order etc. a reason must be added to the Audit Log.",
       "comments_for_audit_log": "Offers an extensible list of predefined reasons from which users can select when adding reasons for user intervention to the Audit Log.",
       "default_profile_account": "Specifies the user account that is used to populate Profiles of new user accounts.",

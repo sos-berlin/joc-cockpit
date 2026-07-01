@@ -1338,6 +1338,10 @@
               [appRichTooltip]="'common.tooltip.help' | translate"
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
+          @if (preferences.showVideoHelpPages) {
+          <i (click)="videoPage('dailyplan-overview')" [appRichTooltip]="'common.tooltip.video' | translate"
+            class="help-info-dashboard tab-help-icon cur-point fa fa-play-circle text-14 m-r-sm"></i>
+          }
           <span>{{ 'dailyPlan.tab.dailyPlan' | translate }}</span>
         </div>
       </ng-template>

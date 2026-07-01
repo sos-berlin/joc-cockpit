@@ -7359,6 +7359,10 @@ export class ExportComponent {
   helpPage(key): void {
     this.coreService.openHelpPage(key);
   }
+  
+  videoPage(key): void {
+    this.coreService.openVideoPage(key);
+  }
 
   getDisplayName(path: string): string {
     if (!path) {

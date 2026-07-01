@@ -3,6 +3,9 @@
     @if (preferences.showHelpPages) {
       <i (click)="helpPage('configuration-inventory-operations-export-folder')" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20 m-r-sm"></i>
     }
+    @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('inventoryobject-export')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-controllers-agent cur-point fa fa-play-circle text-20 m-r-sm"></i>
+      }
     <span>{{ 'inventory.label.export' | translate }}</span>
     @if (path) {
       <span>: {{path}}</span>

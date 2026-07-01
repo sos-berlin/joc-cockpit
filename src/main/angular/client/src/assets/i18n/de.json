@@ -4153,6 +4153,7 @@
       "label.num_of_workflow_tags_displayed": "Max. dargestellte Anzahl Kennzeichnungen für Arbeitsabläufe",
       "label.report_java_options": "Java Optionen des Berichtsdienstes",
       "label.approval_requestor_role": "Rolle des Anfragers von Autorisierungen",
+      "label.workflows_requiring_approval": "Workflows requiring approval",
       "force_comments_for_audit_log": "Bestimmt, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines ^Auftrags|order^ vom Benutzer eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Bietet eine erweiterbare Liste vordefinierter Begründungen für Änderungen an Objekten, aus der die Benutzer auswählen können, wenn Begründungen für eine Benutzerintervention in das Prüfprotokoll aufgenommen werden.",
       "default_profile_account": "Bestimmt das Benutzeronto, das als Muster für Einstellungen neu hinzugefügter Benutzerkonten verwendet wird.",

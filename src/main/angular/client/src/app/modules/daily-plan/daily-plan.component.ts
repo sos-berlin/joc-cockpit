@@ -3824,6 +3824,9 @@ export class DailyPlanComponent {
     this.coreService.openHelpPage(helpKey);
   }
 
+  videoPage(key): void {
+    this.coreService.openVideoPage(key);
+  }
 
   notesForWorkflow(workflowPath: string, order?: any): void {
     const modal = this.modal.create({

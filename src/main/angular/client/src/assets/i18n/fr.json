@@ -4153,6 +4153,7 @@
       "label.num_of_workflow_tags_displayed": "Afficher le nombre max. de Tags de Workflow",
       "label.report_java_options": "Options Java du Service de Rapport",
       "label.approval_requestor_role": "Rôle de Demandeur d'Autorisation",
+      "label.workflows_requiring_approval": "Workflows requiring approval",
       "force_comments_for_audit_log": "Spécifie que pour tout changement appliqué à un objet tel que l'ajout d'un ^Ordre|order^, l'annulation d'un Ordre etc., une justification doit être ajoutée au *Journal d'Audit*.",
       "comments_for_audit_log": "Propose une liste extensible de justifications prédéfinies pour les modifications apportées aux objets, parmi lesquelles les utilisateurs peuvent choisir lorsque des justifications de leur intervention doivent être consignées dans le Journal d'Audit.",
       "default_profile_account": "Spécifie le compte utilisateur qui est utilisé pour remplir les profils de tous les nouveaux comptes utilisateurs.",

@@ -4153,6 +4153,7 @@
       "label.num_of_workflow_tags_displayed": "Número máximo de etiquetas de Workflow a mostrar",
       "label.report_java_options": "Opciones Java del Servicio de informes",
       "label.approval_requestor_role": "Approval Requestor Role",
+      "label.workflows_requiring_approval": "Workflows requiring approval",
       "force_comments_for_audit_log": "Especifica que para cualquier cambio aplicado a un objeto, como agregar una ^Order^, cancelar una Orden, etc., se debe añadir un motivo al Registro de Auditoría.",
       "comments_for_audit_log": "Ofrece una lista extensible de motivos predefinidos de los cuales los usuarios pueden seleccionar al agregar motivos para intervención de usuario al Registro de Auditoría.",
       "default_profile_account": "Especifica la cuenta de usuario que se usa para completar los Perfiles de nuevas cuentas de usuario.",
