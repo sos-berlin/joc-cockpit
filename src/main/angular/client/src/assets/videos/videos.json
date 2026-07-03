@@ -46,5 +46,10 @@
     "id": "JDazuggb2fw",
     "title": "Export inventory objects",
     "description": "How to export inventory objects"
+  },
+  "dashboard-orders-panel": {
+    "id": "ldfjS72MpJM",
+    "title": "Order State Panel in Dashboard View",
+    "description": "How to monitor and manage Orders"
   }
 }
