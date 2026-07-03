@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DailyPlanComponent {
   schedulerIds: any = {};
@@ -37,7 +37,7 @@ export class DailyPlanComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {

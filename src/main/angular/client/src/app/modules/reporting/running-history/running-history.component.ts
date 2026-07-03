@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -14,7 +14,7 @@ import {TranslateService} from "@ngx-translate/core";
   standalone: false,
   selector: 'app-running-history',
   templateUrl: './running-history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class RunningHistoryComponent {
   @Input() permission: any;
@@ -44,6 +44,7 @@ export class RunningHistoryComponent {
 
     this.subscription2 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
       this.searchInResult();
+      this.cdr.markForCheck();
     });
 
     this.subscription3 = sharingDataService.functionAnnounced$.subscribe((res: any) => {

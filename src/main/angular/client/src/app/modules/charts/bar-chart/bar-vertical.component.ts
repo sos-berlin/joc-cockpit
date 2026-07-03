@@ -4,9 +4,14 @@ import {
   ViewEncapsulation,
   Output,
   EventEmitter,
-  ChangeDetectionStrategy,
+  
   ContentChild,
-  TemplateRef
+  TemplateRef,
+  ChangeDetectorRef,
+  ElementRef,
+  NgZone,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
 import {scaleBand, scaleLinear} from 'd3-scale';
 
@@ -87,11 +92,19 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class BarVerticalComponent extends BaseChartComponent {
+  constructor(
+    protected override chartElement: ElementRef,
+    protected override zone: NgZone,
+    protected override cd: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public override platformId: any
+  ) {
+    super(chartElement, zone, cd, platformId);
+  }
+
   @Input() legend = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition: LegendPosition = LegendPosition.Right;
@@ -260,6 +273,7 @@ export class BarVerticalComponent extends BaseChartComponent {
     } else {
       this.dataLabelMaxHeight.positive = Math.max(this.dataLabelMaxHeight.positive, event.size.height);
     }
+    this.cd.markForCheck();
     if (event.index === this.results.length - 1) {
       setTimeout(() => this.update());
     }

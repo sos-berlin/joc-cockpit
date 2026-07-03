@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
+import {  ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
 import { AuthService } from 'src/app/components/guard';
 import { CoreService } from 'src/app/services/core.service';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-encipherment-modal',
   templateUrl: './add-encipherment-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -175,7 +175,7 @@ export class AddEnciphermentModalComponent {
   standalone: false,
   selector: 'app-import-encipherment-modal',
   templateUrl: './import-encipherment-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ImportEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -293,6 +293,7 @@ export class ImportEnciphermentModalComponent {
         if (i == this.fileList.length - 1) {
           setTimeout(() => {
             this.submitted = false;
+            this.cdr.markForCheck();
           }, 100);
         }
       }, 10 * i);
@@ -366,7 +367,7 @@ export class ImportEnciphermentModalComponent {
   standalone: false,
   selector: 'app-encipherment-update-modal',
   templateUrl: './update-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class EnciphermentUpdateKeyComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -385,7 +386,7 @@ export class EnciphermentUpdateKeyComponent {
   standalone: false,
   selector: 'app-encipherment',
   templateUrl: './encipherment.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class EnciphermentComponent {
   permission: any = {};

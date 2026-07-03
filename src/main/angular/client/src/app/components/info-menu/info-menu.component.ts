@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
@@ -8,7 +8,6 @@ import {mdToHtml} from '../../directives/rich-tooltip.directive';
 @Component({
   standalone: false,
   selector: 'app-about',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 template: `
   <div class="modal-header">
     <h4 class="modal-title">
@@ -148,7 +147,7 @@ export class AboutModalComponent {
       }
       this.coreService.get('version.json').subscribe((data) => {
         this.versionData = data;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       });
     } else {
       this.isLoaded = true;
@@ -178,6 +177,7 @@ export class AboutModalComponent {
           let validUntil = sessionStorage['licenseValidUntil'];
           this.formatDate(validFrom, validUntil);
           this.isLoading = false;
+          this.ref.markForCheck();
         }
       });
     }
@@ -195,7 +195,7 @@ export class AboutModalComponent {
     } else {
       this.remainingDays = 0;
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 }
 

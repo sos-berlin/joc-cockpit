@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {isArray, isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
@@ -12,7 +12,6 @@ export let that: any;
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-log-view',
   templateUrl: './log-view.component.html'
 })

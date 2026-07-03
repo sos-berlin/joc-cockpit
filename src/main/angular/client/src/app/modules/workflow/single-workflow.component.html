@@ -11,7 +11,7 @@
               @for (btn of filterBtn; track btn) {
                 <button (click)="loadOrders(btn.date)"
                         [ngClass]="{'btn-primary': date===btn.date}"
-                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'filters.button' | translate }}.{{btn.text}}
+                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'filters.button.' + btn.text | translate }}
                 </button>
               }
             </div>

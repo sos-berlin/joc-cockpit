@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-history-summary',
   templateUrl: './history-summary.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HistorySummaryComponent {
   orderSummary: any;
@@ -34,7 +34,7 @@ export class HistorySummaryComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
@@ -94,6 +94,7 @@ export class HistorySummaryComponent {
       }, error: (err) => {
         this.notAuthenticate1 = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -124,6 +125,7 @@ export class HistorySummaryComponent {
       }, error: (err) => {
         this.notAuthenticate2 = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

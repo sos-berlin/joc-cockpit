@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -7,7 +7,6 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-calendar-view',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 template: `
   <div class="modal-header">
     <h4 class="modal-title">

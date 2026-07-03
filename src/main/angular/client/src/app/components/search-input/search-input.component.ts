@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -19,7 +19,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchInputComponent {
   @Input() type: string;
@@ -133,9 +133,9 @@ export class SearchInputComponent {
         origin.children = data;
         this.nodes = [...this.nodes];
         if (this.changeDetect) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
-      }, error: () => origin.loading = false
+      }, error: () => { origin.loading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -182,22 +182,16 @@ export class SearchInputComponent {
             this.nodes = res.results.map(function (item) {
               return {...item, key: item.name, title: item.name};
             });
-            if (this.changeDetect) {
-              this.ref.detectChanges();
-            }
+            this.ref.markForCheck();
           }
         });
       } else {
         this.nodes = this._tree;
-        if (this.changeDetect) {
-          this.ref.detectChanges();
-        }
+        this.ref.markForCheck();
       }
     } else {
       this.nodes = this._tree;
-      if (this.changeDetect) {
-        this.ref.detectChanges();
-      }
+      this.ref.markForCheck();
     }
   }
 
@@ -217,6 +211,7 @@ export class SearchInputComponent {
     if (!isOpen) {
       Promise.resolve().then(() => {
         this.treeSelectComponent.openDropdown();
+        this.ref.markForCheck();
       });
     }
   }

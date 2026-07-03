@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ViewContainerRef,  ChangeDetectorRef} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -17,7 +17,7 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
   standalone: false,
   selector: 'app-order-action',
   templateUrl: './order-action.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderActionComponent {
   @Input() order: any;

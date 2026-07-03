@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html',
   styleUrls: ['agent-running-task.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentRunningTaskComponent {
   @Input('layout') layout: any;
@@ -46,6 +46,7 @@ export class AgentRunningTaskComponent {
             this.layout = res[i];
             this.setViewSize(window);
             this.getRunningTask();
+            this.cdr.markForCheck();
             break;
           }
         }
@@ -54,7 +55,7 @@ export class AgentRunningTaskComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {

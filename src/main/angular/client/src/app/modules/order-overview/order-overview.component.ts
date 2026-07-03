@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   Directive,
@@ -207,7 +207,7 @@ export class OrderPieChartComponent {
   standalone: false,
   selector: 'app-all-order-resume',
   templateUrl: './all-order-resume-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AllOrderResumeModelComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -462,6 +462,7 @@ export class AllOrderResumeModelComponent {
         if (result) {
           data.value = result;
         }
+        this.cdr.markForCheck();
       });
     }
 
@@ -532,7 +533,7 @@ export class AllOrderResumeModelComponent {
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 }
@@ -542,7 +543,7 @@ export class AllOrderResumeModelComponent {
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
   styleUrls: ['./order-overview.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderOverviewComponent {
   loading: boolean;
@@ -783,7 +784,7 @@ export class OrderOverviewComponent {
             this.loadOrder();
           }
           this.cdr.markForCheck();
-        }, error: () => this.loading = true
+        }, error: () => { this.loading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.loading = true;
@@ -838,6 +839,7 @@ export class OrderOverviewComponent {
         this.orderOverview = {};
         this.loading = true;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1051,6 +1053,7 @@ export class OrderOverviewComponent {
         this.isLoaded = true;
         this.loading = true;
         this.resetAction();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1073,6 +1076,7 @@ export class OrderOverviewComponent {
       }
       this.resizerHeight = ht + 'px';
       $('#orderTableId').css('height', this.resizerHeight);
+      this.cdr.markForCheck();
     }, 10);
   }
 
@@ -1145,7 +1149,7 @@ export class OrderOverviewComponent {
         this.auditLogs = res.auditLog;
         this.showPanelObj.loading = false;
         this.cdr.markForCheck();
-      }, error: () => this.showPanelObj.loading = false
+      }, error: () => { this.showPanelObj.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -1510,6 +1514,7 @@ export class OrderOverviewComponent {
         this.isProcessing = true;
         this.resetAction(5000);
         this.resetCheckBox();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1549,6 +1554,7 @@ export class OrderOverviewComponent {
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -1571,6 +1577,7 @@ export class OrderOverviewComponent {
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1664,6 +1671,7 @@ export class OrderOverviewComponent {
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -1678,6 +1686,7 @@ export class OrderOverviewComponent {
             }
             this.resetCheckBox();
             this.resetAction(5000);
+            this.cdr.markForCheck();
           },
           error: () => this.resetAction()
         });
@@ -1700,6 +1709,7 @@ export class OrderOverviewComponent {
     modal.afterClose.subscribe((result) => {
       if (result) {
         this.isProcessing = true;
+        this.cdr.markForCheck();
         this.coreService.post('orders/' + url, obj).subscribe({
           next: () => {
             if (cb) {
@@ -1789,6 +1799,7 @@ export class OrderOverviewComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -2210,6 +2221,7 @@ export class OrderOverviewComponent {
           this.isProcessing = true;
           this.resetAction(5000);
           this.resetCheckBox();
+          this.cdr.markForCheck();
         }
       });
   }

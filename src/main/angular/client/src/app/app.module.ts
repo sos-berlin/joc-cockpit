@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
+import {ErrorHandler, Injectable, NgModule, provideZoneChangeDetection} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {en_US, NZ_DATE_CONFIG, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {registerLocaleData} from '@angular/common';
@@ -69,6 +69,7 @@ export class MyErrorHandler implements ErrorHandler {
     provideTranslateService({
       loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json?v=1659421544261' })
     }),
+    provideZoneChangeDetection({ eventCoalescing: true })
   ],
   bootstrap: [AppComponent]
 })

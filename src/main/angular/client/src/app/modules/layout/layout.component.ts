@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, NgZone, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, NgZone, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LayoutComponent {
   preferences: any = {};
@@ -448,7 +448,7 @@ export class LayoutComponent {
           this.child.reloadSettings();
         }
         if (flag) {
-          this.ngZone.run(() => { this.loading = true; this.cdr.detectChanges(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
+          this.ngZone.run(() => { this.loading = true; this.cdr.markForCheck(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
         }
         setTimeout(() => {
           if (!this.loading) {
@@ -498,7 +498,7 @@ export class LayoutComponent {
             this.router.navigate(['/start-up']).then();
           });
           setTimeout(() => {
-            this.ngZone.run(() => { this.loading = true; this.cdr.detectChanges(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
+            this.ngZone.run(() => { this.loading = true; this.cdr.markForCheck(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
           }, 10);
         }
       }
@@ -514,7 +514,7 @@ export class LayoutComponent {
       }
     });
     setTimeout(() => {
-      this.ngZone.run(() => { this.loading = true; this.cdr.detectChanges(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
+      this.ngZone.run(() => { this.loading = true; this.cdr.markForCheck(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
       this.loadInit(false, true);
     }, 10);
   }
@@ -571,7 +571,7 @@ export class LayoutComponent {
         if (!this.permission) {
           this.permission = JSON.parse(this.authService.permission) || {};
         }
-        this.ngZone.run(() => { this.loading = true; this.cdr.detectChanges(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
+        this.ngZone.run(() => { this.loading = true; this.cdr.markForCheck(); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); });
       } else {
         return;
       }

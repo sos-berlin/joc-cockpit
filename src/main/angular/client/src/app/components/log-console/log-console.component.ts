@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
 import {LogSearchService} from '../../services/log-search.service';
@@ -24,7 +24,7 @@ interface ContextBlock {
   collapsed: boolean;
 }
 
-const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3})\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
+const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
 
 // ── Order ID parsing ────────────────────────────────────────────────────────
 // Matches JS7 Order IDs: #YYYY-MM-DD#<word chars, colon, hyphen>
@@ -142,7 +142,7 @@ export interface LogConsoleRequest {
   selector: 'app-log-console',
   templateUrl: './log-console.component.html',
   styleUrls: ['./log-console.component.scss', './log-console.toolbar.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   @Input() request: LogConsoleRequest = { type: 'controller' };
@@ -824,7 +824,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       }
       if ((fromCmp || toCmp) && l.timestamp) {
         // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
-        const ts = l.timestamp.replace(',', '.');
+        // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
+        const ts = l.timestamp.replace(',', '.').replace(/(Z|[+-]\d{2}(?:\d{2})?)$/, '');
         if (fromCmp && ts < fromCmp) return false;
         // '\uffff' suffix ensures the whole last minute/second is included
         // when the user's toCmp has no sub-minute/sub-second precision.
@@ -906,7 +907,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * Used when double-clicking a timestamp to populate the date filter.
    */
   private timestampToDatetimeLocal(raw: string): string {
+    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?:\d{2})?)$/);
     const iso = raw.replace(',', '.');
+    if (offsetMatch) {
+      const offset = offsetMatch[1];
+      const normalizedIso = (offset !== 'Z' && offset.length === 3) ? iso + '00' : iso;
+      const m = moment.parseZone(normalizedIso);
+      if (this._useProfileTz && this.profileTz) {
+        return m.tz(this.profileTz).format('YYYY-MM-DDTHH:mm:ss');
+      }
+      return m.utcOffset(m.utcOffset()).format('YYYY-MM-DDTHH:mm:ss');
+    }
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
       const m = moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz);
@@ -949,7 +960,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const pool = this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
       if ((fromCmp || toCmp) && l.timestamp) {
-        const ts = l.timestamp.replace(',', '.');
+        // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
+        const ts = l.timestamp.replace(',', '.').replace(/(Z|[+-]\d{2}(?:\d{2})?)$/, '');
         if (fromCmp && ts < fromCmp) return false;
         if (toCmp && ts > toCmp + '\uffff') return false;
       }
@@ -1201,6 +1213,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private showCopyFeedback(id: string): void {
     this.copiedOrderId = id;
+    this.cdr.markForCheck();
     if (this.copyFeedbackTimer) clearTimeout(this.copyFeedbackTimer);
     this.copyFeedbackTimer = setTimeout(() => { this.copiedOrderId = null; this.cdr.markForCheck(); }, 2000);
   }
@@ -1455,16 +1468,27 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   formatTimestamp(raw: string): string {
     if (!raw) return raw;
+    // If the timestamp carries an embedded tz offset (Z, +02, +0530), convert directly
+    // using that offset — the response timezone field is irrelevant for these lines.
+    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?:\d{2})?)$/);
+    if (offsetMatch) {
+      const offset = offsetMatch[1];
+      const iso = raw.replace(',', '.');
+      // Normalize +HH (no minutes, length 3) to +HHMM so moment.parseZone parses correctly.
+      const normalizedIso = (offset !== 'Z' && offset.length === 3) ? iso + '00' : iso;
+      const m = moment.parseZone(normalizedIso);
+      if (this._useProfileTz && this.profileTz) {
+        return m.tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
+      }
+      return m.format('YYYY-MM-DD HH:mm:ssZ');
+    }
+    // No offset in timestamp — use the controller/agent timezone from the response.
     const iso = raw.replace(',', '.');
-    // Source timezone: the timezone the Controller/Agent runs in, returned in response.timeZone.
-    // Fall back to request.timeZone only before the first response arrives.
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
       if (this._useProfileTz && this.profileTz) {
-        // Profile tz mode: parse as Controller tz, then convert to user profile tz.
         return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
       } else {
-        // Original tz mode: display in Controller tz with UTC offset appended.
         return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).format('YYYY-MM-DD HH:mm:ssZ');
       }
     }
@@ -1820,7 +1844,7 @@ export class LogConsoleModalComponent implements OnInit {
     if (req.timeZone)     params.set('timeZone',     req.timeZone);
     if (req.numOfLines)   params.set('numOfLines',   String(req.numOfLines));
     if (req.limit)         params.set('limit',         String(req.limit));
-    this.activeModal.destroy();
+    this.activeModal.close();
     const savedW = window.localStorage['syslog_window_wt'];
     const savedH = window.localStorage['syslog_window_ht'];
     const w = savedW ? Number(savedW) : (window.innerWidth  || 1400);

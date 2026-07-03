@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -135,7 +135,7 @@ export class ConfirmationModalComponent {
   standalone: false,
   selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AccountModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -408,7 +408,7 @@ export class AccountModalComponent {
   standalone: false,
   selector: 'app-accounts-all',
   templateUrl: 'accounts.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AccountsComponent {
   loading = true;
@@ -442,6 +442,7 @@ export class AccountsComponent {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
+      this.cdr.markForCheck();
     });
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD') {

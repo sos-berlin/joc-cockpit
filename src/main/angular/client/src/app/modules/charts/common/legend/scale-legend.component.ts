@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges,  ChangeDetectorRef, SimpleChanges, ViewEncapsulation} from '@angular/core';
 
 @Component({
   standalone: false,
@@ -21,7 +21,7 @@ import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges, Vie
   `,
   styleUrls: ['./scale-legend.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ScaleLegendComponent implements OnChanges {
   @Input() valueRange: number[];
@@ -31,6 +31,8 @@ export class ScaleLegendComponent implements OnChanges {
   @Input() horizontal: boolean = false;
 
   gradient: string;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     const gradientValues = this.gradientString(this.colors.range(), this.colors.domain());

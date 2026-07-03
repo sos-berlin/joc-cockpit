@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {WorkflowService} from '../../services/workflow.service';
 import {CoreService} from '../../services/core.service';
@@ -19,7 +19,7 @@ declare const $: any;
   selector: 'app-graphical-view-modal',
   templateUrl: './graphical-view-modal.component.html',
   styleUrls: ['./graphical-view-modal.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class GraphicalViewModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -239,6 +239,7 @@ export class GraphicalViewModalComponent {
             self.position = pos;
             graph.setSelectionCell(cell);
           }
+          self.cdr.markForCheck();
         }
         evt.consume();
       }

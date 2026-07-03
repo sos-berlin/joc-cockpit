@@ -1,4 +1,4 @@
-import {Component, SimpleChanges, Input, OnChanges, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectorRef, Component, SimpleChanges, Input, OnChanges} from '@angular/core';
 import {BarOrientation} from './types/bar-orientation.enum';
 import {ViewDimensions} from './types/view-dimension.interface';
 
@@ -32,10 +32,11 @@ enum ClassEnum {
       [class.even]="gridPanel.class === 'even'"
     ></svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridPanelSeriesComponent implements OnChanges {
   gridPanels: GridPanel[];
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   @Input() data: any[];
 

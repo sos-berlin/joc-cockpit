@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Input, ElementRef, OnChanges, SimpleChanges,  ChangeDetectorRef} from '@angular/core';
 import {Orientation} from '../types/orientation.enum';
 
 @Component({
@@ -15,7 +15,7 @@ import {Orientation} from '../types/orientation.enum';
       {{ label }}
     </svg:text>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AxisLabelComponent implements OnChanges {
   @Input() orient: Orientation;
@@ -33,7 +33,7 @@ export class AxisLabelComponent implements OnChanges {
   textHeight = 25;
   margin = 5;
 
-  constructor(element: ElementRef) {
+  constructor(element: ElementRef, private cdr: ChangeDetectorRef) {
     this.element = element.nativeElement;
   }
 

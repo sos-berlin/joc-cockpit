@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   Directive,
@@ -669,7 +669,7 @@ export class CycleInstructionComponent {
       this.schemeList.push(obj);
     });
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
 
@@ -869,7 +869,7 @@ export class CycleInstructionComponent {
           }
         }
 
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.convertSchemeList();
       }
     });
@@ -988,7 +988,7 @@ export class CycleInstructionComponent {
         };
         p.text = this.workflowService.getText(p.startTime, p.duration);
         data.periods.push(p);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         const obj2 = CycleInstructionComponent.createObj(data, res);
         if (period) {
           const obj = CycleInstructionComponent.createObj(data, period);
@@ -1430,7 +1430,7 @@ export class AdmissionTimeComponent {
       this.cleanupAdmissionTimeScheme();
     }
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   closeRuntime(): void {
@@ -1444,7 +1444,7 @@ export class AdmissionTimeComponent {
       this.resetFrequencyForm();
       this.frequency.tab = 'weekDays';
       this.object = {};
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
   }
 
@@ -1728,7 +1728,7 @@ export class AdmissionTimeComponent {
     this.checkMonths();
     this.editor.isEnable = true;
     this.isEditingRestrictedFrequency = false;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   editPeriod(period, data): void {
@@ -1766,7 +1766,7 @@ export class AdmissionTimeComponent {
         // Clear _temp to avoid stale frequency data interfering with future operations
         this._temp = null;
 
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.isValid = true;
 
         if (this.restrictedSchemeIndex > -1) {
@@ -2291,7 +2291,7 @@ export class AdmissionTimeComponent {
       this.job.admissionTimeScheme.restrictedSchemes = [...this.job.admissionTimeScheme.restrictedSchemes];
     }
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private removeFromRestrictedScheme(schemeIndex: number, periodsToRemove: any[]): void {
@@ -2729,7 +2729,6 @@ export class ShowReferenceComponent {
 @Component({
   standalone: false,
   selector: 'app-job-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent {
@@ -2828,7 +2827,7 @@ export class JobComponent {
           this.jobs = res.change.jobs;
           this.selectedNode.job = {...this.selectedNode.job, ...this.coreService.clone(res.change.current.value)};
           this.setJobProperties();
-          this.ref.detectChanges();
+          this.ref.markForCheck();
           this.isRuntimeVisible = false;
           this.fullScreen = false;
         }
@@ -2892,7 +2891,7 @@ export class JobComponent {
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
-            self.ref.detectChanges();
+            self.ref.markForCheck();
             setTimeout(() => {
               const dom = $('#show-tree');
               dom?.css({
@@ -2973,7 +2972,7 @@ export class JobComponent {
     });
     this.mentionValueList = [...x, ...arr];
     this.filteredOptions = [...x, ...arr];
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   reloadScript(time = 5): void {
@@ -2981,7 +2980,7 @@ export class JobComponent {
     setTimeout(() => {
       this.isDisplay = true;
       this.initAutoComplete();
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }, time);
   }
 
@@ -3047,6 +3046,7 @@ export class JobComponent {
             }
           });
         }
+        this.ref.markForCheck();
       }
     });
   }
@@ -3172,7 +3172,7 @@ export class JobComponent {
       }
     }
     this.shouldShowAPIRequestButton()
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   showEditor(mode): void {
@@ -3195,7 +3195,7 @@ export class JobComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.selectedNode.job.executable.script = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.saveToHistory();
       }
     });
@@ -3709,7 +3709,7 @@ export class JobComponent {
       }
       this.copiedParamObjects = {};
       this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
   }
 
@@ -3749,7 +3749,7 @@ export class JobComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.saveToHistory();
       }
     });
@@ -3788,7 +3788,7 @@ export class JobComponent {
 
   checkExpectNoticeExp(name): void {
     this.isTreeShow = false;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     if (name) {
       const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor();
@@ -3890,6 +3890,7 @@ export class JobComponent {
       }).subscribe({
         next: (res) => {
           this.state = res;
+          this.ref.markForCheck();
         }
       })
     }
@@ -4087,6 +4088,7 @@ export class JobComponent {
     this.coreService.post('tags/job', {}).subscribe({
       next: (res: any) => {
         this.allTags = res.tags;
+        this.ref.markForCheck();
       }
     });
   }
@@ -4101,7 +4103,7 @@ export class JobComponent {
         next: (res: any) => {
           this.tagsData = res.jobs;
           this.tags = this.tagsData.find(jobTag => jobTag.jobName === this.selectedNode.job.jobName)?.jobTags ?? [];
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -4187,7 +4189,7 @@ export class JobComponent {
 
     if (input.value.includes('$')) {
       setTimeout(() => {
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.focusMentionInput(cursorPosition);
       }, 100);
     }
@@ -4421,7 +4423,7 @@ export class JobComponent {
     obj = JSON.parse(obj);
     this.selectedNode.obj = JSON.parse(obj.obj);
     this.selectedNode.job = JSON.parse(obj.job);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   updateFromJobTemplate(): void {
@@ -4605,6 +4607,7 @@ export class JobComponent {
           this.jobTagsEvent.emit(jobTagData);
         }
       });
+      this.ref.markForCheck();
     });
   }
 
@@ -4635,6 +4638,7 @@ export class JobComponent {
             this.jobTagsEvent.emit(jobTagData);
           }
         });
+        this.ref.markForCheck();
       }
     });
   }
@@ -4995,7 +4999,6 @@ export class ScriptEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-expression-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './expression-editor.html'
 })
 export class ExpressionComponent {
@@ -5257,7 +5260,6 @@ export class HistoryLogDialogComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
@@ -5380,7 +5382,7 @@ export class WorkflowComponent {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.workflow.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         } else if (res.saveObject && this.selectedNode) {
           if (res.saveObject.id || res.saveObject.objectType) {
             if ((res.saveObject.id && res.saveObject.id === this.data.id)
@@ -5401,13 +5403,14 @@ export class WorkflowComponent {
       if (this.data?.name && update.objectType === this.objectType) {
         if (update.objectName === this.data.name) {
           this.workflow.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
 
     coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.ref.markForCheck();
     });
   }
 
@@ -5500,7 +5503,7 @@ export class WorkflowComponent {
         this.jobResourceNames = [];
         this.orderPreparation = {};
         this.dummyXml = false;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -5599,6 +5602,7 @@ export class WorkflowComponent {
         types: [InventoryObject.LOCK]
       }).subscribe((res) => {
         this.lockTree = this.coreService.prepareTree(res, true);
+        this.ref.markForCheck();
       });
     }
     if (this.workflowTree.length === 0 || flag) {
@@ -5608,6 +5612,7 @@ export class WorkflowComponent {
         types: [InventoryObject.WORKFLOW]
       }).subscribe((res) => {
         this.workflowTree = this.coreService.prepareTree(res, true);
+        this.ref.markForCheck();
       });
     }
     if (this.boardTree.length === 0 || flag) {
@@ -5617,6 +5622,7 @@ export class WorkflowComponent {
         types: [InventoryObject.NOTICEBOARD]
       }).subscribe((res) => {
         this.boardTree = this.coreService.prepareTree(res, false);
+        this.ref.markForCheck();
       });
     }
     if (this.scriptTree.length === 0 || flag) {
@@ -5626,6 +5632,7 @@ export class WorkflowComponent {
         types: [InventoryObject.INCLUDESCRIPT]
       }).subscribe((res) => {
         this.scriptTree = this.coreService.prepareTree(res, false);
+        this.ref.markForCheck();
       });
     }
     if (this.jobResourcesTree.length === 0 || flag) {
@@ -5635,6 +5642,7 @@ export class WorkflowComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+        this.ref.markForCheck();
       });
     }
   }
@@ -5738,7 +5746,7 @@ export class WorkflowComponent {
       const dom = $('#searchTree');
       if (!dom.hasClass('ant-select-focused')) {
         if (event.target.id === 'search-container') {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
           dom.addClass('ant-select-focused');
         } else {
           $('#workflowHeader').removeClass('hide-on-focus');
@@ -6256,7 +6264,7 @@ export class WorkflowComponent {
     delete data.orderPreparation;
     delete data.documentationName;
     delete data.jobResourceNames;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   expandAll(): void {
@@ -6294,6 +6302,7 @@ export class WorkflowComponent {
         if (result.value.state && result.value.state._text !== 'UPTODATE') {
           // this.init();
           this.selectedNode = null;
+          this.ref.markForCheck();
           this.getWorkflowObject();
         }
       }
@@ -6880,6 +6889,7 @@ export class WorkflowComponent {
         this.updateXMLJSON(false);
         this.history = {past: [], present: {}, future: [], type: 'new'};
         this.storeData(result);
+        this.ref.markForCheck();
       }
     });
   }
@@ -6905,7 +6915,7 @@ export class WorkflowComponent {
   checkExpectNoticeExp(event): void {
     if (this.selectedNode) {
       this.selectedNode.isTreeShow = false;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       $('.ant-select-tree-dropdown').hide();
     }
     if (event) {
@@ -7257,7 +7267,7 @@ export class WorkflowComponent {
             this.history.present = JSON.stringify(this.extendJsonObj(JSON.parse(this.workflow.actual)));
             if (this.editor) {
               this.updateJobs(this.editor.graph, true);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
             if (this.workflowService.getJobValue()) {
               this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
@@ -7284,7 +7294,7 @@ export class WorkflowComponent {
             console.error(e);
           }
         }
-      }, error: () => this.isLoading = false
+      }, error: () => { this.isLoading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -7695,7 +7705,7 @@ export class WorkflowComponent {
       }
     }
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   removeArgument(data): void {
@@ -7980,7 +7990,7 @@ export class WorkflowComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result.value;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.updateOtherProperties('variable');
       }
     });
@@ -8034,7 +8044,7 @@ export class WorkflowComponent {
       if (result) {
         if (data[type] !== result) {
           data[type] = result;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
           if (type !== 'noticeBoardNames') {
             this.updateOtherProperties('variable');
           }
@@ -8072,7 +8082,7 @@ export class WorkflowComponent {
             } else {
               this.workflow.name = this.data.name;
               this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -8081,7 +8091,7 @@ export class WorkflowComponent {
       } else {
         this.workflow.name = this.data.name;
         this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -8106,7 +8116,7 @@ export class WorkflowComponent {
       }, error: () => {
         this.workflow.name = this.data.name;
         this.workflow.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -8171,6 +8181,7 @@ export class WorkflowComponent {
           this.blockPositionList = undefined;
           this.getPositions(this.selectedNode.obj.workflowName);
           this.updateArgumentList();
+          this.ref.markForCheck();
         }
       });
     }
@@ -8225,7 +8236,7 @@ export class WorkflowComponent {
               }).filter(pos => !!pos);
           }
         }
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -12445,12 +12456,12 @@ export class WorkflowComponent {
         if ((selectedCells.length == 2 && !self.workflowService.checkClosingCell(selectedCells[0].value.tagName) && !self.workflowService.checkClosingCell(selectedCells[1].value.tagName)) ||
           (selectedCells.length > 2)) {
           self.selectedNode = null;
-          self.ref.detectChanges();
+          self.ref.markForCheck();
           return;
         }
         if (cell.value.tagName === 'Catch') {
           self.selectedNode = null;
-          self.ref.detectChanges();
+          self.ref.markForCheck();
           return;
         }
 
@@ -12691,7 +12702,7 @@ export class WorkflowComponent {
           obj.whenNotAnnounced = cell.getAttribute('whenNotAnnounced');
           setTimeout(() => {
             self.isDisplay = true;
-            self.ref.detectChanges();
+            self.ref.markForCheck();
           }, 100);
         } else if (cell.value.tagName === 'Prompt') {
           obj.question = cell.getAttribute('question');
@@ -12781,7 +12792,7 @@ export class WorkflowComponent {
         if (self.selectedNode) {
           self.selectedNode.isTreeShow = false;
         }
-        self.ref.detectChanges();
+        self.ref.markForCheck();
         setTimeout(() => {
           if (self.cm && self.cm.codeEditor) {
             setTimeout(() => {
@@ -12811,7 +12822,7 @@ export class WorkflowComponent {
                 // Save contents
                 const cursor = editor.getCursor();
                 self.selectedNode.isTreeShow = true;
-                self.ref.detectChanges();
+                self.ref.markForCheck();
                 setTimeout(() => {
                   const dom = $('#show-tree');
                   dom?.css({
@@ -15466,7 +15477,7 @@ export class WorkflowComponent {
         }
         this.data.valid = res.valid;
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -15817,7 +15828,7 @@ export class WorkflowComponent {
             const data = this.coreService.clone(this.workflow.configuration);
             this.modifyJSON(data, true, false);
           }
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }, error: (err: any) => {
         if (request.objectType === 'WORKFLOW') {
@@ -15942,7 +15953,7 @@ export class WorkflowComponent {
       if (cb) {
         cb();
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 

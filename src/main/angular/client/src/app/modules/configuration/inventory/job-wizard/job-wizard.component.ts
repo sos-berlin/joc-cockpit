@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -39,7 +39,6 @@ interface KeyValue {
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-request',
   templateUrl: './api-request.component.html'
 })
@@ -138,7 +137,7 @@ export class ApiRequestComponent {
         this.isError = true;
         this.errorMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     };
   }
 
@@ -202,7 +201,7 @@ export class ApiRequestComponent {
         this.model.body = '';
       }
 
-      // â€” auth
+      // — auth
       if (req.auth && typeof req.auth === 'object') {
         const a = req.auth as any;
         this.auth.type = a.type ?? 'None';
@@ -232,7 +231,7 @@ export class ApiRequestComponent {
         }
       }
 
-      // â€” return variables
+      // — return variables
       const ret = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
       if (ret) {
         try {
@@ -360,6 +359,7 @@ export class ApiRequestComponent {
     modal.afterClose.subscribe((result: Mapping) => {
       if (result) {
         this.mappings.push(result);
+        this.ref.markForCheck();
       }
     });
   }
@@ -435,6 +435,7 @@ export class ApiRequestComponent {
     modal.afterClose.subscribe((result: Mapping[]) => {
       if (Array.isArray(result)) {
         this.mappings = [...result];
+        this.ref.markForCheck();
       }
     });
   }
@@ -601,7 +602,7 @@ export class ApiRequestComponent {
           res.headers.keys().forEach(h => {
             this.responseHeaders[h] = res.headers.get(h)!;
           });
-          this.cd.detectChanges();
+          this.cd.markForCheck();
           if (accessToken) {
             const logoutHeaders: Record<string, string> = {
               'x-access-token': accessToken
@@ -624,7 +625,7 @@ export class ApiRequestComponent {
                 this.requestUrl = err?.url
                 this.errorText = text;
                 this.msg.error(`Error ${code}: ${text}`);
-                this.cd.detectChanges();
+                this.cd.markForCheck();
               }
             });
           }
@@ -637,7 +638,7 @@ export class ApiRequestComponent {
           this.errorLogs = err;
           this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         }
       });
   }
@@ -839,7 +840,7 @@ export class ApiRequestComponent {
       if (result) {
         this.model.body = JSON.stringify(result.data, null, 2)
         this.model.endPoint = result.endpoint
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -847,7 +848,6 @@ export class ApiRequestComponent {
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'json-schema-field',
   templateUrl: './json-schema-field.component.html'
 })
@@ -1065,7 +1065,6 @@ export class JsonSchemaFieldComponent {
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-text-editor',
   templateUrl: './api-text-editor.html'
 })
@@ -1110,7 +1109,7 @@ export class ApiFormDialogComponent {
       } catch (err) {
         this.isError = true;
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     };
   }
 
@@ -1177,7 +1176,7 @@ export class ApiFormDialogComponent {
 
   private async loadSchema(ep: string): Promise<void> {
     this.loading = true;
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
 
     const origin = window.location.origin;
     try {
@@ -1207,7 +1206,7 @@ export class ApiFormDialogComponent {
     } catch (e) {
     } finally {
       this.loading = false;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     }
   }
 
@@ -1884,7 +1883,7 @@ export class ApiFormDialogComponent {
 
   toggleSchemaView(): void {
     this.showSchema = !this.showSchema;
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
 
@@ -2087,7 +2086,6 @@ export interface endPoint {
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-api-request-dialog',
   templateUrl: './api-request-dialog.html'
 })
@@ -2181,7 +2179,7 @@ export class ApiRequestDialogComponent {
     {title: '/notices/post', path: '/board/postNotices', des: 'Posts notice for several boards'}
   ];
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -2196,6 +2194,7 @@ export class ApiRequestDialogComponent {
       this.coreService.get('version.json').subscribe((data) => {
         this.version = data?.version;
         this.updateRamlLinks(data?.version);
+        this.cdr.markForCheck();
       });
     }
   }
@@ -2348,7 +2347,6 @@ export class ApiRequestDialogComponent {
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-job-wizard',
   templateUrl: './job-wizard.component.html'
 })
@@ -2392,7 +2390,7 @@ export class JobWizardComponent {
   parameters: any;
   private searchTerm = new Subject<string>();
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -2437,7 +2435,8 @@ export class JobWizardComponent {
       next: (res: any) => {
         this.jobList = res.jobs;
         this.loading = false;
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -2451,8 +2450,10 @@ export class JobWizardComponent {
       next: (res) => {
         this.isTreeLoad = true;
         this.jobTree = this.coreService.prepareTree(res, false);
+        this.cdr.markForCheck();
       }, error: () => {
         this.isTreeLoad = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2487,9 +2488,11 @@ export class JobWizardComponent {
           e.origin.loading = false;
           data.jobTemplates = res.jobTemplates;
           data.jobTemplates = sortBy(data.jobTemplates, 'name');
+          this.cdr.markForCheck();
         }, error: () => {
           data.jobTemplates = [];
           e.origin.loading = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -2521,7 +2524,8 @@ export class JobWizardComponent {
             this.wizard.token = res.token;
             this.jobTemplates = res.results;
             this.wizard.loading = false;
-          }, error: () => this.wizard.loading = false
+            this.cdr.markForCheck();
+          }, error: () => { this.wizard.loading = false; this.cdr.markForCheck(); }
         });
       }
     } else {
@@ -2540,6 +2544,7 @@ export class JobWizardComponent {
       this.wizard.indeterminate = false;
       this.checkRequiredParam();
       this.isAnyRequiredVariable();
+      this.cdr.markForCheck();
     });
   }
 
@@ -2592,8 +2597,10 @@ export class JobWizardComponent {
           this.wizard.indeterminate = false;
           this.checkRequiredParam(true);
           this.isAnyRequiredVariable();
+          this.cdr.markForCheck();
         }, error: () => {
           job.loading = false;
+          this.cdr.markForCheck();
         }
       });
     }

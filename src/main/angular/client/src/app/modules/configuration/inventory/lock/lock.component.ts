@@ -1,10 +1,12 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
+  Output,
   SimpleChanges
 } from '@angular/core';
 import {isEmpty, isEqual} from 'underscore';
@@ -22,7 +24,6 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-lock',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lock.component.html'
 })
 export class LockComponent implements OnChanges, OnDestroy {
@@ -34,6 +35,7 @@ export class LockComponent implements OnChanges, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   lock: any = {};
   objectType = InventoryObject.LOCK;
@@ -53,7 +55,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.lock.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -72,7 +74,7 @@ export class LockComponent implements OnChanges, OnDestroy {
         const currentPath = this.lock.name;
         if (update.objectName === currentPath) {
           this.lock.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -97,7 +99,7 @@ export class LockComponent implements OnChanges, OnDestroy {
         this.getObject();
       } else {
         this.lock = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -170,7 +172,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       this.lock.name = this.data.name;
       this.lock.actual = JSON.stringify(res.configuration);
       this.history.push(JSON.stringify(this.lock.configuration));
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -202,7 +204,7 @@ export class LockComponent implements OnChanges, OnDestroy {
             } else {
               this.lock.name = this.data.name;
               this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -211,7 +213,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       } else {
         this.lock.name = this.data.name;
         this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -236,7 +238,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       }, error: () => {
         this.lock.name = this.data.name;
         this.lock.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -357,9 +359,9 @@ export class LockComponent implements OnChanges, OnDestroy {
             this.lock.valid = res.valid;
             this.lock.deployed = false;
             this.data.deployed = false;
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           }
-        }, error: () => this.ref.detectChanges()
+        }, error: () => this.ref.markForCheck()
       });
     }
   }
@@ -367,11 +369,13 @@ export class LockComponent implements OnChanges, OnDestroy {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

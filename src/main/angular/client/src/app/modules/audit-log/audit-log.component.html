@@ -53,7 +53,7 @@
                     <li (click)="load(opt.date)"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date===opt.date, 'disable-link': savedFilter.selected}"
                         nz-menu-item>
-                      <a>{{opt.text}}</a>
+                      <a>{{opt.text | translate}}</a>
                     </li>
                   }
                 </ul>

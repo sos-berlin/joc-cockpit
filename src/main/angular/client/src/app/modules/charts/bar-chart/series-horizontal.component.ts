@@ -5,7 +5,8 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   TemplateRef
 } from '@angular/core';
 import {formatLabel, escapeLabel} from '../common/label.helper';
@@ -67,7 +68,6 @@ import {ScaleType} from '../common/types/scale-type.enum';
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeriesHorizontal implements OnChanges {
   @Input() dims: ViewDimensions;
@@ -98,6 +98,8 @@ export class SeriesHorizontal implements OnChanges {
   barsForDataLabels: Array<{ x: number; y: number; width: number; height: number; total: number; series: string }> = [];
 
   barOrientation = BarOrientation;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();

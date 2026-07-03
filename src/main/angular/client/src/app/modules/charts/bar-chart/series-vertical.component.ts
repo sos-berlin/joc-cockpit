@@ -4,7 +4,8 @@ import {
   Output,
   EventEmitter,
   OnChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   TemplateRef,
   PLATFORM_ID,
   Inject
@@ -102,7 +103,6 @@ import {isPlatformServer} from '@angular/common';
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeriesVerticalComponent implements OnChanges {
   @Input() dims: ViewDimensions;
@@ -137,7 +137,7 @@ export class SeriesVerticalComponent implements OnChanges {
 
   isSSR = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(@Inject(PLATFORM_ID) private platformId: any, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit() {

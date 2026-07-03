@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 
@@ -8,7 +8,6 @@ declare const $: any;
   standalone: false,
   selector: 'app-agent-selection',
   templateUrl: './agent-selection.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgentSelectionComponent {
   @Input() preferences: any = {};
@@ -105,6 +104,7 @@ export class AgentSelectionComponent {
     this.dataService.reloadTree.next({reloadAgents: true});
     setTimeout(() => {
       this.isReloading = false;
+      this.cdr.markForCheck();
     }, 2000)
   }
 

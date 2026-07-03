@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ElementRef} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ElementRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
@@ -9,7 +9,7 @@ import {WorkflowService} from "../../services/workflow.service";
   standalone: false,
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ResumeOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -222,7 +222,7 @@ export class ResumeOrderModalComponent {
     this.coreService.post('orders/resume', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -302,6 +302,7 @@ export class ResumeOrderModalComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
+        this.cdr.markForCheck();
       }
     });
   }

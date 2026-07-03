@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from "@angular/core";
+import { ChangeDetectorRef, Component, inject} from "@angular/core";
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -12,7 +12,7 @@ import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
   standalone: false,
   selector: 'app-change-modal',
   templateUrl: './add-change-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddChangesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -99,9 +99,11 @@ export class AddChangesModalComponent {
       next: (res) => {
         this.changes = res.changes;
         this.loading = false;
+        this.cdRef.markForCheck();
       },
       error: () => {
         this.loading = false;
+        this.cdRef.markForCheck();
       }
     });
   }
@@ -483,7 +485,7 @@ export class AddChangesModalComponent {
     setTimeout(() => {
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-      this.cdRef.detectChanges();
+      this.cdRef.markForCheck();
     }, 0);
   }
 
@@ -601,7 +603,7 @@ export class AddChangesModalComponent {
   onDependencyModeChange(): void {
     this.filteredDepsCache = new WeakMap();
     setTimeout(() => {
-      this.cdRef.detectChanges();
+      this.cdRef.markForCheck();
     }, 0);
   }
 
@@ -671,7 +673,7 @@ export class AddChangesModalComponent {
       }
     });
     this.nodes = [...nodes];
-    this.cdRef.detectChanges();
+    this.cdRef.markForCheck();
   }
 
   collapseAll(nodes): void {
@@ -682,7 +684,7 @@ export class AddChangesModalComponent {
       }
     });
     this.nodes = [...nodes];
-    this.cdRef.detectChanges();
+    this.cdRef.markForCheck();
   }
 
   helpPage(key): void {
@@ -706,7 +708,7 @@ export class AddChangesModalComponent {
   standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ChangesComponent {
   permission: any = {};

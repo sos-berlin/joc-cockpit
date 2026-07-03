@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {forkJoin, of, Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ToastrService} from 'ngx-toastr';
@@ -795,7 +795,7 @@ export class SingleDeployComponent {
 
   async deploy(): Promise<void> {
     this.submitted = true;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
 
     if (this.showDependencies && this._dependenciesPromise) {
       try {
@@ -936,7 +936,7 @@ export class SingleDeployComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.submitted = true;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
 
     if (!this.showDependencies) {
       this.activeModal.close();
@@ -962,7 +962,7 @@ export class SingleDeployComponent {
 
   getReleaseObject(recall?): void {
     this.submitted = true;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
 
     let obj: any = {
@@ -1059,7 +1059,7 @@ export class SingleDeployComponent {
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
     this.submitted = true
-    this.ref.detectChanges();
+    this.ref.markForCheck();
 
     if (!this.showDependencies) {
       this.activeModal.close();
@@ -1458,7 +1458,7 @@ export class SingleDeployComponent {
       this.updateParentCheckboxRelated(type);
     });
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   getFilteredRelatedObjects(type: string): any[] {
@@ -1710,7 +1710,7 @@ export class SingleDeployComponent {
     this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
     this.relatedObjectTypes.forEach(t => this.updateParentCheckboxRelated(t));
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   toggleRelatedCollapse(objectType: string): void {
@@ -1775,7 +1775,7 @@ export class SingleDeployComponent {
       };
     }
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   updateParentCheckboxAffected(objectType: string): void {
@@ -1859,7 +1859,7 @@ export class SingleDeployComponent {
       this.relatedObjectsByType = {};
       this.relatedObjectTypes = [];
       this.relatedParentMap.clear();
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       return;
     }
 
@@ -1941,7 +1941,7 @@ export class SingleDeployComponent {
       this.updateParentCheckboxRelated(type);
     });
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onChangeParentObjTyp(objectType: string, isChecked: boolean, nodeType: string): void {
@@ -2087,7 +2087,6 @@ export class SingleDeployComponent {
 @Component({
   standalone: false,
   selector: 'app-deploy-draft-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './deploy-dialog.html'
 })
 export class DeployComponent {
@@ -2206,7 +2205,7 @@ export class DeployComponent {
         path: this.path,
         isLeaf: true
       })
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     } else {
       this.buildTree(this.path);
 
@@ -2340,7 +2339,7 @@ export class DeployComponent {
             delete merge.loading;
             if (!flag) {
               this.nodes = [...this.nodes];
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           } else {
             this.nodes = tree;
@@ -2365,7 +2364,7 @@ export class DeployComponent {
                 if (checkedNodes.length > 0) {
                   this.getDependencies(checkedNodes, this.nodes[0]);
                 }
-                this.ref.detectChanges();
+                this.ref.markForCheck();
                 resolve();
               }, 0);
             } else {
@@ -2514,7 +2513,7 @@ export class DeployComponent {
             delete merge.loading;
             if (!flag) {
               this.nodes = [...this.nodes];
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           } else {
             this.nodes = tree;
@@ -2538,7 +2537,7 @@ export class DeployComponent {
                 if (checkedNodes.length > 0) {
                   this.getDependencies(checkedNodes, this.nodes[0]);
                 }
-                this.ref.detectChanges();
+                this.ref.markForCheck();
                 resolve();
               }, 0);
             } else {
@@ -2702,7 +2701,7 @@ export class DeployComponent {
 
       recursive(this.nodes);
       this.nodes = [...this.nodes];
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }, true);
   }
 
@@ -2735,13 +2734,13 @@ export class DeployComponent {
       this.recursiveCheck(this.nodes, true);
 
       this.nodes = [...this.nodes];
-      this.ref.detectChanges();
+      this.ref.markForCheck();
 
       const checkedNodes = this.collectCheckedObjects(this.nodes);
       if (checkedNodes.length > 0) {
         this.loading = true
         this.getDependencies(checkedNodes, this.nodes[0]);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
 
       }
 
@@ -2751,7 +2750,7 @@ export class DeployComponent {
   collapseAll(): void {
     this.expandCollapseRec(this.nodes);
     this.nodes = [...this.nodes];
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private expandCollapseRec(node: any): void {
@@ -2779,13 +2778,13 @@ export class DeployComponent {
   }
 
   handleRecursive(): void {
-    this.ref.detectChanges();
+    this.ref.markForCheck();
 
     if (this.object.isRecursive) {
       if (this.recursiveDependenciesCache) {
         this.updateNodeDependencies(this.recursiveDependenciesCache, new Set(), true);
         this.prepareObject(this.recursiveDependenciesCache);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         return;
       } else {
         this.checkedObject.clear();
@@ -2858,7 +2857,7 @@ export class DeployComponent {
       this.relatedObjectTypes = [];
       this.relatedParentMap.clear();
       this._dependenciesPromise = null;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
 
     this.rebuildRelatedObjects()
@@ -2889,7 +2888,7 @@ export class DeployComponent {
       this.relatedObjectTypes = [];
       this.relatedParentMap.clear();
       this._dependenciesPromise = null;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
 
 
@@ -2966,7 +2965,7 @@ export class DeployComponent {
       });
     }
     this.rebuildRelatedObjects();
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onChangeParentObjTyp(referenced: any, objectType: string, isChecked: boolean, nodeType: string): void {
@@ -2981,7 +2980,7 @@ export class DeployComponent {
           }
         }
       });
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
 
     if (nodeType === 'referenced' && referenced && referenced.length > 0) {
@@ -2992,7 +2991,7 @@ export class DeployComponent {
           }
         }
       });
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
 
     if (nodeType === 'related') {
@@ -3177,7 +3176,7 @@ export class DeployComponent {
       });
 
       this.rebuildRelatedObjects();
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -3544,7 +3543,7 @@ export class DeployComponent {
 
         this.rebuildRelatedObjects();
 
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }, 100);
     }
   }
@@ -3608,7 +3607,7 @@ export class DeployComponent {
       indeterminate: partiallySelected
     };
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onAffectedCheckboxChange(nodeKey: any, changedObj: any, objectType: string, referencedBy: any): void {
@@ -3626,6 +3625,7 @@ export class DeployComponent {
 
       this.updateParentCheckboxAffected(objectType);
       this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -3641,6 +3641,7 @@ export class DeployComponent {
 
       this.updateParentCheckboxReferenced(objectType);
       this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -3727,7 +3728,7 @@ export class DeployComponent {
     this.relatedParentMap.clear();
 
     if (!this.dependencies?.objects) {
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       return;
     }
 
@@ -3751,7 +3752,7 @@ export class DeployComponent {
     });
 
     if (selectedParentIds.size === 0) {
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       return;
     }
 
@@ -3827,7 +3828,7 @@ export class DeployComponent {
       this.updateParentCheckboxRelated(type);
     });
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   hasDependencies(): any {
@@ -3898,7 +3899,7 @@ export class DeployComponent {
           this.clearDependenciesForNode(child);
         });
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
   }
 
@@ -3982,7 +3983,7 @@ export class DeployComponent {
 
           this.onDependencyModeChange();
 
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       },
       error: () => {
@@ -4337,7 +4338,7 @@ export class DeployComponent {
       if (this.object.releasables.length > 0) {
         obj.releasables = this.object.releasables;
       } else {
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         return;
       }
     }
@@ -4375,7 +4376,7 @@ export class DeployComponent {
 
           if (this.showDependencies) {
             this.activeModal.close();
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           } else {
 
             sessionStorage.removeItem('backgroundOperationInProgress');
@@ -4384,7 +4385,7 @@ export class DeployComponent {
       });
     } else {
       this.submitted = false;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
   }
 
@@ -4461,7 +4462,7 @@ export class DeployComponent {
 
             if (this.showDependencies) {
               this.activeModal.close();
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             } else {
 
               sessionStorage.removeItem('backgroundOperationInProgress');
@@ -4473,7 +4474,7 @@ export class DeployComponent {
         this.submitted = false;
 
         if (this.showDependencies) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         } else {
 
           sessionStorage.removeItem('backgroundOperationInProgress');
@@ -4945,7 +4946,6 @@ export class DeployComponent {
   standalone: false,
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -6228,6 +6228,7 @@ export class ExportComponent {
 
       this.updateParentCheckboxAffected(objectType);
       this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -6243,6 +6244,7 @@ export class ExportComponent {
 
       this.updateParentCheckboxReferenced(objectType);
       this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -7858,7 +7860,7 @@ export class RepositoryComponent {
                   if (checkedNodes.length > 0) {
                     this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
                   }
-                  this.ref.detectChanges();
+                  this.ref.markForCheck();
                   this.nodes = [...this.nodes];
                   resolve();
                 }, 0);
@@ -8031,7 +8033,7 @@ export class RepositoryComponent {
             this._dependenciesPromise = this.getDependencies(checkedNodes, this.nodes[0]);
           }
 
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       },
       error: () => {
@@ -8237,7 +8239,7 @@ export class RepositoryComponent {
         this.checkedObject = savedCheckedState;
         this.recursiveCheck(this.nodes, true);
         this.nodes = [...this.nodes];
-        this.ref.detectChanges();
+        this.ref.markForCheck();
 
         const checkedNodes = this.collectCheckedObjects(this.nodes);
         if (checkedNodes.length > 0) {
@@ -8258,7 +8260,7 @@ export class RepositoryComponent {
         this.checkedObject = savedCheckedState;
         this.recursiveCheck(this.nodes, true);
         this.nodes = [...this.nodes];
-        this.ref.detectChanges();
+        this.ref.markForCheck();
 
         const checkedNodes = this.collectCheckedObjects(this.nodes);
         if (checkedNodes.length > 0) {
@@ -8301,13 +8303,13 @@ export class RepositoryComponent {
   }
 
   handleRecursive(): void {
-    this.ref.detectChanges();
+    this.ref.markForCheck();
 
     if (this.exportObj.isRecursive && this.operation !== 'update'&& this.operation !== 'delete') {
       if (this.recursiveDependenciesCache) {
         this.updateNodeDependencies(this.recursiveDependenciesCache, new Set(), true);
         this.prepareObject(this.recursiveDependenciesCache);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         return;
       } else {
         this.checkedObject.clear();
@@ -8399,7 +8401,7 @@ export class RepositoryComponent {
           this.clearDependenciesForNode(child);
         });
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
 
     }
   }
@@ -9027,13 +9029,13 @@ export class RepositoryComponent {
             if (res && res.requestedItems && res.requestedItems.length > 0) {
               this.updateNodeDependencies(res, requestedKeys, isChecked);
               this.prepareObject(res);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
 
             this.loading = false;
             this.dependenciesLoading = false;
             this.rebuildRelatedObjects();
-            this.ref.detectChanges();
+            this.ref.markForCheck();
             resolve();
           },
           error: (err) => {
@@ -9289,7 +9291,7 @@ export class RepositoryComponent {
       });
 
       this.rebuildRelatedObjects();
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -9299,7 +9301,7 @@ export class RepositoryComponent {
     this.relatedParentMap.clear();
 
     if (!this.dependencies?.objects) {
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       return;
     }
 
@@ -9323,7 +9325,7 @@ export class RepositoryComponent {
     });
 
     if (selectedParentIds.size === 0) {
-      this.ref.detectChanges();
+      this.ref.markForCheck();
       return;
     }
 
@@ -9399,7 +9401,7 @@ export class RepositoryComponent {
       this.updateParentCheckboxRelated(type);
     });
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private getDependencyState(refObj: any, isEnforced: boolean): { selected: boolean; disabled: boolean } {
@@ -9469,7 +9471,7 @@ export class RepositoryComponent {
         indeterminate: someSelected
       };
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   getRelatedParentTooltip(relatedObjectId: number): string {
@@ -9579,7 +9581,7 @@ export class RepositoryComponent {
     this.rebuildRelatedObjects();
 
     this.nodes = [...this.nodes];
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private collectCheckedObjects(nodes: any[]): any[] {
@@ -9949,7 +9951,6 @@ export class NotificationComponent {
 @Component({
   standalone: false,
   selector: 'app-json-editor',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-editor-dialog.html'
 })
 export class JsonEditorModalComponent {
@@ -9982,7 +9983,7 @@ export class JsonEditorModalComponent {
         this.isError = true;
         this.errorMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     };
   }
 
@@ -10023,7 +10024,7 @@ export class JsonEditorModalComponent {
           this.activeModal.close(this.editor.get());
         }
         this.submitted = false;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       });
     }
   }
@@ -10035,7 +10036,7 @@ export class JsonEditorModalComponent {
       this.errorMsg = res.invalidMsg;
     }
     this.isError = !flag;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     cb(flag);
   }
 
@@ -10056,7 +10057,6 @@ export class JsonEditorModalComponent {
 @Component({
   standalone: false,
   selector: 'app-create-object-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-object-dialog.html'
 })
 export class CreateObjectModalComponent {
@@ -10111,7 +10111,7 @@ export class CreateObjectModalComponent {
       this.object.suffix = this.settings.suffix;
       this.object.prefix = this.settings.prefix;
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onSubmit(): void {
@@ -10169,7 +10169,7 @@ export class CreateObjectModalComponent {
           });
         }, error: () => {
           this.submitted = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -10205,7 +10205,7 @@ export class CreateObjectModalComponent {
         this.activeModal.close(res);
       }, error: () => {
         this.submitted = false;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -10232,7 +10232,7 @@ export class CreateObjectModalComponent {
         this.activeModal.close(res);
       }, error: () => {
         this.submitted = false;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -10248,14 +10248,13 @@ export class CreateObjectModalComponent {
     } else {
       this.isValid = false;
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 }
 
 @Component({
   standalone: false,
   selector: 'app-create-folder-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-folder-dialog.html'
 })
 export class CreateFolderModalComponent {
@@ -10304,7 +10303,7 @@ export class CreateFolderModalComponent {
     if (this.rename && !this.folder.name) {
       this.folder.name = this.origin.name;
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onSubmit(): void {
@@ -10334,7 +10333,7 @@ export class CreateFolderModalComponent {
           });
         }, error: () => {
           this.submitted = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     } else {
@@ -10378,7 +10377,7 @@ export class CreateFolderModalComponent {
           this.activeModal.close(res);
         }, error: () => {
           this.submitted = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -10392,7 +10391,7 @@ export class CreateFolderModalComponent {
         break;
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   isValidObject(str: string): void {
@@ -10406,7 +10405,7 @@ export class CreateFolderModalComponent {
     } else {
       this.isValid = false;
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private getObjectArr(object: any): any {
@@ -11041,7 +11040,6 @@ export class EncryptArgumentModalComponent {
   standalone: false,
   selector: 'app-change-modal',
   templateUrl: './change-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -11433,7 +11431,6 @@ export class ChangeModalComponent {
   standalone: false,
   selector: 'app-publish-change-modal',
   templateUrl: './publish-change-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PublishChangeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -12301,6 +12298,7 @@ export class PublishChangeModalComponent {
 
       this.updateParentCheckboxAffected(objectType);
       this.isCheckParentObjectType(nodeKey, referencedBy, objectType, 'affected');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -12314,6 +12312,7 @@ export class PublishChangeModalComponent {
 
       this.updateParentCheckboxReferenced(objectType);
       this.isCheckParentObjectType(nodeKey, references, objectType, 'referenced');
+      this.ref.markForCheck();
     }, 0);
   }
 
@@ -12849,7 +12848,6 @@ export class PublishChangeModalComponent {
   standalone: false,
   selector: 'app-show-dependencies-modal',
   templateUrl: './show-dependencies-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowDependenciesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -13809,7 +13807,6 @@ export class AddTagsToGropusModalComponent {
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InventoryComponent {
   schedulerIds: any = {};
@@ -13973,7 +13970,7 @@ export class InventoryComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy(): void {
@@ -14934,7 +14931,7 @@ export class InventoryComponent {
       this.allObjects = [];
       this.searchNode.text = '';
       $('#treeSearch').blur();
-
+      this.cdr.markForCheck();
     }, 10);
   }
 

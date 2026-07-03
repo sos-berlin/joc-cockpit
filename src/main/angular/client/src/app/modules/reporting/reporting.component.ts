@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from 'jspdf';
@@ -12,7 +12,7 @@ import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.comp
   standalone: false,
   selector: 'app-run-modal-content',
   templateUrl: './run-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class RunModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -22,7 +22,7 @@ export class RunModalComponent {
   comments: any = {};
   reportPaths = [];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -48,8 +48,10 @@ export class RunModalComponent {
         this.coreService.startReport();
         this.activeModal.close('Done');
         this.submitted = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     })
   }
@@ -60,7 +62,7 @@ export class RunModalComponent {
   selector: 'app-share-modal-content',
   templateUrl: './share-dialog.html',
   styleUrls: ['./reporting.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShareModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -68,11 +70,11 @@ export class ShareModalComponent {
   imageUrl: string | undefined;
   loading: boolean = false;
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.getImage().then(r => this.loading = false);
+    this.getImage().then(() => { this.loading = false; this.cdr.markForCheck(); });
   }
 
   private async getImage() {
@@ -110,6 +112,7 @@ export class ShareModalComponent {
     // Save PDF
     pdf.save('report.pdf');
     this.imageUrl = canvas.toDataURL('image/png');
+    this.cdr.markForCheck();
   }
 
   onSubmit(): void {
@@ -121,7 +124,7 @@ export class ShareModalComponent {
   selector: 'app-reporting',
   templateUrl: './reporting.component.html',
   styleUrls: ['./reporting.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ReportingComponent {
 

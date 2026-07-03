@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
   standalone: false,
   selector: 'app-manage-report',
   templateUrl: './manage-report.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ManageReportComponent {
   @Input() permission: any;
@@ -74,10 +74,12 @@ export class ManageReportComponent {
       } else if (res.run) {
         this.runAll();
       }
+      this.cdr.markForCheck();
     });
     this.subscription4 = sharingDataService.searchKeyAnnounced$.subscribe(res => {
       this.reset();
       this.searchInResult();
+      this.cdr.markForCheck();
     });
   }
 
@@ -346,7 +348,8 @@ export class ManageReportComponent {
           this.coreService.startReport();
           this.reset();
           this.cdr.markForCheck();
-        }
+        },
+        error: () => { this.cdr.markForCheck(); }
       })
     } else {
       this.modal.create({

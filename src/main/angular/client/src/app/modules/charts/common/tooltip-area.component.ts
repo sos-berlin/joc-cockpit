@@ -4,7 +4,8 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  
   TemplateRef,
   PLATFORM_ID,
   Inject
@@ -71,7 +72,6 @@ export interface Tooltip {
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TooltipArea {
   anchorOpacity: number = 0;
@@ -96,7 +96,10 @@ export class TooltipArea {
 
   @ViewChild('tooltipAnchor', {static: false}) tooltipAnchor;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: any,
+    private cd: ChangeDetectorRef
+  ) {
   }
 
   getValues(xVal): Tooltip[] {
@@ -166,6 +169,7 @@ export class TooltipArea {
       this.showTooltip();
 
       this.lastAnchorPos = this.anchorPos;
+      this.cd.markForCheck();
     }
   }
 
@@ -210,6 +214,7 @@ export class TooltipArea {
     this.tooltipAnchor.nativeElement.dispatchEvent(event);
     this.anchorOpacity = 0;
     this.lastAnchorPos = -1;
+    this.cd.markForCheck();
   }
 
   getToolTipText(tooltipItem: Tooltip): string {

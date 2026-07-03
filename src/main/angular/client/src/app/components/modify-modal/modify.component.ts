@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {isArray, isEmpty, object} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -13,7 +13,7 @@ import {NgModel} from "@angular/forms";
   standalone: false,
   selector: 'app-change-parameter',
   templateUrl: './change-parameter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ChangeParameterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -116,6 +116,7 @@ export class ChangeParameterModalComponent {
           this.blockPositions.set(item.positionString, item.position);
           this.blockPositionList.set(item.positionString, item.positions);
         });
+        this.cdr.markForCheck();
       });
     }
   }
@@ -498,6 +499,7 @@ export class ChangeParameterModalComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -636,7 +638,7 @@ export class ChangeParameterModalComponent {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
           this.activeModal.close(obj.variables);
-        }, error: () => this.submitted = false
+        }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
     } else {
       this.submitted = false;
@@ -677,7 +679,7 @@ export class ChangeParameterModalComponent {
   standalone: false,
   selector: 'app-start-time',
   templateUrl: './start-time-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ModifyStartTimeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -972,7 +974,7 @@ export class ModifyStartTimeModalComponent {
     this.coreService.post(this.isCopy? 'daily_plan/orders/copy' : 'daily_plan/orders/modify', obj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 

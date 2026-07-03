@@ -1,10 +1,11 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
-  Component, inject,
+  Component, EventEmitter, inject,
   Input,
   OnChanges,
   OnDestroy,
+  Output,
   SimpleChanges
 } from '@angular/core';
 import {isArray, isEmpty, isEqual} from 'underscore';
@@ -64,7 +65,6 @@ export class TestMailComponent {
 @Component({
   standalone: false,
   selector: 'app-job-resource',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-resource.component.html'
 })
 export class JobResourceComponent {
@@ -76,6 +76,7 @@ export class JobResourceComponent {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   jobResource: any = {};
   invalidMsg: string;
@@ -117,7 +118,7 @@ export class JobResourceComponent {
               setOfCheckedEnv: new Set<string>()
             };
           }
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -136,7 +137,7 @@ export class JobResourceComponent {
         const currentPath = this.jobResource.name;
         if (update.objectName === currentPath) {
           this.jobResource.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -165,7 +166,7 @@ export class JobResourceComponent {
         this.getObject();
       } else {
         this.jobResource = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -230,7 +231,7 @@ export class JobResourceComponent {
             } else {
               this.jobResource.name = this.data.name;
               this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -239,7 +240,7 @@ export class JobResourceComponent {
       } else {
         this.jobResource.name = this.data.name;
         this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -264,7 +265,7 @@ export class JobResourceComponent {
       }, error: () => {
         this.jobResource.name = this.data.name;
         this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -349,7 +350,7 @@ export class JobResourceComponent {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.env, 'name', '')) {
         this.jobResource.configuration.env.push(param);
         if (!flag) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     }
@@ -357,7 +358,7 @@ export class JobResourceComponent {
 
   removeEnv(index): void {
     this.jobResource.configuration.env.splice(index, 1);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     this.saveJSON();
   }
 
@@ -370,7 +371,7 @@ export class JobResourceComponent {
       if (!this.coreService.isLastEntryEmpty(this.jobResource.configuration.arguments, 'name', '')) {
         this.jobResource.configuration.arguments.push(param);
         if (!flag) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     }
@@ -378,7 +379,7 @@ export class JobResourceComponent {
 
   removeArgu(index): void {
     this.jobResource.configuration.arguments.splice(index, 1);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     this.saveJSON();
   }
 
@@ -617,11 +618,11 @@ export class JobResourceComponent {
             this.data.valid = res.valid;
             this.data.deployed = false;
             this.setErrorMessage(res);
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           }
         }, error: () => {
           this.isStore = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -709,7 +710,7 @@ export class JobResourceComponent {
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
       this.history.push(JSON.stringify(this.jobResource.configuration));
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -823,11 +824,13 @@ export class JobResourceComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

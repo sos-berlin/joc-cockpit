@@ -4,7 +4,7 @@ import {
   Output,
   EventEmitter,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -118,7 +118,6 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
   `,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarVerticalNormalizedComponent extends BaseChartComponent {
   @Input() legend: boolean = false;
@@ -318,6 +317,7 @@ export class BarVerticalNormalizedComponent extends BaseChartComponent {
 
     this.activeEntries = [...items];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(event, group: Series, fromLegend: boolean = false) {
@@ -335,5 +335,6 @@ export class BarVerticalNormalizedComponent extends BaseChartComponent {
     });
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

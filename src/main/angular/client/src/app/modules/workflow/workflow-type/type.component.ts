@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -23,7 +23,6 @@ import {Subscription} from "rxjs";
   standalone: false,
   selector: 'app-type',
   templateUrl: './type.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TypeComponent {
   @Input() configuration;
@@ -102,7 +101,7 @@ export class TypeComponent {
 
       this.updateOrder();
     }
-
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy(): void {

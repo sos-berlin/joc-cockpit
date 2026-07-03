@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {CoreService} from "../../services/core.service";
 
@@ -7,7 +7,7 @@ import {CoreService} from "../../services/core.service";
   selector: 'app-signup-complete',
   templateUrl: './signup-complete.component.html',
   styleUrls: ['./signup-complete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SignupCompleteComponent {
   isVerified = false;

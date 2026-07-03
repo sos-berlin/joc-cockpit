@@ -29,7 +29,7 @@
                         <li (click)="loadAgentTasks(opt.date)"
                             [ngClass]="{'ant-select-dropdown-menu-item-active': agentFilters.filter.date === opt.date, 'disable-link': savedFilter.selected}"
                             nz-menu-item>
-                          <a>{{opt.text}}</a>
+                          <a>{{opt.text | translate}}</a>
                         </li>
                       }
                     </ul>

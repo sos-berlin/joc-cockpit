@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -331,7 +331,7 @@ export class ControllerModalComponent {
   selector: 'app-roles',
   templateUrl: 'roles.component.html',
   styleUrls: ['./roles.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class RolesComponent {
   accounts: any = [];
@@ -358,6 +358,7 @@ export class RolesComponent {
       if (res) {
         if (isArray(res)) {
           this.accounts = res;
+          this.cdr.markForCheck();
         }
       }
     });
@@ -1079,6 +1080,7 @@ export class RolesComponent {
       this.activeRoute.queryParams
         .subscribe((params: any) => {
           this.selectUser(params.account);
+          this.cdr.markForCheck();
         });
     }
   }

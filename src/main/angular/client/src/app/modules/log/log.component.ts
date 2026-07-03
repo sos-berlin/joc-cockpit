@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {isArray, isEmpty} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
@@ -13,7 +13,7 @@ declare const $;
   standalone: false,
   selector: 'app-log',
   templateUrl: './log.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LogComponent {
   preferences: any = {};

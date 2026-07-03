@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
 import { MarkdownParserService } from '../../services/markdown-parser.service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
@@ -59,7 +59,7 @@ interface ColorPreset {
   selector: 'app-note',
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class NoteComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -403,6 +403,7 @@ export class NoteComponent {
     this.lastX = event.clientX;
     this.lastY = event.clientY;
     this.updateModalSize();
+    this.cdr.markForCheck();
   }
 
 
@@ -410,7 +411,7 @@ export class NoteComponent {
     this.resizing = false;
     window.removeEventListener('mousemove', this.onResizing);
     window.removeEventListener('mouseup', this.onResizeEnd);
-
+    this.cdr.markForCheck();
     this.saveDisplayPreferences();
   }
 

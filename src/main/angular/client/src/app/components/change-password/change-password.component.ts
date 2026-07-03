@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {isEqual} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
@@ -8,7 +8,6 @@ import {CoreService} from '../../services/core.service';
   standalone: false,
   selector: 'app-change-password',
   templateUrl: './change-password-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePasswordComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

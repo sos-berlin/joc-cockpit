@@ -4,7 +4,7 @@ import {
   Output,
   EventEmitter,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -128,7 +128,6 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
   `,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarVerticalStackedComponent extends BaseChartComponent {
   @Input() legend: boolean = false;
@@ -187,6 +186,7 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
   override ngOnInit() {
     if (isPlatformServer(this.platformId)) {
       this.isSSR = true;
+      this.cd.markForCheck();
     }
   }
 
@@ -299,6 +299,8 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     }
     if (groupIndex === this.results.length - 1) {
       setTimeout(() => this.update());
+    } else {
+      this.cd.markForCheck();
     }
   }
 
@@ -378,6 +380,7 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
 
     this.activeEntries = [...items];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(event, group: Series, fromLegend: boolean = false) {
@@ -395,5 +398,6 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     });
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

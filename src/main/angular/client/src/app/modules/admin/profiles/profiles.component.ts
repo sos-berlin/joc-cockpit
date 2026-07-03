@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,7 +12,7 @@ import {AuthService} from '../../../components/guard';
   standalone: false,
   selector: 'app-profiles',
   templateUrl: './profiles.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ProfilesComponent {
   preferences: any = {};
@@ -66,6 +66,7 @@ export class ProfilesComponent {
         this.cdr.markForCheck();
       }, error: () => {
         this.loading = false;
+        this.cdr.markForCheck();
       }
     })
   }

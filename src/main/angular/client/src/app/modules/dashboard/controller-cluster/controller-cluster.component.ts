@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ElementRef, HostListener, NgZone, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ElementRef, HostListener, NgZone, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
@@ -29,7 +29,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-controller-cluster',
   templateUrl: './controller-cluster.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
@@ -60,7 +60,7 @@ export class ControllerClusterComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   static colorCode(severity): string {
@@ -471,7 +471,7 @@ export class ControllerClusterComponent {
         }
         this.isDataLoaded = true;
         this.cdr.markForCheck();
-      }, error: () => this.isDataLoaded = true
+      }, error: () => { this.isDataLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

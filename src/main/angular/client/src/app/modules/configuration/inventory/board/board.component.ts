@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {clone, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -15,7 +15,6 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-board',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './board.component.html'
 })
 export class BoardComponent {
@@ -27,6 +26,7 @@ export class BoardComponent {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   board: any = {};
   boardObj: any = {
@@ -81,7 +81,7 @@ export class BoardComponent {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.board.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -99,7 +99,7 @@ export class BoardComponent {
       if (data && data.objectType === 'NOTICEBOARD' && this.board) {
         if (this.board.name === data.objectName && this.board.hasNote) {
           this.board.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -124,7 +124,7 @@ export class BoardComponent {
         this.getObject();
       } else {
         this.board = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -226,7 +226,7 @@ export class BoardComponent {
       } else {
         this.invalidMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -270,7 +270,7 @@ export class BoardComponent {
         this.data.valid = res.valid;
       }
       this.setErrorMessage(res);
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -318,7 +318,7 @@ export class BoardComponent {
             } else {
               this.board.name = this.data.name;
               this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -327,7 +327,7 @@ export class BoardComponent {
       } else {
         this.board.name = this.data.name;
         this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -353,7 +353,7 @@ export class BoardComponent {
       }, error: () => {
         this.board.name = this.data.name;
         this.board.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -594,9 +594,9 @@ export class BoardComponent {
             this.board.valid = res.valid;
             this.data.valid = res.valid;
             this.setErrorMessage(res);
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           }
-        }, error: () => this.ref.detectChanges()
+        }, error: () => this.ref.markForCheck()
       });
     }
   }
@@ -604,11 +604,13 @@ export class BoardComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

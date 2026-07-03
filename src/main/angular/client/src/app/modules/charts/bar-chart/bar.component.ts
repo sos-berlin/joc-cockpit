@@ -1,5 +1,6 @@
 import {
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -36,7 +37,6 @@ import {Gradient} from '../common/types/gradient.interface';
       (click)="select.emit(data)"
     />
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BarComponent implements OnChanges {
   @Input() fill: string;
@@ -67,7 +67,7 @@ export class BarComponent implements OnChanges {
   hasGradient: boolean = false;
   hideBar: boolean = false;
 
-  constructor(element: ElementRef) {
+  constructor(element: ElementRef, private cdr: ChangeDetectorRef) {
     this.element = element.nativeElement;
   }
 
@@ -91,6 +91,7 @@ export class BarComponent implements OnChanges {
 
     this.updatePathEl();
     this.checkToHideBar();
+    this.cdr.markForCheck();
   }
 
   loadAnimation(): void {

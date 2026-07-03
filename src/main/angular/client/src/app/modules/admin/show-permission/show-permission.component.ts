@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
 import {CoreService} from "../../../services/core.service";
@@ -7,7 +7,7 @@ import {CoreService} from "../../../services/core.service";
   standalone: false,
   selector: 'app-show-permission-view',
   templateUrl: './show-permission.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowPermissionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -38,6 +38,7 @@ export class ShowPermissionComponent {
         this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     })
   }

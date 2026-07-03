@@ -4,7 +4,7 @@ import {
   Output,
   ViewEncapsulation,
   EventEmitter,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -118,7 +118,6 @@ import {isPlatformServer} from '@angular/common';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
 styles: [`
@@ -178,6 +177,7 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
   override ngOnInit() {
     if (isPlatformServer(this.platformId)) {
       this.isSSR = true;
+      this.cd.markForCheck();
     }
   }
 
@@ -326,6 +326,7 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
 
     this.activeEntries = [...items];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(event, group: Series, fromLegend: boolean = false) {
@@ -343,5 +344,6 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
     });
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

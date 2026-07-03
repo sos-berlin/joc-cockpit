@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   Input,
@@ -23,7 +23,6 @@ import {AuthService} from "../../../../components/guard";
 @Component({
   standalone: false,
   selector: 'app-table',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './table.component.html'
 })
 export class TableComponent implements OnChanges, OnDestroy {
@@ -52,7 +51,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       if (res && !isEmpty(res)) {
         if ((res.reloadTree && this.dataObj && this.dataObj.children) || res.reloadFolder) {
           this.searchInResult();
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -75,7 +74,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/Inventory/)) {
           this.searchInResult();
-          this.ref.detectChanges();
+          this.ref.markForCheck();
           break;
         }
       }
@@ -164,7 +163,7 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.mapOfCheckedId = new Map();
     this.checked = false;
     this.indeterminate = false;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onItemChecked(item: any, checked: boolean): void {
@@ -487,7 +486,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       if (result) {
         const URL =  'inventory/trash/delete';
         this.coreService.post(URL, obj).subscribe();
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -669,7 +668,7 @@ export class TableComponent implements OnChanges, OnDestroy {
     }
     this.searchInResult();
     this.dataService.reloadTree.next({reload: true});
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   restoreObject(data): void {
@@ -725,7 +724,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       this.dataObj.children.push(obj);
       this.searchInResult();
       this.dataService.reloadTree.next({add: true});
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
 
   }

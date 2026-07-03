@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -13,7 +13,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-status',
   templateUrl: './agent-status.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentStatusComponent {
   @Input('layout') layout: any;
@@ -73,7 +73,7 @@ export class AgentStatusComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -221,6 +221,7 @@ export class AgentStatusComponent {
 
         this.pieChartData.labels.push(displayLabel);
       });
+      this.cdr.markForCheck();
     });
   }
 

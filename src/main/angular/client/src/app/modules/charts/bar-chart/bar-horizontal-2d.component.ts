@@ -4,7 +4,7 @@ import {
   ViewEncapsulation,
   Output,
   EventEmitter,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -138,7 +138,6 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
   styles: [`
@@ -433,6 +432,7 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
 
     this.activeEntries = [...items];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(event, group: DataItem, fromLegend: boolean = false): void {
@@ -450,5 +450,6 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
     });
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

@@ -74,7 +74,7 @@
                     <li (click)="togglePriority('common')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'common'}"
                         nz-menu-item>
-                      <a translate>settings.filter.common</a>
+                      <a>{{'settings.filter.common' | translate}}</a>
                     </li>
                     <li (click)="togglePriority('advanced')"
                         [ngClass]="{'ant-select-dropdown-menu-item-active': priorityFilter === 'advanced'}"

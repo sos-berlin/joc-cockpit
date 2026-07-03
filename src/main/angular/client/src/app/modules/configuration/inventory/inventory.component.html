@@ -612,63 +612,63 @@
           <div>
             <app-file-order [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                             [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                            [schedulerId]="schedulerIds.selected"></app-file-order>
+                            [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-file-order>
           </div>
         }
         @if (type == 'JOBTEMPLATE') {
           <div>
             <app-job-template [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                               [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                              [schedulerId]="schedulerIds.selected"></app-job-template>
+                              [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-job-template>
           </div>
         }
         @if (type == 'JOBRESOURCE') {
           <div>
             <app-job-resource [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                               [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                              [schedulerId]="schedulerIds.selected"></app-job-resource>
+                              [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-job-resource>
           </div>
         }
         @if (type == 'NOTICEBOARD') {
           <div>
             <app-board [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                        [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                       [schedulerId]="schedulerIds.selected"></app-board>
+                       [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-board>
           </div>
         }
         @if (type == 'LOCK') {
           <div>
             <app-lock [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash" [securityLevel]="securityLevel"
                       [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                      [schedulerId]="schedulerIds.selected"></app-lock>
+                      [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-lock>
           </div>
         }
         @if (type == 'SCHEDULE') {
           <div>
             <app-schedule [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                           [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                          [schedulerId]="schedulerIds.selected"></app-schedule>
+                          [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-schedule>
           </div>
         }
         @if (type == 'INCLUDESCRIPT') {
           <div>
             <app-script [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                         [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                        [schedulerId]="schedulerIds.selected"></app-script>
+                        [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-script>
           </div>
         }
         @if (type == 'REPORT') {
           <div>
             <app-report [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                         [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                        [schedulerId]="schedulerIds.selected"></app-report>
+                        [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-report>
           </div>
         }
         @if (type && type.match('CALENDAR')) {
           <div>
             <app-calendar [copyObj]="copyObj" [data]="selectedData" [isTrash]="isTrash"
                           [permission]="permission" [preferences]="preferences" [reload]="selectedData.reload"
-                          [schedulerId]="schedulerIds.selected"></app-calendar>
+                          [schedulerId]="schedulerIds.selected" (moreOptionsChange)="onMoreOptionsChange($event)"></app-calendar>
           </div>
         }
       </div>

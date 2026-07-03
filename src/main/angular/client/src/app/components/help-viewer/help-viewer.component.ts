@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { finalize, takeUntil, catchError, timeout, retryWhen, delay, take } from 'rxjs/operators';
 import { Subject, lastValueFrom, of } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -20,7 +20,7 @@ interface LinkValidationResult {
   standalone: false,
   selector: 'app-help-viewer',
   templateUrl: './help-viewer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HelpViewerComponent implements OnInit, OnDestroy {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -454,6 +454,7 @@ onClick(e: MouseEvent): void {
             this.fallbackNotice = '';
           }
 
+          this.cdr.markForCheck();
           setTimeout(() => {
             const root = this.host.nativeElement.querySelector('.help-md') as HTMLElement | null;
             if (root) {
@@ -466,6 +467,7 @@ onClick(e: MouseEvent): void {
           this.hasError = true;
           this.html = '';
           this.fallbackNotice = '';
+          this.cdr.markForCheck();
         }
       });
   }
@@ -543,6 +545,7 @@ onClick(e: MouseEvent): void {
         if (searchInput) searchInput.focus();
       }, 100);
     }
+    this.cdr.markForCheck();
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -572,6 +575,7 @@ onClick(e: MouseEvent): void {
     if (!this.searchText || this.searchText.trim().length === 0) {
       this.totalMatches = 0;
       this.currentMatchIndex = -1;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -591,6 +595,7 @@ onClick(e: MouseEvent): void {
     } else {
       this.currentMatchIndex = -1;
     }
+    this.cdr.markForCheck();
   }
 
   handleSearchKeyDown(event: KeyboardEvent): void {
@@ -704,6 +709,7 @@ onClick(e: MouseEvent): void {
 
     this.currentMatchIndex = (this.currentMatchIndex + 1) % this.totalMatches;
     this.scrollToMatch(this.currentMatchIndex);
+    this.cdr.markForCheck();
   }
 
   findPrevious(): void {
@@ -711,6 +717,7 @@ onClick(e: MouseEvent): void {
 
     this.currentMatchIndex = (this.currentMatchIndex - 1 + this.totalMatches) % this.totalMatches;
     this.scrollToMatch(this.currentMatchIndex);
+    this.cdr.markForCheck();
   }
 
   private scrollToMatch(index: number): void {
@@ -735,6 +742,7 @@ onClick(e: MouseEvent): void {
     this.clearHighlights();
     this.totalMatches = 0;
     this.currentMatchIndex = -1;
+    this.cdr.markForCheck();
   }
 
   private clearHighlights(): void {

@@ -4,7 +4,8 @@ import {
   Output,
   EventEmitter,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -126,7 +127,6 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
@@ -358,6 +358,7 @@ export class BarHorizontalStackedComponent extends BaseChartComponent {
     if (groupIndex === this.results.length - 1) {
       setTimeout(() => this.update());
     }
+    this.cd.markForCheck();
   }
 
   onActivate(event, group: Series, fromLegend: boolean = false) {
@@ -379,6 +380,7 @@ export class BarHorizontalStackedComponent extends BaseChartComponent {
 
     this.activeEntries = [...items];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(event, group: Series, fromLegend: boolean = false) {
@@ -396,5 +398,6 @@ export class BarHorizontalStackedComponent extends BaseChartComponent {
     });
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

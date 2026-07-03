@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -15,7 +15,7 @@ import {SaveService} from '../../../services/save.service';
   standalone: false,
   selector: 'app-filter-agent-content',
   templateUrl: './filter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -69,7 +69,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
 
@@ -89,7 +89,7 @@ export class SearchComponent {
   isUnique = true;
   agentIds = [];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -108,6 +108,7 @@ export class SearchComponent {
       this.agentIds = result.agents.map((item) => {
         return item.agentId;
       });
+      this.ref.markForCheck();
     });
   }
 
@@ -181,7 +182,8 @@ export class SearchComponent {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, error: () => this.submitted = false
+        this.ref.markForCheck();
+      }, error: () => { this.submitted = false; this.ref.markForCheck(); }
     });
   }
 
@@ -202,7 +204,7 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-agent-job-execution',
   templateUrl: 'agent-job-execution.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentJobExecutionComponent {
   objectType = 'AGENTCLUSTER';
@@ -406,6 +408,7 @@ export class AgentJobExecutionComponent {
           this.filterList = res.configurations;
         }
         this.getCustomizations();
+        this.cdr.markForCheck();
       }, error: () => this.getCustomizations()
     });
   }
@@ -453,9 +456,11 @@ export class AgentJobExecutionComponent {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
                   this.loadAgentTasks();
+                  this.cdr.markForCheck();
                 }, error: () => {
                   this.savedFilter.selected = undefined;
                   this.loadAgentTasks();
+                  this.cdr.markForCheck();
                 }
               });
             }
@@ -463,14 +468,17 @@ export class AgentJobExecutionComponent {
           if (flag) {
             this.savedFilter.selected = undefined;
             this.loadAgentTasks();
+            this.cdr.markForCheck();
           }
         } else {
           this.savedFilter.selected = undefined;
           this.loadAgentTasks();
+          this.cdr.markForCheck();
         }
       }, error: () => {
         this.savedFilter.selected = undefined;
         this.loadAgentTasks();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -529,6 +537,7 @@ export class AgentJobExecutionComponent {
         this.agentTasks = [];
         this.isLoading = true;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -583,10 +592,12 @@ export class AgentJobExecutionComponent {
         this.totalJobExecution = res.totalNumOfSuccessfulTasks;
         this.totalNumOfJobs = res.totalNumOfJobs;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.agentTasks = [];
         this.isLoading = true;
         this.configLoading = false;
+        this.cdr.markForCheck();
       }
     })
   }
@@ -748,6 +759,7 @@ export class AgentJobExecutionComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.loadAgentTasks();
+        this.cdr.markForCheck();
       });
     } else {
       this.isCustomizationSelected(false);

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -71,7 +71,7 @@ export class AddWidgetModalComponent {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DashboardComponent {
   options: GridsterConfig = {};

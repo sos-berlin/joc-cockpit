@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../../services/data.service";
@@ -9,7 +9,6 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-add-approver-dialog',
   templateUrl: './add-approver-dialog.html',
 })
@@ -23,7 +22,7 @@ export class AddApproverModalComponent {
     lastName: '',
     email: ''
   };
-  constructor(public activeModal: NzModalRef, public coreService: CoreService, public authService: AuthService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, public authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
 
@@ -43,15 +42,15 @@ export class AddApproverModalComponent {
       }
       this.coreService.post('approval/approver/store', obj).subscribe({
         next: () => {
-          this.submitted = false
-          this.activeModal.close(true)
-        }, error: () => this.submitted = false
+          this.submitted = false;
+          this.activeModal.close(true);
+          this.cdr.markForCheck();
+        }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
   }
 }
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-approvers',
   templateUrl: './approvers.component.html',
   styleUrl: './approvers.component.scss'

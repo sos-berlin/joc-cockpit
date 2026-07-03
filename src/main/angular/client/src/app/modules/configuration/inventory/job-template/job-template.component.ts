@@ -1,9 +1,11 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   inject,
   Input,
+  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -339,7 +341,6 @@ export class UpdateJobTemplatesComponent {
 @Component({
   standalone: false,
   selector: 'app-job-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-template.component.html'
 })
 export class JobTemplateComponent {
@@ -350,6 +351,7 @@ export class JobTemplateComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   job: any = {};
   invalidMsg: string;
@@ -404,7 +406,7 @@ export class JobTemplateComponent {
           if (this.data.released !== this.job.released || this.data.valid !== this.job.valid) {
             this.reset();
           }
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -423,7 +425,7 @@ export class JobTemplateComponent {
         const currentPath = this.job.name;
         if (update.objectName === currentPath) {
           this.job.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -473,7 +475,7 @@ export class JobTemplateComponent {
         this.getObject();
       } else {
         this.job = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -573,7 +575,7 @@ export class JobTemplateComponent {
       } else {
         this.invalidMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
 
   }
@@ -718,7 +720,7 @@ export class JobTemplateComponent {
           "Ctrl-Space": function (editor) {
             const cursor = editor.getCursor();
             self.isTreeShow = true;
-            self.ref.detectChanges();
+            self.ref.markForCheck();
             setTimeout(() => {
               const dom = $('#show-tree');
               dom?.css({
@@ -763,7 +765,7 @@ export class JobTemplateComponent {
             } else {
               this.job.name = this.data.name;
               this.job.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -772,7 +774,7 @@ export class JobTemplateComponent {
       } else {
         this.job.name = this.data.name;
         this.job.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -797,7 +799,7 @@ export class JobTemplateComponent {
       }, error: () => {
         this.job.name = this.data.name;
         this.job.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -817,7 +819,7 @@ export class JobTemplateComponent {
     this.isDisplay = false;
     setTimeout(() => {
       this.isDisplay = true;
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }, time);
   }
 
@@ -899,7 +901,7 @@ export class JobTemplateComponent {
           return {name: k, value: val};
         });
         this.job.configuration.arguments = result.arguments;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.saveJSON();
       }
     });
@@ -924,7 +926,7 @@ export class JobTemplateComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.job.configuration.executable.script = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1120,7 +1122,7 @@ export class JobTemplateComponent {
       this.copiedParamObjects = {};
       this.coreService.tabs._configuration.copiedParamObjects = this.copiedParamObjects;
       this.saveJSON();
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     }
   }
 
@@ -1159,7 +1161,7 @@ export class JobTemplateComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data[type] = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1225,7 +1227,7 @@ export class JobTemplateComponent {
 
   removeParameter(index): void {
     this.job.configuration.arguments.splice(index, 1);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     this.saveJSON();
   }
 
@@ -1246,7 +1248,7 @@ export class JobTemplateComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result.value;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
         this.saveJSON();
       }
     });
@@ -1359,7 +1361,7 @@ export class JobTemplateComponent {
 
   checkExpectNoticeExp(name): void {
     this.isTreeShow = false;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     if (name) {
       const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor(); // gets the line number in the cursor position
@@ -1433,7 +1435,7 @@ export class JobTemplateComponent {
           }
         }, error: () => {
           this.isStore = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -1469,7 +1471,7 @@ export class JobTemplateComponent {
         this.invalidMsg = 'inventory.message.credentialKeyIsMissing';
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   encryptValue(argument, typeArg, variableType){
@@ -1648,11 +1650,13 @@ export class JobTemplateComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   notes(name): void {

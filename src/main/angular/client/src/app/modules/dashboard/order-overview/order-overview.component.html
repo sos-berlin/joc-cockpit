@@ -23,7 +23,7 @@
                   @for (btn of dateFilterBtn; track btn.date) {
                     <li (click)="changeDate(btn.date);filters.label = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=== btn.date}"
                         nz-menu-item>
-                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                      <a>{{ 'filters.button.' + btn.text | translate }}</a>
                     </li>
                   }
                 </ul>

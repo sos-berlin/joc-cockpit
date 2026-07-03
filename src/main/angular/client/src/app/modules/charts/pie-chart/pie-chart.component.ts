@@ -4,7 +4,7 @@ import {
   Output,
   ViewEncapsulation,
   EventEmitter,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef
 } from '@angular/core';
@@ -58,7 +58,7 @@ import {ScaleType} from '../common/types/scale-type.enum';
   `,
   styleUrls: ['../common/base-chart.component.scss', './pie-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PieChartComponent extends BaseChartComponent {
   @Input() labels: boolean = false;
@@ -178,6 +178,7 @@ export class PieChartComponent extends BaseChartComponent {
     }
 
     this.activeEntries = [item, ...this.activeEntries];
+    this.cd.markForCheck();
     this.activate.emit({value: item, entries: this.activeEntries});
   }
 
@@ -196,6 +197,7 @@ export class PieChartComponent extends BaseChartComponent {
 
     this.activeEntries.splice(idx, 1);
     this.activeEntries = [...this.activeEntries];
+    this.cd.markForCheck();
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
   }

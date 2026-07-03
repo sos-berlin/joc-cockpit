@@ -1,11 +1,13 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component, ElementRef,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges, ViewChild
 } from '@angular/core';
 import {Subscription} from 'rxjs';
@@ -23,7 +25,6 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-file-order',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './file-order.component.html'
 })
 export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
@@ -35,6 +36,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   invalidMsg: string;
   isLocalChange: string;
@@ -76,7 +78,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.fileOrder.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -95,7 +97,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         const currentPath = this.fileOrder.name;
         if (update.objectName === currentPath) {
           this.fileOrder.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -120,7 +122,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.getObject();
       } else {
         this.fileOrder = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -243,7 +245,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.invalidMsg = '';
       }
       this.history.push(JSON.stringify(this.fileOrder.configuration));
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -305,7 +307,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
         this.invalidMsg = 'inventory.message.directoryIsMissing';
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   rename(inValid): void {
@@ -336,7 +338,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
             } else {
               this.fileOrder.name = this.data.name;
               this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -345,7 +347,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       } else {
         this.fileOrder.name = this.data.name;
         this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -371,7 +373,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
       }, error: () => {
         this.fileOrder.name = this.data.name;
         this.fileOrder.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -388,7 +390,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   detectChanges(): void {
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   deploy(): void {
@@ -501,7 +503,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
           }
         }, error: () => {
           this.isStore = false;
-          this.ref.detectChanges()
+          this.ref.markForCheck()
         }
       });
     }
@@ -511,7 +513,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.isTreeShow = false;
     this.fileOrder.configuration.workflowName = name;
     this.saveJSON();
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   onBlur(): void {
@@ -582,11 +584,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

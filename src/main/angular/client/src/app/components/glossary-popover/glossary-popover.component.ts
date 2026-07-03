@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {  ChangeDetectorRef, Component, Input } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -13,7 +13,6 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
   standalone: false,
   selector: 'app-glossary-popover',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="glossary-popover-bubble" role="tooltip">
       <div class="glossary-popover-header">
@@ -45,6 +44,8 @@ import { SafeHtml } from '@angular/platform-browser';
   `,
 })
 export class GlossaryPopoverComponent {
+  constructor(private cdr: ChangeDetectorRef) {}
+
   @Input() termKey   = '';
   @Input() termLabel = '';
   @Input() definitionHtml: SafeHtml | null = null;

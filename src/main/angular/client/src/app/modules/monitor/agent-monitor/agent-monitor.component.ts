@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {differenceInCalendarDays, differenceInMilliseconds} from 'date-fns';
 import * as moment from 'moment-timezone';
@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   selector: 'app-agent-monitor',
   templateUrl: './agent-monitor.component.html',
   styleUrls: ['./agent-monitor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentMonitorComponent {
   @Input() permission: any;
@@ -124,7 +124,7 @@ export class AgentMonitorComponent {
         this.checkMissingDates();
         this.isLoaded = true;
         this.cdr.markForCheck();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import {  ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
@@ -8,7 +8,7 @@ import { VideoEntry } from './videos.config';
   standalone: false,
   selector: 'app-video-viewer',
   templateUrl: './video-viewer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class VideoViewerComponent implements OnInit {
   readonly modalData: any = inject(NZ_MODAL_DATA);

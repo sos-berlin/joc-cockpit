@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component,  ChangeDetectorRef} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -11,7 +11,6 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-logging2',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div class="p-a">
     @for (log of clientLogs; track log) {
@@ -60,7 +59,7 @@ export class Logging2Component {
   standalone: false,
   selector: 'app-logging',
   templateUrl: './logging.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LoggingComponent {
   clientLogs = [];

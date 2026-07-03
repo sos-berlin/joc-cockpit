@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject, HostListener} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, inject, HostListener} from '@angular/core';
 import {isEmpty, unique, isArray, isEqual, clone} from 'underscore';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TreeModalComponent} from './tree-modal/tree.component';
@@ -26,7 +26,7 @@ interface CalendarItem {
   standalone: false,
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddRestrictionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -105,6 +105,7 @@ export class AddRestrictionComponent {
     this.data = this.modalData.data || {};
     setTimeout(() => {
       this.isVisible = true;
+      this.cdr.markForCheck();
     }, 0);
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.dateFormatM = this.coreService.getDateFormatMom(this.preferences.dateFormat);
@@ -1171,7 +1172,7 @@ export class AddRestrictionComponent {
   standalone: false,
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PeriodComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -1308,7 +1309,7 @@ export class PeriodComponent {
   standalone: false,
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class RunTimeComponent implements OnChanges, OnDestroy {
   @Input() schedule: any;
@@ -1338,6 +1339,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes): void {
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.ref.markForCheck();
     });
     this.init();
   }
@@ -1384,7 +1386,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
             this.calendars = this.calendars.concat(result);
           }
         }
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1487,7 +1489,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         if (!flag) {
           calendar.periods.push(result.period);
         }
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1507,14 +1509,14 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         calendar.periods[index] = result.period;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
 
   removePeriodInCalendar(calendar, index): void {
     calendar.periods.splice(index, 1);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   planFromRuntime(): void {
@@ -1658,7 +1660,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.frequencyList = result.frequencyList;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1684,7 +1686,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.frequencyList = result.frequencyList;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1746,7 +1748,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
             this.calendarReleaseStatus.set(result.name, result.released);
           });
 
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       },
       error: (err) => {
@@ -1890,7 +1892,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       this.tempList = clone(this.planItems);
     }
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private populateCalPlanItems(res: any): void {
@@ -1962,7 +1964,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
     this.attachDayTooltips(cal);
 
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private populatePlanItems(res: { dates: string[], periods: any[] }): void {

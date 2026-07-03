@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -23,7 +23,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
   standalone: false,
   selector: 'app-order-history-template',
   templateUrl: './workflow-history-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowTemplateComponent {
   @Input() history: any;
@@ -66,7 +66,7 @@ export class WorkflowTemplateComponent {
   standalone: false,
   selector: 'app-workflow-history',
   templateUrl: './workflow-history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   @Input() workflow: any;
@@ -107,6 +107,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         this.index = 3;
         setTimeout(() => {
           this.index = 2;
+          this.cdr.markForCheck();
         }, 1);
       } else {
         this.index = 2;

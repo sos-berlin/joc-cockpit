@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -19,7 +19,7 @@ import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component
   standalone: false,
   selector: 'app-filter-log-content',
   templateUrl: './filter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -72,7 +72,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -110,7 +110,7 @@ export class SearchComponent {
     "SETTINGS",
     "MONITORING"];
 
-  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -190,7 +190,11 @@ export class SearchComponent {
           this.onCancel.emit(configObj);
         }
         this.submitted = false;
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -211,7 +215,7 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-audit-log',
   templateUrl: './audit-log.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AuditLogComponent {
   objectType = 'AUDITLOG';

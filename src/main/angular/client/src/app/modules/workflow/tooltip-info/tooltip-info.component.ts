@@ -1,11 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 
 @Component({
   standalone: false,
   selector: 'app-tooltip-info',
   templateUrl: './tooltip-info.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class TooltipInfoComponent {
   @Input() workflow;

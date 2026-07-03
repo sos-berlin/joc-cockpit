@@ -5,7 +5,8 @@ import {
   Output,
   EventEmitter,
   OnChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   TemplateRef
 } from '@angular/core';
 import {max} from 'd3-array';
@@ -66,7 +67,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       ></svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PieSeriesComponent implements OnChanges {
   @Input() colors: ColorHelper;
@@ -96,6 +97,8 @@ export class PieSeriesComponent implements OnChanges {
 
   placementTypes = PlacementTypes;
   styleTypes = StyleTypes;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();

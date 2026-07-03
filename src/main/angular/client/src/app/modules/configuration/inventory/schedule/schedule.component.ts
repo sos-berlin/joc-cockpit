@@ -1,9 +1,11 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
+  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -28,7 +30,6 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-schedule',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule.component.html',
 })
 export class ScheduleComponent {
@@ -39,6 +40,7 @@ export class ScheduleComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   schedule: any = {};
   isVisible: boolean;
@@ -90,7 +92,7 @@ export class ScheduleComponent {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.schedule.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -109,7 +111,7 @@ export class ScheduleComponent {
         const currentPath = this.schedule.name;
         if (update.objectName === currentPath) {
           this.schedule.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -144,7 +146,7 @@ export class ScheduleComponent {
         this.getObject();
       } else {
         this.schedule = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -327,7 +329,7 @@ export class ScheduleComponent {
 
   closeCalendarView(): void {
     this.isVisible = false;
-    this.ref.detectChanges();
+    this.ref.markForCheck();
     setTimeout(() => {
       this.saveJSON();
     }, 10);
@@ -1179,7 +1181,7 @@ export class ScheduleComponent {
         }
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   rename(inValid): void {
@@ -1210,7 +1212,7 @@ export class ScheduleComponent {
             } else {
               this.schedule.name = this.data.name;
               this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -1219,7 +1221,7 @@ export class ScheduleComponent {
       } else {
         this.schedule.name = this.data.name;
         this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -1244,7 +1246,7 @@ export class ScheduleComponent {
       }, error: () => {
         this.schedule.name = this.data.name;
         this.schedule.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1520,7 +1522,7 @@ export class ScheduleComponent {
             }
           }, error: () => {
             this.isStore = false;
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           }
         });
       }
@@ -1530,7 +1532,7 @@ export class ScheduleComponent {
   private removeSelection(name): void {
     this.schedule.configuration.workflowNames.splice(this.schedule.configuration.workflowNames.indexOf(name), 1);
     this.schedule.configuration.workflowNames = [...this.schedule.configuration.workflowNames];
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   private getWorkflowInfo(name, flag = false, cb): void {
@@ -1541,7 +1543,7 @@ export class ScheduleComponent {
     }).subscribe({
       next: (conf: any) => {
         if (this.schedule.configuration && this.schedule.configuration.workflowNames.length > 1) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
           let msg;
           if (conf.configuration.orderPreparation) {
             msg = 'inventory.message.workflowsWithoutVariables';
@@ -1575,7 +1577,7 @@ export class ScheduleComponent {
         if (cb) {
           cb();
         }
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1609,7 +1611,7 @@ export class ScheduleComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -1734,7 +1736,7 @@ export class ScheduleComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data[type] = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1797,7 +1799,7 @@ export class ScheduleComponent {
         this.invalidMsg = res.invalidMsg;
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   /** Auto expand variables */
@@ -1914,7 +1916,7 @@ export class ScheduleComponent {
   drop(event: CdkDragDrop<string[]>, index: number) {
     moveItemInArray(this.schedule.configuration.orderParameterisations[index].tags, event.previousIndex, event.currentIndex);
     setTimeout(() => {
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
     this.saveJSON();
   }
@@ -1987,11 +1989,13 @@ export class ScheduleComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

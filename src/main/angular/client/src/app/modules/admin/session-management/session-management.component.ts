@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {DataService} from '../data.service';
@@ -12,7 +12,7 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
   standalone: false,
   selector: 'app-session-management',
   templateUrl: './session-management.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SessionManagementComponent {
   @Input() permission: any = {};
@@ -171,6 +171,7 @@ export class SessionManagementComponent {
         this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -246,6 +247,7 @@ export class SessionManagementComponent {
         this.cdr.markForCheck();
       }, error: () => {
         this.reset();
+        this.cdr.markForCheck();
       }
     });
   }

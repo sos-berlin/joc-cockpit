@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {sortBy} from 'underscore';
@@ -18,7 +18,6 @@ declare const $;
   standalone: false,
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`.left-sidebar {
     height: calc(100vh - 260px);
     width: 180px;
@@ -134,6 +133,7 @@ export class WorkflowDetailComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -173,6 +173,7 @@ export class WorkflowDetailComponent {
         setTimeout(() => {
           if (this.isAllLoaded) {
             this.isLoading = true;
+            this.cdr.markForCheck();
           }
         }, 7000);
       }
@@ -219,6 +220,7 @@ export class WorkflowDetailComponent {
               }
             }
           });
+          this.cdr.markForCheck();
         }
       });
     }
@@ -233,6 +235,7 @@ export class WorkflowDetailComponent {
         if (!self.workflowObjects.has(item.path)) {
           setTimeout(() => {
             self.isAllLoaded = false;
+            self.cdr.markForCheck();
           }, 50);
           if (self.workflowObjects.size < 15) {
             APIs.push(self.coreService.post('workflow/dependencies', {
@@ -278,12 +281,14 @@ export class WorkflowDetailComponent {
         setTimeout(() => {
           if (this.isAllLoaded) {
             this.isLoading = true;
+            this.cdr.markForCheck();
           }
         }, 1000);
       });
     } else {
       setTimeout(() => {
         this.isAllLoaded = true;
+        this.cdr.markForCheck();
       }, 80);
     }
   }
@@ -405,7 +410,7 @@ export class WorkflowDetailComponent {
       this.coreService.post('workflow/transition', obj).subscribe({
         next: () => {
           this.resetAction();
-        }, error: () => this.isProcessing = false
+        }, error: () => { this.isProcessing = false; this.cdr.markForCheck(); }
       });
     }
   }

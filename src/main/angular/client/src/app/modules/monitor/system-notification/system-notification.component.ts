@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -17,7 +17,7 @@ import {ClipboardService} from "ngx-clipboard";
   standalone: false,
   selector: 'app-system-notification',
   templateUrl: './system-notification.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SystemNotificationComponent {
   @Input() permission: any;
@@ -127,7 +127,7 @@ export class SystemNotificationComponent {
         this.notifications = res.notifications;
         this.searchInResult();
         this.cdr.markForCheck();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -162,7 +162,7 @@ export class SystemNotificationComponent {
           data.monitors = res.monitors;
           data.isLoaded = true;
           this.cdr.markForCheck();
-        }, error: () => data.isLoaded = true
+        }, error: () => { data.isLoaded = true; this.cdr.markForCheck(); }
       });
     }
   }
@@ -284,6 +284,7 @@ export class SystemNotificationComponent {
         this.object.checked = false;
         this.object.indeterminate = false;
         this.getData();
+        this.cdr.markForCheck();
       }
     });
   }

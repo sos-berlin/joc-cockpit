@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-post-notice-modal',
   templateUrl: './post-notice-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PostModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -44,7 +44,7 @@ export class PostModalComponent {
   showNoticeId = false;
   globalSingle = false;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -61,6 +61,7 @@ export class PostModalComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.cdr.markForCheck();
     });
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'later';
@@ -290,8 +291,9 @@ export class PostModalComponent {
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
+        this.cdr.markForCheck();
       },
-      error: () => this.submitted = false
+      error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -301,7 +303,7 @@ export class PostModalComponent {
   standalone: false,
   selector: 'app-single-board',
   templateUrl: './single-board.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleBoardComponent {
   loading: boolean;
@@ -314,7 +316,7 @@ export class SingleBoardComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute, private ref: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -347,7 +349,8 @@ export class SingleBoardComponent {
         this.boards.forEach((value) => {
           value.name = value.path.substring(value.path.lastIndexOf('/') + 1);
         });
-      }, error: () => this.loading = false
+        this.ref.markForCheck();
+      }, error: () => { this.loading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -428,6 +431,7 @@ export class SingleBoardComponent {
         }
       }
       board.notices = [...board.notices];
+      this.ref.markForCheck();
     });
   }
 
@@ -444,6 +448,7 @@ export class SingleBoardComponent {
             this.boards[0].numOfNotices = res.noticeBoard.numOfNotices;
             this.boards[0].numOfExpectingOrders = res.noticeBoard.numOfExpectingOrders;
             this.boards[0].notices = res.noticeBoard.notices;
+            this.ref.markForCheck();
           });
           break;
         }
@@ -476,6 +481,7 @@ export class SingleBoardComponent {
         }
         // Emit global update to stop blinking in all components
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'NOTICEBOARD', action: 'read' });
+        this.ref.markForCheck();
       }
     });
   }
@@ -485,7 +491,7 @@ export class SingleBoardComponent {
   standalone: false,
   selector: 'app-board',
   templateUrl: 'board.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BoardComponent {
   isLoading = false;
@@ -545,7 +551,7 @@ export class BoardComponent {
           }
         });
         if (updated) {
-          this.cdr.detectChanges();
+          this.cdr.markForCheck();
         }
       }
     });
@@ -589,7 +595,8 @@ export class BoardComponent {
           if (this.tree.length) {
             this.loadBoards();
           }
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -737,7 +744,8 @@ export class BoardComponent {
           }
         });
         this.boards = [...this.boards];
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -789,7 +797,7 @@ export class BoardComponent {
           this.updateBoardsDetail(boards);
         }
         this.cdr.markForCheck();
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -874,8 +882,10 @@ export class BoardComponent {
     this.coreService.post('notice/boards', obj).subscribe({
       next: (res: any) => {
         cb(res.noticeBoards);
+        this.cdr.markForCheck();
       }, error: () => {
         cb();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -928,6 +938,7 @@ export class BoardComponent {
       delete item.checked;
       delete item.indeterminate;
     });
+    this.cdr.markForCheck();
   }
 
   private checkChild(value: boolean, board): void {
@@ -1344,6 +1355,7 @@ export class BoardComponent {
           }
         }
         board.notices = [...board.notices];
+        this.cdr.markForCheck();
       });
       this.reset();
     } else {
@@ -1416,11 +1428,12 @@ export class BoardComponent {
         });
         this.boards = [...this.boards];
         this.reset();
+        this.cdr.markForCheck();
       });
     } else {
       this.reset();
     }
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   reload(): void {
@@ -1479,6 +1492,7 @@ export class BoardComponent {
         }
 
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'NOTICEBOARD', action: 'read' });
+        this.cdr.markForCheck();
       }
     });
   }

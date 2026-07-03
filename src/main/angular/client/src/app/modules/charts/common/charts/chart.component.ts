@@ -2,10 +2,11 @@ import {
   Component,
   Input,
   OnChanges,
-  ChangeDetectionStrategy,
+  
   EventEmitter,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectorRef
 } from '@angular/core';
 import {TooltipService} from '../tooltip/tooltip.service';
 import {LegendOptions, LegendType, LegendPosition} from '../types/legend.model';
@@ -47,9 +48,10 @@ import {ScaleType} from '../types/scale-type.enum';
       </ngx-charts-legend>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ChartComponent implements OnChanges {
+  constructor(private cdr: ChangeDetectorRef) {}
   @Input() view: [number, number];
   @Input() showLegend: boolean = false;
   @Input() legendOptions: LegendOptions;

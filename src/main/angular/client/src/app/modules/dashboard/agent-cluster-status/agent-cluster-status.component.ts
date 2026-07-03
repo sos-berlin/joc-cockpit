@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -13,7 +13,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-cluster-status',
   templateUrl: './agent-cluster-status.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentClusterStatusComponent {
   @Input('layout') layout: any;
@@ -71,7 +71,7 @@ export class AgentClusterStatusComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -48,7 +48,6 @@ interface ExtendedEditorConfiguration {
   template: `<textarea #textArea></textarea>`,
   styleUrls: ['./codemirror-editor.component.css'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

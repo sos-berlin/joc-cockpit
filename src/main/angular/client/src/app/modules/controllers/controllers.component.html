@@ -15,14 +15,14 @@
                             class="btn btn-grey btn-sm">{{ 'agent.button.allAgent' | translate }}
                     </button>
                     <button (click)="loadAgents('IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='IN_SYNC'}"
-                            class="btn btn-grey btn-sm text-capitalize">IN_SYNC
+                            class="btn btn-grey btn-sm text-capitalize">{{'IN_SYNC' | translate }}
                     </button>
                     <button (click)="loadAgents('NOT_IN_SYNC')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_IN_SYNC'}"
-                            class="btn btn-grey btn-sm text-capitalize">NOT_IN_SYNC
+                            class="btn btn-grey btn-sm text-capitalize">{{'NOT_IN_SYNC' | translate}}
                     </button>
                     <button (click)="loadAgents('NOT_DEPLOYED')"
                             [ngClass]="{'btn-primary': agentsFilters.filter.state=='NOT_DEPLOYED'}"
-                            class="btn btn-grey btn-sm text-capitalize">NOT_DEPLOYED
+                            class="btn btn-grey btn-sm text-capitalize">{{'NOT_DEPLOYED' | translate}}
                     </button>
                     <button (click)="loadAgents('UNKNOWN')" [ngClass]="{'btn-primary': agentsFilters.filter.state=='UNKNOWN'}"
                             class="btn btn-grey btn-sm text-capitalize">{{ 'agent.button.unknown' | translate }}

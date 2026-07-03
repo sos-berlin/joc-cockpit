@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, EventEmitter, inject, Input, Output, SimpleChanges,  ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {TranslateService} from "@ngx-translate/core";
 import {groupBy, isEmpty} from "underscore";
@@ -12,7 +12,7 @@ declare const $;
   standalone: false,
   selector: 'app-projection-export-modal',
   templateUrl: './export-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -219,7 +219,7 @@ export class ExportComponent {
   standalone: false,
   selector: 'app-projection-dialog-modal-content',
   templateUrl: './projection-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowProjectionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -374,7 +374,7 @@ export class ShowProjectionModalComponent {
   selector: 'app-projection',
   templateUrl: './projection.component.html',
   styleUrls: ['./projection.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ProjectionComponent {
   @Input() projectionData: any = [];
@@ -540,6 +540,7 @@ export class ProjectionComponent {
       });
       setTimeout(() => {
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, 10);
     } else {
       if (this.filters.calView.toLowerCase() !== dom.data('calendar').getView()) {
@@ -600,6 +601,7 @@ export class ProjectionComponent {
     this.onSearch.emit(this.filter);
     setTimeout(() => {
       this.submitted = false;
+      this.cdr.markForCheck();
     }, 800);
   }
 

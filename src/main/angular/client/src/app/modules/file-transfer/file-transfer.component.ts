@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewContainerRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {isEmpty, extend, clone} from 'underscore';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -19,7 +19,7 @@ declare const $;
   standalone: false,
   selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -69,7 +69,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
@@ -350,7 +350,7 @@ export class FileTransferSearchComponent {
   standalone: false,
   selector: 'app-single-file-transfer',
   templateUrl: './single-file-transfer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleFileTransferComponent {
   controllerId: any;
@@ -434,6 +434,7 @@ export class SingleFileTransferComponent {
       dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
+      self.cdr.markForCheck();
     }, 0);
   }
 
@@ -461,7 +462,7 @@ export class SingleFileTransferComponent {
   standalone: false,
   selector: 'app-file-transfer',
   templateUrl: './file-transfer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileTransferComponent {
   schedulerIds: any = {};
@@ -949,6 +950,7 @@ export class FileTransferComponent {
       dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
+      self.cdr.markForCheck();
     }, 0);
   }
 

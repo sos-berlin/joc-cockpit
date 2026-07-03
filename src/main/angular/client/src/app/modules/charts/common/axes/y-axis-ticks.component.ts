@@ -7,7 +7,8 @@ import {
   ViewChild,
   EventEmitter,
   AfterViewInit,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   SimpleChanges,
   PLATFORM_ID,
   Inject
@@ -99,7 +100,7 @@ import {TextAnchor} from '../types/text-anchor.enum';
   }
 `,
 
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class YAxisTicksComponent implements OnChanges, AfterViewInit {
   @Input() scale;
@@ -143,7 +144,7 @@ export class YAxisTicksComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('ticksel') ticksElement: ElementRef;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(@Inject(PLATFORM_ID) private platformId: any, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -166,6 +167,7 @@ export class YAxisTicksComponent implements OnChanges, AfterViewInit {
     if (width !== this.width) {
       this.width = width;
       this.dimensionsChanged.emit({width});
+      this.cdr.markForCheck();
       setTimeout(() => this.updateDims());
     }
   }

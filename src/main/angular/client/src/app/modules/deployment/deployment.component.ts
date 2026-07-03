@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {isArray, isEmpty, isEqual} from 'underscore';
 import {saveAs} from 'file-saver';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -212,7 +212,7 @@ export class ShowJsonModalComponent {
   selector: 'app-deployment',
   templateUrl: './deployment.component.html',
   styleUrls: ['./deployment.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DeploymentComponent {
   isLoading = true;
@@ -1422,6 +1422,7 @@ export class DeploymentComponent {
         this.deploymentData.mainObj = result;
         this.updateJSONObject();
         this.saveJSON();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1484,6 +1485,7 @@ export class DeploymentComponent {
             }
           });
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1751,6 +1753,7 @@ export class DeploymentComponent {
       if (result) {
         this.loading = true;
         this.storeData(this.selectedObj, result);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1874,6 +1877,7 @@ export class DeploymentComponent {
       if (res) {
         this.node?.origin.children.push(res);
         this.updateTree(false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2148,6 +2152,7 @@ export class DeploymentComponent {
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2164,6 +2169,7 @@ export class DeploymentComponent {
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2247,6 +2253,7 @@ export class DeploymentComponent {
       }, error: () => {
         this.node.origin.loading = false;
         this.node.origin.deleted = false;
+        this.cdr.markForCheck();
       }
     });
   }

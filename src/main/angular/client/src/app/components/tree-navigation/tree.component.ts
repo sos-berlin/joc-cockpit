@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Output, EventEmitter,
+   ChangeDetectorRef, Component, Input, Output, EventEmitter,
   HostListener, SimpleChanges
 } from '@angular/core';
 import {CoreService} from '../../services/core.service';
@@ -12,7 +12,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-tree-navigation',
   templateUrl: './tree.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class TreeComponent {
 
@@ -262,6 +262,7 @@ export class TreeComponent {
       this.allObjects = [];
       this.searchNode.text = '';
       $('#objectTreeSearch').blur();
+      this.cdr.markForCheck();
     }, 0);
   }
 }

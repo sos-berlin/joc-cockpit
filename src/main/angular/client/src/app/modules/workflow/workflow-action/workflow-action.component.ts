@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -24,7 +24,7 @@ export class ShowDependencyComponent {
   permission: any = {}
   loading = true;
 
-  constructor(public coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
+  constructor(public coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -50,8 +50,10 @@ export class ShowDependencyComponent {
           this.workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
           this.workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
           this.loading = false;
+          this.cdr.markForCheck();
         }, error: () => {
           this.loading = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -83,7 +85,7 @@ export class ShowDependencyComponent {
   standalone: false,
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -529,9 +531,9 @@ export class AddOrderModalComponent {
           this.blockPositions.set(item.positionString, item.position);
           this.blockPositionList.set(item.positionString, item.positions);
         });
-
+        this.cdr.markForCheck();
       },
-      error: () => this.submitted = false
+      error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -1063,6 +1065,7 @@ export class AddOrderModalComponent {
             this.commonStartTime = 'now';
             this.onCommonTimeChange(this.commonStartTime);
           }
+          this.cdr.markForCheck();
         }
       },
       error: (err) => {
@@ -1232,7 +1235,7 @@ addArguments(orderIndex): void {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1728,6 +1731,7 @@ addArguments(orderIndex): void {
         next: (res) => {
           this.schedules = res.schedules;
           this.schedules.sort((a, b) => a.name.localeCompare(b.name));
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1747,6 +1751,7 @@ addArguments(orderIndex): void {
         next: (res) => {
           this.schedules = res.schedules;
           this.schedules.sort((a, b) => a.name.localeCompare(b.name));
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1760,7 +1765,8 @@ addArguments(orderIndex): void {
       this.allTags = res.results;
       this.allTags = this.allTags.map((item) => {
         return item.name;
-      })
+      });
+      this.cdr.markForCheck();
     });
   }
 
@@ -1787,7 +1793,7 @@ addArguments(orderIndex): void {
   dropTag(event: CdkDragDrop<string[]>, orderIndex: number): void {
     moveItemInArray(this.orders[orderIndex].tags, event.previousIndex, event.currentIndex);
     setTimeout(() => {
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 
@@ -1901,7 +1907,8 @@ addArguments(orderIndex): void {
     };
     this.coreService.post('plans/ids', requestPayload)
       .subscribe((res) => {
-        this.planIds = res.plans
+        this.planIds = res.plans;
+        this.cdr.markForCheck();
       });
   }
 
@@ -1949,6 +1956,7 @@ addArguments(orderIndex): void {
               item.order.planId.noticeSpaceKey = '';
             }
           });
+          this.cdr.markForCheck();
           resolve();
         });
       } else {

@@ -4,7 +4,7 @@ import {
   Output,
   ViewEncapsulation,
   EventEmitter,
-  ChangeDetectionStrategy,
+  
   ContentChild,
   TemplateRef,
   TrackByFunction
@@ -131,7 +131,6 @@ import {isPlatformServer} from '@angular/common';
   `,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarVertical2DComponent extends BaseChartComponent {
   @Input() legend: boolean = false;

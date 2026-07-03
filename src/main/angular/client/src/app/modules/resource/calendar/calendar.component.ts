@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -17,7 +17,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-single-calendar',
   templateUrl: 'single-calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleCalendarComponent {
   loading: boolean;
@@ -30,7 +30,8 @@ export class SingleCalendarComponent {
   controllerId: string;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute) {
+              private modal: NzModalService, private dataService: DataService, private route: ActivatedRoute,
+              private ref: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -80,7 +81,8 @@ export class SingleCalendarComponent {
       next: (res: any) => {
         this.calendars = res.calendars;
         this.loading = false;
-      }, error: () => this.loading = false
+        this.ref.markForCheck();
+      }, error: () => { this.loading = false; this.ref.markForCheck(); }
     });
   }
 }
@@ -90,7 +92,7 @@ export class SingleCalendarComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: 'calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CalendarComponent {
   isLoading = false;

@@ -99,7 +99,7 @@
                       <li (click)="filterBy({state: opt.state})"
                           [ngClass]="{'ant-select-dropdown-menu-item-active': filter.generateReport.filter.state === opt.state}"
                           nz-menu-item>
-                        <a>{{opt.text}}</a>
+                        <a>{{opt.text | translate}}</a>
                       </li>
                     }
                   </ul>

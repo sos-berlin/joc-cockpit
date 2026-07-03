@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, inject, ViewChild,  ChangeDetectorRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -17,7 +17,7 @@ declare var d3: any;
   standalone: false,
   selector: 'app-permission-modal-content',
   templateUrl: 'permission-modal.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PermissionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -129,7 +129,7 @@ export class PermissionModalComponent {
   standalone: false,
   selector: 'app-folder-modal-content',
   templateUrl: 'folder-modal.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FolderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -296,7 +296,7 @@ export class FolderModalComponent {
   standalone: false,
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PermissionsComponent {
   controllerName;
@@ -345,6 +345,7 @@ export class PermissionsComponent {
         this.addPermission();
       } else if (res === 'CHANGE_VIEW') {
         this.pageView = JSON.parse(localStorage['views']).permission;
+        this.cdr.markForCheck();
         if (this.pageView === 'grid') {
           setTimeout(() => {
             this.drawTree(this.permissionNodes[0][0], '');
@@ -1528,6 +1529,7 @@ export class PermissionsComponent {
           modal.afterClose.subscribe(result => {
             if (result) {
               savePermission(permission_node, result);
+              self.cdr.markForCheck();
             }
           });
         } else {
@@ -1587,6 +1589,7 @@ export class PermissionsComponent {
           modal.afterClose.subscribe(result => {
             if (result) {
               saveTogglePermission(permission_node, result);
+              self.cdr.markForCheck();
             }
           });
         } else {

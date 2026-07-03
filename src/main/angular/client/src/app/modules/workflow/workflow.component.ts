@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -28,7 +28,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-filter-workflow-content',
   templateUrl: './filter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -78,7 +78,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -122,7 +122,7 @@ export class SearchComponent {
   selectedAvailabilityStatuses: string[] = [];
   selectedJobAvailabilityStatuses: string[] = [];
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
 ngOnInit(): void {
@@ -183,6 +183,7 @@ ngOnInit(): void {
         if (this.folders.length > 0) {
           this.folders[0].expanded = true;
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -193,6 +194,7 @@ ngOnInit(): void {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.tags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -202,6 +204,7 @@ ngOnInit(): void {
       controllerId: this.schedulerIds.selected
     }).subscribe((res) => {
       this.orderTags = res.results;
+      this.cdr.markForCheck();
     });
   }
 
@@ -299,7 +302,8 @@ ngOnInit(): void {
           this.onCancel.emit(configObj);
         }
         this.submitted = false;
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -326,7 +330,7 @@ ngOnInit(): void {
   standalone: false,
   selector: 'app-bulk-add-order',
   templateUrl: './bulk-add-order-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BulkAddOrderComponent {
 
@@ -481,6 +485,7 @@ export class BulkAddOrderComponent {
       },
       error: (err) => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -490,7 +495,7 @@ export class BulkAddOrderComponent {
   standalone: false,
   selector: 'app-single-workflow',
   templateUrl: './single-workflow.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleWorkflowComponent {
   loading = true;
@@ -521,7 +526,7 @@ export class SingleWorkflowComponent {
   @ViewChild(WorkflowActionComponent, {static: false}) actionChild;
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
-              private route: ActivatedRoute, private workflowService: WorkflowService, private router: Router) {
+              private route: ActivatedRoute, private workflowService: WorkflowService, private router: Router, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -649,6 +654,7 @@ export class SingleWorkflowComponent {
             this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, {count: 0});
             this.workflowService.compareAndMergeInstructions(this.workflows[0].configuration.instructions, res.workflow.instructions);
           }
+          this.cdr.markForCheck();
         } else {
           const request = {
             compact: true,
@@ -671,8 +677,9 @@ export class SingleWorkflowComponent {
             this.showPanel = this.workflows[0];
           }
           this.showPanelFuc(this.workflows[0]);
+          this.cdr.markForCheck();
         }
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -714,6 +721,7 @@ export class SingleWorkflowComponent {
       if (this.sideBar.isVisible) {
         this.sideBar.orders = res.orders;
       }
+      this.cdr.markForCheck();
     });
   }
 }
@@ -722,7 +730,6 @@ export class SingleWorkflowComponent {
   standalone: false,
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkflowComponent {
   isLoading = false;
@@ -837,7 +844,7 @@ export class WorkflowComponent {
           }
         });
         if (updated) {
-          this.cdr.detectChanges();
+          this.cdr.markForCheck();
         }
       }
     });
@@ -1033,7 +1040,7 @@ export class WorkflowComponent {
         this.clearCheckboxes = !this.clearCheckboxes;
         this.broadNames.clear();
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
 
   }
@@ -1416,7 +1423,7 @@ export class WorkflowComponent {
           this.traverseTreeForSearchData();
         }
         this.updatePanelHeight();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }, error: () => this.loading = false
     });
   }
@@ -1637,7 +1644,7 @@ export class WorkflowComponent {
         this.loadWorkflow();
         this.resetCheckBox();
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 
@@ -1837,7 +1844,7 @@ export class WorkflowComponent {
         obj.workflowTags = Array.from(this.coreService.checkedTags);
         this.searchByTags(obj);
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
 
   }
@@ -2012,7 +2019,7 @@ export class WorkflowComponent {
             this.saveService.save();
           }
         }
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
     }
   }
@@ -2042,7 +2049,7 @@ export class WorkflowComponent {
           this.copyFilter(obj);
         }
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 
@@ -2563,7 +2570,7 @@ export class WorkflowComponent {
           }
         }
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 
@@ -2647,12 +2654,13 @@ export class WorkflowComponent {
 
 
           }
+          this.cdr.markForCheck();
           if (cb) {
             cb();
           }
           this.resetAction();
-          this.cdr.detectChanges();
         }, error: () => {
+          this.cdr.markForCheck();
           if (cb) {
             cb();
           }
@@ -2916,7 +2924,7 @@ export class WorkflowComponent {
           obj.orderTags = Array.from(this.coreService.checkedOrderTags);
           this.searchByOrderTags(obj);
         }
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
 
     }
@@ -3136,7 +3144,7 @@ export class WorkflowComponent {
         }
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'WORKFLOW', action: 'read' });
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 

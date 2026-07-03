@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, SimpleChanges} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, SimpleChanges} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {DatePipe} from '@angular/common';
 import * as moment from 'moment';
@@ -28,7 +28,7 @@ interface CalendarItem {
   standalone: false,
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FrequencyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -997,7 +997,8 @@ export class FrequencyModalComponent {
 
           this.isCalendarLoading = false;
           $('#full-calendar').data('calendar').setDataSource(this.planItems);
-        }, error: () => this.isCalendarLoading = false
+          this.cdr.markForCheck();
+        }, error: () => { this.isCalendarLoading = false; this.cdr.markForCheck(); }
       });
     } else if (newDate.getFullYear() == this.calendarTitle) {
       this.planItems = clone(this.tempList);
@@ -1308,8 +1309,10 @@ export class FrequencyModalComponent {
         this.isCalendarLoading = false;
         setTimeout(() => {
           this.isCalendarDisplay = true;
+          this.cdr.markForCheck();
         }, 100);
-      }, error: () => this.isCalendarLoading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.isCalendarLoading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -1344,11 +1347,13 @@ export class FrequencyModalComponent {
 
         this.buildNonWorkingDayCalendarTree();
         this.initializeNonWorkingDayCalendarResources();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Failed to load calendars', err);
         this.availableNonWorkingDayCalendars = [];
         this.nonWorkingDayCalendarTree = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1490,7 +1495,7 @@ export class FrequencyModalComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CalendarComponent {
   @Input() schedulerId: any;
@@ -1500,6 +1505,7 @@ export class CalendarComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   submitted = false;
   required = false;
@@ -1532,7 +1538,7 @@ export class CalendarComponent {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.calendar.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -1551,7 +1557,7 @@ export class CalendarComponent {
         const currentPath = this.calendar.name;
         if (update.objectName === currentPath) {
           this.calendar.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -1592,7 +1598,7 @@ export class CalendarComponent {
         this.getObject();
       } else {
         this.calendar = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -1659,7 +1665,7 @@ export class CalendarComponent {
             } else {
               this.calendar.name = this.data.name;
               this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -1668,7 +1674,7 @@ export class CalendarComponent {
       } else {
         this.calendar.name = this.data.name;
         this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -1694,7 +1700,7 @@ export class CalendarComponent {
       }, error: () => {
         this.calendar.name = this.data.name;
         this.calendar.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -1706,6 +1712,7 @@ export class CalendarComponent {
         types: ['DOCUMENTATION']
       }).subscribe((res) => {
         this.documentationTree = this.coreService.prepareTree(res, true);
+        this.ref.markForCheck();
       });
     }
   }
@@ -1885,11 +1892,11 @@ export class CalendarComponent {
             } else {
               this.invalidMsg = res.invalidMsg;
             }
-            this.ref.detectChanges();
+            this.ref.markForCheck();
           }
         }, error: () => {
           this.isStore = false;
-          this.ref.detectChanges()
+          this.ref.markForCheck()
         }
       });
     }
@@ -1942,6 +1949,7 @@ export class CalendarComponent {
     modal.afterClose.subscribe(res => {
       if (res && res.calendar) {
         this.calendar.configuration = res.calendar.configuration;
+        this.ref.markForCheck();
         this.saveJSON();
       }
     });
@@ -2028,7 +2036,7 @@ export class CalendarComponent {
       } else {
         this.invalidMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -2242,11 +2250,13 @@ export class CalendarComponent {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{
@@ -2276,6 +2286,7 @@ export class CalendarComponent {
         if (this.calendar && this.calendar.hasNote) {
           this.calendar.hasNote.notified = false;
         }
+        this.ref.markForCheck();
       }
     });
   }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -15,7 +15,7 @@ import {ExcelService} from "../../../services/excel.service";
   standalone: false,
   selector: 'app-order-notification',
   templateUrl: './order-notification.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderNotificationComponent {
   @Input() permission: any;
@@ -125,7 +125,7 @@ export class OrderNotificationComponent {
         this.notifications = res.notifications;
         this.searchInResult();
         this.cdr.markForCheck();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 
@@ -161,7 +161,7 @@ export class OrderNotificationComponent {
           data.monitors = res.monitors;
           data.isLoaded = true;
           this.cdr.markForCheck();
-        }, error: () => data.isLoaded = true
+        }, error: () => { data.isLoaded = true; this.cdr.markForCheck(); }
       });
     }
   }
@@ -303,6 +303,7 @@ export class OrderNotificationComponent {
         this.object.checked = false;
         this.object.indeterminate = false;
         this.getData();
+        this.cdr.markForCheck();
       }
     });
   }

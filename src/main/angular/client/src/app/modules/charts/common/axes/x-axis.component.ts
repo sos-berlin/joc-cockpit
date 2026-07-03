@@ -6,7 +6,8 @@ import {
   EventEmitter,
   OnChanges,
   ViewChild,
-  ChangeDetectionStrategy
+  
+  ChangeDetectorRef
 } from '@angular/core';
 
 import {XAxisTicksComponent} from './x-axis-ticks.component';
@@ -47,7 +48,7 @@ import {ViewDimensions} from '../types/view-dimension.interface';
       ></svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class XAxisComponent implements OnChanges {
   @Input() xScale;
@@ -81,6 +82,8 @@ export class XAxisComponent implements OnChanges {
   readonly orientation = Orientation;
 
   @ViewChild(XAxisTicksComponent) ticksComponent: XAxisTicksComponent;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();

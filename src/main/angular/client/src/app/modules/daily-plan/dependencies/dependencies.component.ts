@@ -6,8 +6,7 @@ import {
   ElementRef,
   Output,
   EventEmitter,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy
+  ChangeDetectorRef
 } from '@angular/core';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
@@ -45,7 +44,7 @@ declare const mxCellOverlay: any;
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
   styleUrl: './dependencies.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;

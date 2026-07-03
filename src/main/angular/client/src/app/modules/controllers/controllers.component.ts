@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
@@ -18,7 +18,7 @@ import {SearchPipe} from "../../pipes/core.pipe";
   standalone: false,
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -124,6 +124,7 @@ export class ExportComponent {
           this.activeModal.close('ok');
         } else {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -139,7 +140,7 @@ export class ExportComponent {
   standalone: false,
   selector: 'app-export-bulk-modal',
   templateUrl: './export-bulk-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ExportBulkComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -209,6 +210,7 @@ export class ExportBulkComponent {
           this.activeModal.close('ok');
         } else {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -223,7 +225,7 @@ export class ExportBulkComponent {
   standalone: false,
   selector: 'app-create-token-modal',
   templateUrl: './create-token.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CreateTokenModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -320,7 +322,7 @@ export class CreateTokenModalComponent {
   standalone: false,
   selector: 'app-controllers',
   templateUrl: './controllers.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllersComponent {
   data: any = [];

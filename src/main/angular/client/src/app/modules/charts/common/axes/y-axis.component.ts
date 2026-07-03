@@ -6,7 +6,8 @@ import {
   OnChanges,
   ViewChild,
   SimpleChanges,
-  ChangeDetectionStrategy
+  
+  ChangeDetectorRef
 } from '@angular/core';
 import {YAxisTicksComponent} from './y-axis-ticks.component';
 import {Orientation} from '../types/orientation.enum';
@@ -48,7 +49,7 @@ import {ViewDimensions} from '../types/view-dimension.interface';
       ></svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class YAxisComponent implements OnChanges {
   @Input() yScale;
@@ -82,6 +83,8 @@ export class YAxisComponent implements OnChanges {
 
   @ViewChild(YAxisTicksComponent) ticksComponent: YAxisTicksComponent;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     this.update();
   }
@@ -105,11 +108,13 @@ export class YAxisComponent implements OnChanges {
       this.labelOffset = width + this.labelOffset;
       setTimeout(() => {
         this.dimensionsChanged.emit({width});
+        this.cdr.markForCheck();
       }, 0);
     } else if (width !== this.labelOffset) {
       this.labelOffset = width;
       setTimeout(() => {
         this.dimensionsChanged.emit({width});
+        this.cdr.markForCheck();
       }, 0);
     }
   }

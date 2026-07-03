@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges,  ChangeDetectorRef} from '@angular/core';
 import {BarOrientation} from './types/bar-orientation.enum';
 import {Gradient} from './types/gradient.interface';
 
@@ -15,7 +15,7 @@ import {Gradient} from './types/gradient.interface';
       />
     </svg:linearGradient>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SvgLinearGradientComponent implements OnChanges {
   @Input() orientation = BarOrientation.Vertical;
@@ -26,6 +26,8 @@ export class SvgLinearGradientComponent implements OnChanges {
   x2: string;
   y1: string;
   y2: string;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.x1 = '0%';

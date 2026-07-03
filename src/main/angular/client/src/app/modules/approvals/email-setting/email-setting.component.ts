@@ -1,4 +1,4 @@
-import {Component, Input, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, Input,  ChangeDetectorRef} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../../services/data.service";
@@ -9,7 +9,7 @@ import {AuthService} from "../../../components/guard";
   selector: 'app-email-setting',
   templateUrl: './email-setting.component.html',
   styleUrl: './email-setting.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class EmailSettingComponent {
   @Input() preferences: any = {};

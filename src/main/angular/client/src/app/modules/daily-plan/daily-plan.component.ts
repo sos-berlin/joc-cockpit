@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {forkJoin, map, Observable, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -718,7 +718,7 @@ export class SearchComponent {
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
   styleUrls: ['./daily-plan.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DailyPlanComponent {
   objectType = 'DAILYPLAN';
@@ -894,7 +894,7 @@ export class DailyPlanComponent {
       }
 
       if (updated) {
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1306,6 +1306,7 @@ export class DailyPlanComponent {
         this.resetAction(5000);
         this.isCalendarClick = false;
         $('#full-calendar').data('calendar').clearRange();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1367,6 +1368,7 @@ export class DailyPlanComponent {
             this.refreshView();
           }
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1552,6 +1554,7 @@ export class DailyPlanComponent {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1699,6 +1702,7 @@ export class DailyPlanComponent {
           if (isMultiple) {
             this.resetCheckBox();
           }
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -1766,6 +1770,7 @@ export class DailyPlanComponent {
       if (result) {
         this.isProcessing = true;
         this.resetAction(5000);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2172,6 +2177,7 @@ export class DailyPlanComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.isLoaded = false;
+        this.cdr.markForCheck();
         this.loadOrderPlan();
       }
     });
@@ -2208,6 +2214,7 @@ export class DailyPlanComponent {
         modal.afterClose.subscribe(result => {
           if (result) {
             this.isLoaded = false;
+            this.cdr.markForCheck();
             this.loadOrderPlan();
           }
         });
@@ -2340,8 +2347,10 @@ export class DailyPlanComponent {
         if (calendar) {
           calendar.setDataSource(this.submissionHistoryItems);
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.isLoaded = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2358,6 +2367,7 @@ export class DailyPlanComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -2369,9 +2379,11 @@ export class DailyPlanComponent {
       next: (result: any) => {
         this.filterData(result.plannedOrderItems);
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }, error: () => {
         this.resetCheckBox();
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2577,6 +2589,7 @@ export class DailyPlanComponent {
         workflowId: {path: order.workflowPath}
       }).subscribe((res: any) => {
         order.requirements = res.workflow.orderPreparation;
+        this.cdr.markForCheck();
         this._openModel(plan, order, order.requirements, res.workflow);
       });
     } else {
@@ -2632,6 +2645,7 @@ export class DailyPlanComponent {
               res.variables = result;
             }
             this.convertObjectToArray(res.variables, order);
+            this.cdr.markForCheck();
           });
         } else {
           this.loadOrderPlan();
@@ -2663,6 +2677,7 @@ export class DailyPlanComponent {
         $('#full-calendar').data('calendar').clearRange();
       }
     }
+    this.cdr.markForCheck();
   }
 
   tabChange($event): void {
@@ -2685,6 +2700,7 @@ export class DailyPlanComponent {
 
     setTimeout(() => {
       this.isTabSwitching = false;
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -2928,6 +2944,7 @@ export class DailyPlanComponent {
           }).subscribe((conf: any) => {
             this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
             this.selectedFiltered.account = value.account;
+            this.cdr.markForCheck();
             this.loadOrderPlan();
           });
         }
@@ -3168,6 +3185,7 @@ export class DailyPlanComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.isLoaded = false;
+        this.cdr.markForCheck();
         this.loadOrderPlan();
       });
     } else {
@@ -3250,7 +3268,11 @@ export class DailyPlanComponent {
             this.searchTag.tags = res.results;
             this.searchTag.token = res.token;
             this.searchTag.loading = false;
-          }, error: () => this.searchTag.loading = true
+            this.cdr.markForCheck();
+          }, error: () => {
+            this.searchTag.loading = true;
+            this.cdr.markForCheck();
+          }
         });
       }
     } else {
@@ -3368,6 +3390,7 @@ export class DailyPlanComponent {
           if (result) {
             this.isProcessing = true;
             this.resetAction(5000);
+            this.cdr.markForCheck();
           }
         });
       } else {
@@ -3416,6 +3439,7 @@ export class DailyPlanComponent {
             if (result) {
               this.isProcessing = true;
               this.resetAction(5000);
+              this.cdr.markForCheck();
             }
           });
         } else {
@@ -3590,7 +3614,11 @@ export class DailyPlanComponent {
             this.searchOrderTag.tags = res.results;
             this.searchOrderTag.token = res.token;
             this.searchOrderTag.loading = false;
-          }, error: () => this.searchTag.loading = true
+            this.cdr.markForCheck();
+          }, error: () => {
+            this.searchTag.loading = true;
+            this.cdr.markForCheck();
+          }
         });
       }
     } else {
@@ -3739,6 +3767,7 @@ export class DailyPlanComponent {
           return (item.state && item.state._text === 'EXPECTED');
         });
         board.notices = [...board.notices];
+        this.cdr.markForCheck();
       });
     }
   }
@@ -3850,6 +3879,7 @@ export class DailyPlanComponent {
       if (result && result.objectName) {
         if (order && order.workflowHasNote) {
           order.workflowHasNote.notified = false;
+          this.cdr.markForCheck();
         }
         this.dataService.announceNoteUpdate({ objectName: workflowPath, objectType: 'WORKFLOW', action: 'read' });
       }
@@ -3878,6 +3908,7 @@ export class DailyPlanComponent {
       if (result && result.objectName) {
         if (order && order.scheduleHasNote) {
           order.scheduleHasNote.notified = false;
+          this.cdr.markForCheck();
         }
         this.dataService.announceNoteUpdate({ objectName: schedulePath, objectType: 'SCHEDULE', action: 'read' });
       }

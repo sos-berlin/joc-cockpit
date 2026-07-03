@@ -4,9 +4,14 @@ import {
   Output,
   EventEmitter,
   ViewEncapsulation,
-  ChangeDetectionStrategy,
+  
   ContentChild,
-  TemplateRef
+  TemplateRef,
+  ElementRef,
+  NgZone,
+  ChangeDetectorRef,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
 import {scaleBand, scaleLinear} from 'd3-scale';
 
@@ -87,11 +92,19 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class BarHorizontalComponent extends BaseChartComponent {
+  constructor(
+    protected override chartElement: ElementRef,
+    protected override zone: NgZone,
+    protected override cd: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public override platformId: any
+  ) {
+    super(chartElement, zone, cd, platformId);
+  }
+
   @Input() legend = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition: LegendPosition = LegendPosition.Right;
@@ -278,6 +291,7 @@ export class BarHorizontalComponent extends BaseChartComponent {
 
     this.activeEntries = [item, ...this.activeEntries];
     this.activate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 
   onDeactivate(item, fromLegend: boolean = false) {
@@ -297,5 +311,6 @@ export class BarHorizontalComponent extends BaseChartComponent {
     this.activeEntries = [...this.activeEntries];
 
     this.deactivate.emit({value: item, entries: this.activeEntries});
+    this.cd.markForCheck();
   }
 }

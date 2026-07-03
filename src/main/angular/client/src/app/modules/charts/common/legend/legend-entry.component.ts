@@ -1,4 +1,4 @@
-import {Component, Input, Output, ChangeDetectionStrategy, HostListener, EventEmitter} from '@angular/core';
+import {Component, Input, Output,  ChangeDetectorRef, HostListener, EventEmitter} from '@angular/core';
 
 @Component({
   standalone: false,
@@ -11,9 +11,10 @@ import {Component, Input, Output, ChangeDetectionStrategy, HostListener, EventEm
       </span>
     </span>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LegendEntryComponent {
+  constructor(private cdr: ChangeDetectorRef) {}
   @Input() color: string;
   @Input() label: string;
   @Input() formattedLabel: string;

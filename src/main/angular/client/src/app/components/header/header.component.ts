@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter} from '@angular/core';
+import { ChangeDetectorRef, Component, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -12,7 +12,6 @@ import { NoteComponent } from '../notes/note.component';
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
@@ -161,23 +160,27 @@ export class HeaderComponent {
     setTimeout(() => {
       this.problemEvent = {};
       sessionStorage.removeItem('$SOS$NODELOSS');
+      this.cdr.markForCheck();
     }, 250);
   }
   clearNotesEvent(): void {
     setTimeout(() => {
       this.notesEvent = {};
+      this.cdr.markForCheck();
     }, 250);
   }
   clearApprovalEvent(): void {
     setTimeout(() => {
       this.approvalEvent = {};
       sessionStorage.removeItem('$SOS$APPROVALREQUESTS');
+      this.cdr.markForCheck();
     }, 250);
   }
   clearRequestorEvent(): void {
     setTimeout(() => {
       this.requestorEvent = {};
       sessionStorage.removeItem('$SOS$REQUESTORREQUESTS');
+      this.cdr.markForCheck();
     }, 250);
   }
 
@@ -331,6 +334,7 @@ export class HeaderComponent {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
       sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
+      this.cdr.markForCheck();
     });
   }
 
@@ -403,6 +407,7 @@ export class HeaderComponent {
             }, 100);
           }
           this.switchScheduler = false;
+          this.cdr.markForCheck();
         }, error: (err) => {
           if (!this.isLogout && err) {
             if (err.status == 420 && err.error && err.error.error && err.error.error.message.match(/ExpiredSessionException/)) {
@@ -433,6 +438,7 @@ export class HeaderComponent {
     this.coreService.post('note/notifications', obj).subscribe({
         next: (res: any) => {
           this.notesNotificationList = res.notifications;
+          this.cdr.markForCheck();
         }
         , error: (err) => {}
     });

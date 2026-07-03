@@ -1,5 +1,6 @@
 import {
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -13,7 +14,6 @@ declare const $;
 @Component({
   standalone: false,
   selector: 'app-value-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './value-editor.html'
 })
 export class ValueEditorComponent {
@@ -24,7 +24,7 @@ export class ValueEditorComponent {
 
   @ViewChild('myinput') myInputField: ElementRef;
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

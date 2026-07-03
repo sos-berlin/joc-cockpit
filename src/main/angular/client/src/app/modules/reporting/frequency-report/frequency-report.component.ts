@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone, Input, Output, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone, Input, Output, ViewChild} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
@@ -12,7 +12,7 @@ import {TranslateService} from '@ngx-translate/core';
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
   styleUrls: ['./frequency-report.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FrequencyReportComponent {
   @Input({required: true}) readonly templates: any;

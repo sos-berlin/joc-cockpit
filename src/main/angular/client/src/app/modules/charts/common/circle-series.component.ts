@@ -5,7 +5,8 @@ import {
   EventEmitter,
   OnChanges,
   OnInit,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   TemplateRef,
   PLATFORM_ID,
   Inject
@@ -99,7 +100,6 @@ export interface Circle {
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircleSeriesComponent implements OnChanges, OnInit {
   @Input() data: Series;
@@ -129,7 +129,7 @@ export class CircleSeriesComponent implements OnChanges, OnInit {
 
   isSSR = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(@Inject(PLATFORM_ID) private platformId: any, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -293,11 +293,13 @@ export class CircleSeriesComponent implements OnChanges, OnInit {
   activateCircle(): void {
     this.barVisible = true;
     this.activate.emit({name: this.data.name});
+    this.cdr.markForCheck();
   }
 
   deactivateCircle(): void {
     this.barVisible = false;
     this.circle.opacity = 0;
     this.deactivate.emit({name: this.data.name});
+    this.cdr.markForCheck();
   }
 }

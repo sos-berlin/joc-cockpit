@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, ViewChild} from '@angular/core';
 import {NzFormatBeforeDropEvent, NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -29,7 +29,7 @@ const convert = require('xml-js');
   standalone: false,
   selector: 'app-show-child-modal',
   templateUrl: './show-child-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowChildModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -567,7 +567,7 @@ export class ShowChildModalComponent {
   standalone: false,
   selector: 'app-show-modal',
   templateUrl: './show-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -726,7 +726,7 @@ export class ShowModalComponent {
   standalone: false,
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ConfirmationModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -781,7 +781,7 @@ export class ConfirmationModalComponent {
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class XmlEditorComponent {
   schedulerIds: any = {};

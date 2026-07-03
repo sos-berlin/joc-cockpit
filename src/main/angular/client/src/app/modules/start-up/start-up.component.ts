@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -13,7 +13,7 @@ declare const $;
   standalone: false,
   selector: 'app-start-up-modal',
   templateUrl: './start-up.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class StartUpModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -197,7 +197,7 @@ export class StartUpModalComponent {
   standalone: false,
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class StartUpComponent {
   controller: any = {};

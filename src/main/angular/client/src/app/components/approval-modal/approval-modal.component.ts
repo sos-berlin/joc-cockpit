@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
@@ -7,7 +7,6 @@ import {AuthService} from "../guard";
   standalone: false,
   selector: 'app-approval-modal',
   templateUrl: './approval-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApprovalModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -39,17 +38,19 @@ export class ApprovalModalComponent {
 
   onSubmit(): void {
     if(this.edit){
-      this.submitted = true
+      this.submitted = true;
+      this.cdr.markForCheck();
       const obj = this.approvalData
       this.coreService.post('approval/edit', obj).subscribe({
         next: () => {
-          this.submitted = false
-          this.activeModal.close(true)
+          this.submitted = false;
           this.cdr.markForCheck();
+          this.activeModal.close(true);
         }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
     }else {
-      this.submitted = true
+      this.submitted = true;
+      this.cdr.markForCheck();
       const obj = {
         title: this.approvalData.title,
         reason: this.approvalData.reason || '',
@@ -61,9 +62,9 @@ export class ApprovalModalComponent {
       };
       this.coreService.post('approval/request', obj).subscribe({
         next: () => {
-          this.submitted = false
-          this.activeModal.close()
+          this.submitted = false;
           this.cdr.markForCheck();
+          this.activeModal.close();
         }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
     }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {registerLocaleData} from '@angular/common';
 import {HttpHeaders} from "@angular/common/http";
@@ -806,7 +806,7 @@ export class RemoveKeyModalComponent {
   standalone: false,
   selector: 'app-user',
   templateUrl: './user.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class UserComponent {
   zones: any = [];

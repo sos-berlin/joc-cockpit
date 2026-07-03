@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../services/core.service";
 import {WorkflowService} from "../../services/workflow.service";
@@ -8,7 +8,7 @@ import {isArray} from "underscore";
   standalone: false,
   selector: 'app-priority-modal',
   templateUrl: './priority-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PriorityModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -69,8 +69,8 @@ export class PriorityModalComponent {
     const url = this.isDailyPlan ? 'daily_plan/orders/modify/priority' : 'orders/change'
     this.coreService.post(url, obj).subscribe({
       next: () => {
-        this.activeModal.close('Done');
         this.cdr.markForCheck();
+        this.activeModal.close('Done');
       }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }

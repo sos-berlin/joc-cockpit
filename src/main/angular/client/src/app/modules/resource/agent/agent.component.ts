@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -13,7 +13,7 @@ import {LogConsoleModalComponent} from '../../../components/log-console/log-cons
   standalone: false,
   selector: 'app-confirm-node-modal',
   templateUrl: './confirm-node-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ConfirmNodeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -27,7 +27,7 @@ export class ConfirmNodeModalComponent {
   lossNode = '';
 
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -55,6 +55,7 @@ export class ConfirmNodeModalComponent {
         this.activeModal.close('DONE');
       }, error: () => {
         this.submitted = false;
+        this.ref.markForCheck();
       }
     });
   }
@@ -65,7 +66,7 @@ export class ConfirmNodeModalComponent {
   standalone: false,
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentComponent {
   loading: boolean;
@@ -83,7 +84,8 @@ export class AgentComponent {
   subscription2: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private router: Router,
-              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService) {
+              private searchPipe: SearchPipe, private dataService: DataService, public modal: NzModalService,
+              private ref: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -169,9 +171,11 @@ private getAgentClassList(obj): void {
       this.agentClusters = [...updatedAgents];
       this.searchInResult();
       this.loading = false;
+      this.ref.markForCheck();
     },
     error: () => {
       this.loading = false;
+      this.ref.markForCheck();
     }
   });
 }
@@ -218,7 +222,7 @@ private getAgentClassList(obj): void {
             }
           }
         })
-
+        this.ref.markForCheck();
       }
     });
   }
@@ -289,7 +293,11 @@ private getAgentClassList(obj): void {
             }
           }
         });
-      }, error: () => this.data.forEach((value) => value.loading = false)
+        this.ref.markForCheck();
+      }, error: () => {
+        this.data.forEach((value) => value.loading = false);
+        this.ref.markForCheck();
+      }
     });
   }
 
@@ -377,7 +385,11 @@ private getAgentClassList(obj): void {
           cluster.orders = result.agents[0].orders;
         }
         cluster.loading = false;
-      }, error: () => cluster.loading = false
+        this.ref.markForCheck();
+      }, error: () => {
+        cluster.loading = false;
+        this.ref.markForCheck();
+      }
     });
   }
 

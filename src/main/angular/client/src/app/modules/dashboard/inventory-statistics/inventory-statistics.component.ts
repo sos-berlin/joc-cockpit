@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -9,7 +9,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-inventory-statistics',
   templateUrl: './inventory-statistics.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class InventoryStatisticsComponent {
   @Input('sizeX') xbody: number;
@@ -31,7 +31,7 @@ export class InventoryStatisticsComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -73,6 +73,7 @@ export class InventoryStatisticsComponent {
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

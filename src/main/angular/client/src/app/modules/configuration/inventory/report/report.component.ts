@@ -1,10 +1,11 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
-  Component, Directive, forwardRef,
+  Component, Directive, EventEmitter, forwardRef,
   Input,
   OnChanges,
   OnDestroy,
+  Output,
   SimpleChanges
 } from '@angular/core';
 import {clone, isEmpty, isEqual} from 'underscore';
@@ -132,7 +133,6 @@ export class RelativeMonthValidator implements Validator {
 @Component({
   standalone: false,
   selector: 'app-report',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './report.component.html'
 })
 export class ReportComponent implements OnChanges, OnDestroy {
@@ -143,6 +143,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   report: any = {};
   isVisible: boolean;
@@ -206,7 +207,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.report.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -225,7 +226,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
         const currentPath = this.report.name;
         if (update.objectName === currentPath) {
           this.report.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -258,7 +259,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
         this.getObject();
       } else {
         this.report = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -323,7 +324,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
             } else {
               this.report.name = this.data.name;
               this.report.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -332,7 +333,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
       } else {
         this.report.name = this.data.name;
         this.report.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -357,7 +358,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
       }, error: () => {
         this.report.name = this.data.name;
         this.report.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -450,7 +451,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
             this.setErrorMessage(res);
           }
         }, error: () => {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -497,7 +498,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
       this.updateDateFields(res.configuration.monthFrom, res.configuration.monthTo);
 
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -568,7 +569,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
         this.invalidMsg = res.invalidMsg;
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   convertRelativeToAbsolute(unit: string, from: number | null, count: number | null): { monthFrom: string, monthTo: string } {
@@ -761,11 +762,13 @@ export class ReportComponent implements OnChanges, OnDestroy {
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   notes(name): void {

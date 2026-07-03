@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
@@ -7,7 +7,6 @@ import {AddApproverModalComponent, ApproversComponent} from "./approvers/approve
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-approvals',
   templateUrl: './approvals.component.html'
 })

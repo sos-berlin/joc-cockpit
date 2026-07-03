@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {isArray, isEqual} from 'underscore';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import {CoreService} from '../../services/core.service';
   standalone: false,
   selector: 'app-order-variable',
   templateUrl: './order-variable.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderVariableComponent {
   @Input() order;

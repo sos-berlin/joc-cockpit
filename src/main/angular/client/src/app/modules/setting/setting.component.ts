@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -136,7 +136,7 @@ for (const section in SETTING_GROUPS) {
   standalone: false,
   selector: 'app-setting',
   templateUrl: './setting.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SettingComponent {
   zones: any = {};

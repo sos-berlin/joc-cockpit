@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {HttpHeaders} from '@angular/common/http';
 import {NzUploadFile} from 'ng-zorro-antd/upload';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -12,7 +12,7 @@ import {AuthService} from '../guard';
   standalone: false,
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileUploaderComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -225,8 +225,10 @@ export class FileUploaderComponent {
     this.coreService.post('inventory/' + this.objectType + '/validate', json).subscribe({
       next: (res: any) => {
         cb(res);
+        this.cdr.markForCheck();
       }, error: (err) => {
         cb(err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -301,6 +303,7 @@ export class FileUploaderComponent {
             } else {
               this.toasterService.error('Invalid xml file or file must be empty', '');
             }
+            this.cdr.markForCheck();
           };
         }
       } else if (this.importXsd) {
@@ -317,6 +320,7 @@ export class FileUploaderComponent {
             } else {
               this.toasterService.error('Invalid xml file or file must be empty', '');
             }
+            this.cdr.markForCheck();
           };
         }
       }
@@ -364,6 +368,7 @@ export class FileUploaderComponent {
         } catch (e) {
           self.showErrorMsg();
         }
+        self.cdr.markForCheck();
       } else if (self.type == 'DEPLOYMENT' || self.type == 'INVENTORY_OBJECT') {
         try {
           data = JSON.parse(_event.target.result);
@@ -385,9 +390,11 @@ export class FileUploaderComponent {
             } else {
               self.data = data;
             }
+            self.cdr.markForCheck();
           }
         } else {
           self.showErrorMsg();
+          self.cdr.markForCheck();
         }
       } else if (self.type == 'WORKFLOW') {
         try {
@@ -403,8 +410,10 @@ export class FileUploaderComponent {
           });
           self.toasterService.error(msg);
           self.fileList = [];
+          self.cdr.markForCheck();
           return;
         }
+        self.cdr.markForCheck();
       } else if (self.type === 'SETTING') {
         try {
           data = JSON.parse(_event.target.result);
@@ -415,6 +424,7 @@ export class FileUploaderComponent {
           });
           self.fileList = [];
         }
+        self.cdr.markForCheck();
       }
     }
   }

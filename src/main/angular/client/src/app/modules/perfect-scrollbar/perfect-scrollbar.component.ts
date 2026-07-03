@@ -4,7 +4,7 @@ import {mapTo, takeUntil, distinctUntilChanged} from 'rxjs/operators';
 import {PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {
-  NgZone, Inject, Component, ChangeDetectionStrategy,
+  NgZone, Inject, Component, 
   Input, Output, EventEmitter, HostBinding,
   ViewChild, ViewEncapsulation, ChangeDetectorRef
 } from '@angular/core';
@@ -24,7 +24,7 @@ import {
     './perfect-scrollbar.component.css'
   ],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PerfectScrollbarComponent {
   public states: any = {};
@@ -161,7 +161,7 @@ export class PerfectScrollbarComponent {
           }
 
           this.cdRef.markForCheck();
-          this.cdRef.detectChanges();
+          this.cdRef.markForCheck();
         });
 
       this.zone.runOutsideAngular(() => {
@@ -283,6 +283,6 @@ export class PerfectScrollbarComponent {
 
     this.stateUpdate.next('interaction');
 
-    this.cdRef.detectChanges();
+    this.cdRef.markForCheck();
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges,  ChangeDetectorRef, SimpleChanges} from '@angular/core';
 import {Gradient} from './types/gradient.interface';
 
 @Component({
@@ -14,7 +14,7 @@ import {Gradient} from './types/gradient.interface';
       />
     </svg:radialGradient>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SvgRadialGradientComponent implements OnChanges {
   @Input() color: string;
@@ -37,6 +37,8 @@ export class SvgRadialGradientComponent implements OnChanges {
 
   private stopsInput: Gradient[];
   private stopsDefault: Gradient[];
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.r = '30%';

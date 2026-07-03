@@ -6,7 +6,8 @@ import {
   ElementRef,
   SimpleChanges,
   OnChanges,
-  ChangeDetectionStrategy
+  
+  ChangeDetectorRef
 } from '@angular/core';
 import {interpolate} from 'd3-interpolate';
 import {select} from 'd3-selection';
@@ -36,7 +37,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PieArcComponent implements OnChanges {
   @Input() fill: string;
@@ -70,7 +71,7 @@ export class PieArcComponent implements OnChanges {
 
   private _timeout;
 
-  constructor(element: ElementRef) {
+  constructor(element: ElementRef, private cdr: ChangeDetectorRef) {
     this.element = element.nativeElement;
   }
 

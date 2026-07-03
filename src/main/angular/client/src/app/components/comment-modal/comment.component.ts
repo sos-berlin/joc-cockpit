@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -6,7 +6,7 @@ import {CoreService} from '../../services/core.service';
   standalone: false,
   selector: 'app-comment-modal-content',
   templateUrl: './comment.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CommentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

@@ -46,7 +46,7 @@
                     (ngModelChange)="dayChange($event)">
                     @for (option of daysOptions; track option.value) {
                       <label nz-checkbox [nzValue]="option.value">
-                        <span>{{ 'runtime.label' | translate }}.{{option.label}}</span>
+                        <span>{{ 'runtime.label.' + option.label | translate }}</span>
                       </label>
                     }
                   </nz-checkbox-group>                </div>

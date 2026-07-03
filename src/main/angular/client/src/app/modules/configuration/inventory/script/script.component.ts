@@ -1,8 +1,10 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
+  Output,
   SimpleChanges, ViewChild
 } from '@angular/core';
 import {isEmpty, isEqual, clone} from 'underscore';
@@ -19,7 +21,6 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-script',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script.component.html',
 })
 export class ScriptComponent {
@@ -30,6 +31,7 @@ export class ScriptComponent {
   @Input() copyObj: any;
   @Input() reload: any;
   @Input() isTrash: any;
+  @Output() moreOptionsChange = new EventEmitter<boolean>();
 
   script: any = {};
   isVisible: boolean;
@@ -66,7 +68,7 @@ export class ScriptComponent {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.script.actual) {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -85,7 +87,7 @@ export class ScriptComponent {
         const currentPath = this.script.name;
         if (update.objectName === currentPath) {
           this.script.hasNote.notified = false;
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       }
     });
@@ -127,7 +129,7 @@ export class ScriptComponent {
         this.getObject();
       } else {
         this.script = {};
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -202,7 +204,7 @@ export class ScriptComponent {
             } else {
               this.script.name = this.data.name;
               this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-              this.ref.detectChanges();
+              this.ref.markForCheck();
             }
           });
         } else {
@@ -211,7 +213,7 @@ export class ScriptComponent {
       } else {
         this.script.name = this.data.name;
         this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     }
   }
@@ -236,7 +238,7 @@ export class ScriptComponent {
       }, error: () => {
         this.script.name = this.data.name;
         this.script.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -296,7 +298,7 @@ export class ScriptComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         this.script.configuration.script = result;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       }
     });
   }
@@ -340,7 +342,7 @@ export class ScriptComponent {
             this.setErrorMessage(res);
           }
         }, error: () => {
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         }
       });
     }
@@ -396,7 +398,7 @@ export class ScriptComponent {
       } else {
         this.invalidMsg = '';
       }
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
   }
 
@@ -422,17 +424,19 @@ export class ScriptComponent {
         this.invalidMsg = res.invalidMsg;
       }
     }
-    this.ref.detectChanges();
+    this.ref.markForCheck();
   }
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
     sessionStorage['inventoryShowMoreOptions'] = 'true';
+    this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
     sessionStorage['inventoryShowMoreOptions'] = 'false';
+    this.moreOptionsChange.emit(false);
   }
 
   helpPage(key): void{

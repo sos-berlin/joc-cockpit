@@ -1,4 +1,4 @@
-  import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
+  import { ChangeDetectorRef, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
   import {ActivatedRoute, Router} from '@angular/router';
   import {ToastrService} from 'ngx-toastr';
   import {TranslateService} from '@ngx-translate/core';
@@ -17,7 +17,7 @@
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    
   })
   export class LoginComponent {
     isLoading = true;
@@ -94,7 +94,7 @@
     }
 
     ngAfterViewInit(): void {
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
       if (this.user.userName && this.user.password) {
         setTimeout(() => {
           this.loginButton.nativeElement.focus();

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subscription} from 'rxjs';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -73,7 +73,7 @@ export class AddBlocklistModalComponent {
   standalone: false,
   selector: 'app-blocklist',
   templateUrl: './blocklist.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BlocklistComponent {
 
@@ -140,7 +140,8 @@ export class BlocklistComponent {
         this.cdr.markForCheck();
       }, error: () => {
         this.data = [];
-        this.isLoaded = true
+        this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

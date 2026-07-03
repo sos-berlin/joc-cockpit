@@ -3,7 +3,8 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   ElementRef,
   Output,
   EventEmitter
@@ -27,7 +28,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
     </svg:text>
   `,
   styleUrls: ['./bar-label.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BarLabelComponent implements OnChanges {
   @Input() value;
@@ -49,7 +50,7 @@ export class BarLabelComponent implements OnChanges {
   transform: string;
   textAnchor: string;
 
-  constructor(element: ElementRef) {
+  constructor(element: ElementRef, private cdr: ChangeDetectorRef) {
     this.element = element.nativeElement;
   }
 

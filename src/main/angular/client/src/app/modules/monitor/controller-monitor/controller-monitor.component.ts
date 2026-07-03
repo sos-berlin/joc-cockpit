@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild, ElementRef} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, ViewChild, ElementRef} from '@angular/core';
 import {Subscription} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   selector: 'app-controller-monitor',
   templateUrl: './controller-monitor.component.html',
   styleUrls: ['./controller-monitor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllerMonitorComponent {
   @Input() permission: any;
@@ -186,7 +186,7 @@ export class ControllerMonitorComponent {
         groupData = this.groupByPipe.transform(groupData, 'date');
         this.checkMissingDates(groupData, map);
         this.cdr.markForCheck();
-      }, error: () => this.isLoaded = true
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

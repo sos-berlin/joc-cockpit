@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -16,7 +16,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-single-lock',
   templateUrl: './single-lock.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleLockComponent {
   loading = false;
@@ -29,7 +29,7 @@ export class SingleLockComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService, private route: ActivatedRoute) {
+              private dataService: DataService, private route: ActivatedRoute, private ref: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -69,7 +69,8 @@ export class SingleLockComponent {
           value.hasNote = value.lock?.hasNote;
         });
         this.locks = res.locks;
-      }, error: () => this.loading = false
+        this.ref.markForCheck();
+      }, error: () => { this.loading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -91,6 +92,7 @@ export class SingleLockComponent {
               this.locks[0].workflowTagsPerWorkflow = lock.workflowTagsPerWorkflow;
               this.locks[0].workflows = lock.workflows;
             }
+            this.ref.markForCheck();
           });
           break;
         }
@@ -123,6 +125,7 @@ export class SingleLockComponent {
           lock.hasNote.notified = false;
         }
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'LOCK', action: 'read' });
+        this.ref.markForCheck();
       }
     });
   }
@@ -133,7 +136,7 @@ export class SingleLockComponent {
   standalone: false,
   selector: 'app-lock',
   templateUrl: 'lock.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LockComponent {
   isLoading = false;
@@ -223,7 +226,8 @@ export class LockComponent {
           if (this.tree.length) {
             this.loadLocks();
           }
-        }, error: () => this.isLoading = true
+          this.cdr.markForCheck();
+        }, error: () => { this.isLoading = true; this.cdr.markForCheck(); }
       });
     } else {
       this.isLoading = true;
@@ -381,7 +385,8 @@ export class LockComponent {
             }
           }
         });
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -435,7 +440,7 @@ export class LockComponent {
           this.updateLocksDetail(locks);
         }
         this.cdr.markForCheck();
-      }, error: () => this.loading = false
+      }, error: () => { this.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -516,6 +521,7 @@ export class LockComponent {
           lock.loading = false;
         });
         this.locks = [...this.locks];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -550,6 +556,7 @@ export class LockComponent {
         }
       }
       lock.loading = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -623,6 +630,7 @@ export class LockComponent {
         }
 
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'LOCK', action: 'read' });
+        this.cdr.markForCheck();
       }
     });
   }

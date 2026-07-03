@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Subject, Subscription} from 'rxjs';
@@ -17,7 +17,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-show-modal-content',
   templateUrl: './show-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -35,7 +35,7 @@ export class ShowModalComponent {
   standalone: false,
   selector: 'app-edit-modal-content',
   templateUrl: './edit-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class EditModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -45,7 +45,7 @@ export class EditModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -69,8 +69,9 @@ export class EditModalComponent {
     this.coreService.post('documentation/edit ', obj).subscribe({
       next: () => {
         this.submitted = false;
+        this.ref.markForCheck();
         this.activeModal.close(this.document);
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.ref.markForCheck(); }
     });
   }
 
@@ -83,7 +84,7 @@ export class EditModalComponent {
   standalone: false,
   selector: 'app-single-document',
   templateUrl: './single-documentation.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleDocumentationComponent {
   loading = false;
@@ -95,7 +96,7 @@ export class SingleDocumentationComponent {
   path?: string | null;
 
   constructor(private router: Router, private authService: AuthService, public coreService: CoreService,
-              private modal: NzModalService, private route: ActivatedRoute) {
+              private modal: NzModalService, private route: ActivatedRoute, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -183,6 +184,7 @@ export class SingleDocumentationComponent {
   deleteDocument(obj: any): void {
     this.coreService.post('documentations/delete', obj).subscribe(() => {
       this.documents = [];
+      this.ref.markForCheck();
     });
   }
 
@@ -191,7 +193,8 @@ export class SingleDocumentationComponent {
       next: (res: any) => {
         this.loading = false;
         this.documents = res.documentations;
-      }, error: () => this.loading = false
+        this.ref.markForCheck();
+      }, error: () => { this.loading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -249,7 +252,7 @@ export class SingleDocumentationComponent {
   standalone: false,
   selector: 'app-document',
   templateUrl: 'documentation.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DocumentationComponent {
   isLoading = false;

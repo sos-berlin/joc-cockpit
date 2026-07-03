@@ -1,11 +1,11 @@
-import {OnChanges, Component, Input, Output, ViewChild, SimpleChanges, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {OnChanges, Component, Input, Output, ViewChild, SimpleChanges, EventEmitter,  ChangeDetectorRef} from '@angular/core';
 import {CoreService} from "../../../../services/core.service";
 
 @Component({
   standalone: false,
   selector: 'app-favorite-list',
   templateUrl: './favorite-list.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FavoriteListComponent implements OnChanges {
   @ViewChild('myinput') myInputField;

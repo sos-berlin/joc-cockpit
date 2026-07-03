@@ -77,7 +77,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': order.filter.date==btn.date, 'disable-link':savedHistoryFilter.selected}"
                           nz-menu-item>
-                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -192,7 +192,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': task.filter.date==btn.date, 'disable-link':savedJobHistoryFilter.selected}"
                           nz-menu-item>
-                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -303,7 +303,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': yade.filter.date==btn.date, 'disable-link':savedYadeHistoryFilter.selected}"
                         nz-menu-item>
-                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                      <a>{{ 'filters.button.' + btn.text | translate }}</a>
                     </li>
                   }
                 </ul>
@@ -416,7 +416,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': deployment.filter.date==btn.date, 'disable-link':savedDeploymentHistoryFilter.selected}"
                           nz-menu-item>
-                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -527,7 +527,7 @@
                     @for (btn of subMissionFilterBtn; track btn) {
                       <li (click)="loadHistory('DATE',btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': submission.filter.date==btn.date, 'disable-link':savedSubmissionHistoryFilter.selected}"
                           nz-menu-item>
-                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>

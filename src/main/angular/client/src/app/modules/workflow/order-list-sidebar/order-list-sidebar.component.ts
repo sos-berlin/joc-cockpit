@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   Input,
@@ -27,7 +27,7 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
   standalone: false,
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderListSidebarComponent implements OnChanges {
   @Input() orders;
@@ -124,6 +124,7 @@ export class OrderListSidebarComponent implements OnChanges {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -436,6 +437,7 @@ export class OrderListSidebarComponent implements OnChanges {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.cdr.markForCheck();
           this.resetCheckBox();
           this.resetAction(5000);
         }
@@ -470,6 +472,7 @@ export class OrderListSidebarComponent implements OnChanges {
     modal.afterClose.subscribe((result) => {
       if (result) {
         this.isProcessing = true;
+        this.cdr.markForCheck();
         this.coreService.post('orders/' + url, obj).subscribe({
           next: () => {
             this.resetCheckBox();
@@ -488,6 +491,7 @@ export class OrderListSidebarComponent implements OnChanges {
         orderId: order.orderId
       }).subscribe((res: any) => {
         order.obstacles = res.obstacles;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -500,6 +504,7 @@ export class OrderListSidebarComponent implements OnChanges {
     this.checked = false;
     this.indeterminate = false;
     this.setOfCheckedId.clear();
+    this.cdr.markForCheck();
   }
 
   getPriorityLabel(value: number): string {

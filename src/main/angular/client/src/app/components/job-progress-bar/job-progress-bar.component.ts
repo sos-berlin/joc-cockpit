@@ -1,10 +1,9 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {interval, Subscription} from 'rxjs';
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-job-progress-bar',
   templateUrl: './job-progress-bar.component.html',
   styleUrls: ['./job-progress-bar.component.css']
@@ -61,6 +60,7 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges, Do
         } else if (previousRunning && !this.isRunning) {
           this.stopProgressTracking();
           this.resetState();
+          this.cdr.markForCheck();
         }
       }
     }
@@ -251,6 +251,7 @@ export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges, Do
     // Additional safety check: if job already has an endTime, it's completed
     if (this.job.endTime) {
       this.stopProgressTracking();
+      this.cdr.markForCheck();
       return;
     }
 

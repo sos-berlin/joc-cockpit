@@ -4,7 +4,8 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   PLATFORM_ID,
   Inject
 } from '@angular/core';
@@ -45,7 +46,7 @@ export interface PieData extends DefaultArcObject {
       [class.animation]="animations"
     ></svg:path>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PieLabelComponent implements OnChanges {
   @Input() data: PieData;
@@ -65,7 +66,7 @@ export class PieLabelComponent implements OnChanges {
   attrTransform: string;
   textTransition: string;
 
-  constructor(@Inject(PLATFORM_ID) public platformId: any) {
+  constructor(@Inject(PLATFORM_ID) public platformId: any, private cdr: ChangeDetectorRef) {
     this.trimLabel = trimLabel;
   }
 

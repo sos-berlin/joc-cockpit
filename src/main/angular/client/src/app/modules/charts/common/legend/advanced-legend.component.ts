@@ -1,5 +1,6 @@
 import {
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -79,9 +80,11 @@ export interface AdvancedLegendItem {
   `,
   styleUrls: ['./advanced-legend.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AdvancedLegendComponent implements OnChanges {
+  constructor(private cdr: ChangeDetectorRef) {}
+
   @Input() width: number;
   @Input() data: DataItem[];
   @Input() colors: ColorHelper;

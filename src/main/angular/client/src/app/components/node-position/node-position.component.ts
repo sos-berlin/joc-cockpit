@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {GraphicalViewModalComponent} from "../graphical-view-modal/graphical-view-modal.component";
 import {WorkflowService} from "../../services/workflow.service";
@@ -8,7 +8,7 @@ import {CoreService} from "../../services/core.service";
   standalone: false,
   selector: 'app-node-position',
   templateUrl: './node-position.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class NodePositionComponent {
   @Input() obj: any;

@@ -5,7 +5,8 @@ import {
   Output,
   EventEmitter,
   OnChanges,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   HostListener
 } from '@angular/core';
 
@@ -24,9 +25,10 @@ import {
       [attr.pointer-events]="pointerEvents"
     />
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CircleComponent implements OnChanges {
+  constructor(private cdr: ChangeDetectorRef) {}
   @Input() cx: number;
   @Input() cy: number;
   @Input() r: number;

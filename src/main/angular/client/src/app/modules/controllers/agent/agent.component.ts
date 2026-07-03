@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter, HostListener, inject, ViewChild} from '@angular/core';
+import { ChangeDetectorRef, Component, Output, EventEmitter, HostListener, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
@@ -35,7 +35,7 @@ declare const mxCellOverlay;
   standalone: false,
   selector: 'app-sub-agent-modal',
   templateUrl: './sub-agent.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SubagentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -56,7 +56,7 @@ export class SubagentModalComponent {
   display: any;
   required = false;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -105,7 +105,7 @@ export class SubagentModalComponent {
       next: () => {
         this.activeModal.close('close');
       },
-      error: () => this.submitted = false
+      error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -118,7 +118,7 @@ export class SubagentModalComponent {
   standalone: false,
   selector: 'add-cluster-agent-modal',
   templateUrl: './add-cluster.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddClusterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -135,7 +135,7 @@ export class AddClusterModalComponent {
   display: any;
   required = false;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -208,6 +208,7 @@ export class AddClusterModalComponent {
         this.activeModal.close(obj);
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -217,7 +218,7 @@ export class AddClusterModalComponent {
   standalone: false,
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -235,7 +236,7 @@ export class AgentModalComponent {
   secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -412,7 +413,7 @@ export class AgentModalComponent {
       next: () => {
         this.activeModal.close('close');
       },
-      error: () => this.submitted = false
+      error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -425,7 +426,7 @@ export class AgentModalComponent {
   standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './add-certificate-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddCertificateModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -437,7 +438,7 @@ export class AddCertificateModalComponent {
   submitted = false;
   certificateList: any = [];
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -463,8 +464,10 @@ export class AddCertificateModalComponent {
     this.coreService.post('encipherment/certificate', certAliasesObj).subscribe({
       next: (res: any) => {
         this.certificateList = res.certificates;
+        this.cdr.markForCheck();
       }, error: () => {
         this.certificateList = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -487,7 +490,7 @@ export class AddCertificateModalComponent {
     this.coreService.post('encipherment/assignment/add', this.certificateObj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 }
@@ -496,7 +499,7 @@ export class AddCertificateModalComponent {
   standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './show-certificate-list-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowCertificateListModalComponent {
 
@@ -507,7 +510,7 @@ export class ShowCertificateListModalComponent {
   certificateList: any = [];
   sub: any;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -532,8 +535,10 @@ export class ShowCertificateListModalComponent {
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
         this.certificateList = res.mappings;
+        this.cdr.markForCheck();
       }, error: () => {
         this.certificateList = [];
+        this.cdr.markForCheck();
       }
     });
   }
@@ -617,7 +622,7 @@ export class ShowCertificateListModalComponent {
   standalone: false,
   selector: 'app-add-priority-modal',
   templateUrl: './add-priority-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddPriorityModalComponent {
 
@@ -709,7 +714,7 @@ export class AddPriorityModalComponent {
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentComponent {
   isLoading = true;

@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -11,7 +11,6 @@ import {CoreService} from "../../services/core.service";
 @Component({
   standalone: false,
   selector: 'app-select-document',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-document.component.html',
   styleUrls: ['./select-document.component.scss']
 })
@@ -67,7 +66,7 @@ export class SelectDocumentComponent {
           node.origin.isLeaf = false;
           node.origin.children = data;
           this.documentationTree = [...this.documentationTree];
-          this.ref.detectChanges();
+          this.ref.markForCheck();
         });
       }
     } else {

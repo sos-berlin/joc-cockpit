@@ -9,7 +9,8 @@ import {
   ViewChild,
   SimpleChanges,
   AfterViewInit,
-  ChangeDetectionStrategy,
+  
+  ChangeDetectorRef,
   Inject,
   PLATFORM_ID
 } from '@angular/core';
@@ -55,7 +56,7 @@ import {TextAnchor} from '../types/text-anchor.enum';
       </svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class XAxisTicksComponent implements OnChanges, AfterViewInit {
   @Input() scale;
@@ -88,7 +89,7 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('ticksel') ticksElement: ElementRef;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: any) {
+  constructor(@Inject(PLATFORM_ID) private platformId: any, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -110,6 +111,7 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
     if (height !== this.height) {
       this.height = height;
       this.dimensionsChanged.emit({height: 16});
+      this.cdr.markForCheck();
       setTimeout(() => this.updateDims());
     }
   }

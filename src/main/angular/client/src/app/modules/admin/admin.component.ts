@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Router, NavigationEnd} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {Subscription} from 'rxjs';
@@ -11,7 +11,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AdminComponent {
   schedulerIds: any = {};
@@ -65,6 +65,7 @@ export class AdminComponent {
       } else if (res === 'IS_SESSION_MANAGEMENT_FALSE') {
         this.isSessionButtonShow = false;
       }
+      this.cdr.markForCheck();
     });
   }
 

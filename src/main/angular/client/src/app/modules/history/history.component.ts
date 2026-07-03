@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -1141,7 +1141,7 @@ export class SingleHistoryComponent {
   standalone: false,
   selector: 'app-history',
   templateUrl: './history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HistoryComponent {
   schedulerIds: any = {};
@@ -1266,7 +1266,7 @@ export class HistoryComponent {
     this.initConf();
     this.tabChangeListener = (event: CustomEvent) => {
       this.historyFilters.type = event.detail;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     };
     window.addEventListener('change-history-type', this.tabChangeListener);
   }
@@ -2386,7 +2386,7 @@ export class HistoryComponent {
       this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
       this.data.forEach((history: any) => {
         const workflowKey = this.getLastPartOfWorkflow(history.workflow);
-        if (this.workflowTagsPerWorkflow[workflowKey]) {
+        if (this.workflowTagsPerWorkflow && this.workflowTagsPerWorkflow[workflowKey]) {
           history.filteredWorkflowTags = this.workflowTagsPerWorkflow[workflowKey]
             .filter((tag: string) => tag?.toLowerCase().includes(this.order.searchText?.toLowerCase()));
         }
@@ -2395,7 +2395,7 @@ export class HistoryComponent {
       this.data = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
       this.data.forEach((history: any) => {
         const workflowKey = this.getLastPartOfWorkflow(history.workflow);
-        if (this.workflowTagsPerWorkflow[workflowKey]) {
+        if (this.workflowTagsPerWorkflow && this.workflowTagsPerWorkflow[workflowKey]) {
           history.filteredWorkflowTags = this.workflowTagsPerWorkflow[workflowKey]
             .filter((tag: string) => tag?.toLowerCase().includes(this.task.searchText?.toLowerCase()));
         }
@@ -2748,12 +2748,14 @@ export class HistoryComponent {
             };
             this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
               this.ignoreListConfigId = res.id;
+              this.cdr.markForCheck();
             });
           }
         });
       } else {
         this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
           this.ignoreListConfigId = res.id;
+          this.cdr.markForCheck();
         });
       }
       if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
@@ -2818,12 +2820,14 @@ export class HistoryComponent {
             };
             this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
               this.ignoreListConfigId = res.id;
+              this.cdr.markForCheck();
             });
           }
         });
       } else {
         this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
           this.ignoreListConfigId = res.id;
+          this.cdr.markForCheck();
         });
       }
     }
@@ -3000,6 +3004,7 @@ export class HistoryComponent {
       dom.find('thead tr.main-header-row th').each(function () {
         self.widthArr.push($(this).outerWidth());
       });
+      self.cdr.markForCheck();
     }, 0);
   }
 
@@ -3176,6 +3181,7 @@ export class HistoryComponent {
       }
       this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
         this.ignoreListConfigId = res.id;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -3559,7 +3565,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Task History Tab
         else if (this.isLoading && this.historyFilters.type === 'TASK') {
           if (eventType === 'HistoryTaskTerminated' || eventType === 'HistoryTaskStarted' || eventType === 'HistoryTaskUpdated' || eventType === 'JobStateChanged') {
@@ -3571,7 +3577,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Deployment History Tab
         else if (this.isLoading && this.historyFilters.type === 'DEPLOYMENT') {
           if (eventType && eventType.match(/Deploy/)) {
@@ -3583,7 +3589,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // Submission History Tab
         else if (this.isLoading && this.historyFilters.type === 'SUBMISSION') {
           if (eventType === 'DailyPlanUpdated') {
@@ -3595,7 +3601,7 @@ export class HistoryComponent {
             break;
           }
         }
-        
+
         // YADE/File Transfer Tab
         else if (this.isLoading && this.historyFilters.type === 'YADE') {
           if (eventType === 'FILETRANSFER' || eventType === 'FileTransferUpdated') {

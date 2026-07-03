@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderOverviewComponent {
   @Input('sizeX') xbody: number;
@@ -44,7 +44,7 @@ export class OrderOverviewComponent {
   }
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -96,6 +96,7 @@ export class OrderOverviewComponent {
       }, error: (err) => {
         this.notAuthenticate = !err.isPermitted;
         this.isLoaded = true;
+        this.cdr.markForCheck();
       }
     });
   }

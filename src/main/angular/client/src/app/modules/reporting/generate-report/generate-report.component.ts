@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {takeUntil} from 'rxjs/operators';
@@ -16,7 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
   standalone: false,
   selector: 'app-generate-report',
   templateUrl: './generate-report.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class GenerateReportComponent {
   @Input() permission: any;
@@ -58,6 +58,7 @@ export class GenerateReportComponent {
 
     this.subscription2 = sharingDataService.searchKeyAnnounced$.subscribe(() => {
       this.searchInResult();
+      this.cdr.markForCheck();
     });
     this.subscription3 = sharingDataService.filterAnnounced$.subscribe((res: any) => {
       if (res.templateName) {
@@ -71,14 +72,17 @@ export class GenerateReportComponent {
         this.getData();
       } else if (res.expandAll) {
         this.expandAllItems();
+        this.cdr.markForCheck();
       } else if (res.collapseAll) {
         this.collapseAllItems();
+        this.cdr.markForCheck();
       } else if (res.groupBy) {
         if (this.filters.groupBy !== res.groupBy) {
           this.filters.groupBy = res.groupBy;
           this.reset();
           this.filters.expandedKey?.clear();
           this.groupByFunc();
+          this.cdr.markForCheck();
         }
       }
     });
@@ -142,7 +146,8 @@ export class GenerateReportComponent {
         this.reports = this.orderPipe.transform(this.reports, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.data = [...this.reports];
         this.searchInResult();
-      }, error: () => this.isLoaded = true
+        this.cdr.markForCheck();
+      }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
 

@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, inject,  ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import {AuthService} from '../../../../components/guard';
   standalone: false,
   selector: 'app-update-job',
   templateUrl: './update-job.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class UpdateJobComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

@@ -1,7 +1,7 @@
 import {
   Component,
   Input,
-  ChangeDetectionStrategy,
+  
   Output,
   EventEmitter,
   SimpleChanges,
@@ -46,7 +46,7 @@ export interface LegendEntry {
   `,
   styleUrls: ['./legend.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LegendComponent implements OnChanges {
   @Input() data: string[];

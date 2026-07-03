@@ -5,7 +5,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild, ViewContainerRef,
-  ChangeDetectionStrategy,
+  
   ChangeDetectorRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
@@ -45,7 +45,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-workflow-graphical-dialog',
   templateUrl: './dependent-workflow-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DependentWorkflowComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -216,7 +216,7 @@ export class DependentWorkflowComponent {
   selector: 'app-workflow-graphical',
   templateUrl: './workflow-graphical.component.html',
   styleUrls: ['./workflow-graphical.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowGraphicalComponent {
   @Input() workFlowJson: any = {};
@@ -955,6 +955,7 @@ export class WorkflowGraphicalComponent {
                   } else {
                     self.stopInstruction = data;
                   }
+                  self.cdr.markForCheck();
                   self.nzContextMenuService.create(evt, self.menu);
                   $('.mxTooltip').css({visibility: 'hidden'});
                 }, 0);
@@ -2000,6 +2001,7 @@ export class WorkflowGraphicalComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -2026,7 +2028,8 @@ export class WorkflowGraphicalComponent {
     $('.editor-tree  a').removeClass('hide-on-focus');
     $('.tree-search').removeClass('hide-on-focus');
     setTimeout(() =>{
-      this.filteredNodes = this.nodes
+      this.filteredNodes = this.nodes;
+      this.cdr.markForCheck();
     },100)
   }
 

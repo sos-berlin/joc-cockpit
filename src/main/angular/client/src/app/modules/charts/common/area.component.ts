@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ElementRef, OnChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Input, Output, EventEmitter, ElementRef, OnChanges,  ChangeDetectorRef} from '@angular/core';
 import {select} from 'd3-selection';
 import {id} from '../utils/id';
 import {AreaChartSeries} from '../models/chart-data.model';
@@ -19,7 +19,7 @@ import {Gradient} from './types/gradient.interface';
     </svg:defs>
     <svg:path class="area" [attr.d]="areaPath" [attr.fill]="gradient ? gradientFill : fill" [style.opacity]="opacity" />
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AreaComponent implements OnChanges {
   @Input() data: AreaChartSeries;
@@ -45,7 +45,7 @@ export class AreaComponent implements OnChanges {
 
   barOrientation = BarOrientation;
 
-  constructor(element: ElementRef) {
+  constructor(element: ElementRef, private cd: ChangeDetectorRef) {
     this.element = element.nativeElement;
   }
 
@@ -74,7 +74,10 @@ export class AreaComponent implements OnChanges {
 
   loadAnimation(): void {
     this.areaPath = this.startingPath;
-    setTimeout(this.updatePathEl.bind(this), 100);
+    setTimeout(() => {
+      this.updatePathEl();
+      this.cd.markForCheck();
+    }, 100);
   }
 
   updatePathEl(): void {

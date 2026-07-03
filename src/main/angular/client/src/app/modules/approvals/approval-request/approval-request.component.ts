@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {AuthService} from "../../../components/guard";
@@ -11,7 +11,6 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 
 @Component({
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-approval-request',
   templateUrl: './approval-request.component.html',
   styleUrl: './approval-request.component.scss'

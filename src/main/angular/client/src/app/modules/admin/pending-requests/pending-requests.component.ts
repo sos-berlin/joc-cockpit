@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmationModalComponent} from '../accounts/accounts.component';
@@ -12,7 +12,7 @@ import {DataService} from '../data.service';
   selector: 'app-pending-requests',
   templateUrl: './pending-requests.component.html',
   styleUrls: ['./pending-requests.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PendingRequestsComponent {
   requests: any = {};
@@ -39,6 +39,7 @@ export class PendingRequestsComponent {
     this.subscription1 = this.dataService.searchKeyAnnounced$.subscribe(res => {
       this.searchKey = res;
       this.searchInResult();
+      this.cdr.markForCheck();
     });
     this.subscription2 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'APPROVE_REQUEST') {

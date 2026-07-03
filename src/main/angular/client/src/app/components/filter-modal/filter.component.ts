@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
+import { ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -6,7 +6,7 @@ import {CoreService} from '../../services/core.service';
   standalone: false,
   selector: 'app-edit-filter-modal',
   templateUrl: './filter.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class EditFilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

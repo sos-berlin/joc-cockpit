@@ -1,4 +1,4 @@
-import {Component, inject, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, inject,  ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../../services/core.service';
 
@@ -6,7 +6,7 @@ import {CoreService} from '../../../services/core.service';
   standalone: false,
   selector: 'app-acknowledge-modal',
   templateUrl: './acknowledge.dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AcknowledgeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty} from 'underscore';
 import {AuthService} from "../guard";
@@ -11,7 +11,7 @@ import {UpdateObjectComponent} from '../../modules/configuration/inventory/updat
   standalone: false,
   selector: 'app-inventory-search',
   templateUrl: './search.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
@@ -210,6 +210,7 @@ export class SearchComponent {
       if (this.permission.joc && this.permission.joc.inventory.view) {
         this.coreService.getAgents(this.agents, '', () => {
           this.agentList = this.coreService.clone(this.agents.agentList);
+          this.cdr.markForCheck();
         });
       }
     }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -8,7 +8,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class MonitorComponent {
   monitor: Array<any> = [];
@@ -33,9 +33,11 @@ export class MonitorComponent {
               private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.loading = false;
+      this.cdr.markForCheck();
       this.init();
       setTimeout(() => {
         this.loading = true;
+        this.cdr.markForCheck();
       }, 10);
     });
   }
@@ -53,7 +55,7 @@ export class MonitorComponent {
     this.loading = true;
     this.tabChangeListener = (event: CustomEvent) => {
       this.index = event.detail;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     };
     window.addEventListener('change-tab', this.tabChangeListener);
   }

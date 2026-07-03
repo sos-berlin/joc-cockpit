@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Component, HostListener, inject, ViewChild,  ChangeDetectorRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {ClipboardService} from 'ngx-clipboard';
 import {TranslateService} from '@ngx-translate/core';
@@ -14,7 +14,7 @@ declare const $;
   standalone: false,
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ScriptModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
