@@ -8,7 +8,7 @@ import {CoreService} from "../../services/core.service";
   standalone: false,
   selector: 'app-node-position',
   templateUrl: './node-position.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class NodePositionComponent {
   @Input() obj: any;
@@ -361,6 +361,7 @@ export class NodePositionComponent {
           this.selectBlockPosition(result);
         }
       }
+      this.cdr.markForCheck();
     });
   }
 }

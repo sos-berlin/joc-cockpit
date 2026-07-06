@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
   standalone: false,
   selector: 'app-error',
-  templateUrl: './page-not-found.component.html'
+  templateUrl: './page-not-found.component.html',
+  
 })
 export class PageNotFoundComponent {
   code = '403';

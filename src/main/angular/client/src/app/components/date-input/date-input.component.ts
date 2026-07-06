@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Optional, Output} from '@angular/core';
 import {differenceInCalendarDays} from "date-fns";
 import {ControlContainer, NgForm, NgModel} from "@angular/forms";
 import {CoreService} from "../../services/core.service";
@@ -13,7 +13,8 @@ import {CoreService} from "../../services/core.service";
       deps: [[Optional, NgForm]],
       useFactory: (ngForm: NgForm) => ngForm,
     }
-  ]
+  ],
+  
 })
 export class DateInputComponent {
   @Input() placeholder = '';
@@ -34,7 +35,7 @@ export class DateInputComponent {
 
   @Output() modelChange = new EventEmitter<any>();
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

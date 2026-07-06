@@ -28,7 +28,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-controller-cluster',
   templateUrl: './controller-cluster.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
@@ -55,6 +55,7 @@ export class ControllerClusterComponent {
               private nzContextMenuService: NzContextMenuService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
+      this.cdr.markForCheck();
     });
   }
 
@@ -135,6 +136,7 @@ export class ControllerClusterComponent {
         } else {
           this.createEditor();
         }
+        this.cdr.markForCheck();
       }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }
@@ -260,6 +262,7 @@ export class ControllerClusterComponent {
             self.nzContextMenuService.create(event, self.menu);
           }, 0);
           evt.consume();
+          self.cdr.markForCheck();
         }
       }
     });

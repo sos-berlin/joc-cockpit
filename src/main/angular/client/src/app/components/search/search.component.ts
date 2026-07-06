@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isEmpty} from 'underscore';
 import {AuthService} from "../guard";
@@ -10,7 +10,8 @@ import {UpdateObjectComponent} from '../../modules/configuration/inventory/updat
 @Component({
   standalone: false,
   selector: 'app-inventory-search',
-  templateUrl: './search.component.html'
+  templateUrl: './search.component.html',
+  
 })
 export class SearchComponent {
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
@@ -78,7 +79,7 @@ export class SearchComponent {
   selectedSynchronizationStatuses: string[] = [];
   selectedAvailabilityStatuses: string[] = [];
   selectedJobAvailabilityStatuses: string[] = [];
-  constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
+  constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -209,6 +210,7 @@ export class SearchComponent {
       if (this.permission.joc && this.permission.joc.inventory.view) {
         this.coreService.getAgents(this.agents, '', () => {
           this.agentList = this.coreService.clone(this.agents.agentList);
+          this.cdr.markForCheck();
         });
       }
     }
@@ -247,6 +249,7 @@ export class SearchComponent {
       if (this.folders.length > 0) {
         this.folders[0].expanded = true;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -393,8 +396,10 @@ export class SearchComponent {
         this.coreService.setSearchResult(this.isWorkflow ? 'workflow' : this.isBoard ? 'board' : this.isLock ? 'lock' : this.isReport ? 'report' : this.isCalendar ? 'calendar' : 'inventory',
           {panel: this.panel.active, request: this.searchObj, result: this.results});
         this.submitted = false;
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -438,6 +443,7 @@ export class SearchComponent {
       if (res) {
         this.onCancel.emit();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -464,6 +470,7 @@ export class SearchComponent {
       if (res) {
         this.onCancel.emit();
       }
+      this.cdr.markForCheck();
     });
   }
 }

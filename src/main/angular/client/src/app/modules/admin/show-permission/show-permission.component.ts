@@ -7,7 +7,7 @@ import {CoreService} from "../../../services/core.service";
   standalone: false,
   selector: 'app-show-permission-view',
   templateUrl: './show-permission.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowPermissionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

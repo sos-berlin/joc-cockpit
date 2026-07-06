@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -13,7 +13,8 @@ import { NoteComponent } from '../notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  
 })
 export class HeaderComponent {
   preferences: any = {};
@@ -49,16 +50,19 @@ export class HeaderComponent {
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService,
-              private modal: NzModalService, private router: Router, private dataService: DataService, private kioskService: KioskService) {
+              private modal: NzModalService, private router: Router, private dataService: DataService, private kioskService: KioskService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
       }
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.isThemeReload.subscribe(res => {
       if (res) {
         this.preferences = JSON.parse(sessionStorage['preferences']);
       }
+      this.cdr.markForCheck();
     });
     this.subscription3 = dataService.functionAnnounced$.subscribe(res => {
       if (res) {
@@ -66,6 +70,7 @@ export class HeaderComponent {
           this.isBackUp = res;
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -149,23 +154,27 @@ export class HeaderComponent {
     setTimeout(() => {
       this.problemEvent = {};
       sessionStorage.removeItem('$SOS$NODELOSS');
+      this.cdr.markForCheck();
     }, 250);
   }
   clearNotesEvent(): void {
     setTimeout(() => {
       this.notesEvent = {};
+      this.cdr.markForCheck();
     }, 250);
   }
   clearApprovalEvent(): void {
     setTimeout(() => {
       this.approvalEvent = {};
       sessionStorage.removeItem('$SOS$APPROVALREQUESTS');
+      this.cdr.markForCheck();
     }, 250);
   }
   clearRequestorEvent(): void {
     setTimeout(() => {
       this.requestorEvent = {};
       sessionStorage.removeItem('$SOS$REQUESTORREQUESTS');
+      this.cdr.markForCheck();
     }, 250);
   }
 
@@ -319,6 +328,7 @@ export class HeaderComponent {
     this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
       this.isBackUp = res.ok ? 'NO' : 'YES';
       sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
+      this.cdr.markForCheck();
     });
   }
 
@@ -388,9 +398,11 @@ export class HeaderComponent {
             this.timeout = setTimeout(() => {
               this.eventLoading = false;
               this.getEvents();
+              this.cdr.markForCheck();
             }, 100);
           }
           this.switchScheduler = false;
+          this.cdr.markForCheck();
         }, error: (err) => {
           if (!this.isLogout && err) {
             if (err.status == 420 && err.error && err.error.error && err.error.error.message.match(/ExpiredSessionException/)) {
@@ -399,9 +411,11 @@ export class HeaderComponent {
               this.timeout = setTimeout(() => {
                 this.eventLoading = false;
                 this.getEvents();
+                this.cdr.markForCheck();
               }, 1000);
             }
           }
+          this.cdr.markForCheck();
         }
       });
     }
@@ -421,8 +435,9 @@ export class HeaderComponent {
     this.coreService.post('note/notifications', obj).subscribe({
         next: (res: any) => {
           this.notesNotificationList = res.notifications;
+          this.cdr.markForCheck();
         }
-        , error: (err) => {}
+        , error: (err) => { this.cdr.markForCheck(); }
     });
 
   }

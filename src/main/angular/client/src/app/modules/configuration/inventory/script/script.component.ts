@@ -19,7 +19,7 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-script',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './script.component.html',
 })
 export class ScriptComponent {

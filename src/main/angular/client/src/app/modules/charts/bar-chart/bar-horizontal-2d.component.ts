@@ -138,7 +138,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
   styles: [`

@@ -20,7 +20,7 @@ import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.
   standalone: false,
   selector: 'app-setting',
   templateUrl: './setting.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SettingComponent {
   zones: any = {};

@@ -118,7 +118,7 @@ import {isPlatformServer} from '@angular/common';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
 styles: [`

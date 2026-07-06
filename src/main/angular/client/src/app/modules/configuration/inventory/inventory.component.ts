@@ -31,7 +31,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-create-tag-template',
-  templateUrl: './create-tag-dialog.html'
+  templateUrl: './create-tag-dialog.html',
+  
 })
 export class CreateTagModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -71,7 +72,7 @@ export class CreateTagModalComponent {
   @ViewChild(NzSelectComponent) tagSelect;
 
 
-  constructor(private coreService: CoreService, private modal: NzModalService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  constructor(private coreService: CoreService, private modal: NzModalService, public activeModal: NzModalRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -131,6 +132,7 @@ export class CreateTagModalComponent {
     const url = this.isJobTag ? 'tags/job' : 'tags';
     this.coreService.post(url, {}).subscribe((res) => {
       this.allTags = res.tags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      this.cdr.markForCheck();
     });
   }
 
@@ -141,6 +143,7 @@ export class CreateTagModalComponent {
 
     this.coreService.post(url, {path}).subscribe((res) => {
       this.tags = res.tags;
+      this.cdr.markForCheck();
     });
   }
 
@@ -156,6 +159,7 @@ export class CreateTagModalComponent {
       next: (res) => {
         delete res.deliveryDate;
         this.object.tagsObject = res;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -182,6 +186,7 @@ export class CreateTagModalComponent {
     }).subscribe({
       next: (res: any) => {
         this.allTags = res.results;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -262,6 +267,7 @@ export class CreateTagModalComponent {
           this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
         }, error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -281,6 +287,7 @@ export class CreateTagModalComponent {
         this.activeModal.close('DONE');
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -293,6 +300,7 @@ export class CreateTagModalComponent {
     }).subscribe({
       next: (res: any) => {
         this.allOrderTags = res.results;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -311,14 +319,15 @@ export class CreateTagModalComponent {
 @Component({
   standalone: false,
   selector: 'app-show-objects',
-  templateUrl: './show-objects-dialog.html'
+  templateUrl: './show-objects-dialog.html',
+  
 })
 export class ShowObjectsComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   data: any;
   panels: any = [];
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -348,7 +357,8 @@ export class ShowObjectsComponent {
 @Component({
   standalone: false,
   selector: 'app-new-draft-modal',
-  templateUrl: './new-draft-dialog.html'
+  templateUrl: './new-draft-dialog.html',
+  
 })
 export class NewDraftComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -360,7 +370,7 @@ export class NewDraftComponent {
   required = false;
   comments: any = {radio: 'predefined'};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -394,7 +404,11 @@ export class NewDraftComponent {
         }
         this.loading = false;
         this.deployablesObject = [result];
-      }, error: () => this.loading = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -431,6 +445,7 @@ export class NewDraftComponent {
           this.store(obj);
         }, error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -445,6 +460,7 @@ export class NewDraftComponent {
         this.activeModal.close(res);
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -458,7 +474,7 @@ export class NewDraftComponent {
   standalone: false,
   selector: 'app-single-deploy-modal',
   templateUrl: './single-deploy-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleDeployComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -606,10 +622,12 @@ export class SingleDeployComponent {
                 const commitId = res.deployable.deployablesVersions[0]?.commitId || '';
                 processConfig(obj, commitId, revoke);
                 resolve();
+                this.ref.markForCheck();
               },
               error: () => {
                 this.loading = false;
                 resolve();
+                this.ref.markForCheck();
               }
             });
           } else {
@@ -784,11 +802,13 @@ export class SingleDeployComponent {
         } else {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       }, error: () => {
         this.submitted = false;
         if (!this.showDependencies) {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       }
     });
   }
@@ -889,12 +909,14 @@ export class SingleDeployComponent {
             } else {
               sessionStorage.removeItem('backgroundOperationInProgress');
             }
+            this.ref.markForCheck();
           },
           error: () => {
             this.submitted = false;
             if (!this.showDependencies) {
               sessionStorage.removeItem('backgroundOperationInProgress');
             }
+            this.ref.markForCheck();
           }
         });
       }).catch(() => {
@@ -950,12 +972,14 @@ export class SingleDeployComponent {
         } else {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       },
       error: () => {
         this.submitted = false;
         if (!this.showDependencies) {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       }
     });
   }
@@ -1073,12 +1097,14 @@ export class SingleDeployComponent {
         } else {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       },
       error: () => {
         this.submitted = false;
         if (!this.showDependencies) {
           sessionStorage.removeItem('backgroundOperationInProgress');
         }
+        this.ref.markForCheck();
       }
     });
 
@@ -1262,8 +1288,12 @@ export class SingleDeployComponent {
 
           this.loading = false;
           this.deployablesObject = [result];
+          this.ref.markForCheck();
         },
-        error: () => this.loading = false
+        error: () => {
+          this.loading = false;
+          this.ref.markForCheck();
+        }
       });
     }
   }
@@ -1309,6 +1339,7 @@ export class SingleDeployComponent {
           this.loading = false;
           this.dependenciesLoading = false;
           reject(err);
+          this.ref.markForCheck();
         }
       });
     });
@@ -2074,7 +2105,7 @@ export class SingleDeployComponent {
 @Component({
   standalone: false,
   selector: 'app-deploy-draft-modal',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './deploy-dialog.html'
 })
 export class DeployComponent {
@@ -2159,7 +2190,7 @@ export class DeployComponent {
   private _deployablesReleasablesPromise: Promise<void> | null = null;
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef, private cdr: ChangeDetectorRef) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -2370,6 +2401,7 @@ export class DeployComponent {
               cb();
             }
           }
+          this.ref.detectChanges();
           reject(err);
         }
       });
@@ -2546,6 +2578,7 @@ export class DeployComponent {
               cb();
             }
           }
+          this.ref.detectChanges();
           reject(err);
         }
       });
@@ -3054,6 +3087,7 @@ export class DeployComponent {
         error: (err) => {
           this.loading = false;
           this.dependenciesLoading = false;
+          this.ref.detectChanges();
           reject(err);
         }
       });
@@ -3944,9 +3978,11 @@ export class DeployComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes
+        this.ref.detectChanges();
       },
       error: () => {
         this.loading = true;
+        this.ref.detectChanges();
       }
     });
   }
@@ -3972,6 +4008,7 @@ export class DeployComponent {
       },
       error: () => {
         this.loading = true;
+        this.ref.detectChanges();
       }
     });
   }
@@ -4365,6 +4402,7 @@ export class DeployComponent {
           } else {
 
             sessionStorage.removeItem('backgroundOperationInProgress');
+            this.ref.detectChanges();
           }
         }
       });
@@ -4451,6 +4489,7 @@ export class DeployComponent {
             } else {
 
               sessionStorage.removeItem('backgroundOperationInProgress');
+              this.ref.detectChanges();
             }
           }
         });
@@ -4916,7 +4955,8 @@ export class DeployComponent {
 @Component({
   standalone: false,
   selector: 'app-export-modal',
-  templateUrl: './export-dialog.html'
+  templateUrl: './export-dialog.html',
+  
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -5191,6 +5231,7 @@ export class ExportComponent {
             if (!flag) {
               this.nodes = [...this.nodes];
             }
+            this.ref.markForCheck();
             resolve();
           } else {
             this.nodes = tree;
@@ -5207,16 +5248,19 @@ export class ExportComponent {
                   this.getDependencies(checkedNodes, this.nodes[0]);
                 }
                 this.nodes = [...this.nodes];
+                this.ref.markForCheck();
                 resolve();
               }, 0);
             } else {
               cb();
+              this.ref.markForCheck();
               resolve();
             }
           }
         },
         error: (err) => {
           this.loading = false;
+          this.ref.markForCheck();
           reject(err);
         }
       });
@@ -5276,22 +5320,23 @@ export class ExportComponent {
             if (res.requestedItems && res.requestedItems.length > 0) {
               this.updateNodeDependencies(res, requestedKeys, isChecked);
               this.prepareObject(res);
-              this.ref.detectChanges();
             }
             this.loading = false;
             this.rebuildRelatedObjects();
-            this.ref.detectChanges();
             this.dependenciesLoading = false;
+            this.ref.detectChanges();
             resolve();
           },
           error: (err) => {
             this.loading = false;
             this.dependenciesLoading = false;
+            this.ref.markForCheck();
             reject(err);
           }
         });
       } catch (error) {
         this.loading = false;
+        this.ref.markForCheck();
         reject(error);
       }
     });
@@ -5818,9 +5863,11 @@ export class ExportComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes
+        this.ref.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -5840,9 +5887,11 @@ export class ExportComponent {
             this.getDependencies(checkedNodes, this.nodes[0]);
           }
         }
+        this.ref.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -6784,6 +6833,7 @@ export class ExportComponent {
                   sessionStorage.removeItem('backgroundOperationInProgress');
                 }
               }
+              this.ref.markForCheck();
             });
           }
         } else {
@@ -6797,6 +6847,7 @@ export class ExportComponent {
       .catch((error) => {
         console.error('Error waiting for dependencies:', error);
         this.submitted = false;
+        this.ref.markForCheck();
       });
   }
 
@@ -7302,6 +7353,7 @@ export class ExportComponent {
       } else {
         this.submitted = false;
       }
+      this.ref.markForCheck();
     });
   }
 
@@ -7328,7 +7380,8 @@ export class ExportComponent {
 @Component({
   standalone: false,
   selector: 'app-repository-modal',
-  templateUrl: './repository-dialog.html'
+  templateUrl: './repository-dialog.html',
+  
 })
 export class RepositoryComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -7508,8 +7561,10 @@ export class RepositoryComponent {
         }
         this.loadObjects(res)
         this.init();
+        this.ref.markForCheck();
       }, error: () => {
         this.init();
+        this.ref.markForCheck();
       }
     });
   }
@@ -7600,8 +7655,10 @@ export class RepositoryComponent {
         }
         this.loadObjects(res)
         this.initPseudo(flag);
+        this.ref.markForCheck();
       }, error: () => {
         this.initPseudo();
+        this.ref.markForCheck();
       }
     });
   }
@@ -7791,6 +7848,7 @@ export class RepositoryComponent {
               if (!flag) {
                 this.nodes = [...this.nodes];
               }
+              this.ref.markForCheck();
               resolve();
             } else {
               this.nodes = tree;
@@ -7809,6 +7867,7 @@ export class RepositoryComponent {
                   }
                   this.ref.detectChanges();
                   this.nodes = [...this.nodes];
+                  this.ref.markForCheck();
                   resolve();
                 }, 0);
               } else {
@@ -7819,6 +7878,7 @@ export class RepositoryComponent {
           },
           error: (err) => {
             this.loading = false;
+            this.ref.markForCheck();
             reject(err);
           }
         });
@@ -7919,6 +7979,7 @@ export class RepositoryComponent {
           cb();
         }
       }
+      this.ref.markForCheck();
     });
   }
 
@@ -7958,9 +8019,11 @@ export class RepositoryComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes
+        this.ref.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -7985,6 +8048,7 @@ export class RepositoryComponent {
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -8147,11 +8211,13 @@ export class RepositoryComponent {
       this.buildTree(this.path, null, () => {
         recursive(this.nodes);
         this.nodes = [...this.nodes];
+        this.ref.markForCheck();
       }, true);
     } else {
       this.readFileSystem(this.path, null, () => {
         recursive(this.nodes);
         this.nodes = [...this.nodes];
+        this.ref.markForCheck();
       }, true);
     }
   }
@@ -8377,6 +8443,7 @@ export class RepositoryComponent {
       } catch (error) {
         console.error('Error loading dependencies:', error);
         this.submitted = false;
+        this.ref.markForCheck();
         return;
       }
     }
@@ -8416,6 +8483,7 @@ export class RepositoryComponent {
       },
       error: () => {
         this.submitted = false;
+        this.ref.markForCheck();
       }
     });
   }
@@ -8496,6 +8564,7 @@ export class RepositoryComponent {
           if (!this.showDependencies) {
             sessionStorage.removeItem('backgroundOperationInProgress');
           }
+          this.ref.markForCheck();
         }
       });
     } else {
@@ -8683,6 +8752,7 @@ export class RepositoryComponent {
           } else {
             this.activeModal.close();
           }
+          this.ref.markForCheck();
         }
       });
     } else {
@@ -8942,6 +9012,7 @@ export class RepositoryComponent {
         }
 
         this.loading = true;
+        this.ref.markForCheck();
 
         const configurations = checkedNodes.map(node => ({
           name: node.name,
@@ -8988,12 +9059,14 @@ export class RepositoryComponent {
           error: (err) => {
             this.loading = false;
             this.dependenciesLoading = false;
+            this.ref.markForCheck();
             reject(err);
           }
         });
       } catch (error) {
         this.loading = false;
         this.dependenciesLoading = false;
+        this.ref.markForCheck();
         reject(error);
       }
     });
@@ -9753,6 +9826,7 @@ export class RepositoryComponent {
 @Component({
   standalone: false,
   selector: 'app-git-modal',
+  
   templateUrl: './git-dialog.html'
 })
 export class GitComponent {
@@ -9773,7 +9847,7 @@ export class GitComponent {
   message = '';
   results = [];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -9809,8 +9883,10 @@ export class GitComponent {
           this.results.push(res);
           this.showResult();
           this.activeModal.close('Done');
+          this.cdr.markForCheck();
         }, error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -9818,8 +9894,10 @@ export class GitComponent {
         next: (res) => {
           this.results.push(res);
           this.commitAndPush();
+          this.cdr.markForCheck();
         }, error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -9836,14 +9914,18 @@ export class GitComponent {
             this.results.push(result2);
             this.showResult();
             this.activeModal.close('Done');
+            this.cdr.markForCheck();
           }, error: () => {
             this.submitted = false;
             this.showResult();
+            this.cdr.markForCheck();
           }
         });
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
         this.showResult();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -9862,6 +9944,7 @@ export class GitComponent {
       nzMaskClosable: false
     }).afterClose.subscribe(() => {
       this.results = [];
+      this.cdr.markForCheck();
     });
   }
 
@@ -9877,6 +9960,7 @@ export class GitComponent {
 @Component({
   standalone: false,
   selector: 'app-notification-modal',
+  
   templateUrl: './notification-dialog.html'
 })
 export class NotificationComponent {
@@ -9898,7 +9982,7 @@ export class NotificationComponent {
 @Component({
   standalone: false,
   selector: 'app-json-editor',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './json-editor-dialog.html'
 })
 export class JsonEditorModalComponent {
@@ -9948,6 +10032,7 @@ export class JsonEditorModalComponent {
       this.options.languages[this.preferences.locale] = data;
       this.options.language = this.preferences.locale;
       this.editor.setOptions(this.options);
+      this.ref.markForCheck();
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
@@ -10005,7 +10090,7 @@ export class JsonEditorModalComponent {
 @Component({
   standalone: false,
   selector: 'app-create-object-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './create-object-dialog.html'
 })
 export class CreateObjectModalComponent {
@@ -10204,7 +10289,7 @@ export class CreateObjectModalComponent {
 @Component({
   standalone: false,
   selector: 'app-create-folder-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './create-folder-dialog.html'
 })
 export class CreateFolderModalComponent {
@@ -10380,6 +10465,7 @@ export class CreateFolderModalComponent {
 @Component({
   standalone: false,
   selector: 'app-show-agents-assigned',
+  
   templateUrl: './show-agents-dialog.html'
 })
 
@@ -10409,7 +10495,7 @@ export class ShowAgentsModalComponent {
   previouslyAssignedAgentIds: string[] = [];
 
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -10424,6 +10510,7 @@ export class ShowAgentsModalComponent {
       next: data => {
         this.inventoryAgents = data;
         this.getAgentClusterData();
+        this.cdr.markForCheck();
       },
       error: err => {
       }
@@ -10435,6 +10522,7 @@ export class ShowAgentsModalComponent {
       next: data => {
         this.inventoryClusterAgents = data;
         this.getAssignedAgents();
+        this.cdr.markForCheck();
       },
       error: err => {
       }
@@ -10451,12 +10539,14 @@ export class ShowAgentsModalComponent {
             .map(mapping => mapping.agentId)
             .flat();
           this.processAssignedAgents(assignedAgents);
+          this.cdr.markForCheck();
         },
         error: err => {
         },
       });
     } else {
       this.loadAllAgents();
+      this.cdr.markForCheck();
     }
   }
 
@@ -10757,7 +10847,8 @@ export class ShowAgentsModalComponent {
 @Component({
   standalone: false,
   selector: 'app-encrpyt-argument-template',
-  templateUrl: './encrypt-argument-dialog.html'
+  templateUrl: './encrypt-argument-dialog.html',
+  
 })
 export class EncryptArgumentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -10773,7 +10864,7 @@ export class EncryptArgumentModalComponent {
   isBulkOperation: boolean = false;
   certificateMode: 'alias' | 'paste' = 'alias';
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {
+  constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -10796,6 +10887,7 @@ export class EncryptArgumentModalComponent {
     this.coreService.post('encipherment/assignment', certAliases).subscribe({
       next: (res: any) => {
         this.certificateList = res.mappings;
+        this.cdr.markForCheck();
       },
       error: () => {
       },
@@ -10885,9 +10977,11 @@ export class EncryptArgumentModalComponent {
             }
           }
           this.activeModal.close(this.argu);
+          this.cdr.markForCheck();
         },
         error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         },
       });
     }
@@ -10937,9 +11031,11 @@ export class EncryptArgumentModalComponent {
           }
         }
         this.processBulkEncryption(args, index + 1);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       },
     });
   }
@@ -10954,6 +11050,7 @@ export class EncryptArgumentModalComponent {
         listOrMapParameters.forEach((param, index) => {
           param.value.default = encryptedParams[index].encryptedValue;
         });
+        this.cdr.markForCheck();
         callback();
         return;
       }
@@ -10974,6 +11071,7 @@ export class EncryptArgumentModalComponent {
         },
         error: () => {
           this.submitted = false;
+          this.cdr.markForCheck();
         },
       });
     };
@@ -10989,7 +11087,8 @@ export class EncryptArgumentModalComponent {
 @Component({
   standalone: false,
   selector: 'app-change-modal',
-  templateUrl: './change-dialog.html'
+  templateUrl: './change-dialog.html',
+  
 })
 export class ChangeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -11017,7 +11116,7 @@ export class ChangeModalComponent {
     valid: false,
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -11060,9 +11159,11 @@ export class ChangeModalComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes
+        this.cdr.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -11320,11 +11421,13 @@ export class ChangeModalComponent {
                 this.inventoryService.preselected(this.nodes[0]);
               }
               this.nodes = [...this.nodes];
+              this.cdr.markForCheck();
             }, 0);
           } else {
             cb();
           }
         }
+        this.cdr.markForCheck();
       }
     })
   }
@@ -11374,7 +11477,8 @@ export class ChangeModalComponent {
 @Component({
   standalone: false,
   selector: 'app-publish-change-modal',
-  templateUrl: './publish-change-dialog.html'
+  templateUrl: './publish-change-dialog.html',
+  
 })
 export class PublishChangeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -11452,9 +11556,11 @@ export class PublishChangeModalComponent {
     this.coreService.post('inventory/changes', {}).subscribe({
       next: (res) => {
         this.changeObj = res.changes;
+        this.ref.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -11478,9 +11584,11 @@ export class PublishChangeModalComponent {
             this.nodes = [...this.nodes];
           }
         }
+        this.ref.markForCheck();
       },
       error: () => {
         this.loading = true;
+        this.ref.markForCheck();
       }
     });
   }
@@ -11598,6 +11706,7 @@ export class PublishChangeModalComponent {
         error: (err) => {
           this.loading = false;
           this.dependenciesLoading = false;
+          this.ref.markForCheck();
           reject(err);
         }
       });
@@ -12784,7 +12893,7 @@ export class PublishChangeModalComponent {
   standalone: false,
   selector: 'app-show-dependencies-modal',
   templateUrl: './show-dependencies-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowDependenciesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -12868,6 +12977,7 @@ export class ShowDependenciesModalComponent {
       },
       error: (err) => {
         this.loading = false;
+        this.ref.markForCheck();
       }
     });
   }
@@ -13218,6 +13328,7 @@ export class ShowDependenciesModalComponent {
   standalone: false,
   selector: 'app-group-tags',
   templateUrl: './group-tags.html',
+  
 })
 export class GroupTagsComponent {
 
@@ -13225,7 +13336,7 @@ export class GroupTagsComponent {
   groups = [];
   selectedGroupName: string;
 
-  constructor(private coreService: CoreService, private modal: NzModalService, private translate: TranslateService,) {
+  constructor(private coreService: CoreService, private modal: NzModalService, private translate: TranslateService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -13240,6 +13351,7 @@ export class GroupTagsComponent {
       this.groups = this.groups.map(group => {
         return {name: group};
       });
+      this.cdr.markForCheck();
     })
     if (group) {
       this.selectGroup(group);
@@ -13267,8 +13379,10 @@ export class GroupTagsComponent {
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           group.loading = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -13359,6 +13473,7 @@ export class GroupTagsComponent {
         }
         return tag.name != tagName;
       })
+      this.cdr.markForCheck();
     });
   }
 
@@ -13379,6 +13494,7 @@ export class GroupTagsComponent {
     }).afterClose.subscribe((res) => {
       if (res) {
         group.name = res;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -13429,6 +13545,7 @@ export class GroupTagsComponent {
   standalone: false,
   selector: 'app-add-group',
   templateUrl: './add-groups-dialog.html',
+  
 })
 export class AddGropusModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -13453,7 +13570,7 @@ export class AddGropusModalComponent {
   @ViewChild(NzSelectComponent) tagSelect;
 
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -13488,6 +13605,7 @@ export class AddGropusModalComponent {
     const url = 'tags/groups';
     this.coreService.post(url, {}).subscribe((res) => {
       this.allGroups = res.groups;
+      this.cdr.markForCheck();
     });
   }
 
@@ -13546,6 +13664,7 @@ export class AddGropusModalComponent {
         this.activeModal.close(this.isRename ? this.group.name : 'DONE');
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -13555,6 +13674,7 @@ export class AddGropusModalComponent {
   standalone: false,
   selector: 'app-add-group',
   templateUrl: './add-tags-to-group-dialog.html',
+  
 })
 export class AddTagsToGropusModalComponent {
   @ViewChild('treeCtrlGroup', {static: false}) treeCtrlGroup: any;
@@ -13575,7 +13695,7 @@ export class AddTagsToGropusModalComponent {
 
   preferences: any;
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -13608,6 +13728,7 @@ export class AddTagsToGropusModalComponent {
         children: this.assignedTags
       });
       this.allTags = [...this.allTags, assignedNode];
+      this.cdr.markForCheck();
     });
   }
 
@@ -13624,6 +13745,7 @@ export class AddTagsToGropusModalComponent {
         children: this.workflowTags
       });
       this.allTags = [...this.allTags, workflowNode];
+      this.cdr.markForCheck();
     })
   }
 
@@ -13640,6 +13762,7 @@ export class AddTagsToGropusModalComponent {
         children: this.orderTags
       });
       this.allTags = [...this.allTags, orderNode];
+      this.cdr.markForCheck();
     })
   }
 
@@ -13656,6 +13779,7 @@ export class AddTagsToGropusModalComponent {
         children: this.jobTags
       });
       this.allTags = [...this.allTags, jobNode];
+      this.cdr.markForCheck();
     })
   }
 
@@ -13733,6 +13857,7 @@ export class AddTagsToGropusModalComponent {
       },
       error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -13744,7 +13869,7 @@ export class AddTagsToGropusModalComponent {
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class InventoryComponent {
   schedulerIds: any = {};
@@ -13953,6 +14078,7 @@ export class InventoryComponent {
         const tree = this.coreService.prepareTree(res, false);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
+          this.cdr.markForCheck();
           this.updateFolders(path, false, recursive, (response: any) => {
             this.updateTree(false);
             if (redirect) {
@@ -13990,6 +14116,7 @@ export class InventoryComponent {
             }
           } else if (!isEmpty(this.inventoryConfig.selectedObj) || (this.objectType && this.path)) {
             this.tree = tree;
+            this.cdr.markForCheck();
             if (!this.isTag) {
               this.selectedObj = this.inventoryConfig.selectedObj;
               if (this.objectType && this.path) {
@@ -14041,8 +14168,10 @@ export class InventoryComponent {
             this.updateFolders(path, true, false, () => {
               this.updateTree(true);
             });
+            this.cdr.markForCheck();
           } else {
             this.trashTree = tree;
+            this.cdr.markForCheck();
             if (this.trashTree.length > 0) {
               this.trashTree[0].expanded = true;
               this.updateObjects(this.trashTree[0], true, false, (children) => {
@@ -14053,11 +14182,15 @@ export class InventoryComponent {
                   this.trashTree[0].children.splice(1, 0, children[1]);
                 }
                 this.updateTree(true);
+                this.cdr.markForCheck();
               }, false);
             }
           }
         }
-      }, error: () => this.isTreeLoaded = false
+      }, error: () => {
+        this.isTreeLoaded = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -14403,8 +14536,10 @@ export class InventoryComponent {
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           tag.loading = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -14692,6 +14827,7 @@ export class InventoryComponent {
         } else if (extraCb) {
           extraCb(conf);
         }
+        this.cdr.markForCheck();
       }, error: () => {
         if (cb) {
           cb([{
@@ -14712,6 +14848,7 @@ export class InventoryComponent {
             deleted: data.deleted
           }]);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -14770,7 +14907,11 @@ export class InventoryComponent {
               this.updateData(res.results);
             }
             this.searchNode.loading = false;
-          }, error: () => this.searchNode.loading = false
+            this.cdr.markForCheck();
+          }, error: () => {
+            this.searchNode.loading = false;
+            this.cdr.markForCheck();
+          }
         });
       }
     } else {
@@ -14846,6 +14987,7 @@ export class InventoryComponent {
         if (index >= subObjects.length) {
           clearInterval(intervalId);
           this.allObjects = updatedAllObjects;
+          this.cdr.markForCheck();
         }
       }, index == 0 ? 0 : delay);
       this.intervalIds[objectType] = intervalId;
@@ -14872,7 +15014,7 @@ export class InventoryComponent {
       this.allObjects = [];
       this.searchNode.text = '';
       $('#treeSearch').blur();
-
+      this.cdr.markForCheck();
     }, 10);
   }
 
@@ -14987,6 +15129,7 @@ export class InventoryComponent {
           }
           return obj;
         });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -15158,6 +15301,7 @@ export class InventoryComponent {
           if (this.tree && this.tree.length > 0) {
             if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
               this.selectedData.reload = true;
+              this.cdr.markForCheck();
             }
             this.initTree(origin.path, '', false, true);
           }
@@ -15238,6 +15382,7 @@ export class InventoryComponent {
           if (this.tree && this.tree.length > 0) {
             if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
               this.selectedData.reload = true;
+              this.cdr.markForCheck();
             }
             this.initTree(origin.path, '', false, true);
           }
@@ -15511,6 +15656,7 @@ export class InventoryComponent {
             if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
               this.clearSelection();
             }
+            this.cdr.markForCheck();
           });
 
 
@@ -15582,6 +15728,7 @@ export class InventoryComponent {
               if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                 this.clearSelection();
               }
+              this.cdr.markForCheck();
             });
           }
         }
@@ -15869,8 +16016,10 @@ export class InventoryComponent {
           this.selectedData.valid = res.valid;
           this.selectedData.deployed = res.deployed;
           this.selectedData.released = res.released;
+          this.cdr.markForCheck();
           setTimeout(() => {
             this.type = data.objectType;
+            this.cdr.markForCheck();
           }, 5);
         }
       }
@@ -15904,6 +16053,7 @@ export class InventoryComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       }
     })
   }
@@ -16103,6 +16253,7 @@ export class InventoryComponent {
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, obj.objectType ? '$ID' : undefined);
       });
       this.copyObj = undefined;
+      this.cdr.markForCheck();
     });
   }
 
@@ -16162,9 +16313,11 @@ export class InventoryComponent {
                   if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                     this.clearSelection();
                   }
+                  this.cdr.markForCheck();
                 }, error: () => {
                   object.deleted = false;
                   object.loading = false;
+                  this.cdr.markForCheck();
                 }
               });
             }
@@ -16226,9 +16379,11 @@ export class InventoryComponent {
                   if (this.selectedData.name === object.name && this.selectedData.path === object.path && this.selectedData.objectType === object.objectType) {
                     this.clearSelection();
                   }
+                  this.cdr.markForCheck();
                 }, error: () => {
                   object.deleted = false;
                   object.loading = false;
+                  this.cdr.markForCheck();
                 }
               });
             }
@@ -16268,6 +16423,7 @@ export class InventoryComponent {
     this.coreService.post('inventory/dependencies', requestObj).subscribe({
       next: (res: any) => {
         this.dependencies = res;
+        this.cdr.markForCheck();
       },
       error: (err) => {
       }
@@ -16377,6 +16533,7 @@ export class InventoryComponent {
       } else {
         this.clearCopyObject(object);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -16475,10 +16632,12 @@ export class InventoryComponent {
 
   private revalidate(obj) {
     this.revalidating = true;
+    this.cdr.markForCheck();
     this.coreService.post('inventory/revalidate/folder',
       obj).subscribe({
       next: (res) => {
         this.revalidating = false;
+        this.cdr.markForCheck();
         this.modal.create({
           nzTitle: undefined,
           nzContent: ShowObjectsComponent,
@@ -16496,6 +16655,7 @@ export class InventoryComponent {
         })
       }, error: () => {
         this.revalidating = false;
+        this.cdr.markForCheck();
       }
     })
   }
@@ -16734,6 +16894,7 @@ export class InventoryComponent {
           this.selectedData.reload = true;
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -16847,6 +17008,7 @@ export class InventoryComponent {
         } else {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -16933,6 +17095,7 @@ export class InventoryComponent {
         });
       }
     }
+    this.cdr.markForCheck();
   }
 
   private pushObjectInHistory(): void {
@@ -17123,6 +17286,7 @@ export class InventoryComponent {
         this.selectedData = obj;
         this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
         this.updateTree(false);
+        this.cdr.markForCheck();
       });
     }
   }
@@ -17208,6 +17372,7 @@ export class InventoryComponent {
         }
         return tag.name != tagName;
       })
+      this.cdr.markForCheck();
     });
   }
 
@@ -17228,6 +17393,7 @@ export class InventoryComponent {
     }).afterClose.subscribe((res) => {
       if (res) {
         tag.name = res;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -17250,9 +17416,11 @@ export class InventoryComponent {
           this.clearSelection();
         }
         this.updateTree(false);
+        this.cdr.markForCheck();
       }, error: () => {
         object.loading = false;
         object.deleted = false;
+        this.cdr.markForCheck();
       }
     });
   }

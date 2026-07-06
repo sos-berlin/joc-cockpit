@@ -539,7 +539,7 @@ export class AllOrderResumeModelComponent {
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
   styleUrls: ['./order-overview.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderOverviewComponent {
   loading: boolean;

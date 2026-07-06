@@ -27,7 +27,7 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
   standalone: false,
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderListSidebarComponent implements OnChanges {
   @Input() orders;

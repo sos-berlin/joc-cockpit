@@ -118,7 +118,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
   `,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class BarVerticalNormalizedComponent extends BaseChartComponent {
   @Input() legend: boolean = false;

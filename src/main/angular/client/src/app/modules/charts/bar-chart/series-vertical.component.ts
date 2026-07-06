@@ -102,7 +102,7 @@ import {isPlatformServer} from '@angular/common';
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class SeriesVerticalComponent implements OnChanges {
   @Input() dims: ViewDimensions;

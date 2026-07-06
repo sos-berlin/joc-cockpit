@@ -62,7 +62,7 @@ export class WorkflowTemplateComponent {
   standalone: false,
   selector: 'app-workflow-history',
   templateUrl: './workflow-history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   @Input() workflow: any;

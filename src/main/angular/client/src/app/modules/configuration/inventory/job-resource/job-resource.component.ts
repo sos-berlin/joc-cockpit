@@ -25,7 +25,8 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-test-mail',
-  templateUrl: './test-mail-dialog.html'
+  templateUrl: './test-mail-dialog.html',
+  
 })
 export class TestMailComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -37,7 +38,7 @@ export class TestMailComponent {
   };
   submitted = false;
 
-  constructor(private activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(private activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -50,8 +51,10 @@ export class TestMailComponent {
     this.coreService.post('utilities/send_email', this.object).subscribe({
       next: (res) => {
         this.activeModal.close(res);
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -64,7 +67,7 @@ export class TestMailComponent {
 @Component({
   standalone: false,
   selector: 'app-job-resource',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './job-resource.component.html'
 })
 export class JobResourceComponent {
@@ -126,9 +129,11 @@ export class JobResourceComponent {
       } else if (res === 'UNDO') {
         this.undo();
       }
+      this.ref.detectChanges();
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.ref.detectChanges();
     });
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.jobResource.name) {
@@ -226,6 +231,7 @@ export class JobResourceComponent {
           modal.afterClose.subscribe(result => {
             if (result) {
               this.renameJobResource(result);
+              this.ref.detectChanges();
             } else {
               this.jobResource.name = this.data.name;
               this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -260,6 +266,7 @@ export class JobResourceComponent {
         }
         data.name1 = name;
         this.dataService.reloadTree.next({rename: data});
+        this.ref.detectChanges();
       }, error: () => {
         this.jobResource.name = this.data.name;
         this.jobResource.path = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
@@ -275,6 +282,7 @@ export class JobResourceComponent {
         types: ['DOCUMENTATION']
       }).subscribe((res) => {
         this.documentationTree = this.coreService.prepareTree(res, true);
+        this.ref.detectChanges();
       });
     }
   }
@@ -305,6 +313,7 @@ export class JobResourceComponent {
       } else {
         this.dataService.reloadTree.next({deploy: this.jobResource});
       }
+      this.ref.detectChanges();
     }, time);
   }
 
@@ -402,6 +411,7 @@ export class JobResourceComponent {
     } else {
       setTimeout(() => {
         this.saveJSON();
+        this.ref.detectChanges();
       }, 0);
     }
   }
@@ -561,6 +571,7 @@ export class JobResourceComponent {
         data.value = result;
         this.saveJSON();
       }
+      this.ref.detectChanges();
     });
   }
 
@@ -749,6 +760,7 @@ export class JobResourceComponent {
         }
         this.saveJSON();
       }
+      this.ref.detectChanges();
     });
   }
 
@@ -782,6 +794,7 @@ export class JobResourceComponent {
           });
           this.saveJSON();
         }
+        this.ref.detectChanges();
       });
     }
   }
@@ -815,6 +828,7 @@ export class JobResourceComponent {
           });
           this.saveJSON();
         }
+        this.ref.detectChanges();
       });
     }
   }
@@ -846,6 +860,7 @@ export class JobResourceComponent {
           this.jobResource.hasNote.notified = false;
         }
       }
+      this.ref.detectChanges();
     });
   }
 }

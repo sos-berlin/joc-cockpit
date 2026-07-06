@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -53,6 +55,7 @@ interface ExtendedEditorConfiguration {
       multi: true,
     },
   ],
+  
 })
 export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @ViewChild('textArea', { static: true }) textArea!: ElementRef<HTMLTextAreaElement>;
@@ -85,7 +88,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
     return this.editorInstance;
   }
 
-  constructor(private cmService: CodeEditorService) {}
+  constructor(private cmService: CodeEditorService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     if (!this.cmService.isLoaded()) {
@@ -183,6 +186,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
     this.editorInstance.on('cursorActivity', this.onCodeMirrorCursorActivity);
 
     this.ready.emit();
+    this.cdr.markForCheck();
   }
 
   private handleAutoRefresh(enabled: boolean): void {
@@ -234,6 +238,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
     this.onChange(value);
     this.valueChange.emit(value);
     this.ngModelChange.emit(value);
+    this.cdr.markForCheck();
   };
 
   private onCodeMirrorFocus = (): void => {

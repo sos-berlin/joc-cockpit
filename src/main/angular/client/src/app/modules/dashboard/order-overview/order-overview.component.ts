@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderOverviewComponent {
   @Input('sizeX') xbody: number;
@@ -39,6 +39,7 @@ export class OrderOverviewComponent {
       if (res) {
         this.refresh(res);
       }
+      this.cdr.markForCheck();
     });
   }
 

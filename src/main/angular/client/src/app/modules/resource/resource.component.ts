@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'app-resource',
-  templateUrl: './resource.component.html'
+  templateUrl: './resource.component.html',
+  
 })
 export class ResourceComponent {
   constructor() {

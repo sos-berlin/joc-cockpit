@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html',
   styleUrls: ['agent-running-task.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentRunningTaskComponent {
   @Input('layout') layout: any;
@@ -37,6 +37,7 @@ export class AgentRunningTaskComponent {
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.refreshWidgetAnnounced$.subscribe((res) => {
       if (res) {
@@ -48,6 +49,7 @@ export class AgentRunningTaskComponent {
             break;
           }
         }
+        this.cdr.markForCheck();
       }
     });
   }

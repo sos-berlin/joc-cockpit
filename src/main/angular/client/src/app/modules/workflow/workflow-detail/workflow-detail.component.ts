@@ -18,7 +18,7 @@ declare const $;
   standalone: false,
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   styles: [`.left-sidebar {
     height: calc(100vh - 260px);
     width: 180px;

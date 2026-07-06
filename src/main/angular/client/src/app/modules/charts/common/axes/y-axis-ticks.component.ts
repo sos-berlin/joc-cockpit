@@ -99,7 +99,7 @@ import {TextAnchor} from '../types/text-anchor.enum';
   }
 `,
 
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class YAxisTicksComponent implements OnChanges, AfterViewInit {
   @Input() scale;

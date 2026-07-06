@@ -709,7 +709,7 @@ export class AddChangesModalComponent {
   standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class ChangesComponent {
   permission: any = {};

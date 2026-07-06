@@ -11,7 +11,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AdminComponent {
   schedulerIds: any = {};

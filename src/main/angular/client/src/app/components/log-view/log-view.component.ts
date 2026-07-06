@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {isArray, isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
@@ -13,7 +13,8 @@ export let that: any;
 @Component({
   standalone: false,
   selector: 'app-log-view',
-  templateUrl: './log-view.component.html'
+  templateUrl: './log-view.component.html',
+  
 })
 export class LogViewComponent {
   preferences: any = {};
@@ -63,7 +64,7 @@ export class LogViewComponent {
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
 
   constructor(private authService: AuthService,private helpService: HelpService, public coreService: CoreService,private modal: NzModalService,
-              @Inject(POPOUT_MODAL_DATA) public data: PopoutData) {
+              @Inject(POPOUT_MODAL_DATA) public data: PopoutData, private cdr: ChangeDetectorRef) {
 
   }
 
@@ -106,7 +107,8 @@ export class LogViewComponent {
               this.preferences = JSON.parse(res.profileItem);
             }
             this.init();
-          }, error: () => this.init()
+            this.cdr.markForCheck();
+          }, error: () => { this.init(); this.cdr.markForCheck(); }
         });
       } else {
         this.init();
@@ -168,6 +170,7 @@ export class LogViewComponent {
       window.localStorage['log_window_x'] = POPOUT_MODALS['windowInstance'].screenX;
       window.localStorage['log_window_y'] = POPOUT_MODALS['windowInstance'].screenY;
     }
+    that.cdr.markForCheck();
 
     return null;
   }
@@ -185,6 +188,7 @@ export class LogViewComponent {
     if (Math.abs(that.lastScrollTop - nowScrollTop) >= that.delta) {
       that.scrolled = nowScrollTop <= that.lastScrollTop;
       that.lastScrollTop = nowScrollTop;
+      that.cdr.markForCheck();
     }
   }
 
@@ -331,6 +335,7 @@ export class LogViewComponent {
           this.finished = true;
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         if (POPOUT_MODALS['windowInstance']) {
           POPOUT_MODALS['windowInstance'].document.getElementById('logs').innerHTML = '';
@@ -344,6 +349,7 @@ export class LogViewComponent {
         this.loading = false;
         this.finished = true;
         this.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -448,6 +454,7 @@ export class LogViewComponent {
             };
             this.runningTaskLog(obj, domId, taskKey, currentSession);
           }
+          this.cdr.markForCheck();
         }
       });
 
@@ -498,6 +505,7 @@ export class LogViewComponent {
           this.loading = false;
         }
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, error: (err) => {
         this.dataBody.nativeElement.innerHTML = '';
         if (err.data && err.data.error) {
@@ -509,6 +517,7 @@ export class LogViewComponent {
         this.loading = false;
         this.finished = true;
         this.isLoading = false;
+        this.cdr.markForCheck();
       }, complete: () => {
         POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-close')[0].style.display = 'none';
         POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open')[0].style.display = 'none';

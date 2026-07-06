@@ -1,4 +1,4 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {isEqual, clone} from 'underscore';
@@ -287,7 +287,8 @@ export class FolderModalComponent {
 @Component({
   standalone: false,
   selector: 'app-permissions',
-  templateUrl: './permissions.component.html'
+  templateUrl: './permissions.component.html',
+  
 })
 export class PermissionsComponent {
   controllerName;
@@ -326,7 +327,7 @@ export class PermissionsComponent {
   subscription2: Subscription;
 
   constructor(private coreService: CoreService, private route: ActivatedRoute,
-              private modal: NzModalService, private dataService: DataService, private authService: AuthService) {
+              private modal: NzModalService, private dataService: DataService, private authService: AuthService, private cdr: ChangeDetectorRef) {
 
     this.subscription1 = this.dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_FOLDER') {
@@ -338,9 +339,11 @@ export class PermissionsComponent {
         if (this.pageView === 'grid') {
           setTimeout(() => {
             this.drawTree(this.permissionNodes[0][0], '');
+            this.cdr.markForCheck();
           }, 5);
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -356,6 +359,7 @@ export class PermissionsComponent {
         this.controllerName = '';
       }
       this.roleName = params['role.role'];
+      this.cdr.markForCheck();
     });
     this.getPermissions();
   }
@@ -372,6 +376,7 @@ export class PermissionsComponent {
       roleName: this.roleName
     }).subscribe((res: any) => {
       this.folderArr = res.folders;
+      this.cdr.markForCheck();
     });
   }
 
@@ -386,6 +391,7 @@ export class PermissionsComponent {
       this.preparePermissionJSON();
       this.preparePermissionOptions();
       this.switchTree();
+      this.cdr.markForCheck();
     })
   }
 
@@ -400,6 +406,7 @@ export class PermissionsComponent {
 
       this.getFolderList();
       this.getPermissionList();
+      this.cdr.markForCheck();
     });
   }
 
@@ -428,6 +435,7 @@ export class PermissionsComponent {
         } else {
           this.getFolderList();
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -459,6 +467,7 @@ export class PermissionsComponent {
         } else {
           this.getFolderList();
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -487,6 +496,7 @@ export class PermissionsComponent {
         if (result) {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
           this.deleteFolderAPI(folder.folder, result);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -508,6 +518,7 @@ export class PermissionsComponent {
         if (result) {
           this.folderArr.splice(this.folderArr.indexOf(folder), 1);
           this.deleteFolderAPI(folder.folder, this.dataService.comments);
+          this.cdr.markForCheck();
         }
       });
     }
@@ -552,6 +563,7 @@ export class PermissionsComponent {
     }).afterClose.subscribe(result => {
       if (result === 'DONE') {
         this.getPermissionList();
+        this.cdr.markForCheck();
       }
     })
   }
@@ -579,6 +591,7 @@ export class PermissionsComponent {
     }).afterClose.subscribe(result => {
       if (result === 'DONE') {
         this.getPermissionList();
+        this.cdr.markForCheck();
       }
     })
   }
@@ -609,6 +622,7 @@ export class PermissionsComponent {
           this.deletePermissionAPI(permission, result);
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData();
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -632,6 +646,7 @@ export class PermissionsComponent {
           this.deletePermissionAPI(permission, this.dataService.comments);
           this.findPermissionObj(this.permissionNodes[0][0], permission.permissionPath);
           this.updateDiagramData();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -977,6 +992,7 @@ export class PermissionsComponent {
       this.isReset = false;
     }
     this.updatePermissionList(comments, tempPermission);
+    this.cdr.markForCheck();
   }
 
   resetPermission(): void {
@@ -1013,6 +1029,7 @@ export class PermissionsComponent {
     this.previousPermission = [];
     this.isReset = false;
     this.updatePermissionList(comments, tempPermission);
+    this.cdr.markForCheck();
   }
 
   expandAll(): void {
@@ -1533,6 +1550,7 @@ export class PermissionsComponent {
         self.isReset = true;
         self.previousPermission.push(_previousPermissionObj);
         updatePermissionAfterChange(_temp, comments);
+        self.cdr.markForCheck();
       }
     }
 
@@ -1594,6 +1612,7 @@ export class PermissionsComponent {
         self.isReset = true;
         self.previousPermission.push(_previousPermissionObj);
         updatePermissionAfterChange(_temp, comments);
+        self.cdr.markForCheck();
       }
     }
 

@@ -23,7 +23,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-file-order',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './file-order.component.html'
 })
 export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {

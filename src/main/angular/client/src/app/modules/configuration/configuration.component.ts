@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostListener, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
@@ -7,18 +7,20 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-configuration',
-  templateUrl: './configuration.component.html'
+  templateUrl: './configuration.component.html',
+  
 })
 export class ConfigurationComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription;
   flag = true;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     this.subscription = router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         setTimeout(() => {
           this.flag = false;
           this.calcHeight();
+          this.cdr.markForCheck();
         }, 5);
       }
     });

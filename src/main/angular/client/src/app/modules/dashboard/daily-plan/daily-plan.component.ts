@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DailyPlanComponent {
   schedulerIds: any = {};
@@ -31,6 +31,7 @@ export class DailyPlanComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
   }

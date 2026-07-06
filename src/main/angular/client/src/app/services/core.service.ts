@@ -2,7 +2,7 @@ import {Injectable, ViewContainerRef} from '@angular/core';
 import {HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
-import {filter, Observable} from 'rxjs';
+import {BehaviorSubject, filter, Observable} from 'rxjs';
 import * as moment from 'moment-timezone';
 import {ToastrService} from "ngx-toastr";
 import {TranslateService} from '@ngx-translate/core';
@@ -31,7 +31,14 @@ export class CoreService {
   dashboard: any = {};
   locales: any = [];
   expertMode: string | undefined | null;
-  reportStartRunning = false;
+  private reportStartRunningSource = new BehaviorSubject<boolean>(false);
+  reportStartRunning$ = this.reportStartRunningSource.asObservable();
+  get reportStartRunning(): boolean {
+    return this.reportStartRunningSource.getValue();
+  }
+  set reportStartRunning(value: boolean) {
+    this.reportStartRunningSource.next(value);
+  }
   scheduleExpandedProperties: any = new Map();
   allTagsSelected = true;
   allOrderTagsSelected = true;
@@ -377,7 +384,7 @@ export class CoreService {
     this.tabs._history.order.filter.date = 'today';
     this.tabs._history.order.filter.sortBy = 'startTime';
     this.tabs._history.order.reverse = true;
-    this.tabs._history.order.currentPage = '1';
+    this.tabs._history.order.currentPage = 1;
     this.tabs._history.order.selectedView = true;
     this.tabs._history.task = {};
     this.tabs._history.task.filter = {};
@@ -385,7 +392,7 @@ export class CoreService {
     this.tabs._history.task.filter.date = 'today';
     this.tabs._history.task.filter.sortBy = 'startTime';
     this.tabs._history.task.reverse = true;
-    this.tabs._history.task.currentPage = '1';
+    this.tabs._history.task.currentPage = 1;
     this.tabs._history.task.selectedView = true;
     this.tabs._history.yade = {};
     this.tabs._history.yade.filter = {};
@@ -393,7 +400,7 @@ export class CoreService {
     this.tabs._history.yade.filter.date = 'today';
     this.tabs._history.yade.filter.sortBy = 'start';
     this.tabs._history.yade.reverse = true;
-    this.tabs._history.yade.currentPage = '1';
+    this.tabs._history.yade.currentPage = 1;
     this.tabs._history.yade.selectedView = true;
     this.tabs._history.deployment = {};
     this.tabs._history.deployment.filter = {};
@@ -401,7 +408,7 @@ export class CoreService {
     this.tabs._history.deployment.filter.date = 'today';
     this.tabs._history.deployment.filter.sortBy = 'deploymentDate';
     this.tabs._history.deployment.reverse = true;
-    this.tabs._history.deployment.currentPage = '1';
+    this.tabs._history.deployment.currentPage = 1;
     this.tabs._history.deployment.selectedView = true;
     this.tabs._history.submission = {};
     this.tabs._history.submission.filter = {};
@@ -409,7 +416,7 @@ export class CoreService {
     this.tabs._history.submission.filter.date = 'today';
     this.tabs._history.submission.filter.sortBy = 'date';
     this.tabs._history.submission.reverse = true;
-    this.tabs._history.submission.currentPage = '1';
+    this.tabs._history.submission.currentPage = 1;
     this.tabs._history.submission.selectedView = true;
 
     this.tabs._yade = {};

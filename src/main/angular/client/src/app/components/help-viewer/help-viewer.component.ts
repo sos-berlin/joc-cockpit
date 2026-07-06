@@ -19,7 +19,7 @@ interface LinkValidationResult {
   standalone: false,
   selector: 'app-help-viewer',
   templateUrl: './help-viewer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HelpViewerComponent implements OnInit, OnDestroy {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -137,6 +137,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       this.toasterService.error('Error validating links.');
     } finally {
       this.isValidatingLinks = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -449,11 +450,13 @@ onClick(e: MouseEvent): void {
               if (restoreAnchor) this.scrollToInPageAnchorFromUrl();
             }
           }, 0);
+          this.cdr.markForCheck();
         },
         error: () => {
           this.hasError = true;
           this.html = '';
           this.fallbackNotice = '';
+          this.cdr.markForCheck();
         }
       });
   }

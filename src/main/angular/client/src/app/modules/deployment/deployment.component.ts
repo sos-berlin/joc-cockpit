@@ -212,7 +212,7 @@ export class ShowJsonModalComponent {
   selector: 'app-deployment',
   templateUrl: './deployment.component.html',
   styleUrls: ['./deployment.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DeploymentComponent {
   isLoading = true;
@@ -277,9 +277,11 @@ export class DeploymentComponent {
               private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+      this.cdr.markForCheck();
     });
   }
 
@@ -481,6 +483,7 @@ export class DeploymentComponent {
         } else {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
         }
+        this.cdr.markForCheck();
       }
     });
   }

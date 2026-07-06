@@ -40,7 +40,8 @@ interface KeyValue {
 @Component({
   standalone: false,
   selector: 'app-api-request',
-  templateUrl: './api-request.component.html'
+  templateUrl: './api-request.component.html',
+  
 })
 
 
@@ -121,7 +122,6 @@ export class ApiRequestComponent {
     private ref: ChangeDetectorRef,
     private clipboardService: ClipboardService,
     private modal: NzModalService,
-    private cd: ChangeDetectorRef,
     private translate: TranslateService,
     private toasterService: ToastrService,
   ) {
@@ -153,6 +153,7 @@ export class ApiRequestComponent {
       this.options.languages[this.preferences.locale] = data;
       this.options.language = this.preferences.locale;
       this.editor.setOptions(this.options);
+      this.ref.detectChanges();
     });
     this.options.modes = ['code', 'tree'];
     this.populateFromArgs();
@@ -359,6 +360,7 @@ export class ApiRequestComponent {
     modal.afterClose.subscribe((result: Mapping) => {
       if (result) {
         this.mappings.push(result);
+        this.ref.detectChanges();
       }
     });
   }
@@ -434,6 +436,7 @@ export class ApiRequestComponent {
     modal.afterClose.subscribe((result: Mapping[]) => {
       if (Array.isArray(result)) {
         this.mappings = [...result];
+        this.ref.detectChanges();
       }
     });
   }
@@ -600,7 +603,7 @@ export class ApiRequestComponent {
           res.headers.keys().forEach(h => {
             this.responseHeaders[h] = res.headers.get(h)!;
           });
-          this.cd.detectChanges();
+          this.ref.detectChanges();
           if (accessToken) {
             const logoutHeaders: Record<string, string> = {
               'x-access-token': accessToken
@@ -623,7 +626,7 @@ export class ApiRequestComponent {
                 this.requestUrl = err?.url
                 this.errorText = text;
                 this.msg.error(`Error ${code}: ${text}`);
-                this.cd.detectChanges();
+                this.ref.detectChanges();
               }
             });
           }
@@ -636,7 +639,7 @@ export class ApiRequestComponent {
           this.errorLogs = err;
           this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
-          this.cd.detectChanges();
+          this.ref.detectChanges();
         }
       });
   }
@@ -2346,7 +2349,7 @@ export class ApiRequestDialogComponent {
   standalone: false,
   selector: 'app-job-wizard',
   templateUrl: './job-wizard.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class JobWizardComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

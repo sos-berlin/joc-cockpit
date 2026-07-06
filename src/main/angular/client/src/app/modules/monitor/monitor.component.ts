@@ -8,7 +8,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class MonitorComponent {
   monitor: Array<any> = [];

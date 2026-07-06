@@ -258,7 +258,8 @@ export class OffsetValidator implements Validator {
 @Component({
   standalone: false,
   selector: 'app-notice-board-editor-modal',
-  templateUrl: './notice-board-editor-dialog.html'
+  templateUrl: './notice-board-editor-dialog.html',
+  
 })
 export class NoticeBoardEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -273,7 +274,7 @@ export class NoticeBoardEditorComponent {
 
   @ViewChild('codeEditor', {static: false}) cm;
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -296,6 +297,7 @@ export class NoticeBoardEditorComponent {
           cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
           this.cm.codeEditor.focus();
           doc.setCursor(cursor);
+          this.cdr.markForCheck();
         }, 400);
 
         this.cm.codeEditor.setOption("extraKeys", {
@@ -319,9 +321,11 @@ export class NoticeBoardEditorComponent {
                 'left': '12px',
                 'width': 'calc(100% - 22px)'
               });
+              self.cdr.markForCheck();
             }, 0)
           }
         })
+        this.cdr.markForCheck();
       }
     }, 0);
   }
@@ -360,7 +364,8 @@ export class NoticeBoardEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-facet-editor-modal',
-  templateUrl: './facet-editor-dialog.html'
+  templateUrl: './facet-editor-dialog.html',
+  
 })
 export class FacetEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -370,7 +375,7 @@ export class FacetEditorComponent {
   variable: any = {};
   favList = [];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -391,6 +396,7 @@ export class FacetEditorComponent {
     }).subscribe({
       next: (res: any) => {
         this.favList = res.favorites;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -433,7 +439,8 @@ export class FacetEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-repeat-editor-modal',
-  templateUrl: './repeat-editor-dialog.html'
+  templateUrl: './repeat-editor-dialog.html',
+  
 })
 export class RepeatEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -442,7 +449,7 @@ export class RepeatEditorComponent {
   isNew: boolean;
   object: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -477,7 +484,8 @@ export class RepeatEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-time-editor-modal',
-  templateUrl: './time-editor-dialog.html'
+  templateUrl: './time-editor-dialog.html',
+  
 })
 export class TimeEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -492,7 +500,7 @@ export class TimeEditorComponent {
 
   @ViewChild('timePicker', {static: true}) tp;
 
-  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private workflowService: WorkflowService, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -555,7 +563,8 @@ export class TimeEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-cycle-instruction',
-  templateUrl: './cycle-instruction-editor.html'
+  templateUrl: './cycle-instruction-editor.html',
+  
 })
 export class CycleInstructionComponent {
   @Input() selectedNode: any;
@@ -993,6 +1002,7 @@ export class CycleInstructionComponent {
             });
         }
         this.selectedNode.obj.schedule.schemes[index].admissionTimeScheme.periods.push(obj2);
+        this.ref.markForCheck();
       }
     });
   }
@@ -1105,7 +1115,8 @@ export class CycleInstructionComponent {
 @Component({
   standalone: false,
   selector: 'app-admission-time',
-  templateUrl: './admission-time-dialog.html'
+  templateUrl: './admission-time-dialog.html',
+  
 })
 export class AdmissionTimeComponent {
   @Input() job: any;
@@ -2592,6 +2603,7 @@ export class AdmissionTimeComponent {
 @Component({
   standalone: false,
   selector: 'app-find-replace-modal',
+  
   templateUrl: './find-replace-dialog.html'
 })
 export class FindAndReplaceComponent {
@@ -2657,6 +2669,7 @@ export class FindAndReplaceComponent {
 @Component({
   standalone: false,
   selector: 'app-show-reference',
+  
   templateUrl: './show-reference-dialog.html'
 })
 export class ShowReferenceComponent {
@@ -2666,7 +2679,7 @@ export class ShowReferenceComponent {
   preferences: any;
   data: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private calendarService: CalendarService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -2688,6 +2701,7 @@ export class ShowReferenceComponent {
             }
           }
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2724,7 +2738,7 @@ export class ShowReferenceComponent {
 @Component({
   standalone: false,
   selector: 'app-job-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent {
@@ -3041,6 +3055,7 @@ export class JobComponent {
             }
           });
         }
+        this.ref.markForCheck();
       }
     });
   }
@@ -3884,6 +3899,7 @@ export class JobComponent {
       }).subscribe({
         next: (res) => {
           this.state = res;
+          this.ref.markForCheck();
         }
       })
     }
@@ -4081,6 +4097,7 @@ export class JobComponent {
     this.coreService.post('tags/job', {}).subscribe({
       next: (res: any) => {
         this.allTags = res.tags;
+        this.ref.markForCheck();
       }
     });
   }
@@ -4599,6 +4616,7 @@ export class JobComponent {
           this.jobTagsEvent.emit(jobTagData);
         }
       });
+      this.ref.markForCheck();
     });
   }
 
@@ -4629,6 +4647,7 @@ export class JobComponent {
             this.jobTagsEvent.emit(jobTagData);
           }
         });
+        this.ref.markForCheck();
       }
     });
   }
@@ -4740,6 +4759,7 @@ export class JobComponent {
 @Component({
   standalone: false,
   selector: 'app-script-content',
+  
   templateUrl: './script-editor.html'
 })
 export class ScriptEditorComponent {
@@ -4768,7 +4788,7 @@ export class ScriptEditorComponent {
   };
   @ViewChild('codeEditor', {static: false}) cm: any;
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -4836,6 +4856,7 @@ export class ScriptEditorComponent {
             if (!self.isSkip) {
               const cursor = editor.getCursor();
               self.isTreeShow = true;
+              self.cdr.markForCheck();
               setTimeout(() => {
                 const dom = $('#show-tree-editor');
                 dom?.css({
@@ -4848,6 +4869,7 @@ export class ScriptEditorComponent {
             }
           }
         })
+        this.cdr.markForCheck();
       } else {
       }
     }, 0);
@@ -4989,7 +5011,7 @@ export class ScriptEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-expression-content',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './expression-editor.html'
 })
 export class ExpressionComponent {
@@ -5015,7 +5037,7 @@ export class ExpressionComponent {
 
   @ViewChild('codeEditor', {static: true}) cm;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -5086,13 +5108,14 @@ export class ExpressionComponent {
   standalone: false,
   selector: 'app-change-impact-dialog',
   templateUrl: './change-impact-dialog.html',
+  
 })
 export class ChangeImpactDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   impactedSchedules: any
   obj: any;
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -5104,6 +5127,7 @@ export class ChangeImpactDialogComponent {
     this.coreService.post('inventory/workflow/references', this.obj).subscribe({
       next: (res: any) => {
         this.impactedSchedules = res.schedules;
+        this.cdr.markForCheck();
       }
     });
     setTimeout(() => {
@@ -5156,7 +5180,7 @@ export class ChangeImpactDialogComponent {
   standalone: false,
   selector: 'app-history-log-dialog',
   templateUrl: './history-log-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HistoryLogDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -5259,7 +5283,7 @@ export class HistoryLogDialogComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
@@ -5607,6 +5631,7 @@ export class WorkflowComponent {
         types: [InventoryObject.LOCK]
       }).subscribe((res) => {
         this.lockTree = this.coreService.prepareTree(res, true);
+        this.ref.detectChanges();
       });
     }
     if (this.workflowTree.length === 0 || flag) {
@@ -5616,6 +5641,7 @@ export class WorkflowComponent {
         types: [InventoryObject.WORKFLOW]
       }).subscribe((res) => {
         this.workflowTree = this.coreService.prepareTree(res, true);
+        this.ref.detectChanges();
       });
     }
     if (this.boardTree.length === 0 || flag) {
@@ -5625,6 +5651,7 @@ export class WorkflowComponent {
         types: [InventoryObject.NOTICEBOARD]
       }).subscribe((res) => {
         this.boardTree = this.coreService.prepareTree(res, false);
+        this.ref.detectChanges();
       });
     }
     if (this.scriptTree.length === 0 || flag) {
@@ -5634,6 +5661,7 @@ export class WorkflowComponent {
         types: [InventoryObject.INCLUDESCRIPT]
       }).subscribe((res) => {
         this.scriptTree = this.coreService.prepareTree(res, false);
+        this.ref.detectChanges();
       });
     }
     if (this.jobResourcesTree.length === 0 || flag) {
@@ -5643,6 +5671,7 @@ export class WorkflowComponent {
         types: [InventoryObject.JOBRESOURCE]
       }).subscribe((res) => {
         this.jobResourcesTree = this.coreService.prepareTree(res, false);
+        this.ref.detectChanges();
       });
     }
   }
@@ -5938,6 +5967,7 @@ export class WorkflowComponent {
       next: (res: any) => {
         const copiedTagsData = res.jobs;
         callback(copiedTagsData);
+        this.ref.detectChanges();
       }
     });
   }
@@ -5950,6 +5980,7 @@ export class WorkflowComponent {
       next: (res: any) => {
         const copiedTagsData = res.tags;
         callback(copiedTagsData);
+        this.ref.detectChanges();
       }
     });
   }
@@ -6674,6 +6705,7 @@ export class WorkflowComponent {
         this.updateXMLJSON(false);
         this.history = {past: [], present: {}, future: [], type: 'new'};
         this.storeData(result);
+        this.ref.detectChanges();
       }
     });
   }
@@ -6779,6 +6811,7 @@ export class WorkflowComponent {
       }
       setTimeout(() => {
         this.isUpdate = false;
+        this.ref.detectChanges();
       }, 50);
     }
   }
@@ -6957,6 +6990,7 @@ export class WorkflowComponent {
           types: ['DOCUMENTATION']
         }).subscribe((res) => {
           this.documentationTree = this.coreService.prepareTree(res, false);
+          this.ref.detectChanges();
         });
       }
     }
@@ -7078,7 +7112,10 @@ export class WorkflowComponent {
             console.error(e);
           }
         }
-      }, error: () => this.isLoading = false
+      }, error: () => {
+        this.isLoading = false;
+        this.ref.detectChanges();
+      }
     });
   }
 
@@ -10786,7 +10823,9 @@ export class WorkflowComponent {
                   }
                   setTimeout(() => {
                     self.implicitSave = false;
+                    self.ref.detectChanges();
                   }, 250);
+                  self.ref.detectChanges();
                 }
               }
             }, 200);
@@ -12860,6 +12899,7 @@ export class WorkflowComponent {
               setTimeout(() => {
                 graph.setSelectionCell(graph.getModel().getCell(copyObj.id));
                 customizedChangeEvent();
+                self.ref.detectChanges();
               }, 0);
             }
           }
@@ -13313,6 +13353,7 @@ export class WorkflowComponent {
               graph.setSelectionCells([clickedCell]);
             }
             customizedChangeEvent();
+            self.ref.detectChanges();
           }, 0);
         } else {
           graph.clearSelection();
@@ -14517,7 +14558,9 @@ export class WorkflowComponent {
         this.validateJSON();
         setTimeout(() => {
           this.noSave = false;
+          this.ref.markForCheck();
         }, 250);
+        this.ref.markForCheck();
       }
     }, 150);
   }
@@ -15274,6 +15317,7 @@ export class WorkflowComponent {
             this.data.valid = false;
           }
           this.openSideBar(id);
+          this.ref.markForCheck();
         }
       });
     }
@@ -15596,6 +15640,7 @@ export class WorkflowComponent {
     this.coreService.post('inventory/store', request).subscribe({
       next: (res: any) => {
         this.isStore = false;
+        this.ref.markForCheck();
         if (res.path === this.workflow.path) {
           this.isLocalChange = res.path;
           this.lastModified = res.configurationDate;
@@ -15622,6 +15667,7 @@ export class WorkflowComponent {
           }
         }
         this.isStore = false
+        this.ref.markForCheck();
       }
     });
     this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
@@ -15721,6 +15767,7 @@ export class WorkflowComponent {
         });
         const data = this.coreService.clone(this.workflow.configuration);
         this.modifyJSON(data, false, false);
+        this.ref.markForCheck();
         if (!isEqual(this.workflow.actual, JSON.stringify(data))) {
           this.isStore = true;
           this.storeData(data);
@@ -15866,6 +15913,7 @@ export class WorkflowComponent {
         const data = this.coreService.clone(this.workflow.configuration);
         const valid = this.modifyJSON(data, true, false);
         this.saveJSON(valid ? data : 'false');
+        this.ref.markForCheck();
       }
     });
   }
@@ -15947,6 +15995,7 @@ export class WorkflowComponent {
         const data = this.coreService.clone(this.workflow.configuration);
         const valid = this.modifyJSON(data, true, false);
         this.saveJSON(valid ? data : 'false');
+        this.ref.markForCheck();
       }
     });
   }
@@ -15963,6 +16012,7 @@ export class WorkflowComponent {
     }).subscribe({
       next: (res: any) => {
         this.allTags = res.tags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        this.ref.markForCheck();
         // this.allTags = res.results;
         // this.allTags = this.allTags.map((item) => {
         //   return item.name;
@@ -16035,6 +16085,7 @@ export class WorkflowComponent {
       if (result && result.objectName) {
         if (this.workflow && this.workflow.hasNote) {
           this.workflow.hasNote.notified = false;
+          this.ref.markForCheck();
         }
       }
     });

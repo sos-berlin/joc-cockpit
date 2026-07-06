@@ -12,7 +12,7 @@ import {DataService} from '../data.service';
   selector: 'app-pending-requests',
   templateUrl: './pending-requests.component.html',
   styleUrls: ['./pending-requests.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PendingRequestsComponent {
   requests: any = {};

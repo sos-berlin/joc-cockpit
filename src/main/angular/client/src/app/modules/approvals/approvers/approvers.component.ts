@@ -53,7 +53,7 @@ export class AddApproverModalComponent {
   selector: 'app-approvers',
   templateUrl: './approvers.component.html',
   styleUrl: './approvers.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ApproversComponent {
   @Input() preferences: any = {};

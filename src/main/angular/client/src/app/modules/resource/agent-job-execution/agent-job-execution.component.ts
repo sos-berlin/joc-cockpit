@@ -15,7 +15,7 @@ import {SaveService} from '../../../services/save.service';
   standalone: false,
   selector: 'app-filter-agent-content',
   templateUrl: './filter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -70,7 +70,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
 
@@ -110,6 +110,7 @@ export class SearchComponent {
       this.agentIds = result.agents.map((item) => {
         return item.agentId;
       });
+      this.cdr.markForCheck();
     });
   }
 
@@ -183,7 +184,11 @@ export class SearchComponent {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -204,7 +209,7 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-agent-job-execution',
   templateUrl: 'agent-job-execution.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentJobExecutionComponent {
   objectType = 'AGENTCLUSTER';
@@ -236,9 +241,11 @@ export class AgentJobExecutionComponent {
       if (!this.configLoading) {
         this.refresh(res);
       }
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+      this.cdr.markForCheck();
     });
   }
 
@@ -395,7 +402,11 @@ export class AgentJobExecutionComponent {
           this.filterList = res.configurations;
         }
         this.getCustomizations();
-      }, error: () => this.getCustomizations()
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.getCustomizations();
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -442,9 +453,11 @@ export class AgentJobExecutionComponent {
                   this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                   this.selectedFiltered.account = value.account;
                   this.loadAgentTasks();
+                  this.cdr.markForCheck();
                 }, error: () => {
                   this.savedFilter.selected = undefined;
                   this.loadAgentTasks();
+                  this.cdr.markForCheck();
                 }
               });
             }
@@ -457,9 +470,11 @@ export class AgentJobExecutionComponent {
           this.savedFilter.selected = undefined;
           this.loadAgentTasks();
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.savedFilter.selected = undefined;
         this.loadAgentTasks();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -740,6 +755,7 @@ export class AgentJobExecutionComponent {
         this.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
         this.selectedFiltered.account = filter.account;
         this.loadAgentTasks();
+        this.cdr.markForCheck();
       });
     } else {
       this.isCustomizationSelected(false);

@@ -9,7 +9,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-scheduler-instance',
   templateUrl: './scheduler-instance.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SchedulerInstanceComponent {
   @Input('sizeY') ybody: number;
@@ -26,6 +26,7 @@ export class SchedulerInstanceComponent {
       if (res) {
         this.refresh(res);
       }
+      this.cdr.markForCheck();
     });
   }
 

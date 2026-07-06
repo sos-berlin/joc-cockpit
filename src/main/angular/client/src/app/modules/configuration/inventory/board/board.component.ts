@@ -15,7 +15,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-board',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './board.component.html'
 })
 export class BoardComponent {

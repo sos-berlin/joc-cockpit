@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-history-summary',
   templateUrl: './history-summary.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HistorySummaryComponent {
   orderSummary: any;
@@ -28,6 +28,7 @@ export class HistorySummaryComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
   }

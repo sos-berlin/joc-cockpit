@@ -1,4 +1,4 @@
-import {Component, Input, Optional} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Optional} from '@angular/core';
 import {Router} from '@angular/router';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ControlContainer, NgForm} from "@angular/forms";
@@ -11,7 +11,8 @@ import {ControlContainer, NgForm} from "@angular/forms";
     provide: ControlContainer,
     deps: [[Optional, NgForm]],
     useFactory: (ngForm: NgForm) => ngForm,
-  }]
+  }],
+  
 })
 export class AuditLogInputComponent {
   @Input() comments: any;
@@ -21,7 +22,7 @@ export class AuditLogInputComponent {
   required = false;
   oldValue = '';
 
-  constructor(public activeModal: NzModalRef, public router: Router) {
+  constructor(public activeModal: NzModalRef, public router: Router, private cdr: ChangeDetectorRef) {
     if (sessionStorage['comments']) {
       this.messageList = JSON.parse(sessionStorage['comments']);
     }

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -15,7 +15,8 @@ import {NgModel} from "@angular/forms";
 @Component({
   standalone: false,
   selector: 'app-show-dependency',
-  templateUrl: './show-dependency-dialog.html'
+  templateUrl: './show-dependency-dialog.html',
+  
 })
 export class ShowDependencyComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -24,7 +25,8 @@ export class ShowDependencyComponent {
   permission: any = {}
   loading = true;
 
-  constructor(public coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
+  constructor(public coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -50,8 +52,10 @@ export class ShowDependencyComponent {
           this.workflow.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
           this.workflow.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
           this.loading = false;
+          this.cdr.markForCheck();
         }, error: () => {
           this.loading = false;
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -83,6 +87,7 @@ export class ShowDependencyComponent {
   standalone: false,
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
+  
 })
 export class AddOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -139,7 +144,7 @@ export class AddOrderModalComponent {
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
+              private modal: NzModalService, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -151,6 +156,7 @@ export class AddOrderModalComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.cdr.markForCheck();
     });
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -525,9 +531,12 @@ export class AddOrderModalComponent {
           this.blockPositions.set(item.positionString, item.position);
           this.blockPositionList.set(item.positionString, item.positions);
         });
-
+        this.cdr.markForCheck();
       },
-      error: () => this.submitted = false
+      error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -1060,9 +1069,11 @@ export class AddOrderModalComponent {
             this.onCommonTimeChange(this.commonStartTime);
           }
         }
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error fetching schedules:', err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1226,7 +1237,7 @@ addArguments(orderIndex): void {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
-        this.ref.detectChanges();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -1727,6 +1738,7 @@ addArguments(orderIndex): void {
         next: (res) => {
           this.schedules = res.schedules;
           this.schedules.sort((a, b) => a.name.localeCompare(b.name));
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1741,6 +1753,7 @@ addArguments(orderIndex): void {
       this.allTags = this.allTags.map((item) => {
         return item.name;
       })
+      this.cdr.markForCheck();
     });
   }
 
@@ -1882,6 +1895,7 @@ addArguments(orderIndex): void {
     this.coreService.post('plans/ids', requestPayload)
       .subscribe((res) => {
         this.planIds = res.plans
+        this.cdr.markForCheck();
       });
   }
 
@@ -1929,6 +1943,7 @@ addArguments(orderIndex): void {
               item.order.planId.noticeSpaceKey = '';
             }
           });
+          this.cdr.markForCheck();
           resolve();
         });
       } else {
@@ -1947,6 +1962,7 @@ addArguments(orderIndex): void {
   standalone: false,
   selector: 'app-add-schedules',
   templateUrl: './add-schedules-dialog.html',
+  
 })
 
 export class AddSchedulesModalComponent {
@@ -1962,7 +1978,8 @@ export class AddSchedulesModalComponent {
   constructor(
     public coreService: CoreService,
     private activeModal: NzModalRef,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -1985,10 +2002,11 @@ export class AddSchedulesModalComponent {
         });
         this.schedules = res.schedules;
         this.schedules.sort((a, b) => a.name.localeCompare(b.name));
-
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error fetching schedules:', err);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -2026,7 +2044,8 @@ export class AddSchedulesModalComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow-action',
-  templateUrl: './workflow-action.component.html'
+  templateUrl: './workflow-action.component.html',
+  
 })
 export class WorkflowActionComponent {
   @Input() workflow: any;

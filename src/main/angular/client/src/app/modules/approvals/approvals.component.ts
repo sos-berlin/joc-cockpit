@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
@@ -8,7 +8,8 @@ import {AddApproverModalComponent, ApproversComponent} from "./approvers/approve
 @Component({
   standalone: false,
   selector: 'app-approvals',
-  templateUrl: './approvals.component.html'
+  templateUrl: './approvals.component.html',
+  
 })
 export class ApprovalsComponent {
   permission: any = {};
@@ -20,7 +21,7 @@ export class ApprovalsComponent {
   isRequestor: any = false;
   @ViewChild('approvers') approversComponent: ApproversComponent;
 
-  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,private dataService: DataService,) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.permission = JSON.parse(this.authService.permission,) || {};
   }
 

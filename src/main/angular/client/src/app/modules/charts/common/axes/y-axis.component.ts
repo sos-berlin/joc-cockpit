@@ -48,7 +48,7 @@ import {ViewDimensions} from '../types/view-dimension.interface';
       ></svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class YAxisComponent implements OnChanges {
   @Input() yScale;

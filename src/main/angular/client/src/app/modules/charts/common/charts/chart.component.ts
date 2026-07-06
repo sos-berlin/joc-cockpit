@@ -47,7 +47,7 @@ import {ScaleType} from '../types/scale-type.enum';
       </ngx-charts-legend>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ChartComponent implements OnChanges {
   @Input() view: [number, number];

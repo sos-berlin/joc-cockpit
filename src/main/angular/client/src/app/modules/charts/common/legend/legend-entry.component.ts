@@ -11,7 +11,7 @@ import {Component, Input, Output, ChangeDetectionStrategy, HostListener, EventEm
       </span>
     </span>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LegendEntryComponent {
   @Input() color: string;

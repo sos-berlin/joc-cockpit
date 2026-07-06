@@ -1,5 +1,5 @@
 import {
-  Component, Input, Output, EventEmitter,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Output, EventEmitter,
   HostListener, SimpleChanges
 } from '@angular/core';
 import {CoreService} from '../../services/core.service';
@@ -11,7 +11,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-tree-navigation',
-  templateUrl: './tree.component.html'
+  templateUrl: './tree.component.html',
+  
 })
 export class TreeComponent {
 
@@ -36,7 +37,7 @@ export class TreeComponent {
 
   private searchTerm = new Subject<string>();
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   static calcTop(): void {
@@ -246,7 +247,11 @@ export class TreeComponent {
             this.allObjects = res.results;
             this.searchNode.token = res.token;
             this.searchNode.loading = false;
-          }, error: () => this.searchNode.loading = true
+            this.cdr.markForCheck();
+          }, error: () => {
+            this.searchNode.loading = true;
+            this.cdr.markForCheck();
+          }
         });
       }
     } else {
@@ -260,6 +265,7 @@ export class TreeComponent {
       this.allObjects = [];
       this.searchNode.text = '';
       $('#objectTreeSearch').blur();
+      this.cdr.markForCheck();
     }, 0);
   }
 }

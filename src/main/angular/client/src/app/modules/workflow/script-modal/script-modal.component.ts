@@ -14,7 +14,7 @@ declare const $;
   standalone: false,
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ScriptModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

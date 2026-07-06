@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 import {ScriptModalComponent} from '../../modules/workflow/script-modal/script-modal.component';
@@ -8,7 +8,8 @@ import {AuthService} from "../guard";
   standalone: false,
   selector: 'app-workflow-tree-structure',
   templateUrl: './workflow-tree-structure.component.html',
-  styleUrls: ['./workflow-tree-structure.component.scss']
+  styleUrls: ['./workflow-tree-structure.component.scss'],
+  
 })
 export class WorkflowTreeStructureComponent {
   @Input() configuration;
@@ -23,7 +24,7 @@ export class WorkflowTreeStructureComponent {
   position: '';
   permission: any = {};
 
-  constructor(public coreService: CoreService, private modal: NzModalService, private authService: AuthService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private authService: AuthService, private cdr: ChangeDetectorRef) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 

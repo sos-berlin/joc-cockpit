@@ -85,10 +85,10 @@
   </div>
   <div class="modal-footer text-left">
     <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-      common.button.submit
+      {{'common.button.submit' | translate }}
     </button>
     <button (click)="validateXML()" class="btn btn-default btn-sm" type="button">
-      xml.button.validate
+      {{'xml.button.validate' | translate }}
     </button>
     <button (click)="copyToClipboard()" [disabled]="obj.error" class="btn btn-default btn-sm"
             type="button">{{ 'log.button.copyToClipboard' | translate }}

@@ -12,7 +12,7 @@ import {AuthService} from '../../../components/guard';
   standalone: false,
   selector: 'app-profiles',
   templateUrl: './profiles.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ProfilesComponent {
   preferences: any = {};

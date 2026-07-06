@@ -126,7 +126,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       </svg:g>
     </ngx-charts-chart>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None
 })

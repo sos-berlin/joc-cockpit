@@ -28,7 +28,7 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-schedule',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './schedule.component.html',
 })
 export class ScheduleComponent {
@@ -85,7 +85,7 @@ export class ScheduleComponent {
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
               private calendarService: CalendarService, private dataService: DataService, private authService: AuthService,
-              private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
+              private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.schedule.actual) {
@@ -1906,7 +1906,7 @@ export class ScheduleComponent {
   drop(event: CdkDragDrop<string[]>, index: number) {
     moveItemInArray(this.schedule.configuration.orderParameterisations[index].tags, event.previousIndex, event.currentIndex);
     setTimeout(() => {
-      this.cdr.detectChanges();
+      this.ref.detectChanges();
     });
     this.saveJSON();
   }

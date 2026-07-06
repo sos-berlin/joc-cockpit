@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class LayoutComponent {
   preferences: any = {};
@@ -72,11 +72,13 @@ export class LayoutComponent {
         if (this.schedulerIds && this.schedulerIds.selected) {
           this.getUserProfileConfiguration(this.schedulerIds.selected, this.authService.currentUserData, true);
         }
+        this.cdr.markForCheck();
       }
     });
     this.subscription4 = dataService.resetProfileSetting.subscribe(res => {
       if (res && sessionStorage['preferences']) {
         this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+        this.cdr.markForCheck();
       }
     });
 
@@ -85,6 +87,7 @@ export class LayoutComponent {
         if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
           this.isChangePasswordPopupOpen = true;
           this.changePassword();
+          this.cdr.markForCheck();
         }
         if (this.loading) {
           setTimeout(() => {

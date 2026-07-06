@@ -36,7 +36,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-order-history-template',
   templateUrl: './order-history-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderTemplateComponent {
   @Input() history: any;
@@ -45,7 +45,8 @@ export class OrderTemplateComponent {
   @Input() orderSearch: any;
   @Input() permission: any;
 
-  constructor(public coreService: CoreService, private router: Router, public viewContainerRef: ViewContainerRef) {
+  constructor(public coreService: CoreService, private router: Router, public viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
   }
 
   downloadLog(obj, schedulerId): void {
@@ -70,7 +71,11 @@ export class OrderTemplateComponent {
         data.level = count + 1;
         data.states = res.states;
         this.coreService.calRowWidth(this.historyView.current);
-      }, error: () => data.loading = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        data.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -148,7 +153,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-order-form-template',
   templateUrl: './order-form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderSearchComponent {
   @Input() schedulerIds: any;
@@ -387,7 +392,7 @@ export class OrderSearchComponent {
   standalone: false,
   selector: 'app-task-form-template',
   templateUrl: './task-form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class TaskSearchComponent {
   @Input() schedulerIds: any;
@@ -1146,7 +1151,7 @@ export class SingleHistoryComponent {
   standalone: false,
   selector: 'app-history',
   templateUrl: './history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class HistoryComponent {
   schedulerIds: any = {};
@@ -1200,7 +1205,7 @@ export class HistoryComponent {
   submissionHistoryFilterList: any;
   sideView: any = {};
   showPanel: any;
-  workflowTagsPerWorkflow: any;
+  workflowTagsPerWorkflow: any = {};
   isPathDisplay: any;
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position', 'tags', 'filteredWorkflowTags'];
@@ -1271,7 +1276,7 @@ export class HistoryComponent {
     this.initConf();
     this.tabChangeListener = (event: CustomEvent) => {
       this.historyFilters.type = event.detail;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     };
     window.addEventListener('change-history-type', this.tabChangeListener);
   }
@@ -1370,6 +1375,7 @@ export class HistoryComponent {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
+      this.cdr.detectChanges();
     }
 
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true') && ((this.savedIgnoreList.workflows && this.savedIgnoreList.workflows.length > 0))) {
@@ -1398,8 +1404,6 @@ export class HistoryComponent {
     this.convertRequestBody(obj);
     this.coreService.post('orders/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
-        this.isLoading = true;
-        this.cdr.markForCheck();
         this.historys = this.setDuration(res);
         this.workflowTagsPerWorkflow = res?.workflowTagsPerWorkflow || {};
         this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
@@ -1408,10 +1412,12 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.isLoading = true;
+        this.cdr.detectChanges();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -1488,6 +1494,7 @@ export class HistoryComponent {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
+      this.cdr.detectChanges();
     }
     if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
       && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
@@ -1515,8 +1522,6 @@ export class HistoryComponent {
     this.convertRequestBody(obj);
     this.coreService.post('tasks/history', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res) => {
-        this.isLoading = true;
-        this.cdr.markForCheck();
         this.taskHistorys = this.setDuration(res);
         this.taskHistorys = this.orderPipe.transform(this.taskHistorys, this.task.filter.sortBy, this.task.reverse);
         if (flag) {
@@ -1524,10 +1529,12 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.isLoading = true;
+        this.cdr.detectChanges();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -1574,6 +1581,7 @@ export class HistoryComponent {
       obj = {controllerId: this.historyFilters.current == true ? this.schedulerIds.selected : ''};
       this.isLoading = false;
       this.data = [];
+      this.cdr.detectChanges();
     }
 
     if (this.selectedFiltered3 && !isEmpty(this.selectedFiltered3)) {
@@ -1590,8 +1598,6 @@ export class HistoryComponent {
     obj.compact = true;
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
-        this.isLoading = true;
-        this.cdr.markForCheck();
         this.yadeHistorys = res.transfers || [];
         this.yadeHistorys = this.orderPipe.transform(this.yadeHistorys, this.yade.filter.sortBy, this.yade.reverse);
         if (flag) {
@@ -1600,10 +1606,12 @@ export class HistoryComponent {
           this.searchInResult();
         }
         this.setHeaderWidth();
+        this.isLoading = true;
+        this.cdr.detectChanges();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -1672,6 +1680,7 @@ export class HistoryComponent {
       }
       this.isLoading = false;
       this.data = [];
+      this.cdr.detectChanges();
     } else {
       if (!obj.controllerId) {
         delete obj.controllerId;
@@ -1687,8 +1696,6 @@ export class HistoryComponent {
     this.convertDeployRequestBody(obj);
     this.coreService.post('inventory/deployment/history', {compactFilter: obj}).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
-        this.isLoading = true;
-        this.cdr.markForCheck();
         this.deploymentHistorys = res.depHistory || [];
         this.deploymentHistorys = this.orderPipe.transform(this.deploymentHistorys, this.deployment.filter.sortBy, this.deployment.reverse);
         if (flag) {
@@ -1696,10 +1703,12 @@ export class HistoryComponent {
         } else {
           this.searchInResult();
         }
+        this.isLoading = true;
+        this.cdr.detectChanges();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -1759,6 +1768,7 @@ export class HistoryComponent {
       }
       this.isLoading = false;
       this.data = [];
+      this.cdr.detectChanges();
     } else {
       if (!obj.controllerId) {
         delete obj.controllerId;
@@ -1780,15 +1790,15 @@ export class HistoryComponent {
     this.coreService.post('daily_plan/history', obj)
       .pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
-        this.isLoading = true;
-        this.cdr.markForCheck();
         this.submissionHistorys = res.dates || [];
         this.submissionHistorys = this.orderPipe.transform(this.submissionHistorys, this.submission.filter.sortBy, this.submission.reverse);
         this.searchInResult();
+        this.isLoading = true;
+        this.cdr.detectChanges();
       }, error: () => {
         this.data = [];
         this.isLoading = true;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -3723,6 +3733,7 @@ export class HistoryComponent {
       if (!flag) {
         this.isLoading = false;
         this.data = [];
+        this.cdr.detectChanges();
       }
       if (this.historyFilters.type === 'ORDER') {
         if (this.order.workflow) {

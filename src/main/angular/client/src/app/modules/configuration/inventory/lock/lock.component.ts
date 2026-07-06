@@ -22,7 +22,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
 @Component({
   standalone: false,
   selector: 'app-lock',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './lock.component.html'
 })
 export class LockComponent implements OnChanges, OnDestroy {

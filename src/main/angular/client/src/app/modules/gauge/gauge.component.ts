@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -15,6 +17,7 @@ import {GaugeDefaults, GaugeOptions} from './gauge-defaults.service';
   standalone: false,
   selector: 'app-gauge',
   template: '',
+  
 })
 export class GaugeComponent implements AfterViewInit, OnChanges, GaugeOptions {
   /**
@@ -99,7 +102,7 @@ export class GaugeComponent implements AfterViewInit, OnChanges, GaugeOptions {
 
   private gauge: any;
 
-  constructor(private elm: ElementRef, private defaults: GaugeDefaults) {
+  constructor(private elm: ElementRef, private defaults: GaugeDefaults, private cdr: ChangeDetectorRef) {
   }
 
   ngAfterViewInit(): void {

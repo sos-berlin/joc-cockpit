@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {registerLocaleData} from '@angular/common';
 import {HttpHeaders} from "@angular/common/http";
@@ -22,7 +22,8 @@ declare var $;
 @Component({
   standalone: false,
   selector: 'app-edit-favorite-modal',
-  templateUrl: './edit-favorite-dialog.html'
+  templateUrl: './edit-favorite-dialog.html',
+  
 })
 export class EditFavoriteModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -35,7 +36,8 @@ export class EditFavoriteModalComponent {
   agents = [];
   object: any = {};
 
-  constructor(private activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
+  constructor(private activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -94,6 +96,7 @@ export class EditFavoriteModalComponent {
         this.agents.push(obj);
         this.agents = [...this.agents]
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -134,7 +137,10 @@ export class EditFavoriteModalComponent {
             } else {
               this.activeModal.close('Done');
             }
-          }, error: () => this.submitted = false
+          }, error: () => {
+            this.submitted = false;
+            this.cdr.markForCheck();
+          }
         });
         break;
       }
@@ -152,7 +158,10 @@ export class EditFavoriteModalComponent {
     }).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -179,7 +188,8 @@ export class EditFavoriteModalComponent {
       0 8px 10px 1px rgba(0, 0, 0, 0.14),
       0 3px 14px 2px rgba(0, 0, 0, 0.12);
     }
-  `]
+  `],
+  
 })
 export class FavoriteListComponent {
   @Input() favList = [];
@@ -198,7 +208,7 @@ export class FavoriteListComponent {
 
   @Output() reload: EventEmitter<any> = new EventEmitter();
 
-  constructor(public coreService: CoreService, private modal: NzModalService) {
+  constructor(public coreService: CoreService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(): void {
@@ -260,6 +270,7 @@ export class FavoriteListComponent {
     }).subscribe({
       next: () => {
         data.shared = true;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -270,6 +281,7 @@ export class FavoriteListComponent {
     }).subscribe({
       next: () => {
         data.shared = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -293,6 +305,7 @@ export class FavoriteListComponent {
           mapOfCheckedId: new Map<string, string>()
         };
         this.reload.emit(this.type);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -337,7 +350,8 @@ export class FavoriteListComponent {
 @Component({
   standalone: false,
   selector: 'app-git-modal-content',
-  templateUrl: './git-dialog.html'
+  templateUrl: './git-dialog.html',
+  
 })
 export class GitModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -352,7 +366,7 @@ export class GitModalComponent {
     type: 'password'
   };
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -411,7 +425,10 @@ export class GitModalComponent {
     this.coreService.post('inventory/repository/git/credentials/add', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 }
@@ -419,7 +436,8 @@ export class GitModalComponent {
 @Component({
   standalone: false,
   selector: 'app-update-modal-content',
-  templateUrl: './update-dialog.html'
+  templateUrl: './update-dialog.html',
+  
 })
 export class UpdateKeyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -434,7 +452,7 @@ export class UpdateKeyModalComponent {
   comments: any = {};
   algorithm: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -492,7 +510,10 @@ export class UpdateKeyModalComponent {
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('DONE');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 }
@@ -500,7 +521,8 @@ export class UpdateKeyModalComponent {
 @Component({
   standalone: false,
   selector: 'app-import-key-modal',
-  templateUrl: './import-key-dialog.html'
+  templateUrl: './import-key-dialog.html',
+  
 })
 export class ImportKeyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -526,7 +548,7 @@ export class ImportKeyModalComponent {
   jobResourcesTree = [];
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
-              public translate: TranslateService, public toasterService: ToastrService) {
+              public translate: TranslateService, public toasterService: ToastrService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -605,6 +627,7 @@ export class ImportKeyModalComponent {
         } catch (e) {
           self.uploadError = true;
         }
+        self.cdr.markForCheck();
       }
     }
   }
@@ -620,6 +643,7 @@ export class ImportKeyModalComponent {
         if (i == this.fileList.length - 1) {
           setTimeout(() => {
             this.submitted = false;
+            this.cdr.markForCheck();
           }, 100);
         }
       }, 10 * i);
@@ -651,9 +675,11 @@ export class ImportKeyModalComponent {
         if (this.fileList.length === 1 || this.fileList[this.fileList.length - 1].name === file.name) {
           this.activeModal.close('success');
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.uploadError = true;
         this.submitted = false
+        this.cdr.markForCheck();
       }
     });
   }
@@ -666,7 +692,8 @@ export class ImportKeyModalComponent {
 @Component({
   standalone: false,
   selector: 'app-generate-key-component',
-  templateUrl: './generate-key-dialog.html'
+  templateUrl: './generate-key-dialog.html',
+  
 })
 export class GenerateKeyComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -683,7 +710,7 @@ export class GenerateKeyComponent {
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
-              private translate: TranslateService, private toasterService: ToastrService) {
+              private translate: TranslateService, private toasterService: ToastrService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -745,6 +772,7 @@ export class GenerateKeyComponent {
       }, error: () => {
         this.submitted = false;
         this.activeModal.destroy();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -753,7 +781,8 @@ export class GenerateKeyComponent {
 @Component({
   standalone: false,
   selector: 'app-remove-key-modal',
-  templateUrl: './remove-key-dialog.html'
+  templateUrl: './remove-key-dialog.html',
+  
 })
 export class RemoveKeyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -763,7 +792,7 @@ export class RemoveKeyModalComponent {
   comments: any = {};
 
   constructor(public activeModal: NzModalRef, private authService: AuthService, private coreService: CoreService,
-              public translate: TranslateService, public toasterService: ToastrService) {
+              public translate: TranslateService, public toasterService: ToastrService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -797,6 +826,7 @@ export class RemoveKeyModalComponent {
       error: () => {
         this.submitted = false;
         this.activeModal.destroy();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -805,7 +835,8 @@ export class RemoveKeyModalComponent {
 @Component({
   standalone: false,
   selector: 'app-user',
-  templateUrl: './user.component.html'
+  templateUrl: './user.component.html',
+  
 })
 export class UserComponent {
   zones: any = [];
@@ -981,14 +1012,17 @@ export class UserComponent {
   selectedTheme: string;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
-              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
+              private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService,
+              private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.resetProfileSetting.subscribe(res => {
       if (res) {
         this.setPreferences();
+        this.cdr.markForCheck();
       }
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.setPreferences();
+      this.cdr.markForCheck();
     });
   }
 
@@ -1004,6 +1038,7 @@ export class UserComponent {
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones.filter(tz => tz !== this.timeZone);
       this.zones.unshift(this.timeZone, '-----------------------------');
+      this.cdr.markForCheck();
     });
     this.configObj.accountName = this.username;
     this.entryPerPage.push({value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage});
@@ -1276,6 +1311,7 @@ export class UserComponent {
       this.selectedTheme = this.preferences.theme;
       this.loadOrderStateColors();
       this.applyThemeColors(this.orderStateColors);
+      this.cdr.markForCheck();
     },100)
 
   }
@@ -1308,8 +1344,10 @@ export class UserComponent {
         if (this.keys.validUntil) {
           this.keys.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.keys.validUntil) < 0;
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.keys = {};
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1322,8 +1360,10 @@ export class UserComponent {
         if (this.certificates.validUntil) {
           this.certificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.certificates.validUntil) < 0;
         }
+        this.cdr.markForCheck();
       }, error: () => {
         this.certificates = {};
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1332,8 +1372,10 @@ export class UserComponent {
     this.coreService.post('inventory/repository/git/credentials', {}).subscribe({
       next: (res: any) => {
         this.gitCredentials = res;
+        this.cdr.markForCheck();
       }, error: () => {
         this.gitCredentials = {};
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1560,6 +1602,7 @@ export class UserComponent {
       next: (res: any) => {
         this.sharedList = res.sharedFavorites;
         this.favList = res.favorites;
+        this.cdr.markForCheck();
       }
     });
   }

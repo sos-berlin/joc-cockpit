@@ -33,7 +33,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-create-plan-modal-content',
-  templateUrl: './create-plan-dialog.html'
+  templateUrl: './create-plan-dialog.html',
+  
 })
 export class CreatePlanModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -54,7 +55,7 @@ export class CreatePlanModalComponent {
   workflowsTree: any = [];
   selectedTemplates: any = {schedules: [], paths: []};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -79,6 +80,7 @@ export class CreatePlanModalComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowsTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 
@@ -89,6 +91,7 @@ export class CreatePlanModalComponent {
       types: ['SCHEDULE']
     }).subscribe((res) => {
       this.scheduleTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 
@@ -150,7 +153,10 @@ export class CreatePlanModalComponent {
       next: () => {
         this.activeModal.close('Done');
       },
-      error: () => this.submitted = false
+      error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -165,6 +171,7 @@ export class CreatePlanModalComponent {
   standalone: false,
   selector: 'app-remove-plan-modal',
   templateUrl: './remove-plan-dialog.html',
+  
 })
 export class RemovePlanModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -186,7 +193,7 @@ export class RemovePlanModalComponent {
   required = false;
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -257,7 +264,10 @@ export class RemovePlanModalComponent {
     this.coreService.post('daily_plan/orders/submit', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -316,7 +326,10 @@ export class RemovePlanModalComponent {
     this.coreService.post(this.submissionsDelete ? 'daily_plan/submissions/delete' : 'daily_plan/orders/delete', obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -326,7 +339,10 @@ export class RemovePlanModalComponent {
     this.coreService.post('daily_plan/orders/delete', this.coreService.clone(obj)).subscribe({
       next: () => {
         this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 }
@@ -552,7 +568,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -702,7 +718,11 @@ export class SearchComponent {
         } else {
           this.onCancel.emit(configObj);
         }
-      }, error: () => this.submitted = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -724,7 +744,7 @@ export class SearchComponent {
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
   styleUrls: ['./daily-plan.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DailyPlanComponent {
   objectType = 'DAILYPLAN';

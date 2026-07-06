@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -11,14 +11,15 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-update-url-modal-content',
-  templateUrl: './update-url-dialog.html'
+  templateUrl: './update-url-dialog.html',
+  
 })
 export class UpdateUrlModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   joc: any = {};
   obj = {url:''};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -33,6 +34,7 @@ export class UpdateUrlModalComponent {
     }).subscribe({
       next: () => {
         this.activeModal.close('Done');
+        this.cdr.markForCheck();
       }
     });
   }
@@ -42,7 +44,8 @@ export class UpdateUrlModalComponent {
 @Component({
   standalone: false,
   selector: 'app-widget-modal-content',
-  templateUrl: './add-widget-dialog.html'
+  templateUrl: './add-widget-dialog.html',
+  
 })
 export class AddWidgetModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -70,7 +73,8 @@ export class AddWidgetModalComponent {
   standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  
 })
 export class DashboardComponent {
   options: GridsterConfig = {};
@@ -203,6 +207,7 @@ export class DashboardComponent {
         this.initWidgets();
         this.setWidgetPreference();
         DashboardComponent.calculateHeight();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -298,6 +303,7 @@ export class DashboardComponent {
             $('.gridster').css({height: 'calc(100vh - ' + top + 'px)', 'scroll-top': '0'});
             window.dispatchEvent(new Event('resize'));
             this.isLoading = true;
+            this.cdr.markForCheck();
           }, 0);
           this.cdr.detectChanges();
         });

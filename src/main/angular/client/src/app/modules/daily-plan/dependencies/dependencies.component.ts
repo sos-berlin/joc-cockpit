@@ -45,7 +45,7 @@ declare const mxCellOverlay: any;
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
   styleUrl: './dependencies.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;
@@ -101,11 +101,15 @@ export class DependenciesComponent {
     private modal: NzModalService,
     private translate: TranslateService,
   ) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
+    this.subscription = dataService.eventAnnounced$.subscribe(res => {
+      this.refreshGraph(res);
+      this.cd.markForCheck();
+    });
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
       }
+      this.cd.markForCheck();
     });
   }
 

@@ -17,7 +17,8 @@ import {SearchPipe} from "../../pipes/core.pipe";
 @Component({
   standalone: false,
   selector: 'app-export-modal',
-  templateUrl: './export-dialog.html'
+  templateUrl: './export-dialog.html',
+  
 })
 export class ExportComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -37,7 +38,7 @@ export class ExportComponent {
   {value: 'TAR_GZ' , name:'TAR_GZ'}
 ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -62,6 +63,7 @@ export class ExportComponent {
     }).subscribe({
       next: (data: any) => {
         controller.agents = data.agents;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -73,6 +75,7 @@ export class ExportComponent {
     }).subscribe({
       next: (data: any) => {
         controller.agentClusters = data.agents;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -122,6 +125,7 @@ export class ExportComponent {
         } else {
           this.submitted = false;
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -135,7 +139,8 @@ export class ExportComponent {
 @Component({
   standalone: false,
   selector: 'app-export-bulk-modal',
-  templateUrl: './export-bulk-dialog.html'
+  templateUrl: './export-bulk-dialog.html',
+  
 })
 export class ExportBulkComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -155,7 +160,7 @@ export class ExportBulkComponent {
   {value: 'TAR_GZ' , name:'TAR_GZ'}
 ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -206,6 +211,7 @@ export class ExportBulkComponent {
         } else {
           this.submitted = false;
         }
+        this.cdr.markForCheck();
       });
     }
   }
@@ -218,7 +224,8 @@ export class ExportBulkComponent {
 @Component({
   standalone: false,
   selector: 'app-create-token-modal',
-  templateUrl: './create-token.dialog.html'
+  templateUrl: './create-token.dialog.html',
+  
 })
 export class CreateTokenModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -239,7 +246,7 @@ export class CreateTokenModalComponent {
   viewDate = new Date();
   zones = [];
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -253,6 +260,7 @@ export class CreateTokenModalComponent {
     }
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.cdr.markForCheck();
     });
     this.display = this.preferences.auditLog;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
@@ -304,7 +312,10 @@ export class CreateTokenModalComponent {
     this.coreService.post('token/create', obj).subscribe({
       next: res => {
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -314,7 +325,7 @@ export class CreateTokenModalComponent {
   standalone: false,
   selector: 'app-controllers',
   templateUrl: './controllers.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllersComponent {
   data: any = [];
@@ -346,6 +357,7 @@ export class ControllersComponent {
               private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
   }
 
@@ -417,10 +429,12 @@ export class ControllersComponent {
           } else {
             this.getData();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           if (flag) {
             this.getData();
           }
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -439,6 +453,7 @@ export class ControllersComponent {
           this.coreService.preferences.controllers.add(data.selected);
         }
         this.getSecurity();
+        this.cdr.markForCheck();
       }, error: () => {
         this.loading = true;
         this.cdr.markForCheck();
@@ -466,12 +481,14 @@ export class ControllersComponent {
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }, error: () => {
           controller.agents = [];
           controller.loading = false;
           if (cb) {
             cb();
           }
+          this.cdr.markForCheck();
         }
       });
     } else if (cb) {
@@ -506,9 +523,11 @@ export class ControllersComponent {
           }
         });
         this.filterAgentList(controller);
+        this.cdr.markForCheck();
       }, error: () => {
         controller.agentClusters = [];
         controller.isLoading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -765,6 +784,7 @@ export class ControllersComponent {
       if (result) {
         this.resetCheckbox();
         this.getTokens(false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -792,6 +812,7 @@ export class ControllersComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this._deleteAll(result);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -812,6 +833,7 @@ export class ControllersComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this._deleteAll();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -872,6 +894,7 @@ export class ControllersComponent {
       }).afterClose.subscribe(result => {
         if (result) {
           this._revokeAndDeploy(type, result);
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -1222,6 +1245,7 @@ export class ControllersComponent {
             this.restSubagents(force);
           }
           this.resetCheckbox();
+          this.cdr.markForCheck();
         }
       });
     } else if (force) {
@@ -1264,6 +1288,7 @@ export class ControllersComponent {
             this.restSubagents(force);
           }
           this.resetCheckbox();
+          this.cdr.markForCheck();
         }
       });
 
@@ -1631,8 +1656,10 @@ export class ControllersComponent {
           this.coreService.post('agents/inventory/store', obj).subscribe({
             error: () => {
               agent.hidden = !flag;
+              this.cdr.markForCheck();
             }
           });
+          this.cdr.markForCheck();
         }
       });
     } else {
@@ -1640,6 +1667,7 @@ export class ControllersComponent {
       this.coreService.post('agents/inventory/store', obj).subscribe({
         error: () => {
           agent.hidden = !flag;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -1959,6 +1987,7 @@ export class ControllersComponent {
             }
           }
         })
+        this.cdr.markForCheck();
       }
     });
   }

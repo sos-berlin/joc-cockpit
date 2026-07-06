@@ -9,7 +9,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-inventory-statistics',
   templateUrl: './inventory-statistics.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class InventoryStatisticsComponent {
   @Input('sizeX') xbody: number;
@@ -26,6 +26,7 @@ export class InventoryStatisticsComponent {
       if (res) {
         this.refresh(res);
       }
+      this.cdr.markForCheck();
     });
   }
 

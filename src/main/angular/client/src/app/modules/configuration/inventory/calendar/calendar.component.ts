@@ -28,7 +28,7 @@ interface CalendarItem {
   standalone: false,
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FrequencyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -185,6 +185,7 @@ export class FrequencyModalComponent {
         if (this.isCalendarDisplay) {
           this.changeDate();
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -1175,6 +1176,7 @@ export class FrequencyModalComponent {
     }
     this.editor.isEnable = this.tempItems.length > 0;
     $('#calendar').data('calendar').setDataSource(this.tempItems);
+    this.cdr.markForCheck();
   }
 
   private freqObj(data, obj): void {
@@ -1294,6 +1296,7 @@ export class FrequencyModalComponent {
               if (this.isCalendarDisplay) {
                 this.changeDate();
               }
+              this.cdr.markForCheck();
             }
           });
         }
@@ -1495,7 +1498,7 @@ export class FrequencyModalComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CalendarComponent {
   @Input() schedulerId: any;
@@ -1546,9 +1549,11 @@ export class CalendarComponent {
       } else if (res === 'UNDO') {
         this.undo();
       }
+      this.ref.detectChanges();
     });
     this.subscription3 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.ref.detectChanges();
     });
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.calendar.name) {

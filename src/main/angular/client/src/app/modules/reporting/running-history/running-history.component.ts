@@ -14,7 +14,7 @@ import {TranslateService} from "@ngx-translate/core";
   standalone: false,
   selector: 'app-running-history',
   templateUrl: './running-history.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class RunningHistoryComponent {
   @Input() permission: any;

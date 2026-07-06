@@ -778,7 +778,7 @@ export class ConfirmationModalComponent {
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class XmlEditorComponent {
   schedulerIds: any = {};

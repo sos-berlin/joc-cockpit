@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 
 @Component({
   standalone: false,
@@ -15,9 +15,13 @@ import {Component, Input} from '@angular/core';
       </ng-template>
     </nz-empty>
   `,
+  
 })
 export class EmptyDataComponent {
   @Input() title: string;
+
+  constructor(private cdr: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
     if (!this.title) {

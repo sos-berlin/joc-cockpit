@@ -13,7 +13,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-cluster-status',
   templateUrl: './agent-cluster-status.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentClusterStatusComponent {
   @Input('layout') layout: any;

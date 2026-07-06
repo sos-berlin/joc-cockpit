@@ -13,7 +13,7 @@ declare const $;
   standalone: false,
   selector: 'app-log',
   templateUrl: './log.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LogComponent {
   preferences: any = {};
@@ -383,6 +383,7 @@ export class LogComponent {
             this.runningTaskLog(obj, domId, taskKey);
           }
         }
+        this.cdr.markForCheck();
       });
 
       this.taskCancellers.set(taskKey, subscription);
@@ -469,6 +470,7 @@ export class LogComponent {
             this.finished = true;
           }
         }
+        this.cdr.markForCheck();
       });
 
       if (taskKey) {
@@ -497,6 +499,7 @@ export class LogComponent {
             this.finished = true;
           }
         }
+        this.cdr.markForCheck();
       });
     }
   }

@@ -7,7 +7,7 @@ import {DataService} from "../../services/data.service";
 @Component({
   standalone: false,
   selector: 'app-about',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 template: `
   <div class="modal-header">
     <h4 class="modal-title">
@@ -201,24 +201,28 @@ export class AboutModalComponent {
 @Component({
   standalone: false,
   selector: 'app-step-guide',
-  templateUrl: './step-guide-dialog.component.html'
+  templateUrl: './step-guide-dialog.component.html',
+  
 })
 export class StepGuideComponent {
   line1: string = '';
   line2: string = '';
 
-  constructor(public modalService: NzModalRef, private translate: TranslateService, private coreService: CoreService) {
+  constructor(public modalService: NzModalRef, private translate: TranslateService, private coreService: CoreService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     this.translate.get('info.link.jobEnvironmentVariables').subscribe(link => {
       this.translate.get('info.message.line1').subscribe(translatedValue => {
         this.line1 = this.coreService.convertTextToLink(translatedValue, link);
+        this.cdr.markForCheck();
       });
     });
     this.translate.get('info.link.instructions').subscribe(link => {
       this.translate.get('info.message.line2').subscribe(translatedValue => {
         this.line2 = this.coreService.convertTextToLink(translatedValue, link);
+        this.cdr.markForCheck();
       });
     });
   }
@@ -231,7 +235,8 @@ export class StepGuideComponent {
 @Component({
   standalone: false,
   selector: 'app-info-menu',
-  templateUrl: './info-menu.component.html'
+  templateUrl: './info-menu.component.html',
+  
 })
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
@@ -242,6 +247,7 @@ export class InfoMenuComponent {
   ngOnInit(): void {
       this.coreService.get('version.json').subscribe((data) => {
         this.versionData = data;
+        this.cdr.markForCheck();
       });
   }
 

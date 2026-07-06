@@ -339,7 +339,7 @@ export class UpdateJobTemplatesComponent {
 @Component({
   standalone: false,
   selector: 'app-job-template',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './job-template.component.html'
 })
 export class JobTemplateComponent {

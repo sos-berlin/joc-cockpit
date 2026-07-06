@@ -8,7 +8,7 @@ import {CoreService} from '../../../../../services/core.service';
   standalone: false,
   selector: 'app-tree-modal-content',
   templateUrl: './tree.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class TreeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

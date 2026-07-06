@@ -16,7 +16,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-single-lock',
   templateUrl: './single-lock.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleLockComponent {
   loading = false;
@@ -135,7 +135,7 @@ export class SingleLockComponent {
   standalone: false,
   selector: 'app-lock',
   templateUrl: 'lock.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class LockComponent {
   isLoading = false;

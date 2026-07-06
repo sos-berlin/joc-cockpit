@@ -11,7 +11,8 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 @Component({
   standalone: false,
   selector: 'app-confirm-node-modal',
-  templateUrl: './confirm-node-dialog.html'
+  templateUrl: './confirm-node-dialog.html',
+  
 })
 export class ConfirmNodeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -25,7 +26,7 @@ export class ConfirmNodeModalComponent {
   lossNode = '';
 
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -51,8 +52,10 @@ export class ConfirmNodeModalComponent {
     this.coreService.post('agent/cluster/confirm_node_loss', request).subscribe({
       next: () => {
         this.activeModal.close('DONE');
+        this.cdr.markForCheck();
       }, error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -63,7 +66,7 @@ export class ConfirmNodeModalComponent {
   standalone: false,
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentComponent {
   loading: boolean;
@@ -85,9 +88,11 @@ export class AgentComponent {
               private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
+      this.cdr.markForCheck();
     });
   }
 
@@ -219,7 +224,7 @@ private getAgentClassList(obj): void {
             }
           }
         })
-
+        this.cdr.markForCheck();
       }
     });
   }
@@ -290,7 +295,11 @@ private getAgentClassList(obj): void {
             }
           }
         });
-      }, error: () => this.data.forEach((value) => value.loading = false)
+        this.cdr.markForCheck();
+      }, error: () => {
+        this.data.forEach((value) => value.loading = false);
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -378,7 +387,11 @@ private getAgentClassList(obj): void {
           cluster.orders = result.agents[0].orders;
         }
         cluster.loading = false;
-      }, error: () => cluster.loading = false
+        this.cdr.markForCheck();
+      }, error: () => {
+        cluster.loading = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 

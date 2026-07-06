@@ -55,7 +55,7 @@ import {TextAnchor} from '../types/text-anchor.enum';
       </svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class XAxisTicksComponent implements OnChanges, AfterViewInit {
   @Input() scale;

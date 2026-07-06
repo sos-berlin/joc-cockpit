@@ -67,7 +67,7 @@ import {ScaleType} from '../common/types/scale-type.enum';
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class SeriesHorizontal implements OnChanges {
   @Input() dims: ViewDimensions;

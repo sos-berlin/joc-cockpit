@@ -68,7 +68,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
@@ -189,6 +189,7 @@ export class FileTransferSearchComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, false);
+      this.cdr.detectChanges();
     });
   }
 
@@ -456,7 +457,7 @@ export class SingleFileTransferComponent {
   standalone: false,
   selector: 'app-file-transfer',
   templateUrl: './file-transfer.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileTransferComponent {
   schedulerIds: any = {};
@@ -617,6 +618,7 @@ export class FileTransferComponent {
         transfer.profile = res.transfers[0].profile;
         transfer.taskId = res.transfers[0].taskId;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -638,8 +640,8 @@ export class FileTransferComponent {
             $(this).css('width', self.widthArr[i] + 'px');
           });
         }, 0);
-
-      }, error: () => value.loading = false
+        this.cdr.markForCheck();
+      }, error: () => { value.loading = false; this.cdr.markForCheck(); }
     });
   }
 
@@ -653,6 +655,7 @@ export class FileTransferComponent {
       };
       this.coreService.post('yade/transfer', obj).subscribe((res: any) => {
         value = extend(value, res);
+        this.cdr.markForCheck();
       });
     }
     this.getFiles(value);

@@ -77,7 +77,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -721,7 +721,7 @@ export class SingleWorkflowComponent {
   standalone: false,
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowComponent {
   isLoading = false;
@@ -848,7 +848,7 @@ export class WorkflowComponent {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.cdr.detectChanges(), 0);
+    setTimeout(() => this.cdr.markForCheck());
   }
 
   ngOnDestroy(): void {
@@ -1148,6 +1148,7 @@ export class WorkflowComponent {
     }
     this.coreService.getAgents(obj, this.schedulerIds.selected, () => {
       this.listOfAgents = obj.agentList;
+      this.cdr.detectChanges();
     });
     this.savedFilter = JSON.parse(this.saveService.workflowFilters) || {};
     if (this.schedulerIds.selected && this.permission.joc && this.permission.joc.administration.customization.view) {
@@ -2248,6 +2249,7 @@ export class WorkflowComponent {
       if (rsHt.workflow[this.currentPath]) {
         this.resizerHeight = rsHt.workflow[this.currentPath];
         $('#workflowTableId').css('height', this.resizerHeight);
+        this.cdr.detectChanges();
       } else {
         this._updatePanelHeight();
       }
@@ -2755,6 +2757,7 @@ export class WorkflowComponent {
       }
       this.resizerHeight = ht + 'px';
       $('#workflowTableId').css('height', this.resizerHeight);
+      this.cdr.detectChanges();
     }, 10);
   }
 

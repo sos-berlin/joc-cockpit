@@ -703,7 +703,7 @@ export class AddPriorityModalComponent {
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentComponent {
   isLoading = true;

@@ -13,7 +13,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-status',
   templateUrl: './agent-status.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentStatusComponent {
   @Input('layout') layout: any;
@@ -68,6 +68,7 @@ export class AgentStatusComponent {
               private router: Router, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
   }
 

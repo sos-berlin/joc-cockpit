@@ -14,7 +14,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
   selector: 'app-approval-request',
   templateUrl: './approval-request.component.html',
   styleUrl: './approval-request.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ApprovalRequestComponent {
   @Input() preferences: any = {};

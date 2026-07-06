@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   selector: 'app-agent-monitor',
   templateUrl: './agent-monitor.component.html',
   styleUrls: ['./agent-monitor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AgentMonitorComponent {
   @Input() permission: any;
@@ -51,6 +51,7 @@ export class AgentMonitorComponent {
               private groupByPipe: GroupByPipe, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
 
     this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
@@ -90,6 +91,7 @@ export class AgentMonitorComponent {
   ngOnInit(): void {
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
+      this.cdr.markForCheck();
     });
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.init();

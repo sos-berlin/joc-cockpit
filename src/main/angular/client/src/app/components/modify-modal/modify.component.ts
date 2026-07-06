@@ -13,7 +13,7 @@ import {NgModel} from "@angular/forms";
   standalone: false,
   selector: 'app-change-parameter',
   templateUrl: './change-parameter-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ChangeParameterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -406,6 +406,7 @@ export class ChangeParameterModalComponent {
           this.newPositions.set(item.positionString, (item.position));
         });
       }
+      this.cdr.markForCheck();
     }, 0);
   }
 
@@ -499,6 +500,7 @@ export class ChangeParameterModalComponent {
       if (result) {
         data.value = result;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -636,7 +638,7 @@ export class ChangeParameterModalComponent {
       this.coreService.post('daily_plan/orders/modify', obj).subscribe({
         next: () => {
           this.activeModal.close(obj.variables);
-        }, error: () => this.submitted = false
+        }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
       });
     } else {
       this.submitted = false;
@@ -676,7 +678,8 @@ export class ChangeParameterModalComponent {
 @Component({
   standalone: false,
   selector: 'app-start-time',
-  templateUrl: './start-time-dialog.html'
+  templateUrl: './start-time-dialog.html',
+  
 })
 export class ModifyStartTimeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -816,6 +819,7 @@ export class ModifyStartTimeModalComponent {
             period = {...period, ...res.plannedOrderItems[0].period};
             this.updatePeriod(period);
           }
+          this.cdr.markForCheck();
         }
       });
     }
@@ -972,7 +976,7 @@ export class ModifyStartTimeModalComponent {
     this.coreService.post(this.isCopy? 'daily_plan/orders/copy' : 'daily_plan/orders/modify', obj).subscribe({
       next: (res) => {
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+      }, error: () => { this.submitted = false; this.cdr.markForCheck(); }
     });
   }
 

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -330,7 +330,8 @@ export class ControllerModalComponent {
   standalone: false,
   selector: 'app-roles',
   templateUrl: 'roles.component.html',
-  styleUrls: ['./roles.component.css']
+  styleUrls: ['./roles.component.css'],
+  
 })
 export class RolesComponent {
   accounts: any = [];
@@ -352,13 +353,14 @@ export class RolesComponent {
   subscription3: Subscription;
 
   constructor(private coreService: CoreService, private router: Router, private authService: AuthService, private activeRoute: ActivatedRoute, private modal: NzModalService,
-              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, public dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.dataAnnounced$.subscribe(res => {
       if (res) {
         if (isArray(res)) {
           this.accounts = res;
         }
       }
+      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.functionAnnounced$.subscribe(res => {
       if (res === 'ADD_ROLE') {

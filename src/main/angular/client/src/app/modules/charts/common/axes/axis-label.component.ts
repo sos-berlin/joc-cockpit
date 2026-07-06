@@ -15,7 +15,7 @@ import {Orientation} from '../types/orientation.enum';
       {{ label }}
     </svg:text>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AxisLabelComponent implements OnChanges {
   @Input() orient: Orientation;

@@ -71,7 +71,7 @@ export interface Tooltip {
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class TooltipArea {
   anchorOpacity: number = 0;

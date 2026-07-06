@@ -15,7 +15,7 @@ import {ExcelService} from "../../../services/excel.service";
   standalone: false,
   selector: 'app-order-notification',
   templateUrl: './order-notification.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class OrderNotificationComponent {
   @Input() permission: any;
@@ -45,6 +45,7 @@ export class OrderNotificationComponent {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
 

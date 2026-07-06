@@ -73,7 +73,7 @@ export class AddBlocklistModalComponent {
   standalone: false,
   selector: 'app-blocklist',
   templateUrl: './blocklist.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BlocklistComponent {
 

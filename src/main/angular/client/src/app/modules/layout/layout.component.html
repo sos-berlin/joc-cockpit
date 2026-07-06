@@ -84,7 +84,7 @@
     <div class="cssload-inner cssload-three"></div>
   </div>
 }
-@if (coreService.reportStartRunning) {
+@if (coreService.reportStartRunning$ | async) {
   <div class="download-bar box-shadow-z1 animated" id="download-panel">
     <div class="row p-a-10 p-l p-r">
       <div class="col-md-6 ">
@@ -96,8 +96,6 @@
       </div>
     </div>
   </div>
-}
-@if (coreService.reportStartRunning) {
   <div class="download-bar box-shadow-z1 download-bar-hide animated opacity0">
     <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
   </div>

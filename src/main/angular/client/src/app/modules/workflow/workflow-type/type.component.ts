@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   HostListener,
@@ -20,7 +22,8 @@ import {Subscription} from "rxjs";
 @Component({
   standalone: false,
   selector: 'app-type',
-  templateUrl: './type.component.html'
+  templateUrl: './type.component.html',
+  
 })
 export class TypeComponent {
   @Input() configuration;
@@ -62,10 +65,12 @@ export class TypeComponent {
   subscription1: any = Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService, private dataService: DataService
+              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService, private dataService: DataService,
+              private cdr: ChangeDetectorRef
   ) {
     this.subscription1 = dataService.sidebarOrders$.subscribe(res => {
       this.isVisible = res
+      this.cdr.markForCheck();
     });
   }
 
@@ -456,8 +461,10 @@ export class TypeComponent {
     this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe({
       next: () => {
         this.processingHandler(true)
+        this.cdr.markForCheck();
       }, error: () => {
         this.processingHandler(false)
+        this.cdr.markForCheck();
       }
     });
   }
@@ -554,6 +561,7 @@ export class TypeComponent {
         orderId: order.orderId
       }).subscribe((res: any) => {
         order.obstacles = res.obstacles;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -637,6 +645,7 @@ export class TypeComponent {
       }).afterClose.subscribe(result => {
         if (result) {
           this.clearCheckbox();
+          this.cdr.markForCheck();
         }
       });
     }
@@ -675,6 +684,7 @@ export class TypeComponent {
       }).afterClose.subscribe(result => {
         if (result) {
           this.clearCheckbox();
+          this.cdr.markForCheck();
         }
       });
     }

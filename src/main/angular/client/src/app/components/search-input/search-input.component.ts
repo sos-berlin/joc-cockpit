@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -17,7 +18,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-search-input',
-  templateUrl: './search-input.component.html'
+  templateUrl: './search-input.component.html',
+  
 })
 export class SearchInputComponent {
   @Input() type: string;
@@ -133,7 +135,8 @@ export class SearchInputComponent {
         if (this.changeDetect) {
           this.ref.detectChanges();
         }
-      }, error: () => origin.loading = false
+        this.ref.markForCheck();
+      }, error: () => { origin.loading = false; this.ref.markForCheck(); }
     });
   }
 
@@ -183,6 +186,7 @@ export class SearchInputComponent {
             if (this.changeDetect) {
               this.ref.detectChanges();
             }
+            this.ref.markForCheck();
           }
         });
       } else {
@@ -190,12 +194,14 @@ export class SearchInputComponent {
         if (this.changeDetect) {
           this.ref.detectChanges();
         }
+        this.ref.markForCheck();
       }
     } else {
       this.nodes = this._tree;
       if (this.changeDetect) {
         this.ref.detectChanges();
       }
+      this.ref.markForCheck();
     }
   }
 

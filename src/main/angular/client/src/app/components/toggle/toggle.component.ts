@@ -1,4 +1,4 @@
-import {Component, Output, EventEmitter, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Output, EventEmitter, Input} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
@@ -18,7 +18,8 @@ import {Router} from '@angular/router';
         <i class="fa fa-bars"></i>
       </button>
     </div>
-  `
+  `,
+  
 })
 export class ToggleComponent {
   @Input() type: string;
@@ -28,7 +29,7 @@ export class ToggleComponent {
   views: any = {};
   @Output() messageEvent = new EventEmitter<string>();
 
-  constructor(public router: Router) {
+  constructor(public router: Router, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

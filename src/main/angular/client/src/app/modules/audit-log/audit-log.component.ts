@@ -209,7 +209,7 @@ export class SearchComponent {
   standalone: false,
   selector: 'app-audit-log',
   templateUrl: './audit-log.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AuditLogComponent {
   objectType = 'AUDITLOG';
@@ -690,6 +690,7 @@ export class AuditLogComponent {
       self.saveService.setAuditLog(self.savedFilter);
       self.saveService.save();
     }
+    self.cdr.markForCheck();
   }
 
   changeController(): void {
@@ -723,7 +724,11 @@ export class AuditLogComponent {
         next: (res: any) => {
           auditLog.details = res.auditLogDetails;
           auditLog.isLoaded = true;
-        }, error: () => auditLog.isLoaded = true
+          this.cdr.markForCheck();
+        }, error: () => {
+          auditLog.isLoaded = true;
+          this.cdr.markForCheck();
+        }
       });
     }
   }

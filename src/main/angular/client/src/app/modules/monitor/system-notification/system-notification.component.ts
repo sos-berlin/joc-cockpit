@@ -17,7 +17,7 @@ import {ClipboardService} from "ngx-clipboard";
   standalone: false,
   selector: 'app-system-notification',
   templateUrl: './system-notification.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SystemNotificationComponent {
   @Input() permission: any;
@@ -47,6 +47,7 @@ export class SystemNotificationComponent {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
 

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, isEmpty} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
@@ -10,7 +10,8 @@ import {AuthService} from '../../../../components/guard';
 @Component({
   standalone: false,
   selector: 'app-update-job',
-  templateUrl: './update-job.component.html'
+  templateUrl: './update-job.component.html',
+  
 })
 export class UpdateJobComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -119,6 +120,7 @@ export class UpdateJobComponent {
       if (this.selectedNode.job) {
         this.step = 2;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -149,7 +151,10 @@ export class UpdateJobComponent {
     this.coreService.post('inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -533,6 +538,7 @@ export class UpdateJobComponent {
     this.findAndUpdate(this.getUpdatedJob(), () => {
       this.step = 3;
       this.submitted = false;
+      this.cdr.markForCheck();
     });
   }
 }

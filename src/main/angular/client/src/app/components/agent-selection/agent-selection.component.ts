@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from "../../services/core.service";
 import {DataService} from "../../services/data.service";
 
@@ -7,7 +7,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-agent-selection',
-  templateUrl: './agent-selection.component.html'
+  templateUrl: './agent-selection.component.html',
+  
 })
 export class AgentSelectionComponent {
   @Input() preferences: any = {};
@@ -30,7 +31,7 @@ export class AgentSelectionComponent {
   @Output() selectSubagentCluster: EventEmitter<any> = new EventEmitter();
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
   @Output() agentChanged = new EventEmitter<boolean>();
-  constructor(private coreService: CoreService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private dataService: DataService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: any): void {
@@ -46,6 +47,7 @@ export class AgentSelectionComponent {
             this.favorite.show = true;
             this.generateFavList();
           }
+          this.cdr.markForCheck();
         }
       });
       this.checkIsAgentExist();
@@ -103,6 +105,7 @@ export class AgentSelectionComponent {
     this.dataService.reloadTree.next({reloadAgents: true});
     setTimeout(() => {
       this.isReloading = false;
+      this.cdr.markForCheck();
     }, 2000)
   }
 

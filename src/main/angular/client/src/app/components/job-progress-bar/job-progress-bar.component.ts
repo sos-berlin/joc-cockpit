@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, DoCheck} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, DoCheck} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 import {interval, Subscription} from 'rxjs';
 
@@ -6,7 +6,8 @@ import {interval, Subscription} from 'rxjs';
   standalone: false,
   selector: 'app-job-progress-bar',
   templateUrl: './job-progress-bar.component.html',
-  styleUrls: ['./job-progress-bar.component.css']
+  styleUrls: ['./job-progress-bar.component.css'],
+  
 })
 export class JobProgressBarComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
   private _job: any;

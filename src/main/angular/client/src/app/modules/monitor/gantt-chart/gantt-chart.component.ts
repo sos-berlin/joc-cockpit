@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {differenceInHours, set, differenceInMinutes} from 'date-fns';
 
 @Component({
   standalone: false,
   selector: 'app-gantt-chart',
   templateUrl: 'gantt-chart.component.html',
-  styleUrls: ['gantt-chart.component.scss']
+  styleUrls: ['gantt-chart.component.scss'],
+  
 })
 export class GanttChartComponent implements OnChanges {
   @Input() dayStart: any;
@@ -18,7 +19,7 @@ export class GanttChartComponent implements OnChanges {
   selectedDate = this.today;
   workingHours: number;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {DataService} from "../../../services/data.service";
@@ -8,7 +8,8 @@ import {AuthService} from "../../../components/guard";
   standalone: false,
   selector: 'app-email-setting',
   templateUrl: './email-setting.component.html',
-  styleUrl: './email-setting.component.scss'
+  styleUrl: './email-setting.component.scss',
+  
 })
 export class EmailSettingComponent {
   @Input() preferences: any = {};
@@ -31,7 +32,7 @@ export class EmailSettingComponent {
   fullScreen = false;
 
   constructor(public coreService: CoreService,
-              private modal: NzModalService, private dataService: DataService, public authService: AuthService) {
+              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -59,6 +60,7 @@ export class EmailSettingComponent {
         this.currentObj.contentType = res.contentType
         this.currentObj.jobResourceName = res.jobResourceName
         this.currentObj.body = res.body
+        this.cdr.markForCheck();
       },
       error: () => {
       }
@@ -71,9 +73,11 @@ export class EmailSettingComponent {
     this.coreService.post('approval/email_settings/store', obj).subscribe({
       next: (res) => {
         this.submitted = false;
+        this.cdr.markForCheck();
       },
       error: () => {
         this.submitted = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -85,6 +89,7 @@ export class EmailSettingComponent {
       forInventory: true
     }).subscribe((res) => {
       this.jobResourcesTree = this.coreService.prepareTree(res, true);
+      this.cdr.markForCheck();
     });
   }
 }

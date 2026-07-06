@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
@@ -7,7 +7,8 @@ import {Subscription} from 'rxjs';
   standalone: false,
   selector: 'app-breadcrumbs',
   templateUrl: './breadcrumbs.component.html',
-  styleUrls: ['./breadcrumbs.component.scss']
+  styleUrls: ['./breadcrumbs.component.scss'],
+  
 })
 export class BreadcrumbsComponent {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
@@ -15,10 +16,13 @@ export class BreadcrumbsComponent {
   identityServiceName: string | undefined;
   subscription: Subscription;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private cdr: ChangeDetectorRef) {
     this.subscription = router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root));
+      .subscribe(() => {
+        this.breadcrumbs = this.createBreadcrumbs(this.activatedRoute.root);
+        this.cdr.markForCheck();
+      });
   }
 
   ngOnInit(): void {

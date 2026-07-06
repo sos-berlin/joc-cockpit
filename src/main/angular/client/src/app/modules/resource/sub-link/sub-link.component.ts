@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 
 @Component({
   standalone: false,
   selector: 'app-links',
-  templateUrl: './sub-link.component.html'
+  templateUrl: './sub-link.component.html',
+  
 })
 export class SubLinkComponent {
   permission: any = {};

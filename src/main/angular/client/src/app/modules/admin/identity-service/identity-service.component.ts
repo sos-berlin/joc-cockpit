@@ -980,7 +980,7 @@ export class IdentityServiceModalComponent {
   standalone: false,
   selector: 'app-identity-service-all',
   templateUrl: 'identity-service.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class IdentityServiceComponent {
   loading = true;

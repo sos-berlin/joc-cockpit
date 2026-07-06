@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
@@ -61,7 +61,8 @@ template: `
       common.button.close
     </button>
   </div>
-`
+`,
+  
 })
 export class CalendarModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -73,7 +74,7 @@ export class CalendarModalComponent {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -126,6 +127,7 @@ export class CalendarModalComponent {
         if (this.toDate) {
           this.changeDate();
         }
+        this.cdr.markForCheck();
       }
     });
     const obj: any = {
@@ -144,6 +146,7 @@ export class CalendarModalComponent {
     this.coreService.post('calendar/dates',
       obj).subscribe((result: any) => {
       this.filterDates(result);
+      this.cdr.markForCheck();
     });
   }
 

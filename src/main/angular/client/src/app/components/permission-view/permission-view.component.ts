@@ -1,9 +1,10 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 
 @Component({
   standalone: false,
   selector: 'app-permission-view',
-  templateUrl: './permission-view.component.html'
+  templateUrl: './permission-view.component.html',
+  
 })
 export class PermissionViewComponent {
   @Input() permission: any = {};
@@ -11,7 +12,7 @@ export class PermissionViewComponent {
   selectedController: string;
   controllerPermission: any = {};
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

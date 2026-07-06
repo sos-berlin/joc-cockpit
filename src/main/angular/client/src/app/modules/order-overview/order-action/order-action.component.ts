@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Output, EventEmitter, ViewContainerRef} from '@angular/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from 'underscore';
 import {CoreService} from '../../../services/core.service';
@@ -16,7 +16,8 @@ import {PriorityModalComponent} from "../../../components/priority-modal/priorit
 @Component({
   standalone: false,
   selector: 'app-order-action',
-  templateUrl: './order-action.component.html'
+  templateUrl: './order-action.component.html',
+  
 })
 export class OrderActionComponent {
   @Input() order: any;
@@ -30,7 +31,7 @@ export class OrderActionComponent {
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public message: NzMessageService) {
+              public message: NzMessageService, private cdr: ChangeDetectorRef) {
   }
 
   change(value: boolean): void {

@@ -89,7 +89,7 @@ export class SingleCalendarComponent {
   standalone: false,
   selector: 'app-calendar',
   templateUrl: 'calendar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CalendarComponent {
   isLoading = false;

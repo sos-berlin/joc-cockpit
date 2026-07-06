@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {interval, Subscription} from 'rxjs';
 import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
@@ -57,7 +57,8 @@ export class Logging2Component {
 @Component({
   standalone: false,
   selector: 'app-logging',
-  templateUrl: './logging.component.html'
+  templateUrl: './logging.component.html',
+  
 })
 export class LoggingComponent {
   clientLogs = [];
@@ -75,7 +76,8 @@ export class LoggingComponent {
   preferences: any = {};
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private clipboardService: ClipboardService, private message: NzMessageService, private modal: NzModalService) {
+              private clipboardService: ClipboardService, private message: NzMessageService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
     if (sessionStorage['clientLogFilter']) {
       this.clientLogFilter = JSON.parse(sessionStorage['clientLogFilter']);
     } else {
@@ -101,7 +103,9 @@ ngOnInit(): void {
     if (this.clientLogFilter.isEnable) {
       try {
         this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
+        this.cdr.markForCheck();
       } catch (e) {
+        this.cdr.markForCheck();
       }
     }
   });

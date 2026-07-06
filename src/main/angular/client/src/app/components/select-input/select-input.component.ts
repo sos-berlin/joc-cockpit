@@ -5,7 +5,7 @@ import {ControlContainer, NgForm} from "@angular/forms";
   standalone: false,
   selector: 'app-select-input',
   templateUrl: './select-input.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   viewProviders: [{
     provide: ControlContainer,
     deps: [[Optional, NgForm]],

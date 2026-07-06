@@ -16,7 +16,7 @@ import {TranslateService} from '@ngx-translate/core';
   standalone: false,
   selector: 'app-generate-report',
   templateUrl: './generate-report.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class GenerateReportComponent {
   @Input() permission: any;

@@ -24,7 +24,7 @@ import {
       [attr.pointer-events]="pointerEvents"
     />
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class CircleComponent implements OnChanges {
   @Input() cx: number;

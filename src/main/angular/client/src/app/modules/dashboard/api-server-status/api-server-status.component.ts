@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-api-server-status',
   templateUrl: './api-server-status.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class APIServerStatusComponent {
   @Input('sizeY') ybody: number;
@@ -26,6 +26,7 @@ export class APIServerStatusComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
   }

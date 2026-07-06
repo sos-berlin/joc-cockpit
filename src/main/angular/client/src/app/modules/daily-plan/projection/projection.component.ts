@@ -214,7 +214,7 @@ export class ExportComponent {
   standalone: false,
   selector: 'app-projection-dialog-modal-content',
   templateUrl: './projection-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ShowProjectionModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -369,7 +369,7 @@ export class ShowProjectionModalComponent {
   selector: 'app-projection',
   templateUrl: './projection.component.html',
   styleUrls: ['./projection.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ProjectionComponent {
   @Input() projectionData: any = [];
@@ -568,6 +568,7 @@ export class ProjectionComponent {
       types: ['WORKFLOW']
     }).subscribe((res) => {
       this.workflowTree = this.coreService.prepareTree(res, true);
+      this.cdr.detectChanges();
     });
   }
 
@@ -578,6 +579,7 @@ export class ProjectionComponent {
       types: ['SCHEDULE']
     }).subscribe((res) => {
       this.scheduleTree = this.coreService.prepareTree(res, true);
+      this.cdr.detectChanges();
     });
   }
 

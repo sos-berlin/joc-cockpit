@@ -81,7 +81,7 @@ export class EditModalComponent {
   standalone: false,
   selector: 'app-single-document',
   templateUrl: './single-documentation.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleDocumentationComponent {
   loading = false;
@@ -249,7 +249,7 @@ export class SingleDocumentationComponent {
   standalone: false,
   selector: 'app-document',
   templateUrl: 'documentation.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class DocumentationComponent {
   isLoading = false;

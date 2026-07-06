@@ -132,7 +132,7 @@ export class RelativeMonthValidator implements Validator {
 @Component({
   standalone: false,
   selector: 'app-report',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
   templateUrl: './report.component.html'
 })
 export class ReportComponent implements OnChanges, OnDestroy {

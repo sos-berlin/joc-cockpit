@@ -66,7 +66,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
       ></svg:g>
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class PieSeriesComponent implements OnChanges {
   @Input() colors: ColorHelper;

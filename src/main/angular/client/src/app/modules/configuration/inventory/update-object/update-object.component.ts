@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {isArray, isEmpty} from 'underscore';
@@ -12,7 +12,8 @@ import {ValueEditorComponent} from "../../../../components/value-editor/value.co
 @Component({
   standalone: false,
   selector: 'app-update-object',
-  templateUrl: './update-object.component.html'
+  templateUrl: './update-object.component.html',
+  
 })
 export class UpdateObjectComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -181,6 +182,7 @@ export class UpdateObjectComponent {
       this.object.orderParameterisations = [];
       this.getPositions(conf.path, () => {
         this.updateVariableList();
+        this.cdr.markForCheck();
       });
     });
   }
@@ -418,8 +420,10 @@ export class UpdateObjectComponent {
           this.blockPositionList.set(item.positionString, item.positions);
         });
         cb();
+        this.cdr.markForCheck();
       }, error: () => {
         cb();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -715,6 +719,7 @@ export class UpdateObjectComponent {
     modal.afterClose.subscribe(result => {
       if (result) {
         data.value = result;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -772,7 +777,10 @@ export class UpdateObjectComponent {
     this.coreService.post(URL, obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -1057,6 +1065,7 @@ export class UpdateObjectComponent {
     this.findAndUpdate(() => {
       this.step = 2;
       this.submitted = false;
+      this.cdr.markForCheck();
     });
   }
 

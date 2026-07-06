@@ -402,7 +402,7 @@ export class AccountModalComponent {
   standalone: false,
   selector: 'app-accounts-all',
   templateUrl: 'accounts.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AccountsComponent {
   loading = true;

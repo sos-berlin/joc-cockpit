@@ -6,7 +6,7 @@ import {isPlatformBrowser} from '@angular/common';
 import {
   NgZone, Inject, Component,
   Input, Output, EventEmitter, HostBinding,
-  ViewChild, ViewEncapsulation, ChangeDetectorRef
+  ViewChild, ViewEncapsulation, ChangeDetectorRef, ChangeDetectionStrategy
 } from '@angular/core';
 
 import {PerfectScrollbarDirective} from './perfect-scrollbar.directive';
@@ -23,7 +23,8 @@ import {
   styleUrls: [
     './perfect-scrollbar.component.css'
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  
 })
 export class PerfectScrollbarComponent {
   public states: any = {};

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {isArray, isEqual} from 'underscore';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
@@ -9,7 +9,8 @@ import {CoreService} from '../../services/core.service';
 @Component({
   standalone: false,
   selector: 'app-order-variable',
-  templateUrl: './order-variable.component.html'
+  templateUrl: './order-variable.component.html',
+  
 })
 export class OrderVariableComponent {
   @Input() order;
@@ -19,7 +20,8 @@ export class OrderVariableComponent {
   @Input() schedulerId: any;
 
   constructor(public coreService: CoreService, public modal: NzModalService,
-              public toasterService: ToastrService, private translate: TranslateService) {
+              public toasterService: ToastrService, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -94,6 +96,7 @@ export class OrderVariableComponent {
               }
               return {name: k, value: v};
             });
+            this.cdr.markForCheck();
           });
         }
       });
@@ -125,6 +128,7 @@ export class OrderVariableComponent {
               break;
             }
           }
+          this.cdr.markForCheck();
         });
       } else {
         this.translate.get('common.message.requiredVariableCannotRemoved').subscribe(translatedValue => {
@@ -145,6 +149,7 @@ export class OrderVariableComponent {
         next: (res: any) => {
           order.requirements = res.workflow.orderPreparation;
           cb();
+          this.cdr.markForCheck();
         }, error: () => cb()
       });
     }

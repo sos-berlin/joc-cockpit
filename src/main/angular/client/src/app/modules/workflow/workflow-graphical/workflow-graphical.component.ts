@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef, EventEmitter, inject,
   Input,
@@ -42,7 +44,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-workflow-graphical-dialog',
-  templateUrl: './dependent-workflow-dialog.html'
+  templateUrl: './dependent-workflow-dialog.html',
+  
 })
 export class DependentWorkflowComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -63,9 +66,10 @@ export class DependentWorkflowComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dataService: DataService,
-              private workflowService: WorkflowService, private modal: NzModalService) {
+              private workflowService: WorkflowService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
   }
 
@@ -146,6 +150,7 @@ export class DependentWorkflowComponent {
       this.workFlowJson.addOrderFromWorkflows = res.workflow.addOrderFromWorkflows;
       this.workFlowJson.addOrderToWorkflows = res.workflow.addOrderToWorkflows;
       this.getOrders(this.workflow);
+      this.cdr.markForCheck();
     });
   }
 
@@ -183,6 +188,7 @@ export class DependentWorkflowComponent {
           }
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -210,7 +216,8 @@ export class DependentWorkflowComponent {
   standalone: false,
   selector: 'app-workflow-graphical',
   templateUrl: './workflow-graphical.component.html',
-  styleUrls: ['./workflow-graphical.component.css']
+  styleUrls: ['./workflow-graphical.component.css'],
+  
 })
 export class WorkflowGraphicalComponent {
   @Input() workFlowJson: any = {};
@@ -263,7 +270,8 @@ export class WorkflowGraphicalComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private route: ActivatedRoute,
               public workflowService: WorkflowService, public modal: NzModalService, private dataService: DataService,
-              private nzContextMenuService: NzContextMenuService, private viewContainerRef: ViewContainerRef) {
+              private nzContextMenuService: NzContextMenuService, private viewContainerRef: ViewContainerRef,
+              private cdr: ChangeDetectorRef) {
   }
 
   ngAfterViewInit(): void {
@@ -504,6 +512,7 @@ export class WorkflowGraphicalComponent {
     modal.afterClose.subscribe((res) => {
       if (res) {
         this.isProcessing = true;
+        this.cdr.markForCheck();
         this.resetAction(5000);
       }
     });
@@ -516,6 +525,7 @@ export class WorkflowGraphicalComponent {
     }).subscribe((res: any) => {
       this.order.variables = res.variables || {};
       this.openModel(this.order);
+      this.cdr.markForCheck();
     });
   }
 
@@ -946,6 +956,7 @@ export class WorkflowGraphicalComponent {
                   }
                   self.nzContextMenuService.create(evt, self.menu);
                   $('.mxTooltip').css({visibility: 'hidden'});
+                  self.cdr.markForCheck();
                 }, 0);
               }
             } catch (e) {
@@ -1847,6 +1858,7 @@ export class WorkflowGraphicalComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           this.isProcessing = true;
+          this.cdr.markForCheck();
           this.skipOrStop(instruction, operation, {
             comment: result.comment,
             timeSpent: result.timeSpent,
@@ -1968,6 +1980,7 @@ export class WorkflowGraphicalComponent {
       }).subscribe((res: any) => {
         order.obstacles = res.obstacles;
         cell.setAttribute('order', JSON.stringify(order));
+        this.cdr.markForCheck();
       });
     }
   }
@@ -1982,6 +1995,7 @@ export class WorkflowGraphicalComponent {
     if (this.isProcessing) {
       setTimeout(() => {
         this.isProcessing = false;
+        this.cdr.markForCheck();
       }, time);
     }
   }
@@ -1989,11 +2003,13 @@ export class WorkflowGraphicalComponent {
   searchNodes(keyword: string): void {
     if (!keyword.trim()) {
       this.filteredNodes = this.nodes;
+      this.cdr.markForCheck();
       return;
     }
     this.filteredNodes = this.nodes.filter(node =>
       (node.title || '').toLowerCase().includes(keyword.toLowerCase())
     );
+    this.cdr.markForCheck();
   }
 
   objectTreeSearch() {
@@ -2009,6 +2025,7 @@ export class WorkflowGraphicalComponent {
     $('.tree-search').removeClass('hide-on-focus');
     setTimeout(() =>{
       this.filteredNodes = this.nodes
+      this.cdr.markForCheck();
     },100)
   }
 

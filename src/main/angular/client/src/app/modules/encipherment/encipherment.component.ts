@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-encipherment-modal',
   templateUrl: './add-encipherment-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class AddEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -174,7 +174,7 @@ export class AddEnciphermentModalComponent {
   standalone: false,
   selector: 'app-import-encipherment-modal',
   templateUrl: './import-encipherment-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ImportEnciphermentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -382,7 +382,7 @@ export class EnciphermentUpdateKeyComponent {
   standalone: false,
   selector: 'app-encipherment',
   templateUrl: './encipherment.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class EnciphermentComponent {
   permission: any = {};

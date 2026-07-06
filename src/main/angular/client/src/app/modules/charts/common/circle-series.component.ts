@@ -99,7 +99,7 @@ export interface Circle {
       />
     </svg:g>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  
 })
 export class CircleSeriesComponent implements OnChanges, OnInit {
   @Input() data: Series;

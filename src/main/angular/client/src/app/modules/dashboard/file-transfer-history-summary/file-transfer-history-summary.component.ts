@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-file-transfer-history-summary',
   templateUrl: './file-transfer-history-summary.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class FileTransferHistorySummaryComponent {
   summary: any;
@@ -26,6 +26,7 @@ export class FileTransferHistorySummaryComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
+        this.cdr.markForCheck();
       }
     });
   }

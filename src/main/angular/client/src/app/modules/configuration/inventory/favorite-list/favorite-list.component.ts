@@ -1,10 +1,11 @@
-import {OnChanges, Component, Input, Output, ViewChild, SimpleChanges, EventEmitter} from '@angular/core';
+import {OnChanges, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Output, ViewChild, SimpleChanges, EventEmitter} from '@angular/core';
 import {CoreService} from "../../../../services/core.service";
 
 @Component({
   standalone: false,
   selector: 'app-favorite-list',
-  templateUrl: './favorite-list.component.html'
+  templateUrl: './favorite-list.component.html',
+  
 })
 export class FavoriteListComponent implements OnChanges {
   @ViewChild('myinput') myInputField;
@@ -23,7 +24,7 @@ export class FavoriteListComponent implements OnChanges {
 
   @Output() reload: EventEmitter<any> = new EventEmitter();
 
-  constructor(private coreService: CoreService) {
+  constructor(private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,6 +79,7 @@ export class FavoriteListComponent implements OnChanges {
             this.list.splice(parseInt(i), 1);
             this.list.push({name: this.obj.name, content: this.data[this.type], ordering});
             this.reload.emit();
+            this.cdr.markForCheck();
           });
           break;
         }
@@ -99,6 +101,7 @@ export class FavoriteListComponent implements OnChanges {
           ordering: this.list.length > 0 ? (this.list[this.list.length - 1].ordering + 1) : 1
         });
         this.reload.emit();
+        this.cdr.markForCheck();
       });
     }
   }
@@ -126,6 +129,7 @@ export class FavoriteListComponent implements OnChanges {
             break;
           }
         }
+        this.cdr.markForCheck();
       }
     });
   }

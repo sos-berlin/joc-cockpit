@@ -19,7 +19,8 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-post-notice-modal',
-  templateUrl: './post-notice-dialog.html'
+  templateUrl: './post-notice-dialog.html',
+  
 })
 export class PostModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -43,7 +44,7 @@ export class PostModalComponent {
   showNoticeId = false;
   globalSingle = false;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -60,6 +61,7 @@ export class PostModalComponent {
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.cdr.markForCheck();
     });
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'later';
@@ -289,8 +291,12 @@ export class PostModalComponent {
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
+        this.cdr.markForCheck();
       },
-      error: () => this.submitted = false
+      error: () => {
+        this.submitted = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -300,7 +306,7 @@ export class PostModalComponent {
   standalone: false,
   selector: 'app-single-board',
   templateUrl: './single-board.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SingleBoardComponent {
   loading: boolean;
@@ -317,6 +323,7 @@ export class SingleBoardComponent {
               private cdr: ChangeDetectorRef) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
   }
 
@@ -429,6 +436,7 @@ export class SingleBoardComponent {
         }
       }
       board.notices = [...board.notices];
+      this.cdr.markForCheck();
     });
   }
 
@@ -478,6 +486,7 @@ export class SingleBoardComponent {
         }
         // Emit global update to stop blinking in all components
         this.dataService.announceNoteUpdate({ objectName: name, objectType: 'NOTICEBOARD', action: 'read' });
+        this.cdr.markForCheck();
       }
     });
   }
@@ -487,7 +496,7 @@ export class SingleBoardComponent {
   standalone: false,
   selector: 'app-board',
   templateUrl: 'board.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class BoardComponent {
   isLoading = false;

@@ -14,7 +14,7 @@ import {GroupByPipe} from '../../../pipes/core.pipe';
   selector: 'app-controller-monitor',
   templateUrl: './controller-monitor.component.html',
   styleUrls: ['./controller-monitor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class ControllerMonitorComponent {
   @Input() permission: any;
@@ -53,6 +53,7 @@ export class ControllerMonitorComponent {
               private groupByPipe: GroupByPipe, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
+      this.cdr.markForCheck();
     });
 
     this.subscription2 = dataService.functionAnnounced$.subscribe((res: any) => {
@@ -80,6 +81,7 @@ export class ControllerMonitorComponent {
   ngOnInit(): void {
     this.translate.get('monitor.label.inHours').subscribe(translatedValue => {
       this.yAxisLabel = translatedValue;
+      this.cdr.markForCheck();
     });
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.init();
@@ -189,6 +191,7 @@ export class ControllerMonitorComponent {
         });
         groupData = this.groupByPipe.transform(groupData, 'date');
         this.checkMissingDates(groupData, map);
+        this.cdr.markForCheck();
       }, error: () => { this.isLoaded = true; this.cdr.markForCheck(); }
     });
   }

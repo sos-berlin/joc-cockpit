@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
 @Component({
   standalone: false,
   selector: 'app-multi-select',
-  templateUrl: './multi-select.component.html'
+  templateUrl: './multi-select.component.html',
+  
 })
 export class MultiSelectComponent {
   @Input() type: string;
@@ -24,7 +25,7 @@ export class MultiSelectComponent {
   @Output() funcCall: EventEmitter<any> = new EventEmitter();
   @Output() onSelectCall: EventEmitter<any> = new EventEmitter();
   @Output() onChange = new EventEmitter<boolean>();
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

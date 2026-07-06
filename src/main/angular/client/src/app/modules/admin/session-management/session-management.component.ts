@@ -12,7 +12,7 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
   standalone: false,
   selector: 'app-session-management',
   templateUrl: './session-management.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class SessionManagementComponent {
   @Input() permission: any = {};

@@ -17,7 +17,7 @@
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    
   })
   export class LoginComponent {
     isLoading = true;
@@ -67,6 +67,7 @@
               this.cdr.markForCheck();
             }, 100)
           }
+          this.cdr.markForCheck();
         }
       });
       if (localStorage['$SOS$REMEMBER'] === 'true' || localStorage['$SOS$REMEMBER'] === true) {
@@ -218,6 +219,7 @@
             };
             this.submitted = false;
             this.onSign(data.secondFactoridentityService)
+            this.cdr.markForCheck();
             return;
           }
           this.authService.setUser(data);
@@ -232,6 +234,7 @@
         }, error: () => {
           this.submitted = false;
           this.errorMsg = true;
+          this.cdr.markForCheck();
         }
       });
     }
@@ -325,6 +328,7 @@
           } else {
             this.errorMsgText = err.message;
           }
+          this.cdr.markForCheck();
         }
       });
     }
@@ -358,6 +362,7 @@
             });
             this.toasterService.success(msg, title)
             this.back();
+            this.cdr.markForCheck();
           }, error: (err) => {
             this.submitted1 = false;
             if (err.error && err.error.error) {
@@ -365,12 +370,14 @@
             } else {
               this.toasterService.error(err.message);
             }
+            this.cdr.markForCheck();
           }
         })
       }).catch((error) => {
         this.submitted1 = false;
         this.errorMsg = true;
         this.errorMsgText = error;
+        this.cdr.markForCheck();
       })
     }
 

@@ -1,4 +1,4 @@
-import {Component, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewContainerRef} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {Router} from '@angular/router';
@@ -15,14 +15,15 @@ declare const $: any;
 @Component({
   standalone: false,
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  
 })
 export class AppComponent {
   locales: any = [];
 
   constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService: DataService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService, private popupService: PopupService,
-              public viewContainerRef: ViewContainerRef) {
+              public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -77,6 +78,7 @@ export class AppComponent {
       }
       this.coreService.setLocales(locales);
       this.getTranslate();
+      this.cdr.markForCheck();
     });
 
     setTimeout(() => {

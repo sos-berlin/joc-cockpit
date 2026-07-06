@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class WorkflowComponent {
   schedulerIds: any = {};
