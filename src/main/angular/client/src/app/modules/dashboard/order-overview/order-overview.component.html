@@ -4,6 +4,9 @@
       @if (preferences.showHelpPages) {
         <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       }
+      @if (preferences.showVideoHelpPages) {
+        <i (click)="videoPage('dashboard-orders-panel')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-dashboard cur-point fa fa-play-circle text-14 m-r-sm"></i>
+      }
       <span>{{ 'dashboard.label.orders' | translate }}</span>
     </h3>
   </div>

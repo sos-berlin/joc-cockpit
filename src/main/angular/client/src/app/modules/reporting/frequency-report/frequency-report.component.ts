@@ -2,17 +2,22 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, NgZone, Input, 
 import {NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
-import {Chart} from "chart.js";
+import Chart from "chart.js/auto";
 import PerfectScrollbar from 'perfect-scrollbar';
 import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
 import {TranslateService} from '@ngx-translate/core';
+
+function chartColor(index: number): string {
+  return `hsl(${(index * 137.508) % 360}, 65%, 80%)`;
+}
+
 @Component({
   standalone: false,
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
   styleUrls: ['./frequency-report.component.scss'],
-  
+
 })
 export class FrequencyReportComponent {
   @Input({required: true}) readonly templates: any;
@@ -305,6 +310,8 @@ removeCard(cardId: any): void {
             break;
         }
         chartData.uniqueKeys.key = key;
+        const colorIndex = chartData.datasets[0].data.length - 1;
+        chartData.datasets[0].backgroundColor.push(chartColor(colorIndex));
         chartData.datasets[0].borderColor.push('white');
         chartData.datasets[0].hoverBackgroundColor.push('#e0e0e2');
         chartData.datasets[0].hoverBorderColor.push('#e0e0e2');
@@ -378,6 +385,7 @@ removeCard(cardId: any): void {
       datasets: [{
         label: 'Job Execution Counts',
         data: [],
+        backgroundColor: [],
         borderColor: [],
         borderWidth: 1,
         hoverBackgroundColor: [],
@@ -663,7 +671,10 @@ removeCard(cardId: any): void {
       datasets: [
         {
           label: this.getLabel(),
-          data: []
+          data: [],
+          backgroundColor: [],
+          borderColor: [],
+          borderWidth: 1
         }
       ]
     };
@@ -725,7 +736,10 @@ removeCard(cardId: any): void {
         default:
 
       }
-
+      const idx = data.datasets[0].data.length - 1;
+      const color = chartColor(idx);
+      data.datasets[0].backgroundColor.push(color);
+      data.datasets[0].borderColor.push(color);
     }
     let delayed;
     const self = this;

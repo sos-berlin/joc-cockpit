@@ -1640,7 +1640,10 @@ export class WorkflowGraphicalComponent {
 
     recursive(this.workFlowJson, nodes);
     this.nodes = nodes.children;
-    this.filteredNodes = this.nodes
+    setTimeout(() => {
+      this.filteredNodes = this.nodes;
+      this.cdr.markForCheck();
+    }, 0);
   }
 
   expandAllTree(): void {

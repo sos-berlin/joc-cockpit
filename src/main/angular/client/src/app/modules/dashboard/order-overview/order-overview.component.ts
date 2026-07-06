@@ -10,7 +10,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
-  
+
 })
 export class OrderOverviewComponent {
   @Input('sizeX') xbody: number;
@@ -115,5 +115,9 @@ export class OrderOverviewComponent {
 
   helpPage(): void{
     this.coreService.openHelpPage('dashboard-orders');
+  }
+
+  videoPage(key): void {
+    this.coreService.openVideoPage(key);
   }
 }

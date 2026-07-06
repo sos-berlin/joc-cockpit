@@ -38,7 +38,7 @@
               @for (btn of filterBtn; track btn) {
                 <button (click)="loadOrders(btn.date)"
                         [ngClass]="{'btn-primary': workflowFilters.date===btn.date}"
-                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'filters.button' | translate }}.{{btn.text}}
+                        class="btn btn-grey btn-sm button-group-ellipsis">{{ 'filters.button.' + btn.text | translate }}
                 </button>
               }
             </div>
@@ -53,7 +53,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadOrders(btn.date)" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.date=== btn.date}"
                         nz-menu-item>
-                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                      <a>{{ 'filters.button.' + btn.text | translate }}</a>
                     </li>
                   }
                 </ul>

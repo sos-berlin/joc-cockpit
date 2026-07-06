@@ -260,6 +260,7 @@ export class CreateTokenModalComponent {
     }
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
+      this.cdr.markForCheck();
     });
     this.display = this.preferences.auditLog;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
