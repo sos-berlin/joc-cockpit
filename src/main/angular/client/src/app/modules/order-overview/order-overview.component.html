@@ -28,7 +28,7 @@
                     @for (btn of dateFilterBtn; track btn) {
                       <li (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}"
                           nz-menu-item>
-                        <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'filters.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>
@@ -49,7 +49,7 @@
                     @for (btn of filterBtn; track btn) {
                       <li (click)="changeStatus(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=== btn.status}"
                           nz-menu-item>
-                        <a>{{ 'common.button' | translate }}.{{btn.text}}</a>
+                        <a>{{ 'common.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>

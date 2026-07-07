@@ -94,7 +94,7 @@
                   @for (btn of filterBtn; track btn) {
                     <li (click)="loadOrders(btn.date);workflowFilters.filter.label = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': workflowFilters.filter.date=== btn.date}"
                         nz-menu-item>
-                      <a>{{ 'filters.button' | translate }}.{{btn.text}}</a>
+                      <a>{{ 'filters.button.' + btn.text | translate }}</a>
                     </li>
                   }
                 </ul>

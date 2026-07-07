@@ -385,7 +385,7 @@
         @if (object.mapOfCheckedId.size > 0) {
           <div class="col-sm-12 m-b-sm">
             <button class="btn btn-grey btn-sm" type="button"
-                    (click)="updateObject()">inventory.search.button.updateObject</button>
+                    (click)="updateObject()">{{ 'inventory.search.button.updateObject' | translate }}</button>
             <span class="p-l-sm"
                  >{{ 'inventory.search.message.updateSelectedObjects' | translate: {objectCount: object.mapOfCheckedId.size} }}</span>
           </div>
@@ -394,7 +394,7 @@
           <div class="col-sm-12 m-b-sm">
             @if (searchObj.advanced.jobNameExactMatch) {
               <button class="btn btn-grey btn-sm" type="button"
-                      (click)="propagateJob()">inventory.search.button.propagateJob</button>
+                      (click)="propagateJob()">{{ 'inventory.search.button.propagateJob' | translate }}</button>
             }
             <button class="btn btn-grey btn-sm" [ngClass]="{'m-l-12' : searchObj.advanced.jobNameExactMatch}"
                     type="button" (click)="updateJob()">{{ 'inventory.search.button.updateJob' | translate }}</button>

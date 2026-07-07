@@ -1,5 +1,4 @@
 import {
-  
   ChangeDetectorRef,
   Component,
   Directive,
@@ -5302,6 +5301,7 @@ export class WorkflowComponent {
   isReferencedBy: any;
   title = '';
   timeZone = '';
+  dayOffset = '';
   documentationName = '';
   extraConfiguration: any = {};
   zones: any = [];
@@ -5499,6 +5499,7 @@ export class WorkflowComponent {
         this.jobs = [];
         this.title = '';
         this.timeZone = '';
+        this.dayOffset = '';
         this.documentationName = '';
         this.jobResourceNames = [];
         this.orderPreparation = {};
@@ -6256,11 +6257,13 @@ export class WorkflowComponent {
     this.extraConfiguration = {
       title: data.title,
       timeZone: data.timeZone,
+      dayOffset: data.dayOffset || '',
       documentationName: data.documentationName,
       jobResourceNames: data.jobResourceNames,
     };
     delete data.title;
     delete data.timeZone;
+    delete data.dayOffset;
     delete data.orderPreparation;
     delete data.documentationName;
     delete data.jobResourceNames;
@@ -6616,12 +6619,12 @@ export class WorkflowComponent {
       docOverListener = (e: MouseEvent) => {
         const target = e.target as Element | null;
         if (!target) return;
-        // Cursor is on trigger or inside any overlay pane — keep open
+        // Cursor is on trigger or inside any overlay pane ï¿½ keep open
         if (el.contains(target) || target.closest('.cdk-overlay-pane')) {
           cancelClose();
           return;
         }
-        // Cursor truly left — close and stop watching
+        // Cursor truly left ï¿½ close and stop watching
         scheduleClose();
         removeDocListener();
       };
@@ -6667,7 +6670,7 @@ export class WorkflowComponent {
       overlayRef.overlayElement.addEventListener('mouseleave', (event: MouseEvent) => {
         if (isDragging || contextMenuOpen) return;
         const related = event.relatedTarget as Element | null;
-        // Cursor moved into another overlay pane (e.g. glossary popover) — don't close yet
+        // Cursor moved into another overlay pane (e.g. glossary popover) ï¿½ don't close yet
         if (related && related.closest('.cdk-overlay-pane')) {
           cancelClose();
           watchExternalOverlay();
@@ -6698,13 +6701,13 @@ export class WorkflowComponent {
           const range = sel.getRangeAt(0);
           if (overlayRef.overlayElement.contains(range.commonAncestorContainer)) {
             e.stopPropagation(); // keep mxGraph from handling Ctrl+C as "copy cells"
-            // No preventDefault — browser clipboard operation proceeds normally
+            // No preventDefault ï¿½ browser clipboard operation proceeds normally
           }
         } catch { /* ignore */ }
       };
       document.addEventListener('keydown', keyCaptureHandler, true);
 
-      // Handle action links: [text](context:type:param) — context help / video
+      // Handle action links: [text](context:type:param) ï¿½ context help / video
       overlayRef.overlayElement.addEventListener('click', (e: MouseEvent) => {
         const anchor = (e.target as HTMLElement).closest('[data-rt-action-type]') as HTMLElement | null;
         if (!anchor) return;
@@ -6740,7 +6743,7 @@ export class WorkflowComponent {
     el.addEventListener('mouseleave', (event: MouseEvent) => {
       if (openTimer) { clearTimeout(openTimer); openTimer = null; }
       const related = event.relatedTarget as Element | null;
-      // Cursor moved directly from icon into an overlay pane — don't close yet
+      // Cursor moved directly from icon into an overlay pane ï¿½ don't close yet
       if (related && related.closest('.cdk-overlay-pane')) {
         cancelClose();
         watchExternalOverlay();
@@ -6835,6 +6838,9 @@ export class WorkflowComponent {
         }
         if (this.timeZone) {
           newData.timeZone = this.timeZone;
+        }
+        if (this.dayOffset) {
+          newData.dayOffset = this.dayOffset;
         }
         if (this.documentationName) {
           newData.documentationName = this.documentationName;
@@ -7376,15 +7382,18 @@ export class WorkflowComponent {
     if (!this.timeZone) {
       this.timeZone = this.preferences.zone;
     }
+    this.dayOffset = res.configuration.dayOffset || '';
     delete res.configuration.orderPreparation;
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
     delete res.configuration.title;
     delete res.configuration.timeZone;
+    delete res.configuration.dayOffset;
 
     this.extraConfiguration = {
       title: this.title,
       timeZone: this.timeZone,
+      dayOffset: this.dayOffset,
       documentationName: this.documentationName,
       jobResourceNames: this.coreService.clone(this.jobResourceNames),
     };
@@ -15562,6 +15571,11 @@ export class WorkflowComponent {
         this.timeZone = this.extraConfiguration.timeZone;
         flag = true;
       }
+    } else if (type === 'dayOffset') {
+      if (this.dayOffset !== this.extraConfiguration.dayOffset) {
+        this.dayOffset = this.extraConfiguration.dayOffset;
+        flag = true;
+      }
     } else if (type === 'documentation') {
       if (this.documentationName !== this.extraConfiguration.documentationName) {
         this.documentationName = this.extraConfiguration.documentationName;
@@ -15675,6 +15689,9 @@ export class WorkflowComponent {
     }
     if (this.timeZone) {
       newObj.timeZone = this.timeZone;
+    }
+    if (this.dayOffset) {
+      newObj.dayOffset = this.dayOffset;
     }
     if (this.documentationName) {
       newObj.documentationName = this.documentationName;

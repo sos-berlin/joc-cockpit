@@ -5,7 +5,7 @@
         <form (ngSubmit)="onSubmit()">
           <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
             <h4 class="modal-title">
-              <span>inventory.search.label.filterBy</span>
+              <span>{{'inventory.search.label.filterBy' | translate }}</span>
               @if (filter.submit && isHide && (filter.workflowPaths.length > 0 || filter.workflowFolders.length > 0 ||
                 filter.schedulePaths.length > 0 || filter.scheduleFolders.length > 0)) {
                 <i class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>

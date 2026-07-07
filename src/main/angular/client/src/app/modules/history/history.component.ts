@@ -1139,6 +1139,34 @@ export class SingleHistoryComponent {
 
 @Component({
   standalone: false,
+  selector: 'app-yade-export-option',
+  template: `
+    <div class="modal-header">
+      <h4 class="modal-title">{{ 'history.label.exportOption' | translate }}</h4>
+    </div>
+    <div class="modal-body p-a">
+      <nz-radio-group [(ngModel)]="selection">
+        <label nz-radio nzValue="all" class="d-block m-b-sm">{{ 'history.label.allTransfers' | translate }}</label>
+        <label nz-radio nzValue="withFiles" class="d-block">{{ 'history.label.transfersWithFilesOnly' | translate }}</label>
+      </nz-radio-group>
+    </div>
+    <div class="modal-footer">
+      <button (click)="submit()" class="btn btn-primary btn-sm">{{ 'common.button.export' | translate }}</button>
+      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm">{{ 'common.button.cancel' | translate }}</button>
+    </div>
+  `
+})
+export class YadeExportOptionComponent {
+  readonly activeModal = inject(NzModalRef);
+  selection = 'all';
+
+  submit(): void {
+    this.activeModal.close(this.selection);
+  }
+}
+
+@Component({
+  standalone: false,
   selector: 'app-history',
   templateUrl: './history.component.html',
   
@@ -2463,8 +2491,22 @@ export class HistoryComponent {
       data = this.exportToExcelTask();
       fileName = 'JS7-task-history-report';
     } else if (this.historyFilters.type === 'YADE') {
-      data = this.exportToExcelYade();
-      fileName = 'JS7-yade-history-report';
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: YadeExportOptionComponent,
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false,
+        nzAutofocus: null,
+      });
+      modal.afterClose.subscribe((result: string) => {
+        if (!result) return;
+        const source = result === 'withFiles'
+          ? this.yadeHistorys.filter((t: any) => t.numOfFiles > 0)
+          : this.yadeHistorys;
+        this.excelService.exportAsExcelFile(this.exportToExcelYade(source), 'JS7-yade-history-report');
+      });
+      return;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
       data = this.exportToExcelDeployment();
       fileName = 'JS7-deployment-history-report';
@@ -3314,9 +3356,11 @@ export class HistoryComponent {
     return data;
   }
 
-  private exportToExcelYade(): any {
+  private exportToExcelYade(transfers: any[] = this.yadeHistorys): any {
     let controllerId = '', workflow = '', status = '', profileName = '',
       startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
+    let source = '', target = '', jump = '', host = '', account = '', port = '', protocol = '';
+    let sourceFileName = '', sourceFilePath = '', targetFileName = '', targetFilePath = '', size = '', integrityHash = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
@@ -3350,25 +3394,83 @@ export class HistoryComponent {
     this.translate.get('history.label.duration').subscribe(translatedValue => {
       duration = translatedValue;
     });
+    this.translate.get('fileTransfer.label.source').subscribe(translatedValue => { source = translatedValue; });
+    this.translate.get('fileTransfer.label.target').subscribe(translatedValue => { target = translatedValue; });
+    this.translate.get('fileTransfer.label.jump').subscribe(translatedValue => { jump = translatedValue; });
+    this.translate.get('fileTransfer.label.host').subscribe(translatedValue => { host = translatedValue; });
+    this.translate.get('fileTransfer.label.account').subscribe(translatedValue => { account = translatedValue; });
+    this.translate.get('fileTransfer.label.port').subscribe(translatedValue => { port = translatedValue; });
+    this.translate.get('fileTransfer.label.protocol').subscribe(translatedValue => { protocol = translatedValue; });
+    this.translate.get('fileTransfer.label.sourceFileName').subscribe(translatedValue => { sourceFileName = translatedValue; });
+    this.translate.get('fileTransfer.label.sourceFilePath').subscribe(translatedValue => { sourceFilePath = translatedValue; });
+    this.translate.get('fileTransfer.label.targetFileName').subscribe(translatedValue => { targetFileName = translatedValue; });
+    this.translate.get('fileTransfer.label.targetFilePath').subscribe(translatedValue => { targetFilePath = translatedValue; });
+    this.translate.get('fileTransfer.label.size').subscribe(translatedValue => { size = translatedValue; });
+    this.translate.get('fileTransfer.label.integrityHash').subscribe(translatedValue => { integrityHash = translatedValue; });
+
     const data = [];
-    for (let i = 0; i < this.yadeHistorys.length; i++) {
+    for (let i = 0; i < transfers.length; i++) {
+      const transfer = transfers[i];
       const obj: any = {};
       if (!this.historyFilters.current) {
-        obj[controllerId] = this.yadeHistorys[i].controllerId;
+        obj[controllerId] = transfer.controllerId;
       }
-      this.translate.get(this.yadeHistorys[i].state._text).subscribe(translatedValue => {
+      this.translate.get(transfer.state._text).subscribe(translatedValue => {
         obj[status] = translatedValue;
       });
-      obj[profileName] = this.yadeHistorys[i].profile;
-      obj[operation] = this.yadeHistorys[i]._operation;
-      obj[workflow] = this.yadeHistorys[i].workflowPath;
-      obj[order] = this.yadeHistorys[i].orderId;
-      obj[total] = this.yadeHistorys[i].numOfFiles;
-      obj[lastErrorMessage] = this.yadeHistorys[i].error ? this.yadeHistorys[i].error.message : '';
-      obj[startTime] = this.coreService.stringToDate(this.preferences, this.yadeHistorys[i].start);
-      obj[endTime] = this.coreService.stringToDate(this.preferences, this.yadeHistorys[i].end);
-      obj[duration] = this.coreService.calDuration(this.yadeHistorys[i].start, this.yadeHistorys[i].end);
+      obj[profileName] = transfer.profile;
+      obj[operation] = transfer._operation;
+      obj[workflow] = transfer.workflowPath;
+      obj[order] = transfer.orderId;
+      obj[total] = transfer.numOfFiles;
+      obj[lastErrorMessage] = transfer.error ? transfer.error.message : '';
+      obj[startTime] = this.coreService.stringToDate(this.preferences, transfer.start);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, transfer.end);
+      obj[duration] = this.coreService.calDuration(transfer.start, transfer.end);
+
+      if (transfer.show) {
+        if (transfer.source) {
+          obj[source + ': ' + host] = transfer.source.host;
+          obj[source + ': ' + account] = transfer.source.account;
+          obj[source + ': ' + port] = transfer.source.port;
+          obj[source + ': ' + protocol] = transfer.source.protocol;
+        }
+        if (transfer.target) {
+          obj[target + ': ' + host] = transfer.target.host;
+          obj[target + ': ' + account] = transfer.target.account;
+          obj[target + ': ' + port] = transfer.target.port;
+          obj[target + ': ' + protocol] = transfer.target.protocol;
+        }
+        if (transfer.jump) {
+          obj[jump + ': ' + host] = transfer.jump.host;
+          obj[jump + ': ' + account] = transfer.jump.account;
+          obj[jump + ': ' + port] = transfer.jump.port;
+          obj[jump + ': ' + protocol] = transfer.jump.protocol;
+        }
+      }
+
       data.push(obj);
+
+      if (transfer.show && transfer.files && transfer.files.length > 0) {
+        for (const file of transfer.files) {
+          const fileObj: any = {};
+          fileObj[sourceFileName] = file.sourceName;
+          fileObj[sourceFilePath] = file.sourcePath;
+          fileObj[targetFileName] = file.targetName;
+          fileObj[targetFilePath] = file.targetPath;
+          if (file.state) {
+            this.translate.get(file.state._text).subscribe(translatedValue => {
+              fileObj[status] = translatedValue;
+            });
+          }
+          fileObj[size] = file.size;
+          fileObj[integrityHash] = file.integrityHash;
+          if (file.error) {
+            fileObj[lastErrorMessage] = file.error.message;
+          }
+          data.push(fileObj);
+        }
+      }
     }
     return data;
   }

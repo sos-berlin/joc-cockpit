@@ -51,7 +51,7 @@
               @if (display) {
                 <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()">
                   <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-                  reporting.button.runReport
+                  {{ 'reporting.button.runReport' | translate }}
                 </button>
               }
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>

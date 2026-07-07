@@ -458,8 +458,8 @@
               <div class="btn-group m-l-12 hidden-btn-group">
                 @for (btn of filterBtn; track btn.status) {
                   <button (click)="getPlansCalRange(btn.status)" [disabled]="savedFilter.selected"
-                          [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
-                          class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button' | translate }}.{{btn.text}}
+                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
+                    class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.' + btn.text | translate }}
                   </button>
                 }
               </div>
@@ -470,8 +470,8 @@
               <div class="btn-group m-l-12 hidden-btn-group">
                 @for (btn of filterBtn; track btn.status) {
                   <button (click)="getPlans(btn.status)" [disabled]="savedFilter.selected"
-                          [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
-                          class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button' | translate }}.{{btn.text}}
+                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
+                    class="btn btn-grey btn-sm button-group-ellipsis">{{ 'common.button.' + btn.text | translate }}
                   </button>
                 }
               </div>
@@ -485,8 +485,8 @@
                   <ul nz-menu>
                     @for (btn of filterBtn; track btn.status) {
                       <li (click)="getPlans(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': dailyPlanFilters.filter.status=== btn.status, 'disable-link':savedFilter.selected}"
-                          nz-menu-item>
-                        <a>{{ 'common.button' | translate }}.{{btn.text}}</a>
+                        nz-menu-item>
+                        <a>{{ 'common.button.' + btn.text | translate }}</a>
                       </li>
                     }
                   </ul>

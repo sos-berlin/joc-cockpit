@@ -150,7 +150,7 @@
     @if (step == 2 && !data.onlyUpdate) {
       <button (click)="step = 1" class="btn btn-secondary btn-sm"
               type="button">
-        common.button.back
+        {{'common.button.back' | translate }}
       </button>
     }
     @if (step === 3) {

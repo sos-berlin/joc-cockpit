@@ -17,25 +17,25 @@
             @if (object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage) {
               <button (click)="createCluster()" class="btn btn-grey btn-sm">
                 <i class="fa fa-plus"></i>&nbsp;
-                agent.button.createCluster
+                {{'agent.button.createCluster' | translate}}
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
               <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-rocket"></i>&nbsp;
-                inventory.button.deploy
+                {{'inventory.button.deploy' | translate}}
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
               <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-refresh m-r-xs"></i>
-                agent.button.revoke
+                {{'agent.button.revoke' | translate}}
               </button>
             }
             @if (object.mapOfCheckedId.size > 0) {
               <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12">
                 <i class="fa fa-trash"></i>&nbsp;
-                common.button.delete
+                {{'common.button.delete' | translate}}
               </button>
             }
             @if (object.mapOfCheckedId.size === 0 && !selectedCluster.subagentClusterId) {
@@ -410,15 +410,15 @@
           <div class="pos-abt" style="top:12px;right:8px">
             <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-rocket m-r-xs"></i>
-              inventory.button.deploy
+              {{'inventory.button.deploy' | translate}}
             </button>
             <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-refresh m-r-xs"></i>
-              agent.button.revoke
+              {{'agent.button.revoke' | translate}}
             </button>
             <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-trash m-r-xs"></i>
-              common.button.delete
+              {{'common.button.delete' | translate}}
             </button>
           </div>
         }

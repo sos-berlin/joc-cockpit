@@ -18,7 +18,7 @@
         <div>
           <button nz-dropdown [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nzTrigger="click"
                   type="button">
-            <i class="fa fa-cog"></i> dashboard.button.changeSize
+            <i class="fa fa-cog"></i> {{'dashboard.button.changeSize' | translate }}
           </button>
           <nz-dropdown-menu #size="nzDropdownMenu">
             <ul class="text-overflow max-ht-120 max-w-110" nz-menu>
@@ -49,7 +49,7 @@
             </ul>
           </nz-dropdown-menu>
           <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" type="button">
-            <i class="fa fa-plus"></i> dashboard.button.widget
+            <i class="fa fa-plus"></i> {{'dashboard.button.widget' | translate }}
           </button>
         </div>
       </div>
