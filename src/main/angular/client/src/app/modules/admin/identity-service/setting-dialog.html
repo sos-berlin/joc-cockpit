@@ -1442,12 +1442,12 @@
     </button>
     @if (data) {
       <button (click)="copySetting()" class="btn btn-default btn-sm"
-              type="button">user.button.copySetting
+              type="button">{{'user.button.copySetting' | translate }}
       </button>
     }
     @if (isEnable) {
       <button (click)="pasteSetting()" class="btn btn-default btn-sm"
-              type="button">user.button.pasteSetting
+              type="button">{{'user.button.pasteSetting' | translate }}
       </button>
     }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
@@ -1457,7 +1457,7 @@
       <div class="w-full" style="display: flex;justify-content: end;">
         <button (click)="downloadSetting()" class="btn btn-default btn-sm m-r-xxs" type="button">
           <i nz-icon nzTheme="outline" nzType="download"></i>&nbsp;
-          inventory.button.download
+          {{'inventory.button.download' | translate }}
         </button>
         <nz-upload [nzBeforeUpload]="beforeUpload2" nzAccept=".json">
           <button class="btn btn-default btn-sm m-l-sm" type="button">

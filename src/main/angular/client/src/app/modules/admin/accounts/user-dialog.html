@@ -103,8 +103,8 @@
 
           @if (!isApprovalRoleValid && approvalRequestorRole) {
             <div class="text-danger help-block">
-              <div [translateParams]="{approvalRequestorRole: approvalRequestorRole}" >
-                {{ 'user.message.invalidRole' | translate }}
+              <div >
+                {{ 'user.message.invalidRole' | translate:{approvalRequestorRole: approvalRequestorRole} }}
               </div>
             </div>
           }

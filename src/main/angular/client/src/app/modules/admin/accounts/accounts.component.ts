@@ -162,7 +162,12 @@ export class AccountModalComponent {
   isApprovalRoleValid = true;
   approvalRequestorRole = '';
 
-  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService,
+              private dataService: DataService, private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {
@@ -226,6 +231,7 @@ export class AccountModalComponent {
       for (const i in res.roles) {
         this.allRoles.push(res.roles[i].roleName);
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -244,6 +250,7 @@ export class AccountModalComponent {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -402,7 +409,6 @@ export class AccountModalComponent {
   standalone: false,
   selector: 'app-accounts-all',
   templateUrl: 'accounts.component.html',
-  
 })
 export class AccountsComponent {
   loading = true;

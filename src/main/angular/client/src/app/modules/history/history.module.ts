@@ -5,7 +5,7 @@ import {
   FilterModalComponent,
   OrderSearchComponent,
   TaskSearchComponent,
-  DeploymentSearchComponent, OrderTemplateComponent, SubmissionSearchComponent
+  DeploymentSearchComponent, OrderTemplateComponent, SubmissionSearchComponent, YadeExportOptionComponent
 } from './history.component';
 import {HistoryRoutingModule} from './history-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -33,7 +33,8 @@ import {WorkflowModule} from '../workflow/workflow.module';
     OrderSearchComponent,
     TaskSearchComponent,
     DeploymentSearchComponent,
-    SubmissionSearchComponent
+    SubmissionSearchComponent,
+    YadeExportOptionComponent
   ]
 })
 export class HistoryModule {

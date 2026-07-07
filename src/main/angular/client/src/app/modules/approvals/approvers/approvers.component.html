@@ -23,8 +23,8 @@
       <span >{{ 'common.label.allEntriesSelected' | translate:{count: totalApprovers} }}</span>
     }
     @if (filters.mapOfCheckedId.size !== totalApprovers) {
-      <a (click)="selectAll()" [translateParams]="{count: totalApprovers}"
-         class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate }}</a>
+      <a (click)="selectAll()"
+         class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate:{count: totalApprovers} }}</a>
     }
     @if (filters.mapOfCheckedId.size === totalApprovers) {
       <a (click)="resetCheckBox()" class="text-primary p-l-xs"

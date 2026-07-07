@@ -32,8 +32,8 @@
       <span >{{ 'common.label.allEntriesSelected' | translate:{count: totalNotification} }}</span>
     }
     @if (filters.mapOfCheckedId.size !== totalNotification) {
-      <a (click)="selectAll()" [translateParams]="{count: totalNotification}"
-         class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate }}</a>
+      <a (click)="selectAll()"
+         class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate:{count: totalNotification} }}</a>
     }
     @if (filters.mapOfCheckedId.size === totalNotification) {
       <a (click)="resetCheckBox()" class="text-primary p-l-xs"

@@ -1,4 +1,4 @@
-import {ErrorHandler, Injectable, NgModule} from '@angular/core';
+import {ErrorHandler, Injectable, NgModule, provideZoneChangeDetection} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {en_US, NZ_DATE_CONFIG, NZ_DATE_LOCALE, NZ_I18N} from 'ng-zorro-antd/i18n';
 import {FormsModule} from '@angular/forms';
@@ -50,8 +50,6 @@ export class MyErrorHandler implements ErrorHandler {
     })
   ],
   providers: [
-    provideTranslateService({}),
-    ...provideTranslateHttpLoader({prefix: './assets/i18n/', suffix: '.json?v=1659421544261'}),
     {
       provide: POPOUT_MODAL_DATA,
       useClass: PopupService,
@@ -65,7 +63,12 @@ export class MyErrorHandler implements ErrorHandler {
     {
       provide: NZ_I18N, useValue: en_US
     },
-    {provide: NZ_DATE_LOCALE, useValue: enUS},  { provide: NZ_DATE_CONFIG, useValue: { firstDayOfWeek: 1 } },],
+    {provide: NZ_DATE_LOCALE, useValue: enUS},  { provide: NZ_DATE_CONFIG, useValue: { firstDayOfWeek: 1 } },
+    provideTranslateService({
+      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json?v=1659421544261' })
+    }),
+    provideZoneChangeDetection({ eventCoalescing: true })
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

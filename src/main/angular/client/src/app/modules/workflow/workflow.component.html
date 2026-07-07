@@ -71,7 +71,7 @@
             <div class="btn-group dropdown hidden-dropdown">
               <button [disabled]="savedFilter.selected" [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
                       nz-dropdown nzTrigger="click" type="button">
-                common.label.status
+                {{ 'common.label.status' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #anyState="nzDropdownMenu">
@@ -754,8 +754,8 @@
                   <span >{{ 'common.label.allEntriesSelected' | translate:{count: data.length} }}</span>
                 }
                 @if (object.mapOfCheckedId.size !== data.length) {
-                  <a (click)="selectAll()" [translateParams]="{count: data.length}"
-                     class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate }}</a>
+                  <a (click)="selectAll()"
+                     class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate:{count: data.length} }}</a>
                 }
                 @if (object.mapOfCheckedId.size === data.length) {
                   <a (click)="resetCheckBox()"

@@ -47,8 +47,8 @@
     <div class="col-sm-12 m-t m-b">
       @if (lossNode) {
         <span class="text">
-          <span [translateParams]="{lossNode: lossNode}" class="text"
-                >{{ 'dashboard.message.confirmNodeLoss' | translate }}</span>
+          <span class="text"
+                >{{ 'dashboard.message.confirmNodeLoss' | translate:{lossNode: lossNode} }}</span>
         </span>
       }
       @if (updateFromJobTemplate) {
@@ -71,8 +71,8 @@
         </span>
       }
       @if (countMessage && count > 0) {
-        <span [translateParams]="{count: count}" class="text"
-              >{{ 'common.message.' + countMessage | translate }}</span>
+        <span class="text"
+              >{{ 'common.message.' + countMessage | translate:{count: count} }}</span>
       }
       @if (countMessage && count === 0) {
         <span class="text">

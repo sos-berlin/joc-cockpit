@@ -75,7 +75,7 @@
               <div class="btn-group dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" type="button">
-                  common.label.anyDate
+                  {{ 'common.label.anyDate' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyDate="nzDropdownMenu">
@@ -193,7 +193,7 @@
               <div class="btn-group dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyDate2" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" type="button">
-                  common.label.anyDate
+                  {{ 'common.label.anyDate' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyDate2="nzDropdownMenu">
@@ -307,7 +307,7 @@
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" type="button">
-                common.label.anyDate
+                {{ 'common.label.anyDate' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu">
@@ -424,7 +424,7 @@
               <div class="btn-group dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" type="button">
-                  common.label.anyDate
+                  {{ 'common.label.anyDate' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyDate="nzDropdownMenu">
@@ -539,7 +539,7 @@
               <div class="btn-group dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" type="button">
-                  common.label.anyDate
+                  {{ 'common.label.anyDate' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyDate="nzDropdownMenu">
@@ -1992,13 +1992,13 @@
                     }
                     @if (depHistory.fileOrderSourceCount) {
                       <span class="p-r-sm">
-                  <span>File Order Sources</span>:
+                  <span>{{'File Order Sources' | translate }}</span>:
                         {{depHistory.fileOrderSourceCount}}
                 </span>
                     }
                     @if (depHistory.jobResourceCount) {
                       <span class="p-r-sm">
-                  <span>Job Resources</span>:
+                  <span>{{'Job Resources' | translate }}</span>:
                         {{depHistory.jobResourceCount}}
                 </span>
                     }

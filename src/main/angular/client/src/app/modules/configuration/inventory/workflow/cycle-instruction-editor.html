@@ -110,7 +110,7 @@
                         </div>
 
                         <div class="col-sm-7">
-                          @for (p of (item.periods | orderBy: 'startTime'); track p) {
+                          @for (p of (item.periods | orderBy: 'startTime'); track $index) {
                             <div>
                               <a (click)="editPeriod(p, item, i)">{{p.text}}</a>
                               <a (click)="editPeriod(p, item, i)" style="margin-left: 5px; cursor: pointer;">

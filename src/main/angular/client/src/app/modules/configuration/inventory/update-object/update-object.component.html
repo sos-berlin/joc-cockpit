@@ -831,7 +831,7 @@
         <div class="col-md-12">
           <div class="min-ht-200" style="display: flex;justify-content: center;align-items: center;">
             <div class="text-md">
-              <span [translateParams]="{count: data.length}" class="_600" >{{ 'inventory.updateObject.message.updateSuccessfully' | translate }}</span>
+              <span class="_600" >{{ 'inventory.updateObject.message.updateSuccessfully' | translate:{count: data.length} }}</span>
               @if ((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')) {
                 <a (click)="step = 3;"
                    class="text-primary p-l-xs"
@@ -939,7 +939,7 @@
     }
     @if (step === 2) {
       <button (click)="activeModal.close('Close')" class="btn btn-grey btn-sm" type="button">
-        common.button.close
+        {{'common.button.close' | translate}}
       </button>
     }
     @if (step !== 2) {

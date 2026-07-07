@@ -48,7 +48,7 @@
               <div class="btn-group m-l-12 dropdown hidden-dropdown">
                 <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
                         nzTrigger="click" type="button">
-                  common.label.state
+                  {{ 'common.label.state' | translate }}
                   <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
                 <nz-dropdown-menu #anyState="nzDropdownMenu" [ngClass]="{'hide': (pageView === 'bulk')}">
@@ -933,8 +933,8 @@
                         <span >{{ 'common.label.allEntriesSelected' | translate:{count: data.length} }}</span>
                       }
                       @if (object.mapOfCheckedId.size !== data.length) {
-                        <a (click)="selectAll()" [translateParams]="{count: data.length}"
-                           class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate }}</a>
+                        <a (click)="selectAll()"
+                           class="text-primary p-l-xs" >{{ 'common.label.selectAllEntries' | translate:{count: data.length} }}</a>
                       }
                       @if (object.mapOfCheckedId.size === data.length) {
                         <a (click)="resetCheckBox()"

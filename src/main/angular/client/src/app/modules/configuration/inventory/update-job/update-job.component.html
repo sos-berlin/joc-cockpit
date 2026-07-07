@@ -51,7 +51,7 @@
           <div [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}"
                style="display: flex;justify-content: center;align-items: center;">
             <div class="text-md">
-              <span [translateParams]="{workflowsCount: data.workflows.length}" class="_600" >{{ 'inventory.updateJob.message.updateSuccessfully' | translate }}</span>
+              <span class="_600" >{{ 'inventory.updateJob.message.updateSuccessfully' | translate:{workflowsCount: data.workflows.length} }}</span>
               <a (click)="step = 4;" class="text-primary p-l-xs"
                  >{{ 'inventory.updateJob.button.clickHereToDeploy' | translate }}</a>
             </div>
@@ -150,12 +150,12 @@
     @if (step == 2 && !data.onlyUpdate) {
       <button (click)="step = 1" class="btn btn-secondary btn-sm"
               type="button">
-        common.button.back
+        {{'common.button.back' | translate}}
       </button>
     }
     @if (step === 3) {
       <button (click)="activeModal.close('Close')" class="btn btn-grey btn-sm" type="button">
-        common.button.close
+        {{'common.button.close' | translate}}
       </button>
     }
     @if (step !== 3) {

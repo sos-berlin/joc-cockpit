@@ -91,7 +91,7 @@
             <div class="btn-group dropdown hidden-dropdown">
               <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12"
                       nz-dropdown nzTrigger="click" type="button">
-                common.label.anyDate
+                {{ 'common.label.anyDate' | translate }}
                 <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
               </button>
               <nz-dropdown-menu #anyDate="nzDropdownMenu">

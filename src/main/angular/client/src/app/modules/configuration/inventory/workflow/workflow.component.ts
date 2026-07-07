@@ -259,7 +259,7 @@ export class OffsetValidator implements Validator {
   standalone: false,
   selector: 'app-notice-board-editor-modal',
   templateUrl: './notice-board-editor-dialog.html',
-  
+
 })
 export class NoticeBoardEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -365,7 +365,7 @@ export class NoticeBoardEditorComponent {
   standalone: false,
   selector: 'app-facet-editor-modal',
   templateUrl: './facet-editor-dialog.html',
-  
+
 })
 export class FacetEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -440,7 +440,7 @@ export class FacetEditorComponent {
   standalone: false,
   selector: 'app-repeat-editor-modal',
   templateUrl: './repeat-editor-dialog.html',
-  
+
 })
 export class RepeatEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -485,7 +485,7 @@ export class RepeatEditorComponent {
   standalone: false,
   selector: 'app-time-editor-modal',
   templateUrl: './time-editor-dialog.html',
-  
+
 })
 export class TimeEditorComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -564,7 +564,7 @@ export class TimeEditorComponent {
   standalone: false,
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html',
-  
+
 })
 export class CycleInstructionComponent {
   @Input() selectedNode: any;
@@ -672,8 +672,6 @@ export class CycleInstructionComponent {
 
       this.schemeList.push(obj);
     });
-
-    this.ref.detectChanges();
   }
 
 
@@ -1116,7 +1114,7 @@ export class CycleInstructionComponent {
   standalone: false,
   selector: 'app-admission-time',
   templateUrl: './admission-time-dialog.html',
-  
+
 })
 export class AdmissionTimeComponent {
   @Input() job: any;
@@ -2603,7 +2601,7 @@ export class AdmissionTimeComponent {
 @Component({
   standalone: false,
   selector: 'app-find-replace-modal',
-  
+
   templateUrl: './find-replace-dialog.html'
 })
 export class FindAndReplaceComponent {
@@ -2669,7 +2667,7 @@ export class FindAndReplaceComponent {
 @Component({
   standalone: false,
   selector: 'app-show-reference',
-  
+
   templateUrl: './show-reference-dialog.html'
 })
 export class ShowReferenceComponent {
@@ -2738,7 +2736,7 @@ export class ShowReferenceComponent {
 @Component({
   standalone: false,
   selector: 'app-job-content',
-  
+
   templateUrl: './job-text-editor.html'
 })
 export class JobComponent {
@@ -4759,7 +4757,7 @@ export class JobComponent {
 @Component({
   standalone: false,
   selector: 'app-script-content',
-  
+
   templateUrl: './script-editor.html'
 })
 export class ScriptEditorComponent {
@@ -5011,7 +5009,7 @@ export class ScriptEditorComponent {
 @Component({
   standalone: false,
   selector: 'app-expression-content',
-  
+
   templateUrl: './expression-editor.html'
 })
 export class ExpressionComponent {
@@ -5108,7 +5106,7 @@ export class ExpressionComponent {
   standalone: false,
   selector: 'app-change-impact-dialog',
   templateUrl: './change-impact-dialog.html',
-  
+
 })
 export class ChangeImpactDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -5180,7 +5178,6 @@ export class ChangeImpactDialogComponent {
   standalone: false,
   selector: 'app-history-log-dialog',
   templateUrl: './history-log-dialog.html',
-  
 })
 export class HistoryLogDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -5283,7 +5280,7 @@ export class HistoryLogDialogComponent {
 @Component({
   standalone: false,
   selector: 'app-workflow',
-  
+
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss']
 })
@@ -5325,6 +5322,7 @@ export class WorkflowComponent {
   isReferencedBy: any;
   title = '';
   timeZone = '';
+  dayOffset = '';
   documentationName = '';
   extraConfiguration: any = {};
   zones: any = [];
@@ -5540,6 +5538,7 @@ export class WorkflowComponent {
         this.jobs = [];
         this.title = '';
         this.timeZone = '';
+        this.dayOffset = '';
         this.documentationName = '';
         this.jobResourceNames = [];
         this.orderPreparation = {};
@@ -6287,11 +6286,13 @@ export class WorkflowComponent {
     this.extraConfiguration = {
       title: data.title,
       timeZone: data.timeZone,
+      dayOffset: data.dayOffset || '',
       documentationName: data.documentationName,
       jobResourceNames: data.jobResourceNames,
     };
     delete data.title;
     delete data.timeZone;
+    delete data.dayOffset;
     delete data.orderPreparation;
     delete data.documentationName;
     delete data.jobResourceNames;
@@ -6651,6 +6652,9 @@ export class WorkflowComponent {
         }
         if (this.timeZone) {
           newData.timeZone = this.timeZone;
+        }
+        if (this.dayOffset) {
+          newData.dayOffset = this.dayOffset;
         }
         if (this.documentationName) {
           newData.documentationName = this.documentationName;
@@ -7197,15 +7201,18 @@ export class WorkflowComponent {
     if (!this.timeZone) {
       this.timeZone = this.preferences.zone;
     }
+    this.dayOffset = res.configuration.dayOffset || '';
     delete res.configuration.orderPreparation;
     delete res.configuration.jobResourceNames;
     delete res.configuration.documentationName;
     delete res.configuration.title;
     delete res.configuration.timeZone;
+    delete res.configuration.dayOffset;
 
     this.extraConfiguration = {
       title: this.title,
       timeZone: this.timeZone,
+      dayOffset: this.dayOffset,
       documentationName: this.documentationName,
       jobResourceNames: this.coreService.clone(this.jobResourceNames),
     };
@@ -15389,6 +15396,11 @@ export class WorkflowComponent {
         this.timeZone = this.extraConfiguration.timeZone;
         flag = true;
       }
+    } else if (type === 'dayOffset') {
+      if (this.dayOffset !== this.extraConfiguration.dayOffset) {
+        this.dayOffset = this.extraConfiguration.dayOffset;
+        flag = true;
+      }
     } else if (type === 'documentation') {
       if (this.documentationName !== this.extraConfiguration.documentationName) {
         this.documentationName = this.extraConfiguration.documentationName;
@@ -15502,6 +15514,9 @@ export class WorkflowComponent {
     }
     if (this.timeZone) {
       newObj.timeZone = this.timeZone;
+    }
+    if (this.dayOffset) {
+      newObj.dayOffset = this.dayOffset;
     }
     if (this.documentationName) {
       newObj.documentationName = this.documentationName;

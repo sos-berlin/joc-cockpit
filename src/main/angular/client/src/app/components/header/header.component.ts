@@ -361,18 +361,18 @@ export class HeaderComponent {
               }
             }
 
-            for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
+            for (let j = 0; j < (res.eventsFromApprovalRequests?.length || 0); j++) {
               this.approvalEvent = res.eventsFromApprovalRequests[j];
             }
-            for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
-                          this.requestorEvent = res.eventsFromApprovalRequests[j];
-                        }
-            for (let j = 0; j < res.eventsFromNotes.length; j++) {
-                          this.notesEvent = res.eventsFromNotes[j];
-                        }
+            for (let j = 0; j < (res.eventsFromApprovalRequests?.length || 0); j++) {
+              this.requestorEvent = res.eventsFromApprovalRequests[j];
+            }
+            for (let j = 0; j < (res.eventsFromNotes?.length || 0); j++) {
+              this.notesEvent = res.eventsFromNotes[j];
+            }
 
 
-            for (let j = 0; j < res.eventsFromOrderMonitoring.length; j++) {
+            for (let j = 0; j < (res.eventsFromOrderMonitoring?.length || 0); j++) {
               this.colorOfJOCEvent = res.eventsFromOrderMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
               this.jocMonitor.push(res.eventsFromOrderMonitoring[j]);
               if (this.jocMonitor.length > 10) {
@@ -380,7 +380,7 @@ export class HeaderComponent {
               }
             }
 
-            for (let j = 0; j < res.eventsFromSystemMonitoring.length; j++) {
+            for (let j = 0; j < (res.eventsFromSystemMonitoring?.length || 0); j++) {
               this.colorOfSystemEvent = res.eventsFromSystemMonitoring[j].level === 'ERROR' ? 2 : this.colorOfSystemEvent == 2 ? 2 : 1;
               this.systemMonitor.push(res.eventsFromSystemMonitoring[j]);
               if (this.systemMonitor.length > 10) {

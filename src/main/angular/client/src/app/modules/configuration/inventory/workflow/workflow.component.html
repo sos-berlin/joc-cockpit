@@ -1754,6 +1754,18 @@
                 </nz-select>
               </div>
             </div>
+            <div [ngClass]="{'hide': fullScreen}" class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.dayOffset' | translate) : ''"
+                     class="col-md-4 col-lg-3 form-control-label"
+                     title="{{'workflow.label.dayOffset' | translate}}">{{ 'workflow.label.dayOffset' | translate }}</label>
+              <div class="col-md-8 col-lg-9">
+                <input timevalidator type="text" class="form-control" name="dayOffset"
+                       [readonly]="isTrash"
+                       [(ngModel)]="extraConfiguration.dayOffset"
+                       (ngModelChange)="updateOtherProperties('dayOffset')"
+                       placeholder="HH:MM:SS">
+              </div>
+            </div>
             @if (allowUndeclaredVariables || variableDeclarations.allowUndeclared) {
               <div class="form-group row">
                 <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''"

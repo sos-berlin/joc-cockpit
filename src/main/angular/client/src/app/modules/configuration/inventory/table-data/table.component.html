@@ -150,8 +150,8 @@
         <span >{{ 'common.label.allEntriesSelected' | translate:{count: data.length} }}</span>
       }
       @if (mapOfCheckedId.size !== data.length) {
-        <a (click)="selectAll()" [translateParams]="{count: data.length}" class="text-primary p-l-xs"
-           >{{ 'common.label.selectAllEntries' | translate }}</a>
+        <a (click)="selectAll()" class="text-primary p-l-xs"
+           >{{ 'common.label.selectAllEntries' | translate:{count: data.length} }}</a>
       }
       @if (mapOfCheckedId.size === data.length) {
         <a (click)="reset()" class="text-primary p-l-xs" >{{ 'common.label.clearSelection' | translate }}</a>
