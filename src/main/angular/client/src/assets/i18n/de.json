@@ -298,12 +298,12 @@
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Wird die Authentifizierungsmethode **Bearer Token** verwendet, gibt der Benutzer ein *Token* an.",
     "tooltip.state": {
-      "coupled": "Coupled",
-      "resetting": "Resetting",
-      "initialised": "Initialized",
-      "couplingfailed": "Coupling Failed",
-      "shutdown": "Shutdown",
-      "unknown": "Unknown"
+      "coupled": "Der ^Agent^ ist gekoppelt und funktionsfähig.",
+      "resetting": "Der ^Agent^ ist dabei sich zurückzusetzen, d.h. das Journal des Agenten wird gelöscht und der Agent wird neu gestartet.",
+      "initialised": "Der ^Agent^ ist dabei sich zu initialisieren, d.h. die Kopplung herzustellen.",
+      "couplingfailed": "Der Versuch des ^Agent^en sich zu koppeln ist fehlgeschlagen.",
+      "shutdown": "Der ^Agent^ wurde in normaler Weise heruntergefahren.",
+      "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet."
     },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
@@ -3305,16 +3305,16 @@
     "tooltip.ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf|workflow^ kann durch ^Zutrittszeiten|admission-times^ der Jobs oder der ^AdmissionTimes Anweisung|admissiontimes-instruction^ eingeschränkt sein.\n\nDie Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
     "tooltip.stickToDailyPlanDate": "Ermöglicht die Änderung der Startzeit von ^Aufträgen|order^ unter Beibehaltung ihrer ursprünglichen Zuordnung zum ^Tagesplan|daily-plan^.\n\nAus dem Auftrag erstellte ^Notizen|notice^ werden auf das ursprüngliche Datum des Tagesplans gesetzt und aktivieren ^Wartende Aufträge|expecting-order^, die auf Notizen für dieses Datum warten.",
     "tooltip.state": {
-      "pending": "Pending",
-      "scheduled": "Scheduled",
-      "inprogress": "In Progress",
-      "running": "Running",
-      "suspended": "Suspended",
-      "prompting": "Prompting",
-      "waiting": "Waiting",
-      "blocked": "Blocked",
-      "failed": "Failed",
-      "finished": "Finished"
+      "pending": "^Anstehende|pending^ ^Aufträge|order^ haben keine Startzeit.",
+      "scheduled": "^Eingeplante|scheduled^ ^Aufträge|order^ haben eine zukünftige Startzeit.",
+      "inprogress": "^Fortschreitende|in-progress^ ^Aufträge|order^ verarbeiten eine Instruktion im ^Arbeitsablauf|workflow^, nicht einen ^Job^.",
+      "running": "^Ausführenden|running^ ^Aufträge|order^ verarbeiten einen Job.",
+      "suspended": "^Ausgesetzte|suspended^ ^Aufträge|order^ wurden durch Benutzereingriff angehalten.",
+      "prompting": "^Anfragende|prompting^ ^Aufträge|order^ erwarten eine Bestätigung des Benutzers um fortzusetzen.",
+      "waiting": " ^Wartende|waiting^ ^Aufträge|order^ warten auf eine Ressource, z.B. eine ^Ressourcen-Sperre|resource-lock^, eine ^Notiz|notice^, den nächsten Zyklus einer ^Retry Anweisung|retry-instruction^ oder ^Cycle Anweisung|cycle-instruction^, oder auf einen Prozess.",
+      "blocked": "^Blockierte|blocked^ ^Aufträge|order^ können nicht gestartet werden, z.B. wenn der ^Agent^ nicht erreichbar ist seit der Auftrag hinzugefügt wurde oder wenn der ^Arbeitsablauf|workflow^ ausgesetzt ist.",
+      "failed": "^Fehlgeschlagene|failed^ ^Aufträge|order^ zeigen an, dass ein Auftrag wg. Fehler angehalten wurde oder dass eine ^Fail Anweisung|fail-instruction^ die Fortsetzung des Auftrags verhindert.",
+      "finished": "^Beendete|finished^ ^Aufträge|order^ sind abgeschlossen."
     },
     "treeView": {
       "label": {
@@ -5062,12 +5062,12 @@
     "tooltip.agent": "Aktualisiert die Zuordnung des ^Agent^en in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
     "tooltip.delay": "Aktualisiert die *Verzögerung*, mit der auf die Vollständigkeit eingehender Dateien gewartet wird, in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
     "tooltip.state": {
-      "in_sync": "Synchronized",
-      "suspended": "Suspended",
-      "outstanding": "Outstanding",
-      "not_in_sync": "Not Synchronized",
-      "not_deployed": "Not Deployed",
-      "suspending": "Suspending"
+      "in_sync": "Ein ^Arbeitsablauf|workflow^ ist synchron, wenn er auf den ^Controller^ ^ausgerollt|deployment^ ist.",
+      "suspended": "Ein ^Arbeitsablauf|workflow^ ist ausgesetzt, wenn er durch den Benutzer pausiert wird.",
+      "outstanding": "Ein ^Arbeitsablauf|workflow^ ist ausstehend, wenn nicht alle ^Agent^en das Aussetzen oder die Wiederaufnahme des Arbeitsablaufs bestätigt haben.",
+      "not_in_sync": "Ein ^Arbeitsablauf|workflow^ ist nicht synchron, wenn er nicht auf den ^Controller^ ^ausgerollt|deployment^ wurde.",
+      "not_deployed": "Ein ^Arbeitsablauf|workflow^ gilt als nicht ausgerollt, wenn er nicht auf den ^Controller^ ^ausgerollt|deployment^ wurde.",
+      "suspending": "Ein ^Arbeitsablauf|workflow^ ist ausstehend, wenn nicht alle ^Agent^en das Aussetzen des Arbeitsablaufs bestätigt haben."
     },
     "findAndReplace": {
       "label.find": "Suchen",

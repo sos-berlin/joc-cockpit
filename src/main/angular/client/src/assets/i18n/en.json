@@ -298,12 +298,12 @@
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "If the **Bearer Token** authentication method is used, then a *Token* is specified by the user.",
     "tooltip.state": {
-      "coupled": "Coupled",
-      "resetting": "Resetting",
-      "initialised": "Initialized",
-      "couplingfailed": "Coupling Failed",
-      "shutdown": "Shutdown",
-      "unknown": "Unknown"
+      "coupled": "The ^Agent^ is coupled and operational.",
+      "resetting": "The ^Agent^ is about to reset; that is, the Agent's journal will be cleared and the Agent will be restarted.",
+      "initialised": "The ^Agent^ is in the process of initializing itself, that is, establishing the coupling.",
+      "couplingfailed": "The ^Agent^'s attempt to couple failed.",
+      "shutdown": "The ^Agent^ was shut down normally.",
+      "unknown": "The ^Agent^'s status is unknown. There may be a connection problem with the server and the Agent's port, or the Agent may not have started."
     },
     "cluster": {
       "tooltip.agentClusterName": "The ^Agent Cluster^ Name is a unique identifier of the Agent Cluster that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
@@ -3305,16 +3305,16 @@
     "tooltip.ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
     "tooltip.stickToDailyPlanDate": "Allows modifying the start time of ^Order^s and keep their original ^Daily Plan^ assignment.\n\n^Notice^s created from Orders will resolve to the original Daily Plan date and will match ^Expecting Order^s waiting for Notices for that date.",
     "tooltip.state": {
-      "pending": "Pending",
-      "scheduled": "Scheduled",
-      "inprogress": "In Progress",
-      "running": "Running",
-      "suspended": "Suspended",
-      "prompting": "Prompting",
-      "waiting": "Waiting",
-      "blocked": "Blocked",
-      "failed": "Failed",
-      "finished": "Finished"
+      "pending": "^Pending^ ^Order^s are not assigned a start time.",
+      "scheduled": "^Scheduled^ ^Order^s are assigned a future start time.",
+      "inprogress": "^In progress^ ^Order^s are processed by ^Workflow^ instructions but are not running a ^Job^.",
+      "running": "^Running^ ^Order^s are in execution of a ^Job^.",
+      "suspended": "^Suspended^ ^Order^s have been halted by user intervention.",
+      "prompting": "^Prompting^ ^Order^s are put on hold by the ^Prompt Instruction^ in a ^Workflow^ and require user confirmation to continue.",
+      "waiting": "^Waiting^ ^Order^s wait for a resource such as a ^Resource Lock^, ^Notice^, ^Retry Instruction^ or ^Cycle Instruction^ interval or for a process.",
+      "blocked": "^Blocked^ ^Order^s cannot start, for example, if the ^Agent^ is not reachable since the Order was added or if the ^Workflow^ is suspended.",
+      "failed": "^Failed^ ^Order^s indicate that a ^Job^ failed or that a ^Fail Instruction^ prevents the Order from proceeding.",
+      "finished": "^Finished^ ^Order^s have been completed."
     },
     "treeView": {
       "label": {
@@ -5062,12 +5062,12 @@
     "tooltip.agent": "Updates the ^Agent^ assignment in selected ^File Order Source^ objects.",
     "tooltip.delay": "Updates the *Delay* for processing of incoming files being persisted in selected ^File Order Source^ objects.",
     "tooltip.state": {
-      "in_sync": "Synchronized",
-      "suspended": "Suspended",
-      "outstanding": "Outstanding",
-      "not_in_sync": "Not Synchronized",
-      "not_deployed": "Not Deployed",
-      "suspending": "Suspending"
+      "in_sync": "A ^Workflow^ is synchronized if it has been ^deployed|deployment^ to the ^Controller^.",
+      "suspended": "A ^Workflow^ is suspended when it is paused by the user.",
+      "outstanding": "A ^Workflow^ is outstanding if not all ^Agents^ have confirmed the suspension or resumption of the Workflow.",
+      "not_in_sync": "A ^Workflow^ is not synchronized if it has not been ^deployed|deployment^ to the ^Controller^.",
+      "not_deployed": "A ^Workflow^ is not deployed if it has not been ^deployed|deployment^ to the ^Controller^.",
+      "suspending": "A ^Workflow^ is suspending if not all ^Agents^ have confirmed that the Workflow has been suspended."
     },
     "findAndReplace": {
       "label.find": "Search",

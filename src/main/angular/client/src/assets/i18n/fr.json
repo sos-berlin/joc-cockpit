@@ -298,12 +298,12 @@
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Si la méthode d'authentification **Bearer Token** est utilisée, l'utilisateur doit alors fournir un *Jeton*.",
     "tooltip.state": {
-      "coupled": "Coupled",
-      "resetting": "Resetting",
-      "initialised": "Initialized",
-      "couplingfailed": "Coupling Failed",
-      "shutdown": "Shutdown",
-      "unknown": "Unknown"
+      "coupled": "L'^Agent^ est couplé et opérationnel.",
+      "resetting": "L'^Agent^ est en train de se réinitialiser, c'est-à-dire que son journal est effacé et qu'il redémarre.",
+      "initialised": "L'^Agent^ est en train de s'initialiser, c'est-à-dire d'établir la couplage.",
+      "couplingfailed": "La tentative de couplage de l'^Agent^ a échoué.",
+      "shutdown": "L'^Agent^ a été arrêté normalement.",
+      "unknown": "L'état de l'^Agent^ est inconnu. Il se peut qu'il y ait un problème de connexion au serveur et au port de l'Agent, ou que l'Agent ne soit pas démarré."
     },
     "cluster": {
       "tooltip.agentClusterName": "Le Nom du ^Cluster d'Agents|agent-cluster^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
@@ -3305,16 +3305,16 @@
     "tooltip.ignoreAdmissionTimes": "L'exécution des ^Tâches|job^ peut être limitée par les ^Heures d'Admission|admission-times^ des Tâches et par l'^Instruction AdmissionTimes|admissiontimes-instruction^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
     "tooltip.stickToDailyPlanDate": "Permet de modifier l'heure de démarrage des ^Ordres|order^ tout en conservant leur affectation initiale au ^Plan Quotidien|daily-plan^.\n\nLes ^Annonces|notice^ créées à partir de l'Ordre sont associées à la date initiale du Plan Quotidien et correspondront aux Ordres qui attendent des Annonces pour cette date.",
     "tooltip.state": {
-      "pending": "Pending",
-      "scheduled": "Scheduled",
-      "inprogress": "In Progress",
-      "running": "Running",
-      "suspended": "Suspended",
-      "prompting": "Prompting",
-      "waiting": "Waiting",
-      "blocked": "Blocked",
-      "failed": "Failed",
-      "finished": "Finished"
+      "pending": "Les ^Ordres|order^ ^á venir|pending^ ont été ajoutés aux ^Workflow^s sans spécifier d'heure de démarrage.",
+      "scheduled": "Les ^Ordres|order^ ^prévus|scheduled^ ont été ajoutés aux ^Workflow^s et sont planifiés pour être exécutés à une date et une heure ultérieures.",
+      "inprogress": "Les ^Ordres|order^ ^en progression|in-progress^ sont traités par des instructions de ^Workflow^ mais ne sont pas en cours d'exécution d'une ^Tâche|job^.",
+      "running": "Les ^Ordres|order^ ^en exécution|running^ sont en cours d'exécution d'une ^Tâche|job^.",
+      "suspended": "Les ^Ordres|order^ ^suspendus|suspended^ ont été interrompus par une intervention de l'utilisateur.",
+      "prompting": "Les ^Ordres|order^ ^à confirmer|prompting^ sont mis en attente par l'^Instruction Prompt|prompt-instruction^ dans un ^Workflow^ et nécessitent la confirmation de l'utilisateur pour continuer.",
+      "waiting": "Les ^Ordres|order^ ^en attente|waiting^ attendent une ressource telle qu'un ^Verrou de Ressource|resource-lock^, une ^Annonce|notice^ ou un cycle de l'^Instruction Retry|retry-instruction^ ou de l'^Instruction Cycle|cycle-instruction^, ou un processus.",
+      "blocked": "Les ^Ordres|order^ ^bloqués|blocked^ ne peuvent pas démarrer, par exemple, si l'^Agent^ n'est pas joignable depuis l'ajout de l'Ordre ou si le ^Workflow^ est suspendu.",
+      "failed": "Les ^Ordres|order^ ^échoués|failed^ indiquent qu'une ^Tâche|job^ a échoué ou qu'une ^Instruction Fail|fail-instruction^ empêche la poursuite de l'Ordre.",
+      "finished": "Les ^Ordres|order^ ^terminés|finished^ ont été exécutés."
     },
     "treeView": {
       "label": {
@@ -5062,12 +5062,12 @@
     "tooltip.agent": "Met à jour l'^Agent^ associé aux ^Sources d'Ordres de Fichiers|file-order-source^ sélectionnées.",
     "tooltip.delay": "Met à jour le *Délai* pendant lequel le système attend que les fichiers entrants soient complets dans les objets ^Source d'Ordres de Fichiers|file-order-source^ sélectionnées.",
     "tooltip.state": {
-      "in_sync": "Synchronized",
-      "suspended": "Suspended",
-      "outstanding": "Outstanding",
-      "not_in_sync": "Not Synchronized",
-      "not_deployed": "Not Deployed",
-      "suspending": "Suspending"
+      "in_sync": "Un ^Workflow^ est synchronisé lorsqu'il est ^déployé|deployment^ sur le ^Contrôleur^.",
+      "suspended": "Un ^Workflow^ est suspendu lorsqu'il est mis en pause par l'utilisateur.",
+      "outstanding": "Un ^Workflow^ est en attente tant que tous les ^Agents^ n'ont pas confirmé sa suspension ou sa reprise.",
+      "not_in_sync": "Un ^Workflow^ est non synchronisé lorsqu'il n'est pas ^déployé|deployment^ sur le ^Contrôleur^.",
+      "not_deployed": "Un ^Workflow^ est non déployé lorsqu'il n'est pas ^déployé|deployment^ sur le ^Contrôleur^.",
+      "suspending": "Un ^Workflow^ est en attente tant que tous les ^Agents^ n'ont pas confirmé sa suspension."
     },
     "findAndReplace": {
       "label.find": "Rechercher",
