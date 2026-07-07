@@ -98,6 +98,10 @@
                               [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
                         {{data.syncState._text | translate}}
                       </span>
+                        @if (data.syncState._text !== 'NOT_DEPLOYED' || data.deployed) {
+                          <i [appRichTooltip]="'workflow.tooltip.state.' + (data.syncState._text | lowercase) | translate"
+                             class="fa fa-info-circle p-l-sm"></i>
+                        }
                       }
                   </span>
                   }

@@ -179,8 +179,8 @@
                         @if (!cluster.state && cluster.healthState) {
                           <span [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
                         }
-                        @if (cluster.state && cluster.state._text == 'INITIALISED') {
-                          <i [appRichTooltip]="cluster.state._reason | translate"
+                        @if (cluster.state) {
+                          <i [appRichTooltip]="'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
                              class="fa fa-info-circle p-l-sm"></i>
                         }
                       </div>
@@ -370,8 +370,8 @@
                               [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
                           </span>
                           }
-                          @if (cluster.state && cluster.state._text == 'INITIALISED') {
-                            <i [appRichTooltip]="cluster.state._reason | translate"
+                          @if (cluster.state) {
+                            <i [appRichTooltip]="'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
                                class="fa fa-info-circle p-l-sm"></i>
                           }
                         </td>
@@ -523,8 +523,9 @@
                                   [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
                               </span>
                               }
-                              @if (subagent.state && subagent.state._text == 'INITIALISED') {
-                                <i [appRichTooltip]="subagent.state._reason" class="fa fa-info-circle p-l-sm"></i>
+                              @if (subagent.state) {
+                                <i [appRichTooltip]="'agent.tooltip.state.' + (subagent.state._text | lowercase) | translate"
+                                   class="fa fa-info-circle p-l-sm"></i>
                               }
                             </td>
                             <td (click)="navToController(subagent, cluster)" class="cursor">

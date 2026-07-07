@@ -670,6 +670,10 @@
                                 <app-tooltip-info [controllerId]="schedulerIds.selected"
                                                   [workflow]="workflow"></app-tooltip-info>
                               }
+                              @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
+                                <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
+                                   class="fa fa-info-circle p-l-sm"></i>
+                              }
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                               <span>
@@ -1041,6 +1045,10 @@
                             @if (workflow.state && (workflow.state._text === 'OUTSTANDING')) {
                               <app-tooltip-info [controllerId]="schedulerIds.selected"
                                                 [workflow]="workflow"></app-tooltip-info>
+                            }
+                            @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
+                              <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
+                                 class="fa fa-info-circle p-l-sm"></i>
                             }
                           </td>
                           <td>

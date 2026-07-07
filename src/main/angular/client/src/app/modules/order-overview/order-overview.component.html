@@ -735,6 +735,10 @@
                                       <span class="p-l-xs"><i
                                         [appRichTooltip]="order.question" class="fa fa-info-circle"></i></span>
                                     }
+                                    @if (order.state && !(order.state._text === 'PROMPTING' && order.question)) {
+                                      <i [appRichTooltip]="'order.tooltip.state.' + (order.state._text | lowercase) | translate"
+                                         class="fa fa-info-circle p-l-sm"></i>
+                                    }
                                   </div>
                                   <ng-template #tooltipTemplate1>
                                     <div class="p-l-sm">
@@ -1116,6 +1120,10 @@
                                   @if (order.state._text === 'PROMPTING' && order.question) {
                                     <span class="p-l-xs"><i
                                       [appRichTooltip]="order.question" class="fa fa-info-circle"></i></span>
+                                  }
+                                  @if (order.state && !(order.state._text === 'PROMPTING' && order.question)) {
+                                    <i [appRichTooltip]="'order.tooltip.state.' + (order.state._text | lowercase) | translate"
+                                       class="fa fa-info-circle p-l-sm"></i>
                                   }
                                   <ng-template #tooltipTemplate1>
                                     <div class="p-l-sm">

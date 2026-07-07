@@ -297,6 +297,14 @@
     "tooltip.timeZone": "^Часовой пояс|time-zone^, используемый для расчёта периода действия токена.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Токен",
+    "tooltip.state": {
+      "coupled": "Coupled",
+      "resetting": "Resetting",
+      "initialised": "Initialized",
+      "couplingfailed": "Coupling Failed",
+      "shutdown": "Shutdown",
+      "unknown": "Unknown"
+    },
     "cluster": {
       "tooltip.agentClusterName": "^Название кластера агентов|agent-cluster-name^ должно соответствовать ^правилам наименования объектов|object-naming-rules^.",
       "tooltip.subagentId": "^ID субагента|subagent-id^ ^агента-директора|director-agent^ должно соответствовать ^правилам наименования объектов|object-naming-rules^.",
@@ -3292,6 +3300,18 @@
     "tooltip.endNode": "Определяет конечные позиции, на которых ^задание|order^ должно завершить выполнение ^рабочего процесса|workflow^:\n- **Позиция блока не указана** - может быть выбрана любая инструкция верхнего уровня, перед которой задание будет завершено.\n- **Указана позиция блока** - может быть выбран любой узел того же уровня внутри блока, перед которым задание будет завершено.\n- **Конечная позиция не указана** - задание завершается при достижении конца блока.\n\nМожно указать несколько конечных позиций.",
     "tooltip.ignoreAdmissionTimes": "Выполнение ^задач|job^ ^рабочего процесса|workflow^ может быть ограничено ^временем допуска|admission-times^ задач или ^инструкцией AdmissionTimes|admissiontimes-instruction^.\n\nЭта настройка игнорирует время допуска и принудительно запускает задачи.",
     "tooltip.stickToDailyPlanDate": "Позволяет изменять время запуска ^заданий|order^ с сохранением их первоначальной привязки к ^дневному плану|daily-plan^.\n\nСоздаваемые заданием ^события|notice^ относятся к исходной дате дневного плана и активируют ^ожидающие задания|expecting-order^, которые ожидают уведомлений за эту дату.",
+    "tooltip.state": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "inprogress": "In Progress",
+      "running": "Running",
+      "suspended": "Suspended",
+      "prompting": "Prompting",
+      "waiting": "Waiting",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "finished": "Finished"
+    },
     "treeView": {
       "label": {
         "state": "Состояние",
@@ -5036,6 +5056,14 @@
     "tooltip.jobResourceNames": "Обновляет ссылки на ^ресурсы задач|job-resource^ выбранных объектов.",
     "tooltip.agent": "Обновляет назначение ^агента|аgent^ в выбранных ^источниках файловых заданий|file-order-source^.",
     "tooltip.delay": "Обновляет значение *задержки* ожидания полного поступления файлов во входящей папке для выбранных ^источников файловых заданий|file-order-source^.",
+    "tooltip.state": {
+      "in_sync": "Synchronized",
+      "suspended": "Suspended",
+      "outstanding": "Outstanding",
+      "not_in_sync": "Not Synchronized",
+      "not_deployed": "Not Deployed",
+      "suspending": "Suspending"
+    },
     "findAndReplace": {
       "label.find": "Найти",
       "label.replace": "Заменить",

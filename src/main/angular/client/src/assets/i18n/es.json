@@ -297,6 +297,14 @@
     "tooltip.timeZone": "La ^Zona horaria^ usada para calcular el período de validez.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Si se usa el método de autenticación **Token de portador**, se especifica un Token para la autenticación.",
+    "tooltip.state": {
+      "coupled": "Coupled",
+      "resetting": "Resetting",
+      "initialised": "Initialized",
+      "couplingfailed": "Coupling Failed",
+      "shutdown": "Shutdown",
+      "unknown": "Unknown"
+    },
     "cluster": {
       "tooltip.agentClusterName": "El ^Nombre de Clúster de Agentes^ es un identificador único del Clúster de Agentes que no puede modificarse durante su vida útil.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
       "tooltip.subagentId": "El ^ID de Subagente^ es un identificador único de un ^Agente Director^ que no puede modificarse durante su vida útil.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
@@ -3292,6 +3300,18 @@
     "tooltip.endNode": "Especifica Posiciones de Fin en las que la ^Orden^ debe abandonar el ^Workflow^:\n- **Sin bloque**: la Orden finaliza al alcanzar el final del Workflow.\n- **En instrucción**: la Orden finaliza al alcanzar la instrucción seleccionada.",
     "tooltip.ignoreAdmissionTimes": "La ejecución de ^Job^s puede estar restringida por ^Ventanas de Admisión^ de Jobs y la respectiva configuración del ^Workflow^. Esta opción ignora las Ventanas de Admisión y fuerza el inicio de los Jobs.",
     "tooltip.stickToDailyPlanDate": "Permite modificar la hora de inicio de las ^Órden^es conservando su asignación original al ^Plan Diario^.\n\nLos ^Avisos^ creados a partir de Órdenes se resolverán a la fecha del Plan Diario original y coincidirán con las ^Órdenes Receptoras^ que aguarden Avisos para esa fecha.",
+    "tooltip.state": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "inprogress": "In Progress",
+      "running": "Running",
+      "suspended": "Suspended",
+      "prompting": "Prompting",
+      "waiting": "Waiting",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "finished": "Finished"
+    },
     "treeView": {
       "label": {
         "state": "Estado",
@@ -5036,6 +5056,14 @@
     "tooltip.jobResourceNames": "Actualiza las referencias a ^Recursos de Job^ en los objetos seleccionados.",
     "tooltip.agent": "Actualiza la asignación de ^Agente^ en los objetos ^Fuente de Órdenes de Archivos^ seleccionados.",
     "tooltip.delay": "Actualiza el *Retraso* para el procesamiento de archivos entrantes en los objetos seleccionados.",
+    "tooltip.state": {
+      "in_sync": "Synchronized",
+      "suspended": "Suspended",
+      "outstanding": "Outstanding",
+      "not_in_sync": "Not Synchronized",
+      "not_deployed": "Not Deployed",
+      "suspending": "Suspending"
+    },
     "findAndReplace": {
       "label.find": "Buscar",
       "label.replace": "Reemplazar",

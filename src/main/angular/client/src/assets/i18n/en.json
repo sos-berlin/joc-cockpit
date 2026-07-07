@@ -297,6 +297,14 @@
     "tooltip.timeZone": "The ^Time Zone^ used to calculate the validity period.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "If the **Bearer Token** authentication method is used, then a *Token* is specified by the user.",
+    "tooltip.state": {
+      "coupled": "Coupled",
+      "resetting": "Resetting",
+      "initialised": "Initialized",
+      "couplingfailed": "Coupling Failed",
+      "shutdown": "Shutdown",
+      "unknown": "Unknown"
+    },
     "cluster": {
       "tooltip.agentClusterName": "The ^Agent Cluster^ Name is a unique identifier of the Agent Cluster that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
       "tooltip.subagentId": "The ^Subagent ID^ is a unique identifier of a ^Director Agent^ that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
@@ -3292,6 +3300,18 @@
     "tooltip.endNode": "Specifies End Positions when the ^Order^ should leave the ^Workflow^:\n- **No Block Position** is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.\n- **Block Position** is specified, then any same-level node inside the block can be specified before which the Order will terminate.\n- **No End Position** is specified, then the Order will terminate when reaching the end of the block.\n\nMore than one End Position can be specified.",
     "tooltip.ignoreAdmissionTimes": "The execution of ^Job^s can be restricted by ^Admission Times^ of Jobs and the related ^AdmissionTimes Instruction^.\n\nThis option ignores Admission Times and forces the start of Jobs.",
     "tooltip.stickToDailyPlanDate": "Allows modifying the start time of ^Order^s and keep their original ^Daily Plan^ assignment.\n\n^Notice^s created from Orders will resolve to the original Daily Plan date and will match ^Expecting Order^s waiting for Notices for that date.",
+    "tooltip.state": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "inprogress": "In Progress",
+      "running": "Running",
+      "suspended": "Suspended",
+      "prompting": "Prompting",
+      "waiting": "Waiting",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "finished": "Finished"
+    },
     "treeView": {
       "label": {
         "state": "State",
@@ -5036,6 +5056,14 @@
     "tooltip.jobResourceNames": "Updates ^Job Resource^ references in selected objects.",
     "tooltip.agent": "Updates the ^Agent^ assignment in selected ^File Order Source^ objects.",
     "tooltip.delay": "Updates the *Delay* for processing of incoming files being persisted in selected ^File Order Source^ objects.",
+    "tooltip.state": {
+      "in_sync": "Synchronized",
+      "suspended": "Suspended",
+      "outstanding": "Outstanding",
+      "not_in_sync": "Not Synchronized",
+      "not_deployed": "Not Deployed",
+      "suspending": "Suspending"
+    },
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

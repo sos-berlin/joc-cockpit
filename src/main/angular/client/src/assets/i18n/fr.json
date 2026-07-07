@@ -297,6 +297,14 @@
     "tooltip.timeZone": "Le ^fuseau horaire|time-zone^ utilisé pour calculer la période de validité.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Si la méthode d'authentification **Bearer Token** est utilisée, l'utilisateur doit alors fournir un *Jeton*.",
+    "tooltip.state": {
+      "coupled": "Coupled",
+      "resetting": "Resetting",
+      "initialised": "Initialized",
+      "couplingfailed": "Coupling Failed",
+      "shutdown": "Shutdown",
+      "unknown": "Unknown"
+    },
     "cluster": {
       "tooltip.agentClusterName": "Le Nom du ^Cluster d'Agents|agent-cluster^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
       "tooltip.subagentId": "L'^ID Sous-Agent|subagent-id^ est un identifiant unique qui ne peut être modifié pendant la durée de vie de l'^Agent Directeur|director-agent^.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
@@ -3292,6 +3300,18 @@
     "tooltip.endNode": "Définit les positions de fin auxquelles l'^Ordre|order^ doit quitter le ^Workflow^ :\n- Si aucune **position de bloc** n'est indiquée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow avant laquelle l'Ordre doit prendre fin.\n- Si une **position de bloc** est indiquée, il est possible de spécifier n'importe quel nœud du même niveau au sein du bloc, avant lequel l'Ordre doit prendre fin.\n- Si aucune **position de fin** n'est indiquée, l'Ordre prend fin à la fin du bloc.\n\nIl est possible de spécifier plusieurs positions de fin.",
     "tooltip.ignoreAdmissionTimes": "L'exécution des ^Tâches|job^ peut être limitée par les ^Heures d'Admission|admission-times^ des Tâches et par l'^Instruction AdmissionTimes|admissiontimes-instruction^.\n\nCette option ignore les Heures d'Admission et force le lancement des Tâches.",
     "tooltip.stickToDailyPlanDate": "Permet de modifier l'heure de démarrage des ^Ordres|order^ tout en conservant leur affectation initiale au ^Plan Quotidien|daily-plan^.\n\nLes ^Annonces|notice^ créées à partir de l'Ordre sont associées à la date initiale du Plan Quotidien et correspondront aux Ordres qui attendent des Annonces pour cette date.",
+    "tooltip.state": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "inprogress": "In Progress",
+      "running": "Running",
+      "suspended": "Suspended",
+      "prompting": "Prompting",
+      "waiting": "Waiting",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "finished": "Finished"
+    },
     "treeView": {
       "label": {
         "state": "Étape",
@@ -5036,6 +5056,14 @@
     "tooltip.jobResourceNames": "Met à jour des références aux ^Ressources de Tâche|job-resource^ dans les objets sélectionnés.",
     "tooltip.agent": "Met à jour l'^Agent^ associé aux ^Sources d'Ordres de Fichiers|file-order-source^ sélectionnées.",
     "tooltip.delay": "Met à jour le *Délai* pendant lequel le système attend que les fichiers entrants soient complets dans les objets ^Source d'Ordres de Fichiers|file-order-source^ sélectionnées.",
+    "tooltip.state": {
+      "in_sync": "Synchronized",
+      "suspended": "Suspended",
+      "outstanding": "Outstanding",
+      "not_in_sync": "Not Synchronized",
+      "not_deployed": "Not Deployed",
+      "suspending": "Suspending"
+    },
     "findAndReplace": {
       "label.find": "Rechercher",
       "label.replace": "Remplacer",

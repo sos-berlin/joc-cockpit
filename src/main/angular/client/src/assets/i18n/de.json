@@ -297,6 +297,14 @@
     "tooltip.timeZone": "Die zur Berechnung der Gültigkeitsdauer des Tokens verwendete ^Zeitzone|time-zone^.",
     "--------BEARER TOKEN DIALOG TOOLTIPS------------": "Page: Workflow Editor, Sub-tab: -, Pop-up: API Request, Source: api-request.component.html, Fields: token",
     "tooltip.token": "Wird die Authentifizierungsmethode **Bearer Token** verwendet, gibt der Benutzer ein *Token* an.",
+    "tooltip.state": {
+      "coupled": "Coupled",
+      "resetting": "Resetting",
+      "initialised": "Initialized",
+      "couplingfailed": "Coupling Failed",
+      "shutdown": "Shutdown",
+      "unknown": "Unknown"
+    },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
       "tooltip.subagentId": "Die ^Subagenten-Kennung|subagent-id^ eines ^Director Agent^en ist eindeutig und kann während der Lebenszeit eines Director Agenten nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
@@ -3292,6 +3300,18 @@
     "tooltip.endNode": "Legt die Endpositionen fest, an denen der ^Auftrag|order^ den ^Arbeitsablauf|workflow^ verlassen soll:\n- **Keine Blockposition** angegeben, dann kann eine beliebige Anweisung der obersten Ebene im Arbeitsablauf ausgewählt werden, vor der der Auftrag beendet wird.\n- **Blockposition** angegeben, dann kann ein beliebiger Knoten derselben Ebene innerhalb des Blocks angegeben werden, vor dem der Auftrag beendet wird.\n- **Keine Endposition** angegeben, dann endet der Auftrag beim Erreichen des Blockendes.\n\nEs können mehrere Endpositionen angegeben werden.",
     "tooltip.ignoreAdmissionTimes": "Die Ausführung von ^Job^s im ^Arbeitsablauf|workflow^ kann durch ^Zutrittszeiten|admission-times^ der Jobs oder der ^AdmissionTimes Anweisung|admissiontimes-instruction^ eingeschränkt sein.\n\nDie Option ignoriert Zutrittszeiten und erzwingt den Start der Jobs.",
     "tooltip.stickToDailyPlanDate": "Ermöglicht die Änderung der Startzeit von ^Aufträgen|order^ unter Beibehaltung ihrer ursprünglichen Zuordnung zum ^Tagesplan|daily-plan^.\n\nAus dem Auftrag erstellte ^Notizen|notice^ werden auf das ursprüngliche Datum des Tagesplans gesetzt und aktivieren ^Wartende Aufträge|expecting-order^, die auf Notizen für dieses Datum warten.",
+    "tooltip.state": {
+      "pending": "Pending",
+      "scheduled": "Scheduled",
+      "inprogress": "In Progress",
+      "running": "Running",
+      "suspended": "Suspended",
+      "prompting": "Prompting",
+      "waiting": "Waiting",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "finished": "Finished"
+    },
     "treeView": {
       "label": {
         "state": "Zustand",
@@ -5036,6 +5056,14 @@
     "tooltip.jobResourceNames": "Aktualisiert Verweise auf ^Job-Ressourcen|job-resource^ in den ausgewählten Objekten.",
     "tooltip.agent": "Aktualisiert die Zuordnung des ^Agent^en in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
     "tooltip.delay": "Aktualisiert die *Verzögerung*, mit der auf die Vollständigkeit eingehender Dateien gewartet wird, in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
+    "tooltip.state": {
+      "in_sync": "Synchronized",
+      "suspended": "Suspended",
+      "outstanding": "Outstanding",
+      "not_in_sync": "Not Synchronized",
+      "not_deployed": "Not Deployed",
+      "suspending": "Suspending"
+    },
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",
