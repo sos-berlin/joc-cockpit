@@ -1147,21 +1147,7 @@ export class SingleHistoryComponent {
 @Component({
   standalone: false,
   selector: 'app-yade-export-option',
-  template: `
-    <div class="modal-header">
-      <h4 class="modal-title">{{ 'history.label.exportOption' | translate }}</h4>
-    </div>
-    <div class="modal-body p-a">
-      <nz-radio-group [(ngModel)]="selection">
-        <label nz-radio nzValue="all" class="d-block m-b-sm">{{ 'history.label.allTransfers' | translate }}</label>
-        <label nz-radio nzValue="withFiles" class="d-block">{{ 'history.label.transfersWithFilesOnly' | translate }}</label>
-      </nz-radio-group>
-    </div>
-    <div class="modal-footer">
-      <button (click)="submit()" class="btn btn-primary btn-sm">{{ 'common.button.export' | translate }}</button>
-      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm">{{ 'common.button.cancel' | translate }}</button>
-    </div>
-  `
+  templateUrl: './file-transfer-export-dialog.html'
 })
 export class YadeExportOptionComponent {
   readonly activeModal = inject(NzModalRef);
@@ -3338,7 +3324,7 @@ export class HistoryComponent {
     let controllerId = '', workflow = '', status = '', profileName = '',
       startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
     let source = '', target = '', jump = '', host = '', account = '', port = '', protocol = '';
-    let sourceFileName = '', sourceFilePath = '', targetFileName = '', targetFilePath = '', size = '', integrityHash = '';
+    let sourceFileName = '', sourceFilePath = '', targetFileName = '', targetFilePath = '', fileStatus = '', size = '', integrityHash = '';
     this.translate.get('common.label.controllerId').subscribe(translatedValue => {
       controllerId = translatedValue;
     });
@@ -3383,6 +3369,7 @@ export class HistoryComponent {
     this.translate.get('fileTransfer.label.sourceFilePath').subscribe(translatedValue => { sourceFilePath = translatedValue; });
     this.translate.get('fileTransfer.label.targetFileName').subscribe(translatedValue => { targetFileName = translatedValue; });
     this.translate.get('fileTransfer.label.targetFilePath').subscribe(translatedValue => { targetFilePath = translatedValue; });
+    this.translate.get('fileTransfer.label.fileStatus').subscribe(translatedValue => { fileStatus = translatedValue; });
     this.translate.get('fileTransfer.label.size').subscribe(translatedValue => { size = translatedValue; });
     this.translate.get('fileTransfer.label.integrityHash').subscribe(translatedValue => { integrityHash = translatedValue; });
 
@@ -3427,18 +3414,16 @@ export class HistoryComponent {
         }
       }
 
-      data.push(obj);
-
       if (transfer.show && transfer.files && transfer.files.length > 0) {
         for (const file of transfer.files) {
-          const fileObj: any = {};
+          const fileObj: any = {...obj};
           fileObj[sourceFileName] = file.sourceName;
           fileObj[sourceFilePath] = file.sourcePath;
           fileObj[targetFileName] = file.targetName;
           fileObj[targetFilePath] = file.targetPath;
           if (file.state) {
             this.translate.get(file.state._text).subscribe(translatedValue => {
-              fileObj[status] = translatedValue;
+              fileObj[fileStatus] = translatedValue;
             });
           }
           fileObj[size] = file.size;
@@ -3448,6 +3433,8 @@ export class HistoryComponent {
           }
           data.push(fileObj);
         }
+      } else {
+        data.push(obj);
       }
     }
     return data;

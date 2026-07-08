@@ -142,7 +142,7 @@
                           <span (click)="navToController(cluster, null);$event.stopPropagation()"
                                 [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.path"
-                                class="text text-ellipsis1 cursor m-l-xs"></span>
+                                class="text text-ellipsis1 cursor m-l-sm"></span>
                         </div>
                         @if (permission.currentController && permission.currentController.switchOver) {
                           <div class="btn-group dropdown pull-right abt-dropdown ">

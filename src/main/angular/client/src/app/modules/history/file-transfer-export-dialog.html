@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ 'history.label.exportOption' | translate }}</h4>
+</div>
+<div class="modal-body p-a">
+  <div class="form-group row m-b-0">
+    <div class="col-md-12">
+      <nz-radio-group [(ngModel)]="selection">
+        <label nz-radio nzValue="all">{{ 'history.label.allTransfers' | translate }}</label>
+        <label nz-radio nzValue="withFiles">{{ 'history.label.transfersWithFilesOnly' | translate }}</label>
+      </nz-radio-group>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button (click)="submit()" class="btn btn-primary btn-sm">{{ 'common.button.export' | translate }}</button>
+  <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm">{{ 'common.button.cancel' | translate }}</button>
+</div>

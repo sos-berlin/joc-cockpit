@@ -297,6 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
       "tooltip.agentNameAliases": "Einem Agenten Cluster können Alias Namen zugeordnet werden. Der Agenten Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.processLimit": "Agenten führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für Aufträge aus. Ein Prozess Limit kann zugewiesen werden, um die Ressourcennutzung über alle Subagenten im Cluster hinweg einzuschränken. Ein Prozess Limit von 0 verhindert den Start von Aufträgen.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "Der Name des Subagenten Cluster ist eindeutig und kann während der Lebenszeit des Subagenten Cluster nicht geändert werden. Für den Namen des Subagenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "tooltip.title": "Der Titel eines Subagenten Cluster kann nach Belieben angegeben werden."
@@ -421,6 +422,7 @@
     "label.primaryUrl": "Verbindung von Primärem Controller zu Sekundärem Controller",
     "label.jocAsClusterWatch": "JOC Cockpit als Cluster Wächter",
     "label.agentAsClusterWatch": "Agent als Cluster Wächter",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
@@ -431,7 +433,8 @@
     "tooltip.urlForBackup": "Verbindung des Sekundären Controllers zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
     "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller Instanz in der ÜBERSICHT Ansicht",
-    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht"
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -1551,6 +1554,7 @@
     "label.lastErrorMessage": "Letzte Fehlermeldung",
     "label.integrityHash": "Prüfsumme",
     "label.fileTransferFound": "Dateiübertragung gefunden",
+    "label.fileStatus": "File Status",
     "button.restart": "Neustart",
     "label.fileTransfersFound": "Dateiübertragungen gefunden",
     "message.noFilesFound": "Keine übertragenen Dateien gefunden",

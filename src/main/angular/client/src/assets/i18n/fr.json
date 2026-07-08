@@ -297,6 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-Agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
       "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Cluster d'Agents. Le Cluster d'Agents peut être affecté à une tâche ou à une Source d'Ordres de Fichiers en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
       "tooltip.processLimit": "Les Agents exécutent par défaut un nombre illimité de processus parallèles pour les Tâches. Une limite de processus peut être attribuée pour restreindre l'utilisation des ressources pour tous les Sous-Agents dans un Cluster d'Agents. Une valeur de 0 pour la limite de processus empêchera les Tâches de démarrer.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "Le nom du Cluster de Sous-Agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster de Sous-Agents. Pour le Nom du Cluster de Sous-Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "tooltip.title": "Le Titre d'un Cluster de Sous-Agent peut être spécifié à volonté."
@@ -421,6 +422,7 @@
     "label.primaryUrl": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
     "label.jocAsClusterWatch": "JOC Cockpit comme Observateur de Cluster",
     "label.agentAsClusterWatch": "Agent comme Observateur de Cluster",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
     "tooltip.type": "Un Contrôleur Autonome est configuré à l'aide d'une seule instance. Un Cluster de Contrôleurs peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
@@ -431,7 +433,8 @@
     "tooltip.urlForBackup": "Connexion du Contrôleur Secondaire au Contrôleur Primaire",
     "tooltip.urlForPrimary": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
     "tooltip.primaryTitle": "Légende du Contrôleur Primaire dans la vue TABLEAU DE BORD",
-    "tooltip.backupTitle": "Légende du Contrôleur Secondaire dans la vue TABLEAU DE BORD"
+    "tooltip.backupTitle": "Légende du Contrôleur Secondaire dans la vue TABLEAU DE BORD",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Cryptage",
@@ -1551,6 +1554,7 @@
     "label.lastErrorMessage": "Dernier message d'erreur",
     "label.integrityHash": "Hash d'Intégrité",
     "label.fileTransferFound": "Transfert de Fichiers trouvé",
+    "label.fileStatus": "File Status",
     "button.restart": "Redémarrer",
     "label.fileTransfersFound": "Transferts de fichiers trouvés",
     "message.noFilesFound": "aucun fichier trouvé à partir du Transfert de Fichier",

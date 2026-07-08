@@ -13,7 +13,6 @@ declare const $;
   standalone: false,
   selector: 'app-start-up-modal',
   templateUrl: './start-up.dialog.html',
-  
 })
 export class StartUpModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -73,6 +72,7 @@ export class StartUpModalComponent {
               this.controller.primaryUrl = this.controllerInfo[i].url;
               this.controller.primaryClusterUrl = this.controllerInfo[i].clusterUrl;
             }
+            this.controller.forceFailoverConfirmation = this.controllerInfo[i].forceFailoverConfirmation || false;
           } else {
             this.controller.title = this.controllerInfo[i].title;
             this.controller.url = this.controllerInfo[i].url;
@@ -118,6 +118,10 @@ export class StartUpModalComponent {
         _obj.clusterUrl = this.controller.backupClusterUrl;
         _obj.title = this.controller.backupTitle;
         obj.controllers.push(_obj);
+      }
+
+      if (this.controller.forceFailoverConfirmation) {
+        obj.forceFailoverConfirmation = this.controller.forceFailoverConfirmation;
       }
     }
     if (this.display) {
@@ -197,7 +201,6 @@ export class StartUpModalComponent {
   standalone: false,
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html',
-  
 })
 export class StartUpComponent {
   controller: any = {};

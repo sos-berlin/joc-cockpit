@@ -297,6 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "ディレクターエージェントは、このディレクターエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはディレクターエージェント上で別に実行することができます。",
       "tooltip.agentNameAliases": "エイリアス名はエージェントクラスターに割り当てることができます。エージェントクラスターは、エイリアス名を使用して、ジョブまたはファイルオーダーソースに割り当てることができます。エイリアス名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンは使用できません。",
       "tooltip.processLimit": "プロセス上限",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "サブエージェントクラスター名は、サブエージェントクラスターの一意な識別子で、サブエージェントクラスターが存続する間は変更することができません。サブエージェント・クラスター名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
         "tooltip.title": "タイトルは任意に指定可能です。"
@@ -421,6 +422,7 @@
     "label.primaryUrl": "プライマリーコントローラーがみるURL",
     "label.jocAsClusterWatch": "JOCコクピットからクラスター監視",
     "label.agentAsClusterWatch": "エージェントからクラスター監視",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
     "tooltip.type": "タイプ",
@@ -431,7 +433,8 @@
     "tooltip.urlForBackup": "セカンダリーコントローラーがみるプライマリーコントローラーURL",
     "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL",
     "tooltip.primaryTitle": "プライマリータイトル",
-    "tooltip.backupTitle": "セカンダリータイトル"
+    "tooltip.backupTitle": "セカンダリータイトル",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "暗号化証明書追加",
@@ -1551,6 +1554,7 @@
     "label.lastErrorMessage": "最新エラーメッセージ",
     "label.integrityHash": "ハッシュ値",
     "label.fileTransferFound": "ファイル転送があります",
+    "label.fileStatus": "File Status",
     "button.restart": "リスタート",
     "label.fileTransfersFound": "ファイル転送があります",
     "message.noFilesFound": "ファイル転送のファイルはありません",

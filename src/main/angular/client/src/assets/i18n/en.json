@@ -297,6 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
       "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for jobs. A Process Limit can be assigned to restrict resource usages across all Subagents in an Agent Cluster. A Prcess Limit value 0 will prevent jobs from starting.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "tooltip.title": "The Title of a Subagent Cluster can be specified as desired."
@@ -421,6 +422,7 @@
     "label.primaryUrl": "Primary Controller connection to Secondary Controller",
     "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
     "label.agentAsClusterWatch": "Agent as Cluster Watch",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
     "tooltip.type": "A Standalone Controller can be configured using a single instance. A Controller Cluster can be configured using two instances if a Commercial License is in place.",
@@ -431,7 +433,8 @@
     "tooltip.urlForBackup": "Connection of the Secondary Controller to the Primary Controller",
     "tooltip.urlForPrimary": "Connection of the Primary Controller to the Secondary Controller",
     "tooltip.primaryTitle": "Caption of the Primary Controller instance",
-    "tooltip.backupTitle": "Caption of the Secondary Controller instance"
+    "tooltip.backupTitle": "Caption of the Secondary Controller instance",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Add Encryption Certificate",
@@ -1551,6 +1554,7 @@
     "label.lastErrorMessage": "Last Error Message",
     "label.integrityHash": "Integrity Hash",
     "label.fileTransferFound": "File Transfer found",
+    "label.fileStatus": "File Status",
     "button.restart": "Restart",
     "label.fileTransfersFound": "File Transfers found",
     "message.noFilesFound": "no files found from File Transfer",

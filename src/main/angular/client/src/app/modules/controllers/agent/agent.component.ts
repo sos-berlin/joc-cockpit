@@ -231,6 +231,7 @@ export class AgentModalComponent {
   required = false;
   secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
+  forceFailoverConfirmation: boolean = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
   }
@@ -240,6 +241,9 @@ export class AgentModalComponent {
     this.new = this.modalData.new;
     this.isCluster = this.modalData.isCluster;
     this.controllerId = this.modalData.controllerId;
+    if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
+      this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
+    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -385,6 +389,9 @@ export class AgentModalComponent {
             title: this.secondaryDirector.title
           });
         }
+      }
+      if (this.forceFailoverConfirmation) {
+        _agent.forceFailoverConfirmation = this.forceFailoverConfirmation;
       }
       obj.clusterAgents = [_agent];
     } else {
@@ -703,7 +710,6 @@ export class AddPriorityModalComponent {
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss'],
-  
 })
 export class AgentComponent {
   isLoading = true;

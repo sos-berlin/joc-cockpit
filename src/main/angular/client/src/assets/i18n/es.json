@@ -297,6 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "Un Agente Director puede configurarse como un Clúster de Subagentes que incluya únicamente a este Agente Director. Esto permite ejecutar Jobs específicamente en el Agente Director.",
       "tooltip.agentNameAliases": "A un Clúster de Agentes se le pueden asignar múltiples nombres alias. El Clúster puede asignarse a un Job o a un Orden Disparada por Archivo utilizando dichos alias. Para los alias se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
       "tooltip.processLimit": "Por defecto, los Agentes ejecutan un número ilimitado de procesos en paralelo para los Jobs. Se puede asignar un Límite de Procesos para restringir el uso de recursos en todos los Subagentes de un Clúster de Agentes. Un valor de Límite de Procesos igual a 0 impedirá que se inicien los Jobs.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "El Nombre del Clúster de Subagentes es un identificador único del Clúster que no puede modificarse durante su vida útil. Para los nombres de Clúster se pueden utilizar la mayoría de los caracteres Unicode, puntos y guiones; sin embargo, no se permiten espacios ni puntos o guiones al inicio o al final.",
         "tooltip.title": "El Título de un Clúster de Subagentes puede definirse libremente."
@@ -421,6 +422,7 @@
     "label.primaryUrl": "Conexión del Controlador Primario al Controlador Secundario",
     "label.jocAsClusterWatch": "JOC Cockpit como monitor de Clúster",
     "label.agentAsClusterWatch": "Agente como monitor de Clúster",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Prueba de conexión",
     "button.newController": "Nuevo Controlador",
     "tooltip.type": "Un Controlador Autónomo puede configurarse con una única instancia. Un Clúster de Controladores puede configurarse con dos instancias si se dispone de una licencia comercial.",
@@ -431,7 +433,8 @@
     "tooltip.urlForBackup": "Conexión del Controlador Secundario al Controlador Primario",
     "tooltip.urlForPrimary": "Conexión del Controlador Primario al Controlador Secundario",
     "tooltip.primaryTitle": "Descripción de la instancia del Controlador Primario",
-    "tooltip.backupTitle": "Descripción de la instancia del Controlador Secundario"
+    "tooltip.backupTitle": "Descripción de la instancia del Controlador Secundario",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Agregar Certificado de Cifrado",
@@ -1551,6 +1554,7 @@
     "label.lastErrorMessage": "Último Mensaje de Error",
     "label.integrityHash": "Hash de Integridad",
     "label.fileTransferFound": "Transferencia de Archivos Encontrada",
+    "label.fileStatus": "File Status",
     "button.restart": "Reiniciar",
     "label.fileTransfersFound": "Transferencias de Archivos Encontradas",
     "message.noFilesFound": "no se encontraron Archivos de la Transferencia",
