@@ -313,7 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "Ein ^Director Agent^ kann als eigener ^Subagenten-Cluster|subagent-cluster^ eingerichtet werden, der diesen einzigen Director Agenten aufführt.\n\nDadurch lassen sich Jobs gezielt auf einem Director Agenten ausführen.",
       "tooltip.agentNameAliases": "Alias-Namen sind Varianten des ^Agenten-Namens|agent-name^, die einem ^Agenten-Cluster|agent-cluster^ zugewiesen werden.\n\nDer Agenten-Cluster kann unter Verwendung des Alias-Namens wie des Agenten-Namens einem ^Job^ oder einer ^Dateiauftragsquelle|file-order-source^ zugeordnet werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
       "tooltip.processLimit": "^Agent^en führen standardmäßig eine unbegrenzte Anzahl von parallelen ^Job^s für ^Aufträge|order^ aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung über alle ^Subagent^en im Cluster hinweg einzuschränken. Ein Prozess-Limit von 0 verhindert den Start von Jobs.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "Standardmäßig erfolgt das Umschalten der Ausfallsicherung automatisch, wenn die aktive Instanz in einem ^Agenten-Cluster|agent-cluster^ ausfällt.\n\nIst die Option aktiviert, muss der Benutzer das Umschalten der Ausfallsicherung bestätigen.",
       "subagent": {
         "tooltip.clusterName": "Der Name des ^Subagenten-Cluster|subagent-cluster^ ist eindeutig und kann während der Lebenszeit des Subagenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
         "tooltip.title": "Der Titel eines ^Subagenten-Cluster|subagent-cluster^ kann nach Belieben angegeben werden."
@@ -459,8 +459,8 @@
     "label.primaryUrl": "Verbindung vom Primären Controller zum Sekundären Controller",
     "label.jocAsClusterWatch": "JOC Cockpit als Cluster Wächter",
     "label.agentAsClusterWatch": "Agent als Cluster Wächter",
-    "label.force": "Force",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.force": "Ausfallsicherung",
+    "label.forceFailoverConfirmation": "Benutzer muss Umschalten der Ausfallsicherung bestätigen",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "section.export": "Export",
@@ -473,7 +473,7 @@
     "tooltip.urlForPrimary": "Verbindung des ^Primären Controller|controller-cluster^ zum Sekundären Controller",
     "tooltip.primaryTitle": "Beschriftung der Kopfzeile des ^Primären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*",
     "tooltip.backupTitle": "Beschriftung der Kopfzeile des ^Sekundären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "Standardmäßig erfolgt das Umschalten der Ausfallsicherung automatisch, wenn die aktive Instanz in einem ^Controller Cluster^ ausfällt.\n\nIst die Option aktiviert, muss der Benutzer das Umschalten der Ausfallsicherung bestätigen."
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -1741,7 +1741,7 @@
     "label.lastErrorMessage": "Letzte Fehlermeldung",
     "label.integrityHash": "Prüfsumme",
     "label.fileTransferFound": "Dateiübertragung gefunden",
-    "label.fileStatus": "File Status",
+    "label.fileStatus": "Status Datei",
     "button.restart": "Neustart",
     "label.fileTransfersFound": "Dateiübertragungen gefunden",
     "message.noFilesFound": "Keine übertragenen Dateien gefunden",
@@ -1904,9 +1904,9 @@
     "label.numberOfItems": "Anzahl Einträge",
     "label.historiesFound": "Einträge in der Historie gefunden",
     "label.historyFound": "Eintrag in der Historie gefunden",
-    "label.exportOption": "Export Option",
-    "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.exportOption": "Optionen für Export",
+    "label.allTransfers": "Alle Transfers",
+    "label.transfersWithFilesOnly": "Nur Transfers von Dateien",
     "button.resetIgnoreList": "Ausschlussliste zurücksetzen",
     "button.addJobToIgnoreList": "Job zur Ausschlussliste hinzufügen",
     "button.addWorkflowToIgnoreList": "Arbeitsablauf zur Ausschlussliste hinzufügen",
@@ -1968,8 +1968,8 @@
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
     "tooltip.date": "Gibt das Datum an, das der Startzeitregel hinzugefügt werden soll. Durch Klicken auf die Schaltfläche + wird das Datum hinzugefügt.",
     "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
-    "tooltip.allTransfers": "All Transfers",
-    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
+    "tooltip.allTransfers": "Legt fest, dass alle Transfers exportiert werden unabhängig davon, ob im Einzelfall Dateien übertragen wurden.",
+    "tooltip.transfersWithFilesOnly": "Legt fest, dass nur Transfers exportiert werden, mit denen Dateien übertragen wurden."
   },
   "info": {
     "label.welcome": "Willkommen",

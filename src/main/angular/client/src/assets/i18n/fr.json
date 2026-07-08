@@ -313,7 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "Un ^Agent Directeur|director-agent^ peut être configuré comme un ^Cluster de Sous-Agents|subagent-cluster^ distinct qui inclut ce seul Agent Directeur.\n\nCela permet d'exécuter des ^Tâches|job^ spécifiquement sur l'Agent Directeur.",
       "tooltip.agentNameAliases": "Les Noms d'Alias sont des variantes du ^Nom de l'Agent|agent-name^ qui sont attribués à un ^Cluster d'Agents|agent-cluster^.\n\nLe Cluster d'Agents peut être affecté à une ^Tâche|job^ ou à une ^Source d'Ordres de Fichiers|file-order-source^ en utilisant le Nom d'Alias ou le Nom de l'Agent.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
       "tooltip.processLimit": "Les ^Agent^s exécutent par défaut un nombre illimité de ^Tâches|job^ parallèles pour les ^Ordres|order^.\n\nUne Limite de Processus peut être attribuée pour restreindre l'utilisation des ressources pour tous les ^Sous-Agents|subagent^ dans un ^Cluster d'Agents|agent-cluster^.\n\nUne valeur de 0 pour la limite de processus empêche les Tâches de démarrer.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "Par défaut, le basculement s'effectue automatiquement en cas de défaillance de l'instance active d'un ^Cluster d'Agents|agent-cluster^.\n\nSi cette option est activée, l'utilisateur doit confirmer le basculement au sein du cluster.",
       "subagent": {
         "tooltip.clusterName": "Le nom du ^Cluster de Sous-Agents|subagent-cluster^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster de Sous-Agents.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
         "tooltip.title": "Le Titre d'un ^Cluster de Sous-Agents|subagent-cluster^ peut être spécifié à volonté."
@@ -440,7 +440,6 @@
   "configuration": {
     "tab.inventory": "Inventaire",
     "tab.notification": "Notification",
-    "tab.fileTransfer": "Transfert de Fichiers",
     "tab.others": "Autres"
   },
   "controller": {
@@ -459,8 +458,8 @@
     "label.primaryUrl": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
     "label.jocAsClusterWatch": "JOC Cockpit comme Observateur de Cluster",
     "label.agentAsClusterWatch": "Agent comme Observateur de Cluster",
-    "label.force": "Force",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.force": "Basculement",
+    "label.forceFailoverConfirmation": "Exiger la confirmation de l'utilisateur pour le basculement",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
     "section.export": "Exportation",
@@ -473,7 +472,7 @@
     "tooltip.urlForPrimary": "Connexion du ^Contrôleur Primaire|controller-cluster^ au Contrôleur Secondaire",
     "tooltip.primaryTitle": "Légende du ^Contrôleur Primaire|controller-cluster^ dans la vue *TABLEAU DE BORD*",
     "tooltip.backupTitle": "Légende du ^Contrôleur Secondaire|controller-cluster^ dans la vue *TABLEAU DE BORD*",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "Par défaut, le basculement s'effectue automatiquement en cas de défaillance de l'instance active d'un ^Cluster de Contrôleurs|controller-cluster^.\n\nSi cette option est activée, l'utilisateur doit confirmer le basculement au sein du cluster."
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Cryptage",
@@ -1741,7 +1740,7 @@
     "label.lastErrorMessage": "Dernier message d'erreur",
     "label.integrityHash": "Hash d'Intégrité",
     "label.fileTransferFound": "Transfert de Fichiers trouvé",
-    "label.fileStatus": "File Status",
+    "label.fileStatus": "Statut Fichier",
     "button.restart": "Redémarrer",
     "label.fileTransfersFound": "Transferts de fichiers trouvés",
     "message.noFilesFound": "aucun fichier trouvé à partir du Transfert de Fichier",
@@ -1904,9 +1903,9 @@
     "label.numberOfItems": "Nombre d'entrées",
     "label.historiesFound": "Entrées d'Historique trouvées",
     "label.historyFound": "Entrée historique trouvée",
-    "label.exportOption": "Export Option",
-    "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.exportOption": "Options pour l'exportation",
+    "label.allTransfers": "Tous les transferts",
+    "label.transfersWithFilesOnly": "Uniquement les transferts de fichiers",
     "button.resetIgnoreList": "Réinitialiser la Liste des Ignorés",
     "button.addJobToIgnoreList": "Ajouter une Tâche à la Liste des Ignorés",
     "button.addWorkflowToIgnoreList": "Ajouter un Workflow à la Liste des Ignorés",
@@ -1968,8 +1967,8 @@
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
     "tooltip.date": "Spécifie la date à ajouter à la Règle d'heures de démarrage sélectionnée. En cliquant sur le bouton +, vous ajoutez cette date.",
     "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
-    "tooltip.allTransfers": "All Transfers",
-    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
+    "tooltip.allTransfers": "Spécifie que tous les transferts doivent être exportés, que des fichiers aient été transférés ou non dans chaque cas particulier.",
+    "tooltip.transfersWithFilesOnly": "Spécifie que seuls les transferts ayant donné lieu à un transfert de fichiers seront exportés."
   },
   "info": {
     "label.welcome": "Bienvenue au JS7",

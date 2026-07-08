@@ -313,7 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "A ^Director Agent^ can be set up as a separate ^Subagent Cluster^ that includes the single Director Agent.\n\nThis allows ^Job^s running on a specific Director Agent.",
       "tooltip.agentNameAliases": "Alias Names are variants of the ^Agent Name^ that can be specified for an ^Agent Cluster^.\n\nThe Agent Cluster Name or its Alias Name can be assigned to a ^Job^ or ^File Order Source^.\n\n^Object Naming Rules^ apply.",
       "tooltip.processLimit": "^Agent^s by default run an unlimited number of parallel ^Job^s for ^Order^s. A Process Limit can be assigned to restrict resource usage across all ^Subagent^s in an ^Agent Cluster^. A Process Limit value of 0 will prevent Jobs from starting.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "By default, fail-over is performed automatically if the active instance in an ^Agent Cluster^ fails.\n\nIf the option is activated, then the user must confirm fail-over.",
       "subagent": {
         "tooltip.clusterName": "The ^Subagent Cluster^ Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime.\n\n^Object Naming Rules^ apply.",
         "tooltip.title": "The Title of a ^Subagent Cluster^ can be specified as desired."
@@ -459,8 +459,8 @@
     "label.primaryUrl": "Primary Controller connection to Secondary Controller",
     "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
     "label.agentAsClusterWatch": "Agent as Cluster Watch",
-    "label.force": "Force",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.force": "Fail-over",
+    "label.forceFailoverConfirmation": "Force user confirmation for fail-over",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
     "section.export": "Export",
@@ -473,7 +473,7 @@
     "tooltip.urlForPrimary": "Connection of the ^Primary Controller|controller-cluster^ to the Secondary Controller",
     "tooltip.primaryTitle": "Caption of the ^Primary Controller|controller-cluster^ instance",
     "tooltip.backupTitle": "Caption of the ^Secondary Controller|controller-cluster^ instance",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "By default, fail-over is performed automatically if the active instance in a ^Controller Cluster^ fails.\n\nIf the option is activated, then the user must confirm fail-over."
   },
   "encipherment": {
     "label.addCertificate": "Add Encryption Certificate",
@@ -1904,9 +1904,9 @@
     "label.numberOfItems": "Number Of Items",
     "label.historiesFound": "History entries found",
     "label.historyFound": "History entry found",
-    "label.exportOption": "Export Option",
+    "label.exportOption": "Export Options",
     "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.transfersWithFilesOnly": "Transfers with files only",
     "button.resetIgnoreList": "Reset Ignore List",
     "button.addJobToIgnoreList": "Add Job to Ignore List",
     "button.addWorkflowToIgnoreList": "Add Workflow to Ignore List",
@@ -1968,8 +1968,8 @@
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
     "tooltip.date": "Specifies the date that should be added to the given start time rule. Hitting the + button will add the date.",
     "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
-    "tooltip.allTransfers": "All Transfers",
-    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
+    "tooltip.allTransfers": "Specifies that all transfers are exported, regardless of whether files were actually transferred in each individual case.",
+    "tooltip.transfersWithFilesOnly": "Specifies that only transfers in which files were transferred will be exported."
   },
   "info": {
     "label.welcome": "Welcome to JS7",
