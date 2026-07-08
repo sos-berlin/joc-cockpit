@@ -2591,7 +2591,7 @@
         "documentation": "Einem ^Arbeitsablauf|workflow^ oder ^Job^ kann eine ^Dokumentation|documentation^ zugewiesen werden, die in der Ansicht *ARBEITSABLÄUFE* angezeigt wird.\n\nDokumentationen werden in der Ansicht *RESSOURCEN -> Dokumentationen* verwaltet.",
         "title": "Der Titel des ^Arbeitsablaufs|workflow^ kann nach Belieben angegeben werden.\n\nDer Titel wird in der Ansicht *ARBEITSABLÄUFE* angezeigt.\n\nDer Titel eines Arbeitsablaufs kann Links in Markdown-Syntax enthalten, zum Beispiel `[Example](https://www.example.com)`.",
         "timeZone": "Die ^Zeitzone|time-zone^ wird verwendet, um ^Zutrittszeiten|admission-times^ und Zyklen der ^Cycle Anweisung|cycle-instruction^ zu bestimmen.\n\nPer Voreinstellung wird die Zeitzone des Benutzerprofils verwendet.",
-        "dayOffset": "Day offset",
+        "dayOffset": "Der **Tagesversatz** wird für die ^Cycle-Anweisung|cycle-instruction^ und die ^AdmissionTimes-Anweisung|admissiontimes-instruction^ im ^Arbeitsablauf|workflow^ verwendet. Standardmäßig darf eine Periode in beiden Anweisungen 24 Stunden nicht überschreiten und nicht über Mitternacht in der ^Zeitzone|time-zone^ des Arbeitsablaufs hinausreichen.\n\nWenn ein Benutzer möchte, dass ein Zyklus um 22:00 Uhr beginnt, ist die Periode standardmäßig auf 2 Stunden bis Mitternacht begrenzt.\n\nDie Option dient dazu, eine Periode zuzulassen, die über Mitternacht hinausgeht, bspw. um einen Zyklus um 22:00 Uhr für eine Periode von 6 Stunden bis 04:00 Uhr am nächsten Tag zu starten.\n\nBenutzer können den *Tagesversatz* auf einen Wert von 04:00 Stunden setzen und den Zyklusbeginn vier Stunden früher um 18:00 Uhr für eine Periode von 6 Stunden festlegen. Der *Tagesversatz* wird berücksichtigt, der Zyklus beginnt um 22:00 Uhr und dauert bis 04:00 Uhr am nächsten Tag.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am ^Auftrag|order^.\n\nSolche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft.\n\n^Job^s, die undeklarierte Variablen referenzieren, die nicht zu einem ^Auftrag|order^ erfasst wurden, werden fehlschlagen.",
         "duration": "Gibt die Dauer in Sekunden an, für die ^Aufträge|order^ durch die ^Sleep-Anweisung|sleep-instruction^ verzögert werden.\n\nFür Bruchteile von Sekunden kann der Dezimalpunkt verwendet werden, z.B. `1.5`.",
         "board": {
@@ -4858,7 +4858,7 @@
     "label.admissionType": "Art der Zutrittszeit",
     "label.showPeriods": "Periode anzeigen",
     "label.timeZone": "Zeitzone",
-    "label.dayOffset": "Day Offset",
+    "label.dayOffset": "Tagesversatz",
     "label.addOrder": "Auftrag hinzufügen",
     "label.workflowPath": "Name des Arbeitsablaufs",
     "label.remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben",

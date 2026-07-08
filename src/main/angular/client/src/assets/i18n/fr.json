@@ -2590,7 +2590,7 @@
         "documentation": "Un ^Worklow^ ou une ^Tâche|job^ peut se voir attribuer une ^Documentation^ qui s'affiche avec la vue *WORKFLOWS*.\n\nLes Documentations sont gérées avec la vue *RESSOURCES*.",
         "title": "Le Titre du ^Workflow^ peut être spécifié à volonté.\n\nLe Titre est affiché dans la vue *WORKFLOWS*.\n\nLe titre d'un Workflow peut contenir des liens au format Markdown, par exemple : `[Example](https://www.example.com)`.",
         "timeZone": "Le ^fuseau horaire|time-zone^ sert à calculer les ^Heures d'Admission|admission-times^ et l'^Instruction Cycle|cycle-instruction^.\n\nPar défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
-        "dayOffset": "Day offset",
+        "dayOffset": "Le **Décalage de jour** est utilisé pour l'^Instruction Cycle|cycle-instruction^ et l'^Instruction AdmissionTimes|admissiontimes-instruction^ dans le ^Workflow^. Par défaut, la période définie dans ces deux instructions ne peut pas dépasser 24 heures et ne peut pas s'étendre au-delà de minuit dans le ^fuseau horaire|time-zone^ du Workflow.\n\nSi un utilisateur souhaite qu'un cycle commence à 22 h, la période est alors limitée par défaut à 2 heures jusqu'à minuit.\n\nCette option permet de définir une période dépassant minuit, par exemple pour démarrer un cycle à 22 h pour une période de 6 heures jusqu’à 04 h le lendemain.\n\nLes utilisateurs peuvent définir le *Décalage de jour* sur une valeur de 04 h et spécifier le début du cycle quatre heures plus tôt, à 18 h, pour une période de 6 heures. Le *Décalage de jour* sera pris en compte et le cycle démarra à 22 h pour une période allant jusqu’à 4 h le lendemain.",
         "allowUndeclared": "Autoriser les variables non déclarées des ^Ordres|order^.\n\nCela signifie qu'un Ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés.\n\nLes ^Tâches|job^ échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.",
         "duration": "Spécifie la durée, en secondes, pendant laquelle les ^Ordres|order^ sont retardés par l'^Instruction Sleep|sleep-instruction^.\n\nPour les fractions de seconde, on peut utiliser le point décimale, comme dans `1.5`.",
         "board": {
@@ -4858,7 +4858,7 @@
     "label.admissionType": "Type d'Admission",
     "label.showPeriods": "Afficher les Périodes",
     "label.timeZone": "Fuseau horaire d'Admission",
-    "label.dayOffset": "Day Offset",
+    "label.dayOffset": "Décalage de jour",
     "label.addOrder": "Ajouter un Ordre",
     "label.workflowPath": "Chemin du Workflow",
     "label.remainWhenTerminated": "Validation requise pour sortir",
