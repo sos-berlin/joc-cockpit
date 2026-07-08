@@ -313,6 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "Un ^Agente Director^ puede configurarse como un ^Clúster de Subagentes^ separado que incluye únicamente al Agente Director.\n\nEsto permite que los ^Job^s se ejecuten en un Agente Director específico.",
       "tooltip.agentNameAliases": "Los Nombres de Alias son variantes del ^Nombre de Agente^ que pueden especificarse para un ^Clúster de Agentes^.\n\nEl Nombre del Clúster de Agentes o su Nombre de Alias pueden asignarse a un ^Job^ o ^Fuente de Órdenes de Archivos^.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
       "tooltip.processLimit": "Los ^Agente^s ejecutan por defecto un número ilimitado de ^Job^s paralelos para ^Orden^es. Se puede asignar un Límite de Procesos para restringir el uso de recursos en todos los ^Subagente^s de un ^Clúster de Agentes^. Un valor de Límite de Procesos de 0 impedirá que los Jobs se inicien.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "El ^Nombre de Clúster de Subagentes^ es un identificador único del Clúster de Subagentes que no puede modificarse durante la vida útil del Clúster de Subagentes.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
         "tooltip.title": "El Título de un ^Clúster de Subagentes^ puede especificarse libremente."
@@ -458,6 +459,8 @@
     "label.primaryUrl": "Conexión del Controlador Primario al Controlador Secundario",
     "label.jocAsClusterWatch": "JOC Cockpit como monitor de Clúster",
     "label.agentAsClusterWatch": "Agente como monitor de Clúster",
+    "label.force": "Force",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Prueba de conexión",
     "button.newController": "Nuevo Controlador",
     "section.export": "Exportar",
@@ -469,7 +472,8 @@
     "tooltip.urlForBackup": "Conexión del ^Controlador Secundario|controller-cluster^ al Controlador Primario",
     "tooltip.urlForPrimary": "Conexión del ^Controlador Primario|controller-cluster^ al Controlador Secundario",
     "tooltip.primaryTitle": "Título de la instancia del ^Controlador Primario|controller-cluster^",
-    "tooltip.backupTitle": "Título de la instancia del ^Controlador Secundario|controller-cluster^"
+    "tooltip.backupTitle": "Título de la instancia del ^Controlador Secundario|controller-cluster^",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Agregar Certificado de Cifrado",
@@ -1737,6 +1741,7 @@
     "label.lastErrorMessage": "Último Mensaje de Error",
     "label.integrityHash": "Hash de Integridad",
     "label.fileTransferFound": "Transferencia de Archivos Encontrada",
+    "label.fileStatus": "File Status",
     "button.restart": "Reiniciar",
     "label.fileTransfersFound": "Transferencias de Archivos Encontradas",
     "message.noFilesFound": "no se encontraron Archivos de la Transferencia",
@@ -1961,7 +1966,10 @@
     "tooltip.job": "Limita la visualización al ^Job^ seleccionado.",
     "tooltip.criticality": "Limita la visualización según la criticidad del ^Job^:\n- **Normal**: jobs sin criticidad especial.\n- **Fatal**: jobs con error fatal.",
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
-    "tooltip.date": "Especifica la fecha que se agregará a la regla de hora de inicio dada."
+    "tooltip.date": "Especifica la fecha que se agregará a la regla de hora de inicio dada.",
+    "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
+    "tooltip.allTransfers": "All Transfers",
+    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
   },
   "info": {
     "label.welcome": "Bienvenido a JS7",

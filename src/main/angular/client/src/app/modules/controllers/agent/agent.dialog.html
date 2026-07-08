@@ -146,6 +146,14 @@
             </div>
           </div>
         }
+
+        <div class="form-group row m-t">
+          <label [appRichTooltip]="'agent.cluster.tooltip.forceFailoverConfirmation' | translate" class="col-sm-3" >{{ 'controller.label.forceFailoverConfirmation' | translate }}</label>
+          <div class="col-sm-8">
+            <label [(ngModel)]="forceFailoverConfirmation" name="forceFailoverConfirmation" nz-checkbox></label>
+          </div>
+        </div>
+
         @if (!isCluster) {
           <div class="form-group row">
             <label [appRichTooltip]="'agent.tooltip.url' | translate" class="col-sm-3 form-control-label">{{ 'agent.label.url' | translate }}

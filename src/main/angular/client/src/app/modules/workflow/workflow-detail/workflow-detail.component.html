@@ -187,12 +187,17 @@
                     </td>
                     <td>
                       @if (item.state) {
-                        <span [innerHtml]="item.state._text | translate" [ngClass]="coreService.getColor(item.state.severity, 'bg')"
-                              class="label"></span>
-                      }
-                      @if (item.state && (item.state._text === 'OUTSTANDING')) {
-                        <app-tooltip-info [controllerId]="schedulerIds.selected"
-                                          [workflow]="item"></app-tooltip-info>
+                        <span [ngClass]="coreService.getColor(item.state.severity, 'bg')" class="label">
+                          <span>{{item.state._text | translate}}</span>
+                          @if (item.state && (item.state._text === 'OUTSTANDING')) {
+                            <app-tooltip-info [controllerId]="schedulerIds.selected"
+                                              [workflow]="item"></app-tooltip-info>
+                          }
+                          @if (item.state && item.state._text !== 'OUTSTANDING') {
+                            <i [appRichTooltip]="'workflow.tooltip.state.' + (item.state._text | lowercase) | translate"
+                              class="fa fa-info-circle p-l-xs"></i>
+                          }
+                        </span>
                       }
                     </td>
                     <td>

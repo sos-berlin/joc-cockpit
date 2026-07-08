@@ -313,6 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "ディレクターエージェントは、このディレクターエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはディレクターエージェント上で別に実行することができます。",
       "tooltip.agentNameAliases": "エイリアス名はエージェントクラスターに割り当てることができます。エージェントクラスターは、エイリアス名を使用して、ジョブまたはファイルオーダーソースに割り当てることができます。エイリアス名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンは使用できません。",
       "tooltip.processLimit": "プロセス上限",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "サブエージェントクラスター名は、サブエージェントクラスターの一意な識別子で、サブエージェントクラスターが存続する間は変更することができません。サブエージェント・クラスター名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
         "tooltip.title": "タイトルは任意に指定可能です。"
@@ -458,6 +459,8 @@
     "label.primaryUrl": "プライマリーコントローラーがみるURL",
     "label.jocAsClusterWatch": "JOCコクピットからクラスター監視",
     "label.agentAsClusterWatch": "エージェントからクラスター監視",
+    "label.force": "Force",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
     "section.export":"Export",
@@ -469,7 +472,8 @@
     "tooltip.urlForBackup": "セカンダリーコントローラーがみるプライマリーコントローラーURL",
     "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL",
     "tooltip.primaryTitle": "プライマリータイトル",
-    "tooltip.backupTitle": "セカンダリータイトル"
+    "tooltip.backupTitle": "セカンダリータイトル",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "暗号化証明書追加",
@@ -1737,6 +1741,7 @@
     "label.lastErrorMessage": "最新エラーメッセージ",
     "label.integrityHash": "ハッシュ値",
     "label.fileTransferFound": "ファイル転送があります",
+    "label.fileStatus": "File Status",
     "button.restart": "リスタート",
     "label.fileTransfersFound": "ファイル転送があります",
     "message.noFilesFound": "ファイル転送のファイルはありません",
@@ -1961,7 +1966,10 @@
     "tooltip.job": "Job",
     "tooltip.criticality": "Criticality",
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
-    "tooltip.date": "Date"
+    "tooltip.date": "Date",
+    "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
+    "tooltip.allTransfers": "All Transfers",
+    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
   },
   "info": {
     "label.welcome": "Welcome",

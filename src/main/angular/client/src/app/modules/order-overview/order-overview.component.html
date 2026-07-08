@@ -724,20 +724,13 @@
                                   </div>
                                   <div (mouseover)="getObstacles(order)" class="text-sm text-left text-muted p-t-sm">
                                     <span>{{ 'order.label.state' | translate }} </span>:
-                                    <span
-                                      [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"
-                                      [ngClass]="coreService.getColor(order.state.severity, 'text')"
-                                      [appRichTooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"></span>
+                                    <span [ngClass]="coreService.getColor(order.state.severity, 'text')">
+                                      {{order.state._text | translate | highlight : orderFilters.searchText}}
+                                    </span>
+                                    <span><i [appRichTooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : (order.state._text === 'PROMPTING' && order.question) ? order.question : 'order.tooltip.state.' + (order.state._text | lowercase) | translate"
+                                        class="fa fa-info-circle p-l-xs"></i></span>
                                     @if (order.marked) {
                                       <span [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
-                                    }
-                                    @if (order.state._text === 'PROMPTING' && order.question) {
-                                      <span class="p-l-xs"><i
-                                        [appRichTooltip]="order.question" class="fa fa-info-circle"></i></span>
-                                    }
-                                    @if (order.state && !(order.state._text === 'PROMPTING' && order.question)) {
-                                      <i [appRichTooltip]="'order.tooltip.state.' + (order.state._text | lowercase) | translate"
-                                         class="fa fa-info-circle p-l-sm"></i>
                                     }
                                   </div>
                                   <ng-template #tooltipTemplate1>
@@ -1107,23 +1100,16 @@
                                 </td>
                                 <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
                                   @if (order.state) {
-                                    <span
-                                      [innerHtml]="order.state._text | translate  | highlight : orderFilters.searchText" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-                                      [appRichTooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
-                                      class="label"></span>
+                                    <span [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']" class="label">
+                                      <span>{{order.state._text | translate  | highlight : orderFilters.searchText}}</span>
+                                      <i [appRichTooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : (order.state._text === 'PROMPTING' && order.question) ? order.question : 'order.tooltip.state.' + (order.state._text | lowercase) | translate"
+                                        class="fa fa-info-circle p-l-xs"></i>
+                                    </span>
                                   }
                                   @if (order.marked) {
                                     <span [innerHtml]="order.marked._text | translate"
                                           [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
                                           class="label label2"></span>
-                                  }
-                                  @if (order.state._text === 'PROMPTING' && order.question) {
-                                    <span class="p-l-xs"><i
-                                      [appRichTooltip]="order.question" class="fa fa-info-circle"></i></span>
-                                  }
-                                  @if (order.state && !(order.state._text === 'PROMPTING' && order.question)) {
-                                    <i [appRichTooltip]="'order.tooltip.state.' + (order.state._text | lowercase) | translate"
-                                       class="fa fa-info-circle p-l-sm"></i>
                                   }
                                   <ng-template #tooltipTemplate1>
                                     <div class="p-l-sm">

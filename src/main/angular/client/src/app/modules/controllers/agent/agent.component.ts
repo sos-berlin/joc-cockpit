@@ -118,7 +118,6 @@ export class SubagentModalComponent {
   standalone: false,
   selector: 'add-cluster-agent-modal',
   templateUrl: './add-cluster.dialog.html',
-  
 })
 export class AddClusterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA)
@@ -218,7 +217,6 @@ export class AddClusterModalComponent {
   standalone: false,
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html',
-  
 })
 export class AgentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -235,6 +233,7 @@ export class AgentModalComponent {
   required = false;
   secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
+  forceFailoverConfirmation: boolean = false;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService, private cdr: ChangeDetectorRef) {
   }
@@ -244,6 +243,9 @@ export class AgentModalComponent {
     this.new = this.modalData.new;
     this.isCluster = this.modalData.isCluster;
     this.controllerId = this.modalData.controllerId;
+    if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
+      this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
+    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -389,6 +391,9 @@ export class AgentModalComponent {
             title: this.secondaryDirector.title
           });
         }
+      }
+      if (this.forceFailoverConfirmation) {
+        _agent.forceFailoverConfirmation = this.forceFailoverConfirmation;
       }
       obj.clusterAgents = [_agent];
     } else {
@@ -622,7 +627,6 @@ export class ShowCertificateListModalComponent {
   standalone: false,
   selector: 'app-add-priority-modal',
   templateUrl: './add-priority-dialog.html',
-  
 })
 export class AddPriorityModalComponent {
 

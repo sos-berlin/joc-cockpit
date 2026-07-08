@@ -1672,11 +1672,11 @@
                 <span class="show-in-single-line">
                 @if (!transfer.show && !historyFilters.current) {
                   <i (click)="showTransferFuc(transfer);$event.stopPropagation()"
-                     class="cursor fa fa-caret-down fa-lg"></i>
+                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
                 }
                   @if (transfer.show && !historyFilters.current) {
                     <i (click)="transfer.show = false;$event.stopPropagation()"
-                       class="cursor fa fa-caret-up fa-lg"></i>
+                       class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                   }&nbsp;
                 <span [innerHtml]="transfer.controllerId"></span>
                   @if (!transfer.controllerId) {
@@ -1689,11 +1689,11 @@
               <span>
               @if (!transfer.show && historyFilters.current) {
                 <i (click)="showTransferFuc(transfer);$event.stopPropagation()"
-                   class="cursor fa fa-caret-down fa-lg"></i>
+                   class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
               }
                 @if (transfer.show && historyFilters.current) {
                   <i (click)="transfer.show = false;$event.stopPropagation()"
-                     class="cursor fa fa-caret-up fa-lg"></i>
+                     class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                 }&nbsp;
               <span [innerHtml]="transfer.state._text | translate | highlight : yade.searchText" [ngClass]="coreService.getColor(transfer.state.severity,'bg')"
                     class="label"></span>

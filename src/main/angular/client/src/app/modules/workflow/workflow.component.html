@@ -672,7 +672,7 @@
                               }
                               @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
                                 <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
-                                   class="fa fa-info-circle p-l-sm"></i>
+                                   class="fa fa-info-circle p-l-xs"></i>
                               }
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
@@ -1038,17 +1038,17 @@
                           </td>
                           <td>
                             @if (workflow.state) {
-                              <a [innerHtml]="workflow.state._text | translate | highlight : workflowFilters.searchText"
-                                 [ngClass]="coreService.getColor(workflow.state.severity, 'bg')"
-                                 class="label"></a>
-                            }
-                            @if (workflow.state && (workflow.state._text === 'OUTSTANDING')) {
-                              <app-tooltip-info [controllerId]="schedulerIds.selected"
-                                                [workflow]="workflow"></app-tooltip-info>
-                            }
-                            @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
-                              <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
-                                 class="fa fa-info-circle p-l-sm"></i>
+                              <a [ngClass]="coreService.getColor(workflow.state.severity, 'bg')" class="label">
+                                <span>{{workflow.state._text | translate | highlight : workflowFilters.searchText}}</span>
+                                @if (workflow.state && (workflow.state._text === 'OUTSTANDING')) {
+                                  <app-tooltip-info [controllerId]="schedulerIds.selected"
+                                                    [workflow]="workflow"></app-tooltip-info>
+                                }
+                                @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
+                                  <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
+                                    class="fa fa-info-circle p-l-xs"></i>
+                                }
+                              </a>
                             }
                           </td>
                           <td>

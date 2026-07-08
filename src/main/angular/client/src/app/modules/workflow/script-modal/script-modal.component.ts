@@ -119,6 +119,7 @@ export class ScriptModalComponent {
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }
     });
+    this.cdr.detectChanges();
   }
 
   @HostListener('document:mousemove', ['$event'])

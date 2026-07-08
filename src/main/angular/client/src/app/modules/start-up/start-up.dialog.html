@@ -253,6 +253,20 @@
           </div>
         </div>
       </div>
+
+      <div class="b-a m-b-sm section-box">
+        <div class="section-box-header">
+          <small class="_600 section-box-title">{{ 'controller.label.force' | translate }}</small>
+        </div>
+        <div class="p-a-sm">
+          <div class="form-group row">
+            <label [appRichTooltip]="'controller.tooltip.forceFailoverConfirmation' | translate" class="col-sm-4" >{{ 'controller.label.forceFailoverConfirmation' | translate }}</label>
+            <div class="col-sm-8">
+              <label [(ngModel)]="controller.forceFailoverConfirmation" name="forceFailoverConfirmation" nz-checkbox></label>
+            </div>
+          </div>
+        </div>
+      </div>
     }
   </div>
   <div class="modal-footer">

@@ -175,13 +175,13 @@
                         <span>{{ 'common.label.status' | translate }}</span>:
                         @if (cluster.state) {
                           <span [innerHtml]="cluster.state._text | highlight : agentsFilters.searchText"></span>
+                          <i [appRichTooltip]="cluster.errorMessage ? cluster.errorMessage : 'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
+                                class="fa fa-info-circle p-l-xs"></i>
                         }
                         @if (!cluster.state && cluster.healthState) {
                           <span [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
-                        }
-                        @if (cluster.state) {
-                          <i [appRichTooltip]="'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
-                             class="fa fa-info-circle p-l-sm"></i>
+                          <i [appRichTooltip]="cluster.errorMessage ? cluster.errorMessage : 'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
+                                class="fa fa-info-circle p-l-xs"></i>
                         }
                       </div>
                       <div class="text-sm text-left text-muted p-t-sm">
@@ -357,22 +357,18 @@
                           [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                         <td (click)="navToController(cluster, null)" class="cursor">
                           @if (cluster.state) {
-                            <span [ngClass]="coreService.getColor(cluster.state.severity,'bg')" [appRichTooltip]="cluster.errorMessage"
-                                  class="label">
-                            <span
-                              [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
-                          </span>
+                            <span [ngClass]="coreService.getColor(cluster.state.severity,'bg')" class="label">
+                              <span [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
+                              <i [appRichTooltip]="cluster.errorMessage ? cluster.errorMessage : 'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
+                                class="fa fa-info-circle p-l-xs"></i>
+                            </span>
                           }
                           @if (!cluster.state && cluster.healthState) {
-                            <span [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')"
-                                  [appRichTooltip]="cluster.errorMessage" class="label">
-                            <span
-                              [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
-                          </span>
-                          }
-                          @if (cluster.state) {
-                            <i [appRichTooltip]="'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
-                               class="fa fa-info-circle p-l-sm"></i>
+                            <span [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')" class="label">
+                              <span [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
+                              <i [appRichTooltip]="cluster.errorMessage ? cluster.errorMessage : 'agent.tooltip.state.' + (cluster.state._text | lowercase) | translate"
+                                    class="fa fa-info-circle p-l-xs"></i>
+                            </span>
                           }
                         </td>
                         <td (click)="navToController(cluster, null)" class="cursor">
@@ -517,15 +513,11 @@
                                 class="cursor">{{subagent.isDirector | translate}}</td>
                             <td (click)="navToController(subagent, cluster)" class="cursor">
                               @if (subagent.state) {
-                                <span [ngClass]="coreService.getColor(subagent.state.severity,'bg')" [appRichTooltip]="subagent.errorMessage"
-                                      class="label">
-                                <span
-                                  [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
+                                <span [ngClass]="coreService.getColor(subagent.state.severity,'bg')" class="label">
+                                <span [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
+                                <i [appRichTooltip]="subagent.errorMessage ? subagent.errorMessage : 'agent.tooltip.state.' + (subagent.state._text | lowercase) | translate"
+                                  class="fa fa-info-circle p-l-xs"></i>
                               </span>
-                              }
-                              @if (subagent.state) {
-                                <i [appRichTooltip]="'agent.tooltip.state.' + (subagent.state._text | lowercase) | translate"
-                                   class="fa fa-info-circle p-l-sm"></i>
                               }
                             </td>
                             <td (click)="navToController(subagent, cluster)" class="cursor">

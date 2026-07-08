@@ -313,6 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "^Агент-директор|director-agent^ может быть настроен как собственный ^кластер субагентов|subagent-cluster^, который включает этого единственного агента-директора.\n\nЭто позволяет целенаправленно выполнять ^задачи|job^ на агенте-директоре.",
       "tooltip.agentNameAliases": "^Кластеру агентов|agent-cluster^ могут быть назначены псевдонимы названий.\n\nКластер агентов может быть назначен ^задаче|job^ или ^источнику файловых заданий|file-order-source^ с использованием псевдонима.\n\nПсевдонимы должны соответствовать ^правилам наименования объектов|object-naming-rules^.",
       "tooltip.processLimit": "По умолчанию ^агент|agent^ выполняет неограниченное число процессов параллельно.\n\nМожно назначить лимит, чтобы ограничить использование ресурсов для всех ^субагентов|subagent^ в кластере.\n\nПри значении 0 процессы ^задач|job^ не запускаются.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "Название ^кластера субагентов|subagent-cluster^ это уникальный идентификатор кластера субагентов.\n\nНазвание должно соответствовать ^правилам наименования объектов|object-naming-rules^.",
         "tooltip.title": "Произвольное краткое описание ^кластера субагентов|subagent-cluster^."
@@ -458,6 +459,8 @@
     "label.primaryUrl": "Соединение первичного контроллера со вторичным",
     "label.jocAsClusterWatch": "JOC Cockpit как наблюдатель кластера",
     "label.agentAsClusterWatch": "Агент как наблюдатель кластера",
+    "label.force": "Force",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Проверить соединение",
     "button.newController": "Новый контроллер",
     "section.export":"Export",
@@ -469,7 +472,8 @@
     "tooltip.urlForBackup": "Соединение вторичного ^контроллера|controller^ с первичным контроллером.",
     "tooltip.urlForPrimary": "Соединение первичного ^контроллера|controller^ со вторичным контроллером.",
     "tooltip.primaryTitle": "Краткое описание первичного ^контроллера|controller^ в  разделе *ОБЗОР*",
-    "tooltip.backupTitle": "Краткое описание вторичного ^контроллера|controller^ в  разделе *ОБЗОР*"
+    "tooltip.backupTitle": "Краткое описание вторичного ^контроллера|controller^ в  разделе *ОБЗОР*",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Добавить сертификат шифрования",
@@ -1737,6 +1741,7 @@
     "label.lastErrorMessage": "Последнее сообщение об ошибке",
     "label.integrityHash": "Контрольная сумма",
     "label.fileTransferFound": "Передача файла найдена",
+    "label.fileStatus": "File Status",
     "button.restart": "Перезапуск",
     "label.fileTransfersFound": "передачи файлов найдено",
     "message.noFilesFound": "Переданных файлов не найдено",
@@ -1961,7 +1966,10 @@
     "tooltip.job": "Ограничение поиска по названию ^задачи|job^.\n\nИспользуйте `*` для любого количества символов и `?` для одного символа в названии задачи.\n\nПример: `job*` находит задачи, название которых начинается с *job*, `*EOD` - задачи, название которых заканчивается на *EOD*.",
     "tooltip.criticality": "Ограничение поиска по уровню критичности ^задач|job^:\n- **Низкая**\n- **Обычная**\n- **Высокая**\n- **Критическая**",
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
-    "tooltip.date": "Дата, которая должна быть добавлена к заданной частоте.\n\nНажатие кнопки + добавляет дату к указанной частоте."
+    "tooltip.date": "Дата, которая должна быть добавлена к заданной частоте.\n\nНажатие кнопки + добавляет дату к указанной частоте.",
+    "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
+    "tooltip.allTransfers": "All Transfers",
+    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
   },
   "info": {
     "label.welcome": "Добро пожаловать",

@@ -313,6 +313,7 @@
       "tooltip.withGenerateSubagentCluster": "Ein ^Director Agent^ kann als eigener ^Subagenten-Cluster|subagent-cluster^ eingerichtet werden, der diesen einzigen Director Agenten aufführt.\n\nDadurch lassen sich Jobs gezielt auf einem Director Agenten ausführen.",
       "tooltip.agentNameAliases": "Alias-Namen sind Varianten des ^Agenten-Namens|agent-name^, die einem ^Agenten-Cluster|agent-cluster^ zugewiesen werden.\n\nDer Agenten-Cluster kann unter Verwendung des Alias-Namens wie des Agenten-Namens einem ^Job^ oder einer ^Dateiauftragsquelle|file-order-source^ zugeordnet werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
       "tooltip.processLimit": "^Agent^en führen standardmäßig eine unbegrenzte Anzahl von parallelen ^Job^s für ^Aufträge|order^ aus.\n\nEin Prozess-Limit kann zugewiesen werden, um die Ressourcennutzung über alle ^Subagent^en im Cluster hinweg einzuschränken. Ein Prozess-Limit von 0 verhindert den Start von Jobs.",
+      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
       "subagent": {
         "tooltip.clusterName": "Der Name des ^Subagenten-Cluster|subagent-cluster^ ist eindeutig und kann während der Lebenszeit des Subagenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
         "tooltip.title": "Der Titel eines ^Subagenten-Cluster|subagent-cluster^ kann nach Belieben angegeben werden."
@@ -458,6 +459,8 @@
     "label.primaryUrl": "Verbindung vom Primären Controller zum Sekundären Controller",
     "label.jocAsClusterWatch": "JOC Cockpit als Cluster Wächter",
     "label.agentAsClusterWatch": "Agent als Cluster Wächter",
+    "label.force": "Force",
+    "label.forceFailoverConfirmation": "Force Failover Confirmation",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "section.export": "Export",
@@ -469,7 +472,8 @@
     "tooltip.urlForBackup": "Verbindung des ^Sekundären Controller|controller-cluster^ zum Primären Controller",
     "tooltip.urlForPrimary": "Verbindung des ^Primären Controller|controller-cluster^ zum Sekundären Controller",
     "tooltip.primaryTitle": "Beschriftung der Kopfzeile des ^Primären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*",
-    "tooltip.backupTitle": "Beschriftung der Kopfzeile des ^Sekundären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*"
+    "tooltip.backupTitle": "Beschriftung der Kopfzeile des ^Sekundären Controller|controller-cluster^ in der Ansicht *ÜBERSICHT*",
+    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -1737,6 +1741,7 @@
     "label.lastErrorMessage": "Letzte Fehlermeldung",
     "label.integrityHash": "Prüfsumme",
     "label.fileTransferFound": "Dateiübertragung gefunden",
+    "label.fileStatus": "File Status",
     "button.restart": "Neustart",
     "label.fileTransfersFound": "Dateiübertragungen gefunden",
     "message.noFilesFound": "Keine übertragenen Dateien gefunden",
@@ -1961,7 +1966,10 @@
     "tooltip.job": "Beschränkt die Anzeige auf ^Job^s, deren Namen eine bestimmte Zeichenfolge enthalten.\n\nVerwenden Sie den Platzhalter `*` für eine beliebige Anzahl von Zeichen, `?` für ein einzelnes Zeichen im Namen eines Jobs.\n\nBeispiel: `job*` findet Jobs, deren Namen mit *job* beginnen, `*EOD` findet Jobs, deren Namen mit *EOD* endeen.",
     "tooltip.criticality": "Beschränkt die Anzeige auf ^Job^s mit der angegebenen Kritikalität:\n- **Gering**\n- **Normal**\n- **Hoch**\n- **Kritisch**",
     "--------FREQUENCY DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: -, Pop-up: Frequency Dialog, Source: frequency-dialog.html, Fields: date",
-    "tooltip.date": "Gibt das Datum an, das der Startzeitregel hinzugefügt werden soll. Durch Klicken auf die Schaltfläche + wird das Datum hinzugefügt."
+    "tooltip.date": "Gibt das Datum an, das der Startzeitregel hinzugefügt werden soll. Durch Klicken auf die Schaltfläche + wird das Datum hinzugefügt.",
+    "--------FILE TRANSFER EXPORT DIALOG TOOLTIPS (history)------------": "Page: History, Sub-tab: File Transfer, Pop-up: File Transfer Export Dialog, Source: file-transfer-dialog-dialog.html, Fields: export options - allTransfers, transfersWithFilesOnly",
+    "tooltip.allTransfers": "All Transfers",
+    "tooltip.transfersWithFilesOnly": "Transfers with Files Only"
   },
   "info": {
     "label.welcome": "Willkommen",
