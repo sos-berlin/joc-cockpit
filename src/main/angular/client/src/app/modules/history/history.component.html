@@ -673,19 +673,19 @@
               <span class="separator"></span>
             </li>
           }
-          @if (permission.currentController && permission.joc.fileTransfer.view) {
+          <!-- @if (permission.currentController && permission.joc.fileTransfer.view) {
             <li class="nav-item">
               <a (click)="yadeHistory(null, false)" [ngClass]="{'active': historyFilters.type=='YADE'}" class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span class="text"
                                                           >{{ 'history.tab.fileTransfers' | translate }}</span></span>
               </a>
             </li>
-          }
-          @if (permission.currentController && permission.currentController.deployments.view && (permission.joc.fileTransfer.view || permission.currentController.orders.view)) {
+          } -->
+          <!-- @if (permission.currentController && permission.currentController.deployments.view && (permission.joc.fileTransfer.view || permission.currentController.orders.view)) {
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-          }
+          } -->
           @if (permission.currentController && permission.currentController.deployments.view) {
             <li class="nav-item">
               <a (click)="deploymentHistory(null,false)" [ngClass]="{'active': historyFilters.type=='DEPLOYMENT'}"

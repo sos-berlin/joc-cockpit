@@ -921,9 +921,9 @@ span ul li a {
 }
 
 .ant-select-multiple .ant-select-selection-item, .ant-tag {
-  background: #7c7c7c;
-  border-color: #7c7c7c;
-  color: #fff;
+  background: #7c7c7c !important;
+  border-color: #7c7c7c !important;
+  color: #fff !important;
 }
 
 .table tr.active {

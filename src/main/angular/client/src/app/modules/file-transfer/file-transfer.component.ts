@@ -12,6 +12,9 @@ import {SaveService} from '../../services/save.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+import { YadeExportOptionComponent } from '../history/history.component';
+import { TranslateService } from '@ngx-translate/core';
+import { ExcelService } from 'src/app/services/excel.service';
 
 declare const $;
 
@@ -68,7 +71,6 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
-  
 })
 export class FileTransferSearchComponent {
   @Input() schedulerIds: any;
@@ -457,7 +459,6 @@ export class SingleFileTransferComponent {
   standalone: false,
   selector: 'app-file-transfer',
   templateUrl: './file-transfer.component.html',
-  
 })
 export class FileTransferComponent {
   schedulerIds: any = {};
@@ -487,7 +488,8 @@ export class FileTransferComponent {
   searchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
-              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService, public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef) {
+              private router: Router, private orderPipe: OrderPipe, private searchPipe: SearchPipe, private dataService: DataService, private modal: NzModalService,
+              public viewContainerRef: ViewContainerRef, private cdr: ChangeDetectorRef, private translate: TranslateService, private excelService: ExcelService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -1065,5 +1067,143 @@ export class FileTransferComponent {
 
   helpPage(): void{
     this.coreService.openHelpPage('history-file-transfers');
+  }
+
+  exportToExcel() {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: YadeExportOptionComponent,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzAutofocus: null,
+    });
+    modal.afterClose.subscribe((result: string) => {
+      if (!result) return;
+      const source = result === 'withFiles'
+        ? this.fileTransfers.filter((t: any) => t.numOfFiles > 0)
+        : this.fileTransfers;
+      this.excelService.exportAsExcelFile(this.exportToExcelYade(source), 'JS7-yade-history-report');
+    });
+  }
+
+  private exportToExcelYade(transfers: any[] = this.fileTransfers): any {
+    let controllerId = '', workflow = '', status = '', profileName = '',
+      startTime = '', endTime = '', duration = '', operation = '', order = '', total = '', lastErrorMessage = '';
+    let source = '', target = '', jump = '', host = '', account = '', port = '', protocol = '';
+    let sourceFileName = '', sourceFilePath = '', targetFileName = '', targetFilePath = '', fileStatus = '', size = '', integrityHash = '';
+    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
+      controllerId = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.status').subscribe(translatedValue => {
+      status = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.profileName').subscribe(translatedValue => {
+      profileName = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.operation').subscribe(translatedValue => {
+      operation = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.workflow').subscribe(translatedValue => {
+      workflow = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.order').subscribe(translatedValue => {
+      order = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.total').subscribe(translatedValue => {
+      total = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.lastErrorMessage').subscribe(translatedValue => {
+      lastErrorMessage = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.startTime').subscribe(translatedValue => {
+      startTime = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.endTime').subscribe(translatedValue => {
+      endTime = translatedValue;
+    });
+    this.translate.get('history.label.duration').subscribe(translatedValue => {
+      duration = translatedValue;
+    });
+    this.translate.get('fileTransfer.label.source').subscribe(translatedValue => { source = translatedValue; });
+    this.translate.get('fileTransfer.label.target').subscribe(translatedValue => { target = translatedValue; });
+    this.translate.get('fileTransfer.label.jump').subscribe(translatedValue => { jump = translatedValue; });
+    this.translate.get('fileTransfer.label.host').subscribe(translatedValue => { host = translatedValue; });
+    this.translate.get('fileTransfer.label.account').subscribe(translatedValue => { account = translatedValue; });
+    this.translate.get('fileTransfer.label.port').subscribe(translatedValue => { port = translatedValue; });
+    this.translate.get('fileTransfer.label.protocol').subscribe(translatedValue => { protocol = translatedValue; });
+    this.translate.get('fileTransfer.label.sourceFileName').subscribe(translatedValue => { sourceFileName = translatedValue; });
+    this.translate.get('fileTransfer.label.sourceFilePath').subscribe(translatedValue => { sourceFilePath = translatedValue; });
+    this.translate.get('fileTransfer.label.targetFileName').subscribe(translatedValue => { targetFileName = translatedValue; });
+    this.translate.get('fileTransfer.label.targetFilePath').subscribe(translatedValue => { targetFilePath = translatedValue; });
+    this.translate.get('fileTransfer.label.fileStatus').subscribe(translatedValue => { fileStatus = translatedValue; });
+    this.translate.get('fileTransfer.label.size').subscribe(translatedValue => { size = translatedValue; });
+    this.translate.get('fileTransfer.label.integrityHash').subscribe(translatedValue => { integrityHash = translatedValue; });
+
+    const data = [];
+    for (let i = 0; i < transfers.length; i++) {
+      const transfer = transfers[i];
+      const obj: any = {};
+      if (!this.yadeFilters.current) {
+        obj[controllerId] = transfer.controllerId;
+      }
+      this.translate.get(transfer.state._text).subscribe(translatedValue => {
+        obj[status] = translatedValue;
+      });
+      obj[profileName] = transfer.profile;
+      obj[operation] = transfer._operation;
+      obj[workflow] = transfer.workflowPath;
+      obj[order] = transfer.orderId;
+      obj[total] = transfer.numOfFiles;
+      obj[lastErrorMessage] = transfer.error ? transfer.error.message : '';
+      obj[startTime] = this.coreService.stringToDate(this.preferences, transfer.start);
+      obj[endTime] = this.coreService.stringToDate(this.preferences, transfer.end);
+      obj[duration] = this.coreService.calDuration(transfer.start, transfer.end);
+
+      if (transfer.show) {
+        if (transfer.source) {
+          obj[source + ': ' + host] = transfer.source.host;
+          obj[source + ': ' + account] = transfer.source.account;
+          obj[source + ': ' + port] = transfer.source.port;
+          obj[source + ': ' + protocol] = transfer.source.protocol;
+        }
+        if (transfer.target) {
+          obj[target + ': ' + host] = transfer.target.host;
+          obj[target + ': ' + account] = transfer.target.account;
+          obj[target + ': ' + port] = transfer.target.port;
+          obj[target + ': ' + protocol] = transfer.target.protocol;
+        }
+        if (transfer.jump) {
+          obj[jump + ': ' + host] = transfer.jump.host;
+          obj[jump + ': ' + account] = transfer.jump.account;
+          obj[jump + ': ' + port] = transfer.jump.port;
+          obj[jump + ': ' + protocol] = transfer.jump.protocol;
+        }
+      }
+
+      if (transfer.show && transfer.files && transfer.files.length > 0) {
+        for (const file of transfer.files) {
+          const fileObj: any = {...obj};
+          fileObj[sourceFileName] = file.sourceName;
+          fileObj[sourceFilePath] = file.sourcePath;
+          fileObj[targetFileName] = file.targetName;
+          fileObj[targetFilePath] = file.targetPath;
+          if (file.state) {
+            this.translate.get(file.state._text).subscribe(translatedValue => {
+              fileObj[fileStatus] = translatedValue;
+            });
+          }
+          fileObj[size] = file.size;
+          fileObj[integrityHash] = file.integrityHash;
+          if (file.error) {
+            fileObj[lastErrorMessage] = file.error.message;
+          }
+          data.push(fileObj);
+        }
+      } else {
+        data.push(obj);
+      }
+    }
+    return data;
   }
 }

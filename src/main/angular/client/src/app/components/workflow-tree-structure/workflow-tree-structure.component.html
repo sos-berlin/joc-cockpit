@@ -345,7 +345,7 @@
                     <div class="p-l">
                       <app-workflow-tree-structure [configuration]="branch" [disabledDrag]="disabledDrag" [expandAll]="expandAll"
                                                    [jobs]="jobs" [orders]="orders"
-                                                   [timezone]="timezone"></app-workflow-tree-structure>
+                                                   [timezone]="timezone" [dayOffset]="dayOffset"></app-workflow-tree-structure>
                     </div>
                   }
                 </div>
@@ -359,7 +359,7 @@
               <div>
                 <app-workflow-tree-structure [configuration]="instruction.then" [disabledDrag]="disabledDrag"
                                              [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
-                                             [timezone]="timezone">
+                                             [timezone]="timezone" [dayOffset]="dayOffset">
                 </app-workflow-tree-structure>
                 <div class="p-l-md">
                   @if (instruction.else) {
@@ -394,7 +394,7 @@
                         <app-workflow-tree-structure [configuration]="instruction.else"
                                                      [disabledDrag]="disabledDrag" [expandAll]="expandAll" [jobs]="jobs"
                                                      [orders]="orders"
-                                                     [timezone]="timezone"></app-workflow-tree-structure>
+                                                     [timezone]="timezone" [dayOffset]="dayOffset"></app-workflow-tree-structure>
                       }
                     </div>
                   }
@@ -408,7 +408,7 @@
             @if (instruction.instructions) {
               <app-workflow-tree-structure [configuration]="instruction" [disabledDrag]="disabledDrag"
                                            [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
-                                           [timezone]="timezone">
+                                           [timezone]="timezone" [dayOffset]="dayOffset">
               </app-workflow-tree-structure>
             }
             @if (instruction.catch && instruction.catch.instructions) {
@@ -443,7 +443,7 @@
                       <app-workflow-tree-structure [configuration]="instruction.catch"
                                                    [disabledDrag]="disabledDrag" [expandAll]="expandAll" [jobs]="jobs"
                                                    [orders]="orders"
-                                                   [timezone]="timezone"></app-workflow-tree-structure>
+                                                   [timezone]="timezone" [dayOffset]="dayOffset"></app-workflow-tree-structure>
                     }
                   </div>
                 }
@@ -458,7 +458,7 @@
               @if (instruction.instructions) {
                 <app-workflow-tree-structure [configuration]="instruction" [disabledDrag]="disabledDrag"
                                              [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
-                                             [timezone]="timezone">
+                                             [timezone]="timezone" [dayOffset]="dayOffset">
                 </app-workflow-tree-structure>
               }
             </div>

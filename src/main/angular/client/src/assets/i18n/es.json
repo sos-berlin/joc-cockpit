@@ -3731,7 +3731,7 @@
         "iamLdapADWithSamAccount": "El atributo sAMAccountName es el identificador único de una cuenta de usuario.\n\nEl atributo está disponible frecuentemente con LDAP de Active Directory.",
         "iamLdapWithMemberOf": "El atributo memberOf simplifica la búsqueda de grupos de seguridad de los cuales la cuenta de usuario es miembro.\n\nEl atributo está disponible con varios servidores LDAP.",
         "iamLdapSearchBase": "La Base de búsqueda para buscar cuentas de usuario en la jerarquía de entradas del servidor LDAP, por ejemplo, OU=Operations,O=IT,O=US.",
-        "iamLdapSearchBase": "La Base de búsqueda para buscar cuentas de usuario en la jerarquía de entradas del servidor LDAP, por ejemplo OU=Operations,O=IT,O=Users,DC=example,DC=com.",
+        "iamLdapGroupSearchBase": "La Base de búsqueda para buscar cuentas de usuario en la jerarquía de entradas del servidor LDAP, por ejemplo OU=Operations,O=IT,O=Users,DC=example,DC=com.",
         "iamLdapUserDnTemplate": "El Nombre distinguido (DN) identifica una cuenta de usuario.\n\nEn el caso de servidores LDAP de Active Directory, el valor {0} puede usarse como marcador para el nombre de cuenta.",
         "iamLdapServerUrl": "La URL del servidor LDAP especifica el protocolo, por ejemplo, ldap:// para conexiones de Texto sin formato y TLS, ldaps:// para conexiones SSL.",
         "iamLdapGroupNameAttribute": "El atributo de nombre de grupo LDAP proporciona el nombre del grupo de seguridad del cual una cuenta de usuario es miembro, por ejemplo, el atributo cn.",

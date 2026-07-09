@@ -23,7 +23,7 @@ import {Subscription} from "rxjs";
   standalone: false,
   selector: 'app-type',
   templateUrl: './type.component.html',
-  
+
 })
 export class TypeComponent {
   @Input() configuration;
@@ -34,6 +34,7 @@ export class TypeComponent {
   @Input() permission: any;
   @Input() schedulerId: any;
   @Input() timezone: string;
+  @Input() dayOffset: string;
   @Input() workflowObj: any;
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
@@ -527,7 +528,8 @@ export class TypeComponent {
       nzData = {
         schedule: instruction.schedule,
         workflowPath: this.workflowObj.path,
-        timezone: this.timezone
+        timezone: this.timezone,
+        dayOffset: this.dayOffset
       };
     } else if (instruction.TYPE === 'Sleep') {
 

@@ -162,6 +162,8 @@
                 </nz-dropdown-menu>
               </div>
             }
+            <button (click)="exportToExcel()" [disabled]="data.length === 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                  class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
           </div>
         </div>
       </div>

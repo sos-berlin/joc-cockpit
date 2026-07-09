@@ -923,9 +923,9 @@ span ul li a {
   background: var(--bg-box) !important;
 }
 .ant-select-multiple .ant-select-selection-item, .ant-tag {
-  background: var(--background-color);
-  border-color: var(--background-color);
-  color: var(--text-color);
+  background: var(--background-color) !important;
+  border-color: var(--background-color) !important;
+  color: var(--text-color) !important;
 }
 .modal-body .ant-select-multiple .ant-select-selection-item {
   background: var(--bg-box);
