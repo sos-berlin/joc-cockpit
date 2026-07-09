@@ -297,7 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
       "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for jobs. A Process Limit can be assigned to restrict resource usages across all Subagents in an Agent Cluster. A Prcess Limit value 0 will prevent jobs from starting.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "By default, fail-over is performed automatically if the active instance in an Agent Cluster fails.\n\nIf the option is activated, then the user must confirm fail-over.",
       "subagent": {
         "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "tooltip.title": "The Title of a Subagent Cluster can be specified as desired."
@@ -422,7 +422,7 @@
     "label.primaryUrl": "Primary Controller connection to Secondary Controller",
     "label.jocAsClusterWatch": "JOC Cockpit as Cluster Watch",
     "label.agentAsClusterWatch": "Agent as Cluster Watch",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.forceFailoverConfirmation": "Force user confirmation for fail-over",
     "button.testConnection": "Test Connection",
     "button.newController": "New Controller",
     "tooltip.type": "A Standalone Controller can be configured using a single instance. A Controller Cluster can be configured using two instances if a Commercial License is in place.",
@@ -434,7 +434,7 @@
     "tooltip.urlForPrimary": "Connection of the Primary Controller to the Secondary Controller",
     "tooltip.primaryTitle": "Caption of the Primary Controller instance",
     "tooltip.backupTitle": "Caption of the Secondary Controller instance",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "Force user confirmation for fail-over"
   },
   "encipherment": {
     "label.addCertificate": "Add Encryption Certificate",
@@ -1691,9 +1691,9 @@
     "label.numberOfItems": "Number Of Items",
     "label.historiesFound": "History entries found",
     "label.historyFound": "History entry found",
-    "label.exportOption": "Export Option",
+    "label.exportOption": "Export Options",
     "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.transfersWithFilesOnly": "Transfers with files only",
     "button.resetIgnoreList": "Reset Ignore List",
     "button.addJobToIgnoreList": "Add Job to Ignore List",
     "button.addWorkflowToIgnoreList": "Add Workflow to Ignore List",
@@ -2249,7 +2249,7 @@
         "documentation": "A workflow or job can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES view.",
         "title": "The Title of the Workflow can be specified as desired. The Title is displayed with the WORKFLOWS view.",
         "timeZone": "The time zone is used for calculation of Admission Times and for Cycle Instructions. By default the time zone specified from the user profile is used.",
-        "dayOffset": "Day offset",
+        "dayOffset": "The Day Offset is used for the Cycle Instruction and AdmissionTimes Instruction in the Workflow. By default the period in both instructions cannot exceed 24 hours and cannot exceed midnight in the Workflow's time zone.\n\nIf a user wants a cycle to start at 22:00, then by default the period is limited to 2 hours until midnight.\n\nThe option is used to allow a period exceeding midnight, for example, to start a cycle at 22:00 for a period of 6 hours until 04:00 next day.\n\nUsers can set the Day Offset to a value of 04:00 hours and specify the cycle start four hours earlier at 18:00 for a period of 6 hours. The Day Offset will be considered and the cycle will start at 22:00 with a period until 04:00 next day.",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available from an order.",
         "duration": "Duration.",
         "board": {

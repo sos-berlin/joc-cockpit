@@ -297,7 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "Un Agent Directeur peut être configuré comme un cluster de Sous-Agents distinct qui inclut ce seul Agent Directeur. Cela permet d'exécuter des tâches spécifiquement sur l'Agent Directeur.",
       "tooltip.agentNameAliases": "Des Noms d'Alias peuvent être attribués à un Cluster d'Agents. Le Cluster d'Agents peut être affecté à une tâche ou à une Source d'Ordres de Fichiers en utilisant le Nom d'Alias. Pour le Nom d'Alias, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
       "tooltip.processLimit": "Les Agents exécutent par défaut un nombre illimité de processus parallèles pour les Tâches. Une limite de processus peut être attribuée pour restreindre l'utilisation des ressources pour tous les Sous-Agents dans un Cluster d'Agents. Une valeur de 0 pour la limite de processus empêchera les Tâches de démarrer.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "Par défaut, le basculement s'effectue automatiquement en cas de défaillance de l'instance active d'un Cluster d'Agents.\n\nSi cette option est activée, l'utilisateur doit confirmer le basculement au sein du cluster.",
       "subagent": {
         "tooltip.clusterName": "Le nom du Cluster de Sous-Agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster de Sous-Agents. Pour le Nom du Cluster de Sous-Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
         "tooltip.title": "Le Titre d'un Cluster de Sous-Agent peut être spécifié à volonté."
@@ -422,7 +422,7 @@
     "label.primaryUrl": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
     "label.jocAsClusterWatch": "JOC Cockpit comme Observateur de Cluster",
     "label.agentAsClusterWatch": "Agent comme Observateur de Cluster",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.forceFailoverConfirmation": "Exiger la confirmation de l'utilisateur pour le basculement",
     "button.testConnection": "Test de Connexion",
     "button.newController": "Nouveau Contrôleur",
     "tooltip.type": "Un Contrôleur Autonome est configuré à l'aide d'une seule instance. Un Cluster de Contrôleurs peut être configuré à l'aide de deux instances si une licence commerciale est en place.",
@@ -434,7 +434,7 @@
     "tooltip.urlForPrimary": "Connexion du Contrôleur Primaire au Contrôleur Secondaire",
     "tooltip.primaryTitle": "Légende du Contrôleur Primaire dans la vue TABLEAU DE BORD",
     "tooltip.backupTitle": "Légende du Contrôleur Secondaire dans la vue TABLEAU DE BORD",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "Exiger la confirmation de l'utilisateur pour le basculement"
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Cryptage",
@@ -1554,7 +1554,7 @@
     "label.lastErrorMessage": "Dernier message d'erreur",
     "label.integrityHash": "Hash d'Intégrité",
     "label.fileTransferFound": "Transfert de Fichiers trouvé",
-    "label.fileStatus": "File Status",
+    "label.fileStatus": "Statut Fichier",
     "button.restart": "Redémarrer",
     "label.fileTransfersFound": "Transferts de fichiers trouvés",
     "message.noFilesFound": "aucun fichier trouvé à partir du Transfert de Fichier",
@@ -1691,9 +1691,9 @@
     "label.numberOfItems": "Nombre d'entrées",
     "label.historiesFound": "Entrées d'Historique trouvées",
     "label.historyFound": "Entrée historique trouvée",
-    "label.exportOption": "Export Option",
-    "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.exportOption": "Options pour l'exportation",
+    "label.allTransfers": "Tous les transferts",
+    "label.transfersWithFilesOnly": "Uniquement les transferts de fichiers",
     "button.resetIgnoreList": "Réinitialiser la Liste des Ignorés",
     "button.addJobToIgnoreList": "Ajouter une Tâche à la Liste des Ignorés",
     "button.addWorkflowToIgnoreList": "Ajouter un Workflow à la Liste des Ignorés",
@@ -2249,7 +2249,7 @@
         "documentation": "Un worklow ou une tâche peut se voir attribuer une documentation qui s'affiche avec la vue WORKFLOWS. Les documentations sont gérées avec la vue RESSOURCES.",
         "title": "Le Titre du workflow peut être spécifié à volonté. Le Titre est affiché dans la vue WORKFLOWS.",
         "timeZone": "Le fuseau horaire sert à calculer les heures d'admission et l'instruction Cycle. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
-        "dayOffset": "Day offset",
+        "dayOffset": "Le Décalage de jour est utilisé pour l'Instruction Cycle et l'Instruction AdmissionTimes dans le Workflow. Par défaut, la période définie dans ces deux instructions ne peut pas dépasser 24 heures et ne peut pas s'étendre au-delà de minuit dans le fuseau horaire du Workflow.\n\nSi un utilisateur souhaite qu'un cycle commence à 22 h, la période est alors limitée par défaut à 2 heures jusqu'à minuit.\n\nCette option permet de définir une période dépassant minuit, par exemple pour démarrer un cycle à 22 h pour une période de 6 heures jusqu’à 04 h le lendemain.\n\nLes utilisateurs peuvent définir le Décalage de jour sur une valeur de 04 h et spécifier le début du cycle quatre heures plus tôt, à 18 h, pour une période de 6 heures. Le Décalage de jour sera pris en compte et le cycle démarra à 22 h pour une période allant jusqu’à 4 h le lendemain.",
         "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
         "duration": "Durée.",
         "board": {
@@ -3957,7 +3957,7 @@
     "label.admissionType": "Type d'Admission",
     "label.showPeriods": "Afficher les Périodes",
     "label.timeZone": "Fuseau horaire d'admission",
-    "label.dayOffset": "Day Offset",
+    "label.dayOffset": "Décalage de jour",
     "label.addOrder": "Ajouter un Ordre",
     "label.workflowPath": "Chemin du Workflow",
     "label.remainWhenTerminated": "Validation requise pour sortir",

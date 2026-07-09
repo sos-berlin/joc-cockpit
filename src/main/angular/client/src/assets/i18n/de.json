@@ -297,7 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "Ein Director Agent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Director Agent aufführt. Dadurch lassen sich Jobs gezielt auf einem Director Agent ausführen.",
       "tooltip.agentNameAliases": "Einem Agenten Cluster können Alias Namen zugeordnet werden. Der Agenten Cluster kann unter Verwendung des Alias Namens einem Job oder einer Dateiauftragsquelle zugeordnet werden. Für Alias Namen des Agenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
       "tooltip.processLimit": "Agenten führen standardmäßig eine unbegrenzte Anzahl von parallelen Prozessen für Aufträge aus. Ein Prozess Limit kann zugewiesen werden, um die Ressourcennutzung über alle Subagenten im Cluster hinweg einzuschränken. Ein Prozess Limit von 0 verhindert den Start von Aufträgen.",
-      "tooltip.forceFailoverConfirmation": "Force Failover Confirmation",
+      "tooltip.forceFailoverConfirmation": "Standardmäßig erfolgt das Umschalten der Ausfallsicherung automatisch, wenn die aktive Instanz in einem Agenten-Cluster ausfällt.\n\nIst die Option aktiviert, muss der Benutzer das Umschalten der Ausfallsicherung bestätigen.",
       "subagent": {
         "tooltip.clusterName": "Der Name des Subagenten Cluster ist eindeutig und kann während der Lebenszeit des Subagenten Cluster nicht geändert werden. Für den Namen des Subagenten Cluster können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
         "tooltip.title": "Der Titel eines Subagenten Cluster kann nach Belieben angegeben werden."
@@ -422,7 +422,7 @@
     "label.primaryUrl": "Verbindung von Primärem Controller zu Sekundärem Controller",
     "label.jocAsClusterWatch": "JOC Cockpit als Cluster Wächter",
     "label.agentAsClusterWatch": "Agent als Cluster Wächter",
-    "label.forceFailoverConfirmation": "Force Failover Confirmation",
+    "label.forceFailoverConfirmation": "Benutzer muss Umschalten der Ausfallsicherung bestätigen",
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
@@ -434,7 +434,7 @@
     "tooltip.urlForPrimary": "Verbindung des Primären Controllers zum Sekundären Controller",
     "tooltip.primaryTitle": "Beschriftung der Kopfzeile der Primären Controller Instanz in der ÜBERSICHT Ansicht",
     "tooltip.backupTitle": "Beschriftung der Kopfzeile der Sekundären Controller Instanz in der ÜBERSICHT Ansicht",
-    "tooltip.forceFailoverConfirmation": "Force Failover Confirmation"
+    "tooltip.forceFailoverConfirmation": "Benutzer muss Umschalten der Ausfallsicherung bestätigen"
   },
   "encipherment": {
     "label.addCertificate": "Verschlüsselungszertifikat hinzufügen",
@@ -1554,7 +1554,7 @@
     "label.lastErrorMessage": "Letzte Fehlermeldung",
     "label.integrityHash": "Prüfsumme",
     "label.fileTransferFound": "Dateiübertragung gefunden",
-    "label.fileStatus": "File Status",
+    "label.fileStatus": "Status Datei",
     "button.restart": "Neustart",
     "label.fileTransfersFound": "Dateiübertragungen gefunden",
     "message.noFilesFound": "Keine übertragenen Dateien gefunden",
@@ -1691,9 +1691,9 @@
     "label.numberOfItems": "Anzahl Einträge",
     "label.historiesFound": "Einträge in der Historie gefunden",
     "label.historyFound": "Eintrag in der Historie gefunden",
-    "label.exportOption": "Export Option",
-    "label.allTransfers": "All Transfers",
-    "label.transfersWithFilesOnly": "Transfers with Files Only",
+    "label.exportOption": "Optionen für Export",
+    "label.allTransfers": "Alle Transfers",
+    "label.transfersWithFilesOnly": "Nur Transfers von Dateien",
     "button.resetIgnoreList": "Ausschlussliste zurücksetzen",
     "button.addJobToIgnoreList": "Job zur Ausschlussliste hinzufügen",
     "button.addWorkflowToIgnoreList": "Arbeitsablauf zur Ausschlussliste hinzufügen",
@@ -2249,7 +2249,7 @@
         "documentation": "Einem Arbeitsablauf oder Job kann eine Dokumetation zugewiesen werden, die in der Sicht ARBEITSABLÄUFE angezeigt wird. Dokumentationen werden in der Sicht RESSOURCEN->Dokumentationen verwaltet.",
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
         "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Anweisung zu bestimmen. Per Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt.",
-        "dayOffset": "Day offset",
+        "dayOffset": "Der Tagesversatz wird für die Cycle-Anweisung und die AdmissionTimes-Anweisung im Arbeitsablauf verwendet. Standardmäßig darf eine Periode in beiden Anweisungen 24 Stunden nicht überschreiten und nicht über Mitternacht in der Zeitzone des Arbeitsablaufs hinausreichen.\n\nWenn ein Benutzer möchte, dass ein Zyklus um 22:00 Uhr beginnt, ist die Periode standardmäßig auf 2 Stunden bis Mitternacht begrenzt.\n\nDie Option dient dazu, eine Periode zuzulassen, die über Mitternacht hinausgeht, bspw. um einen Zyklus um 22:00 Uhr für eine Periode von 6 Stunden bis 04:00 Uhr am nächsten Tag zu starten.\n\nBenutzer können den Tagesversatz auf einen Wert von 04:00 Stunden setzen und den Zyklusbeginn vier Stunden früher um 18:00 Uhr für eine Periode von 6 Stunden festlegen. Der Tagesversatz wird berücksichtigt, der Zyklus beginnt um 22:00 Uhr und dauert bis 04:00 Uhr am nächsten Tag.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
         "duration": "Dauer.",
         "board": {
@@ -3956,7 +3956,7 @@
     "label.admissionType": "Art der Zutrittszeit",
     "label.showPeriods": "Periode anzeigen",
     "label.timeZone": "Zeitzone",
-    "label.dayOffset": "Day Offset",
+    "label.dayOffset": "Tagesversatz",
     "label.addOrder": "Auftrag hinzufügen",
     "label.workflowPath": "Name des Arbeitsablaufs",
     "label.remainWhenTerminated": "Nach Terminierung im Arbeitsablauf verbleiben",
