@@ -304,7 +304,7 @@
       "couplingfailed": "Der Versuch des ^Agent^en sich zu koppeln ist fehlgeschlagen.",
       "shutdown": "Der ^Agent^ wurde in normaler Weise heruntergefahren.",
       "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet.",
-      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
+      "all_subagents_are_coupled_and_enabled": "Alle ^Subagenten|subagent^ in einem ^Agenten-Cluster|agent-cluster^ sind gekoppelt und aktiviert."
     },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
