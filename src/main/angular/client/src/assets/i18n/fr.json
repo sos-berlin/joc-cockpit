@@ -303,7 +303,8 @@
       "initialised": "L'^Agent^ est en train de s'initialiser, c'est-à-dire d'établir la couplage.",
       "couplingfailed": "La tentative de couplage de l'^Agent^ a échoué.",
       "shutdown": "L'^Agent^ a été arrêté normalement.",
-      "unknown": "L'état de l'^Agent^ est inconnu. Il se peut qu'il y ait un problème de connexion au serveur et au port de l'Agent, ou que l'Agent ne soit pas démarré."
+      "unknown": "L'état de l'^Agent^ est inconnu. Il se peut qu'il y ait un problème de connexion au serveur et au port de l'Agent, ou que l'Agent ne soit pas démarré.",
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "Le Nom du ^Cluster d'Agents|agent-cluster^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
@@ -5073,7 +5074,6 @@
       "suspended": "Un ^Workflow^ est suspendu lorsqu'il est mis en pause par l'utilisateur.",
       "outstanding": "Un ^Workflow^ est en attente tant que tous les ^Agents^ n'ont pas confirmé sa suspension ou sa reprise.",
       "not_in_sync": "Un ^Workflow^ est non synchronisé lorsqu'il n'est pas ^déployé|deployment^ sur le ^Contrôleur^.",
-      "not_deployed": "Un ^Workflow^ est non déployé lorsqu'il n'est pas ^déployé|deployment^ sur le ^Contrôleur^.",
       "suspending": "Un ^Workflow^ est en attente tant que tous les ^Agents^ n'ont pas confirmé sa suspension."
     },
     "findAndReplace": {

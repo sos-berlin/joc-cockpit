@@ -5,7 +5,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild, ViewContainerRef,
-  
+
   ChangeDetectorRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
@@ -45,7 +45,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-workflow-graphical-dialog',
   templateUrl: './dependent-workflow-dialog.html',
-  
+
 })
 export class DependentWorkflowComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -216,7 +216,7 @@ export class DependentWorkflowComponent {
   selector: 'app-workflow-graphical',
   templateUrl: './workflow-graphical.component.html',
   styleUrls: ['./workflow-graphical.component.css'],
-  
+
 })
 export class WorkflowGraphicalComponent {
   @Input() workFlowJson: any = {};
@@ -1953,7 +1953,8 @@ export class WorkflowGraphicalComponent {
       nzData = {
         schedule: JSON.parse(argu.schedule),
         workflowPath: this.workFlowJson.path,
-        timezone: this.workFlowJson.timeZone
+        timezone: this.workFlowJson.timeZone,
+        dayOffset: this.workFlowJson.dayOffset
       };
     } else if (argu.noticeNames) {
       nzData = {

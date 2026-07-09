@@ -303,7 +303,8 @@
       "initialised": "Der ^Agent^ ist dabei sich zu initialisieren, d.h. die Kopplung herzustellen.",
       "couplingfailed": "Der Versuch des ^Agent^en sich zu koppeln ist fehlgeschlagen.",
       "shutdown": "Der ^Agent^ wurde in normaler Weise heruntergefahren.",
-      "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet."
+      "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet.",
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
@@ -5074,7 +5075,6 @@
       "suspended": "Ein ^Arbeitsablauf|workflow^ ist ausgesetzt, wenn er durch den Benutzer pausiert wird.",
       "outstanding": "Ein ^Arbeitsablauf|workflow^ ist ausstehend, wenn nicht alle ^Agent^en das Aussetzen oder die Wiederaufnahme des Arbeitsablaufs bestätigt haben.",
       "not_in_sync": "Ein ^Arbeitsablauf|workflow^ ist nicht synchron, wenn er nicht auf den ^Controller^ ^ausgerollt|deployment^ wurde.",
-      "not_deployed": "Ein ^Arbeitsablauf|workflow^ gilt als nicht ausgerollt, wenn er nicht auf den ^Controller^ ^ausgerollt|deployment^ wurde.",
       "suspending": "Ein ^Arbeitsablauf|workflow^ ist ausstehend, wenn nicht alle ^Agent^en das Aussetzen des Arbeitsablaufs bestätigt haben."
     },
     "findAndReplace": {

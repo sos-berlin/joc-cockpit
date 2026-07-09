@@ -9,7 +9,7 @@ import {WorkflowService} from "../../services/workflow.service";
   standalone: false,
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
-  
+
 })
 export class ResumeOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -18,6 +18,8 @@ export class ResumeOrderModalComponent {
   order: any;
   orders: any;
   workflow: any;
+  timezone: string;
+  dayOffset: string;
   display: any;
   submitted = false;
   required = false;
@@ -165,6 +167,8 @@ export class ResumeOrderModalComponent {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
       this.workflow.configuration = {instructions: res.workflow.instructions};
+      this.timezone = res.workflow.timeZone;
+      this.dayOffset = res.workflow.dayOffset;
       this.checkPositions();
       const elementId = this.order?.positionString;
       setTimeout(() => {

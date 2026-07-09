@@ -303,7 +303,8 @@
       "initialised": "The ^Agent^ is in the process of initializing itself, that is, establishing the coupling.",
       "couplingfailed": "The ^Agent^'s attempt to couple failed.",
       "shutdown": "The ^Agent^ was shut down normally.",
-      "unknown": "The ^Agent^'s status is unknown. There may be a connection problem with the server and the Agent's port, or the Agent may not have started."
+      "unknown": "The ^Agent^'s status is unknown. There may be a connection problem with the server and the Agent's port, or the Agent may not have started.",
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "The ^Agent Cluster^ Name is a unique identifier of the Agent Cluster that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
@@ -5074,7 +5075,6 @@
       "suspended": "A ^Workflow^ is suspended when it is paused by the user.",
       "outstanding": "A ^Workflow^ is outstanding if not all ^Agents^ have confirmed the suspension or resumption of the Workflow.",
       "not_in_sync": "A ^Workflow^ is not synchronized if it has not been ^deployed|deployment^ to the ^Controller^.",
-      "not_deployed": "A ^Workflow^ is not deployed if it has not been ^deployed|deployment^ to the ^Controller^.",
       "suspending": "A ^Workflow^ is suspending if not all ^Agents^ have confirmed that the Workflow has been suspended."
     },
     "findAndReplace": {

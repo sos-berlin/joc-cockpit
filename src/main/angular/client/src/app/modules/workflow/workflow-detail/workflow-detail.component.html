@@ -187,17 +187,22 @@
                     </td>
                     <td>
                       @if (item.state) {
-                        <span [ngClass]="coreService.getColor(item.state.severity, 'bg')" class="label">
-                          <span>{{item.state._text | translate}}</span>
-                          @if (item.state && (item.state._text === 'OUTSTANDING')) {
-                            <app-tooltip-info [controllerId]="schedulerIds.selected"
-                                              [workflow]="item"></app-tooltip-info>
-                          }
-                          @if (item.state && item.state._text !== 'OUTSTANDING') {
-                            <i [appRichTooltip]="'workflow.tooltip.state.' + (item.state._text | lowercase) | translate"
-                              class="fa fa-info-circle p-l-xs"></i>
-                          }
-                        </span>
+                        @if (item.state._text === 'OUTSTANDING') {
+                          <span [ngClass]="coreService.getColor(item.state.severity, 'bg')" class="label">
+                            <span>{{item.state._text | translate}}</span>
+                            <app-tooltip-info [controllerId]="schedulerIds.selected" [workflow]="item"></app-tooltip-info>
+                            @if (item.state && item.state._text !== 'OUTSTANDING') {
+                              <i [appRichTooltip]="'workflow.tooltip.state.' + (item.state._text | lowercase) | translate"
+                                class="fa fa-info-circle p-l-xs"></i>
+                            }
+                          </span>
+                        } @else {
+                          <span [ngClass]="coreService.getColor(item.state.severity, 'bg')" class="label"
+                          [appRichTooltip]="'workflow.tooltip.state.' + (item.state._text | lowercase) | translate">
+                            <span>{{item.state._text | translate}}</span>
+                              <i class="fa fa-info-circle p-l-xs"></i>
+                          </span>
+                        }
                       }
                     </td>
                     <td>
@@ -399,7 +404,7 @@
                               [postNoticeBoards]="workFlowJson.postNoticeBoards"
                               [preferences]="preferences" [recursiveCals]="recursiveCals"
                               [schedulerId]="schedulerIds.selected" [timezone]="workFlowJson.timeZone"
-                              [workflowFilters]="workflowFilters"
+                              [dayOffset]="workFlowJson.dayOffset" [workflowFilters]="workflowFilters"
                               [workflowObj]="{path: path, versionId: versionId}"></app-type>
                     <div class="rg-bottom"><span></span></div>
                   </div>

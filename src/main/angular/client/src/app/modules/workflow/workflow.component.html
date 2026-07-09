@@ -1038,17 +1038,18 @@
                           </td>
                           <td>
                             @if (workflow.state) {
-                              <a [ngClass]="coreService.getColor(workflow.state.severity, 'bg')" class="label">
-                                <span>{{workflow.state._text | translate | highlight : workflowFilters.searchText}}</span>
-                                @if (workflow.state && (workflow.state._text === 'OUTSTANDING')) {
-                                  <app-tooltip-info [controllerId]="schedulerIds.selected"
-                                                    [workflow]="workflow"></app-tooltip-info>
-                                }
-                                @if (workflow.state && workflow.state._text !== 'OUTSTANDING') {
-                                  <i [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate"
-                                    class="fa fa-info-circle p-l-xs"></i>
-                                }
-                              </a>
+                              @if (workflow.state._text === 'OUTSTANDING') {
+                                <a [ngClass]="coreService.getColor(workflow.state.severity, 'bg')" class="label">
+                                  <span>{{workflow.state._text | translate | highlight : workflowFilters.searchText}}</span>
+                                  <app-tooltip-info [controllerId]="schedulerIds.selected" [workflow]="workflow"></app-tooltip-info>
+                                </a>
+                              } @else {
+                                <a [ngClass]="coreService.getColor(workflow.state.severity, 'bg')" class="label"
+                                [appRichTooltip]="'workflow.tooltip.state.' + (workflow.state._text | lowercase) | translate">
+                                  <span>{{workflow.state._text | translate | highlight : workflowFilters.searchText}}</span>
+                                  <i class="fa fa-info-circle p-l-xs"></i>
+                                </a>
+                              }
                             }
                           </td>
                           <td>
@@ -1194,7 +1195,7 @@
                                           [schedulerId]="schedulerIds.selected"
                                           [workflowFilters] = "workflowFilters"
                                           [searchText]="workflowFilters.searchText"
-                                          [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
+                                          [timezone]="workflow.configuration.timeZone" [dayOffset]="workflow.configuration.dayOffset" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
                               </div>
                             </td>
                           </tr>

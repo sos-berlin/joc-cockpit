@@ -479,7 +479,7 @@
                 </a>
               </td>
               <td>
-                @for (p of restrictedItem.periods; track p) {
+                @for (p of restrictedItem.periods; track $index) {
                   <div>
                     <a (click)="editRestrictedPeriod(p, restrictedItem)">{{p.text}}</a>
                     <a (click)="editRestrictedPeriod(p, restrictedItem)" class="text-xs text-hover-primary m-l-sm">

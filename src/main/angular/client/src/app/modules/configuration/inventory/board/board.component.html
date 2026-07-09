@@ -18,7 +18,7 @@
                 <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
             }
-           
+
             <i (click)="notes(board?.name)"
                 [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                 nz-icon
@@ -37,10 +37,10 @@
                       <span>{{ 'inventory.label.valid' | translate }}</span>
                     }
                   @if (!board.valid) {
-                    <span>
-                        <span>{{ 'inventory.label.notValid' | translate }}</span>
-                        <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
-                      </span>
+                    <span [appRichTooltip]="invalidMsg | translate">
+                      <span>{{ 'inventory.label.notValid' | translate }}</span>
+                      <i class="fa fa-info-circle p-l-xs"></i>
+                    </span>
                   }
                 </span>
               }

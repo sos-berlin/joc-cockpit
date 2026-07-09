@@ -121,6 +121,8 @@
                 </nz-dropdown-menu>
               </div>
             }
+            <button (click)="exportToExcel()" [disabled]="data.length === 0" [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
+                  class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
           </div>
         </div>
       </div>

@@ -303,7 +303,8 @@
       "initialised": "Initialized",
       "couplingfailed": "Coupling Failed",
       "shutdown": "Shutdown",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "エージェントクラスター名は、エージェントクラスターの一意な識別子で、エージェントクラスターが存続している間は変更することができません。エージェントクラスター名には、ほとんどのユニコード文字、ドットおよびハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンを使用できません。",
@@ -5074,7 +5075,6 @@
       "suspended": "Suspended",
       "outstanding": "Outstanding",
       "not_in_sync": "Not Synchronized",
-      "not_deployed": "Not Deployed",
       "suspending": "Suspending"
     },
     "findAndReplace": {

@@ -663,7 +663,7 @@
               <span class="separator"></span>
             </li>
           }
-          @if (permission.currentController && permission.joc.fileTransfer.view) {
+          <!-- @if (permission.currentController && permission.joc.fileTransfer.view) {
             <li class="nav-item flex-center"  [ngClass]="{'tab-active': historyFilters.type=='YADE'}">
               @if (preferences?.showHelpPages) {
                 <i (click)="helpPage('YADE')"
@@ -674,12 +674,12 @@
                 <span class="nav-text text-dark p-b-sm"><span class="text">{{ 'history.tab.fileTransfers' | translate }}</span></span>
               </a>
             </li>
-          }
-          @if (permission.currentController && permission.currentController.deployments.view && (permission.joc.fileTransfer.view || permission.currentController.orders.view)) {
+          } -->
+          <!-- @if (permission.currentController && permission.currentController.deployments.view && (permission.joc.fileTransfer.view || permission.currentController.orders.view)) {
             <li class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-          }
+          } -->
           @if (permission.currentController && permission.currentController.deployments.view) {
             <li class="nav-item flex-center"  [ngClass]="{'tab-active': historyFilters.type=='DEPLOYMENT'}">
               @if (preferences?.showHelpPages) {

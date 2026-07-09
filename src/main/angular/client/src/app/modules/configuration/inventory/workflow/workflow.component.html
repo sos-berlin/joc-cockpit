@@ -74,10 +74,10 @@
                     <span (click)="validate()" [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'"
                           class="badge m-r-12">
                       @if (!workflow.valid) {
-                        <span>
+                        <span [appRichTooltip]="invalidMsg | translate">
                           <span>{{ 'inventory.label.notValid' | translate }}</span>
                           @if (invalidMsg) {
-                            <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
+                            <i class="fa fa-info-circle p-l-xs"></i>
                           }
                         </span>
                       }

@@ -14,7 +14,6 @@ declare const $;
   standalone: false,
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html',
-  
 })
 export class ScriptModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -29,6 +28,7 @@ export class ScriptModalComponent {
   agentName: string;
   subagentClusterId: string;
   timezone: string;
+  dayOffset: string;
   noticeBoardNames: string;
   mode: string;
 
@@ -71,6 +71,7 @@ export class ScriptModalComponent {
     this.agentName = this.modalData.agentName;
     this.subagentClusterId = this.modalData.subagentClusterId;
     this.timezone = this.modalData.timezone;
+    this.dayOffset = this.modalData.dayOffset;
     this.noticeBoardNames = this.modalData.noticeBoardNames;
     this.duration = this.modalData.duration;
     this.cmOption.tabSize = this.preferences.tabSize;

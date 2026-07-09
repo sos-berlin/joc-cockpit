@@ -314,9 +314,9 @@
                       <span>{{ 'inventory.label.valid' | translate }}</span>
                     }
                     @if (!schedule.valid) {
-                      <span>
+                      <span [appRichTooltip]="invalidMsg | translate">
                         <span>{{ 'inventory.label.notValid' | translate }}</span>
-                        <i class="fa fa-info-circle p-l-xs" [appRichTooltip]="invalidMsg | translate"></i>
+                        <i class="fa fa-info-circle p-l-xs"></i>
                       </span>
                     }
                   </span>

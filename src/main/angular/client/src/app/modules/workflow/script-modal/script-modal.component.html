@@ -113,6 +113,18 @@
             @if (permission && permission.joc.inventory.view) {
               <a class="text-hover-primary p-l-sm" (click)="navToConfig()"><i class="fa fa-pencil"></i></a>
             }
+            <div class="row m-b-xs text-sm">
+              <div class="col-auto">
+                <span class="_600">{{ 'workflow.label.workflowTimeZone' | translate }}:</span>
+                <span class="text-muted m-l-xs">{{timezone}}</span>
+              </div>
+              @if (dayOffset) {
+                <div class="col-auto m-l-md">
+                  <span class="_600">{{ 'workflow.label.dayOffset' | translate }}:</span>
+                  <span class="text-muted m-l-xs">{{dayOffset}}</span>
+                </div>
+              }
+            </div>
             <div class="table-responsive">
               <table class="table table-hover table-bordered ">
                 <thead>

@@ -303,7 +303,8 @@
       "initialised": "Initialized",
       "couplingfailed": "Coupling Failed",
       "shutdown": "Shutdown",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "El ^Nombre de Clúster de Agentes^ es un identificador único del Clúster de Agentes que no puede modificarse durante su vida útil.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
@@ -5074,7 +5075,6 @@
       "suspended": "Suspended",
       "outstanding": "Outstanding",
       "not_in_sync": "Not Synchronized",
-      "not_deployed": "Not Deployed",
       "suspending": "Suspending"
     },
     "findAndReplace": {

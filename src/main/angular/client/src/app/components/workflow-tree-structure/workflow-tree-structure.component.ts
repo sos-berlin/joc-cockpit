@@ -14,6 +14,7 @@ export class WorkflowTreeStructureComponent {
   @Input() configuration;
   @Input() jobs;
   @Input() timezone;
+  @Input() dayOffset;
   @Input() orders;
   @Input() type;
   @Input() positionString;
@@ -154,7 +155,8 @@ export class WorkflowTreeStructureComponent {
       nzData = {
         schedule: instruction.schedule,
         workflowPath: this.configuration.path,
-        timezone: this.timezone
+        timezone: this.timezone,
+        dayOffset: this.dayOffset
       };
     }
     if (nzData) {
