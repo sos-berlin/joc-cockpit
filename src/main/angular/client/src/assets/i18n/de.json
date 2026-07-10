@@ -304,9 +304,9 @@
       "couplingfailed": "Der Versuch des ^Agent^en sich zu koppeln ist fehlgeschlagen.",
       "shutdown": "Der ^Agent^ wurde in normaler Weise heruntergefahren.",
       "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet.",
-      "all_subagents_are_coupled_and_enabled": "Alle ^Subagenten|subagent^ in einem ^Agenten-Cluster|agent-cluster^ sind gekoppelt und aktiviert.",
-      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
-      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
+      "all_subagents_are_coupled_and_enabled": "Der ^Agenten-Cluster|agent-cluster^ ist funktionsfähig und alle ^Subagenten|subagent^ sind gekoppelt und aktiviert für die Ausführung von ^Job^s.",
+      "only_some_subagents_are_coupled_and_enabled": "Der ^Agenten-Cluster|agent-cluster^ ist eingeschränkt, da einige ^Subagenten|subagent^ nicht gekoppelt sind. Die verbleibenden Subagenten arbeiten weiter und führen ^Job^s aus.",
+      "no_subagents_are_coupled_and_enabled": "Der ^Agenten-Cluster|agent-cluster^ befindet sich in einem kritischen Zustand, da keine ^Subagenten|subagent^ gekoppelt und zur Ausführung von ^Job^s bereit sind."
     },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
@@ -3326,7 +3326,7 @@
       "blocked": "^Blockierte|blocked^ ^Aufträge|order^ können nicht gestartet werden, z.B. wenn der ^Agent^ nicht erreichbar ist seit der Auftrag hinzugefügt wurde oder wenn der ^Arbeitsablauf|workflow^ ausgesetzt ist.",
       "failed": "^Fehlgeschlagene|failed^ ^Aufträge|order^ zeigen an, dass ein Auftrag wg. Fehler angehalten wurde oder dass eine ^Fail Anweisung|fail-instruction^ die Fortsetzung des Auftrags verhindert.",
       "finished": "^Beendete|finished^ ^Aufträge|order^ sind abgeschlossen.",
-      "cancelled": "Cancelled"
+      "cancelled": "Abgebrochene ^Aufträge|order^ sind abgeschlossen.\n\nSolche Aufträge werden über eine ^Dateiauftragsquelle|file-order-source^ erstellt und durch einen Eingriff des Benutzers abgebrochen.\n\nDie durch den Auftrag repräsentierte Eingangsdatei ist weiterhin vorhanden. Der Auftrag verschwindet, sobald die Eingangsdatei verschoben oder gelöscht wird."
     },
     "treeView": {
       "label": {

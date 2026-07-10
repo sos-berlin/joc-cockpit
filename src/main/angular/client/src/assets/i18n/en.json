@@ -304,9 +304,9 @@
       "couplingfailed": "The ^Agent^'s attempt to couple failed.",
       "shutdown": "The ^Agent^ was shut down normally.",
       "unknown": "The ^Agent^'s status is unknown. There may be a connection problem with the server and the Agent's port, or the Agent may not have started.",
-      "all_subagents_are_coupled_and_enabled": "All ^Subagent^s in an ^Agent Cluster^ are coupled and enabled.",
-      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
-      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
+      "all_subagents_are_coupled_and_enabled": "The ^Agent Cluster^ is healthy and all ^Subagent^s are coupled and enabled for execution of ^Job^s.",
+      "only_some_subagents_are_coupled_and_enabled": "The ^Agent Cluster^ is unhealthy as some ^Subagent^s are not coupled. However remaining Subagents continue to work and will execute ^Job^s.",
+      "no_subagents_are_coupled_and_enabled": "The ^Agent Cluster^ is in a critical status as no ^Subagent^s are coupled and ready to execute ^Job^s."
     },
     "cluster": {
       "tooltip.agentClusterName": "The ^Agent Cluster^ Name is a unique identifier of the Agent Cluster that cannot be changed during its lifetime.\n\n^Object Naming Rules^ apply.",
@@ -3326,7 +3326,7 @@
       "blocked": "^Blocked^ ^Order^s cannot start, for example, if the ^Agent^ is not reachable since the Order was added or if the ^Workflow^ is suspended.",
       "failed": "^Failed^ ^Order^s indicate that a ^Job^ failed or that a ^Fail Instruction^ prevents the Order from proceeding.",
       "finished": "^Finished^ ^Order^s have been completed.",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled ^Order^s have been completed.\n\nSuch Orders are created by a ^File Order Source^ and have been cancelled by user intervention.\n\nThe incoming file represented by the Order still exists. The Order will vanish when the incoming file is (re)moved."
     },
     "treeView": {
       "label": {
