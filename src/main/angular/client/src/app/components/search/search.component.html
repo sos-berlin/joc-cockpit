@@ -49,7 +49,7 @@
               (ngModelChange)="synchronizationStatusChange($event)" name="synchronizationStatus">
               @for (option of synchronizationStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -65,7 +65,7 @@
               (ngModelChange)="availabilityStatusChange($event)"  name="availabilityStatus">
               @for (option of availabilityStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>
@@ -82,7 +82,7 @@
               (ngModelChange)="jobAvailabilityStatusChange($event)" name="jobAvailabilityStatus">
               @for (option of jobAvailabilityStatusOptions; track option.value) {
                 <label nz-checkbox [nzValue]="option.value">
-                  <span>{{ 'filters.button' | translate }}.{{option.label}}</span>
+                  <span>{{ 'filters.button.' + option.label | translate }}</span>
                 </label>
               }
             </nz-checkbox-group>

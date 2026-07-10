@@ -72,7 +72,9 @@ export class StartUpModalComponent {
               this.controller.primaryUrl = this.controllerInfo[i].url;
               this.controller.primaryClusterUrl = this.controllerInfo[i].clusterUrl;
             }
-            this.controller.forceFailoverConfirmation = this.controllerInfo[i].forceFailoverConfirmation || false;
+            if (this.controllerInfo[i].forceFailoverConfirmation) {
+              this.controller.forceFailoverConfirmation = this.controllerInfo[i].forceFailoverConfirmation
+            }
           } else {
             this.controller.title = this.controllerInfo[i].title;
             this.controller.url = this.controllerInfo[i].url;

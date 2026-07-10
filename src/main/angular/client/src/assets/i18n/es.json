@@ -304,7 +304,9 @@
       "couplingfailed": "Coupling Failed",
       "shutdown": "Shutdown",
       "unknown": "Unknown",
-      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled",
+      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
+      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "El ^Nombre de Clúster de Agentes^ es un identificador único del Clúster de Agentes que no puede modificarse durante su vida útil.\n\nSe aplican las ^Reglas de nomenclatura de objetos^.",
@@ -3323,7 +3325,8 @@
       "waiting": "Waiting",
       "blocked": "Blocked",
       "failed": "Failed",
-      "finished": "Finished"
+      "finished": "Finished",
+      "cancelled": "Cancelled"
     },
     "treeView": {
       "label": {

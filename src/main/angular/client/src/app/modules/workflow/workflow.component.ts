@@ -330,7 +330,7 @@ ngOnInit(): void {
   standalone: false,
   selector: 'app-bulk-add-order',
   templateUrl: './bulk-add-order-dialog.html',
-  
+
 })
 export class BulkAddOrderComponent {
 
@@ -495,7 +495,7 @@ export class BulkAddOrderComponent {
   standalone: false,
   selector: 'app-single-workflow',
   templateUrl: './single-workflow.component.html',
-  
+
 })
 export class SingleWorkflowComponent {
   loading = true;
@@ -3116,6 +3116,10 @@ export class WorkflowComponent {
 
   helpPage(key): void{
     this.coreService.openHelpPage(key);
+  }
+
+  videoPage(key): void {
+    this.coreService.openVideoPage(key);
   }
 
   notes(name): void {

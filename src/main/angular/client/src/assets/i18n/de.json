@@ -304,7 +304,9 @@
       "couplingfailed": "Der Versuch des ^Agent^en sich zu koppeln ist fehlgeschlagen.",
       "shutdown": "Der ^Agent^ wurde in normaler Weise heruntergefahren.",
       "unknown": "Der Zustand des ^Agent^en ist unbekannt. Es kann ein Verbindungsproblem zum Server und Port des Agenten vorliegen oder der Agent ist nicht gestartet.",
-      "all_subagents_are_coupled_and_enabled": "Alle ^Subagenten|subagent^ in einem ^Agenten-Cluster|agent-cluster^ sind gekoppelt und aktiviert."
+      "all_subagents_are_coupled_and_enabled": "Alle ^Subagenten|subagent^ in einem ^Agenten-Cluster|agent-cluster^ sind gekoppelt und aktiviert.",
+      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
+      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "Der Name des ^Agenten-Cluster|agent-cluster^ ist eindeutig und kann während der Lebenszeit des Agenten-Cluster nicht geändert werden.\n\nEs gelten die ^Regeln für die Benennung von Objekten|object-naming-rules^.",
@@ -3323,7 +3325,8 @@
       "waiting": " ^Wartende|waiting^ ^Aufträge|order^ warten auf eine Ressource, z.B. eine ^Ressourcen-Sperre|resource-lock^, eine ^Notiz|notice^, den nächsten Zyklus einer ^Retry Anweisung|retry-instruction^ oder ^Cycle Anweisung|cycle-instruction^, oder auf einen Prozess.",
       "blocked": "^Blockierte|blocked^ ^Aufträge|order^ können nicht gestartet werden, z.B. wenn der ^Agent^ nicht erreichbar ist seit der Auftrag hinzugefügt wurde oder wenn der ^Arbeitsablauf|workflow^ ausgesetzt ist.",
       "failed": "^Fehlgeschlagene|failed^ ^Aufträge|order^ zeigen an, dass ein Auftrag wg. Fehler angehalten wurde oder dass eine ^Fail Anweisung|fail-instruction^ die Fortsetzung des Auftrags verhindert.",
-      "finished": "^Beendete|finished^ ^Aufträge|order^ sind abgeschlossen."
+      "finished": "^Beendete|finished^ ^Aufträge|order^ sind abgeschlossen.",
+      "cancelled": "Cancelled"
     },
     "treeView": {
       "label": {

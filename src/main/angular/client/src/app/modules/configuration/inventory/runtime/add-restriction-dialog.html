@@ -433,7 +433,7 @@
           @for (option of monthsOptions; track option) {
             <ng-container>
               <label nz-checkbox [nzValue]="option.value">
-                <span>{{ 'runtime.label' | translate }}.{{option.label}}</span>
+                <span>{{ 'runtime.label.' + option.label | translate }}</span>
               </label>
             </ng-container>
           }

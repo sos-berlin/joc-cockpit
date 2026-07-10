@@ -67,7 +67,12 @@ export class UpdateObjectComponent {
   @ViewChild('codeEditor', {static: false}) cm;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
-              private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {
+              private authService: AuthService, private modal: NzModalService, private translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {

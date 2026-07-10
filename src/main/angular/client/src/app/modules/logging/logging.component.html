@@ -38,7 +38,7 @@
                 (ngModelChange)="statusChange($event)">
                 @for (option of checkOptions; track option) {
                   <label [nzValue]="option.value" nz-checkbox>
-                    <span>{{ 'log.label' | translate }}.{{option.label}}</span>
+                    <span>{{ 'log.label.' + option.label | translate }}</span>
                   </label>
                 }
               </nz-checkbox-group>

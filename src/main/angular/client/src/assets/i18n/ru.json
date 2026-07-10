@@ -304,7 +304,9 @@
       "couplingfailed": "Coupling Failed",
       "shutdown": "Shutdown",
       "unknown": "Unknown",
-      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled"
+      "all_subagents_are_coupled_and_enabled": "All subagents are coupled and enabled",
+      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
+      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "^Название кластера агентов|agent-cluster-name^ должно соответствовать ^правилам наименования объектов|object-naming-rules^.",
@@ -3323,7 +3325,8 @@
       "waiting": "Waiting",
       "blocked": "Blocked",
       "failed": "Failed",
-      "finished": "Finished"
+      "finished": "Finished",
+      "cancelled": "Cancelled"
     },
     "treeView": {
       "label": {

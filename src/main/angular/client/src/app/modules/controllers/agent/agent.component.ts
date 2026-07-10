@@ -35,7 +35,6 @@ declare const mxCellOverlay;
   standalone: false,
   selector: 'app-sub-agent-modal',
   templateUrl: './sub-agent.dialog.html',
-  
 })
 export class SubagentModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -243,9 +242,6 @@ export class AgentModalComponent {
     this.new = this.modalData.new;
     this.isCluster = this.modalData.isCluster;
     this.controllerId = this.modalData.controllerId;
-    if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
-      this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
-    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -257,6 +253,9 @@ export class AgentModalComponent {
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
+        this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
+      }
       if (this.agent.processLimit || this.agent.processLimit == 0) {
         this.processLimitTry = 'limited';
       }
@@ -319,6 +318,7 @@ export class AgentModalComponent {
     this.submitted = true;
     const obj: any = {controllerId: this.controllerId};
     const _agent: any = this.coreService.clone(this.agent);
+    delete _agent.forceFailoverConfirmation;
     if (this.display) {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -392,7 +392,7 @@ export class AgentModalComponent {
           });
         }
       }
-      if (this.forceFailoverConfirmation) {
+      if (this.isCluster && this.forceFailoverConfirmation) {
         _agent.forceFailoverConfirmation = this.forceFailoverConfirmation;
       }
       obj.clusterAgents = [_agent];
@@ -431,7 +431,6 @@ export class AgentModalComponent {
   standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './add-certificate-dialog.html',
-  
 })
 export class AddCertificateModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -504,7 +503,6 @@ export class AddCertificateModalComponent {
   standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './show-certificate-list-dialog.html',
-  
 })
 export class ShowCertificateListModalComponent {
 
@@ -718,7 +716,7 @@ export class AddPriorityModalComponent {
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss'],
-  
+
 })
 export class AgentComponent {
   isLoading = true;

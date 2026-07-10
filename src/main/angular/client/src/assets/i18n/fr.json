@@ -304,7 +304,9 @@
       "couplingfailed": "La tentative de couplage de l'^Agent^ a échoué.",
       "shutdown": "L'^Agent^ a été arrêté normalement.",
       "unknown": "L'état de l'^Agent^ est inconnu. Il se peut qu'il y ait un problème de connexion au serveur et au port de l'Agent, ou que l'Agent ne soit pas démarré.",
-      "all_subagents_are_coupled_and_enabled": "Tous les ^Sous-Agents|subagent^ d'un ^Cluster d'Agents|agent-cluster^ sont coplés et activés."
+      "all_subagents_are_coupled_and_enabled": "Tous les ^Sous-Agents|subagent^ d'un ^Cluster d'Agents|agent-cluster^ sont coplés et activés.",
+      "only_some_subagents_are_coupled_and_enabled": "Only some subagents are coupled and enabled",
+      "no_subagents_are_coupled_and_enabled": "No subagents are coupled and enabled"
     },
     "cluster": {
       "tooltip.agentClusterName": "Le Nom du ^Cluster d'Agents|agent-cluster^ est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents.\n\nLes ^Règles de Dénomination des Objets|object-naming-rules^ s'appliquent.",
@@ -3322,7 +3324,8 @@
       "waiting": "Les ^Ordres|order^ ^en attente|waiting^ attendent une ressource telle qu'un ^Verrou de Ressource|resource-lock^, une ^Annonce|notice^ ou un cycle de l'^Instruction Retry|retry-instruction^ ou de l'^Instruction Cycle|cycle-instruction^, ou un processus.",
       "blocked": "Les ^Ordres|order^ ^bloqués|blocked^ ne peuvent pas démarrer, par exemple, si l'^Agent^ n'est pas joignable depuis l'ajout de l'Ordre ou si le ^Workflow^ est suspendu.",
       "failed": "Les ^Ordres|order^ ^échoués|failed^ indiquent qu'une ^Tâche|job^ a échoué ou qu'une ^Instruction Fail|fail-instruction^ empêche la poursuite de l'Ordre.",
-      "finished": "Les ^Ordres|order^ ^terminés|finished^ ont été exécutés."
+      "finished": "Les ^Ordres|order^ ^terminés|finished^ ont été exécutés.",
+      "cancelled": "Cancelled"
     },
     "treeView": {
       "label": {

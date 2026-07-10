@@ -699,7 +699,7 @@ export class SingleDeployComponent {
     });
   }
 
-  getDeployObject(): void {
+  getDeployObject(transactionId?: string): void {
     this.submitted = true;
     const allowedTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
 
@@ -777,6 +777,7 @@ export class SingleDeployComponent {
       sessionStorage.setItem('backgroundOperationInProgress', 'true');
     }
 
+    if (transactionId) obj.transactionId = transactionId;
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         if (this.showDependencies) {
@@ -815,20 +816,25 @@ export class SingleDeployComponent {
       this.getReleaseObject(true);
       return
     }
+    // txId shared between the paired Release+Deploy or Recall+Revoke requests
+    let txId: string | undefined;
     if (this.releasable && !this.shouldCallRelease() && !this.isRevoke) {
-      this.release();
+      if (this.shouldCallDeploy()) txId = this.coreService.create_UUID();
+      this.release(txId);
       if (this.shouldCallDeploy()) {
-        this.getDeployObject();
+        this.getDeployObject(txId);
       }
       return;
     } else {
       if (this.shouldCallRelease() && !this.isRevoke) {
-        this.getReleaseObject();
+        txId = this.coreService.create_UUID();
+        this.getReleaseObject(undefined, txId);
       }
     }
     if (this.isRevoke) {
       if (this.shouldCallRelease()) {
-        this.getReleaseObject(true);
+        txId = this.coreService.create_UUID();
+        this.getReleaseObject(true, txId);
       }
     }
     const getJSObjectPromise = !this.releasable || this.shouldCallDeploy()
@@ -882,6 +888,7 @@ export class SingleDeployComponent {
           sessionStorage.setItem('backgroundOperationInProgress', 'true');
         }
 
+        if (txId) obj.transactionId = txId;
         this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
           next: () => {
             if (this.showDependencies) {
@@ -905,7 +912,7 @@ export class SingleDeployComponent {
     });
   }
 
-  release(): void {
+  release(transactionId?: string): void {
 
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
     let obj: any = {
@@ -943,6 +950,7 @@ export class SingleDeployComponent {
       sessionStorage.setItem('backgroundOperationInProgress', 'true');
     }
 
+    if (transactionId) obj.transactionId = transactionId;
     this.coreService.post('inventory/release', obj).subscribe({
       next: () => {
         if (this.showDependencies) {
@@ -960,7 +968,7 @@ export class SingleDeployComponent {
     });
   }
 
-  getReleaseObject(recall?): void {
+  getReleaseObject(recall?, transactionId?: string): void {
     this.submitted = true;
     this.ref.markForCheck();
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
@@ -1066,6 +1074,7 @@ export class SingleDeployComponent {
       sessionStorage.setItem('backgroundOperationInProgress', 'true');
     }
 
+    if (transactionId) obj.transactionId = transactionId;
     this.coreService.post(releaseURL, obj).subscribe({
       next: () => {
         if (this.showDependencies) {
@@ -3367,7 +3376,7 @@ export class DeployComponent {
     return dependencies;
   }
 
-  private processDependenciesForRelease(recall?): void {
+  private processDependenciesForRelease(recall?, transactionId?: string): void {
     let obj: any = {
       auditLog: {},
       includeLate: this.includeLate
@@ -3403,6 +3412,7 @@ export class DeployComponent {
     this.removeDuplicateConfigurationsForRelease(obj);
     if (obj.update && obj.update?.length > 0 || obj.releasables?.length > 0) {
       const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
+      if (transactionId) obj.transactionId = transactionId;
       this.coreService.post(releaseURL, obj).subscribe({
         next: () => {
           this.activeModal.close();
@@ -3434,7 +3444,7 @@ export class DeployComponent {
     }
   }
 
-  private processDependenciesForDeploy(): void {
+  private processDependenciesForDeploy(transactionId?: string): void {
     let obj: any = {
       auditLog: {},
       includeLate: this.includeLate,
@@ -3455,6 +3465,7 @@ export class DeployComponent {
 
     if (obj.store) {
       const URL = 'inventory/deployment/deploy';
+      if (transactionId) obj.transactionId = transactionId;
       this.coreService.post(URL, obj).subscribe({
         next: () => {
           this.activeModal.close();
@@ -4131,7 +4142,7 @@ export class DeployComponent {
     this.object.delete = [];
     this.object.releasables = [];
     const self = this;
-    const releaseableType = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    const releaseableType = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'];
 
     function recursive(nodes: any) {
       for (let i = 0; i < nodes.length; i++) {
@@ -4277,24 +4288,29 @@ export class DeployComponent {
             this.handleRelease(true);
             return
           }
+          // txId shared between the paired Release+Deploy or Recall+Revoke requests
+          let txId: string | undefined;
           if (this.releasable && !shouldRelease && !this.isRevoke && this.operation != 'recall') {
-            this.handleRelease();
+            if (shouldDeploy) txId = this.coreService.create_UUID();
+            this.handleRelease(undefined, txId);
             if (shouldDeploy) {
-              this.processDependenciesForDeploy();
+              this.processDependenciesForDeploy(txId);
             }
             return;
           } else {
             if (shouldRelease && !this.isRevoke && this.operation != 'recall') {
-              this.processDependenciesForRelease();
+              txId = this.coreService.create_UUID();
+              this.processDependenciesForRelease(undefined, txId);
             }
           }
           if (this.isRevoke) {
             if (shouldRelease) {
-              this.processDependenciesForRelease(true);
+              txId = this.coreService.create_UUID();
+              this.processDependenciesForRelease(true, txId);
             }
           }
 
-          this.handleDeploy();
+          this.handleDeploy(txId);
           this.submitted = false;
         })
         .catch((error) => {
@@ -4304,14 +4320,14 @@ export class DeployComponent {
     }
   }
 
-  private handleDeploy(): void {
+  private handleDeploy(transactionId?: string): void {
     if (!this.releasable) {
       this.getJSObject()
     }
-    this.prepareAndSendDeployObject();
+    this.prepareAndSendDeployObject(transactionId);
   }
 
-  private handleRelease(recall?): void {
+  private handleRelease(recall?, transactionId?: string): void {
     this.getReleaseObject();
     const obj: any = {
       includeLate: this.includeLate,
@@ -4361,6 +4377,7 @@ export class DeployComponent {
         sessionStorage['backgroundOperationInProgress'] = 'true';
       }
 
+      if (transactionId) obj.transactionId = transactionId;
       this.coreService.post(releaseURL, obj).subscribe({
         next: () => {
 
@@ -4389,7 +4406,7 @@ export class DeployComponent {
     }
   }
 
-  private prepareAndSendDeployObject(): void {
+  private prepareAndSendDeployObject(transactionId?: string): void {
     const obj: any = {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds,
@@ -4447,6 +4464,7 @@ export class DeployComponent {
           sessionStorage['backgroundOperationInProgress'] = 'true';
         }
 
+        if (transactionId) obj.transactionId = transactionId;
         this.coreService.post(deployURL, obj).subscribe({
           next: () => {
 
@@ -7361,7 +7379,7 @@ export class ExportComponent {
   helpPage(key): void {
     this.coreService.openHelpPage(key);
   }
-  
+
   videoPage(key): void {
     this.coreService.openVideoPage(key);
   }
@@ -15667,17 +15685,21 @@ export class InventoryComponent {
       }
     });
 
+    // Generate ONE transactionId only when both Revoke and Recall fire together
+    const txId = (revokeObjects.length > 0 && recallObjects.length > 0)
+      ? this.coreService.create_UUID() : undefined;
+
     if (revokeObjects.length > 0) {
-      this.callRevokeAPI(revokeObjects);
+      this.callRevokeAPI(revokeObjects, txId);
     }
 
     if (recallObjects.length > 0) {
-      this.callRecallAPI(recallObjects);
+      this.callRecallAPI(recallObjects, txId);
     }
   }
 
-  callRevokeAPI(objects): void {
-    const payload = {
+  callRevokeAPI(objects, transactionId?: string): void {
+    const payload: any = {
       controllerIds: [this.getAllowedControllerOnly().selected],
       deployConfigurations: objects.map(obj => ({
         configuration: {
@@ -15687,6 +15709,7 @@ export class InventoryComponent {
       }))
     };
 
+    if (transactionId) payload.transactionId = transactionId;
     this.coreService.post('inventory/deployment/revoke', payload).subscribe({
       next: (res) => {
       },
@@ -15695,11 +15718,12 @@ export class InventoryComponent {
     });
   }
 
-  callRecallAPI(objects): void {
-    const payload = {
+  callRecallAPI(objects, transactionId?: string): void {
+    const payload: any = {
       releasables: objects
     };
 
+    if (transactionId) payload.transactionId = transactionId;
     this.coreService.post('inventory/releasables/recall', payload).subscribe({
       next: (res) => {
       },

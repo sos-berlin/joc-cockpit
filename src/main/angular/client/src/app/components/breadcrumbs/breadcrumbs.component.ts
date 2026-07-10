@@ -12,7 +12,9 @@ import {Subscription} from 'rxjs';
 export class BreadcrumbsComponent {
   static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
   @Input() showHelp: boolean = false;
+  @Input() videoHelp: boolean = false;
   @Output() helpClick = new EventEmitter<void>();
+  @Output() videoClick = new EventEmitter<void>();
   breadcrumbs: any;
   identityServiceName: string | undefined;
   subscription: Subscription;
@@ -71,6 +73,10 @@ export class BreadcrumbsComponent {
 
   onHelpClick(): void {
     this.helpClick.emit();
+  }
+
+  onVideoClick(): void {
+    this.videoClick.emit();
   }
 
   backClicked(): void {

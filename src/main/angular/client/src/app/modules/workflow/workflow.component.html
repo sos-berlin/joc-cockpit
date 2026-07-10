@@ -13,7 +13,7 @@
       <div class="padding p-b-sm">
         <div class="text-right ">
           <div class="pull-left">
-            <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage('workflows')"></app-breadcrumbs>
+            <app-breadcrumbs [showHelp]="preferences.showHelpPages" [videoHelp]="preferences.showVideoHelpPages" (helpClick)="helpPage('workflows')" (videoClick)="videoPage('workflow-view')"></app-breadcrumbs>
           </div>
           @if (showMoreAdvanceOptions) {
             <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
