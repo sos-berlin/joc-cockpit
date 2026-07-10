@@ -241,9 +241,6 @@ export class AgentModalComponent {
     this.new = this.modalData.new;
     this.isCluster = this.modalData.isCluster;
     this.controllerId = this.modalData.controllerId;
-    if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
-      this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
-    }
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -255,6 +252,9 @@ export class AgentModalComponent {
     }
     if (this.data) {
       this.agent = this.coreService.clone(this.data);
+      if (this.isCluster && !this.new && this.agent.forceFailoverConfirmation) {
+        this.forceFailoverConfirmation = this.agent.forceFailoverConfirmation;
+      }
       if (this.agent.processLimit || this.agent.processLimit == 0) {
         this.processLimitTry = 'limited';
       }
@@ -317,6 +317,7 @@ export class AgentModalComponent {
     this.submitted = true;
     const obj: any = {controllerId: this.controllerId};
     const _agent: any = this.coreService.clone(this.agent);
+    delete _agent.forceFailoverConfirmation;
     if (this.display) {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -390,7 +391,7 @@ export class AgentModalComponent {
           });
         }
       }
-      if (this.forceFailoverConfirmation) {
+      if (this.isCluster && this.forceFailoverConfirmation) {
         _agent.forceFailoverConfirmation = this.forceFailoverConfirmation;
       }
       obj.clusterAgents = [_agent];
