@@ -46,7 +46,6 @@ export class ControllerClusterComponent {
   controller: any;
   cluster: any;
   joc: any;
-  failOver: any;
   configXml = './assets/mxgraph/config/diagram.xml';
   private pendingHTTPRequests$ = new Subject<void>();
 
@@ -120,7 +119,6 @@ export class ControllerClusterComponent {
         this.clusterStatusData = res;
         if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
           this.selectedController.role = this.clusterStatusData.controllers[0].role;
-          this.failOver = this.clusterStatusData.controllers[0].forceFailoverConfirmation;
         }
         if(this.clusterStatusData && this.clusterStatusData?.jocs ){
           this.clusterStatusData?.jocs.forEach(data => {
@@ -1079,7 +1077,7 @@ export class ControllerClusterComponent {
       nzTitle: undefined,
       nzContent: ConfirmModalComponent,
       nzData: {
-        failOver: this.failOver
+        failOver: true
       },
       nzFooter: null,
       nzClosable: false,

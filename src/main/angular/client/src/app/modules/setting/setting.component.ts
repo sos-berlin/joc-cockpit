@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -154,6 +154,12 @@ export class SettingComponent {
   searchText: string = '';
   priorityFilter: SettingPriority | '' = 'critical';
   changedFilter: boolean = false;
+  @ViewChild('wfTagInputEl') wfTagInputEl?: ElementRef;
+  workflowTags: string[] = [];
+  wfTagInputVisible = false;
+  wfTagInputValue = '';
+  wfTagFilteredOptions: string[] = [];
+
   daysOptions = [
     {label: 'monday', value: 1},
     {label: 'tuesday', value: 2},
@@ -488,6 +494,52 @@ static generateChildStoreObject(children): any {
     val.value.value.splice(index, 1);
     const tempSetting = this.coreService.clone(this.settings);
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), true)
+  }
+
+  wfTagShowInput(val: any): void {
+    const openInput = () => {
+      this.wfTagInputVisible = true;
+      this.wfTagInputValue = '';
+      const selected: string[] = (val.value.value || []).map((i: any) => i.name);
+      this.wfTagFilteredOptions = this.workflowTags.filter(p => !selected.includes(p));
+      setTimeout(() => { this.wfTagInputEl?.nativeElement.focus(); }, 10);
+    };
+    if (this.workflowTags.length === 0) {
+      this.coreService.post('tags', {}).subscribe({
+        next: (res: any) => {
+          this.workflowTags = res.tags || [];
+          openInput();
+        }
+      });
+    } else {
+      openInput();
+    }
+  }
+
+  wfTagOnChangeTags(value: string): void {
+    this.wfTagFilteredOptions = this.workflowTags.filter(p =>
+      p.toLowerCase().includes((value || '').toLowerCase())
+    );
+  }
+
+  wfTagHandleInputConfirm(val: any): void {
+    const v = (this.wfTagInputValue || '').trim();
+    if (v && this.workflowTags.includes(v) && !val.value.value.some((i: any) => i.name === v)) {
+      val.value.value.push({name: v});
+      const tempSetting = this.coreService.clone(this.settings);
+      this.savePreferences(SettingComponent.generateStoreObject(tempSetting), true);
+    }
+    this.wfTagInputVisible = false;
+    this.wfTagInputValue = '';
+  }
+
+  wfTagHandleClose(val: any, tag: string): void {
+    val.value.value = val.value.value.filter((i: any) => i.name !== tag);
+    if (tag && !this.wfTagFilteredOptions.includes(tag)) {
+      this.wfTagFilteredOptions = [...this.wfTagFilteredOptions, tag].sort();
+    }
+    const tempSetting = this.coreService.clone(this.settings);
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), true);
   }
 
   removeValue(val: any, isJoc: any): void {
