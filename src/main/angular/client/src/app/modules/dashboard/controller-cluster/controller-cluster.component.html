@@ -100,19 +100,19 @@
         }
         @if (permission.currentController && permission.currentController.switchOver && cluster) {
           <li (click)="clusterAction('switchover',cluster, false)"
-              [nzDisabled]="controller && controller.componentState._text !== 'operational'"
+              [nzDisabled]="!(clusterStatusData?.clusterState?._text === 'ClusterCoupled')"
               nz-menu-item>
             <a>{{'dashboard.button.switchOver' | translate}}</a>
           </li>
         }
         @if (permission.currentController && permission.currentController.switchOver && cluster) {
-          <li (click)="confirmLossNode()" [nzDisabled]="!clusterStatusData?.clusterState?.lossNode"
+          <li (click)="confirmLossNode()" [nzDisabled]="!(clusterStatusData?.clusterState?._text === 'NodeLossToBeConfirmed')"
               nz-menu-item>
             <a>{{ 'dashboard.button.confirmNodeLoss' | translate }}</a>
           </li>
         }
         @if (permission.currentController && permission.currentController.switchOver && cluster) {
-          <li (click)="confirmFailOver()" [nzDisabled]="!failOver"
+          <li (click)="confirmFailOver()" [nzDisabled]="!(clusterStatusData?.clusterState?._text === 'ClusterFailoverToBeConfirmed')"
               nz-menu-item>
             <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
           </li>

@@ -758,6 +758,7 @@ export class LayoutComponent {
     preferences.historyTab = 'order';
     preferences.expandOption = 'both';
     preferences.currentController = true;
+    preferences.includeDependencies = 'enforced';
     preferences.showHelpPages = true;
     preferences.showVideoHelpPages = true;
     preferences.showMoreOptions = false;
@@ -907,6 +908,9 @@ export class LayoutComponent {
       }
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
+      }
+      if (!data.includeDependencies) {
+        data.includeDependencies = 'enforced';
       }
       if(data.orderStateColors) {
         data.orderStateColors.forEach(item => {

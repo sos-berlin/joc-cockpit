@@ -148,18 +148,18 @@
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                             <ul nz-menu>
                               @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
+                                <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
                                   <a>{{ 'dashboard.button.switchOver' | translate }}</a>
                                 </li>
                               }
                               @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
+                                <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'NodeLossToBeConfirmed')"
                                     nz-menu-item>
                                   <a>{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                 </li>
                               }
                               @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!(cluster.clusterState._text === 'ClusterFailoverToBeConfirmed')"
                                     nz-menu-item>
                                   <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                 </li>
@@ -317,18 +317,18 @@
                             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                               <ul nz-menu>
                                 @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                  <li (click)="switchOver(cluster)" [nzDisabled]="cluster.subagents?.length < 2" nz-menu-item>
+                                  <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
                                     <a>{{ 'dashboard.button.switchOver' | translate }}</a>
                                   </li>
                                 }
                                 @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                  <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
+                                  <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'NodeLossToBeConfirmed')"
                                       nz-menu-item>
                                     <a>{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                   </li>
                                 }
                                 @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
-                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!(cluster.clusterState._text === 'ClusterFailoverToBeConfirmed')"
                                       nz-menu-item>
                                     <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                   </li>

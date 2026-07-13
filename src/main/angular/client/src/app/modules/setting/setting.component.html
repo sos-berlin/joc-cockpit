@@ -339,28 +339,71 @@
                                     </div>
                                   }
                                   @case ('ARRAY') {
-                                    <div class="col-sm-4 col-lg-3">
-                                      @for (item of val.value.value; track item; let m = $index) {
-                                        <div [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}"
-                                            class="m-b-n-8">
-                                          <input #arr="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" (keydown)="checkSemicolon($event, val)" [(ngModel)]="item.name"
-                                                autocomplete="off"
-                                                class="form-control w-xxxl" name="{{val.name}}{{i}}{{m + 1}}"
-                                                placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}" required
-                                                type="text">
-                                          <i (click)="removeValInArr(val, m)"
-                                            class="text-hover-color fa fa-trash setting-cancel-btn-390"></i>
+                                    @if (val.name === 'workflows_requiring_approval') {
+                                      <div class="col-sm-4 col-lg-3">
+                                        <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs w-xxxl">
+                                          @for (item of val.value.value; track item.name) {
+                                            @if (item.name) {
+                                              <nz-tag [nzMode]="'closeable'" (nzOnClose)="wfTagHandleClose(val, item.name)">
+                                                {{ item.name }}
+                                              </nz-tag>
+                                            }
+                                          }
+                                          @if (permission.joc.administration.settings.manage) {
+                                            @if (!wfTagInputVisible) {
+                                              <nz-tag class="editable-tag" nzNoAnimation (click)="wfTagShowInput(val)">
+                                                <span nz-icon nzType="plus"></span>
+                                                {{'inventory.button.newTag' | translate}}
+                                              </nz-tag>
+                                            }
+                                            @if (wfTagInputVisible) {
+                                              <div class="d-inline-block">
+                                                <input
+                                                  #wfTagInputEl
+                                                  nz-input
+                                                  [nzAutocomplete]="wfAuto"
+                                                  type="text"
+                                                  name="wfApprovalInput"
+                                                  [(ngModel)]="wfTagInputValue"
+                                                  (ngModelChange)="wfTagOnChangeTags($event)"
+                                                  style="width: 200px;"
+                                                  (blur)="wfTagHandleInputConfirm(val)"
+                                                  (keydown.enter)="wfTagHandleInputConfirm(val)"
+                                                />
+                                                <nz-autocomplete [nzDataSource]="wfTagFilteredOptions" #wfAuto></nz-autocomplete>
+                                              </div>
+                                            }
+                                          }
+                                          @if (permission.joc.administration.settings.manage) {
+                                            <i (click)="removeValue(val, setting.name === 'joc')"
+                                              class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                                          }
                                         </div>
-                                      }
-                                      @if (permission.joc.administration.settings.manage) {
-                                        <i (click)="removeValue(val, setting.name === 'joc')"
-                                          class="text-hover-color fa fa-times setting-cancel-btn-422"></i>
-                                      }
-                                      @if (permission.joc.administration.settings.manage) {
-                                        <i (click)="addValInArr(val)"
-                                          class="text-hover-primary fa fa-plus"></i>
-                                      }
-                                    </div>
+                                      </div>
+                                    } @else {
+                                      <div class="col-sm-4 col-lg-3">
+                                        @for (item of val.value.value; track item; let m = $index) {
+                                          <div [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}"
+                                              class="m-b-n-8">
+                                            <input #arr="ngModel" (focus)="addEditToValue(val)" (blur)="changeConfiguration(arr, val, setting.name === 'joc')" (keydown)="checkSemicolon($event, val)" [(ngModel)]="item.name"
+                                                  autocomplete="off"
+                                                  class="form-control w-xxxl" name="{{val.name}}{{i}}{{m + 1}}"
+                                                  placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}" required
+                                                  type="text">
+                                            <i (click)="removeValInArr(val, m)"
+                                              class="text-hover-color fa fa-trash setting-cancel-btn-390"></i>
+                                          </div>
+                                        }
+                                        @if (permission.joc.administration.settings.manage) {
+                                          <i (click)="removeValue(val, setting.name === 'joc')"
+                                            class="text-hover-color fa fa-times setting-cancel-btn-422"></i>
+                                        }
+                                        @if (permission.joc.administration.settings.manage) {
+                                          <i (click)="addValInArr(val)"
+                                            class="text-hover-primary fa fa-plus"></i>
+                                        }
+                                      </div>
+                                    }
                                   }
                                   @case ('PASSWORD') {
                                     <div class="col-sm-4 col-lg-3">
