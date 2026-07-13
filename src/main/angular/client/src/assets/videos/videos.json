@@ -49,12 +49,17 @@
   },
   "dashboard-orders-panel": {
     "id": "ldfjS72MpJM",
-    "title": "Order State Panel in Dashboard View",
+    "title": "Orders Panel in Dashboard View",
     "description": "How to monitor and manage Orders"
   },
   "workflow-view": {
     "id": "8TUVS-Lpi_c",
     "title": "Manage Workflows, Orders and Jobs",
     "description": "How to manage workflows,orders and jobs in Workflow View"
+  },
+  "job-properties": {
+    "id": "yLHZ7mq9XBY",
+    "title": "Configure job properties ",
+    "description": "How to configure job properties"
   }
 }
