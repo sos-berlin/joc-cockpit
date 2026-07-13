@@ -873,6 +873,7 @@
     "button.removeFromInventory": "Aus dem Inventar entfernen",
     "button.viewAllAgentsDetails": "Details aller Agenten",
     "button.confirmNodeLoss": "Verlust einer Controller Instanz bestätigen",
+    "button.confirmFailOver": "Confirm fail-over",
     "button.removeRepository": "Aus Inventar entfernen",
     "button.updateURL": "URL aktualisieren",
     "button.lognotification": "Protokoll-Benachrichtigungsdienst",
@@ -892,7 +893,9 @@
     "message.fileTransferHistorySummary": "Das Steuerelement zeigt die Historie der Dateiübertragungen",
     "message.apiServerStatus": "Das Steuerelement zeigt den Status des API Server",
     "message.confirmNodeLoss": "Bestätigen Sie, dass die Controller Instanz '{{lossNode}}' nicht gestartet ist?",
-    "message.confirmAgentNodeLoss": "Bestätigen Sie, dass die Agent Instanz '{{lossNode}}' nicht gestartet ist?"
+    "message.confirmAgentNodeLoss": "Bestätigen Sie, dass die Agent Instanz '{{lossNode}}' nicht gestartet ist?",
+    "message.confirmControllerFailOver": "Can you confirm fail-over?",
+    "message.confirmAgentFailOver": "Can you confirm fail-over?"
   },
   "dailyPlan": {
     "label.createPlan": "Tagesplan anlegen",

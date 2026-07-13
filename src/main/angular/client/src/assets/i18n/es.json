@@ -873,6 +873,7 @@
     "button.removeFromInventory": "Eliminar del Inventario",
     "button.viewAllAgentsDetails": "Ver todos los detalles del Agente",
     "button.confirmNodeLoss": "Confirmar pérdida de una Instancia del Controlador",
+    "button.confirmFailOver": "Confirm fail-over",
     "button.removeRepository": "Eliminar del inventario",
     "button.updateURL": "Actualizar URL",
     "button.lognotification": "Servicio de notificación de Log",
@@ -892,7 +893,9 @@
     "message.fileTransferHistorySummary": "Este widget muestra el resumen de transferencias de archivos",
     "message.apiServerStatus": "Este widget muestra el estado del servidor API",
     "message.confirmNodeLoss": "¿Puede confirmar que la instancia del Controlador '{{lossNode}}' no está en ejecución?",
-    "message.confirmAgentNodeLoss": "¿Puede confirmar que la instancia del Agente '{{lossNode}}' no está en ejecución?"
+    "message.confirmAgentNodeLoss": "¿Puede confirmar que la instancia del Agente '{{lossNode}}' no está en ejecución?",
+    "message.confirmControllerFailOver": "Can you confirm fail-over?",
+    "message.confirmAgentFailOver": "Can you confirm fail-over?"
   },
   "dailyPlan": {
     "label.createPlan": "Crear Plan Diario",

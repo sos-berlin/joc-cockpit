@@ -6,7 +6,7 @@ import {CoreService} from "../../services/core.service";
   standalone: false,
   selector: 'app-confirm-modal-content',
   templateUrl: './confirm.component.html',
-  
+
 })
 export class ConfirmModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -26,6 +26,7 @@ export class ConfirmModalComponent {
   question = '';
   updateFromJobTemplate = '';
   lossNode = '';
+  failOver: any;
   object: any;
   affectedObjectsByType: { [key: string]: any[] } = {};
   referencedObjectsByType: { [key: string]: any[] } = {};
@@ -61,6 +62,7 @@ export class ConfirmModalComponent {
     this.question = this.modalData.question;
     this.updateFromJobTemplate = this.modalData.updateFromJobTemplate;
     this.lossNode = this.modalData.lossNode;
+    this.failOver = this.modalData.failOver;
     this.object = this.modalData.object;
     this.planId = this.modalData.planId;
    if(this.type != 'Delete') {

@@ -873,6 +873,7 @@
     "button.removeFromInventory": "Remove from Inventory",
     "button.viewAllAgentsDetails": "View all Agent details",
     "button.confirmNodeLoss": "Confirm loss of a Controller Instance",
+    "button.confirmFailOver": "Confirm fail-over",
     "button.removeRepository": "Remove from inventory",
     "button.updateURL": "Update URL",
     "button.lognotification": "Log Notification Service",
@@ -892,7 +893,9 @@
     "message.fileTransferHistorySummary": "This widget displays the summary of past File Transfers",
     "message.apiServerStatus": "This widget displays the status of the API Server",
     "message.confirmNodeLoss": "Can you confirm that the Controller instance '{{lossNode}}' is not running?",
-    "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?"
+    "message.confirmAgentNodeLoss": "Can you confirm that the Agent instance '{{lossNode}}' is not running?",
+    "message.confirmControllerFailOver": "Can you confirm fail-over?",
+    "message.confirmAgentFailOver": "Can you confirm fail-over?"
   },
   "dailyPlan": {
     "label.createPlan": "Create Daily Plan",

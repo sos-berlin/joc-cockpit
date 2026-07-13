@@ -873,6 +873,7 @@
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
+    "button.confirmFailOver": "Confirm fail-over",
     "button.removeRepository": "リポジトリーから削除",
     "button.updateURL": "URL更新",
     "button.lognotification": "ログ通知サービス",
@@ -892,7 +893,9 @@
     "message.fileTransferHistorySummary": "ファイル転送履歴を表示",
     "message.apiServerStatus": "APIサーバーステータス表示ウィジェット",
     "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました",
-    "message.confirmAgentNodeLoss": "'{{lossNode}}'エージェントインスタンスが停止していることを確認してください"
+    "message.confirmAgentNodeLoss": "'{{lossNode}}'エージェントインスタンスが停止していることを確認してください",
+    "message.confirmControllerFailOver": "Can you confirm fail-over?",
+    "message.confirmAgentFailOver": "Can you confirm fail-over?"
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",

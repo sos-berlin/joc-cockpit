@@ -158,6 +158,10 @@
                                     nz-menu-item>
                                   <a >{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                 </li>
+                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                    nz-menu-item>
+                                  <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
+                                </li>
                               </ul>
                             </nz-dropdown-menu>
                           </div>
@@ -313,6 +317,10 @@
                                   <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                                       nz-menu-item>
                                     <a >{{ 'agent.button.confirmNodeLoss' | translate }}</a>
+                                  </li>
+                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                      nz-menu-item>
+                                    <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                   </li>
                                 </ul>
                               </nz-dropdown-menu>
