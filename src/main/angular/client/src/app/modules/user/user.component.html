@@ -725,6 +725,20 @@
                       </div>
                     </div>
                     <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span [appRichTooltip]="'inventory.tooltip.includeDependencies' | translate">
+                          {{ 'inventory.label.includeDependencies' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input [attributeName]="'includeDependencies'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="includeDependenciesOptions" [object]="preferences"
+                                          [optionLabel]="'name'" [optionValue]="'value'"
+                                          (modelChange)="changeConfiguration()"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
                       <div class="col-md-4 col-lg-3 text-dark" [appRichTooltip]="'profile.preferences.tooltip.currentController' | translate">
                         {{ 'profile.label.currentController' | translate }}
                       </div>

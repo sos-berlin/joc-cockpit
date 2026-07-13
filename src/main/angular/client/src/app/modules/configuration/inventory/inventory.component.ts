@@ -527,6 +527,7 @@ export class SingleDeployComponent {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.schedulerIds = this.modalData.schedulerIds;
     this.data = this.modalData.data;
     this.type = this.modalData.type;
@@ -1689,6 +1690,7 @@ export class SingleDeployComponent {
 
   onDependencyModeChange(): void {
 
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     this._filteredDepsCache.clear();
 
     Object.values(this.affectedObjectsByType).forEach(arr =>
@@ -2188,6 +2190,7 @@ export class DeployComponent {
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.path = this.modalData.path;
     this.releasable = this.modalData.releasable;
     this.display = this.modalData.display;
@@ -3504,6 +3507,7 @@ export class DeployComponent {
 
   onDependencyModeChange(): void {
 
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     const savedAffectedSelections = new Map<number, boolean>();
     const savedReferencedSelections = new Map<number, boolean>();
 
@@ -5063,6 +5067,7 @@ export class ExportComponent {
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.origin = this.modalData.origin;
     this.display = this.modalData.display;
     this.flag = this.modalData.flag;
@@ -5763,6 +5768,7 @@ export class ExportComponent {
 
   onDependencyModeChange(): void {
 
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     const savedAffectedSelections = new Map<number, boolean>();
     const savedReferencedSelections = new Map<number, boolean>();
 
@@ -7484,6 +7490,7 @@ export class RepositoryComponent {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.controllerId = this.modalData.controllerId;
     this.preferences = this.modalData.preferences;
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.origin = this.modalData.origin;
     this.operation = this.modalData.operation;
     this.category = this.modalData.category;
@@ -9586,6 +9593,7 @@ export class RepositoryComponent {
 
   onDependencyModeChange(): void {
 
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     this._filteredDepsCache = new WeakMap();
     this.clearFilterModeTracking(this.nodes);
 
@@ -11510,6 +11518,7 @@ export class PublishChangeModalComponent {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.display = this.modalData.display;
     this.title = this.modalData.title;
     this.show = this.modalData.show;
@@ -12189,6 +12198,7 @@ export class PublishChangeModalComponent {
 
   onDependencyModeChange(): void {
 
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     this.filteredDepsCache = new WeakMap();
 
     setTimeout(() => {

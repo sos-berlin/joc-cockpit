@@ -865,6 +865,12 @@ export class UserComponent {
     {value: 1,  name: 'profile.label.tooltipDelay.long'},
   ];
 
+  includeDependenciesOptions = [
+    {value: 'all', name: 'inventory.label.all'},
+    {value: 'enforced', name: 'inventory.label.enforcedOnly'},
+    {value: 'none', name: 'inventory.label.none'},
+  ];
+
   entryPerPage = [{value: '10', name: '10'},
     {value: '25', name: '25'},
     {value: '50', name: '50'},

@@ -56,6 +56,7 @@ export class AddChangesModalComponent {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
+    this.dependencyMode = sessionStorage['includeDependencies'] || this.preferences?.includeDependencies || 'enforced';
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.display = this.modalData.display;
     this.title = this.modalData.title;
@@ -601,6 +602,7 @@ export class AddChangesModalComponent {
   }
 
   onDependencyModeChange(): void {
+    sessionStorage['includeDependencies'] = this.dependencyMode;
     this.filteredDepsCache = new WeakMap();
     setTimeout(() => {
       this.cdRef.markForCheck();
