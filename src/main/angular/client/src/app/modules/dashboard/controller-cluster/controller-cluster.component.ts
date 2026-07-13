@@ -29,7 +29,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-controller-cluster',
   templateUrl: './controller-cluster.component.html',
-  
+
 })
 export class ControllerClusterComponent {
   @Input('sizeY') ybody: number;
@@ -46,6 +46,7 @@ export class ControllerClusterComponent {
   controller: any;
   cluster: any;
   joc: any;
+  failOver: any;
   configXml = './assets/mxgraph/config/diagram.xml';
   private pendingHTTPRequests$ = new Subject<void>();
 
@@ -119,6 +120,7 @@ export class ControllerClusterComponent {
         this.clusterStatusData = res;
         if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
           this.selectedController.role = this.clusterStatusData.controllers[0].role;
+          this.failOver = this.clusterStatusData.controllers[0].forceFailoverConfirmation;
         }
         if(this.clusterStatusData && this.clusterStatusData?.jocs ){
           this.clusterStatusData?.jocs.forEach(data => {
@@ -1058,6 +1060,26 @@ export class ControllerClusterComponent {
       nzContent: ConfirmModalComponent,
       nzData: {
         lossNode: this.clusterStatusData?.clusterState?.lossNode
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.coreService.post('controller/cluster/confirm_node_loss', {
+          controllerId: this.schedulerIds.selected,
+        }).subscribe();
+      }
+    });
+  }
+
+  confirmFailOver(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        failOver: this.failOver
       },
       nzFooter: null,
       nzClosable: false,

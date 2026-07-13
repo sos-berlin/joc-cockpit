@@ -158,6 +158,12 @@
                                   <a>{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                 </li>
                               }
+                              @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
+                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                    nz-menu-item>
+                                  <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
+                                </li>
+                              }
                               @if (cluster.url) {
                                 <li (click)="logs(cluster)" nz-menu-item>
                                   <a>{{ 'agent.button.logs' | translate }}</a>
@@ -319,6 +325,12 @@
                                   <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!cluster.clusterState?.lossNode"
                                       nz-menu-item>
                                     <a>{{ 'agent.button.confirmNodeLoss' | translate }}</a>
+                                  </li>
+                                }
+                                @if (permission.currentController && permission.currentController.switchOver && !cluster.url) {
+                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                      nz-menu-item>
+                                    <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                   </li>
                                 }
                                 @if (cluster.url) {

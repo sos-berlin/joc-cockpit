@@ -34,7 +34,7 @@
         }
       </span>
     }
-    @if (lossNode || title == 'confirm') {
+    @if (lossNode || title == 'confirm' || failOver) {
       <span>{{'common.label.confirm' | translate}}</span>
     }
   </h4>
@@ -47,8 +47,12 @@
     <div class="col-sm-12 m-t m-b">
       @if (lossNode) {
         <span class="text">
-          <span class="text"
->{{ 'dashboard.message.confirmNodeLoss' | translate: {lossNode: lossNode} }}</span>
+          <span class="text">{{ 'dashboard.message.confirmNodeLoss' | translate: {lossNode: lossNode} }}</span>
+        </span>
+      }
+      @if (failOver) {
+        <span class="text">
+          <span class="text">{{ 'dashboard.message.confirmControllerFailOver' | translate }}</span>
         </span>
       }
       @if (updateFromJobTemplate) {

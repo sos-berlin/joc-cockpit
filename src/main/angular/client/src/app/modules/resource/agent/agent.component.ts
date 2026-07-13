@@ -13,7 +13,7 @@ import {LogConsoleModalComponent} from '../../../components/log-console/log-cons
   standalone: false,
   selector: 'app-confirm-node-modal',
   templateUrl: './confirm-node-dialog.html',
-  
+
 })
 export class ConfirmNodeModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -61,12 +61,61 @@ export class ConfirmNodeModalComponent {
   }
 }
 
+@Component({
+  standalone: false,
+  selector: 'app-confirm-fail-over-modal',
+  templateUrl: './confirm-fail-over-dialog.html',
+
+})
+export class ConfirmFailOverModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  agent: any;
+
+  submitted = false;
+  display: any;
+  required = false;
+  comments: any = {};
+
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef) {
+  }
+
+  ngOnInit(): void {
+    this.agent = this.modalData.agent;
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    } else {
+      let preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      this.display = preferences.auditLog;
+    }
+  }
+
+  onSubmit(): void {
+    const request: any = {
+      auditLog: {},
+      controllerId: this.agent.controllerId,
+      agentId: this.agent.agentId
+    };
+    this.coreService.getAuditLogObj(this.comments, request.auditLog);
+    this.coreService.post('agent/cluster/confirm_node_loss', request).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+        this.ref.markForCheck();
+      }
+    });
+  }
+}
+
 // Main Component
 @Component({
   standalone: false,
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html',
-  
+
 })
 export class AgentComponent {
   loading: boolean;
@@ -359,6 +408,19 @@ private getAgentClassList(obj): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: ConfirmNodeModalComponent,
+      nzData: {
+        agent,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  confirmFailOver(agent: any) {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmFailOverModalComponent,
       nzData: {
         agent,
       },

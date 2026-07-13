@@ -32,6 +32,7 @@ export class HeaderComponent {
   jocMonitor = [];
   systemMonitor = [];
   problemEvent: any = {};
+  failoverEvent: any = {};
   approvalEvent: any = {};
   requestorEvent: any = {};
   notesEvent: any = {};
@@ -88,6 +89,9 @@ export class HeaderComponent {
     }
     if (sessionStorage['$SOS$NODELOSS']) {
       this.problemEvent = JSON.parse(sessionStorage['$SOS$NODELOSS']);
+    }
+    if (sessionStorage['$SOS$FAILOVER']) {
+      this.failoverEvent = JSON.parse(sessionStorage['$SOS$FAILOVER']);
     }
     if (sessionStorage['$SOS$APPROVALREQUESTS']) {
       this.approvalEvent = JSON.parse(sessionStorage['$SOS$APPROVALREQUESTS']);
@@ -160,6 +164,13 @@ export class HeaderComponent {
     setTimeout(() => {
       this.problemEvent = {};
       sessionStorage.removeItem('$SOS$NODELOSS');
+      this.cdr.markForCheck();
+    }, 250);
+  }
+  clearFailoverEvent(): void {
+    setTimeout(() => {
+      this.failoverEvent = {};
+      sessionStorage.removeItem('$SOS$FAILOVER');
       this.cdr.markForCheck();
     }, 250);
   }
@@ -364,6 +375,10 @@ export class HeaderComponent {
                 res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;
                 this.problemEvent = res.eventSnapshots[j];
                 sessionStorage['$SOS$NODELOSS'] = JSON.stringify(res.eventSnapshots[j]);
+              } else if (res.eventSnapshots[j].eventType === 'FailoverProblemEvent') {
+                res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;
+                this.failoverEvent = res.eventSnapshots[j];
+                sessionStorage['$SOS$FAILOVER'] = JSON.stringify(res.eventSnapshots[j]);
               }
             }
 

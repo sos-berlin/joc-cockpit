@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span>{{ 'common.button.confirm' | translate }}</span>:
+    <span [innerHtml]="agent.agentId"></span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    @if (!display) {
+      <div class="row text-center">
+        <div class="col-sm-12 m-t m-b">
+          <span class="text">
+            <span class="text">{{ 'dashboard.message.confirmAgentFailOver' | translate }}</span>
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted"
+            class="btn btn-primary btn-sm"
+            type="submit">
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">{{ 'common.button.cancel' | translate }}
+    </button>
+  </div>
+</form>

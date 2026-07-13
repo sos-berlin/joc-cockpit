@@ -60,15 +60,25 @@
       </ng-template>
       <ng-template #problemEventTemp>
         <div class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearProblemEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
+          <a (click)="clearProblemEvent(); clearFailoverEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
-          <div>
-            @if (problemEvent?.date) {
-              <span>{{coreService.getLogDateFormat(problemEvent.date, preferences.zone)}} </span>
-            }
-            {{problemEvent?.path}} - {{problemEvent?.message}}
-          </div>
+          @if (problemEvent?.message) {
+            <div>
+              @if (problemEvent?.date) {
+                <span>{{coreService.getLogDateFormat(problemEvent.date, preferences.zone)}} </span>
+              }
+              {{problemEvent?.path}} - {{problemEvent?.message}}
+            </div>
+          }
+          @if (failoverEvent?.message) {
+            <div>
+              @if (failoverEvent?.date) {
+                <span>{{coreService.getLogDateFormat(failoverEvent.date, preferences.zone)}} </span>
+              }
+              {{failoverEvent?.path}} - {{failoverEvent?.message}}
+            </div>
+          }
         </div>
       </ng-template>
       <ng-template #jocMonitorEvent>
@@ -157,7 +167,7 @@
           </a>
       </li>
       }
-      @if (problemEvent?.message) {
+      @if (problemEvent?.message || failoverEvent?.message) {
       <li class="nav-item">
           <a class="nav-link pointer text-danger" style="top: 3px">
             <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"

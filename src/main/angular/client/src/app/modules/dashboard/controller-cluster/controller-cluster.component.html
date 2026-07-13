@@ -111,6 +111,12 @@
             <a>{{ 'dashboard.button.confirmNodeLoss' | translate }}</a>
           </li>
         }
+        @if (permission.currentController && permission.currentController.switchOver && cluster) {
+          <li (click)="confirmFailOver()" [nzDisabled]="!failOver"
+              nz-menu-item>
+            <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
+          </li>
+        }
         @if (joc && joc.current && joc.clusterNodeState && joc.clusterNodeState._text == 'active' && permission.joc.cluster.manage) {
           <li (click)="restartService('cluster')" nz-menu-item>
             <a>{{ 'dashboard.button.restartCluster' | translate }}</a>

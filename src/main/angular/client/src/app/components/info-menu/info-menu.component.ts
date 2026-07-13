@@ -38,7 +38,7 @@ template: `
             </div>
           </div>
           <div class="p-b-xs row">
-            <div class="col-sm-12 text-black-lt">{{info.label.allRightReserved | translate}}</div>
+            <div class="col-sm-12 text-black-lt">{{'info.label.allRightReserved' | translate}}</div>
           </div>
           @if (licenseType) {
             <div class="row">
@@ -54,7 +54,7 @@ template: `
                   </span>
                 }
                 @if (licenseType === 'OPENSOURCE') {
-                  <span translate>{{'info.label.openSourceLicense' | translate}}</span>
+                  <span>{{'info.label.openSourceLicense' | translate}}</span>
                 }
                 @if (licenseType !== 'OPENSOURCE') {
                   <a class="text-primary text-hover-primary m-l-md"
@@ -73,7 +73,7 @@ template: `
           }
           @if (licenseType && licenseType !== 'OPENSOURCE') {
             <div class="row m-t-xs">
-              <label class="col-sm-3" translate>{{'info.label.licenseValidity' | translate}}</label>
+              <label class="col-sm-3">{{'info.label.licenseValidity' | translate}}</label>
               <div class="col-sm-9"
                    [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
                 <i>{{validFrom}}</i>
