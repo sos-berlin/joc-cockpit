@@ -297,7 +297,7 @@
       "tooltip.withGenerateSubagentCluster": "ディレクターエージェントは、このディレクターエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはディレクターエージェント上で別に実行することができます。",
       "tooltip.agentNameAliases": "エイリアス名はエージェントクラスターに割り当てることができます。エージェントクラスターは、エイリアス名を使用して、ジョブまたはファイルオーダーソースに割り当てることができます。エイリアス名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンは使用できません。",
       "tooltip.processLimit": "プロセス上限",
-      "tooltip.forceFailoverConfirmation": "強制切替確認",
+      "tooltip.forceFailoverConfirmation": "強制フェイルオーバー確認",
       "subagent": {
         "tooltip.clusterName": "サブエージェントクラスター名は、サブエージェントクラスターの一意な識別子で、サブエージェントクラスターが存続する間は変更することができません。サブエージェント・クラスター名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
         "tooltip.title": "タイトルは任意に指定可能です。"
@@ -422,7 +422,7 @@
     "label.primaryUrl": "プライマリーコントローラーがみるURL",
     "label.jocAsClusterWatch": "JOCコクピットからクラスター監視",
     "label.agentAsClusterWatch": "エージェントからクラスター監視",
-    "label.forceFailoverConfirmation": "強制切替確認",
+    "label.forceFailoverConfirmation": "強制フェイルオーバー確認",
     "button.testConnection": "テスト接続",
     "button.newController": "新規コントローラー",
     "tooltip.type": "タイプ",
@@ -434,7 +434,7 @@
     "tooltip.urlForPrimary": "プライマリーコントローラーがみるセカンダリーコントローラーURL",
     "tooltip.primaryTitle": "プライマリータイトル",
     "tooltip.backupTitle": "セカンダリータイトル",
-    "tooltip.forceFailoverConfirmation": "強制切替確認"
+    "tooltip.forceFailoverConfirmation": "強制フェイルオーバー確認"
   },
   "encipherment": {
     "label.addCertificate": "暗号化証明書追加",
@@ -873,7 +873,7 @@
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
-    "button.confirmFailOver": "Confirm fail-over",
+    "button.confirmFailOver": "フェイルオーバーを確認",
     "button.removeRepository": "リポジトリーから削除",
     "button.updateURL": "URL更新",
     "button.lognotification": "ログ通知サービス",
@@ -894,8 +894,8 @@
     "message.apiServerStatus": "APIサーバーステータス表示ウィジェット",
     "message.confirmNodeLoss": " コントローラーインスタンス {{lossNode}} が停止していることが確認されました",
     "message.confirmAgentNodeLoss": "'{{lossNode}}'エージェントインスタンスが停止していることを確認してください",
-    "message.confirmControllerFailOver": "Can you confirm fail-over?",
-    "message.confirmAgentFailOver": "Can you confirm fail-over?"
+    "message.confirmControllerFailOver": "フェイルオーバーを確認できますか？",
+    "message.confirmAgentFailOver": "フェイルオーバーを確認できますか？"
   },
   "dailyPlan": {
     "label.createPlan": "実行計画作成",
