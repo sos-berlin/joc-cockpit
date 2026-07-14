@@ -3504,6 +3504,7 @@
     "label.showGlossary": "Enable Glossary for Tooltips",
     "label.numOfLogLines": "Number of lines in Log view",
     "label.numOfNextLogLines": "Load number of next lines in Log view",
+    "label.includeDependencies": "Include Dependencies",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3582,7 +3583,8 @@
       "tooltip.showVideoContextHelp": "The setting enables **Context Help Videos** that are available from an icon in the title of pages, sub-views and pop-up windows.\n\nContext Help Videos provide mostly short explanations that alternatively are available for reading from Context Help.",
       "tooltip.showGlossary": "When enabled, tooltips will display links to glossary items which is helpful for users who are new to JS7.\n\nExperienced users might prefer fewer links in tooltips.",
       "tooltip.numOfLogLines": "The number of lines of log output that can be made available in the Log view depends on system resources such as CPU and memory for rendering.\n\nUsers can adjust the value to match their system's capabilities.",
-      "tooltip.numOfNextLogLines": "The Log view offers loading the indicated number of previous or next lines of log output.\n\nThis considers that the overall **Number of lines in Log view** remains the same and that earlier or later log entries are dropped."
+      "tooltip.numOfNextLogLines": "The Log view offers loading the indicated number of previous or next lines of log output.\n\nThis considers that the overall **Number of lines in Log view** remains the same and that earlier or later log entries are dropped.",
+      "tooltip.includeDependencies": "Include Dependencies"
     },
     "permission": {
       "label.order": "Order",

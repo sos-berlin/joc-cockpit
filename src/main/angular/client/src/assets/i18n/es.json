@@ -3504,6 +3504,7 @@
     "label.showGlossary": "Habilitar glosario para tooltips",
     "label.numOfLogLines": "Número de líneas en vista de Logs",
     "label.numOfNextLogLines": "Cantidad de líneas siguientes en vista de Logs",
+    "label.includeDependencies": "Include Dependencies",
     "button.resetPreferences": "Restablecer preferencias del perfil",
     "button.groupLimit": "Límite de grupo",
     "button.changePassword": "Cambiar contraseña",
@@ -3582,7 +3583,8 @@
       "tooltip.showVideoContextHelp": "La configuración habilita los **Videos de Ayuda contextual** disponibles desde un ícono (i) en la interfaz de ^JOC Cockpit^.",
       "tooltip.showGlossary": "Muestra el glosario para los términos en los tooltips de ^JOC Cockpit^.",
       "tooltip.numOfLogLines": "Especifica el número de líneas de log que se mostrarán inicialmente en la vista de Logs.",
-      "tooltip.numOfNextLogLines": "Especifica el número de líneas de log adicionales que se cargarán al hacer clic en 'Cargar más'."
+      "tooltip.numOfNextLogLines": "Especifica el número de líneas de log adicionales que se cargarán al hacer clic en 'Cargar más'.",
+      "tooltip.includeDependencies": "Include Dependencies"
     },
     "permission": {
       "label.order": "Orden",

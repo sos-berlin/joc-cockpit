@@ -3504,6 +3504,7 @@
     "label.showGlossary": "Glossar in Kurzinfos aktivieren",
     "label.numOfLogLines": "Anzahl Zeilen in Protokollansicht",
     "label.numOfNextLogLines": "Anzahl nächster Zeilen laden in Protokollansicht",
+    "label.includeDependencies": "Include Dependencies",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3582,7 +3583,8 @@
       "tooltip.showVideoContextHelp": "Die Einstellung aktiviert die **Kontexthilfe Videos**, die über ein Symbol in der Kopfzeile von Seiten, Unteransichten und Pop-up Fenstern aufgerufen werden kann.\n\nKontexthilfe Videos bieten meist kurze Erläuterungen, die alternativ per Text der Kontexthilfe gelesen werden können.",
       "tooltip.showGlossary": "Wenn aktiviert, werden in den Kurzinfos Links zu Glossareinträgen angezeigt, was für Benutzer hilfreich ist, die JS7 noch nicht kennen.\n\nErfahrene Benutzer bevorzugen ggf. weniger Links in den Kurzinfos.",
       "tooltip.numOfLogLines": "Die Anzahl Zeilen der Protokollausgabe, die in der Protokollansicht angezeigt werden können, hängt von den Systemressourcen wie CPU und Arbeitsspeicher ab, die zur Darstellung benötigt werden.\n\nBenutzer können den Wert an die Leistungsfähigkeit ihres Systems anpassen.",
-      "tooltip.numOfNextLogLines": "In der Protokollansicht können Sie die angegebene Anzahl vorheriger oder nächster Zeilen der Protokollausgabe laden.\n\nDabei wird davon ausgegangen, dass die Gesamtzahl der Zeilen in der Protokollansicht unverändert bleibt und frühere oder spätere Protokollausgaben verworfen werden."
+      "tooltip.numOfNextLogLines": "In der Protokollansicht können Sie die angegebene Anzahl vorheriger oder nächster Zeilen der Protokollausgabe laden.\n\nDabei wird davon ausgegangen, dass die Gesamtzahl der Zeilen in der Protokollansicht unverändert bleibt und frühere oder spätere Protokollausgaben verworfen werden.",
+      "tooltip.includeDependencies": "Include Dependencies"
     },
     "permission": {
       "label.order": "Auftrag",
