@@ -10,6 +10,7 @@ import {TranslateService} from '@ngx-translate/core';
 interface ParsedLine {
   timestamp: string;
   level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'TRACE' | 'OTHER';
+  displayLevel?: string;
   text: string;
   raw: string;
   rawLower: string; // pre-lowercased for fast search comparisons
@@ -24,7 +25,7 @@ interface ContextBlock {
   collapsed: boolean;
 }
 
-const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
+const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(BEGIN|INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
 
 // ── Order ID parsing ────────────────────────────────────────────────────────
 // Matches JS7 Order IDs: #YYYY-MM-DD#<word chars, colon, hyphen>
@@ -91,12 +92,14 @@ function parseLine(raw: string): ParsedLine {
   if (m) {
     const lvlStr = m[2].toUpperCase();
     let level: ParsedLine['level'] = 'OTHER';
-    if (lvlStr === 'INFO')                     level = 'INFO';
-    else if (lvlStr === 'WARN')                level = 'WARN';
-    else if (lvlStr === 'ERROR' || lvlStr === 'FATAL') level = 'ERROR';
-    else if (lvlStr === 'DEBUG')               level = 'DEBUG';
-    else if (lvlStr === 'TRACE')               level = 'TRACE';
-    return { timestamp: m[1], level, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
+    let displayLevel: string | undefined;
+    if (lvlStr === 'INFO')                              level = 'INFO';
+    else if (lvlStr === 'WARN')                         level = 'WARN';
+    else if (lvlStr === 'ERROR' || lvlStr === 'FATAL')  level = 'ERROR';
+    else if (lvlStr === 'DEBUG')                        level = 'DEBUG';
+    else if (lvlStr === 'TRACE')                        level = 'TRACE';
+    else if (lvlStr === 'BEGIN') { level = 'INFO'; displayLevel = 'Begin'; }
+    return { timestamp: m[1], level, displayLevel, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
   }
   return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
 }
@@ -142,7 +145,7 @@ export interface LogConsoleRequest {
   selector: 'app-log-console',
   templateUrl: './log-console.component.html',
   styleUrls: ['./log-console.component.scss', './log-console.toolbar.scss'],
-  
+
 })
 export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   @Input() request: LogConsoleRequest = { type: 'controller' };

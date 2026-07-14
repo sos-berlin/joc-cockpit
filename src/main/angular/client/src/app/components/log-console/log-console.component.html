@@ -417,7 +417,7 @@
                 <span class="log-ts-small text-muted">{{ entry.globalIdx + 1 }}</span>
                 @if (entry.line.timestamp) {
                   <span class="log-ts">{{ formatTimestamp(entry.line.timestamp) }}</span>
-                  <span class="log-level log-level-{{ entry.line.level.toLowerCase() }}">{{ entry.line.level }}</span>
+                  <span class="log-level log-level-{{ entry.line.level.toLowerCase() }}">{{ entry.line.displayLevel || entry.line.level }}</span>
                 }
                 <span class="log-text" [innerHTML]="highlightText(entry.line.text)"></span>
               </div>
@@ -444,7 +444,7 @@
              (click)="onLineClick(line.globalIdx)">
           @if (line.timestamp) {
             <span class="log-ts">{{ formatTimestamp(line.timestamp) }}</span>
-            <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.level }}</span>
+            <span class="log-level log-level-{{ line.level.toLowerCase() }}">{{ line.displayLevel || line.level }}</span>
           }
           <span class="log-text" [innerHTML]="highlightText(line.text)"></span>
         </div>

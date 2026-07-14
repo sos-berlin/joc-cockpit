@@ -4744,6 +4744,19 @@ export class JobComponent {
     }
     this.coreService.openHelpPage(param);
   }
+
+  videoPage() {
+    let param: string;
+    switch (this.tabIndex) {
+      case 0:
+        param = 'job-properties';
+        break;
+      default:
+        param = 'job-properties';
+    }
+
+    this.coreService.openVideoPage(param);
+  }
 }
 
 @Component({

@@ -106,7 +106,7 @@
           </li>
         }
         @if (permission.currentController && permission.currentController.switchOver && cluster) {
-          <li (click)="confirmLossNode()" [nzDisabled]="!(clusterStatusData?.clusterState?._text === 'NodeLossToBeConfirmed')"
+          <li (click)="confirmLossNode()" [nzDisabled]="!(clusterStatusData?.clusterState?._text === 'ClusterNodeLossToBeConfirmed')"
               nz-menu-item>
             <a>{{ 'dashboard.button.confirmNodeLoss' | translate }}</a>
           </li>

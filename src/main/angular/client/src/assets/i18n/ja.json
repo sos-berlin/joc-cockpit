@@ -17,6 +17,7 @@
   "ClusterEmpty": "空き",
   "ClusterActiveNodeIsNotReady": "アクティブノードは準備できていません",
   "ClusterNodeLossToBeConfirmed": "ノードロストを確認します",
+  "ClusterFailoverToBeConfirmed": "FailoverToBeConfirmed",
   "healthy": "正常",
   "ACTIVE": "アクティブ",
   "DEAD": "停止",

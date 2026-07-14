@@ -17,6 +17,7 @@
   "ClusterEmpty": "пуст",
   "ClusterActiveNodeIsNotReady": "Активный узел кластера не готов",
   "ClusterNodeLossToBeConfirmed": "Потеря узла кластера требует подтверждения",
+  "ClusterFailoverToBeConfirmed": "FailoverToBeConfirmed",
   "healthy": "работоспособен",
   "ACTIVE": "активен",
   "DEAD": "мёртв",
