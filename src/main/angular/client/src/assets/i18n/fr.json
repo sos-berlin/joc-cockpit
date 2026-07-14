@@ -17,7 +17,7 @@
   "ClusterEmpty": "Vide",
   "ClusterActiveNodeIsNotReady": "Nœud actif non prêt",
   "ClusterNodeLossToBeConfirmed": "Perte de Nœud à confirmer",
-  "ClusterFailoverToBeConfirmed": "FailoverToBeConfirmed",
+  "ClusterFailoverToBeConfirmed": "Bascule à confirmer",
   "healthy": "sain",
   "ACTIVE": "actif",
   "DEAD": "arrêté",
@@ -3504,7 +3504,7 @@
     "label.showGlossary": "Activer le glossaire pour les infobulles",
     "label.numOfLogLines": "Nombre de lignes dans la vue du journal",
     "label.numOfNextLogLines": "Nombre de lignes prochaines à charger dans la vue du journal",
-    "label.includeDependencies": "Include Dependencies",
+    "label.includeDependencies": "Gestion des dépendances",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -3583,8 +3583,8 @@
       "tooltip.showVideoContextHelp": "Ce paramètre active les **Vidéos d'Aide Contextuelle**, accessibles via une icône située dans l'en-tête des pages, des sous-vues et des fenêtres contextuelles.\n\nLes Vidéos d'Aide Contextuelle proposent principalement de brèves explications qui peuvent également être consultées sous forme écrite dans l'Aide Contextuelle.",
       "tooltip.showGlossary": "Si activé, les infobulles affichent des liens vers les entrées du glossaire, ce qui est utile pour les utilisateurs novices de JS7.\n\nLes utilisateurs expérimentés pourraient préférer que les infobulles contiennent moins de liens.",
       "tooltip.numOfLogLines": "Le nombre de lignes de journalisation pouvant être affichées dans la vue Journal dépend des ressources système disponibles pour le rendu, telles que le processeur et la mémoire.\n\nLes utilisateurs peuvent ajuster cette valeur en fonction des capacités de leur système.",
-      "tooltip.numOfNextLogLines": "Number of lines to load on demand in log view",
-      "tooltip.includeDependencies": "Include Dependencies"
+      "tooltip.numOfNextLogLines": "Dans la vue du journal, vous pouvez charger le nombre spécifié de lignes précédentes ou suivantes de la sortie du journal.\n\nLe nombre total de lignes dans la vue du journal reste inchangé et les sorties de journal antérieures ou postérieures sont ignorées.",
+      "tooltip.includeDependencies": "Définit la valeur par défaut pour les opérations d'^Inventaire|inventory^ d'inclure les objets dépendants, par exemple, une ^Ressource de Tâche|job-resource^ référencée par un ^Workflow^ ou une ^Planification|schedule^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'opération aux objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix)."
     },
     "permission": {
       "label.order": "Ordre",
