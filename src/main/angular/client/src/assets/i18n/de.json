@@ -17,6 +17,7 @@
   "ClusterEmpty": "Empty",
   "ClusterActiveNodeIsNotReady": "ActiveNodeIsNotReady",
   "ClusterNodeLossToBeConfirmed": "NodeLossToBeConfirmed",
+  "ClusterFailoverToBeConfirmed": "FailoverToBeConfirmed",
   "healthy": "betriebsfähig",
   "ACTIVE": "aktiv",
   "DEAD": "tot",

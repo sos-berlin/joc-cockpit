@@ -151,14 +151,14 @@
                               <i class="text fa fa-ellipsis-h"></i></a>
                             <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                               <ul nz-menu>
-                                <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
+                                <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster?.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
                                   <a >{{ 'dashboard.button.switchOver' | translate }}</a>
                                 </li>
-                                <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'NodeLossToBeConfirmed')"
+                                <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster?.clusterState?._text === 'ClusterNodeLossToBeConfirmed')"
                                     nz-menu-item>
                                   <a >{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                 </li>
-                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!(cluster.clusterState._text === 'ClusterFailoverToBeConfirmed')"
+                                <li (click)="confirmFailOver(cluster)" [nzDisabled]="!(cluster?.clusterState._text === 'ClusterFailoverToBeConfirmed')"
                                     nz-menu-item>
                                   <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                 </li>
@@ -311,14 +311,14 @@
                               </button>
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
-                                  <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
+                                  <li (click)="switchOver(cluster)" [nzDisabled]="!(cluster?.clusterState?._text === 'ClusterCoupled')" nz-menu-item>
                                     <a >{{ 'dashboard.button.switchOver' | translate }}</a>
                                   </li>
-                                  <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster.clusterState?._text === 'NodeLossToBeConfirmed')"
+                                  <li (click)="confirmNodeLoss(cluster)" [nzDisabled]="!(cluster?.clusterState?._text === 'ClusterNodeLossToBeConfirmed')"
                                       nz-menu-item>
                                     <a >{{ 'agent.button.confirmNodeLoss' | translate }}</a>
                                   </li>
-                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!cluster.forceFailoverConfirmation"
+                                  <li (click)="confirmFailOver(cluster)" [nzDisabled]="!(cluster?.clusterState?._text === 'ClusterFailoverToBeConfirmed')"
                                       nz-menu-item>
                                     <a>{{ 'dashboard.button.confirmFailOver' | translate }}</a>
                                   </li>
