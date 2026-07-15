@@ -731,11 +731,11 @@
                         </span>
                       </div>
                       <div class="col-md-6">
-                        <app-select-input [attributeName]="'includeDependencies'" [classNames]="'w-xl'"
-                                          [isSearchable]="false"
-                                          [listArray]="includeDependenciesOptions" [object]="preferences"
-                                          [optionLabel]="'name'" [optionValue]="'value'"
-                                          (modelChange)="changeConfiguration()"></app-select-input>
+                        <nz-radio-group [(ngModel)]="preferences.includeDependencies" (ngModelChange)="changeConfiguration()">
+                          @for (option of includeDependenciesOptions; track $index) {
+                            <label nz-radio [nzValue]="option.value"><span>{{ option.name | translate }}</span></label>
+                          }
+                        </nz-radio-group>
                       </div>
                     </div>
                     <div class="row m-t">

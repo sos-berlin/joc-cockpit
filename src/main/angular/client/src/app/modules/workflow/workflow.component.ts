@@ -861,6 +861,9 @@ export class WorkflowComponent {
 
   ngOnInit(): void {
     this.workflowFilters = this.coreService.getWorkflowTab();
+    if (!(this.workflowFilters.mapObj instanceof Map)) {
+      this.workflowFilters.mapObj = new Map();
+    }
     this.sideView = this.coreService.getSideView();
     this.init();
   }
@@ -1364,7 +1367,7 @@ export class WorkflowComponent {
           if (this.workflowFilters.expandedObjects && this.workflowFilters.expandedObjects.length > 0 &&
             ((this.workflowFilters.expandedObjects.indexOf(path + res.workflows[i].versionId) > -1) ||
               (this.workflowFilters.expandedObjects.indexOf(path + 'CURRENT') > -1 && res.workflows[i].isCurrentVersion))) {
-            this.showPanelFuc(res.workflows[i], false, this.workflowFilters?.mapObj?.get(path + res.workflows[i].versionId));
+            this.showPanelFuc(res.workflows[i], false, this.workflowFilters?.mapObj?.get?.(path + res.workflows[i].versionId));
             if (path) {
               request.workflowIds.push({path, versionId: res.workflows[i].versionId});
             }

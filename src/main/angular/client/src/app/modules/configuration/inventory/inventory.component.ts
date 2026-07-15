@@ -13951,7 +13951,7 @@ export class InventoryComponent {
         } else if (res.renameObject) {
           this.renameObject(res);
         } else if (res.addTag) {
-          this.addTags(res.addTag);
+          this.addTags(res.addTag, res.isWorkflowTag);
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
@@ -17221,7 +17221,7 @@ export class InventoryComponent {
     }
   }
 
-  addTags(node?): void {
+  addTags(node?, isWorkflowTag = false): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -17230,7 +17230,7 @@ export class InventoryComponent {
       nzData: {
         preferences: this.preferences,
         data: node?.origin || node,
-        isJobTag: this.isJobTag
+        isJobTag: isWorkflowTag ? false : this.isJobTag
       },
       nzFooter: null,
       nzClosable: false,
