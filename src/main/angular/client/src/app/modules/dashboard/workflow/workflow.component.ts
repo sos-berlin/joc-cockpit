@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-workflow',
   templateUrl: './workflow.component.html',
-  
 })
 export class WorkflowComponent {
   schedulerIds: any = {};
@@ -24,7 +23,12 @@ export class WorkflowComponent {
   isLoaded = false;
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private router: Router, private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
+              private router: Router, private dataService: DataService, private modal: NzModalService,
+              private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {

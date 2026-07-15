@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -9,7 +9,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-scheduler-instance',
   templateUrl: './scheduler-instance.component.html',
-  
 })
 export class SchedulerInstanceComponent {
   @Input('sizeY') ybody: number;
@@ -26,8 +25,11 @@ export class SchedulerInstanceComponent {
       if (res) {
         this.refresh(res);
       }
-      this.cdr.markForCheck();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {

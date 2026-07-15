@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, NgZone} from '@angular/core';
 import {CompactType, DisplayGrid, GridsterConfig, GridType} from 'angular-gridster2';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.component';
@@ -12,14 +12,13 @@ declare const $: any;
   standalone: false,
   selector: 'app-update-url-modal-content',
   templateUrl: './update-url-dialog.html',
-  
 })
 export class UpdateUrlModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   joc: any = {};
   obj = {url:''};
 
-  constructor(public activeModal: NzModalRef, public coreService: CoreService, private cdr: ChangeDetectorRef) {
+  constructor(public activeModal: NzModalRef, public coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -34,7 +33,6 @@ export class UpdateUrlModalComponent {
     }).subscribe({
       next: () => {
         this.activeModal.close('Done');
-        this.cdr.markForCheck();
       }
     });
   }
@@ -45,7 +43,6 @@ export class UpdateUrlModalComponent {
   standalone: false,
   selector: 'app-widget-modal-content',
   templateUrl: './add-widget-dialog.html',
-  
 })
 export class AddWidgetModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -74,7 +71,6 @@ export class AddWidgetModalComponent {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  
 })
 export class DashboardComponent {
   options: GridsterConfig = {};
@@ -91,7 +87,7 @@ export class DashboardComponent {
   isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
+              private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -291,24 +287,14 @@ export class DashboardComponent {
       if (!this.permission.joc) {
         this.checkPermission(50);
       } else {
-        this.ngZone.run(() => {
-          this.initConfig(false);
-          this.initWidgets();
-          setTimeout(() => {
-            const dom = $('#gridster-container');
-            let top = dom.position() ? dom.position().top : undefined;
-            if (!top || top < 140) {
-              top = 142;
-            }
-            $('.gridster').css({height: 'calc(100vh - ' + top + 'px)', 'scroll-top': '0'});
-            window.dispatchEvent(new Event('resize'));
-            this.isLoading = true;
-            this.cdr.markForCheck();
-          }, 0);
-          this.cdr.detectChanges();
-        });
+        this.initConfig(false);
+        this.initWidgets();
+        DashboardComponent.calculateHeight();
+        this.isLoading = true;
+        this.cdr.markForCheck();
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       }
-    }, timeout);
+    }, timeout)
   }
 
   private initWidgets(): void {

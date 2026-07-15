@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
@@ -10,7 +10,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html',
   styleUrls: ['agent-running-task.component.css'],
-  
 })
 export class AgentRunningTaskComponent {
   @Input('layout') layout: any;
@@ -37,7 +36,6 @@ export class AgentRunningTaskComponent {
   constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
-      this.cdr.markForCheck();
     });
     this.subscription2 = dataService.refreshWidgetAnnounced$.subscribe((res) => {
       if (res) {
@@ -46,12 +44,16 @@ export class AgentRunningTaskComponent {
             this.layout = res[i];
             this.setViewSize(window);
             this.getRunningTask();
+            this.cdr.markForCheck();
             break;
           }
         }
-        this.cdr.markForCheck();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
@@ -90,10 +92,6 @@ export class AgentRunningTaskComponent {
     if (this.view[1] < 90 && this.data.length > 5) {
       this.view[1] = 90 + (this.data.length * 8)
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {

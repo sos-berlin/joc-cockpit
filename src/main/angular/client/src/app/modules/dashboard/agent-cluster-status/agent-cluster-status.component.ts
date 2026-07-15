@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -13,7 +13,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-cluster-status',
   templateUrl: './agent-cluster-status.component.html',
-  
 })
 export class AgentClusterStatusComponent {
   @Input('layout') layout: any;
@@ -66,8 +65,11 @@ export class AgentClusterStatusComponent {
               private router: Router, public modal: NzModalService, private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
-      this.cdr.markForCheck();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -82,10 +84,6 @@ export class AgentClusterStatusComponent {
     if (!localStorage['$SOS$THEME'] || localStorage['$SOS$THEME'].match(/light/)) {
       this.pieChartOptions.plugins.legend.labels.color = '#3d464d';
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {

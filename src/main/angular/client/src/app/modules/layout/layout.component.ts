@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, NgZone, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, HostListener, NgZone, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
@@ -20,7 +20,6 @@ declare const $: any;
   standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  
 })
 export class LayoutComponent {
   preferences: any = {};
@@ -59,7 +58,7 @@ export class LayoutComponent {
   constructor(public coreService: CoreService, private route: ActivatedRoute, private authService: AuthService, private router: Router,
               private dataService: DataService, public translate: TranslateService, private toasterService: ToastrService, private popoutService: PopupService,
               private nzConfigService: NzConfigService, private modal: NzModalService, private oauthService: OIDCAuthService,
-              private cdr: ChangeDetectorRef, private ngZone: NgZone) {
+              private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -87,7 +86,6 @@ export class LayoutComponent {
         if (!this.isChangePasswordPopupOpen && this.authService.currentUserData && (this.authService.forcePasswordChange == true || this.authService.forcePasswordChange == 'true')) {
           this.isChangePasswordPopupOpen = true;
           this.changePassword();
-          this.cdr.markForCheck();
         }
         if (this.loading) {
           setTimeout(() => {
@@ -436,17 +434,14 @@ export class LayoutComponent {
 
   private getPermissions(flag = false): void {
     if (!this.permission) {
-      this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe({
-        next: (permission: any) => {
+      this.coreService.post('authentication/joc_cockpit_permissions', {}).subscribe((permission: any) => {
           permission.currentController = LayoutComponent.setControllerPermission(permission, this.schedulerIds);
           this.authService.setPermission(permission);
           this.authService.save();
           this.permission = permission;
           this.cdr.markForCheck();
           if (!sessionStorage['preferences']) {
-            const preferences: any = {};
-            this.getDefaultPreferences(preferences);
-            sessionStorage['preferences'] = JSON.stringify(preferences);
+            this.ngOnInit();
           }
           if (this.child) {
             this.child.reloadSettings();
@@ -454,7 +449,7 @@ export class LayoutComponent {
           if (flag) {
             this.ngZone.run(() => {
               this.loading = true;
-              this.cdr.detectChanges();
+              this.cdr.markForCheck();
               setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
             });
           }
@@ -463,26 +458,6 @@ export class LayoutComponent {
               this.loadInit(false);
             }
           }, 10);
-        },
-        error: () => {
-          if (!sessionStorage['preferences']) {
-            const preferences: any = {};
-            this.getDefaultPreferences(preferences);
-            sessionStorage['preferences'] = JSON.stringify(preferences);
-          }
-          if (flag) {
-            this.ngZone.run(() => {
-              this.loading = true;
-              this.cdr.detectChanges();
-              setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
-            });
-          }
-          setTimeout(() => {
-            if (!this.loading) {
-              this.loadInit(false);
-            }
-          }, 10);
-        }
       });
     }
   }
@@ -528,7 +503,7 @@ export class LayoutComponent {
           setTimeout(() => {
             this.ngZone.run(() => {
               this.loading = true;
-              this.cdr.detectChanges();
+              this.cdr.markForCheck();
               setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
             });
           }, 10);
@@ -548,7 +523,7 @@ export class LayoutComponent {
     setTimeout(() => {
       this.ngZone.run(() => {
         this.loading = true;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
         setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
       });
       this.loadInit(false, true);
@@ -612,7 +587,7 @@ export class LayoutComponent {
         }
         this.ngZone.run(() => {
           this.loading = true;
-          this.cdr.detectChanges();
+          this.cdr.markForCheck();
           setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
         });
       } else {
@@ -705,49 +680,47 @@ export class LayoutComponent {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    this.ngZone.runOutsideAngular(() => {
-      this.interval = setInterval(() => {
-        if (!this.preferences || !this.preferences.zone && sessionStorage['preferences']) {
-          this.preferences = JSON.parse(sessionStorage['preferences']) || {};
-          if (sessionStorage['licenseValidUntil']) {
-            this.ngZone.run(() => this.checkLicenseExpireDate());
+    this.interval = setInterval(() => {
+      if (!this.preferences || !this.preferences.zone && sessionStorage['preferences']) {
+        this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+        if (sessionStorage['licenseValidUntil']) {
+          this.checkLicenseExpireDate();
+        }
+      }
+      this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
+      if (this.sessionTimeout > 0) {
+        this.count = this.count - 3;
+        const s = Math.floor((this.count) % 60);
+        const m = Math.floor((this.count / (60)) % 60);
+        const h = Math.floor((this.count / (60 * 60)) % 24);
+        const d = Math.floor(this.count / (60 * 60 * 24));
+
+        const x = m > 9 ? m : '0' + m;
+        const y = s > 9 ? s : '0' + s;
+
+        if (d === 0 && h !== 0) {
+          this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
+        } else if (d === 0 && h === 0 && m !== 0) {
+          this.remainingSessionTime = x + 'm ' + y + 's';
+        } else if (d === 0 && h === 0 && m === 0) {
+          this.remainingSessionTime = s + 's';
+        } else {
+          this.remainingSessionTime = d + 'd ' + h + 'h';
+        }
+        if (this.count <= 0) {
+          clearInterval(this.interval);
+          this.isLogout = true;
+          this.logout('timeout');
+        } else {
+          let currentTime = this.coreService.convertTimeToLocalTZ(this.preferences, new Date()).format('HH:mm:ss');
+          if (currentTime === '00:00:00' || currentTime === '00:00:01' || currentTime === '00:00:02') {
+            this.dataService.refreshUI('reload');
           }
         }
-        this.currentTime = this.coreService.stringToDate(this.preferences, new Date());
-        if (this.sessionTimeout > 0) {
-          this.count = this.count - 3;
-          const s = Math.floor((this.count) % 60);
-          const m = Math.floor((this.count / (60)) % 60);
-          const h = Math.floor((this.count / (60 * 60)) % 24);
-          const d = Math.floor(this.count / (60 * 60 * 24));
-
-          const x = m > 9 ? m : '0' + m;
-          const y = s > 9 ? s : '0' + s;
-
-          if (d === 0 && h !== 0) {
-            this.remainingSessionTime = h + 'h ' + x + 'm ' + y + 's';
-          } else if (d === 0 && h === 0 && m !== 0) {
-            this.remainingSessionTime = x + 'm ' + y + 's';
-          } else if (d === 0 && h === 0 && m === 0) {
-            this.remainingSessionTime = s + 's';
-          } else {
-            this.remainingSessionTime = d + 'd ' + h + 'h';
-          }
-          if (this.count <= 0) {
-            clearInterval(this.interval);
-            this.isLogout = true;
-            this.ngZone.run(() => this.logout('timeout'));
-          } else {
-            let currentTime = this.coreService.convertTimeToLocalTZ(this.preferences, new Date()).format('HH:mm:ss');
-            if (currentTime === '00:00:00' || currentTime === '00:00:01' || currentTime === '00:00:02') {
-              this.ngZone.run(() => this.dataService.refreshUI('reload'));
-            }
-          }
-        }
-        this.ngZone.run(() => this.openStepGuideModal());
-        this.cdr.detectChanges();
-      }, 3000);
-    });
+      }
+      this.openStepGuideModal();
+      this.cdr.markForCheck();
+    }, 3000);
   }
 
   private setUserPreferences(preferences: any, configObj: any, reload: boolean): void {

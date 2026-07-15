@@ -50,7 +50,7 @@
   @if (dashboard.length > 0) {
     <div class="gridster">
       <gridster [options]="options">
-        @for (item of dashboard; track item.id) {
+        @for (item of dashboard; track item) {
           <gridster-item [item]="item">
             <div class="destroy-button">
               @if (editLayoutObj) {

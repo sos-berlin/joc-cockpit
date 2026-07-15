@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
@@ -13,7 +13,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-agent-status',
   templateUrl: './agent-status.component.html',
-  
 })
 export class AgentStatusComponent {
   @Input('layout') layout: any;
@@ -68,7 +67,6 @@ export class AgentStatusComponent {
               private router: Router, private dataService: DataService, public modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
-      this.cdr.markForCheck();
     });
   }
 
@@ -87,7 +85,7 @@ export class AgentStatusComponent {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.cdr.detectChanges(), 0);
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy(): void {

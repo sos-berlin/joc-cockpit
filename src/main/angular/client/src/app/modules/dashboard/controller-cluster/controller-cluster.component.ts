@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ElementRef, HostListener, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, ElementRef, HostListener, ViewChild, NgZone} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
@@ -51,11 +51,14 @@ export class ControllerClusterComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService,
               private elementRef: ElementRef, private translate: TranslateService, public modal: NzModalService,
-              private nzContextMenuService: NzContextMenuService, private cdr: ChangeDetectorRef) {
+              private nzContextMenuService: NzContextMenuService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refreshEvent(res);
-      this.cdr.markForCheck();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   static colorCode(severity): string {
@@ -125,6 +128,7 @@ export class ControllerClusterComponent {
                     this.dataService.announceFunction(isBackUp);
                   }
                   sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
+                  this.cdr.markForCheck();
                 });
 
             }
@@ -244,24 +248,25 @@ export class ControllerClusterComponent {
         $('[data-toggle="popover"]').popover('hide');
         const cell = evt.getProperty('cell'); // cell may be null
         if (cell != null) {
-          self.cluster = null;
-          self.controller = null;
-          self.joc = null;
-          let data = cell.getAttribute('data');
-          data = JSON.parse(data);
-          if (cell.value.tagName === 'Cluster') {
-            self.cluster = data;
-          } else if (cell.value.tagName === 'Controller') {
-            self.controller = data;
-          } else {
-            self.joc = data;
-          }
-
-          setTimeout(() => {
-            self.nzContextMenuService.create(event, self.menu);
-          }, 0);
+          self.ngZone.run(() => {
+            self.cluster = null;
+            self.controller = null;
+            self.joc = null;
+            let data = cell.getAttribute('data');
+            data = JSON.parse(data);
+            if (cell.value.tagName === 'Cluster') {
+              self.cluster = data;
+            } else if (cell.value.tagName === 'Controller') {
+              self.controller = data;
+            } else {
+              self.joc = data;
+            }
+            self.cdr.markForCheck();
+            setTimeout(() => {
+              self.nzContextMenuService.create(event, self.menu);
+            }, 0);
+          });
           evt.consume();
-          self.cdr.markForCheck();
         }
       }
     });

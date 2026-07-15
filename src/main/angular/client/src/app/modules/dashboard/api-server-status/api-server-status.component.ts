@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -10,7 +10,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-api-server-status',
   templateUrl: './api-server-status.component.html',
-  
 })
 export class APIServerStatusComponent {
   @Input('sizeY') ybody: number;
@@ -26,9 +25,12 @@ export class APIServerStatusComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
-        this.cdr.markForCheck();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {

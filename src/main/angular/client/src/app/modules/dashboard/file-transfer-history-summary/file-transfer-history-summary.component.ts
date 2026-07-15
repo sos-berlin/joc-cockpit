@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-file-transfer-history-summary',
   templateUrl: './file-transfer-history-summary.component.html',
-  
 })
 export class FileTransferHistorySummaryComponent {
   summary: any;
@@ -26,9 +25,12 @@ export class FileTransferHistorySummaryComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
-        this.cdr.markForCheck();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {

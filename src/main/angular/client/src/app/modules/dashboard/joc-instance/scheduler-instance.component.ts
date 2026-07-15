@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, Input} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
@@ -8,7 +8,6 @@ import {DataService} from '../../../services/data.service';
   standalone: false,
   selector: 'app-scheduler-instance',
   templateUrl: './scheduler-instance.component.html',
-  
 })
 export class SchedulerInstanceComponent {
   @Input('sizeY') ybody: number;
@@ -24,8 +23,11 @@ export class SchedulerInstanceComponent {
       if (res) {
         this.refresh(res);
       }
-      this.cdr.markForCheck();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   ngOnInit(): void {
@@ -34,7 +36,6 @@ export class SchedulerInstanceComponent {
       this.getInstances();
     } else {
       this.isLoaded = true;
-      this.cdr.markForCheck();
     }
   }
 

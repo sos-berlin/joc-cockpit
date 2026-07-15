@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
@@ -10,7 +10,6 @@ import {NzModalService} from "ng-zorro-antd/modal";
   standalone: false,
   selector: 'app-history-summary',
   templateUrl: './history-summary.component.html',
-  
 })
 export class HistorySummaryComponent {
   orderSummary: any;
@@ -28,9 +27,12 @@ export class HistorySummaryComponent {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
-        this.cdr.markForCheck();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.markForCheck();
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
@@ -71,10 +73,6 @@ export class HistorySummaryComponent {
       this.notAuthenticate2 = true;
       this.isLoaded = true;
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => this.cdr.detectChanges(), 0);
   }
 
   ngOnDestroy(): void {
