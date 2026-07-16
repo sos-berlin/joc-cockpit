@@ -358,9 +358,8 @@ export class JobTemplateComponent {
   isLocalChange: string;
   objectType = InventoryObject.JOBTEMPLATE;
 
-  indexOfNextAdd = 0;
   selectedIndex = 0;
-  history = [];
+  history: any = {past: [], present: null, future: []};
   isRuntimeVisible = false;
   isStore = false;
   jobResourcesTree = [];
@@ -522,8 +521,7 @@ export class JobTemplateComponent {
       this.isLocalChange = '';
       this.isDisplay = true;
       this.lastModified = res.configurationDate;
-      this.history = [];
-      this.indexOfNextAdd = 0;
+      this.history = {past: [], present: null, future: []};
       this.returnCodes = {on: 'success'};
       this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.getDocumentations();
@@ -569,7 +567,7 @@ export class JobTemplateComponent {
       }
 
 
-      this.history.push(JSON.stringify(this.job.configuration));
+      this.history = {past: [], present: JSON.stringify(this.job.configuration), future: []};
       if (!res.valid) {
         this.validateJSON(res.configuration);
       } else {
@@ -1172,10 +1170,17 @@ export class JobTemplateComponent {
    * Redoes the last change.
    */
   redo(): void {
-    const n = this.history.length;
-    if (this.indexOfNextAdd < n) {
-      const obj = this.history[this.indexOfNextAdd++];
-      this.job.configuration = JSON.parse(obj);
+    if (this.history.future.length > 0) {
+      const currentPresent = this.history.present;
+      const next = this.history.future[0];
+      this.history = {
+        past: [currentPresent, ...this.history.past],
+        present: next,
+        future: this.history.future.slice(1)
+      };
+      this.job.configuration = JSON.parse(next);
+      this.job.actual = currentPresent;
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -1186,9 +1191,24 @@ export class JobTemplateComponent {
    * Undoes the last change.
    */
   undo(): void {
-    if (this.indexOfNextAdd > 0) {
-      const obj = this.history[--this.indexOfNextAdd];
-      this.job.configuration = JSON.parse(obj);
+    const currentJson = JSON.stringify(this.job.configuration);
+    if (!isEqual(currentJson, this.history.present)) {
+      const newPast = this.history.present !== null
+        ? [this.history.present, ...this.history.past].slice(0, 20)
+        : this.history.past;
+      this.history = {past: newPast, present: currentJson, future: []};
+    }
+    if (this.history.past.length > 0) {
+      const currentPresent = this.history.present;
+      const previous = this.history.past[0];
+      this.history = {
+        past: this.history.past.slice(1),
+        present: previous,
+        future: [currentPresent, ...this.history.future]
+      };
+      this.job.configuration = JSON.parse(previous);
+      this.job.actual = currentPresent;
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -1401,11 +1421,10 @@ export class JobTemplateComponent {
 
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {
-        if (this.history.length === 20) {
-          this.history.shift();
-        }
-        this.history.push(JSON.stringify(this.job.configuration));
-        this.indexOfNextAdd = this.history.length - 1;
+        const newPast = this.history.present !== null
+          ? [this.history.present, ...this.history.past].slice(0, 20)
+          : this.history.past;
+        this.history = {past: newPast, present: JSON.stringify(this.job.configuration), future: []};
       }
 
       const request: any = {
