@@ -26,7 +26,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
   standalone: false,
   selector: 'app-test-mail',
   templateUrl: './test-mail-dialog.html',
-  
+
 })
 export class TestMailComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -67,7 +67,7 @@ export class TestMailComponent {
 @Component({
   standalone: false,
   selector: 'app-job-resource',
-  
+
   templateUrl: './job-resource.component.html'
 })
 export class JobResourceComponent {
@@ -86,8 +86,7 @@ export class JobResourceComponent {
   isStore = false;
   objectType = InventoryObject.JOBRESOURCE;
   documentationTree = [];
-  indexOfNextAdd = 0;
-  history = [];
+  history: any = {past: [], present: null, future: []};
 
   object = {
     checked1: false,
@@ -327,10 +326,17 @@ export class JobResourceComponent {
    * Redoes the last change.
    */
   redo(): void {
-    const n = this.history.length;
-    if (this.indexOfNextAdd < n) {
-      const obj = this.history[this.indexOfNextAdd++];
-      this.jobResource.configuration = JSON.parse(obj);
+    if (this.history.future.length > 0) {
+      const currentPresent = this.history.present;
+      const next = this.history.future[0];
+      this.history = {
+        past: [currentPresent, ...this.history.past],
+        present: next,
+        future: this.history.future.slice(1)
+      };
+      this.jobResource.configuration = JSON.parse(next);
+      this.jobResource.actual = currentPresent;
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -341,9 +347,24 @@ export class JobResourceComponent {
    * Undoes the last change.
    */
   undo(): void {
-    if (this.indexOfNextAdd > 0) {
-      const obj = this.history[--this.indexOfNextAdd];
-      this.jobResource.configuration = JSON.parse(obj);
+    const currentJson = JSON.stringify(this.jobResource.configuration);
+    if (!isEqual(currentJson, this.history.present)) {
+      const newPast = this.history.present !== null
+        ? [this.history.present, ...this.history.past].slice(0, 20)
+        : this.history.past;
+      this.history = {past: newPast, present: currentJson, future: []};
+    }
+    if (this.history.past.length > 0) {
+      const currentPresent = this.history.present;
+      const previous = this.history.past[0];
+      this.history = {
+        past: this.history.past.slice(1),
+        present: previous,
+        future: [currentPresent, ...this.history.future]
+      };
+      this.jobResource.configuration = JSON.parse(previous);
+      this.jobResource.actual = currentPresent;
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -595,11 +616,10 @@ export class JobResourceComponent {
       }
 
       if (!flag) {
-        if (this.history.length === 20) {
-          this.history.shift();
-        }
-        this.history.push(JSON.stringify(this.jobResource.configuration));
-        this.indexOfNextAdd = this.history.length - 1;
+        const newPast = this.history.present !== null
+          ? [this.history.present, ...this.history.past].slice(0, 20)
+          : this.history.past;
+        this.history = {past: newPast, present: JSON.stringify(this.jobResource.configuration), future: []};
       }
 
       const request: any = {
@@ -666,8 +686,7 @@ export class JobResourceComponent {
     this.coreService.post(URL, obj).subscribe((res: any) => {
       this.isLocalChange = '';
       this.lastModified = res.configurationDate;
-      this.history = [];
-      this.indexOfNextAdd = 0;
+      this.history = {past: [], present: null, future: []};
       this.getDocumentations();
       this.object = {
         checked1: false,
@@ -717,7 +736,7 @@ export class JobResourceComponent {
         this.addArgu(true);
       }
       this.jobResource.actual = JSON.stringify(res.configuration);
-      this.history.push(JSON.stringify(this.jobResource.configuration));
+      this.history = {past: [], present: JSON.stringify(this.jobResource.configuration), future: []};
       this.ref.detectChanges();
     });
   }

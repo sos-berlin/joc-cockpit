@@ -19,7 +19,7 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
 @Component({
   standalone: false,
   selector: 'app-script',
-  
+
   templateUrl: './script.component.html',
 })
 export class ScriptComponent {
@@ -38,8 +38,7 @@ export class ScriptComponent {
   invalidMsg: string;
   isLocalChange = '';
   documentationTree = [];
-  indexOfNextAdd = 0;
-  history = [];
+  history: any = {past: [], present: null, future: []};
   cmOption: any = {
     lineNumbers: true,
     autoRefresh: true,
@@ -254,10 +253,20 @@ export class ScriptComponent {
    * Redoes the last change.
    */
   redo(): void {
-    const n = this.history.length;
-    if (this.indexOfNextAdd < n) {
-      const obj = this.history[this.indexOfNextAdd++];
-      this.script.configuration = JSON.parse(obj);
+    if (this.history.future.length > 0) {
+      const currentPresent = this.history.present;
+      const next = this.history.future[0];
+      this.history = {
+        past: [currentPresent, ...this.history.past],
+        present: next,
+        future: this.history.future.slice(1)
+      };
+      this.script.configuration = JSON.parse(next);
+      this.script.actual = currentPresent;
+      if (this.cm && this.cm.codeEditor) {
+        this.cm.codeEditor.setValue(this.script.configuration.script || '');
+      }
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -268,9 +277,27 @@ export class ScriptComponent {
    * Undoes the last change.
    */
   undo(): void {
-    if (this.indexOfNextAdd > 0) {
-      const obj = this.history[--this.indexOfNextAdd];
-      this.script.configuration = JSON.parse(obj);
+    const currentJson = JSON.stringify(this.script.configuration);
+    if (!isEqual(currentJson, this.history.present)) {
+      const newPast = this.history.present !== null
+        ? [this.history.present, ...this.history.past].slice(0, 20)
+        : this.history.past;
+      this.history = {past: newPast, present: currentJson, future: []};
+    }
+    if (this.history.past.length > 0) {
+      const currentPresent = this.history.present;
+      const previous = this.history.past[0];
+      this.history = {
+        past: this.history.past.slice(1),
+        present: previous,
+        future: [currentPresent, ...this.history.future]
+      };
+      this.script.configuration = JSON.parse(previous);
+      this.script.actual = currentPresent;
+      if (this.cm && this.cm.codeEditor) {
+        this.cm.codeEditor.setValue(this.script.configuration.script || '');
+      }
+      this.ref.markForCheck();
       this.saveJSON(true);
     }
   }
@@ -306,11 +333,10 @@ export class ScriptComponent {
     }
     if (!isEqual(this.script.actual, JSON.stringify(this.script.configuration))) {
       if (!flag) {
-        if (this.history.length === 20) {
-          this.history.shift();
-        }
-        this.history.push(JSON.stringify(this.script.configuration));
-        this.indexOfNextAdd = this.history.length - 1;
+        const newPast = this.history.present !== null
+          ? [this.history.present, ...this.history.past].slice(0, 20)
+          : this.history.past;
+        this.history = {past: newPast, present: JSON.stringify(this.script.configuration), future: []};
       }
 
       const request: any = {
@@ -356,8 +382,7 @@ export class ScriptComponent {
       if (this.cm && this.cm.codeEditor) {
         this.cm.codeEditor.setValue('');
       }
-      this.history = [];
-      this.indexOfNextAdd = 0;
+      this.history = {past: [], present: null, future: []};
       this.getDocumentations();
       if (res.configuration) {
         delete res.configuration.TYPE;
@@ -384,7 +409,7 @@ export class ScriptComponent {
       this.script.path1 = this.data.path;
       this.script.name = this.data.name;
 
-      this.history.push(JSON.stringify(this.script.configuration));
+      this.history = {past: [], present: JSON.stringify(this.script.configuration), future: []};
       if (!res.valid) {
         if (!this.script.configuration.script) {
           this.invalidMsg = 'inventory.message.scriptIsMissing';
