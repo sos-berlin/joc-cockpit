@@ -685,7 +685,7 @@ export class ShowModalComponent {
     this.coreService.post(this.objectType !== 'NOTIFICATION' ? 'xmleditor/apply' : 'notification/store', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
-        this.toasterService.error(res?.ValidationError?.message, '');
+        this.toasterService.error(res?.validationError?.message, '');
       } else {
         this.activeModal.close(res);
       }

@@ -18,6 +18,7 @@ import {AppComponent} from './app.component';
 import {AuthInterceptor} from './components/guard';
 import {LoggingService} from './services/logging.service';
 import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
+import {OVERLAY_DEFAULT_CONFIG} from '@angular/cdk/overlay';
 
 @Injectable()
 export class MyErrorHandler implements ErrorHandler {
@@ -49,6 +50,8 @@ export class MyErrorHandler implements ErrorHandler {
       maxOpened: 1,
       positionClass: 'toast-top-center',
       preventDuplicates: true,
+      closeButton: true,
+      tapToDismiss: true,
     })
   ],
   providers: [
@@ -69,7 +72,8 @@ export class MyErrorHandler implements ErrorHandler {
     provideTranslateService({
       loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json?v=1659421544261' })
     }),
-    provideZoneChangeDetection({ eventCoalescing: true })
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    { provide: OVERLAY_DEFAULT_CONFIG, useValue: { usePopover: false } }
   ],
   bootstrap: [AppComponent]
 })

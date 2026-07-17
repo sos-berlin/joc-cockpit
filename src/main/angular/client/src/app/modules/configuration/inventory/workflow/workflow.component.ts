@@ -4751,6 +4751,9 @@ export class JobComponent {
       case 0:
         param = 'job-properties';
         break;
+      case 1:
+        param = 'job-options';
+        break;
       default:
         param = 'job-properties';
     }
