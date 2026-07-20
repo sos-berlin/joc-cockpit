@@ -39,7 +39,7 @@
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "jsoneditor": "^9.10.2",
-    "jspdf": "^3.0.1",
+    "jspdf": "^4.2.1",
     "jwk-to-pem": "^2.0.5",
     "moment-timezone": "^0.5.42",
     "ng-zorro-antd": "^18.0.0",
@@ -90,11 +90,23 @@
   "overrides": {
     "canvg": "^4.0.3",
     "@babel/runtime": "7.28.4",
-    "dompurify": "3.2.6",
+    "dompurify": "3.4.12",
     "js-yaml": "4.1.1",
     "bn.js": "4.12.3",
+    "minimatch": "3.1.4",
+    "brace-expansion": "1.1.13",
+    "lodash": "4.18.0",
+    "lodash-es": "4.18.0",
     "xmlbuilder2": {
       "js-yaml": "3.14.2"
+    },
+    "jsoneditor": {
+      "ajv": "6.14.0"
+    },
+    "replace-in-file": {
+      "glob": {
+        "minimatch": "5.1.8"
+      }
     }
   }
 }
