@@ -547,7 +547,7 @@
                                 <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" title="{{node.name}} should not contain spaces" type="url" xmlAutofocus>
                               }
                               @if (node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer) {
-                                <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="getDataAttr(node.refer)" class="w-full" id="{{node.name}}">
+                                <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="getDataAttr(node.refer, selectedNode)" [nzAllowClear]="node.use !== 'required'" class="w-full" id="{{node.name}}">
                                   @for (key of tempArr; track key) {
                                     <nz-option [nzLabel]="key" [nzValue]="key"></nz-option>
                                   }

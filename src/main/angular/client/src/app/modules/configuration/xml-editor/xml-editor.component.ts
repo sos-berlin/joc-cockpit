@@ -2152,6 +2152,8 @@ export class XmlEditorComponent {
           `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:element`;
         const dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
+          const seqChoiceEl = select(`//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice`, this.doc)[0];
+          const isUnboundedSeqChoice = seqChoiceEl && seqChoiceEl.getAttribute('maxOccurs') === 'unbounded';
           for (let i = 0; i < dElement.length; i++) {
             nodes = {};
             for (let j = 0; j < dElement[i].attributes.length; j++) {
@@ -2161,6 +2163,9 @@ export class XmlEditorComponent {
             }
             nodes.parent = node;
             nodes.choice = node;
+            if (isUnboundedSeqChoice) {
+              nodes.choiceUnbounded = true;
+            }
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -2204,6 +2209,8 @@ export class XmlEditorComponent {
       }
 
       if (select(choicePath, this.doc).length > 0) {
+        const choiceEl = select(choicePath, this.doc)[0];
+        const isUnboundedChoice = choiceEl && choiceEl.getAttribute('maxOccurs') === 'unbounded';
         const childPath = `//xs:element[@name='${node}']/xs:complexType/xs:choice/xs:element`;
         const childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
@@ -2216,6 +2223,9 @@ export class XmlEditorComponent {
             }
             nodes.parent = node;
             nodes.choice = node;
+            if (isUnboundedChoice) {
+              nodes.choiceUnbounded = true;
+            }
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -2236,6 +2246,9 @@ export class XmlEditorComponent {
               }
               nodes.parent = node;
               nodes.choice = node;
+              if (isUnboundedChoice) {
+                nodes.choiceUnbounded = true;
+              }
               childArr.push(nodes);
               if (data) {
                 data.children = childArr;
@@ -2659,6 +2672,8 @@ export class XmlEditorComponent {
         let seqChoicePath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice/xs:element';
         let getChildChoice = select(seqChoicePath, this.doc);
         if (getChildChoice.length > 0) {
+          let seqChoiceEl = select('/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:sequence/xs:choice', this.doc)[0];
+          let isUnboundedTypeSeqChoice = seqChoiceEl && seqChoiceEl.getAttribute('maxOccurs') === 'unbounded';
           for (let i = 0; i < getChildChoice.length; i++) {
             nodes = {};
             for (let j = 0; j < getChildChoice[i].attributes.length; j++) {
@@ -2668,6 +2683,9 @@ export class XmlEditorComponent {
             }
             nodes.parent = parent;
             nodes.choice = parent;
+            if (isUnboundedTypeSeqChoice) {
+              nodes.choiceUnbounded = true;
+            }
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -2709,7 +2727,9 @@ export class XmlEditorComponent {
         return childArr;
       }
       let choicePath = '//xs:complexType[@name=\'' + node + '\']/xs:choice';
-      if ((select(choicePath, this.doc)).length) {
+      let choiceNodes = select(choicePath, this.doc);
+      if (choiceNodes.length) {
+        let isUnboundedTypeChoice = choiceNodes[0] && choiceNodes[0].getAttribute('maxOccurs') === 'unbounded';
         let childPath = '/xs:schema/xs:complexType[@name=\'' + node + '\']/xs:choice/xs:element';
         let childs = select(childPath, this.doc);
         if (childs.length > 0) {
@@ -2722,6 +2742,9 @@ export class XmlEditorComponent {
             }
             nodes.parent = parent;
             nodes.choice = parent;
+            if (isUnboundedTypeChoice) {
+              nodes.choiceUnbounded = true;
+            }
             childArr.push(nodes);
             if (data) {
               data.children = childArr;
@@ -2771,7 +2794,9 @@ export class XmlEditorComponent {
       this.getJobResourceTree(null);
     }
     nodeArr.children.push(child);
-    nodeArr.children = sortBy(nodeArr.children, 'order');
+    if (!child.choiceUnbounded) {
+      nodeArr.children = sortBy(nodeArr.children, 'order');
+    }
     if (check) {
       if ((nodeArr && (nodeArr.ref !== 'SystemMonitorNotification' || (nodeArr.ref === 'SystemMonitorNotification' && child.ref !== 'Timer')))) {
         this.autoAddChild(child);
@@ -2808,7 +2833,7 @@ export class XmlEditorComponent {
     if (getCh) {
       for (let i = 0; i < getCh.length; i++) {
         if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1 || getCh[i].minOccurs === '1') {
-          if (!getCh[i].choice) {
+          if (!getCh[i].choice && !getCh[i].choiceUnbounded) {
             getCh[i].children = [];
             this.addChild(getCh[i], child, true, i);
           }
@@ -3445,7 +3470,7 @@ export class XmlEditorComponent {
     if (event && event.keyref && event.attributes) {
       for (let i = 0; i < event.attributes.length; i++) {
         if (event.attributes[i].name === event.keyref) {
-          this.getDataAttr(event.attributes[i].refer);
+          this.getDataAttr(event.attributes[i].refer, event);
           break;
         }
       }
@@ -3569,7 +3594,7 @@ export class XmlEditorComponent {
     if (this.childNode && this.childNode.length > 0) {
       let flg = true;
       for (let i = 0; i < this.childNode.length; i++) {
-        if (this.childNode[i] && this.childNode[i].choice) {
+        if (this.childNode[i] && this.childNode[i].choice && !this.childNode[i].choiceUnbounded) {
           if (node && node.children && node.children.length > 0) {
             for (let j = 0; j < node.children.length; j++) {
               if ((node.children[j].choice && node.children[j].ref === this.childNode[i].ref) || (node.children[j].choice && node.children[j].name === this.childNode[i].name)) {
@@ -3924,7 +3949,9 @@ export class XmlEditorComponent {
       }
     }
     node.children.push(Object.assign({}, copyData));
-    node.children = sortBy(node.children, 'order');
+    if (!copyData.choiceUnbounded) {
+      node.children = sortBy(node.children, 'order');
+    }
     this.cutData = false;
     this.checkRule = true;
     for (const i in node.children) {
@@ -4788,14 +4815,21 @@ export class XmlEditorComponent {
     this.clearDeploymentState();
   }
 
-  getDataAttr(refer): void {
+  getDataAttr(refer, currentNode?: any): void {
     this.tempArr = [];
+    let excludeValue: string | undefined;
+    if (currentNode && currentNode.keyReference && currentNode.attributes) {
+      const keyAttr = currentNode.attributes.find((a: any) => a.name === currentNode.keyReference);
+      if (keyAttr && keyAttr.data) {
+        excludeValue = keyAttr.data;
+      }
+    }
     if (this.nodes[0] && this.nodes[0].children) {
-      this.keyRecursion(refer, this.nodes[0].children);
+      this.keyRecursion(refer, this.nodes[0].children, excludeValue);
     }
   }
 
-  keyRecursion(refer, childNode): void {
+  keyRecursion(refer, childNode, excludeValue?: string): void {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
       if (childNode[i].ref === refer || childNode[i].name === refer) {
@@ -4805,7 +4839,10 @@ export class XmlEditorComponent {
             for (let j = 0; j < childNode[i].attributes.length; j++) {
               if (childNode[i].attributes[j].name === temp) {
                 if (childNode[i].attributes[j] && childNode[i].attributes[j].data) {
-                  this.tempArr.push(childNode[i].attributes[j].data);
+                  const val = childNode[i].attributes[j].data;
+                  if (val !== excludeValue && !this.tempArr.includes(val)) {
+                    this.tempArr.push(val);
+                  }
                 }
               }
             }
@@ -4813,7 +4850,7 @@ export class XmlEditorComponent {
         }
       } else {
         if (childNode[i] && childNode[i].children) {
-          this.keyRecursion(refer, childNode[i].children);
+          this.keyRecursion(refer, childNode[i].children, excludeValue);
         }
       }
     }
