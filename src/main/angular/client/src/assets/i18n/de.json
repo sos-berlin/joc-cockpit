@@ -968,7 +968,7 @@
     "button.terminateAndRestart": "Beenden und neu starten",
     "button.abort": "Abbrechen",
     "button.abortAndRestart": "Abbrechen und neu starten",
-    "button.switchOver": "Ausfallsicherung Umschalten",
+    "button.switchOver": "Ausfallsicherung umschalten",
     "button.withSwitchover": "Mit Umschalten",
     "button.withFailover": "Mit Ausfallsicherung",
     "button.withApplicableFailover": "Mit Ausfallsicherung",
@@ -2611,7 +2611,7 @@
         "fail": {
           "message": "Mit der Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.\n\nDie Nachricht kann Text und Variablen enthalten, z.B. `'Auftrag fehlgeschlagen: ' ++ $js7OrderId`.",
           "uncatchable": "Ein nicht abfangbarer Fehler kann nicht mit Try/Catch abgefangen werden.",
-          "returnCode": "Der ^Fail Anweisung|fail-instruction^ kann eine positive Zahl als ^Rückgabewert|return-value^ zugeordnet werden, die in der Auftragshistorie sichtbar wird.\n\nRückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
+          "returnCode": "Der ^Fail Anweisung|fail-instruction^ kann eine positive Zahl als ^Rückgabewert|return-code^ zugeordnet werden, die in der Auftragshistorie sichtbar wird.\n\nRückgabewerte ungleich 0 werden als fehlerhafte Ausführung gewertet."
         },
         "finish": {
           "message": "Mit der Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -2658,7 +2658,7 @@
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet, dass bspw. für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit `SCHEDULER_PARAM_` präfiziert sind wie in JS1.",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den ^Job^ mit diesen Zugangsdaten für einen anderen Benutzer zu starten.\n\nOptional kann das Benutzerprofil geladen werden.",
           "loadUserProfile": "Das Windows Benutzerprofil wird geladen. Das Profil enthält bspw. Umgebungsvariablen und Schlüssel der Windows Registry.\n\nDie Einstellung kann nur verwendet werden, wenn ein Berechtigungsschlüssel angegeben wurde.",
-          "returnCode": "Im Standardfall signalisiert der ^Rückgabewert|return-value^ 0 die erfolgreiche Ausführung, andere Rückgabewerte signalisieren Fehler.\n\nDie Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte können durch Komma getrennt aufgeführt werden.\n\nEin Bereich von Rückgabewerten wird durch zwei Punkte angegeben, z.B. `0..42`",
+          "returnCode": "Im Standardfall signalisiert der ^Rückgabewert|return-code^ 0 die erfolgreiche Ausführung, andere Rückgabewerte signalisieren Fehler.\n\nDie Erfolg signalisierenden oder die Fehler signalisierenden Rückgabewerte können durch Komma getrennt aufgeführt werden.\n\nEin Bereich von Rückgabewerten wird durch zwei Punkte angegeben, z.B. `0..42`",
           "checkSteadyState": "Eine Datei im überwachten Verzeichnis wird wiederholt auf Veränderungen der Dateigröße und des Zeitstempels geprüft bis nach Ablauf des Intervalls keine Änderungen mehr erfolgen.",
           "jobClass": "Die ^Job-Klasse|job-class^ legt fest, ob ein ^Job^ in der Shell des Betriebssystems (Windows, Unix, MacOS etc.) oder als JITL Java Job oder als Skript Job in einer der von Java unterstützten Skript-Sprachen ausgeführt wird.",
           "timeout": "Nach Zeitablauf wird ein ^Job^ unter Windows abgebrochen.\n\nUnter Unix wird zunächst versucht den Job mit SIGTERM zu beenden und ggf. nach Ablauf der Toleranzfrist mit SIGKILL abzubrechen.",
@@ -2680,7 +2680,7 @@
           "mailBcc": "Blindkopie der E-Mail an den angegebenen Empfänger senden.\n\nMehrere E-Mail Adressen können durch Komma getrennt angegeben werden.",
           "mailOn": "E-Mail bei Ereignissen wie Fehler, Warnung oder Erfolg versenden.",
           "description": "Die Beschreibung wird angezeigt, wenn der ^Job^ aus der Liste der ^Job-Vorlagen|job-template^ ausgewählt wird.",
-          "onWarning": "Es können ^Rückgabewerte|return-value^ angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nFür Warnungen wird eine ^Benachrichtigung|notification^ erzeugt.\n\nMehrere Rückgabewerte werden durch Komma getrennt angegeben, z.B. `0,1,2`. Ein Bereich wird durch zwei Punkte angegeben, z.B. `0..42`",
+          "onWarning": "Es können ^Rückgabewerte|return-code^ angegeben werden, die eine erfolgreiche Ausführung mit Warnungen signalisieren.\n\nFür Warnungen wird eine ^Benachrichtigung|notification^ erzeugt.\n\nMehrere Rückgabewerte werden durch Komma getrennt angegeben, z.B. `0,1,2`. Ein Bereich wird durch zwei Punkte angegeben, z.B. `0..42`",
           "agentAssignment": "Dem Job wird ein ^Autonomer Agent|autonomous-agent^ oder ^Subagenten-Cluster|subagent-cluster^ zur Ausführung zugewiesen.\n\nInnerhalb eines Blocks der ^ForkList Anweisung|forklist-instruction^ und ^StickySubagent Anweisung|stickysubagent-instruction^ wird ein ^Agenten-Cluster|agent-cluster^ zugewiesen.\n\nAlternativ kann ein Ausdruck angegeben werden, der die ^Subagenten-Cluster Kennung|subagent-cluster-id^ über eine Variable liefert.",
           "agent": "Dem ^Job^ ist ein ^Agent^ zugewiesen, der das ^Job-Skript|job-script^ bzw. den Java Job in der JVM entsprechend der ^Job-Klasse|job-class^ ausführt. Der Agent kann aus der Liste ausgewählt werden.",
           "agentCluster": "Wählt den ^Agenten-Cluster|agent-cluster^ aus, für den eine ^Subagenten-Cluster Kennung|subagent-cluster-id^ aus einem Ausdruck in einem späteren Eingabefeld angegeben wird.",
