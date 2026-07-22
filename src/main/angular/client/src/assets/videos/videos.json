@@ -49,22 +49,32 @@
   },
   "dashboard-orders-panel": {
     "id": "ldfjS72MpJM",
-    "title": "Orders Panel in Dashboard View",
+    "title": "Monitor and manage Orders from Dashboard View",
     "description": "How to monitor and manage Orders"
   },
   "workflow-view": {
     "id": "8TUVS-Lpi_c",
     "title": "Manage Workflows, Orders and Jobs",
-    "description": "How to manage workflows,orders and jobs in Workflow View"
+    "description": "How to manage Workflows, Orders and Jobs"
   },
   "job-properties": {
     "id": "yLHZ7mq9XBY",
-    "title": "Configure job properties ",
-    "description": "How to configure job properties"
+    "title": "Configure Job Properties",
+    "description": "How to configure Job Properties"
   },
   "job-options": {
     "id": "ykaQ4rljzis",
-    "title": "Configure job options",
-    "description": "How to configure job options"
+    "title": "Configure Job Options",
+    "description": "How to configure Job Options"
+  },
+  "try-catch-instruction": {
+    "id": "8mymulDZCJ8",
+    "title": "Error handling",
+    "description": "How to handle errors using Try/Catch"
+  },
+  "first-job": {
+    "id": "IW7UcKWOEhg",
+    "title": "Create first job",
+    "description": "How to create your first Job in JS7"
   }
 }
