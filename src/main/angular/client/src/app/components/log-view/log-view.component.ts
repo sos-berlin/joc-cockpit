@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {isArray, isEmpty} from 'underscore';
 import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
@@ -15,7 +15,7 @@ export let that: any;
   selector: 'app-log-view',
   templateUrl: './log-view.component.html'
 })
-export class LogViewComponent {
+export class LogViewComponent implements AfterViewInit {
   preferences: any = {};
   loading = false;
   isLoading = false;
@@ -27,6 +27,7 @@ export class LogViewComponent {
   object: any = {
     checkBoxs: []
   };
+  isMainLevel = false;
   isStdSuccessLevel = false;
   isFatalLevel = false;
   isErrorLevel = false;
@@ -35,6 +36,8 @@ export class LogViewComponent {
   isStdErrLevel = false;
   isDetailLevel = false;
   isInfoLevel = false;
+  isStdoutLevel = false;
+  isDebugLevel = false;
   orderId: any;
   taskId: any;
   historyId: any;
@@ -58,6 +61,37 @@ export class LogViewComponent {
   treeStructure: any[] = [];
   isChildren = false;
   nodes = [];
+  _tzOverride: 'profile' | 'original' | null = null;
+  readonly levelLastDir = new Map<string, 'next' | 'prev'>();
+  private readonly levelJumpState = new Map<string, { idx: number; total: number }>();
+  readonly levelTotalMap = new Map<string, number>();
+  activeLineIdx: number | null = null;
+  activeLevel: string | null = null;
+  totalLineCount = 0;
+
+  modeMenuOpen = false;
+  contextMode = false;
+  contextLines = 5;
+  filterMatchCount = 0;
+  private _injectedContextHeaders: HTMLElement[] = [];
+
+  // ─── Search / Filter ───────────────────────────────────────────────────────
+  inputMode: 'search' | 'filter' = 'search';
+  unifiedTerm = '';
+  regexMode = false;
+  reverseSearch = false;
+  reverseFilter = false;
+  regexError = '';
+  showDateFilter = false;
+  dateFilterFromStr = '';
+  dateFilterToStr = '';
+  private _compiledRegExp: RegExp | null = null;
+  private _searchPositions: Array<{lineEl: HTMLElement; occIdx: number}> = [];
+  private _searchJumpIdx: number | null = null;
+  _lastSearchDir: 'next' | 'prev' = 'next';
+  private readonly _rawLineText = new Map<HTMLElement, string>();
+  private _searchTimer: any = null;
+  private _dateTimer: any = null;
 
 
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
@@ -65,6 +99,410 @@ export class LogViewComponent {
   constructor(private authService: AuthService,private helpService: HelpService, public coreService: CoreService,private modal: NzModalService,
               @Inject(POPOUT_MODAL_DATA) public data: PopoutData) {
 
+  }
+
+  ngAfterViewInit(): void {
+    this.dataBody.nativeElement.addEventListener('click', (e: MouseEvent) => {
+      const line = (e.target as HTMLElement).closest('.log-line') as HTMLElement | null;
+      if (line) {
+        const allLines = Array.from(this.dataBody.nativeElement.querySelectorAll('.log-line')) as HTMLElement[];
+        const idx = allLines.indexOf(line);
+        if (idx !== -1) this.setActiveLine(idx, allLines);
+      }
+    });
+  }
+
+  private setActiveLine(idx: number, allLines?: HTMLElement[]): void {
+    this.activeLineIdx = idx;
+    const lines = allLines ?? (Array.from(this.dataBody.nativeElement.querySelectorAll('.log-line')) as HTMLElement[]);
+    lines.forEach((l, i) => l.classList.toggle('log-line--active', i === idx));
+    const activeLine = lines[idx];
+    if (activeLine) {
+      const levelClass = Array.from(activeLine.classList).find(c => c.startsWith('log-line-') && c !== 'log-line--active');
+      this.activeLevel = levelClass ? levelClass.slice('log-line-'.length) : null;
+    } else {
+      this.activeLevel = null;
+    }
+  }
+
+  scrollToTop(): void {
+    const doc = POPOUT_MODALS['windowInstance']?.document;
+    if (doc) (doc.scrollingElement || doc.body).scrollTop = 0;
+  }
+
+  scrollToBottom(): void {
+    const doc = POPOUT_MODALS['windowInstance']?.document;
+    if (doc) setTimeout(() => {
+      const el = doc.scrollingElement || doc.body;
+      el.scrollTop = el.scrollHeight;
+    }, 0);
+  }
+
+  // ─── Search / Filter getters ───────────────────────────────────────────────
+  get unifiedRegexMode(): boolean { return this.regexMode; }
+  get unifiedReverse(): boolean {
+    return this.inputMode === 'search' ? this.reverseSearch : this.reverseFilter;
+  }
+  get searchMatchCount(): number { return this._searchPositions.length; }
+  get searchMatchLabel(): string {
+    const t = this._searchPositions.length;
+    if (!t) return '0';
+    return this._searchJumpIdx === null ? String(t) : `${this._searchJumpIdx + 1}/${t}`;
+  }
+
+  // ─── Search / Filter methods ───────────────────────────────────────────────
+  onUnifiedTermChange(): void {
+    this.regexError = '';
+    clearTimeout(this._searchTimer);
+    this._searchTimer = setTimeout(() => this.commitUnified(), 300);
+  }
+
+  clearUnifiedInput(): void {
+    this.unifiedTerm = '';
+    this.regexError = '';
+    clearTimeout(this._searchTimer);
+    this.commitUnified();
+  }
+
+  toggleUnifiedReverse(): void {
+    if (this.inputMode === 'search') {
+      this.reverseSearch = !this.reverseSearch;
+    } else {
+      this.reverseFilter = !this.reverseFilter;
+    }
+    this.commitUnified();
+  }
+
+  onUnifiedRegexModeChange(): void {
+    this.regexMode = !this.regexMode;
+    this.commitUnified();
+  }
+
+  toggleModeMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.modeMenuOpen = !this.modeMenuOpen;
+  }
+
+  setInputMode(mode: 'search' | 'filter'): void {
+    if (this.inputMode === mode) return;
+    this._clearAllSearchAndFilter();
+    this.inputMode = mode;
+    this.contextMode = false;
+    if (this.unifiedTerm.trim()) this.commitUnified();
+  }
+
+  onSearchEnter(): void {
+    if (this.inputMode === 'search' && this.searchMatchCount > 0) {
+      this.jumpToSearchMatch(this._lastSearchDir);
+    }
+  }
+
+  private commitUnified(): void {
+    const term = this.unifiedTerm.trim();
+    if (this.regexMode && term) {
+      try { new RegExp(term, 'i'); this.regexError = ''; }
+      catch (e: any) { this.regexError = e.message; return; }
+    } else {
+      this.regexError = '';
+    }
+    if (term) {
+      const src = this.regexMode ? term : term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      this._compiledRegExp = new RegExp(src, 'gi');
+    } else {
+      this._compiledRegExp = null;
+    }
+    if (this.inputMode === 'search') {
+      this._clearSearchMarks();
+      this._searchPositions = [];
+      this._searchJumpIdx = null;
+      if (this._compiledRegExp) this._applySearch();
+    } else {
+      this._applyFilter();
+    }
+    this._updateCaretState();
+  }
+
+  private _clearAllSearchAndFilter(): void {
+    this._clearSearchMarks();
+    this._clearContextHeaders();
+    this._searchPositions = [];
+    this._searchJumpIdx = null;
+    this.filterMatchCount = 0;
+    const el = this.dataBody?.nativeElement;
+    if (el) {
+      (Array.from(el.querySelectorAll('.log-line--filtered-out')) as HTMLElement[])
+        .forEach(l => l.classList.remove('log-line--filtered-out'));
+      (Array.from(el.querySelectorAll('.log-line-match')) as HTMLElement[])
+        .forEach(l => l.classList.remove('log-line-match'));
+    }
+  }
+
+  private _clearContextHeaders(): void {
+    for (const h of this._injectedContextHeaders) {
+      h.parentNode?.removeChild(h);
+    }
+    this._injectedContextHeaders = [];
+    const el = this.dataBody?.nativeElement;
+    if (el) {
+      (Array.from(el.querySelectorAll('.log-line--block-collapsed')) as HTMLElement[])
+        .forEach(l => l.classList.remove('log-line--block-collapsed'));
+    }
+  }
+
+  private _updateCaretState(): void {
+    const popupDoc = POPOUT_MODALS['windowInstance']?.document;
+    if (popupDoc) {
+      popupDoc.body.classList.toggle('log-search-active', !!this.unifiedTerm);
+    }
+  }
+
+  private _clearSearchMarks(): void {
+    const el = this.dataBody?.nativeElement;
+    if (!el) return;
+    (Array.from(el.querySelectorAll('.log-text[data-searched]')) as HTMLElement[]).forEach(textEl => {
+      const raw = this._rawLineText.get(textEl);
+      if (raw !== undefined) textEl.innerHTML = this._escHtml(raw);
+      textEl.removeAttribute('data-searched');
+    });
+    (Array.from(el.querySelectorAll('.log-line-match')) as HTMLElement[])
+      .forEach(l => l.classList.remove('log-line-match'));
+  }
+
+  private _applySearch(): void {
+    const el = this.dataBody?.nativeElement;
+    if (!el || !this._compiledRegExp) return;
+    const lines = Array.from(el.querySelectorAll('.log-line')) as HTMLElement[];
+    this._searchPositions = [];
+    const regexp = this._compiledRegExp;
+    for (const lineEl of lines) {
+      const textEl = lineEl.querySelector('.log-text') as HTMLElement | null;
+      if (!textEl) continue;
+      if (!this._rawLineText.has(textEl)) {
+        this._rawLineText.set(textEl, textEl.textContent || '');
+      }
+      const raw = this._rawLineText.get(textEl)!;
+      regexp.lastIndex = 0;
+      const allMatches: RegExpExecArray[] = [];
+      let m: RegExpExecArray | null;
+      while ((m = regexp.exec(raw)) !== null) {
+        allMatches.push(m);
+        if (m[0].length === 0) regexp.lastIndex++;
+      }
+      const hasMatch = allMatches.length > 0;
+      const include = this.reverseSearch ? !hasMatch : hasMatch;
+      if (!include) continue;
+      lineEl.classList.add('log-line-match');
+      if (!this.reverseSearch) {
+        let html = '';
+        let last = 0;
+        let occ = 0;
+        for (const match of allMatches) {
+          html += this._escHtml(raw.slice(last, match.index));
+          html += `<mark class="log-search-match">${this._escHtml(match[0])}</mark>`;
+          this._searchPositions.push({lineEl, occIdx: occ++});
+          last = match.index + match[0].length;
+        }
+        html += this._escHtml(raw.slice(last));
+        textEl.setAttribute('data-searched', '1');
+        textEl.innerHTML = html;
+      } else {
+        this._searchPositions.push({lineEl, occIdx: 0});
+      }
+    }
+  }
+
+  private _applyFilter(): void {
+    const el = this.dataBody?.nativeElement;
+    if (!el) return;
+
+    this._clearContextHeaders();
+
+    const lines = Array.from(el.querySelectorAll('.log-line')) as HTMLElement[];
+
+    if (!this._compiledRegExp) {
+      lines.forEach(l => { l.classList.remove('log-line--filtered-out'); l.classList.remove('log-line-match'); });
+      this.filterMatchCount = 0;
+      this._applyDateFilter();
+      return;
+    }
+
+    // First pass: classify every line as match or non-match
+    const matchIdxs: number[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      const textEl = lines[i].querySelector('.log-text') as HTMLElement | null;
+      const raw = textEl ? (textEl.textContent || '') : '';
+      this._compiledRegExp.lastIndex = 0;
+      const isMatch = this.reverseFilter ? !this._compiledRegExp.test(raw) : this._compiledRegExp.test(raw);
+      lines[i].classList.toggle('log-line--filtered-out', !isMatch);
+      lines[i].classList.toggle('log-line-match', isMatch);
+      if (isMatch) matchIdxs.push(i);
+    }
+    this.filterMatchCount = matchIdxs.length;
+
+    if (!this.contextMode || this.contextLines <= 0 || !matchIdxs.length) {
+      this._applyDateFilter();
+      return;
+    }
+
+    // Compute merged context windows (± contextLines around each match)
+    const windows: [number, number][] = [];
+    for (const idx of matchIdxs) {
+      const s = Math.max(0, idx - this.contextLines);
+      const e = Math.min(lines.length - 1, idx + this.contextLines);
+      if (windows.length > 0 && s <= windows[windows.length - 1][1] + 1) {
+        windows[windows.length - 1][1] = Math.max(windows[windows.length - 1][1], e);
+      } else {
+        windows.push([s, e]);
+      }
+    }
+
+    // Un-hide context lines in each window
+    for (const [s, e] of windows) {
+      for (let j = s; j <= e; j++) lines[j].classList.remove('log-line--filtered-out');
+    }
+
+    // Inject collapsible block headers before the first line of each window
+    const SVG_DOWN = `<svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="down" aria-hidden="true"><path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 6.3-6.9 11.7l352.8 512a15.9 15.9 0 0026.2 0l352.8-512c3.4-5.4-.4-11.7-6.9-11.7z"></path></svg>`;
+    const SVG_RIGHT = `<svg viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em" data-icon="right" aria-hidden="true"><path d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"></path></svg>`;
+    const ownerDoc = el.ownerDocument;
+    for (let bi = 0; bi < windows.length; bi++) {
+      const [s, e] = windows[bi];
+      const header = ownerDoc.createElement('div');
+      header.className = 'log-context-header' + (bi > 0 ? ' log-context-header--sep' : '');
+      header.innerHTML = `<i class="anticon anticon-down log-context-chevron">${SVG_DOWN}</i><span class="log-context-label-text">Lines ${s + 1}–${e + 1}</span>`;
+
+      const blockLines = lines.slice(s, e + 1);
+      header.addEventListener('click', () => {
+        const collapsed = header.classList.toggle('log-context-header--collapsed');
+        const iconEl = header.querySelector('.log-context-chevron') as HTMLElement;
+        if (collapsed) {
+          iconEl.className = 'anticon anticon-right log-context-chevron';
+          iconEl.innerHTML = SVG_RIGHT;
+        } else {
+          iconEl.className = 'anticon anticon-down log-context-chevron';
+          iconEl.innerHTML = SVG_DOWN;
+        }
+        blockLines.forEach(l => l.classList.toggle('log-line--block-collapsed', collapsed));
+      });
+
+      lines[s].parentNode?.insertBefore(header, lines[s]);
+      this._injectedContextHeaders.push(header);
+    }
+
+    this._applyDateFilter();
+  }
+
+  toggleContextMode(): void {
+    this.contextMode = !this.contextMode;
+    this._applyFilter();
+  }
+
+  onContextLinesChange(): void {
+    if (this.contextMode) this._applyFilter();
+  }
+
+  jumpToSearchMatch(dir: 'next' | 'prev'): void {
+    if (!this._searchPositions.length) return;
+    this._lastSearchDir = dir;
+    let nextIdx: number;
+    if (this._searchJumpIdx === null) {
+      if (this.activeLineIdx !== null) {
+        const allLines = Array.from(this.dataBody.nativeElement.querySelectorAll('.log-line')) as HTMLElement[];
+        if (dir === 'next') {
+          const found = this._searchPositions.findIndex(p => allLines.indexOf(p.lineEl) > this.activeLineIdx!);
+          nextIdx = found !== -1 ? found : 0;
+        } else {
+          let found = -1;
+          for (let i = this._searchPositions.length - 1; i >= 0; i--) {
+            if (allLines.indexOf(this._searchPositions[i].lineEl) < this.activeLineIdx!) { found = i; break; }
+          }
+          nextIdx = found !== -1 ? found : this._searchPositions.length - 1;
+        }
+      } else {
+        nextIdx = dir === 'next' ? 0 : this._searchPositions.length - 1;
+      }
+    } else {
+      nextIdx = dir === 'next'
+        ? (this._searchJumpIdx + 1) % this._searchPositions.length
+        : (this._searchJumpIdx - 1 + this._searchPositions.length) % this._searchPositions.length;
+    }
+    this._searchJumpIdx = nextIdx;
+    const pos = this._searchPositions[nextIdx];
+    const allLines = Array.from(this.dataBody.nativeElement.querySelectorAll('.log-line')) as HTMLElement[];
+    const lineIdx = allLines.indexOf(pos.lineEl);
+    if (lineIdx !== -1) this.setActiveLine(lineIdx, allLines);
+    setTimeout(() => {
+      const el = this.dataBody?.nativeElement;
+      if (!el) return;
+      (Array.from(el.querySelectorAll('mark.log-search-match--focused')) as HTMLElement[])
+        .forEach(mk => mk.classList.remove('log-search-match--focused'));
+      const marks = Array.from(pos.lineEl.querySelectorAll<HTMLElement>('mark.log-search-match'));
+      const mark = marks[pos.occIdx];
+      if (mark) {
+        mark.classList.add('log-search-match--focused');
+        mark.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else {
+        pos.lineEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }, 0);
+  }
+
+  onDateFilterChange(): void {
+    clearTimeout(this._dateTimer);
+    this._dateTimer = setTimeout(() => this._applyDateFilter(), 150);
+  }
+
+  clearDateFrom(): void {
+    this.dateFilterFromStr = '';
+    this._applyDateFilter();
+  }
+
+  clearDateTo(): void {
+    this.dateFilterToStr = '';
+    this._applyDateFilter();
+  }
+
+  toggleDateFilter(): void {
+    if (this.showDateFilter) {
+      this.showDateFilter = false;
+      if (this.dateFilterFromStr || this.dateFilterToStr) {
+        this.dateFilterFromStr = '';
+        this.dateFilterToStr = '';
+        this._applyDateFilter();
+      }
+    } else {
+      this.showDateFilter = true;
+    }
+  }
+
+  private _applyDateFilter(): void {
+    const el = this.dataBody?.nativeElement;
+    if (!el) return;
+    const from = this.dateFilterFromStr;
+    const to = this.dateFilterToStr;
+    if (!from && !to) {
+      (Array.from(el.querySelectorAll('.log-line--date-out')) as HTMLElement[])
+        .forEach(l => l.classList.remove('log-line--date-out'));
+      return;
+    }
+    const lines = Array.from(el.querySelectorAll('.log-line')) as HTMLElement[];
+    for (const lineEl of lines) {
+      const tsEl = lineEl.querySelector('.log-ts') as HTMLElement | null;
+      const raw = tsEl?.getAttribute('data-ts') || '';
+      if (!raw) { lineEl.classList.remove('log-line--date-out'); continue; }
+      const ts = this._normalizeTsForCompare(raw);
+      const inRange = (!from || ts >= from) && (!to || ts <= to + '￿');
+      lineEl.classList.toggle('log-line--date-out', !inRange);
+    }
+  }
+
+  private _normalizeTsForCompare(raw: string): string {
+    const m = raw.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}:\d{2})/);
+    return m ? `${m[1]}T${m[2]}` : raw;
+  }
+
+  private _escHtml(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   ngOnInit(): void {
@@ -131,7 +569,7 @@ export class LogViewComponent {
   }
 
   private calculateHeight(): void {
-    const $header = POPOUT_MODALS['windowInstance'].document.getElementById('upper-header')?.clientHeight || 30;
+    const $header = POPOUT_MODALS['windowInstance'].document.getElementById('upper-header')?.clientHeight || 80;
     this.dataBody.nativeElement.setAttribute('style', 'margin-top:' + $header + 'px');
   }
 
@@ -198,6 +636,7 @@ export class LogViewComponent {
     this.loaded = true;
     this.calWindowSize();
     this.addStylesToPopupWindow();
+    this.injectLogViewStyles();
 
     if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
@@ -373,9 +812,11 @@ export class LogViewComponent {
     const x: any = this.dataBody.nativeElement.querySelectorAll('.tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
-      element.childNodes[0].addEventListener('click', () => {
-        this.expandTask(i, false);
-      });
+      if (element.childNodes[0]) {
+        element.childNodes[0].addEventListener('click', () => {
+          this.expandTask(i, false);
+        });
+      }
     }
 
     if (!this.coreService.logViewDetails.expandedAllLog && this.coreService.logViewDetails.expandedLogPanel.size == 0) {
@@ -389,6 +830,7 @@ export class LogViewComponent {
   }
 
   private expandTask(i: number, expand: boolean): void {
+    if (this.unifiedTerm) return;
     if (!expand) {
       this.coreService.logViewDetails.expandedAllLog = false;
     }
@@ -586,6 +1028,15 @@ export class LogViewComponent {
   }
 
   private showHideCheckboxs(logLevel: string): void {
+    if (!this.isMainLevel && logLevel === 'MAIN') {
+      this.isMainLevel = true;
+    }
+    if (!this.isStdoutLevel && logLevel === 'STDOUT') {
+      this.isStdoutLevel = true;
+    }
+    if (!this.isDebugLevel && logLevel === 'DEBUG') {
+      this.isDebugLevel = true;
+    }
     if (!this.isInfoLevel && logLevel === 'INFO') {
       this.isInfoLevel = true;
     }
@@ -731,9 +1182,11 @@ export class LogViewComponent {
       }
       this.showHideCheckboxs(dt[i].logLevel);
 
-      const datetime = this.preferences.logTimezone ? this.coreService.getLogDateFormat(dt[i].controllerDatetime, this.preferences.zone) : dt[i].controllerDatetime;
-      col = (datetime + ' <span class="w-64 inline">[' + dt[i].logLevel + ']</span> ' +
-        '[' + dt[i].logEvent + '] ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '') + '');
+      const rawDt = dt[i].controllerDatetime || '';
+      const datetime = this._useProfileTz
+        ? (this.coreService.getLogDateFormat(rawDt, this.preferences.zone) || rawDt).replace('T', ' ').slice(0, 19)
+        : this.formatOriginalTs(rawDt);
+      col = dt[i].logEvent + ' ' + (dt[i].orderId ? ('id=' + dt[i].orderId) : '');
       if (dt[i].job) {
         col += ', <b>Job=' + dt[i].job + '</b>';
       }
@@ -912,14 +1365,24 @@ export class LogViewComponent {
         col += '))';
       }
 
+      const levelLower = (dt[i].logLevel || 'MAIN').toLowerCase();
+      const levelColors: {[key: string]: string} = {
+        'main': '#696969', 'info': '#666666', 'success': 'green',
+        'stdout': 'transparent', 'debug': '#006400', 'stderr': 'red',
+        'warn': 'tomato', 'error': 'red', 'trace': '#a0a0a0',
+        'fatal': 'red', 'detail': '#0000ff'
+      };
+      const borderColor = levelColors[levelLower] || 'transparent';
+
       if (dt[i].logEvent === 'OrderProcessingStarted') {
         const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
-        const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor caret down"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
+        const x = `<div class="main log_main log-line log-line-main${cls}" style="border-left-color:#696969"><span class="tx_order"><i id="ex_${this.taskCount}" class="cursor caret down"></i></span><span class="log-ts" data-ts="${rawDt}">${datetime}</span><span class="log-level log-level-main">MAIN</span><!--container--><span class="log-text">${col}</span></div><div id="tx_log_${this.taskCount}" class="hide inner-log-m"><div id="tx_id_${this.taskCount}" class="hide">${dt[i].taskId}</div><div class="tx_data_${this.taskCount}"></div></div>`;
         this.taskCount++;
         div.innerHTML = x;
       } else {
-        div.className += ' p-l-21';
-        div.innerHTML = `<span class="">` + col;
+        div.className += ` log-line log-line-${levelLower}`;
+        div.setAttribute('style', `border-left-color:${borderColor}`);
+        div.innerHTML = `<span class="log-ts" data-ts="${rawDt}">${datetime}</span><span class="log-level log-level-${levelLower}">${dt[i].logLevel || 'MAIN'}</span><!--container--><span class="log-text">${col}</span>`;
       }
 
       if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
@@ -983,13 +1446,34 @@ export class LogViewComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();
-    this.coreService.renderData(res, domId, this.object, {
+    const levelFlags = {
       isFatalLevel: this.isFatalLevel,
       isWarnLevel: this.isWarnLevel,
       isTraceLevel: this.isTraceLevel,
       isStdErrLevel: this.isStdErrLevel,
-      isInfoLevel: this.isInfoLevel
-    }, this.preferences, POPOUT_MODALS['windowInstance']);
+      isInfoLevel: this.isInfoLevel,
+      isStdoutLevel: this.isStdoutLevel
+    };
+    this.coreService.renderData(res, domId, this.object, levelFlags, {...this.preferences, _useProfileTz: this._useProfileTz}, POPOUT_MODALS['windowInstance']);
+    if (levelFlags.isFatalLevel) this.isFatalLevel = true;
+    if (levelFlags.isWarnLevel) this.isWarnLevel = true;
+    if (levelFlags.isTraceLevel) this.isTraceLevel = true;
+    if (levelFlags.isStdErrLevel) this.isStdErrLevel = true;
+    if (levelFlags.isInfoLevel) this.isInfoLevel = true;
+    if (levelFlags.isStdoutLevel) this.isStdoutLevel = true;
+    setTimeout(() => this.updateLevelCounts(), 0);
+  }
+
+  private updateLevelCounts(): void {
+    const el = this.dataBody?.nativeElement;
+    if (!el) return;
+    for (const level of ['main', 'success', 'stdout', 'stderr', 'info', 'fatal', 'error', 'warn', 'debug', 'trace', 'detail']) {
+      const count = el.querySelectorAll(`.log-line-${level}`).length;
+      if (count > 0) {
+        this.levelTotalMap.set(level, count);
+      }
+    }
+    this.totalLineCount = el.querySelectorAll('.log-line').length;
   }
 
   private checkAndExpand(): void {
@@ -1017,6 +1501,107 @@ export class LogViewComponent {
     }
 
     traverseTree(this.nodes);
+  }
+
+  jumpToLevel(level: string, direction?: 'next' | 'prev'): void {
+    const dir: 'next' | 'prev' = direction ?? (this.levelLastDir.get(level) ?? 'next');
+    const el = this.dataBody?.nativeElement;
+    if (!el) return;
+    const targets: HTMLElement[] = Array.from(el.querySelectorAll(`.log-line-${level}`))
+      .filter((t: any) => t.offsetParent !== null) as HTMLElement[];
+    if (!targets.length) return;
+
+    const allLines = Array.from(el.querySelectorAll('.log-line')) as HTMLElement[];
+    let idx: number;
+    const stored = this.levelJumpState.get(level);
+    if (stored !== undefined) {
+      idx = dir === 'next'
+        ? (stored.idx + 1) % targets.length
+        : (stored.idx - 1 + targets.length) % targets.length;
+    } else if (this.activeLineIdx !== null) {
+      const targetGlobalIdxs = targets.map(t => allLines.indexOf(t));
+      if (dir === 'next') {
+        const found = targetGlobalIdxs.findIndex(gi => gi > this.activeLineIdx!);
+        idx = found !== -1 ? found : 0;
+      } else {
+        let found = -1;
+        for (let i = targetGlobalIdxs.length - 1; i >= 0; i--) {
+          if (targetGlobalIdxs[i] < this.activeLineIdx!) { found = i; break; }
+        }
+        idx = found !== -1 ? found : targets.length - 1;
+      }
+    } else {
+      const scrollMid = el.scrollTop + el.clientHeight / 2;
+      if (dir === 'next') {
+        const found = targets.findIndex((t: HTMLElement) => t.offsetTop >= scrollMid);
+        idx = found !== -1 ? found : 0;
+      } else {
+        let found = -1;
+        for (let i = targets.length - 1; i >= 0; i--) {
+          if (targets[i].offsetTop <= scrollMid) { found = i; break; }
+        }
+        idx = found !== -1 ? found : targets.length - 1;
+      }
+    }
+
+    targets[idx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+    for (const k of Array.from(this.levelJumpState.keys())) {
+      if (k !== level) this.levelJumpState.delete(k);
+    }
+    this.levelJumpState.set(level, { idx, total: targets.length });
+    this.levelLastDir.set(level, dir);
+
+    const lineIdx = allLines.indexOf(targets[idx]);
+    if (lineIdx !== -1) this.setActiveLine(lineIdx, allLines);
+  }
+
+  levelOccurrenceLabel(level: string): string {
+    const total = this.levelTotalMap.get(level);
+    if (!total) return '';
+    const state = this.levelJumpState.get(level);
+    if (!state) return `${total}`;
+    return `${state.idx + 1}/${total}`;
+  }
+
+  get _useProfileTz(): boolean {
+    if (this._tzOverride === 'profile') return true;
+    if (this._tzOverride === 'original') return false;
+    return !!this.preferences.logTimezone;
+  }
+
+  get isOriginalTzMode(): boolean {
+    return !this._useProfileTz;
+  }
+
+  get showTzToggle(): boolean {
+    return true;
+  }
+
+  get displayTz(): string {
+    return this._useProfileTz ? (this.preferences.zone || 'Profile') : 'Original';
+  }
+
+  private formatOriginalTs(raw: string): string {
+    if (!raw) return '';
+    const m = raw.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}:\d{2})(?:\.\d+)?([+-]\d{2}:?\d{2}|Z)?/);
+    if (!m) return raw.replace('T', ' ').slice(0, 19);
+    return `${m[1]} ${m[2]}${m[3] || ''}`;
+  }
+
+  toggleTzMode(): void {
+    if (this._useProfileTz) {
+      this._tzOverride = 'original';
+    } else {
+      this._tzOverride = this.preferences.zone ? 'profile' : null;
+    }
+    const spans = this.dataBody.nativeElement.querySelectorAll('.log-ts[data-ts]');
+    spans.forEach((el: Element) => {
+      const raw = el.getAttribute('data-ts') || '';
+      const formatted = this._useProfileTz
+        ? (this.coreService.getLogDateFormat(raw, this.preferences.zone) || raw).replace('T', ' ').slice(0, 19)
+        : this.formatOriginalTs(raw);
+      (el as HTMLElement).textContent = formatted;
+    });
   }
 
   expandAll(): void {
@@ -1198,70 +1783,70 @@ export class LogViewComponent {
       if (!this.object.checkBoxs.main) {
         this.sheetContent += 'div.main {display: none;}\n';
       } else {
-        this.sheetContent += 'div.main {display: block;}\n';
+        this.sheetContent += 'div.main {display: flex;}\n';
       }
     } else if (type === 'SUCCESS') {
       if (!this.object.checkBoxs.success) {
         this.sheetContent += 'div.success {display: none;}\n';
       } else {
-        this.sheetContent += 'div.success {display: block;}\n';
+        this.sheetContent += 'div.success {display: flex;}\n';
       }
     } else if (type === 'STDOUT') {
       if (!this.object.checkBoxs.stdout) {
         this.sheetContent += 'div.stdout {display: none;}\n';
       } else {
-        this.sheetContent += 'div.stdout {display: block;}\n';
+        this.sheetContent += 'div.stdout {display: flex;}\n';
       }
     } else if (type === 'STDERR') {
       if (!this.object.checkBoxs.stderr) {
         this.sheetContent += 'div.stderr {display: none;}\n';
       } else {
-        this.sheetContent += 'div.stderr {display: block;}\n';
+        this.sheetContent += 'div.stderr {display: flex;}\n';
       }
     } else if (type === 'FATAL') {
       if (!this.object.checkBoxs.fatal) {
         this.sheetContent += 'div.fatal {display: none;}\n';
       } else {
-        this.sheetContent += 'div.fatal {display: block;}\n';
+        this.sheetContent += 'div.fatal {display: flex;}\n';
       }
     } else if (type === 'DETAIL') {
       if (!this.object.checkBoxs.detail) {
         this.sheetContent += 'div.detail {display: none;}\n';
       } else {
-        this.sheetContent += 'div.detail {display: block;}\n';
+        this.sheetContent += 'div.detail {display: flex;}\n';
       }
     } else if (type === 'ERROR') {
       if (!this.object.checkBoxs.error) {
         this.sheetContent += 'div.error {display: none;}\n';
       } else {
-        this.sheetContent += 'div.error {display: block;}\n';
+        this.sheetContent += 'div.error {display: flex;}\n';
       }
     } else if (type === 'WARN') {
       if (!this.object.checkBoxs.warn) {
         this.sheetContent += 'div.warn {display: none;}\n';
       } else {
-        this.sheetContent += 'div.warn {display: block;}\n';
+        this.sheetContent += 'div.warn {display: flex;}\n';
       }
     } else if (type === 'TRACE') {
       if (!this.object.checkBoxs.trace) {
         this.sheetContent += 'div.trace {display: none;}\n';
       } else {
-        this.sheetContent += 'div.trace {display: block;}\n';
+        this.sheetContent += 'div.trace {display: flex;}\n';
       }
     } else if (type === 'SCHEDULER') {
       if (!this.object.checkBoxs.scheduler) {
         this.sheetContent += 'div.scheduler {display: none;}\n';
       } else {
-        this.sheetContent += 'div.scheduler {display: block;}\n';
+        this.sheetContent += 'div.scheduler {display: flex;}\n';
       }
     } else if (type === 'INFO') {
       if (!this.object.checkBoxs.info) {
         this.sheetContent += 'div.log_info {display: none;}\n';
         this.sheetContent += 'div.scheduler_info {display: none;}\n';
       } else {
-        this.sheetContent += 'div.log_info {display: block;}\n';
+        this.sheetContent += 'div.log_info {display: flex;}\n';
         if (this.object.checkBoxs.scheduler) {
-          this.sheetContent += 'div.scheduler_info {display: block;}\n';
+          this.sheetContent += 'div.scheduler_info {display: flex;}\n';
         }
       }
     } else if (type === 'DEBUG') {
@@ -1269,8 +1854,8 @@ export class LogViewComponent {
         this.sheetContent += 'div.log_debug {display: none;}\n';
         this.sheetContent += 'div.debug {display: none;}\n';
       } else {
-        this.sheetContent += 'div.log_debug {display: block;}\n';
-        this.sheetContent += 'div.debug {display: block;}\n';
+        this.sheetContent += 'div.log_debug {display: flex;}\n';
+        this.sheetContent += 'div.debug {display: flex;}\n';
       }
     }
     if (this.sheetContent !== '') {
@@ -1324,6 +1909,17 @@ export class LogViewComponent {
     });
   }
 
+
+  private injectLogViewStyles(): void {
+    const popupWindow = POPOUT_MODALS['windowInstance'];
+    if (!popupWindow || popupWindow.document.getElementById('log-view-popup-styles')) {
+      return;
+    }
+    const s = popupWindow.document.createElement('style');
+    s.id = 'log-view-popup-styles';
+    s.textContent = `.log-line{display:flex;align-items:flex-start;position:relative;padding:1px 12px 1px 18px!important;border-left:3px solid transparent;transition:background 80ms;cursor:pointer}.log-ts{flex-shrink:0;color:var(--text-color,#3d464d);margin-right:8px;white-space:nowrap;font-size:11px;padding-top:1px;opacity:.85}.log-level{flex-shrink:0;min-width:44px;text-align:center;margin-right:8px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:0 3px;border-radius:2px;line-height:18px}.log-level-main{color:#696969;border:1px solid #696969;opacity:.85}.log-level-info{color:#666;border:1px solid #666;opacity:.85}.log-level-warn{color:tomato;border:1px solid tomato;opacity:.85}.log-level-error{color:red;border:1px solid red;opacity:.9}.log-level-fatal{color:red;border:1px solid red;opacity:1}.log-level-debug{color:#006400;border:1px solid #006400;opacity:.85}.log-level-trace{color:#a0a0a0;border:1px solid #a0a0a0;opacity:.8}.log-level-success{color:green;border:1px solid green;opacity:.85}.log-level-stdout{color:#696969;border:1px solid #696969;opacity:.85}.log-level-stderr{color:red;border:1px solid red;opacity:.9}.log-level-detail{color:#0000ff;border:1px solid #0000ff;opacity:.8}.log-text{white-space:pre-wrap;word-break:break-all;flex:1;color:var(--text-color,#3d464d)!important}.log-line-error{background:rgba(255,0,0,.05)}.log-line-fatal{background:rgba(255,0,0,.07)}.log-line-stderr{background:rgba(255,0,0,.05)}.log-line-warn{background:rgba(255,99,71,.05)}.log-line-info{background:rgba(102,102,102,.04)}.log-line-debug{background:rgba(0,100,0,.04)}.log-line-trace{background:rgba(160,160,160,.03)}.log-line .tx_order{position:absolute;left:4px;top:1px;min-width:14px}.log-level-group{display:inline-flex;align-items:center;gap:3px;padding:1px 5px 1px 2px;border:1px solid var(--border-color,#d9d9d9);border-radius:4px;margin-right:4px;vertical-align:middle}.log-level-group .log-level-checkbox{margin-right:1px}.log-level-group--off .log-badge{opacity:.3;text-decoration:line-through}.log-level-group--off .log-nav-btn{opacity:.3;pointer-events:none}.log-level-group--off .log-occurrence-count{opacity:.3}.log-level-btn{display:inline-flex;align-items:center;background:none;border:none;padding:1px 2px;cursor:pointer;line-height:1;border-radius:3px;transition:background 80ms;vertical-align:middle}.log-level-btn:hover{background:rgba(128,128,128,.10)}.log-level-btn.log-level-btn--active{background:rgba(128,128,128,.10)}.log-nav-btn{display:inline-flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:1px 3px;height:18px;font-size:10px;color:var(--text-muted,#666);border-radius:2px;line-height:1;transition:background 80ms,color 80ms}.log-nav-btn:hover{background:rgba(128,128,128,.12);color:var(--text-color,#333)}.log-occurrence-count{font-size:11px;font-weight:600;color:var(--text-muted,#888);min-width:22px;text-align:right;padding-left:3px}.log-badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;letter-spacing:.4px;line-height:16px;white-space:nowrap;text-transform:capitalize}.log-badge-main{color:#696969;border:1px solid #696969;background:transparent;opacity:.85}.log-badge-success{color:green;border:1px solid green;background:transparent;opacity:.9}.log-badge-stdout{color:#696969;border:1px solid #696969;background:transparent;opacity:.85}.log-badge-stderr{color:red;border:1px solid red;background:transparent;opacity:.9}.log-badge-info{color:#666;border:1px solid #666;background:transparent;opacity:.9}.log-badge-fatal{color:red;border:1px solid red;background:transparent;opacity:1}.log-badge-error{color:red;border:1px solid red;background:transparent;opacity:.9}.log-badge-warn{color:tomato;border:1px solid tomato;background:transparent;opacity:.9}.log-badge-debug{color:#006400;border:1px solid #006400;background:transparent;opacity:.85}.log-badge-trace{color:#a0a0a0;border:1px solid #a0a0a0;background:transparent;opacity:.8}.log-badge-detail{color:#00f;border:1px solid #00f;background:transparent;opacity:.8}.log-jump-group{display:inline-flex;align-items:center;gap:2px;padding-left:8px;border-left:1px solid var(--border-color,#d9d9d9)}.log-jump-line-count{font-size:11px;color:var(--text-muted,#888);white-space:nowrap;padding-right:5px;border-right:1px solid var(--border-color,#d9d9d9);margin-right:5px}.log-line--active{background:rgba(24,144,255,.08)!important;border-left-color:var(--primary,#1890ff)!important}.log-toolbar-row{display:flex;align-items:center;gap:6px;padding:4px 8px;flex-wrap:wrap}.log-toolbar-row--search{display:grid;grid-template-columns:auto 1fr auto;column-gap:4px;align-items:center;border-bottom:1px solid var(--border-color,#e8e8e8)}.log-toolbar-row--levels{display:grid;grid-template-columns:auto 1fr auto;column-gap:4px;align-items:center;border-bottom:1px solid var(--border-color,#e8e8e8)}.log-tb-col{display:flex;align-items:center;gap:6px;min-width:0}.log-tb-col--left{justify-content:flex-start;flex-wrap:wrap}.log-tb-col--center{justify-content:center;flex-wrap:wrap}.log-tb-col--right{justify-content:flex-end;flex-wrap:wrap}.log-action-btn{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;font-size:12px;color:var(--text-muted,#888);cursor:pointer;border-radius:3px;white-space:nowrap;text-decoration:none}.log-action-btn:hover{color:var(--primary,#1890ff);background:rgba(128,128,128,.06)}.log-tz-toggle{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted,#888);padding:0 6px;border-right:1px solid var(--border-color,#d9d9d9);margin-right:2px}.log-date-toggle-btn{display:inline-flex;align-items:center;justify-content:center;height:26px;width:26px;border:1px solid var(--border-color,#d9d9d9);border-radius:4px;background:none;cursor:pointer;color:var(--text-muted,#888);font-size:13px}.log-date-toggle-btn.active{background:var(--primary,#1890ff);color:#fff;border-color:var(--primary,#1890ff)}.log-search-group{display:inline-flex;align-items:stretch;border:1px solid var(--border-color,#d9d9d9);border-radius:12px;height:26px}.log-search-group--filter .log-search-mode-btn{color:#fa8c16}.log-search-group--error{border-color:#f5222d!important}.log-search-mode-btn{display:inline-flex;align-items:center;gap:3px;padding:0 8px 0 10px;border:none;border-right:1px solid var(--border-color,#d9d9d9);border-radius:12px 0 0 12px;background:none;cursor:pointer;font-size:12px;color:var(--text-muted,#888)}.log-search-mode-caret{font-size:9px;opacity:.6}.log-regex-checkbox{display:inline-flex;align-items:center;padding:0 8px;border:none;border-right:1px solid var(--border-color,#d9d9d9);border-radius:0;background:none;cursor:pointer;color:var(--text-muted,#888);font-size:12px}.log-regex-checkbox.active{background:var(--primary,#1890ff);color:#fff}.log-regex-label{font-size:11px;font-weight:700;font-family:monospace;color:var(--text-muted,#888)}.log-regex-checkbox.active .log-regex-label{color:#fff}.log-search-wrap{position:relative;display:inline-flex;align-items:center}.log-search-icon{position:absolute;left:8px;font-size:11px;color:var(--text-muted,#888);pointer-events:none;z-index:1}.log-search-input{height:24px;padding:0 44px 0 26px;border:none;border-radius:0 12px 12px 0;background:transparent;width:240px;font-size:11px;outline:none;color:var(--text-color,#3d464d)}.log-search-clear{position:absolute;right:7px;background:none;border:none;cursor:pointer;color:var(--text-muted,#888);font-size:12px;padding:0;display:inline-flex;align-items:center}.log-regex-error-icon{position:absolute;right:26px;color:#f5222d;font-size:11px;display:inline-flex;align-items:center}.log-status-mode-block{display:inline-flex;align-items:center;gap:4px;padding:1px 8px 1px 6px;border-radius:4px;border:1px solid var(--border-color,#d9d9d9);font-size:11px;height:26px}.log-status-mode-block--search{border-color:var(--primary,#1890ff)}.log-status-mode-block--search .log-status-mode-icon{color:var(--primary,#1890ff)}.log-status-mode-block--search .log-search-match-count{color:var(--primary,#1890ff)}.log-status-mode-block--filter{border-color:#fa8c16}.log-status-mode-block--filter .log-status-mode-icon{color:#fa8c16}.log-status-mode-icon{font-size:12px;flex-shrink:0}.log-search-nav{display:inline-flex;align-items:center;gap:2px;padding:1px 5px 1px 4px}.log-search-match-count{color:var(--primary,#1890ff);min-width:28px}.log-date-inline{display:inline-flex;align-items:center;gap:4px;padding:0 8px;border-left:1px solid var(--border-color,#d9d9d9);flex-shrink:0}.log-date-field-wrap{position:relative;display:inline-flex}.log-date-input{height:24px;padding:0 20px 0 4px;border:1px solid var(--border-color,#d9d9d9);border-radius:3px;background:var(--background-color,#fff);width:172px;font-size:11px;color:var(--text-color,#3d464d)}.log-date-clear{position:absolute;right:3px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted,#888);font-size:11px;padding:0;display:inline-flex;align-items:center;z-index:1}.log-date-sep{color:var(--text-muted,#888);font-size:11px;user-select:none}mark.log-search-match{background:#ffd666;color:rgba(0,0,0,.87);border-radius:2px;padding:0 2px;font-weight:700;box-shadow:0 0 0 1px rgba(0,0,0,.12)}mark.log-search-match--focused{background:#ffa940;box-shadow:0 0 0 2px #ffa940,0 0 0 1px rgba(0,0,0,.35)}.log-line-match{background:rgba(255,175,30,.12)!important}.log-line--filtered-out,.log-line--date-out{display:none!important}.log-search-mode-wrap{position:relative;display:inline-flex;align-items:stretch;align-self:stretch}.log-mode-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999}.log-mode-menu{position:absolute;top:calc(100% + 4px);left:0;min-width:160px;background:var(--background-color,#fff);border:1px solid var(--border-color,#d9d9d9);border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:1000;overflow:hidden}.log-mode-menu-item{display:flex;align-items:center;padding:7px 12px;font-size:12px;cursor:pointer;color:var(--text-color,#333);transition:background 80ms}.log-mode-menu-item:hover{background:rgba(0,0,0,.04)}.log-mode-menu-item--active{color:var(--primary,#1890ff);background:rgba(24,144,255,.08)}.log-tz-switch{position:relative;display:inline-block;width:28px;height:14px;border-radius:7px;border:none;background:rgba(0,0,0,.25);cursor:pointer;padding:0;transition:background 200ms;flex-shrink:0;vertical-align:middle}.log-tz-switch::after{content:'';position:absolute;left:2px;top:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:left 200ms;box-shadow:0 2px 4px rgba(0,0,0,.3)}.log-tz-switch--on{background:var(--primary,#1890ff)}.log-tz-switch--on::after{left:16px}.log-line--block-collapsed{display:none!important}.log-expand-btn--disabled{opacity:.35;cursor:not-allowed;pointer-events:none}.log-search-active .tx_order{opacity:.35;pointer-events:none;cursor:not-allowed}.log-summary-filter-active{color:#fa8c16;font-weight:500}.log-context-toggle{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted,#888);cursor:pointer;user-select:none;white-space:nowrap;margin:0;flex-shrink:0}.log-context-label{white-space:nowrap}.log-context-select{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text-muted,#888)}.log-context-lines-input{width:65px;height:20px;padding:0 4px;border:1px solid var(--border-color,#d9d9d9);border-radius:3px;font-size:11px;text-align:center}.log-context-header{display:flex;align-items:center;gap:6px;padding:2px 8px;background:rgba(128,128,128,.04);cursor:pointer;font-size:11px;color:var(--text-muted,#888);user-select:none}.log-context-header:hover{background:rgba(128,128,128,.09)}.log-context-header.log-context-header--sep{border-top:1px dashed var(--border-color,#e3e3e3);margin-top:4px}.log-context-chevron{font-size:10px;flex-shrink:0}.log-context-label-text{flex:1}.btn{display:inline-block;padding:.375rem 1rem;font-size:1rem;font-weight:400;line-height:1.5;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;user-select:none;border:1px solid transparent;border-radius:.25rem;outline:0}.btn-xs{padding:3px 8px;font-size:11px}.btn-primary{background-color:var(--primary,#1890ff)!important;border-color:var(--primary,#1890ff)!important;color:#fff!important}.btn-default{background:var(--background-color,#f5f5f5);border:1px solid var(--border-color,#d9d9d9);color:var(--text-color,#333)}`;
+    popupWindow.document.head.appendChild(s);
+  }
 
   private addStylesToPopupWindow(): void {
     const popupWindow = POPOUT_MODALS['windowInstance'];

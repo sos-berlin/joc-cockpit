@@ -3261,6 +3261,10 @@ export class XmlEditorComponent {
       }
     }
 
+    if (node.choiceUnbounded) {
+      return '';
+    }
+
     if (this.choice && node.choice && !node.fromChoiceSequence) {
       if (node.maxOccurs === 'unbounded') {
         return '';
@@ -4190,7 +4194,7 @@ export class XmlEditorComponent {
   }
 
   strReplace(data) {
-    return data.replace(/(Key|@)/g, '');
+    return data.replace(/(KeyRef|Key|@)/g, '');
   }
 
   AddKeyReferencing() {

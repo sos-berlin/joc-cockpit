@@ -31,7 +31,7 @@
       font-size: 12px;
       background: 0 0;
       margin-bottom: 8px;
-      margin-top: 28px
+      margin-top: 80px;
     }
 
     pre.log .success {
@@ -71,7 +71,7 @@
     .property-panel {
       top: 0;
       right: 0;
-      z-index: 9;
+      z-index: 99;
       position: fixed;
     }
 
@@ -85,7 +85,7 @@
 
     .property-panel .sidebar-open, .property-panel .sidebar-close {
       z-index: 999;
-      margin-top: 32px;
+      margin-top: 85px;
       right: 0;
       padding: 28px 8px;
       padding-right: 0;
@@ -414,7 +414,7 @@
     }
 
     .log_line, .stdout, .stderr, .warn, .error, .trace, .fatal, div.main {
-      padding-left: 8px;
+      padding-left: 0;
     }
 
     .log_line > .main,
@@ -521,7 +521,7 @@
     }
 
     .inner-log-m {
-      margin: 6px 13px
+      margin: 6px 13px 6px 0;
     }
 
     .rotate svg {
@@ -650,6 +650,10 @@
       top: 0;
       margin-right: 0;
       background: var(--box-color);
+    }
+
+    .m-r-xs {
+      margin-right: 4px !important;
     }
 
   </style>

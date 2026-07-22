@@ -17,7 +17,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
         Shared2Module,
         LayoutRoutingModule,
         DashboardModule,
-        NzTooltipDirective
+        NzTooltipDirective,
     ],
   declarations: [
     LayoutComponent,

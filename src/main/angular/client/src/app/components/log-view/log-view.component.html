@@ -1,86 +1,318 @@
 <div [ngClass]="{'show-block' : !loading && !error}" class="hide">
   @if (!error) {
     <div id="upper-header">
-      <div class="inline w-full">
-        <label class="_600 m-l-sm m-r-sm">{{'log.label.modifyLogCriteria' | translate}} -</label>
-        @if (isExpandCollapse) {
-          <span class="m-r">
-            <a (click)="expandAll();" class="text" title="{{'common.tooltip.expandAll' | translate}}">
-              <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-right"></i>
-            </a>
-            <a (click)="collapseAll();" class="text m-l-sm" title="{{'common.tooltip.collapseAll' | translate}}">
-              <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-left"></i>
-            </a>
-          </span>
-        }
 
-        <label [(ngModel)]="object.checkBoxs.main" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('MAIN')" >
-          <span>{{ 'log.label.main' | translate }}</span></label>
-        @if (isStdSuccessLevel) {
-          <label [(ngModel)]="object.checkBoxs.success" class="m-r"
-                 (ngModelChange)="checkLogLevel('SUCCESS')" nz-checkbox><span>{{ 'log.label.success' | translate }}</span></label>
-        }
-        <label [(ngModel)]="object.checkBoxs.stdout" class="m-r"
-               nz-checkbox (ngModelChange)="checkLogLevel('STDOUT')" ><span>{{ 'log.label.stdout' | translate }}</span></label>
-        @if (isStdErrLevel) {
-          <label [(ngModel)]="object.checkBoxs.stderr" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('STDERR')" ><span>{{ 'log.label.stderr' | translate }}</span></label>
-        }
-        @if (isInfoLevel) {
-          <label [(ngModel)]="object.checkBoxs.info" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('INFO')" ><span>{{ 'log.label.info' | translate }}</span></label>
-        }
-        @if (isFatalLevel) {
-          <label [(ngModel)]="object.checkBoxs.fatal" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('FATAL')" ><span>{{ 'log.label.fatal' | translate }}</span></label>
-        }
-        @if (isErrorLevel) {
-          <label [(ngModel)]="object.checkBoxs.error" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('ERROR')" ><span>{{ 'log.label.error' | translate }}</span></label>
-        }
-        @if (isWarnLevel) {
-          <label [(ngModel)]="object.checkBoxs.warn" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('WARN')" ><span>{{ 'log.label.warn' | translate }}</span></label>
-        }
-        <label [(ngModel)]="object.checkBoxs.debug" class="m-r" nz-checkbox (ngModelChange)="checkLogLevel('DEBUG')" ><span
->{{ 'log.label.debug' | translate }}</span></label>
-        @if (isTraceLevel) {
-          <label [(ngModel)]="object.checkBoxs.trace" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('TRACE')" ><span>{{ 'log.label.trace' | translate }}</span></label>
-        }
-        @if (isDetailLevel) {
-          <label [(ngModel)]="object.checkBoxs.detail" class="m-r"
-                 nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span>{{ 'log.label.detail' | translate }}</span></label>
-        }
-        @if (preferences.showHelpPages) {
-          <a (click)="helpPage()" class="m-r pull-right">
-            <i
-              [appRichTooltip]="'common.tooltip.help' | translate"
-              nz-icon nzTheme="fill" nzType="info-circle"
-            ></i>
-          </a>
-        }
-        @if (!isCancel && !finished) {
-          <a (click)="cancel()" class="m-r m-l pull-right">
-            <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>
-            <span>{{ 'common.button.cancel' | translate }}</span>
-          </a>
-        }
-        @if (finished || isCancel) {
-          <a (click)="reloadLog()" class="m-r m-l pull-right">
-            <i class="icon" nz-icon nzTheme="outline" nzType="reload"></i>
-            <span>{{ 'workflow.button.reload' | translate }}</span>
-          </a>
-        }
-        <a (click)="downloadLog()" class="m-l pull-right">
-          <i class="icon" nz-icon nzTheme="outline" nzType="download"></i>
-          <span>{{ 'common.button.download' | translate }}</span>
-        </a>
-        <a (click)="copy()" class="m-l pull-right">
-          <i class="icon" nz-icon nzTheme="outline" nzType="copy"></i>
-          <span>{{ 'log.button.copyToClipboard' | translate }}</span>
-        </a>
+      <!-- ── Row 1: 3-column header ──────────────────────────────────────────── -->
+      <div class="log-toolbar-row log-toolbar-row--search">
+
+        <!-- Col 1 · Left: Modify criteria + expand/collapse -->
+        <div class="log-tb-col log-tb-col--left">
+          <label class="_600 m-r-xs">{{'log.label.modifyLogCriteria' | translate}} -</label>
+          @if (isExpandCollapse) {
+            <span>
+              <a (click)="!unifiedTerm && expandAll()" class="text" [class.log-expand-btn--disabled]="!!unifiedTerm" [title]="'common.tooltip.expandAll' | translate">
+                <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-right"></i>
+              </a>
+              <a (click)="!unifiedTerm && collapseAll()" class="text m-l-xs" [class.log-expand-btn--disabled]="!!unifiedTerm" [title]="'common.tooltip.collapseAll' | translate">
+                <i class="icon rotate" nz-icon nzTheme="outline" nzType="double-left"></i>
+              </a>
+            </span>
+          }
+        </div>
+
+        <!-- Col 2 · Center: Date filter + search + navigation -->
+        <div class="log-tb-col log-tb-col--center">
+
+          <!-- Date filter toggle -->
+          <button class="btn btn-xs"
+                  [ngClass]="showDateFilter || dateFilterFromStr || dateFilterToStr ? 'btn-primary' : 'btn-default'"
+                  (click)="toggleDateFilter()"
+                  [title]="'logConsole.tooltip.dateFilter' | translate">
+            @if (showDateFilter || dateFilterFromStr || dateFilterToStr) {
+              <i nz-icon nzType="calendar" nzTheme="fill"></i>
+            } @else {
+              <i nz-icon nzType="calendar" nzTheme="outline"></i>
+            }
+          </button>
+
+          <!-- Unified compound control -->
+          <div class="log-search-group"
+               [class.log-search-group--filter]="inputMode === 'filter'"
+               [class.log-search-group--error]="!!regexError">
+            <div class="log-search-mode-wrap">
+              <button class="log-search-mode-btn" (click)="toggleModeMenu($event)">
+                @if (inputMode === 'search') {
+                  <i nz-icon nzType="highlight" nzTheme="outline"></i>
+                } @else {
+                  <i nz-icon nzType="filter" nzTheme="outline"></i>
+                }
+                <i nz-icon nzType="caret-down" nzTheme="outline" class="log-search-mode-caret"></i>
+              </button>
+              @if (modeMenuOpen) {
+                <div class="log-mode-backdrop" (click)="modeMenuOpen = false"></div>
+                <div class="log-mode-menu">
+                  <div class="log-mode-menu-item" [class.log-mode-menu-item--active]="inputMode === 'search'" (click)="setInputMode('search'); modeMenuOpen = false">
+                    <i nz-icon nzType="highlight" nzTheme="outline" class="m-r-xs"></i>
+                    {{ 'logConsole.label.inputModeSearch' | translate }}
+                  </div>
+                  <div class="log-mode-menu-item" [class.log-mode-menu-item--active]="inputMode === 'filter'" (click)="setInputMode('filter'); modeMenuOpen = false">
+                    <i nz-icon nzType="filter" nzTheme="outline" class="m-r-xs"></i>
+                    {{ 'logConsole.label.inputModeFilter' | translate }}
+                  </div>
+                </div>
+              }
+            </div>
+            <button class="log-regex-checkbox log-regex-checkbox--mid"
+                    [class.active]="unifiedReverse"
+                    [title]="'logConsole.tooltip.reverseSearch' | translate"
+                    (click)="toggleUnifiedReverse()">
+              <i nz-icon nzType="swap" nzTheme="outline"></i>
+            </button>
+            <button class="log-regex-checkbox log-regex-checkbox--mid"
+                    [class.active]="unifiedRegexMode"
+                    [title]="'logConsole.tooltip.regexMode' | translate"
+                    (click)="onUnifiedRegexModeChange()">
+              <span class="log-regex-label">.*</span>
+            </button>
+            <div class="log-search-wrap">
+              <i nz-icon [nzType]="inputMode === 'search' ? 'highlight' : 'filter'" nzTheme="outline" class="log-search-icon"></i>
+              <input #searchInput class="log-search-input" type="text" autocomplete="off"
+                     [(ngModel)]="unifiedTerm"
+                     (ngModelChange)="onUnifiedTermChange()"
+                     (keydown.enter)="onSearchEnter()"
+                     [placeholder]="(inputMode === 'filter' ? 'logConsole.placeholder.filter' : 'logConsole.placeholder.searchInVisible') | translate"
+                     [appRichTooltip]="(inputMode === 'filter' ? 'logConsole.tooltip.filter' : 'logConsole.tooltip.searchInVisible') | translate"
+                     [attr.aria-label]="(inputMode === 'filter' ? 'logConsole.placeholder.filter' : 'logConsole.placeholder.searchInVisible') | translate">
+              @if (regexError) {
+                <span class="log-regex-error-icon" [title]="regexError">
+                  <i nz-icon nzType="warning" nzTheme="outline"></i>
+                </span>
+              }
+              @if (unifiedTerm) {
+                <button class="log-search-clear" (click)="clearUnifiedInput()">
+                  <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Search navigation -->
+          @if (inputMode === 'search' && searchMatchCount > 0) {
+            <div class="log-status-mode-block log-status-mode-block--search">
+              <i nz-icon nzType="highlight" nzTheme="outline" class="log-status-mode-icon"></i>
+              <div class="log-search-nav">
+                <button class="log-nav-btn" (click)="jumpToSearchMatch('prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+                <button class="log-nav-btn" (click)="jumpToSearchMatch('next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+                <span class="log-occurrence-count log-search-match-count">{{ searchMatchLabel }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Filter status + context controls -->
+          @if (inputMode === 'filter' && unifiedTerm) {
+            <div class="log-status-mode-block log-status-mode-block--filter">
+              <i nz-icon nzType="filter" nzTheme="outline" class="log-status-mode-icon"></i>
+              <span class="log-summary-filter-active">{{ filterMatchCount }}</span>
+              <label class="log-context-toggle">
+                <button class="log-tz-switch" [class.log-tz-switch--on]="contextMode" (click)="toggleContextMode()" role="switch" [attr.aria-checked]="contextMode"></button>
+                <span class="log-context-label">{{ 'logConsole.label.context' | translate }}</span>
+              </label>
+              @if (contextMode) {
+                <div class="log-context-select">
+                  <input class="log-context-lines-input" type="number" [(ngModel)]="contextLines" (ngModelChange)="onContextLinesChange()" min="0" max="200" />
+                </div>
+              }
+            </div>
+          }
+
+        </div>
+
+        <!-- Col 3 · Right: TZ toggle + action icons -->
+        <div class="log-tb-col log-tb-col--right">
+          @if (showTzToggle) {
+            <span class="log-tz-toggle">
+              <button class="log-tz-switch" [class.log-tz-switch--on]="isOriginalTzMode" (click)="toggleTzMode()" role="switch" [attr.aria-checked]="isOriginalTzMode"></button>
+              <i class="m-l-xs icon" nz-icon nzType="clock-circle" nzTheme="outline"></i>
+              <span class="m-l-xs">{{ displayTz }}</span>
+            </span>
+          }
+          <button class="btn btn-xs btn-default" (click)="copy()" [title]="'log.button.copyToClipboard' | translate">
+            <i nz-icon nzTheme="outline" nzType="copy"></i>
+          </button>
+          <button class="btn btn-xs btn-default" (click)="downloadLog()" [title]="'common.button.download' | translate">
+            <i nz-icon nzTheme="outline" nzType="download"></i>
+          </button>
+          @if (!isCancel && !finished) {
+            <button class="btn btn-xs btn-default" (click)="cancel()" [title]="'common.button.cancel' | translate">
+              <i nz-icon nzTheme="outline" nzType="close"></i>
+            </button>
+          }
+          @if (finished || isCancel) {
+            <button class="btn btn-xs btn-default" (click)="reloadLog()" [title]="'workflow.button.reload' | translate">
+              <i nz-icon nzTheme="outline" nzType="reload"></i>
+            </button>
+          }
+          @if (preferences.showHelpPages) {
+            <a (click)="helpPage()" class="log-action-btn">
+              <i [appRichTooltip]="'common.tooltip.help' | translate" nz-icon nzTheme="fill" nzType="info-circle"></i>
+            </a>
+          }
+        </div>
+
       </div>
+
+      <!-- ── Row 2: Log levels | Date range | Active line + scroll ───────────── -->
+      <div class="log-toolbar-row log-toolbar-row--levels">
+
+        <!-- Col 1 · Left: Log level badges -->
+        <div class="log-tb-col log-tb-col--left">
+          @if (isMainLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.main">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')" class="log-level-checkbox" [attr.aria-label]="'log.label.main' | translate"></label>
+              <button class="log-level-btn log-level-btn-main" [class.log-level-btn--active]="activeLevel === 'main'" (click)="jumpToLevel('main')"><span class="log-badge log-badge-main">{{ 'log.label.main' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('main', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('main', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('main') }}</span>
+            </span>
+          }
+          @if (isStdSuccessLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.success">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.success" (ngModelChange)="checkLogLevel('SUCCESS')" class="log-level-checkbox" [attr.aria-label]="'log.label.success' | translate"></label>
+              <button class="log-level-btn log-level-btn-success" [class.log-level-btn--active]="activeLevel === 'success'" (click)="jumpToLevel('success')"><span class="log-badge log-badge-success">{{ 'log.label.success' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('success', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('success', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('success') }}</span>
+            </span>
+          }
+          @if (isStdoutLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.stdout">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.stdout" (ngModelChange)="checkLogLevel('STDOUT')" class="log-level-checkbox" [attr.aria-label]="'log.label.stdout' | translate"></label>
+              <button class="log-level-btn log-level-btn-stdout" [class.log-level-btn--active]="activeLevel === 'stdout'" (click)="jumpToLevel('stdout')"><span class="log-badge log-badge-stdout">{{ 'log.label.stdout' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('stdout', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('stdout', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('stdout') }}</span>
+            </span>
+          }
+          @if (isStdErrLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.stderr">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.stderr" (ngModelChange)="checkLogLevel('STDERR')" class="log-level-checkbox" [attr.aria-label]="'log.label.stderr' | translate"></label>
+              <button class="log-level-btn log-level-btn-stderr" [class.log-level-btn--active]="activeLevel === 'stderr'" (click)="jumpToLevel('stderr')"><span class="log-badge log-badge-stderr">{{ 'log.label.stderr' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('stderr', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('stderr', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('stderr') }}</span>
+            </span>
+          }
+          @if (isInfoLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.info">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.info" (ngModelChange)="checkLogLevel('INFO')" class="log-level-checkbox" [attr.aria-label]="'log.label.info' | translate"></label>
+              <button class="log-level-btn log-level-btn-info" [class.log-level-btn--active]="activeLevel === 'info'" (click)="jumpToLevel('info')"><span class="log-badge log-badge-info">{{ 'log.label.info' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('info', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('info', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('info') }}</span>
+            </span>
+          }
+          @if (isFatalLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.fatal">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.fatal" (ngModelChange)="checkLogLevel('FATAL')" class="log-level-checkbox" [attr.aria-label]="'log.label.fatal' | translate"></label>
+              <button class="log-level-btn log-level-btn-fatal" [class.log-level-btn--active]="activeLevel === 'fatal'" (click)="jumpToLevel('fatal')"><span class="log-badge log-badge-fatal">{{ 'log.label.fatal' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('fatal', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('fatal', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('fatal') }}</span>
+            </span>
+          }
+          @if (isErrorLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.error">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.error" (ngModelChange)="checkLogLevel('ERROR')" class="log-level-checkbox" [attr.aria-label]="'log.label.error' | translate"></label>
+              <button class="log-level-btn log-level-btn-error" [class.log-level-btn--active]="activeLevel === 'error'" (click)="jumpToLevel('error')"><span class="log-badge log-badge-error">{{ 'log.label.error' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('error', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('error', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('error') }}</span>
+            </span>
+          }
+          @if (isWarnLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.warn">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.warn" (ngModelChange)="checkLogLevel('WARN')" class="log-level-checkbox" [attr.aria-label]="'log.label.warn' | translate"></label>
+              <button class="log-level-btn log-level-btn-warn" [class.log-level-btn--active]="activeLevel === 'warn'" (click)="jumpToLevel('warn')"><span class="log-badge log-badge-warn">{{ 'log.label.warn' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('warn', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('warn', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('warn') }}</span>
+            </span>
+          }
+          @if (isDebugLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.debug">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.debug" (ngModelChange)="checkLogLevel('DEBUG')" class="log-level-checkbox" [attr.aria-label]="'log.label.debug' | translate"></label>
+              <button class="log-level-btn log-level-btn-debug" [class.log-level-btn--active]="activeLevel === 'debug'" (click)="jumpToLevel('debug')"><span class="log-badge log-badge-debug">{{ 'log.label.debug' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('debug', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('debug', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('debug') }}</span>
+            </span>
+          }
+          @if (isTraceLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.trace">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.trace" (ngModelChange)="checkLogLevel('TRACE')" class="log-level-checkbox" [attr.aria-label]="'log.label.trace' | translate"></label>
+              <button class="log-level-btn log-level-btn-trace" [class.log-level-btn--active]="activeLevel === 'trace'" (click)="jumpToLevel('trace')"><span class="log-badge log-badge-trace">{{ 'log.label.trace' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('trace', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('trace', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('trace') }}</span>
+            </span>
+          }
+          @if (isDetailLevel) {
+            <span class="log-level-group" [class.log-level-group--off]="!object.checkBoxs.detail">
+              <label nz-checkbox [(ngModel)]="object.checkBoxs.detail" (ngModelChange)="checkLogLevel('DETAIL')" class="log-level-checkbox" [attr.aria-label]="'log.label.detail' | translate"></label>
+              <button class="log-level-btn log-level-btn-detail" [class.log-level-btn--active]="activeLevel === 'detail'" (click)="jumpToLevel('detail')"><span class="log-badge log-badge-detail">{{ 'log.label.detail' | translate }}</span></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('detail', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
+              <button class="log-nav-btn" (click)="jumpToLevel('detail', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
+              <span class="log-occurrence-count">{{ levelOccurrenceLabel('detail') }}</span>
+            </span>
+          }
+        </div>
+
+        <!-- Col 2 · Center: Date range inputs -->
+        <div class="log-tb-col log-tb-col--left">
+          @if (showDateFilter) {
+            <div class="log-date-inline">
+              <div class="log-date-field-wrap">
+                <input class="log-date-input" type="datetime-local" step="1"
+                       [(ngModel)]="dateFilterFromStr" (ngModelChange)="onDateFilterChange()"
+                       [title]="'logConsole.tooltip.view.dateFrom' | translate">
+                @if (dateFilterFromStr) {
+                  <button class="log-date-clear" (click)="clearDateFrom()" (mousedown)="$event.preventDefault()">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                  </button>
+                }
+              </div>
+              <span class="log-date-sep">–</span>
+              <div class="log-date-field-wrap">
+                <input class="log-date-input" type="datetime-local" step="1"
+                       [(ngModel)]="dateFilterToStr" (ngModelChange)="onDateFilterChange()"
+                       [title]="'logConsole.tooltip.view.dateTo' | translate">
+                @if (dateFilterToStr) {
+                  <button class="log-date-clear" (click)="clearDateTo()" (mousedown)="$event.preventDefault()">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Col 3 · Right: Active line / total + scroll buttons -->
+        <div class="log-tb-col log-tb-col--right">
+          <span class="log-jump-group">
+            @if (totalLineCount > 0) {
+              <span class="log-jump-line-count">{{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ totalLineCount }}</span>
+            }
+            <button class="log-nav-btn" (click)="scrollToTop()" [title]="'logConsole.tooltip.jumpToStart' | translate">
+              <i nz-icon nzType="vertical-align-top" nzTheme="outline"></i>
+            </button>
+            <button class="log-nav-btn" (click)="scrollToBottom()" [title]="'logConsole.tooltip.jumpToEnd' | translate">
+              <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
+            </button>
+          </span>
+        </div>
+
+      </div>
+
     </div>
   }
   <!-- BEGIN SLIDER -->

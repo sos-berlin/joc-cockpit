@@ -1168,28 +1168,28 @@ export class CoreService {
       styleEl.id = styleId;
       styleEl.innerHTML = `
       .scheduler_stdout {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_success {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_error {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_main {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_detail {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_debug {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .log_info {
-        margin-left: 289px;
+        margin-left: 194px;
       }
       .scheduler_stderr {
-        margin-left: 289px;
+        margin-left: 194px;
       }
     `;
       doc.head.appendChild(styleEl);
@@ -1214,11 +1214,14 @@ export class CoreService {
       } else {
         div = window.document.createElement('div');
       }
+      let originalTs: string | null = null;
       if (timestampRegex.test(match)) {
         const arr = match.split(/\s+\[/);
         let date;
         if (arr && arr.length > 0) {
           date = arr[0];
+          const cleanDate = date.replace(/^\r?\n/, '').trim();
+          if (cleanDate) originalTs = cleanDate;
         }
         if (date && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.(\d+)([+,-]){1}(\d+)$/.test(date)) {
           const datetime = preferences.logTimezone ? this.getLogDateFormat(date, preferences.zone) : date;
@@ -1265,6 +1268,7 @@ export class CoreService {
           div.className += ' hide-block';
         }
       } else if (level === 'stdout') {
+        obj.isStdoutLevel = true;
         div.className += ' stdout';
         if (!object.checkBoxs.stdout) {
           div.className += ' hide-block';
@@ -1298,6 +1302,7 @@ export class CoreService {
           div.className += ' hide-block';
         }
       } else if (prefix.search(/\[stdout\]/i) > -1) {
+        obj.isStdoutLevel = true;
         div.className += ' stdout';
         if (!object.checkBoxs.stdout) {
           div.className += ' hide-block';
@@ -1340,7 +1345,31 @@ export class CoreService {
       if (level.match('^debug') && !object.checkBoxs.debug) {
         div.className += ' hide-block';
       }
-      div.textContent = match.replace(/^\r?\n/, '');
+      const rawLine = match.replace(/^\r?\n/, '');
+      const lineMatch = rawLine.match(/^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}[^\s]*)\s+\[([^\]]+)\]\s*([\s\S]*)$/);
+      const innerLevelColors: {[key: string]: string} = {
+        'main': '#696969', 'info': '#666666', 'success': 'green',
+        'stdout': 'transparent', 'debug': '#006400', 'stderr': 'red',
+        'warn': 'tomato', 'error': 'red', 'trace': '#a0a0a0',
+        'fatal': 'red', 'detail': '#0000ff'
+      };
+      const esc = (s: string) => s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+      const levelKey = lineMatch ? lineMatch[2].trim().toLowerCase() : lastLevel.trim().toLowerCase().replace(/[\[\]]/g, '') || 'main';
+      div.className += ` log-line log-line-${levelKey}`;
+      div.setAttribute('style', `border-left-color:${innerLevelColors[levelKey] || '#696969'}`);
+      if (lineMatch) {
+        const rawTs = originalTs || lineMatch[1];
+        let displayTs: string;
+        if (preferences._useProfileTz && preferences.zone) {
+          displayTs = (this.getLogDateFormat(rawTs, preferences.zone) || rawTs).replace('T', ' ').slice(0, 19);
+        } else {
+          const tm = rawTs.match(/^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}:\d{2})(?:\.\d+)?([+-]\d{2}:?\d{2}|Z)?/);
+          displayTs = tm ? `${tm[1]} ${tm[2]}${tm[3] || ''}` : rawTs.replace('T', ' ').slice(0, 19);
+        }
+        div.innerHTML = `<span class="log-ts" data-ts="${rawTs}">${displayTs}</span><span class="log-level log-level-${levelKey}">${lineMatch[2].toUpperCase()}</span><!--container--><span class="log-text">${esc(lineMatch[3])}</span>`;
+      } else {
+        div.innerHTML = `<span class="log-text">${esc(rawLine)}</span>`;
+      }
       if (div.innerText.match(/(\[MAIN\])\s*(\[End\])\s*(\[Success\])/) || div.innerText.match(/(\[INFO\])\s*(\[End\])\s*(\[Success\])/)) {
         div.className += ' log_success';
         lastClass = 'log_success';
@@ -1382,10 +1411,13 @@ export class CoreService {
             // Log the last <div> to the console
             // console.log('lastDiv', lastDiv.innerText, lastDiv.classList);
             if (lastDiv.classList.contains('continue')) {
-              let text = lastDiv.innerText;
-              match = match.replace(/^\r?\n/, '');
-              console.log(text + ' >< ' + match);
-              lastDiv.innerText = (text + '' + match);
+              const addText = match.replace(/^\r?\n/, '');
+              const textSpan = lastDiv.querySelector('.log-text');
+              if (textSpan) {
+                textSpan.textContent = (textSpan.textContent || '') + addText;
+              } else {
+                lastDiv.textContent = (lastDiv.textContent || '') + addText;
+              }
               continueClass = lastDiv.classList;
               flag = false;
             }
