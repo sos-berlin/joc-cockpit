@@ -14066,7 +14066,7 @@ export class WorkflowComponent {
   }
 
   addTags(): void {
-    this.dataService.reloadTree.next({addTag: this.data});
+    this.dataService.reloadTree.next({addTag: this.data, isWorkflowTag: true});
   }
 
   expandCollapseVariable(): void {

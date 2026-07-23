@@ -3457,7 +3457,7 @@ export class DeployComponent {
 
   hasUncheckedInvalidCalendar(): boolean {
     if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
-      
+
       for (const type of Object.keys(this.referencedObjectsByType)) {
         const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
           !obj.selected &&
@@ -10066,7 +10066,7 @@ export class InventoryComponent {
         } else if (res.renameObject) {
           this.renameObject(res);
         } else if (res.addTag) {
-          this.addTags(res.addTag);
+          this.addTags(res.addTag, res.isWorkflowTag);
         } else if (res.back) {
           this.backToListView();
         } else if (res.navigate) {
@@ -13010,7 +13010,7 @@ export class InventoryComponent {
         if (args.eventSnapshots[j].eventType === 'AgentInventoryUpdated' && args.eventSnapshots[j].objectType === 'AGENT') {
           this.getAgents();
         }
-        if (args.eventSnapshots[j].eventType.match(/InventoryTagsUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTagAdded/)) {
+        if (args.eventSnapshots[j].eventType.match(/InventoryTagsUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryTagAdded/) || args.eventSnapshots[j].eventType.match(/InventoryJobTagsUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryJobTagAdded/)) {
           if (this.isTag) {
             this.updateTags();
           }
@@ -13274,7 +13274,7 @@ export class InventoryComponent {
     }
   }
 
-  addTags(node?): void {
+  addTags(node?, isWorkflowTag = false): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -13283,7 +13283,7 @@ export class InventoryComponent {
       nzData: {
         preferences: this.preferences,
         data: node?.origin || node,
-        isJobTag: this.isJobTag
+        isJobTag: isWorkflowTag ? false : this.isJobTag
       },
       nzFooter: null,
       nzClosable: false,
