@@ -4720,7 +4720,11 @@ export class JobComponent {
     this.sideBar.isVisible = false;
   }
 
-  helpPage(): void {
+  helpPage(key?: string): void {
+    if (key) {
+      this.coreService.openHelpPage(key);
+      return;
+    }
     let param: string;
     switch (this.tabIndex) {
       case 0:
@@ -4745,7 +4749,11 @@ export class JobComponent {
     this.coreService.openHelpPage(param);
   }
 
-  videoPage() {
+  videoPage(key?: string) {
+    if (key) {
+      this.coreService.openVideoPage(key);
+      return;
+    }
     let param: string;
     switch (this.tabIndex) {
       case 0:

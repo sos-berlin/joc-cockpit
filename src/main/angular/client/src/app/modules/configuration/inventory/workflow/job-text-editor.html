@@ -1,10 +1,7 @@
 @if (!isModal && !isRuntimeVisible) {
   <div class="pos-abt" style="top: 8px; right: 22px">
-    @if (preferences.showHelpPages) {
-      <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-    }
     @if (preferences.showVideoHelpPages) {
-      <i (click)="videoPage()" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-common cur-point fa fa-play-circle text-20"></i>
+      <i (click)="videoPage('first-job')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-common cur-point fa fa-play-circle text-20"></i>
     }
     @if (shouldShowAPIRequestButton()) {
       <button (click)="openAPIRequest()"
@@ -64,7 +61,20 @@
       </div>
     }
     <nz-tabs (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
-      <nz-tab [nzTitle]="'workflow.tab.jobProperties' | translate">
+      <nz-tab [nzTitle]="jobPropertiesTabTitle">
+        <ng-template #jobPropertiesTabTitle>
+          <span class="flex-center">
+            @if (preferences.showHelpPages) {
+              <i (click)="$event.stopPropagation(); helpPage('configuration-inventory-workflow-job-properties')"
+                 [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle"></i>
+            }
+            @if (preferences.showVideoHelpPages) {
+              <i (click)="$event.stopPropagation(); videoPage('job-properties')"
+                 [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-play-circle"></i>
+            }
+            <span>{{ 'workflow.tab.jobProperties' | translate }}</span>
+          </span>
+        </ng-template>
       @if (index === 0) {
         <div class="job-property-editor">
           <div [hidden]="fullScreen || (!exactMatch && isModal)" class="form-group row">
@@ -978,7 +988,20 @@
         </div>
       }
     </nz-tab>
-      <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
+      <nz-tab [nzTitle]="jobOptionsTabTitle">
+        <ng-template #jobOptionsTabTitle>
+          <span class="flex-center">
+            @if (preferences.showHelpPages) {
+              <i (click)="$event.stopPropagation(); helpPage('configuration-inventory-workflow-job-options')"
+                 [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle"></i>
+            }
+            @if (preferences.showVideoHelpPages) {
+              <i (click)="$event.stopPropagation(); videoPage('job-options')"
+                 [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-play-circle"></i>
+            }
+            <span>{{ 'workflow.tab.jobOptions' | translate }}</span>
+          </span>
+        </ng-template>
       @if (index === 1) {
     <div class="job-property-editor">
       <div class="form-group row">
@@ -1254,7 +1277,16 @@
   }
     </nz-tab>
 
-      <nz-tab [nzTitle]="'workflow.tab.jobTags' | translate">
+      <nz-tab [nzTitle]="jobTagsTabTitle">
+        <ng-template #jobTagsTabTitle>
+          <span class="flex-center">
+            @if (preferences.showHelpPages) {
+              <i (click)="$event.stopPropagation(); helpPage('configuration-inventory-workflow-job-tags')"
+                 [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle"></i>
+            }
+            <span>{{ 'workflow.tab.jobTags' | translate }}</span>
+          </span>
+        </ng-template>
         <div class="form-group row">
           <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.tags' | translate) : ''"
           class="col-md-3 form-control-label">{{ 'inventory.label.tags' | translate }}
@@ -1299,7 +1331,16 @@
         </div>
       </nz-tab>
       @if (!isModal) {
-        <nz-tab [nzTitle]="'workflow.tab.nodeProperties' | translate">
+        <nz-tab [nzTitle]="nodePropertiesTabTitle">
+          <ng-template #nodePropertiesTabTitle>
+            <span class="flex-center">
+              @if (preferences.showHelpPages) {
+                <i (click)="$event.stopPropagation(); helpPage('configuration-inventory-workflow-job-node-properties')"
+                   [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle"></i>
+              }
+              <span>{{ 'workflow.tab.nodeProperties' | translate }}</span>
+            </span>
+          </ng-template>
           <div class="job-property-editor">
             <div class="text-right m-t-n-6">
               <a (click)="encryptAllNodeArguments()" [ngClass]="{'disabled-link':object.setOfCheckedEnv.size === 0}"
@@ -1433,7 +1474,16 @@
         </nz-tab>
       }
 
-      <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
+      <nz-tab [nzTitle]="notificationTabTitle">
+        <ng-template #notificationTabTitle>
+          <span class="flex-center">
+            @if (preferences.showHelpPages) {
+              <i (click)="$event.stopPropagation(); helpPage('configuration-inventory-workflow-job-notifications')"
+                 [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle"></i>
+            }
+            <span>{{ 'workflow.tab.notification' | translate }}</span>
+          </span>
+        </ng-template>
         <div class="job-property-editor">
           <div class="form-group row">
             <label [appRichTooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"

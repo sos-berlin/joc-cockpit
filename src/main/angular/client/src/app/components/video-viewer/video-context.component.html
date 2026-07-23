@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <i class="fa fa-play-circle m-r-xs text-primary"></i>
+    {{ 'info.button.videoContext' | translate }}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body p-a">
+  @if (isLoading) {
+    <div class="col-md-12 text-center">
+      <div class="loading-center text-primary text ht-260">
+        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+      </div>
+    </div>
+  } @else if (notFound) {
+    <nz-result nzStatus="404" nzTitle="404" nzSubTitle="{{ 'common.message.noVideoData' | translate }}">
+    </nz-result>
+  } @else {
+    <ul class="video-context-list">
+      @for (video of videos; track video.key) {
+        <li class="video-context-item pointer" (click)="openVideo(video)">
+          <i class="fa fa-play-circle text-primary m-r-xs"></i>
+          <span class="video-context-title">{{ video.title || video.key }}</span>
+          @if (video.description) {
+            <div class="video-context-description text-muted">{{ video.description }}</div>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-sm btn-grey" (click)="cancel()">
+    <span>{{ 'common.button.close' | translate }}</span>
+  </button>
+</div>

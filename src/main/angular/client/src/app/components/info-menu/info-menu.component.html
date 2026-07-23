@@ -7,6 +7,7 @@
   <nz-dropdown-menu #help="nzDropdownMenu">
     <ul nz-menu>
       <li (click)="about()" nz-menu-item><a>{{'info.button.aboutJS7' | translate}}</a></li>
+      <li (click)="openVideoContext()" nz-menu-item><a>{{'info.button.videoContext' | translate}}</a></li>
       <li nz-submenu nzTitle="{{'info.button.featuresAndDownload' | translate}} ">
         <ul>
           <li nz-menu-item>

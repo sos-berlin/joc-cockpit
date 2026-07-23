@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@ang
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {HelpViewerComponent} from '../components/help-viewer/help-viewer.component';
 import {VideoViewerComponent} from '../components/video-viewer/video-viewer.component';
+import {VideoContextComponent} from '../components/video-viewer/video-context.component';
 
 declare const $: any;
 
@@ -4360,6 +4361,17 @@ private checkParentNode(lastPos, data, item, nodes): any {
         videoKey: videoKey,
         title: title
       },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  openVideoContextList(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: VideoContextComponent,
+      nzClassName: 'lg',
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

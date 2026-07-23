@@ -89,6 +89,7 @@ import {NzResultComponent} from "ng-zorro-antd/result";
 import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
 import {NoteComponent} from "../../components/notes/note.component";
 import {VideoViewerComponent} from '../../components/video-viewer/video-viewer.component';
+import {VideoContextComponent} from '../../components/video-viewer/video-context.component';
 import {LogConsoleComponent, LogConsoleModalComponent} from '../../components/log-console/log-console.component';
 import {NzSpaceCompactComponent, NzSpaceComponent} from "ng-zorro-antd/space";
 import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
@@ -100,7 +101,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, Nz
   NzDatePickerModule, NzTimePickerModule, NzUploadModule, NzProgressModule, NzSwitchModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent, VideoViewerComponent, LogConsoleModalComponent, LogConsoleComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent, PriorityModalComponent, HelpViewerComponent, VideoViewerComponent, VideoContextComponent, LogConsoleModalComponent, LogConsoleComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,

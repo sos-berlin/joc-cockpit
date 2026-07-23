@@ -5945,6 +5945,35 @@ tr.disabled-row td:not(.menu):not(.chk) {
   margin-bottom: 10px;
 }
 
+.video-context-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.video-context-item {
+  padding: 8px 10px;
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  & + & {
+    margin-top: 2px;
+  }
+}
+
+.video-context-title {
+  font-weight: 600;
+}
+
+.video-context-description {
+  font-size: 12px;
+  margin-top: 2px;
+  margin-left: 22px;
+}
+
 /* ── Glossary terms ──────────────────────────────────────
    Inline spans produced by ^Term^ syntax in markdown.
    Works inside help viewer, rich tooltips, and any other

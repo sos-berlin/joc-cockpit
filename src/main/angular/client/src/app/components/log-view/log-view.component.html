@@ -27,7 +27,7 @@
           <button class="btn btn-xs"
                   [ngClass]="showDateFilter || dateFilterFromStr || dateFilterToStr ? 'btn-primary' : 'btn-default'"
                   (click)="toggleDateFilter()"
-                  [title]="'logConsole.tooltip.dateFilter' | translate">
+                 [appRichTooltip]="'logConsole.tooltip.dateFilter' | translate">
             @if (showDateFilter || dateFilterFromStr || dateFilterToStr) {
               <i nz-icon nzType="calendar" nzTheme="fill"></i>
             } @else {
@@ -40,7 +40,7 @@
                [class.log-search-group--filter]="inputMode === 'filter'"
                [class.log-search-group--error]="!!regexError">
             <div class="log-search-mode-wrap">
-              <button class="log-search-mode-btn" (click)="toggleModeMenu($event)">
+              <button class="log-search-mode-btn" (click)="toggleModeMenu($event)" [appRichTooltip]="modeMenuOpen ? null : ((inputMode === 'filter' ? 'logConsole.tooltip.inputModeFilter' : 'logConsole.tooltip.inputModeSearch') | translate)">
                 @if (inputMode === 'search') {
                   <i nz-icon nzType="highlight" nzTheme="outline"></i>
                 } @else {
@@ -64,13 +64,13 @@
             </div>
             <button class="log-regex-checkbox log-regex-checkbox--mid"
                     [class.active]="unifiedReverse"
-                    [title]="'logConsole.tooltip.reverseSearch' | translate"
+                    [appRichTooltip]="(inputMode === 'filter' ? 'logConsole.tooltip.reverseFilter' : 'logConsole.tooltip.reverseSearch') | translate"
                     (click)="toggleUnifiedReverse()">
               <i nz-icon nzType="swap" nzTheme="outline"></i>
             </button>
             <button class="log-regex-checkbox log-regex-checkbox--mid"
                     [class.active]="unifiedRegexMode"
-                    [title]="'logConsole.tooltip.regexMode' | translate"
+                    [appRichTooltip]="'logConsole.tooltip.regularExp' | translate"
                     (click)="onUnifiedRegexModeChange()">
               <span class="log-regex-label">.*</span>
             </button>
@@ -130,7 +130,7 @@
         <!-- Col 3 · Right: TZ toggle + action icons -->
         <div class="log-tb-col log-tb-col--right">
           @if (showTzToggle) {
-            <span class="log-tz-toggle">
+            <span class="log-tz-toggle" [appRichTooltip]="(isOriginalTzMode ? 'logConsole.tooltip.tzModeOriginal' : 'logConsole.tooltip.tzModeProfile') | translate">
               <button class="log-tz-switch" [class.log-tz-switch--on]="isOriginalTzMode" (click)="toggleTzMode()" role="switch" [attr.aria-checked]="isOriginalTzMode"></button>
               <i class="m-l-xs icon" nz-icon nzType="clock-circle" nzTheme="outline"></i>
               <span class="m-l-xs">{{ displayTz }}</span>
@@ -139,7 +139,7 @@
           <button class="btn btn-xs btn-default" (click)="copy()" [title]="'log.button.copyToClipboard' | translate">
             <i nz-icon nzTheme="outline" nzType="copy"></i>
           </button>
-          <button class="btn btn-xs btn-default" (click)="downloadLog()" [title]="'common.button.download' | translate">
+          <button class="btn btn-xs btn-default" (click)="downloadLog()" [appRichTooltip]="'logConsole.tooltip.download' | translate">
             <i nz-icon nzTheme="outline" nzType="download"></i>
           </button>
           @if (!isCancel && !finished) {
@@ -148,7 +148,7 @@
             </button>
           }
           @if (finished || isCancel) {
-            <button class="btn btn-xs btn-default" (click)="reloadLog()" [title]="'workflow.button.reload' | translate">
+            <button class="btn btn-xs btn-default" (click)="reloadLog()" [appRichTooltip]="'logConsole.tooltip.reload' | translate">
               <i nz-icon nzTheme="outline" nzType="reload"></i>
             </button>
           }
@@ -172,7 +172,7 @@
               <button class="log-level-btn log-level-btn-main" [class.log-level-btn--active]="activeLevel === 'main'" (click)="jumpToLevel('main')"><span class="log-badge log-badge-main">{{ 'log.label.main' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('main', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('main', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('main') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('main') }}</span>
             </span>
           }
           @if (isStdSuccessLevel) {
@@ -181,7 +181,7 @@
               <button class="log-level-btn log-level-btn-success" [class.log-level-btn--active]="activeLevel === 'success'" (click)="jumpToLevel('success')"><span class="log-badge log-badge-success">{{ 'log.label.success' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('success', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('success', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('success') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('success') }}</span>
             </span>
           }
           @if (isStdoutLevel) {
@@ -190,7 +190,7 @@
               <button class="log-level-btn log-level-btn-stdout" [class.log-level-btn--active]="activeLevel === 'stdout'" (click)="jumpToLevel('stdout')"><span class="log-badge log-badge-stdout">{{ 'log.label.stdout' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('stdout', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('stdout', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('stdout') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('stdout') }}</span>
             </span>
           }
           @if (isStdErrLevel) {
@@ -199,7 +199,7 @@
               <button class="log-level-btn log-level-btn-stderr" [class.log-level-btn--active]="activeLevel === 'stderr'" (click)="jumpToLevel('stderr')"><span class="log-badge log-badge-stderr">{{ 'log.label.stderr' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('stderr', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('stderr', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('stderr') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('stderr') }}</span>
             </span>
           }
           @if (isInfoLevel) {
@@ -208,7 +208,7 @@
               <button class="log-level-btn log-level-btn-info" [class.log-level-btn--active]="activeLevel === 'info'" (click)="jumpToLevel('info')"><span class="log-badge log-badge-info">{{ 'log.label.info' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('info', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('info', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('info') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('info') }}</span>
             </span>
           }
           @if (isFatalLevel) {
@@ -217,7 +217,7 @@
               <button class="log-level-btn log-level-btn-fatal" [class.log-level-btn--active]="activeLevel === 'fatal'" (click)="jumpToLevel('fatal')"><span class="log-badge log-badge-fatal">{{ 'log.label.fatal' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('fatal', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('fatal', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('fatal') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('fatal') }}</span>
             </span>
           }
           @if (isErrorLevel) {
@@ -226,7 +226,7 @@
               <button class="log-level-btn log-level-btn-error" [class.log-level-btn--active]="activeLevel === 'error'" (click)="jumpToLevel('error')"><span class="log-badge log-badge-error">{{ 'log.label.error' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('error', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('error', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('error') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('error') }}</span>
             </span>
           }
           @if (isWarnLevel) {
@@ -235,7 +235,7 @@
               <button class="log-level-btn log-level-btn-warn" [class.log-level-btn--active]="activeLevel === 'warn'" (click)="jumpToLevel('warn')"><span class="log-badge log-badge-warn">{{ 'log.label.warn' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('warn', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('warn', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('warn') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('warn') }}</span>
             </span>
           }
           @if (isDebugLevel) {
@@ -244,7 +244,7 @@
               <button class="log-level-btn log-level-btn-debug" [class.log-level-btn--active]="activeLevel === 'debug'" (click)="jumpToLevel('debug')"><span class="log-badge log-badge-debug">{{ 'log.label.debug' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('debug', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('debug', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('debug') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('debug') }}</span>
             </span>
           }
           @if (isTraceLevel) {
@@ -253,7 +253,7 @@
               <button class="log-level-btn log-level-btn-trace" [class.log-level-btn--active]="activeLevel === 'trace'" (click)="jumpToLevel('trace')"><span class="log-badge log-badge-trace">{{ 'log.label.trace' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('trace', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('trace', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('trace') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('trace') }}</span>
             </span>
           }
           @if (isDetailLevel) {
@@ -262,7 +262,7 @@
               <button class="log-level-btn log-level-btn-detail" [class.log-level-btn--active]="activeLevel === 'detail'" (click)="jumpToLevel('detail')"><span class="log-badge log-badge-detail">{{ 'log.label.detail' | translate }}</span></button>
               <button class="log-nav-btn" (click)="jumpToLevel('detail', 'prev')"><i nz-icon nzType="up" nzTheme="outline"></i></button>
               <button class="log-nav-btn" (click)="jumpToLevel('detail', 'next')"><i nz-icon nzType="down" nzTheme="outline"></i></button>
-              <span class="log-occurrence-count">{{ levelOccurrenceLabel('detail') }}</span>
+              <span class="log-occurrence-count" [appRichTooltip]="'logConsole.tooltip.levelIndicator' | translate">{{ levelOccurrenceLabel('detail') }}</span>
             </span>
           }
         </div>
@@ -274,7 +274,7 @@
               <div class="log-date-field-wrap">
                 <input class="log-date-input" type="datetime-local" step="1"
                        [(ngModel)]="dateFilterFromStr" (ngModelChange)="onDateFilterChange()"
-                       [title]="'logConsole.tooltip.view.dateFrom' | translate">
+                       [appRichTooltip]="'logConsole.tooltip.view.dateFrom' | translate">
                 @if (dateFilterFromStr) {
                   <button class="log-date-clear" (click)="clearDateFrom()" (mousedown)="$event.preventDefault()">
                     <i nz-icon nzType="close-circle" nzTheme="outline"></i>
@@ -285,7 +285,7 @@
               <div class="log-date-field-wrap">
                 <input class="log-date-input" type="datetime-local" step="1"
                        [(ngModel)]="dateFilterToStr" (ngModelChange)="onDateFilterChange()"
-                       [title]="'logConsole.tooltip.view.dateTo' | translate">
+                       [appRichTooltip]="'logConsole.tooltip.view.dateTo' | translate">
                 @if (dateFilterToStr) {
                   <button class="log-date-clear" (click)="clearDateTo()" (mousedown)="$event.preventDefault()">
                     <i nz-icon nzType="close-circle" nzTheme="outline"></i>
@@ -302,10 +302,10 @@
             @if (totalLineCount > 0) {
               <span class="log-jump-line-count">{{ activeLineIdx !== null ? activeLineIdx + 1 : '–' }}/{{ totalLineCount }}</span>
             }
-            <button class="log-nav-btn" (click)="scrollToTop()" [title]="'logConsole.tooltip.jumpToStart' | translate">
+            <button class="log-nav-btn" (click)="scrollToTop()" [appRichTooltip]="'logConsole.tooltip.jumpToStart' | translate">
               <i nz-icon nzType="vertical-align-top" nzTheme="outline"></i>
             </button>
-            <button class="log-nav-btn" (click)="scrollToBottom()" [title]="'logConsole.tooltip.jumpToEnd' | translate">
+            <button class="log-nav-btn" (click)="scrollToBottom()" [appRichTooltip]="'logConsole.tooltip.jumpToEnd' | translate">
               <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
             </button>
           </span>

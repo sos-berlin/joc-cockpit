@@ -251,4 +251,8 @@ export class InfoMenuComponent {
     });
   }
 
+  openVideoContext(): void {
+    this.coreService.openVideoContextList();
+  }
+
 }
