@@ -70,11 +70,16 @@
   "try-catch-instruction": {
     "id": "8mymulDZCJ8",
     "title": "Error handling",
-    "description": "How to handle errors using Try/Catch"
+    "description": "How to handle errors using the Try/Catch Instruction"
   },
   "first-job": {
     "id": "IW7UcKWOEhg",
     "title": "Create first job",
     "description": "How to create your first Job in JS7"
+  },
+  "cycle-instruction": {
+    "id": "PBahizdAmGs",
+    "title": "Cycle instruction",
+    "description": "How to configure the Cycle Instruction"
   }
 }
