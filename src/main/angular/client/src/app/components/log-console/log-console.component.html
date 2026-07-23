@@ -373,7 +373,7 @@
   </div>
 
   <!-- ─── Log panel ──────────────────────────────────────────────────────── -->
-  <div class="log-console-body" #logBody (dblclick)="onLogBodyDblClick($event)">
+  <div class="log-console-body" #logBody (dblclick)="onLogBodyDblClick($event)" (scroll)="onLogBodyScroll($event)">
 
     @if (isLoading && allLines.length === 0) {
       <div class="log-console-loading">
@@ -386,6 +386,12 @@
       <div class="log-console-empty">
         <i nz-icon nzType="file-text" nzTheme="outline" class="log-state-icon"></i>
         <span>{{ 'logConsole.message.noEntries' | translate }}</span>
+      </div>
+    }
+
+    @if (isLoadingPrev) {
+      <div class="log-console-more log-console-more--top">
+        <nz-spin nzSimple nzSize="small"></nz-spin>
       </div>
     }
 
@@ -451,13 +457,13 @@
       }
     }
 
-    @if (isLoading && allLines.length > 0) {
+    @if (isLoadingNext) {
       <div class="log-console-more">
         <nz-spin nzSimple nzSize="small"></nz-spin>
       </div>
     }
 
-    @if (isComplete && allLines.length > 0) {
+    @if (lastLogLineReached && allLines.length > 0) {
       <div class="log-console-end">{{ 'logConsole.message.endOfLog' | translate }}</div>
     }
 

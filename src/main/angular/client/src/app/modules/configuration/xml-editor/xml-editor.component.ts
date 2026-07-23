@@ -4117,6 +4117,20 @@ export class XmlEditorComponent {
         }
       }
     }
+    // Derive the destination element name from xs:selector/@xpath instead of strReplace on xs:keyref/@name.
+    // strReplace on the name attribute is ambiguous: "SFTPFragmentKeyRef" → "SFTPFragmentRef" (cross-element)
+    // vs "ProfileKeyRef" → "Profile" (self-referential) cannot both be satisfied by one regex.
+    // The xs:selector xpath is the XSD-specified, unambiguous source of the destination element name.
+    for (let j = 0; j < keyRefNodes.childNodes.length; j++) {
+      if (keyRefNodes.childNodes[j].nodeName === 'xs:selector') {
+        const selectorXpath: string = keyRefNodes.childNodes[j].getAttribute('xpath') || '';
+        const segments = selectorXpath.split('/').filter((s: string) => s && s !== '.' && s !== '..');
+        if (segments.length > 0) {
+          attrs.name = segments[segments.length - 1];
+        }
+        break;
+      }
+    }
     this.attachKeyRefNodes(attrs);
   }
 
@@ -4194,7 +4208,7 @@ export class XmlEditorComponent {
   }
 
   strReplace(data) {
-    return data.replace(/(KeyRef|Key|@)/g, '');
+    return data.replace(/(Key|@)/g, '');
   }
 
   AddKeyReferencing() {

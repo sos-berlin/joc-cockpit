@@ -8,13 +8,14 @@ import * as moment from 'moment-timezone';
 import {TranslateService} from '@ngx-translate/core';
 
 interface ParsedLine {
+  key?: string;
   timestamp: string;
   level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'TRACE' | 'OTHER';
   displayLevel?: string;
   text: string;
   raw: string;
   rawLower: string; // pre-lowercased for fast search comparisons
-  globalIdx: number; // index in allLines, set by processLines
+  globalIdx: number; // index in allLines, set by processLogEntries
 }
 
 /** Contextual block shown in filter mode: match line + N surrounding lines. */
@@ -98,7 +99,7 @@ function parseLine(raw: string): ParsedLine {
     else if (lvlStr === 'ERROR' || lvlStr === 'FATAL')  level = 'ERROR';
     else if (lvlStr === 'DEBUG')                        level = 'DEBUG';
     else if (lvlStr === 'TRACE')                        level = 'TRACE';
-    else if (lvlStr === 'BEGIN') { level = 'INFO'; displayLevel = 'Begin'; }
+    else if (lvlStr === 'BEGIN') { level = 'INFO'; displayLevel = 'BEGIN'; }
     return { timestamp: m[1], level, displayLevel, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
   }
   return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
@@ -161,9 +162,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   hasDebug = false;
   hasTrace = false;
   isLoading = false;
+  isLoadingNext = false;
+  isLoadingPrev = false;
   isDownloading = false;
-  isComplete = false;
-  token: string | null = null;
+  /** Session token returned by /log — passed as logToken in /log/next and /log/prev. */
+  logToken: string | null = null;
+  /** Cursor key of the first line in the buffer — sent as key in /log/prev requests. */
+  firstKey: string | null = null;
+  /** Cursor key of the last line in the buffer — sent as key in /log/next requests. */
+  lastKey: string | null = null;
+  /** True when the API signals no newer log lines exist. */
+  lastLogLineReached = false;
+  /** True when the API signals no older log lines exist. */
+  firstLogLineReached = false;
   /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
   /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
@@ -1519,9 +1530,15 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.coreService.post(apiUrl, this.buildRequest()).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
-        this.processLines(res.logLines || []);
-        this.isComplete = res.isComplete === true;
-        this.token = res.logToken || null;
+        const entries: {key: string, line: string}[] = res.logLines || [];
+        this.processLogEntries(entries);
+        this.logToken = res.logToken || null;
+        if (entries.length > 0) {
+          this.firstKey = entries[0].key || null;
+          this.lastKey  = entries[entries.length - 1].key || null;
+        }
+        this.lastLogLineReached  = !!(res.lastLogLineReached || res.dateToReached || res.numOfLinesReached);
+        this.firstLogLineReached = false;
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
         if (this.followTail) this.scrollToBottom();
@@ -1535,26 +1552,54 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  loadMore(): void {
-    if (!this.token || this.isLoading) return;
-    this.isLoading = true;
-    const apiUrl = this.getRunningApiUrl();
-    const body: any = { logToken: this.token };
+  fetchNext(): void {
+    if (!this.lastKey || this.isLoadingNext || this.lastLogLineReached) return;
+    this.isLoadingNext = true;
+    const body: any = { logToken: this.logToken, key: this.lastKey };
     const limit = this.request.limit ?? this.numOfNextLogLines;
     if (limit) body.limit = limit;
-    this.coreService.post(apiUrl, body).subscribe({
+    this.coreService.post(this.getNextApiUrl(), body).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
-        this.processLines(res.logLines || []);
-        this.isComplete = res.isComplete === true;
-        this.token = res.logToken || null;
-        this.isLoading = false;
+        const entries: {key: string, line: string}[] = res.logLines || [];
+        if (entries.length > 0) {
+          this.lastKey = entries[entries.length - 1].key || this.lastKey;
+          this.processLogEntries(entries, () => this.trimBuffer('top'));
+        }
+        this.lastLogLineReached = !!(res.lastLogLineReached || res.dateToReached || res.numOfLinesReached);
+        this.isLoadingNext = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoadingNext = false;
+        this._safeMarkForCheck();
+      }
+    });
+  }
+
+  fetchPrev(): void {
+    if (!this.firstKey || this.isLoadingPrev || this.firstLogLineReached) return;
+    this.isLoadingPrev = true;
+    const body: any = { logToken: this.logToken, key: this.firstKey };
+    const limit = this.request.limit ?? this.numOfNextLogLines;
+    if (limit) body.limit = limit;
+    this.coreService.post(this.getPrevApiUrl(), body).subscribe({
+      next: (res: any) => {
+        if (this.destroyed) return;
+        const entries: {key: string, line: string}[] = res.logLines || [];
+        if (entries.length > 0) {
+          this.firstKey = entries[0].key || this.firstKey;
+          this.prependLogEntries(entries);
+          this.trimBuffer('bottom');
+        }
+        this.firstLogLineReached = !!res.firstLogLineReached;
+        this.isLoadingPrev = false;
+        this._safeMarkForCheck();
+      },
+      error: () => {
+        this.isLoadingPrev = false;
         this._safeMarkForCheck();
       }
     });
@@ -1578,8 +1623,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.levelCounts         = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
     this.filteredLevelCounts = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
     this.hasInfo = this.hasWarn = this.hasError = this.hasDebug = this.hasTrace = false;
-    this.token = null;
-    this.isComplete = false;
+    this.logToken = null;
+    this.firstKey = null;
+    this.lastKey  = null;
+    this.lastLogLineReached  = false;
+    this.firstLogLineReached = false;
+    this.isLoadingNext = false;
+    this.isLoadingPrev = false;
     this.activeLineIdx = null;
     this.levelJumpIndices.clear();
     this.levelLastDir.clear();
@@ -1607,7 +1657,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private scheduleNextPoll(): void {
     this.clearPollTimer();
-    if (this.followTail && !this.isComplete && this.token) {
+    if (this.followTail && !this.lastLogLineReached && this.logToken && this.lastKey) {
       this.pollTimer = setTimeout(() => {
         // Do not poll while the user has an active text selection — the response
         // would trigger markForCheck() which destroys innerHTML text nodes.
@@ -1615,8 +1665,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.scheduleNextPoll(); // reschedule and try again after another interval
           return;
         }
-        if (!this.destroyed && this.followTail && !this.isComplete && this.token) {
-          this.loadMore();
+        if (!this.destroyed && this.followTail && !this.lastLogLineReached && this.logToken && this.lastKey) {
+          this.fetchNext();
         }
       }, this.POLL_INTERVAL_MS);
     }
@@ -1629,31 +1679,25 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private processLines(lines: string[]): void {
+  private processLogEntries(entries: {key: string, line: string}[], onComplete?: () => void): void {
     const CHUNK_SIZE = 500;
     let offset = 0;
 
     const processChunk = () => {
       if (this.destroyed) return;
-      const end = Math.min(offset + CHUNK_SIZE, lines.length);
+      const end = Math.min(offset + CHUNK_SIZE, entries.length);
       const prevLength = this.allLines.length;
       for (let i = offset; i < end; i++) {
-        const raw = lines[i];
-        const cleaned = raw.replace(/\r?\n$/, '');
+        const entry = entries[i];
+        const cleaned = entry.line.replace(/\r?\n$/, '');
         if (!cleaned.trim()) continue;
         const parsed = parseLine(cleaned);
-        if (!parsed.timestamp && this.allLines.length > 0) {
-          const last = this.allLines[this.allLines.length - 1];
-          last.text    += '\n' + parsed.text;
-          last.raw     += '\n' + parsed.text;
-          last.rawLower = last.raw.toLowerCase();
-        } else {
-          parsed.globalIdx = this.allLines.length;
-          this.allLines.push(parsed);
-        }
+        parsed.key = entry.key;
+        parsed.globalIdx = this.allLines.length;
+        this.allLines.push(parsed);
       }
       offset = end;
-      const isLastChunk = offset >= lines.length;
+      const isLastChunk = offset >= entries.length;
       // Incremental stats: only scan the newly appended lines.
       this.updateLevelStats(prevLength);
       this.computeFilteredLines();
@@ -1662,6 +1706,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.computeContextBlocks();
         // Only scroll once — on the final chunk — to avoid repeated layout reflows.
         if (this.followTail) this.scrollToBottom();
+        onComplete?.();
       } else {
         setTimeout(processChunk, 0);
       }
@@ -1669,6 +1714,97 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     processChunk();
+  }
+
+  /**
+   * Trims `allLines` to `request.numOfLines` after a fetch, removing lines from
+   * the direction opposite to the fetch so the buffer stays at a fixed size.
+   *
+   * direction='top'    → trim from the TOP (called after fetchNext/append at bottom)
+   * direction='bottom' → trim from the BOTTOM (called after fetchPrev/prepend at top)
+   */
+  private trimBuffer(direction: 'top' | 'bottom'): void {
+    const maxLines = 2500;
+    if (!maxLines || this.allLines.length <= maxLines) return;
+    const excess = this.allLines.length - maxLines;
+
+    if (direction === 'top') {
+      // Remove oldest (top) lines after appending newer lines at bottom.
+      this.allLines.splice(0, excess);
+      // Re-index all remaining lines (globalIdx must equal position in allLines).
+      for (let i = 0; i < this.allLines.length; i++) {
+        this.allLines[i].globalIdx = i;
+      }
+      // Keep activeLineIdx in sync; null it out if the active line was trimmed.
+      if (this.activeLineIdx !== null) {
+        this.activeLineIdx = this.activeLineIdx < excess ? null : this.activeLineIdx - excess;
+      }
+      // Update firstKey to the new first line and signal older lines exist above.
+      this.firstKey = this.allLines[0]?.key || null;
+      this.firstLogLineReached = false;
+    } else {
+      // Remove newest (bottom) lines after prepending older lines at top.
+      this.allLines.splice(this.allLines.length - excess, excess);
+      // No re-indexing needed — top lines retain their globalIdx values.
+      if (this.activeLineIdx !== null && this.activeLineIdx >= this.allLines.length) {
+        this.activeLineIdx = this.allLines.length - 1;
+      }
+      // Update lastKey to the new last line and signal newer lines exist below.
+      this.lastKey = this.allLines[this.allLines.length - 1]?.key || null;
+      this.lastLogLineReached = false;
+    }
+
+    this.levelJumpIndices.clear();
+    this.rebuildLevelStats();
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+  }
+
+  private prependLogEntries(entries: {key: string, line: string}[]): void {
+    const el = this.logBodyRef?.nativeElement;
+    const oldScrollHeight = el ? el.scrollHeight : 0;
+    const oldScrollTop    = el ? el.scrollTop    : 0;
+
+    const newLines: ParsedLine[] = [];
+    for (const entry of entries) {
+      const cleaned = entry.line.replace(/\r?\n$/, '');
+      if (!cleaned.trim()) continue;
+      const parsed = parseLine(cleaned);
+      parsed.key = entry.key;
+      parsed.globalIdx = newLines.length;
+      newLines.push(parsed);
+    }
+    if (newLines.length === 0) return;
+
+    // Shift globalIdx of all existing lines to make room for the prepended block.
+    const shift = newLines.length;
+    for (const line of this.allLines) {
+      line.globalIdx += shift;
+    }
+    // Keep activeLineIdx in sync with the shifted globalIdx values.
+    if (this.activeLineIdx !== null) {
+      this.activeLineIdx += shift;
+    }
+    this.allLines = [...newLines, ...this.allLines];
+
+    // Full rebuild needed since globalIdx values changed across all lines.
+    this.rebuildLevelStats();
+    this.levelJumpIndices.clear();
+    this.computeFilteredLines();
+    this.computeContextBlocks();
+
+    // Restore scroll position so the viewport doesn't jump to the top.
+    if (el) {
+      setTimeout(() => {
+        el.scrollTop = oldScrollTop + (el.scrollHeight - oldScrollHeight);
+      }, 0);
+    }
+  }
+
+  private rebuildLevelStats(): void {
+    this.levelCounts = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
+    this.hasInfo = this.hasWarn = this.hasError = this.hasDebug = this.hasTrace = false;
+    this.updateLevelStats(0);
   }
 
   private getApiUrl(): string {
@@ -1679,11 +1815,30 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private getRunningApiUrl(): string {
+  private getNextApiUrl(): string {
     switch (this.request?.type) {
-      case 'agent': return 'agent/log/running';
-      case 'joc':   return 'joc/log/running';
-      default:      return 'controller/log/running';
+      case 'agent': return 'agent/log/next';
+      case 'joc':   return 'joc/log/next';
+      default:      return 'controller/log/next';
+    }
+  }
+
+  private getPrevApiUrl(): string {
+    switch (this.request?.type) {
+      case 'agent': return 'agent/log/prev';
+      case 'joc':   return 'joc/log/prev';
+      default:      return 'controller/log/prev';
+    }
+  }
+
+  onLogBodyScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150;
+    const atTop    = el.scrollTop <= 150;
+    if (atBottom && !this.isLoadingNext && !this.isLoadingPrev && !this.lastLogLineReached) {
+      this.fetchNext();
+    } else if (atTop && !this.isLoadingPrev && !this.isLoadingNext && !this.firstLogLineReached && this.allLines.length > 0) {
+      this.fetchPrev();
     }
   }
 
