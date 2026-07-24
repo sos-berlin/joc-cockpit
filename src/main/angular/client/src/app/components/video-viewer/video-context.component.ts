@@ -42,7 +42,6 @@ export class VideoContextComponent implements OnInit {
   }
 
   openVideo(video: VideoListEntry): void {
-    this.cancel();
     this.coreService.openVideoPage(video.key, video.title);
   }
 

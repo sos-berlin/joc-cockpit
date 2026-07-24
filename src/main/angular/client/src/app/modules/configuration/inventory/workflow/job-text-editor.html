@@ -1,8 +1,5 @@
 @if (!isModal && !isRuntimeVisible) {
   <div class="pos-abt" style="top: 8px; right: 22px">
-    @if (preferences.showVideoHelpPages) {
-      <i (click)="videoPage('first-job')" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-common cur-point fa fa-play-circle text-20"></i>
-    }
     @if (shouldShowAPIRequestButton()) {
       <button (click)="openAPIRequest()"
               class="btn btn-default btn-sm m-l-12">

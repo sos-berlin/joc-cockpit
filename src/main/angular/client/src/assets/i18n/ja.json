@@ -3639,6 +3639,7 @@
       "label.x509": "X.509",
       "label.rsa": "RSA",
       "label.ecdsa": "ECDSA",
+      "label.mldsa": "MLDSA",
       "label.date": "日付",
       "label.distinguishedName": "識別名（DN: Distinguished Name）",
       "label.caCertificate": "CA証明書",

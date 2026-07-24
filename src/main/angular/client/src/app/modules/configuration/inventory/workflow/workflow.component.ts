@@ -16314,5 +16314,16 @@ export class WorkflowComponent {
     })
   }
 
+  videoPage(type: string) {
+    let key = '';
+    if (type == 'Job') {
+      key = 'first-job';
+    } else if (type == 'Try') {
+      key = 'try-catch-instruction';
+    } else if (type == 'Cycle') {
+      key = 'cycle-instruction';
+    }
+    this.coreService.openVideoPage(key);
+  }
 
 }

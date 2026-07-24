@@ -26,7 +26,7 @@ interface ContextBlock {
   collapsed: boolean;
 }
 
-const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(BEGIN|INFO|WARN|ERROR|DEBUG|TRACE|FATAL)\s+/i;
+const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(BEGIN|INFO|WARN|ERROR|DEBUG|TRACE|FATAL|END)\s+/i;
 
 // ── Order ID parsing ────────────────────────────────────────────────────────
 // Matches JS7 Order IDs: #YYYY-MM-DD#<word chars, colon, hyphen>
@@ -100,6 +100,7 @@ function parseLine(raw: string): ParsedLine {
     else if (lvlStr === 'DEBUG')                        level = 'DEBUG';
     else if (lvlStr === 'TRACE')                        level = 'TRACE';
     else if (lvlStr === 'BEGIN') { level = 'INFO'; displayLevel = 'BEGIN'; }
+    else if (lvlStr === 'END') { level = 'INFO'; displayLevel = 'END'; }
     return { timestamp: m[1], level, displayLevel, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
   }
   return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
@@ -165,16 +166,19 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   isLoadingNext = false;
   isLoadingPrev = false;
   isDownloading = false;
+  maxLogLines = 2500;
   /** Session token returned by /log — passed as logToken in /log/next and /log/prev. */
   logToken: string | null = null;
   /** Cursor key of the first line in the buffer — sent as key in /log/prev requests. */
   firstKey: string | null = null;
   /** Cursor key of the last line in the buffer — sent as key in /log/next requests. */
   lastKey: string | null = null;
-  /** True when the API signals no newer log lines exist. */
+  /** True when the API signals no newer log lines exist — switches polling to /log/running. */
   lastLogLineReached = false;
   /** True when the API signals no older log lines exist. */
   firstLogLineReached = false;
+  /** True when /log/running signals the log session is completely over — stops all polling. */
+  isLogComplete = false;
   /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
   /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
@@ -408,9 +412,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         const prefs = JSON.parse(sessionStorage['preferences']);
         this.logTimezone = prefs.logTimezone === true;
         this.profileTz   = prefs.zone || '';
-        if (prefs.numOfNextLogLines) {
-          this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || undefined;
-        }
+        if (prefs.numOfLogLines)     this.maxLogLines     = Number(prefs.numOfLogLines)     || 2500;
+        if (prefs.numOfNextLogLines) this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || undefined;
       } catch { /**/ }
     }
     if (!this.profileTz) {
@@ -1537,7 +1540,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.firstKey = entries[0].key || null;
           this.lastKey  = entries[entries.length - 1].key || null;
         }
-        this.lastLogLineReached  = !!(res.lastLogLineReached || res.dateToReached || res.numOfLinesReached);
+        this.lastLogLineReached  = !!res.lastLogLineReached;
         this.firstLogLineReached = false;
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
@@ -1566,7 +1569,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.lastKey = entries[entries.length - 1].key || this.lastKey;
           this.processLogEntries(entries, () => this.trimBuffer('top'));
         }
-        this.lastLogLineReached = !!(res.lastLogLineReached || res.dateToReached || res.numOfLinesReached);
+        this.lastLogLineReached = !!res.lastLogLineReached;
         this.isLoadingNext = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
@@ -1581,6 +1584,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   fetchPrev(): void {
     if (!this.firstKey || this.isLoadingPrev || this.firstLogLineReached) return;
+    // Scrolling up means the user wants to inspect older content — stop follow tail
+    // so the poll timer does not append new lines and jump the view back to the bottom.
+    if (this.followTail) {
+      this.followTail = false;
+      this.clearPollTimer();
+    }
     this.isLoadingPrev = true;
     const body: any = { logToken: this.logToken, key: this.firstKey };
     const limit = this.request.limit ?? this.numOfNextLogLines;
@@ -1600,6 +1609,34 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       },
       error: () => {
         this.isLoadingPrev = false;
+        this._safeMarkForCheck();
+      }
+    });
+  }
+
+  fetchRunning(): void {
+    if (!this.lastKey || this.isLoadingNext || this.isLoadingPrev || this.isLogComplete) return;
+    this.isLoadingNext = true;
+    const body: any = { logToken: this.logToken, key: this.lastKey };
+    const limit = this.request.limit ?? this.numOfNextLogLines;
+    if (limit) body.limit = limit;
+    this.coreService.post(this.getRunningApiUrl(), body).subscribe({
+      next: (res: any) => {
+        if (this.destroyed) return;
+        const entries: {key: string, line: string}[] = res.logLines || [];
+        if (entries.length > 0) {
+          this.lastKey = entries[entries.length - 1].key || this.lastKey;
+          this.processLogEntries(entries, () => this.trimBuffer('top'));
+        }
+        if (res.logToken) this.logToken = res.logToken;
+        this.isLogComplete = res.isComplete === true;
+        this.isLoadingNext = false;
+        if (this.followTail) this.scrollToBottom();
+        this.scheduleNextPoll();
+        this._safeMarkForCheck();
+      },
+      error: () => {
+        this.isLoadingNext = false;
         this._safeMarkForCheck();
       }
     });
@@ -1628,6 +1665,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.lastKey  = null;
     this.lastLogLineReached  = false;
     this.firstLogLineReached = false;
+    this.isLogComplete = false;
     this.isLoadingNext = false;
     this.isLoadingPrev = false;
     this.activeLineIdx = null;
@@ -1657,7 +1695,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private scheduleNextPoll(): void {
     this.clearPollTimer();
-    if (this.followTail && !this.lastLogLineReached && this.logToken && this.lastKey) {
+    const canPollNext    = this.followTail && !this.lastLogLineReached && !!this.logToken && !!this.lastKey;
+    const canPollRunning = this.followTail && this.lastLogLineReached  && !this.isLogComplete && !!this.logToken && !!this.lastKey;
+    if (canPollNext || canPollRunning) {
       this.pollTimer = setTimeout(() => {
         // Do not poll while the user has an active text selection — the response
         // would trigger markForCheck() which destroys innerHTML text nodes.
@@ -1665,8 +1705,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.scheduleNextPoll(); // reschedule and try again after another interval
           return;
         }
-        if (!this.destroyed && this.followTail && !this.lastLogLineReached && this.logToken && this.lastKey) {
+        if (this.destroyed) return;
+        if (!this.lastLogLineReached && this.logToken && this.lastKey) {
           this.fetchNext();
+        } else if (this.lastLogLineReached && !this.isLogComplete && this.logToken && this.lastKey) {
+          this.fetchRunning();
         }
       }, this.POLL_INTERVAL_MS);
     }
@@ -1692,9 +1735,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         const cleaned = entry.line.replace(/\r?\n$/, '');
         if (!cleaned.trim()) continue;
         const parsed = parseLine(cleaned);
-        parsed.key = entry.key;
-        parsed.globalIdx = this.allLines.length;
-        this.allLines.push(parsed);
+        if (!parsed.timestamp && this.allLines.length > 0) {
+          const prev = this.allLines[this.allLines.length - 1];
+          prev.text += '\n' + parsed.text;
+          prev.raw  += '\n' + parsed.raw;
+          prev.rawLower = prev.raw.toLowerCase();
+          prev.key = entry.key;
+        } else {
+          parsed.key = entry.key;
+          parsed.globalIdx = this.allLines.length;
+          this.allLines.push(parsed);
+        }
       }
       offset = end;
       const isLastChunk = offset >= entries.length;
@@ -1724,7 +1775,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * direction='bottom' → trim from the BOTTOM (called after fetchPrev/prepend at top)
    */
   private trimBuffer(direction: 'top' | 'bottom'): void {
-    const maxLines = 2500;
+    const maxLines = this.maxLogLines;
     if (!maxLines || this.allLines.length <= maxLines) return;
     const excess = this.allLines.length - maxLines;
 
@@ -1770,9 +1821,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       const cleaned = entry.line.replace(/\r?\n$/, '');
       if (!cleaned.trim()) continue;
       const parsed = parseLine(cleaned);
-      parsed.key = entry.key;
-      parsed.globalIdx = newLines.length;
-      newLines.push(parsed);
+      if (!parsed.timestamp && newLines.length > 0) {
+        const prev = newLines[newLines.length - 1];
+        prev.text += '\n' + parsed.text;
+        prev.raw  += '\n' + parsed.raw;
+        prev.rawLower = prev.raw.toLowerCase();
+        prev.key = entry.key;
+      } else {
+        parsed.key = entry.key;
+        parsed.globalIdx = newLines.length;
+        newLines.push(parsed);
+      }
     }
     if (newLines.length === 0) return;
 
@@ -1812,6 +1871,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       case 'agent': return 'agent/log';
       case 'joc':   return 'joc/log';
       default:      return 'controller/log';
+    }
+  }
+
+  private getRunningApiUrl(): string {
+    switch (this.request?.type) {
+      case 'agent': return 'agent/log/running';
+      case 'joc':   return 'joc/log/running';
+      default:      return 'controller/log/running';
     }
   }
 
@@ -1920,7 +1987,6 @@ export class LogConsoleModalComponent implements OnInit {
       try {
         const prefs = JSON.parse(sessionStorage['preferences']);
         this.preferencesTz = prefs.zone || '';
-        if (prefs.numOfLogLines)     this.form.numOfLines = Number(prefs.numOfLogLines)     || null;
         if (prefs.numOfNextLogLines) this.form.limit      = Number(prefs.numOfNextLogLines) || null;
       } catch { /**/ }
     }
@@ -1953,6 +2019,7 @@ export class LogConsoleModalComponent implements OnInit {
         if (s.dateFromTime) this.form.dateFromTime = new Date(s.dateFromTime);
         if (s.dateToDate)   this.form.dateToDate   = new Date(s.dateToDate);
         if (s.dateToTime)   this.form.dateToTime   = new Date(s.dateToTime);
+        if (s.numOfLines)     this.form.numOfLines = Number(s.numOfLines);
       } catch { /**/ }
     }
   }
@@ -2034,7 +2101,6 @@ export class LogConsoleModalComponent implements OnInit {
       dateMode:   this.form.dateMode,
       dateFrom:   this.form.dateFrom,
       dateTo:     this.form.dateTo,
-      numOfLines: this.form.numOfLines,
       limit:      this.form.limit,
       timeZone:   this.form.timeZone
     };
@@ -2042,6 +2108,7 @@ export class LogConsoleModalComponent implements OnInit {
     if (this.form.dateFromTime instanceof Date) toSave.dateFromTime = this.form.dateFromTime.toISOString();
     if (this.form.dateToDate   instanceof Date) toSave.dateToDate   = this.form.dateToDate.toISOString();
     if (this.form.dateToTime   instanceof Date) toSave.dateToTime   = this.form.dateToTime.toISOString();
+    if (this.form.numOfLines) toSave.numOfLines = this.form.numOfLines;
     try { sessionStorage['logConsoleLastForm'] = JSON.stringify(toSave); } catch { /**/ }
   }
 
