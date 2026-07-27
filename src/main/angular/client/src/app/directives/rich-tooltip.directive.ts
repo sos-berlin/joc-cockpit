@@ -4,17 +4,224 @@ import {
   HostListener,
   inject,
   Injectable,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
   TemplateRef,
 } from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {CoreService} from '../services/core.service';
 import {DomSanitizer} from '@angular/platform-browser';
-import { FlexibleConnectedPositionStrategy, Overlay, OverlayRef, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import {
+  FlexibleConnectedPositionStrategy,
+  Overlay,
+  OverlayContainer,
+  OverlayRef,
+  OverlayPositionBuilder,
+  ScrollStrategyOptions,
+} from '@angular/cdk/overlay';
+import { ViewportRuler } from '@angular/cdk/scrolling';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs';
 import { RichTooltipContentComponent } from '../components/rich-tooltip/rich-tooltip-content.component';
+
+/**
+ * The log-viewer "detach" feature (PopupService) opens a real native popup
+ * window and physically re-parents a component's DOM into that window's own
+ * document, while the component itself keeps living in the MAIN window's
+ * Angular injector. Two consequences for any tooltip triggered from inside
+ * that popup:
+ *
+ *  1. Angular CDK's `Overlay`/`OverlayContainer` are singletons bound to
+ *     whichever `document` they were created against (the main window's), so
+ *     the tooltip overlay would render into the *main* window's overlay
+ *     layer — a different document entirely — rather than anywhere in the
+ *     popup. No CSS change can fix this; it isn't a stacking-order problem,
+ *     it's rendering in the wrong window.
+ *  2. Angular injects its own base overlay CSS, and this directive's own
+ *     bubble CSS lives in the global stylesheet — both loaded into the main
+ *     document only. The popup window's separate document never receives
+ *     them, so even a correctly-targeted overlay pane would show as
+ *     unstyled, unpositioned inline content.
+ *
+ * This entire block (cache + CSS strings + helpers) exists solely to make
+ * THIS directive self-sufficient in that scenario, without requiring any
+ * change to the popup's own HTML/CSS or to PopupService. For the normal
+ * case — the element is in the same document the app booted in — none of
+ * this runs; behavior is identical to before.
+ */
+const crossDocumentOverlayCache = new WeakMap<Document, { overlay: Overlay; positionBuilder: OverlayPositionBuilder }>();
+
+/** Angular CDK's own base overlay positioning CSS (verbatim, from
+ *  `@angular/cdk` `_CdkOverlayStyleLoader`) — normally injected via JS once
+ *  per running app instance, so a second, separate document never gets it. */
+const CDK_OVERLAY_BASE_CSS = `
+.cdk-overlay-container, .cdk-global-overlay-wrapper {
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+.cdk-overlay-container { position: fixed; z-index: 1000; }
+.cdk-overlay-container:empty { display: none; }
+.cdk-global-overlay-wrapper { display: flex; position: absolute; z-index: 1000; }
+.cdk-overlay-pane {
+  position: absolute;
+  pointer-events: auto;
+  box-sizing: border-box;
+  display: flex;
+  max-width: 100%;
+  max-height: 100%;
+  z-index: 1000;
+}
+.cdk-overlay-backdrop {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  touch-action: manipulation;
+  z-index: 1000;
+  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.cdk-overlay-backdrop-showing { opacity: 1; }
+.cdk-overlay-transparent-backdrop {
+  transition: visibility 1ms linear, opacity 1ms linear;
+  visibility: hidden;
+  opacity: 1;
+}
+.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing { opacity: 0; visibility: visible; }
+.cdk-overlay-connected-position-bounding-box {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 1px;
+  min-height: 1px;
+  z-index: 1000;
+}
+.cdk-overlay-popover {
+  background: none;
+  border: none;
+  padding: 0;
+  outline: 0;
+  overflow: visible;
+  position: fixed;
+  pointer-events: none;
+  white-space: normal;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  inset: auto;
+  top: 0;
+  left: 0;
+}
+.cdk-overlay-popover::backdrop { display: none; }
+.cdk-overlay-popover .cdk-overlay-backdrop { position: fixed; z-index: auto; }
+`;
+
+/**
+ * This directive's own visual CSS, normally provided by the app's global
+ * stylesheet (style.scss). Duplicated here — scoped strictly to the
+ * `.rich-tooltip-*` class names that exist nowhere else in the app — so the
+ * tooltip looks right in a foreign document regardless of which stylesheets
+ * that document happens to load. Colors use hard-coded light-theme defaults
+ * (matching style.scss's `--rich-tooltip-*`/`--primary` variables) as a
+ * fallback since a popup document is not guaranteed to define those
+ * CSS custom properties.
+ */
+const RICH_TOOLTIP_VISUAL_CSS = `
+.rich-tooltip-panel { pointer-events: auto !important; z-index: 999999; }
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::before {
+  content: ''; position: absolute; top: -8px;
+  border: 8px solid transparent; border-top: 0;
+  border-bottom-color: var(--rich-tooltip-border, rgba(0,0,0,.1));
+}
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::after,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::after {
+  content: ''; position: absolute; top: -6px;
+  border: 7px solid transparent; border-top: 0;
+  border-bottom-color: var(--rich-tooltip-bg, #fff);
+}
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-start .rich-tooltip-bubble::after { left: 16px; }
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-below-end   .rich-tooltip-bubble::after { right: 16px; }
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::before {
+  content: ''; position: absolute; bottom: -8px;
+  border: 8px solid transparent; border-bottom: 0;
+  border-top-color: var(--rich-tooltip-border, rgba(0,0,0,.1));
+}
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::after,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::after {
+  content: ''; position: absolute; bottom: -6px;
+  border: 7px solid transparent; border-bottom: 0;
+  border-top-color: var(--rich-tooltip-bg, #fff);
+}
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-start .rich-tooltip-bubble::after { left: 16px; }
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::before,
+.rich-tooltip-panel.tooltip-above-end   .rich-tooltip-bubble::after { right: 16px; }
+@keyframes rich-tooltip-in  { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rich-tooltip-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(4px); } }
+.rich-tooltip-bubble {
+  position: relative;
+  background: var(--rich-tooltip-bg, #fff);
+  border: 1px solid var(--rich-tooltip-border, rgba(0,0,0,.1));
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13), 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: max-content;
+  max-width: min(320px, 90vw);
+  min-width: 120px;
+  overflow: visible;
+  animation: rich-tooltip-in 0.15s ease forwards;
+}
+.rich-tooltip-bubble.rich-tooltip-fade-out { animation: rich-tooltip-out 0.15s ease forwards; }
+.rich-tooltip-box {
+  color: var(--rich-tooltip-text, #374151);
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 10px 14px;
+  max-height: min(400px, 80vh);
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-word;
+  user-select: text;
+  cursor: text;
+  border-radius: inherit;
+}
+.rich-tooltip-box strong { font-weight: 600; color: var(--rich-tooltip-strong, #111827); }
+.rich-tooltip-box em { font-style: italic; opacity: 0.85; }
+.rich-tooltip-box code {
+  background: var(--rich-tooltip-code-bg, #f3f4f6);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--rich-tooltip-text, #374151);
+}
+.rich-tooltip-box a { color: var(--primary, rgb(14, 138, 139)); text-decoration: underline; }
+.rich-tooltip-box a:hover { opacity: 0.85; }
+.rich-tooltip-box .rt-action-link { cursor: pointer; }
+.rich-tooltip-box .rt-action-link:focus { outline: 2px solid var(--primary, rgb(14, 138, 139)); outline-offset: 1px; border-radius: 2px; }
+.rich-tooltip-box del { text-decoration: line-through; opacity: 0.75; }
+.rich-tooltip-box br { display: block; content: ''; margin-top: 4px; }
+.rich-tooltip-box ul, .rich-tooltip-box ol { margin: 4px 0 2px; padding-left: 18px; }
+`;
+
+const CROSS_DOCUMENT_STYLE_ID = 'rich-tooltip-cross-document-style';
+
+function ensureCrossDocumentStyles(doc: Document): void {
+  if (doc.getElementById(CROSS_DOCUMENT_STYLE_ID)) return;
+  const styleEl = doc.createElement('style');
+  styleEl.id = CROSS_DOCUMENT_STYLE_ID;
+  styleEl.textContent = CDK_OVERLAY_BASE_CSS + RICH_TOOLTIP_VISUAL_CSS;
+  doc.head.appendChild(styleEl);
+}
 
 /** Singleton — closes any open tooltip before a new one opens. */
 @Injectable({ providedIn: 'root' })
@@ -152,6 +359,8 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   private hoverTimer: ReturnType<typeof setTimeout> | null = null;
   private positionSub: Subscription | null = null;
   private readonly tooltipId = `rt-${++_tooltipIdSeq}`;
+  /** The document the currently-open overlay's listeners are bound to. */
+  private activeDocument: Document | null = null;
   private readonly closeBound = () => this.closeWithAnimation();
   private readonly panelMouseUpHandler = () => { this.isDragging = false; };
 
@@ -176,6 +385,52 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   private readonly registry = inject(RichTooltipRegistry);
   private readonly coreService = inject(CoreService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly injector = inject(Injector);
+  private readonly rootDocument = inject(DOCUMENT);
+
+  /** The document the trigger element actually lives in right now — differs
+   *  from `rootDocument` when this element has been re-parented into a
+   *  detached popup window (see PopupService). */
+  private get hostDocument(): Document {
+    return this.elementRef.nativeElement.ownerDocument || this.rootDocument;
+  }
+
+  /**
+   * Returns the CDK overlay services to use for the CURRENT host document.
+   * For the common case (element still in the main window) this is just the
+   * normally-injected singletons — zero behavior change. When the element has
+   * been moved into a foreign popup window, builds (once per window, then
+   * caches) a private set of overlay services bound to THAT window's own
+   * document, and makes sure the CSS that overlay pane needs actually exists
+   * there.
+   */
+  private resolveOverlayServices(): { overlay: Overlay; positionBuilder: OverlayPositionBuilder } {
+    const doc = this.hostDocument;
+    if (doc === this.rootDocument) {
+      return { overlay: this.overlay, positionBuilder: this.positionBuilder };
+    }
+    let entry = crossDocumentOverlayCache.get(doc);
+    if (!entry) {
+      ensureCrossDocumentStyles(doc);
+      const childInjector = Injector.create({
+        parent: this.injector,
+        providers: [
+          { provide: DOCUMENT, useValue: doc },
+          ViewportRuler,
+          OverlayContainer,
+          ScrollStrategyOptions,
+          OverlayPositionBuilder,
+          Overlay,
+        ],
+      });
+      entry = {
+        overlay: childInjector.get(Overlay),
+        positionBuilder: childInjector.get(OverlayPositionBuilder),
+      };
+      crossDocumentOverlayCache.set(doc, entry);
+    }
+    return entry;
+  }
 
   /** Click-outside handler — attached only while tooltip is open. */
   private readonly outsideClickHandler = (e: MouseEvent) => {
@@ -251,17 +506,24 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   }
 
   // ── Escape closes globally ─────────────────────────────
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    if (this.overlayRef) this.closeWithAnimation();
-  }
+  // NOT an @HostListener('document:...') — that always binds to the main
+  // window's document, which never sees keydown events from inside a
+  // detached popup window. Bound/unbound manually in open()/
+  // closeWithAnimation() against whichever document is actually active.
+  private readonly escapeHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && this.overlayRef) this.closeWithAnimation();
+  };
 
   // ── Open ───────────────────────────────────────────────
   private open(): void {
     if (this.overlayRef) return;
     this.registry.register(this.closeBound);
 
-    const positionStrategy = this.positionBuilder
+    const { overlay, positionBuilder } = this.resolveOverlayServices();
+    const activeDoc = this.hostDocument;
+    this.activeDocument = activeDoc;
+
+    const positionStrategy = positionBuilder
       .flexibleConnectedTo(this.elementRef)
       .withFlexibleDimensions(true)
       .withGrowAfterOpen(true)
@@ -274,9 +536,9 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
         { originX: 'end',   originY: 'top',    overlayX: 'end',   overlayY: 'bottom', offsetY: -8 },
       ]);
 
-    this.overlayRef = this.overlay.create({
+    this.overlayRef = overlay.create({
       positionStrategy,
-      scrollStrategy: this.overlay.scrollStrategies.reposition(),
+      scrollStrategy: overlay.scrollStrategies.reposition(),
       hasBackdrop: false,
       panelClass: 'rich-tooltip-panel',
     });
@@ -314,7 +576,7 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     panelEl.addEventListener('mouseenter', () => { this.insidePanel = true; });
     // Track drag-to-select so tooltip doesn't close while user selects text across the boundary
     panelEl.addEventListener('mousedown', () => { this.isDragging = true; });
-    document.addEventListener('mouseup', this.panelMouseUpHandler, true);
+    activeDoc.addEventListener('mouseup', this.panelMouseUpHandler, true);
     panelEl.addEventListener('mouseleave', (e: MouseEvent) => {
       this.insidePanel = false;
       if (this.isDragging || this.contextMenuOpen) return;
@@ -333,9 +595,9 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
       this.contextMenuOpen = true;
       const reset = () => {
         this.contextMenuOpen = false;
-        document.removeEventListener('mousedown', reset, true);
+        activeDoc.removeEventListener('mousedown', reset, true);
       };
-      document.addEventListener('mousedown', reset, true);
+      activeDoc.addEventListener('mousedown', reset, true);
     });
 
     // Handle action links: [text](action:type:param) — handled entirely inside the directive
@@ -356,8 +618,11 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
       }
     });
 
-    // Click-outside: defer so the opening click doesn't immediately close
-    setTimeout(() => document.addEventListener('click', this.outsideClickHandler, true), 0);
+    // Click-outside/Escape: defer so the opening click doesn't immediately close
+    setTimeout(() => {
+      activeDoc.addEventListener('click', this.outsideClickHandler, true);
+      activeDoc.addEventListener('keydown', this.escapeHandler, true);
+    }, 0);
   }
 
   // ── Close with fade-out animation ──────────────────────
@@ -366,8 +631,11 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
     this.registry.unregister(this.closeBound);
     this.positionSub?.unsubscribe();
     this.positionSub = null;
-    document.removeEventListener('click', this.outsideClickHandler, true);
-    document.removeEventListener('mouseup', this.panelMouseUpHandler, true);
+    const activeDoc = this.activeDocument || this.rootDocument;
+    activeDoc.removeEventListener('click', this.outsideClickHandler, true);
+    activeDoc.removeEventListener('mouseup', this.panelMouseUpHandler, true);
+    activeDoc.removeEventListener('keydown', this.escapeHandler, true);
+    this.activeDocument = null;
     this.isDragging = false;
     this.contextMenuOpen = false;
     const bubbleEl = this.overlayRef.overlayElement.querySelector('.rich-tooltip-bubble') as HTMLElement | null;
@@ -415,8 +683,11 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.hoverTimer) { clearTimeout(this.hoverTimer); this.hoverTimer = null; }
     this.positionSub?.unsubscribe();
-    document.removeEventListener('click', this.outsideClickHandler, true);
-    document.removeEventListener('mouseup', this.panelMouseUpHandler, true);
+    const activeDoc = this.activeDocument || this.rootDocument;
+    activeDoc.removeEventListener('click', this.outsideClickHandler, true);
+    activeDoc.removeEventListener('mouseup', this.panelMouseUpHandler, true);
+    activeDoc.removeEventListener('keydown', this.escapeHandler, true);
+    this.activeDocument = null;
     this.overlayRef?.dispose();
     this.overlayRef = null;
   }
