@@ -3009,8 +3009,8 @@
     "label.predefined.warn": "WARN",
     "label.predefined.started": "Gestartet",
     "label.predefined.shutdown": "Heruntergefahren",
-    "label.force": "Force",
-    "label.runningTimeout": "Timeout (s)",
+    "label.force": "Über die Grenzen hinaus laden",
+    "label.runningTimeout": "Zeitlimit",
     "placeholder.selectDate": "Datum auswählen",
     "placeholder.selectTime": "Zeit auswählen",
     "placeholder.relativeDateFrom": "z.B. 0d, 1d, 6h, 12h, 1w (s/m/h/d/w/M/y)",
@@ -3018,7 +3018,7 @@
     "placeholder.numOfLines": "z.B. 100, 500, 1000 (leer lassen, um alle Zeilen anzuzueigen)",
     "placeholder.filter": "Zeilen filtern…",
     "placeholder.searchInVisible": "Suchen in angezeigten Zeilen…",
-    "placeholder.runningTimeout": "1–57",
+    "placeholder.runningTimeout": "1–57 Sekunden",
     "message.copied": "Kopiert",
     "message.noEntries": "Keine Protokolleinträge gefunden",
     "message.noMatches": "Kein Treffer für \"{{term}}\"",
@@ -3056,8 +3056,8 @@
     "tooltip.contextMode": "Blendet Kontextzeilen für Protkollzeilen ein oder aus, die dem Suchbegriff des Filters entsprechen.",
     "tooltip.copyCriteria": "**Kriterien kopieren** für die Suche und Filterung, damit diese auch in anderen Protokollfenstern verwendet werden können.",
     "tooltip.pasteCriteria": "**Kriterien einfügen** wendet diese auf die Suche und Filter an.",
-    "tooltip.force": "When checked, log lines are loaded past the *Date To* or *Number of Lines* boundary by sending **force=true** to the API.",
-    "tooltip.runningTimeout": "Optional timeout in seconds (1–57) for the running log poll. If set, the server waits up to this many seconds for new log entries before responding. Leave empty to use the server default."
+    "tooltip.force": "Wenn dieses Kontrollkästchen aktiviert ist, werden Protokolleinträge über die Grenzen von *Datum bis* oder *Anzahl der Zeilen* hinaus geladen.",
+    "tooltip.runningTimeout": "Optionaler Zeitlimit in Sekunden (1–57) für das Abrufen des laufenden Protokolls. Wenn dieser Wert festgelegt ist, wartet der Server bis zu angegebenen Anzahl Sekunden auf neue Protokolleinträge, bevor er antwortet.\n\nLassen Sie das Feld leer, um die Voreinstellung des Servers zu verwenden."
   },
   "login": {
     "label.account": "Benutzerkonto",
@@ -3067,7 +3067,7 @@
     "button.loginWith": "Fortsetzen mit {{identityServiceName}}",
     "button.registerDevice": "Sicherheitsschlüssel registrieren",
     "message.loginError": "Zugang verweigert",
-    "message.operationTimeoutOrCancelled": "Der Vorogang ist zeitlich abgelaufen oder wurde abgebrochen",
+    "message.operationTimeoutOrCancelled": "Der Vorgang ist zeitlich abgelaufen oder wurde abgebrochen",
     "message.notSecureConnection": "Ihre Verbindung zu JOC Cockpit ist nicht sicher. Die Verwendung des Identitätsdienstes verlangt eine sichere HTTPS Verbindung.",
     "--------LOGIN DIALOG TOOLTIPS------------": "Page: Login, Sub-tab: -, Pop-up: -, Source: api-request.component.html, Fields: password",
     "tooltip.password": "Password"
