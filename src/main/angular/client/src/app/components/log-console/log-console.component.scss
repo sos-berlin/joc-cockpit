@@ -103,6 +103,27 @@
   }
 }
 
+// ─── Force checkbox and Running timeout input ───────────────────────────────────────────────────────
+.log-force-timeout {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-right: 5px;
+  border-right: 1px solid var(--border-color);
+  margin-right: 5px;
+}
+
+.log-running-timeout-input {
+  width: 62px;
+  height: auto;
+
+  nz-input-number-input,
+  .ant-input-number-input { font-size: 11px; }
+}
+
 // ─── Log line ─────────────────────────────────────────────────────────────
 .log-line {
   display: flex;

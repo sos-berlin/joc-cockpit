@@ -108,14 +108,10 @@ function parseLine(raw: string): ParsedLine {
 
 /** Predefined quick-search presets. */
 const PREDEFINED_SEARCHES: { label: string; value: string }[] = [
-  { label: 'logConsole.label.predefined.exception',        value: 'Exception' },
-  { label: 'logConsole.label.predefined.error',            value: 'ERROR' },
-  { label: 'logConsole.label.predefined.warn',             value: 'WARN' },
-  { label: 'logConsole.label.predefined.controllerStarted', value: 'Controller started' },
-  { label: 'logConsole.label.predefined.agentStarted',     value: 'Agent started' },
-  { label: 'logConsole.label.predefined.connectionLost',   value: 'Connection lost' },
-  { label: 'logConsole.label.predefined.restart',          value: 'Restart' },
-  { label: 'logConsole.label.predefined.terminated',       value: 'Terminated' },
+  { label: 'logConsole.label.predefined.error', value: 'ERROR' },
+  { label: 'logConsole.label.predefined.warn', value: 'WARN' },
+  { label: 'logConsole.label.predefined.started', value: 'Started' },
+  { label: 'logConsole.label.predefined.shutdown', value: 'Shutdown' },
 ];
 
 /** Context line count options for filter mode. */
@@ -179,6 +175,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   firstLogLineReached = false;
   /** True when /log/running signals the log session is completely over — stops all polling. */
   isLogComplete = false;
+  /** True when the API signals the dateTo filter boundary was hit — /log/next returns empty without force=true. */
+  dateToReached = false;
+  /** True when the API signals the numOfLines limit was hit — /log/next returns empty without force=true. */
+  numOfLinesReached = false;
+  /** When true, /log/next and /log/running send force=true to load lines past the dateTo/numOfLines boundary. */
+  forceEnabled = false;
+  /** Optional timeout (seconds, 1–57) sent as the timeout parameter to /log/running. null = omit parameter. */
+  runningTimeout: number | null = null;
   /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
   /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
@@ -1429,6 +1433,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  onForceEnabledChange(): void {
+    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached) && this.followTail) {
+      this.scheduleNextPoll();
+    }
+  }
+
   /** True when timestamps should be converted to the user profile tz; false = stay in Controller tz.
    *  Respects the per-window _tzOverride before falling back to the global logTimezone preference. */
   private get _useProfileTz(): boolean {
@@ -1541,6 +1551,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.lastKey  = entries[entries.length - 1].key || null;
         }
         this.lastLogLineReached  = !!res.lastLogLineReached;
+        this.dateToReached       = !!res.dateToReached;
+        this.numOfLinesReached   = !!res.numOfLinesReached;
         this.firstLogLineReached = false;
         this.timeZone = res.timeZone || '';
         this.isLoading = false;
@@ -1557,10 +1569,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   fetchNext(): void {
     if (!this.lastKey || this.isLoadingNext || this.lastLogLineReached) return;
+    if ((this.dateToReached || this.numOfLinesReached) && !this.forceEnabled) return;
     this.isLoadingNext = true;
     const body: any = { logToken: this.logToken, key: this.lastKey };
     const limit = this.request.limit ?? this.numOfNextLogLines;
     if (limit) body.limit = limit;
+    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached)) body.force = true;
     this.coreService.post(this.getNextApiUrl(), body).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
@@ -1569,7 +1583,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.lastKey = entries[entries.length - 1].key || this.lastKey;
           this.processLogEntries(entries, () => this.trimBuffer('top'));
         }
-        this.lastLogLineReached = !!res.lastLogLineReached;
+        this.lastLogLineReached  = !!res.lastLogLineReached;
+        this.dateToReached       = !!res.dateToReached;
+        this.numOfLinesReached   = !!res.numOfLinesReached;
         this.isLoadingNext = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
@@ -1616,10 +1632,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   fetchRunning(): void {
     if (!this.lastKey || this.isLoadingNext || this.isLoadingPrev || this.isLogComplete) return;
+    if ((this.dateToReached || this.numOfLinesReached) && !this.forceEnabled) return;
     this.isLoadingNext = true;
     const body: any = { logToken: this.logToken, key: this.lastKey };
     const limit = this.request.limit ?? this.numOfNextLogLines;
     if (limit) body.limit = limit;
+    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached)) body.force = true;
+    if (this.runningTimeout) body.timeout = this.runningTimeout;
     this.coreService.post(this.getRunningApiUrl(), body).subscribe({
       next: (res: any) => {
         if (this.destroyed) return;
@@ -1629,7 +1648,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.processLogEntries(entries, () => this.trimBuffer('top'));
         }
         if (res.logToken) this.logToken = res.logToken;
-        this.isLogComplete = res.isComplete === true;
+        this.isLogComplete     = res.isComplete === true;
+        this.dateToReached     = !!res.dateToReached;
+        this.numOfLinesReached = !!res.numOfLinesReached;
         this.isLoadingNext = false;
         if (this.followTail) this.scrollToBottom();
         this.scheduleNextPoll();
@@ -1665,7 +1686,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.lastKey  = null;
     this.lastLogLineReached  = false;
     this.firstLogLineReached = false;
-    this.isLogComplete = false;
+    this.isLogComplete     = false;
+    this.dateToReached     = false;
+    this.numOfLinesReached = false;
     this.isLoadingNext = false;
     this.isLoadingPrev = false;
     this.activeLineIdx = null;
@@ -1695,8 +1718,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   private scheduleNextPoll(): void {
     this.clearPollTimer();
-    const canPollNext    = this.followTail && !this.lastLogLineReached && !!this.logToken && !!this.lastKey;
-    const canPollRunning = this.followTail && this.lastLogLineReached  && !this.isLogComplete && !!this.logToken && !!this.lastKey;
+    const limitReached   = this.dateToReached || this.numOfLinesReached;
+    const canPollNext    = this.followTail && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
+    const canPollRunning = this.followTail && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
     if (canPollNext || canPollRunning) {
       this.pollTimer = setTimeout(() => {
         // Do not poll while the user has an active text selection — the response
@@ -1706,9 +1730,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           return;
         }
         if (this.destroyed) return;
-        if (!this.lastLogLineReached && this.logToken && this.lastKey) {
+        const lr = this.dateToReached || this.numOfLinesReached;
+        if (!this.lastLogLineReached && (!lr || this.forceEnabled) && this.logToken && this.lastKey) {
           this.fetchNext();
-        } else if (this.lastLogLineReached && !this.isLogComplete && this.logToken && this.lastKey) {
+        } else if (this.lastLogLineReached && !this.isLogComplete && (!lr || this.forceEnabled) && this.logToken && this.lastKey) {
           this.fetchRunning();
         }
       }, this.POLL_INTERVAL_MS);

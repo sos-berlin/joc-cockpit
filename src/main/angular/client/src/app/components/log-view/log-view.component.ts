@@ -60,6 +60,7 @@ export class LogViewComponent implements AfterViewInit {
   dataObject: PopoutData;
   treeStructure: any[] = [];
   isChildren = false;
+  _forkAutoReloaded = false;
   nodes = [];
   _tzOverride: 'profile' | 'original' | null = null;
   readonly levelLastDir = new Map<string, 'next' | 'prev'>();
@@ -756,6 +757,7 @@ export class LogViewComponent implements AfterViewInit {
   loadOrderLog(): void {
     this.workflow = this.dataObject.workflow;
     this.treeStructure = [];
+    this._forkAutoReloaded = false;
     const order: any = {
       controllerId: this.controllerId,
       historyId: this.historyId
@@ -812,7 +814,8 @@ export class LogViewComponent implements AfterViewInit {
     const x: any = this.dataBody.nativeElement.querySelectorAll('.tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
-      if (element.childNodes[0]) {
+      if (element.childNodes[0] && !element.childNodes[0].dataset?.clickBound) {
+        element.childNodes[0].dataset.clickBound = '1';
         element.childNodes[0].addEventListener('click', () => {
           this.expandTask(i, false);
         });
@@ -1016,10 +1019,14 @@ export class LogViewComponent implements AfterViewInit {
             if (!res.complete && !this.isCancel) {
               if (res.eventId) {
                 obj.eventId = res.eventId;
-                this.runningOrderLog(obj);
               }
+              this.runningOrderLog(obj);
             } else {
               this.finished = true;
+              if (!this._forkAutoReloaded && this.treeStructure.some(e => e.logEvent === 'OrderForked')) {
+                this._forkAutoReloaded = true;
+                this.reloadLog();
+              }
             }
           }
         }
@@ -1071,25 +1078,30 @@ export class LogViewComponent implements AfterViewInit {
     let col = '';
     for (let i = 0; i < dt.length; i++) {
       if (dt[i].position.match(/\/branch/)) {
-        dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
+        dt[i].position = dt[i].position.replace(/\/branch/g, '/fork+branch');
       }
       let flag = false;
-      if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
-        for (let x in this.treeStructure) {
-          if (this.treeStructure[x]['position'] == dt[i].position && this.treeStructure[x]['job'] == dt[i].job
-            && (this.treeStructure[x]['expectNotices'] == dt[i].expectNotices && this.treeStructure[x]['postNotice'] == dt[i].postNotice
-              && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
-              && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
-            if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
-              if (dt[i].label) {
-                this.treeStructure[x]['label'] = dt[i].label;
-              }
-              if (dt[i].logLevel) {
-                this.treeStructure[x]['logLevel'] = dt[i].logLevel
-              }
-              flag = true;
-              break;
+      for (let x in this.treeStructure) {
+        if (dt[i].logEvent === 'OrderForked' || dt[i].logEvent === 'OrderJoined') {
+          if (this.treeStructure[x]['orderId'] === dt[i].orderId
+            && this.treeStructure[x]['logEvent'] === dt[i].logEvent
+            && this.treeStructure[x]['position'] === dt[i].position) {
+            flag = true;
+            break;
+          }
+        } else if (this.treeStructure[x]['position'] == dt[i].position && this.treeStructure[x]['job'] == dt[i].job
+          && (this.treeStructure[x]['expectNotices'] == dt[i].expectNotices && this.treeStructure[x]['postNotice'] == dt[i].postNotice
+            && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
+            && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
+          if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
+            if (dt[i].label) {
+              this.treeStructure[x]['label'] = dt[i].label;
             }
+            if (dt[i].logLevel) {
+              this.treeStructure[x]['logLevel'] = dt[i].logLevel;
+            }
+            flag = true;
+            break;
           }
         }
       }

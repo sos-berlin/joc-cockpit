@@ -52,6 +52,7 @@ export class LogComponent {
   nodes = [];
   isChildren: boolean;
   logPanelWidth: number;
+  _forkAutoReloaded = false;
 
 
   @ViewChild('dataBody', {static: false}) dataBody: ElementRef;
@@ -279,6 +280,8 @@ export class LogComponent {
   }
 
   loadOrderLog(): void {
+    this.treeStructure = [];
+    this._forkAutoReloaded = false;
     this.workflow = this.route.snapshot.queryParams['workflow'];
     const order: any = {};
     order.controllerId = this.controllerId;
@@ -329,9 +332,12 @@ export class LogComponent {
     const x: any = document.getElementsByClassName('tx_order');
     for (let i = 0; i < x.length; i++) {
       const element = x[i];
-      element.childNodes[0].addEventListener('click', () => {
-        this.expandTask(i, false);
-      });
+      if (element.childNodes[0] && !element.childNodes[0].dataset?.clickBound) {
+        element.childNodes[0].dataset.clickBound = '1';
+        element.childNodes[0].addEventListener('click', () => {
+          this.expandTask(i, false);
+        });
+      }
     }
 
     if (!this.coreService.logViewDetails.expandedAllLog && this.coreService.logViewDetails.expandedLogPanel.size == 0) {
@@ -492,10 +498,16 @@ export class LogComponent {
           if (!res.complete && !this.isCancel) {
             if (res.eventId) {
               obj.eventId = res.eventId;
-              this.runningOrderLog(obj);
             }
+            this.runningOrderLog(obj);
           } else {
             this.finished = true;
+            if (!this._forkAutoReloaded && this.treeStructure.some(e => e.logEvent === 'OrderForked')) {
+              this._forkAutoReloaded = true;
+              this.taskCount = 1;
+              window.document.getElementById('logs').innerHTML = '';
+              this.loadOrderLog();
+            }
           }
         }
         this.cdr.markForCheck();
@@ -538,22 +550,27 @@ export class LogComponent {
     let col = '';
     for (let i = 0; i < dt.length; i++) {
       if (dt[i].position.match(/\/branch/)) {
-        dt[i].position = dt[i].position.replace(/(\/branch)/, '/fork+branch');
+        dt[i].position = dt[i].position.replace(/\/branch/g, '/fork+branch');
       }
 
       let flag = false;
-      if (dt[i].logEvent !== 'OrderForked' && dt[i].logEvent !== 'OrderJoined') {
-        for (let x in this.treeStructure) {
-          if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job
-            && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
-              && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved
-              && this.treeStructure[x].question == dt[i].question && this.treeStructure[x].cycle == dt[i].cycle && this.treeStructure[x].attached == dt[i].attached)) {
+      for (let x in this.treeStructure) {
+        if (dt[i].logEvent === 'OrderForked' || dt[i].logEvent === 'OrderJoined') {
+          if (this.treeStructure[x].orderId === dt[i].orderId
+            && this.treeStructure[x].logEvent === dt[i].logEvent
+            && this.treeStructure[x].position === dt[i].position) {
             flag = true;
-            if (dt[i].logLevel) {
-              this.treeStructure[x]['logLevel'] = dt[i].logLevel
-            }
             break;
           }
+        } else if (this.treeStructure[x].position == dt[i].position && this.treeStructure[x].orderId == dt[i].orderId && this.treeStructure[x].job == dt[i].job
+          && (this.treeStructure[x].expectNotices == dt[i].expectNotices && this.treeStructure[x].postNotice == dt[i].postNotice
+            && this.treeStructure[x].consumeNotices == dt[i].consumeNotices && this.treeStructure[x].moved == dt[i].moved
+            && this.treeStructure[x].question == dt[i].question && this.treeStructure[x].cycle == dt[i].cycle && this.treeStructure[x].attached == dt[i].attached)) {
+          flag = true;
+          if (dt[i].logLevel) {
+            this.treeStructure[x]['logLevel'] = dt[i].logLevel;
+          }
+          break;
         }
       }
       if (!flag) {
