@@ -551,6 +551,7 @@ export class JobTemplateComponent {
       } else {
         this.invalidMsg = '';
       }
+      this.saveJSON(false, true);
       this.ref.detectChanges();
     });
 
@@ -1363,7 +1364,7 @@ export class JobTemplateComponent {
     }
   }
 
-  saveJSON(flag = false): void {
+  saveJSON(flag = false, normalizeOnly = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -1372,6 +1373,11 @@ export class JobTemplateComponent {
        job.executable.internalType = 'JITL';
     }
     this.workflowService.convertJobObject(job);
+
+    if (normalizeOnly) {
+      this.job.actual = JSON.stringify(job);
+      return;
+    }
 
     if (this.job.actual && !isEqual(this.job.actual, JSON.stringify(job))) {
       if (!flag) {

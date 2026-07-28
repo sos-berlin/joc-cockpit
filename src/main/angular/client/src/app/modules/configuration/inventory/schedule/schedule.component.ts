@@ -1296,7 +1296,7 @@ export class ScheduleComponent {
     }, 0);
   }
 
-  saveJSON(flag = false, skip = false, form?, data?): void {
+  saveJSON(flag = false, skip = false, form?, data?, normalizeOnly = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -1412,7 +1412,7 @@ export class ScheduleComponent {
       delete obj.nonWorkingDayCalendars;
     }
 
-    if (skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
+    if (normalizeOnly || skip || (this.schedule.actual && !isEqual(this.schedule.actual, JSON.stringify(obj)))) {
       if (obj.calendars.length > 0) {
         for (let i = 0; i < obj.calendars.length; i++) {
           delete obj.calendars[i].type;
@@ -1434,6 +1434,10 @@ export class ScheduleComponent {
           delete obj.nonWorkingDayCalendars[i].periods;
           delete obj.nonWorkingDayCalendars[i].type;
         }
+      }
+      if (normalizeOnly) {
+        this.schedule.actual = JSON.stringify(obj);
+        return;
       }
       if (obj.workflowNames.length === 0 || obj.calendars.length === 0) {
         isValid = false;
@@ -1675,6 +1679,7 @@ export class ScheduleComponent {
         });
       }
       this.history.push(JSON.stringify(this.schedule.configuration));
+      this.saveJSON(false, false, null, null, true);
     });
   }
 
