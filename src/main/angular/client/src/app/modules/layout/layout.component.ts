@@ -770,7 +770,7 @@ export class LayoutComponent {
     preferences.edgeRounded = true;
     preferences.enableTagging = false;
     preferences.numOfLogLines = 2500;
-    preferences.numOfNextLogLines = 250;
+    preferences.numOfNextLogLines = 1000;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -897,7 +897,7 @@ export class LayoutComponent {
         data.numOfLogLines = 2500;
       }
       if (data.numOfNextLogLines === undefined) {
-        data.numOfNextLogLines = 250;
+        data.numOfNextLogLines = 1000;
       }
       // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
       if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {
