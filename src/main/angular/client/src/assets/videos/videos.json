@@ -81,5 +81,15 @@
     "id": "PBahizdAmGs",
     "title": "Cycle instruction",
     "description": "How to configure the Cycle Instruction"
+  },
+  "if-instruction": {
+    "id": "eFFtz0EYNTE",
+    "title": "If instruction",
+    "description": "How to configure the If Instruction"
+  },
+  "finish-instruction": {
+    "id": "jY86uZ4pckg",
+    "title": "Finish instruction",
+    "description": "How to configure the Finish Instruction"
   }
 }
