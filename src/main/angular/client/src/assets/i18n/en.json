@@ -3037,7 +3037,7 @@
     "tooltip.inputModeSearch": "**Search Mode** highlights lines of log output with matching text and navigates within visible lines.\n\nClicking the icon offers switching to *Filter Mode* which hides lines that do not match.",
     "tooltip.inputModeFilter": "**Filter Mode** hides lines that do not match the search term.\n\nClicking the icon offers switching to *Search Mode* which displays all lines and highlights matching lines.",
     "tooltip.searchInVisible": "Searches within visible log lines and highlights matching text.\n\nNavigation to previous and next hits is available from related icons.\n\nDouble-clicking an ^Order ID^ will copy the Order ID to the clipboard and will search occurrences.",
-    "tooltip.predefined": "Selects from a list of presets for searching log content:\n- **Exception**: problems hinting at wrong use or bugs in the software\n- **ERROR**: errors that need attention\n- **WARN**: temporary errors\n- **Controller started**: startup sequence of Controller\n- **Agent started**: startup sequence of Agent\n- **Connection lost**: connection to Controller or Agent lost\n- **Restarted**: restart sequence of Controller or Agent\n- **Shutdown**: Controller or Agent terminated",
+    "tooltip.predefined": "Selects from a list of presets for searching log content:\n- **ERROR**: errors that need attention\n- **WARN**: temporary errors\n- **Started**: begin of startup sequence\n- **Shutdown**: terminated",
     "tooltip.contextLines": "Number of context lines displayed before and after each match in *Filter Mode*.",
     "tooltip.reload": "**Reload Log** in log view window.",
     "tooltip.download": "**Download Log** to local file.",
