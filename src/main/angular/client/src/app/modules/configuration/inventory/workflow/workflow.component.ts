@@ -3817,6 +3817,7 @@ export class WorkflowComponent {
   subscription2: Subscription;
   isCopiedWorkflow = false;
   copiedWorkflowJobTags: any = {};
+  lastSavedOrderPreparation: any = null;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
@@ -5217,7 +5218,18 @@ export class WorkflowComponent {
         }
       }, 500);
     } else {
-      this.dataService.reloadTree.next({deploy: this.workflow});
+      const orderPrepChanged = !isEqual(
+        JSON.stringify(this.lastSavedOrderPreparation),
+        JSON.stringify(this.orderPreparation || {})
+      );
+      if (orderPrepChanged && !this.isStore) {
+        this.saveJSON(false);
+      }
+      if (this.isStore) {
+        this._reload();
+      } else {
+        this.dataService.reloadTree.next({deploy: this.workflow});
+      }
       this.impactShown = false;
     }
   }
@@ -5600,6 +5612,7 @@ export class WorkflowComponent {
     }
     this.updateOrderPreparation();
     this.fetchClipboard();
+    this.lastSavedOrderPreparation = this.coreService.clone(this.orderPreparation || {});
   }
 
   private updateOrderPreparation(): void {
@@ -13270,9 +13283,10 @@ export class WorkflowComponent {
                     ids.push(branch.id);
                   }
                 }
+                const existingBranchWorkflow = branch.workflow;
                 branch.workflow = {
-                  instructions: branch.instructions,
-                  result: branch.result
+                  instructions: branch.instructions ?? existingBranchWorkflow?.instructions,
+                  result: branch.result ?? existingBranchWorkflow?.result
                 };
                 delete branch.instructions;
                 delete branch.result;
@@ -13303,7 +13317,9 @@ export class WorkflowComponent {
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
           if (json.instructions[x].TYPE === 'CaseWhen') {
-            self.workflowService.convertCases(json.instructions[x]);
+            if (json.instructions[x].instructions) {
+              self.workflowService.convertCases(json.instructions[x]);
+            }
 
             flag = self.workflowService.validateFields(json.instructions[x], 'CaseWhen');
             if (!flag) {
@@ -13383,6 +13399,7 @@ export class WorkflowComponent {
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions
+                ?? json.instructions[x].lockedWorkflow?.instructions
             };
             const demands = clone(json.instructions[x].demands);
             delete json.instructions[x].instructions;
@@ -13391,6 +13408,7 @@ export class WorkflowComponent {
           } else if (json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
+                ?? json.instructions[x].subworkflow?.instructions
             };
             if (json.instructions[x].TYPE === 'ConsumeNotices') {
               const whenNotAnnounced = clone(json.instructions[x].whenNotAnnounced);
@@ -13401,11 +13419,13 @@ export class WorkflowComponent {
           } else if (json.instructions[x].TYPE === 'Options') {
             json.instructions[x].block = {
               instructions: json.instructions[x].instructions
+                ?? json.instructions[x].block?.instructions
             };
             delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
+                ?? json.instructions[x].cycleWorkflow?.instructions
             };
             const onlyOnePeriod = clone(json.instructions[x].onlyOnePeriod);
             let scheduleObj = json.instructions[x].schedule ? clone(json.instructions[x].schedule) : null;
@@ -13444,9 +13464,10 @@ export class WorkflowComponent {
               json.instructions[x].subagentClusterIdExpr = subagentClusterIdExprObj;
             }
             json.instructions[x].subagentIdVariable = subagentIdVariableObj;
+            const existingForkListWorkflow = json.instructions[x].workflow;
             json.instructions[x].workflow = {
-              instructions: json.instructions[x].instructions,
-              result
+              instructions: json.instructions[x].instructions ?? existingForkListWorkflow?.instructions,
+              result: result ?? existingForkListWorkflow?.result
             };
             json.instructions[x].joinIfFailed = joinIfFailed;
             delete json.instructions[x].instructions;
@@ -13640,7 +13661,13 @@ export class WorkflowComponent {
       data = noValidate;
     }
     this.checkJobInstruction(data);
-    if (this.workflow.path && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
+
+    const instructionsChanged = !isEqual(this.workflow.actual, JSON.stringify(data));
+    const orderPrepChanged = !isEqual(
+      JSON.stringify(this.lastSavedOrderPreparation),
+      JSON.stringify(this.orderPreparation || {})
+    );
+    if (this.workflow.path && (instructionsChanged || orderPrepChanged) && !this.isStore) {
       this.isStore = true;
       this.storeData(data);
     }
@@ -13851,9 +13878,6 @@ export class WorkflowComponent {
   }
 
   private storeData(data, onlyStore = false): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
-    }
     if (this.isTrash || !this.workflow || !this.workflow.path || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -13861,6 +13885,13 @@ export class WorkflowComponent {
       this.clearClipboard();
     }
     const newObj = this.extendJsonObj(data);
+    const hasOrderPrepChanged = !isEqual(
+      JSON.stringify(this.lastSavedOrderPreparation),
+      JSON.stringify(newObj.orderPreparation)
+    );
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules && hasOrderPrepChanged) {
+      this.changeImpact();
+    }
     if (!onlyStore) {
       if (this.history.past.length === 20) {
         this.history.past.shift();
@@ -13950,6 +13981,7 @@ export class WorkflowComponent {
         this.isStore = false
       }
     });
+    this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
   }
 
   private storeJobTags(path = null, copyObject = null, isWorkflow = false): void {
