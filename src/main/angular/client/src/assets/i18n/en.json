@@ -3011,6 +3011,7 @@
     "label.predefined.shutdown": "Shutdown",
     "label.force": "Load past boundaries",
     "label.runningTimeout": "Timeout",
+    "label.serviceId": "Service",
     "placeholder.selectDate": "Select date",
     "placeholder.selectTime": "Select time",
     "placeholder.relativeDateFrom": "e.g. 0d, 1d, 6h, 12h, 1w (s/m/h/d/w/M/y)",
@@ -3019,6 +3020,7 @@
     "placeholder.filter": "Filter lines…",
     "placeholder.searchInVisible": "Search in visible lines…",
     "placeholder.runningTimeout": "1–57 seconds",
+    "placeholder.serviceId": "Select a service…",
     "message.copied": "Copied",
     "message.noEntries": "No log entries found",
     "message.noMatches": "No match for \"{{term}}\"",
@@ -3057,7 +3059,20 @@
     "tooltip.copyCriteria": "**Copy Criteria** for search and filter settings so they can be applied to another open log window.",
     "tooltip.pasteCriteria": "**Paste Criteria** applies search and filter settings that were previously copied from another log window.\n\nBecomes available once criteria have been copied.",
     "tooltip.force": "When checked, log lines are loaded past the *Date To* or *Number of Lines* boundaries.",
-    "tooltip.runningTimeout": "Optional timeout in seconds (1–57) for pulling the running log. If set, the server waits up to this many seconds for new log entries before responding.\n\nLeave empty to use the server default."
+    "tooltip.runningTimeout": "Optional timeout in seconds (1–57) for pulling the running log. If set, the server waits up to this many seconds for new log entries before responding.\n\nLeave empty to use the server default.",
+    "tooltip.serviceId": "Selects the JOC Cockpit service for which log output is displayed.",
+    "serviceId": {
+      "label.joc": "JOC",
+      "label.cluster": "Cluster",
+      "label.history": "History",
+      "label.dailyPlan": "Daily plan",
+      "label.cleanUp": "Clean Up",
+      "label.monitor": "Monitor",
+      "label.logNotification": "Log Notification",
+      "label.reports": "Reports",
+      "label.authentication": "Authentication",
+      "label.audit": "Audit"
+    }
   },
   "login": {
     "label.account": "User Account",

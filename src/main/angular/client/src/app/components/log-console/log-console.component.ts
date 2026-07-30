@@ -128,6 +128,7 @@ export interface LogConsoleRequest {
   role?: string;
   agentId?: string;
   subagentId?: string;
+  serviceId?: string;
   /** REST level: WARN | INFO | DEBUG  (no TRACE — DEBUG includes TRACE automatically). */
   level?: string;
   dateFrom?: string;
@@ -1952,6 +1953,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       if (r.controllerId) req.controllerId = r.controllerId;
       if (r.agentId)      req.agentId      = r.agentId;
       if (r.subagentId)   req.subagentId   = r.subagentId;
+    } else if (r.type === 'joc') {
+      if (r.serviceId) req.serviceId = r.serviceId;
     }
     // Hierarchical level: DEBUG → server sends DEBUG + TRACE; WARN → WARN + ERROR
     req.level    = r.level    || 'INFO';
@@ -1980,6 +1983,7 @@ export class LogConsoleModalComponent implements OnInit {
     role:            '',
     agentId:         '',
     subagentId:      '',
+    serviceId:       '',
     level:           'INFO',
     dateMode:        'relative' as 'relative' | 'specific',
     dateFrom:        '0d',
@@ -2003,6 +2007,19 @@ export class LogConsoleModalComponent implements OnInit {
     { value: 'DEBUG', label: 'logConsole.label.levelOption.debug' },
   ];
   readonly roleOptions = ['PRIMARY', 'BACKUP'];
+
+  readonly serviceIdOptions = [
+    { name: 'logConsole.serviceId.label.joc',             value: 'JOC' },
+    { name: 'logConsole.serviceId.label.cluster',         value: 'CLUSTER' },
+    { name: 'logConsole.serviceId.label.history',         value: 'HISTORY' },
+    { name: 'logConsole.serviceId.label.dailyPlan',       value: 'DAILYPLAN' },
+    { name: 'logConsole.serviceId.label.cleanUp',         value: 'CLEANUP' },
+    { name: 'logConsole.serviceId.label.monitor',         value: 'MONITOR' },
+    { name: 'logConsole.serviceId.label.logNotification', value: 'LOGNOTIFICATION' },
+    { name: 'logConsole.serviceId.label.reports',         value: 'REPORTS' },
+    { name: 'logConsole.serviceId.label.authentication',  value: 'AUTHENTICATION' },
+    { name: 'logConsole.serviceId.label.audit',           value: 'AUDIT' },
+  ];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
 
@@ -2045,6 +2062,7 @@ export class LogConsoleModalComponent implements OnInit {
         if (s.dateToDate)   this.form.dateToDate   = new Date(s.dateToDate);
         if (s.dateToTime)   this.form.dateToTime   = new Date(s.dateToTime);
         if (s.numOfLines)     this.form.numOfLines = Number(s.numOfLines);
+        if (s.serviceId)      this.form.serviceId  = s.serviceId;
       } catch { /**/ }
     }
   }
@@ -2072,6 +2090,7 @@ export class LogConsoleModalComponent implements OnInit {
     if (!dateFromOk) return true;
     if (this.type === 'controller' && !this.form.controllerId) return true;
     if (this.type === 'agent' && (!this.form.controllerId || !this.form.agentId)) return true;
+    if (this.type === 'joc' && !this.form.serviceId) return true;
     return false;
   }
 
@@ -2088,6 +2107,7 @@ export class LogConsoleModalComponent implements OnInit {
     if (req.role)         params.set('role',         req.role);
     if (req.agentId)      params.set('agentId',      req.agentId);
     if (req.subagentId)   params.set('subagentId',   req.subagentId);
+    if (req.serviceId)    params.set('serviceId',    req.serviceId);
     if (req.level)        params.set('level',        req.level);
     if (req.dateFrom)     params.set('dateFrom',     req.dateFrom);
     if (req.dateTo)       params.set('dateTo',       req.dateTo);
@@ -2120,6 +2140,19 @@ export class LogConsoleModalComponent implements OnInit {
 
   onTypeChange(): void {}
 
+  get forcedLevel(): string | null {
+    if (this.form.serviceId === 'AUTHENTICATION') return 'DEBUG';
+    if (this.form.serviceId === 'AUDIT') return 'INFO';
+    return null;
+  }
+
+  onServiceIdChange(): void {
+    const forced = this.forcedLevel;
+    if (forced) {
+      this.form.level = forced;
+    }
+  }
+
   private saveFormState(): void {
     const toSave: any = {
       level:      this.form.level,
@@ -2127,7 +2160,8 @@ export class LogConsoleModalComponent implements OnInit {
       dateFrom:   this.form.dateFrom,
       dateTo:     this.form.dateTo,
       limit:      this.form.limit,
-      timeZone:   this.form.timeZone
+      timeZone:   this.form.timeZone,
+      serviceId:  this.form.serviceId || undefined
     };
     if (this.form.dateFromDate instanceof Date) toSave.dateFromDate = this.form.dateFromDate.toISOString();
     if (this.form.dateFromTime instanceof Date) toSave.dateFromTime = this.form.dateFromTime.toISOString();
@@ -2171,6 +2205,7 @@ export class LogConsoleModalComponent implements OnInit {
       role:         this.form.role         || undefined,
       agentId:      this.form.agentId      || undefined,
       subagentId:   this.form.subagentId   || undefined,
+      serviceId:    this.form.serviceId    || undefined,
       level:        this.form.level        || 'INFO',
       dateFrom,
       dateTo,
@@ -2191,6 +2226,8 @@ export class LogConsoleModalComponent implements OnInit {
       if (req.controllerId) p.controllerId = req.controllerId;
       if (req.agentId)    p.agentId    = req.agentId;
       if (req.subagentId) p.subagentId = req.subagentId;
+    } else if (req.type === 'joc') {
+      if (req.serviceId) p.serviceId = req.serviceId;
     }
     p.level    = req.level    || 'INFO';
     p.dateFrom = req.dateFrom;

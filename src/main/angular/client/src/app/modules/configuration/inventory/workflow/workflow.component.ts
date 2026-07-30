@@ -16347,7 +16347,11 @@ export class WorkflowComponent {
       key = 'try-catch-instruction';
     } else if (type == 'Cycle') {
       key = 'cycle-instruction';
-    }
+    } else if (type == 'If') {
+      key = 'if-instruction';
+    }  else if (type == 'Finish') {
+      key = 'finish-instruction';
+    } 
     this.coreService.openVideoPage(key);
   }
 

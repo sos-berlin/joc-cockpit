@@ -174,7 +174,7 @@
           </li>
         }
         @if (joc && joc.current && permission.joc && permission.joc.getLog) {
-          <li (click)="downloadJocLog()" nz-menu-item>
+          <li (click)="jocLogs()" nz-menu-item>
             <a>{{ 'dashboard.button.logs' | translate }}</a>
           </li>
         }

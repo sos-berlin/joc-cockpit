@@ -3011,6 +3011,7 @@
     "label.predefined.shutdown": "Heruntergefahren",
     "label.force": "Über die Grenzen hinaus laden",
     "label.runningTimeout": "Zeitlimit",
+    "label.serviceId": "Service",
     "placeholder.selectDate": "Datum auswählen",
     "placeholder.selectTime": "Zeit auswählen",
     "placeholder.relativeDateFrom": "z.B. 0d, 1d, 6h, 12h, 1w (s/m/h/d/w/M/y)",
@@ -3019,6 +3020,7 @@
     "placeholder.filter": "Zeilen filtern…",
     "placeholder.searchInVisible": "Suchen in angezeigten Zeilen…",
     "placeholder.runningTimeout": "1–57 Sekunden",
+    "placeholder.serviceId": "Select a service…",
     "message.copied": "Kopiert",
     "message.noEntries": "Keine Protokolleinträge gefunden",
     "message.noMatches": "Kein Treffer für \"{{term}}\"",
@@ -3057,7 +3059,20 @@
     "tooltip.copyCriteria": "**Kriterien kopieren** für die Suche und Filterung, damit diese auch in anderen Protokollfenstern verwendet werden können.",
     "tooltip.pasteCriteria": "**Kriterien einfügen** wendet diese auf die Suche und Filter an.",
     "tooltip.force": "Wenn dieses Kontrollkästchen aktiviert ist, werden Protokolleinträge über die Grenzen von *Datum bis* oder *Anzahl der Zeilen* hinaus geladen.",
-    "tooltip.runningTimeout": "Optionaler Zeitlimit in Sekunden (1–57) für das Abrufen des laufenden Protokolls. Wenn dieser Wert festgelegt ist, wartet der Server bis zu angegebenen Anzahl Sekunden auf neue Protokolleinträge, bevor er antwortet.\n\nLassen Sie das Feld leer, um die Voreinstellung des Servers zu verwenden."
+    "tooltip.runningTimeout": "Optionaler Zeitlimit in Sekunden (1–57) für das Abrufen des laufenden Protokolls. Wenn dieser Wert festgelegt ist, wartet der Server bis zu angegebenen Anzahl Sekunden auf neue Protokolleinträge, bevor er antwortet.\n\nLassen Sie das Feld leer, um die Voreinstellung des Servers zu verwenden.",
+    "tooltip.serviceId": "Selects the JOC Cockpit service for which log output is displayed.",
+    "serviceId": {
+      "label.joc": "JOC",
+      "label.cluster": "Cluster",
+      "label.history": "History",
+      "label.dailyPlan": "Daily plan",
+      "label.cleanUp": "Clean Up",
+      "label.monitor": "Monitor",
+      "label.logNotification": "Log Notification",
+      "label.reports": "Reports",
+      "label.authentication": "Authentication",
+      "label.audit": "Audit"
+    }
   },
   "login": {
     "label.account": "Benutzerkonto",

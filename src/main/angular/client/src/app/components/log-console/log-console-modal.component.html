@@ -7,6 +7,23 @@
 
 <form #myForm="ngForm">
   <div class="modal-body p-a">
+    @if (type === 'joc') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label">
+          <span [appRichTooltip]="'logConsole.tooltip.serviceId' | translate">{{ 'logConsole.label.serviceId' | translate }}</span>
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-8">
+          <nz-select [(ngModel)]="form.serviceId" name="serviceId" class="w-full" required
+                     [nzPlaceHolder]="'logConsole.placeholder.serviceId' | translate"
+                     (ngModelChange)="onServiceIdChange()">
+            @for (s of serviceIdOptions; track s.value) {
+              <nz-option [nzValue]="s.value" [nzLabel]="s.name | translate"></nz-option>
+            }
+          </nz-select>
+        </div>
+      </div>
+    }
     <div class="form-group row">
       <label class="col-sm-4 form-control-label">
         <span [appRichTooltip]="'logConsole.tooltip.dateType' | translate">{{ 'logConsole.label.dateType' | translate }}</span>
@@ -103,7 +120,7 @@
         <span [appRichTooltip]="'logConsole.tooltip.level' | translate">{{ 'logConsole.label.level' | translate }}</span>
       </label>
       <div class="col-sm-8">
-        <nz-select [(ngModel)]="form.level" name="level" class="w-full">
+        <nz-select [(ngModel)]="form.level" name="level" class="w-full" [nzDisabled]="!!forcedLevel">
           @for (l of levelOptions; track l.value) {
             <nz-option [nzValue]="l.value" [nzLabel]="l.label | translate"></nz-option>
           }

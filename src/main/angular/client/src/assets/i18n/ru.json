@@ -3011,6 +3011,7 @@
     "label.predefined.shutdown": "Завершён",
     "label.force": "Без ограничений",
     "label.runningTimeout": "Тайм-аут (с)",
+    "label.serviceId": "Service",
     "placeholder.selectDate": "Выберите дату",
     "placeholder.selectTime": "Выберите время",
     "placeholder.relativeDateFrom": "например 1d 6h 12h 1w (s/m/h/d/w/M/y)",
@@ -3019,6 +3020,7 @@
     "placeholder.filter": "Фильтровать строки…",
     "placeholder.searchInVisible": "Поиск среди отображаемых строк…",
     "placeholder.runningTimeout": "1-57 секунд",
+    "placeholder.serviceId": "Select a service…",
     "message.copied": "Скопировано",
     "message.noEntries": "Записи журнала не найдены",
     "message.noMatches": "Совпадений по запросу \"{{term}}\" не найдено",
@@ -3057,7 +3059,20 @@
     "tooltip.copyCriteria": "**Копирует критерии** поиска и фильтрации для использования в других окнах журнала.",
     "tooltip.pasteCriteria": "**Вставляет критерии** поиска и фильтрации.",
     "tooltip.force": "Если этот флажок установлен, записи журнала загружаются без учёта ограничений *Время по* и *Количество строк*.",
-    "tooltip.runningTimeout": "Необязательный тайм-аут в секундах (1-57) для получения текущего журнала. Если указано значение, сервер будет ожидать появления новых записей журнала не более указанного числа секунд, прежде чем отправить ответ.\n\nОставьте поле пустым, чтобы использовать значение по умолчанию, заданное на сервере."
+    "tooltip.runningTimeout": "Необязательный тайм-аут в секундах (1-57) для получения текущего журнала. Если указано значение, сервер будет ожидать появления новых записей журнала не более указанного числа секунд, прежде чем отправить ответ.\n\nОставьте поле пустым, чтобы использовать значение по умолчанию, заданное на сервере.",
+    "tooltip.serviceId": "Selects the JOC Cockpit service for which log output is displayed.",
+    "serviceId": {
+      "label.joc": "JOC",
+      "label.cluster": "Cluster",
+      "label.history": "History",
+      "label.dailyPlan": "Daily plan",
+      "label.cleanUp": "Clean Up",
+      "label.monitor": "Monitor",
+      "label.logNotification": "Log Notification",
+      "label.reports": "Reports",
+      "label.authentication": "Authentication",
+      "label.audit": "Audit"
+    }
   },
   "login": {
     "label.account": "Имя пользователя",

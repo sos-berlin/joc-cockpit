@@ -38,6 +38,7 @@ export class SystemLogPageComponent implements OnInit {
       role:         p['role']         || undefined,
       agentId:      p['agentId']      || undefined,
       subagentId:   p['subagentId']   || undefined,
+      serviceId:    p['serviceId']    || undefined,
       level:        p['level']        || 'INFO',
       dateFrom:     p['dateFrom']     || '1d',
       dateTo:       p['dateTo']       || undefined,
@@ -60,6 +61,7 @@ export class SystemLogPageComponent implements OnInit {
       else if (req.agentId) parts.push(req.agentId);
     } else if (req.type === 'joc') {
       parts.push(this.translate.instant('logConsole.label.joc'));
+      if (req.serviceId) parts.push(req.serviceId);
     }
     return parts.join(' — ');
   }

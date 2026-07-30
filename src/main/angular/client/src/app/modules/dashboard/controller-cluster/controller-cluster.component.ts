@@ -823,6 +823,18 @@ export class ControllerClusterComponent {
     });
   }
 
+  jocLogs(){
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: LogConsoleModalComponent,
+      nzData: { type: 'joc', timeZone: this.coreService.getTimeZone() },
+      nzFooter: null,
+      nzClassName: 'lg',
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
   restartService(type): void {
     let obj: any = {
       type: type
