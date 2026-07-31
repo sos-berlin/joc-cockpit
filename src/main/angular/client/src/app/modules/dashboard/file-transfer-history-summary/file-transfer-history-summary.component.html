@@ -2,7 +2,7 @@
   <div class="box-header b-b remove">
     <h3>
       @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle"></i></span>
       }
       <span>{{ 'dashboard.label.fileTransferSummary' | translate }}</span>
     </h3>
@@ -50,22 +50,16 @@
   </div>
   <div class="box-body">
     @if (!notAuthenticate && isLoaded) {
-      <table class="w-full">
-        <tr class="text-center">
-          <td style="width: 50%">
-            <a (click)="showSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulTransfers' | translate">
-              <div>{{ 'common.label.successful' | translate }}</div>
-              <div [innerHtml]="summary.successful || 0" [ngClass]="{'dark-blue':summary.successful >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-          <td style="width: 50%">
-            <a (click)="showSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedTransfers' | translate">
-              <div>{{ 'common.label.failed' | translate }}</div>
-              <div [innerHtml]="summary.failed || 0" [ngClass]="{'red':summary.failed >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-        </tr>
-      </table>
+      <div class="stat-grid file-transfer-grid">
+        <a class="stat-tile" (click)="showSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulTransfers' | translate">
+          <div class="stat-label">{{ 'common.label.successful' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="summary.successful || 0" [ngClass]="{'dark-blue': summary.successful > 0}"></div>
+        </a>
+        <a class="stat-tile" (click)="showSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedTransfers' | translate">
+          <div class="stat-label">{{ 'common.label.failed' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="summary.failed || 0" [ngClass]="{'red': summary.failed > 0}"></div>
+        </a>
+      </div>
     }
     @if (notAuthenticate) {
       <div>

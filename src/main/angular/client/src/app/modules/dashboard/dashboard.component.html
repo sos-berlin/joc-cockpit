@@ -1,108 +1,124 @@
-<div class="white box-shadow sub-header">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="padding">
-        <div class="text-right ">
-          <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
-          </div>
-          @if (!editLayoutObj) {
-            <div class="inline">
-              <button (click)="editLayout()" class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-pencil"></i>&nbsp;
-                <span>{{ 'dashboard.button.editLayout' | translate }}</span>
-              </button>
-              <button (click)="resetLayout()" class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-refresh"></i>&nbsp;
-                <span>{{ 'dashboard.button.resetLayout' | translate }}</span>
-              </button>
-            </div>
-          }
-          @if (editLayoutObj) {
-            <div class="inline">
-              <button (click)="addWidgetDialog()" class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-plus"></i>&nbsp;
-                <span>{{ 'dashboard.button.widget' | translate }}</span>
-              </button>
-              <button (click)="saveWidget()" class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-save"></i>&nbsp;
-                <span>{{ 'common.button.save' | translate }}</span>
-              </button>
-              <button (click)="cancelWidget()" class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-times"></i>&nbsp;
-                <span>{{ 'common.button.cancel' | translate }}</span>
-              </button>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
+<!-- ─── Dashboard Toolbar ────────────────────────────────────────────────── -->
+<div class="dashboard-toolbar" [class.dashboard-toolbar--editing]="editLayoutObj">
+  <app-breadcrumbs></app-breadcrumbs>
+  <div class="dashboard-toolbar-actions">
+    @if (!editLayoutObj) {
+      <button (click)="editLayout()" class="btn btn-grey btn-sm">
+        <i nz-icon nzType="edit" nzTheme="outline"></i>
+        <span>{{ 'dashboard.button.editLayout' | translate }}</span>
+      </button>
+      <button (click)="resetLayout()" class="btn btn-grey btn-sm">
+        <i nz-icon nzType="reload" nzTheme="outline"></i>
+        <span>{{ 'dashboard.button.resetLayout' | translate }}</span>
+      </button>
+    }
+    @if (editLayoutObj) {
+      <button (click)="addWidgetDialog()" class="btn btn-grey btn-sm">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        <span>{{ 'dashboard.button.widget' | translate }}</span>
+      </button>
+      <button (click)="saveWidget()" class="btn btn-primary btn-sm">
+        <i nz-icon nzType="save" nzTheme="outline"></i>
+        <span>{{ 'common.button.save' | translate }}</span>
+      </button>
+      <button (click)="cancelWidget()" class="btn btn-grey btn-sm">
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        <span>{{ 'common.button.cancel' | translate }}</span>
+      </button>
+    }
   </div>
 </div>
-<div id="gridster-container">
-  @if (dashboard.length == 0 && isLoading) {
-    <div class="m-a">
-      <div class="m-a-sm emtpy-text">
-        <a (click)="addWidgetDialog()" class="cursor">{{ 'dashboard.button.addNewWidget' | translate }}</a>
-      </div>
+
+<!-- ─── Gridster container ──────────────────────────────────────────────────── -->
+<div id="gridster-container" class="dashboard-grid-container">
+
+  @if (dashboard.length === 0 && isLoading) {
+    <div class="dashboard-empty">
+      <i nz-icon nzType="layout" nzTheme="outline" class="dashboard-empty-icon"></i>
+      <p class="dashboard-empty-text">{{ 'dashboard.label.addWidget' | translate }}</p>
+      <button (click)="addWidgetDialog()" class="btn btn-primary btn-sm">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        <span>{{ 'dashboard.button.addNewWidget' | translate }}</span>
+      </button>
     </div>
   }
+
   @if (dashboard.length > 0) {
     <div class="gridster">
       <gridster [options]="options">
         @for (item of dashboard; track item) {
-          <gridster-item [item]="item">
-            <div class="destroy-button">
+          <gridster-item [item]="item" [class.widget--editing]="editLayoutObj">
+
+            <!-- Widget card wrapper -->
+            <div class="widget-card" [attr.data-widget]="item.name">
+
+              <!-- Header / drag handle — only in edit mode -->
               @if (editLayoutObj) {
-                <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()"
-                   [appRichTooltip]="'common.button.remove' | translate"
-                   class="fa fa-times-circle"></i>
+                <div class="widget-header drag-handler">
+                  <span class="widget-title">
+                    <i nz-icon nzType="holder" nzTheme="outline" class="widget-grip"></i>
+                    {{ 'dashboard.label.' + item.name | translate }}
+                  </span>
+                  <button class="widget-remove-btn"
+                          (click)="removeWidget($event, item)"
+                          (mousedown)="$event.stopPropagation()"
+                          [appRichTooltip]="'common.button.remove' | translate">
+                    <i nz-icon nzType="close" nzTheme="outline"></i>
+                  </button>
+                </div>
               }
+
+              <!-- Widget body — gridster-item-content prevents drag on click inside -->
+              <div class="widget-body gridster-item-content">
+                @switch (item.name) {
+                  @case ('agentStatus') {
+                    <app-agent-status [layout]="item"></app-agent-status>
+                  }
+                  @case ('agentClusterStatus') {
+                    <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
+                  }
+                  @case ('componentStatus') {
+                    <app-controller-cluster [permission]="permission" [sizeY]="item.rows"></app-controller-cluster>
+                  }
+                  @case ('agentRunningJobs') {
+                    <app-agent-running-task [layout]="item"></app-agent-running-task>
+                  }
+                  @case ('JS7Status') {
+                    <app-scheduler-instance [permission]="permission" [sizeY]="item.rows"></app-scheduler-instance>
+                  }
+                  @case ('apiServerStatus') {
+                    <app-api-server-status [permission]="permission" [sizeY]="item.rows"></app-api-server-status>
+                  }
+                  @case ('orders') {
+                    <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
+                  }
+                  @case ('history') {
+                    <app-history-summary></app-history-summary>
+                  }
+                  @case ('fileTransferSummary') {
+                    <app-file-transfer-history-summary></app-file-transfer-history-summary>
+                  }
+                  @case ('inventory') {
+                    <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
+                  }
+                  @case ('dailyPlan') {
+                    <app-daily-plan></app-daily-plan>
+                  }
+                  @case ('workflows') {
+                    <app-workflow></app-workflow>
+                  }
+                }
+              </div>
+
             </div>
-            @switch (item.name) {
-              @case ('agentStatus') {
-                <app-agent-status [layout]="item"></app-agent-status>
-              }
-              @case ('agentClusterStatus') {
-                <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
-              }
-              @case ('componentStatus') {
-                <app-controller-cluster [permission]="permission" [sizeY]="item.rows"></app-controller-cluster>
-              }
-              @case ('agentRunningJobs') {
-                <app-agent-running-task [layout]="item"></app-agent-running-task>
-              }
-              @case ('JS7Status') {
-                <app-scheduler-instance [permission]="permission" [sizeY]="item.rows"></app-scheduler-instance>
-              }
-              @case ('apiServerStatus') {
-                <app-api-server-status [permission]="permission" [sizeY]="item.rows"></app-api-server-status>
-              }
-              @case ('orders') {
-                <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
-              }
-              @case ('history') {
-                <app-history-summary></app-history-summary>
-              }
-              @case ('fileTransferSummary') {
-                <app-file-transfer-history-summary></app-file-transfer-history-summary>
-              }
-              @case ('inventory') {
-                <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
-              }
-              @case ('dailyPlan') {
-                <app-daily-plan></app-daily-plan>
-              }
-              @case ('workflows') {
-                <app-workflow></app-workflow>
-              }
-            }
           </gridster-item>
         }
       </gridster>
     </div>
   }
+
 </div>
+
 @if (!isLoading) {
   <div class="spinner">
     <div class="cssload-inner cssload-one"></div>

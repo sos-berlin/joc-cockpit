@@ -3,7 +3,7 @@
     <h3>
       @if (preferences.showHelpPages) {
         <span>
-          <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+          <i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle"></i>
         </span>
       }
       <span>{{ 'dashboard.label.agentClusterStatus' | translate }}</span>
@@ -12,7 +12,7 @@
   <div [hidden]="!isLoaded" class="row">
     <div class="col-md-12">
       @if (pieChartData.datasets.length > 0) {
-        <div [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px'}"
+        <div [ngStyle]="{'height':(layout.rows * 55 +((layout.rows -1) *20 -50)) + 4 +'px', 'width': '90%'}"
              class="p-a p-l-0">
           <canvas (chartClick)="onChartClick($event)"
                   [data]="pieChartData"

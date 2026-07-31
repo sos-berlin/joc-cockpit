@@ -3864,6 +3864,7 @@ table.order-table-panel {
   height: auto;
   padding: 6px;
   position: relative;
+  border-radius: 10px;
 }
 
 .cluster-rect, .connection, .cluster, .icon-color, .ant-tree li {
@@ -3893,7 +3894,7 @@ table.order-table-panel {
 
 .joc.current {
   box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid var(--primary) !important;
 }
 
 .database {
@@ -3907,8 +3908,9 @@ table.order-table-panel {
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: var(--bg-box) -webkit-gradient(linear, left bottom, left top, color-stop(0, var(--bg-box)), color-stop(1, var(--background-color)));
   padding: 5px;
-  border-radius: 12px;
+  border-radius: 10px;
   position: relative;
+  box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3), inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 
   .pull-right {
     margin-top: -2px;
@@ -3950,8 +3952,8 @@ table.order-table-panel {
 
 .success-node {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 3px;
+  top: 5px;
   margin-top: 0;
 }
 

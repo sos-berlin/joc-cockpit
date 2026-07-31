@@ -1,23 +1,97 @@
-.gridster {
-  margin: 0 0 8px;
-  padding: 0;
+:host {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  overflow: hidden;
+}
+
+// ─── Dashboard Toolbar ────────────────────────────────────────────────────────
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-footer);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  gap: 12px;
+  transition: background 200ms, border-color 200ms;
+
+  &--editing {
+    background: color-mix(in srgb, var(--primary) 4%, var(--bg-footer));
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .btn.btn-grey {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+    border: 1px solid;
+    border-radius: 10px;
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--primary);
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      border: 1px solid;
+      background: color-mix(in srgb, var(--primary) 6%, transparent);
+    }
+  }
+
+  .btn.btn-primary {
+    border: 1px solid;
+    border-radius: 10px;
+  }
+}
+
+// Remove Bootstrap's default ol margin-bottom inside the breadcrumb
+.dashboard-toolbar ::ng-deep .breadcrumb {
+  margin-bottom: 0;
+}
+
+.dashboard-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    [nz-icon] { font-size: 12px; }
+  }
+}
+
+// ─── Grid container ───────────────────────────────────────────────────────────
+.dashboard-grid-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-top: 4px;
+}
+
+.gridster {
+  margin: 0;
+  padding: 0;
   user-select: none;
 }
 
 gridster {
-  background: transparent;
+  background: color-mix(in srgb, var(--bg-footer) 70%, var(--bg-box));
+  border-radius: 6px;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--border-color) 55%, transparent) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
 }
 
+// ─── Widget card shell ────────────────────────────────────────────────────────
+// gridster-item is position:absolute — keep overflow:visible so resize handles
+// render at the edges; the visual card is handled by .widget-card inside.
 gridster-item {
-  -webkit-box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05);
-  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, .05);
   z-index: unset !important;
-  background-color: var(--bg-box) !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 gridster-item[style] {
@@ -25,32 +99,515 @@ gridster-item[style] {
   z-index: unset !important;
 }
 
-:host {
+.widget-card {
   width: 100%;
   height: 100%;
+  position: relative;
+  background: var(--bg-box);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 25%, transparent);
+    border-color: var(--primary);
+  }
+}
+
+// Stronger ring when in edit mode; suppress hover lift so dragging doesn't jitter
+.widget--editing .widget-card {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border-color));
+
+  &:hover {
+    box-shadow: none;
+  }
+}
+
+// ─── Widget header / drag handle ─────────────────────────────────────────────
+// Absolutely positioned so it overlays the widget content rather than
+// pushing it down — widget body dimensions stay exactly what gridster sets.
+.widget-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px 0 8px;
+  height: 30px;
+  border-bottom: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-footer) 92%, transparent);
+  backdrop-filter: blur(2px);
+  cursor: grab;
+
+  &:active { cursor: grabbing; }
+}
+
+.widget-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.widget-grip {
+  font-size: 13px;
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.widget-remove-btn {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: background 120ms, color 120ms;
+  padding: 0;
+
+  [nz-icon] { font-size: 11px; }
+
+  &:hover {
+    background: rgba(220, 53, 69, 0.12);
+    color: var(--red, #dc3545);
+  }
+}
+
+// ─── Widget body ──────────────────────────────────────────────────────────────
+// Fills the entire card — header overlays on top so no height is stolen.
+// Each widget component manages its own internal scrolling as before.
+.widget-body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.dashboard-empty {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 320px;
+  gap: 14px;
+  color: var(--text-muted);
+  border-radius: 10px;
+  background-image: radial-gradient(circle, var(--border-color) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
-.destroy-button {
-  position: absolute;
-  right: -10px;
-  top: -10px;
-  z-index: 100;
+.dashboard-empty-icon {
+  font-size: 56px;
+  opacity: 0.20;
 }
 
-.destroy-button i {
-  cursor: pointer;
-  font-size: 20px;
-  opacity: 0.7;
+.dashboard-empty-text {
+  font-size: 14px;
+  margin: 0;
 }
 
-.destroy-button:hover i {
-  opacity: 1;
-}
-
+// ─── Responsive ───────────────────────────────────────────────────────────────
 @media (max-width: 767px) {
   gridster-item {
     height: auto !important;
   }
 }
+
+// ─── Widget inner styles (::ng-deep scoped to dashboard host) ─────────────────
+
+// Box-header: tighter padding + h3 flex alignment + gradient bottom rule
+:host ::ng-deep .box-header {
+  padding: 12px;
+  position: relative;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .help-info-dashboard {
+      margin-right: 0px;
+    }
+  }
+}
+
+// Help-info icon: subtle by default, full on hover
+:host ::ng-deep .help-info-dashboard {
+  opacity: 0.3;
+  transition: opacity 150ms;
+
+  &:hover { opacity: 1; }
+}
+
+// ─── Counter widgets: Orders & History ────────────────────────────────────────
+:host ::ng-deep {
+  #ordersOverview1 {
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    // Tile: number on top (column-reverse), label below
+    .stat-tile {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      margin: 8px 4px;
+      cursor: pointer;
+      text-decoration: none;
+      border-right: 1px solid var(--border-color);
+
+      // Last tile in each 5-column row has no right border
+      &:nth-child(5n) { border-right: none; }
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    // Counter number: muted when zero
+    .stat-count {
+      opacity: 0.35;
+      transition: opacity 150ms;
+
+      &.light-yellow, &.gold, &.green, &.light-blue, &.orange,
+      &.dark-blue, &.red, &.light-green, &.yellow-green, &.mangenta {
+        opacity: 1;
+      }
+    }
+
+    // Filter dropdown: ghost / text-link style
+    .box-tool .btn.btn-grey {
+      background: transparent;
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      border: 1px solid;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 11px;
+      box-shadow: none;
+      padding: 2px 6px;
+
+      &:hover {
+        color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+        border: 1px solid;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
+      }
+    }
+  }
+
+  #ordersSummary1 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-tile {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      margin: 8px 4px;
+      cursor: pointer;
+      text-decoration: none;
+      border-right: 1px solid var(--border-color);
+
+      // Last tile in each 5-column row has no right border
+      &:nth-child(4n) { border-right: none; }
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .stat-count {
+      opacity: 0.35;
+      transition: opacity 150ms;
+
+      &.dark-blue, &.red { opacity: 1; }
+    }
+
+    .file-transfer-grid {
+      grid-template-columns: repeat(2, 1fr);
+
+      .stat-tile {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin: 8px 4px;
+        cursor: pointer;
+        text-decoration: none;
+        border-right: 1px solid var(--border-color);
+
+        // Last tile in each 5-column row has no right border
+        &:nth-child(2n) { border-right: none; }
+      }
+    }
+
+    .box-tool .btn.btn-grey {
+      background: transparent;
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      border: 1px solid;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 11px;
+      box-shadow: none;
+      padding: 2px 6px;
+
+      &:hover {
+        color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+        border: 1px solid;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
+      }
+    }
+  }
+}
+
+// ─── Progress bars: Workflows & Daily Plan ───────────────────────────────────
+:host ::ng-deep {
+  // Both components share id="dailyPlanOverview1"
+  #dailyPlanOverview1 {
+
+    .plan-overview {
+      border-radius: 12px;
+
+      label { cursor: pointer; margin: 0; }
+
+      a { font-size: 11px; font-weight: 600; }
+    }
+
+    // Filter dropdown: ghost / text-link style (same as counter widgets)
+    .box-tool .btn.btn-grey {
+      background: transparent;
+      border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+      border: 1px solid;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 11px;
+      box-shadow: none;
+      padding: 2px 6px;
+
+      &:hover {
+        color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+        border: 1px solid;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
+      }
+    }
+
+    // Fix "Planned" grey to use primary colour
+    .plan-overview.bg-planned {
+      background: color-mix(in srgb, var(--primary) 55%, #888) !important;
+    }
+
+    // Text shadow keeps labels legible on narrow/light segments
+    .plan-overview a {
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+  }
+}
+
+// ─── Progress bar pill: unified pill shape across all segments ────────────────
+:host ::ng-deep #dailyPlanOverview1 .m-t-sm:has(.plan-overview) {
+  display: flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 30px;
+
+  .plan-overview {
+    flex-shrink: 0;
+    border-radius: 0 !important;
+    height: 100%;
+
+    label { height: 100%; display: flex; align-items: center; width: 100%; }
+    a     { align-items: center; }
+  }
+}
+
+// ─── Status tables — shared (Scheduler Instance + API Server) ────────────────
+:host ::ng-deep .status-table {
+  thead th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tbody td {
+    padding: 5px 8px;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  // Status pills: smaller & rounder
+  .label {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  // Title column pill: subtle outline instead of heavy fill
+  .label.label-default {
+    background: color-mix(in srgb, var(--text-muted) 8%, transparent) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid color-mix(in srgb, var(--text-muted) 22%, transparent);
+  }
+
+  // URL links: muted default, primary on hover
+  a.text-hover-primary {
+    color: var(--text-muted);
+
+    &:hover { color: var(--primary); }
+  }
+
+  // Row hover: subtle primary tint
+  tbody tr:hover td {
+    background: color-mix(in srgb, var(--primary) 4%, transparent);
+  }
+}
+
+// ─── Inventory statistics ─────────────────────────────────────────────────────
+:host ::ng-deep #tasksOverview1 {
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  // Flex layout for icon + text alignment
+  .icon-bg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 4px;
+
+    // Primary-tinted icon circle instead of raw page-bg colour
+    i {
+      background: color-mix(in srgb, var(--primary) 8%, var(--bg-box)) !important;
+    }
+
+    // Override the position: relative; top: 7px hack
+    .text {
+      top: 0;
+      margin-left: 0;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: var(--text-muted);
+    }
+  }
+
+  .count {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-color);
+    text-transform: none;
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  .icon-color {
+    opacity: 0.65;
+    font-size: 20px !important;
+  }
+}
+
+// ─── API Server Status: date, URL, version tweaks ────────────────────────────
+:host ::ng-deep #jobSchedulerStatus2 {
+  // Date is secondary info — mute it
+  .text-primary.text-sm {
+    color: var(--text-muted) !important;
+    font-size: 11px;
+  }
+
+  // Truncate long URLs so they don't blow out the table
+  a.text-hover-primary {
+    display: inline-block;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+  }
+}
+
+// ─── Agent Running Jobs horizontal bar chart ──────────────────────────────────
+:host ::ng-deep #agentClusterRunningTasks1 {
+  .p-a-sm {
+    padding-top: 8px;
+  }
+}
+
+// ─── Agent Status / Agent Cluster Status charts ───────────────────────────────
+:host ::ng-deep #agentClusterStatus1 {
+  .row .col-md-12 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+// ─── Box-body: tighter inner padding inside dashboard widgets ─────────────────
+:host ::ng-deep .box-body {
+  padding: 8px 12px;
+}
+
+// ─── box-tool: realign with reduced header padding ───────────────────────────
+:host ::ng-deep .box-tool {
+  top: 10px;
+}
+
+
+// ─── app-empty-data: consistent muted look inside all widgets ────────────────
+:host ::ng-deep app-empty-data .ant-empty {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+

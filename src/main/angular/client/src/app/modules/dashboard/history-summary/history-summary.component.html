@@ -2,7 +2,7 @@
   <div class="box-header b-b remove">
     <h3>
       @if (preferences.showHelpPages) {
-        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
+        <span><i (click)="helpPage()" [appRichTooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle"></i></span>
       }
       <span>{{ 'dashboard.label.history' | translate }}</span>
     </h3>
@@ -50,34 +50,24 @@
   </div>
   <div class="box-body">
     @if (!notAuthenticate1 && !notAuthenticate2 && isLoaded) {
-      <table class="w-full">
-        <tr class="text-center">
-          <td style="width: 25%">
-            <a (click)="showOrderSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulOrders' | translate">
-              <div>{{ 'dashboard.label.successfulOrders' | translate }}</div>
-              <div [innerHtml]="orderSummary.successful || 0" [ngClass]="{'dark-blue':orderSummary.successful >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showOrderSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedOrders' | translate">
-              <div>{{ 'dashboard.label.failedOrders' | translate }}</div>
-              <div [innerHtml]="orderSummary.failed || 0" [ngClass]="{'red':orderSummary.failed >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showTaskSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulJobs' | translate">
-              <div>{{ 'dashboard.label.successfulJobs' | translate }}</div>
-              <div [innerHtml]="taskSummary.successful || 0" [ngClass]="{'dark-blue':taskSummary.successful >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-          <td style="width: 25%">
-            <a (click)="showTaskSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedJobs' | translate">
-              <div>{{ 'dashboard.label.failedJobs' | translate }}</div>
-              <div [innerHtml]="taskSummary.failed || 0" [ngClass]="{'red':taskSummary.failed >0}" class="text-lg _600"></div>
-            </a>
-          </td>
-        </tr>
-      </table>
+      <div class="stat-grid">
+        <a class="stat-tile" (click)="showOrderSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulOrders' | translate">
+          <div class="stat-label">{{ 'dashboard.label.successfulOrders' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="orderSummary.successful || 0" [ngClass]="{'dark-blue': orderSummary.successful > 0}"></div>
+        </a>
+        <a class="stat-tile" (click)="showOrderSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedOrders' | translate">
+          <div class="stat-label">{{ 'dashboard.label.failedOrders' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="orderSummary.failed || 0" [ngClass]="{'red': orderSummary.failed > 0}"></div>
+        </a>
+        <a class="stat-tile" (click)="showTaskSummary('SUCCESSFUL')" [appRichTooltip]="'dashboard.tooltip.successfulJobs' | translate">
+          <div class="stat-label">{{ 'dashboard.label.successfulJobs' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="taskSummary.successful || 0" [ngClass]="{'dark-blue': taskSummary.successful > 0}"></div>
+        </a>
+        <a class="stat-tile" (click)="showTaskSummary('FAILED')" [appRichTooltip]="'dashboard.tooltip.failedJobs' | translate">
+          <div class="stat-label">{{ 'dashboard.label.failedJobs' | translate }}</div>
+          <div class="stat-count text-lg _600" [innerHtml]="taskSummary.failed || 0" [ngClass]="{'red': taskSummary.failed > 0}"></div>
+        </a>
+      </div>
     }
     @if (notAuthenticate1 && notAuthenticate2) {
       <div>

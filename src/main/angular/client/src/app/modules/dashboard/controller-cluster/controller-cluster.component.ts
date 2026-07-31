@@ -331,7 +331,7 @@ export class ControllerClusterComponent {
       } else if (cell.value.tagName === 'DataBase') {
         className += ' database';
         return '<div class="' + className + '">' +
-          '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
+          '<span class="m-t-n-xxs fa fa-circle text-success success-node"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"> ' + data.dbms +
           '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm block-ellipsis-cluster" title="' + data.version + '">' +
           '<span>' + data.version + '</span></div></div>';
@@ -368,7 +368,7 @@ export class ControllerClusterComponent {
 
         let str = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '"   >' +
-          '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
+          '<span class="m-t-n-xxs fa fa-circle success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-television"></i><span class="p-l-sm _600">' + data.title +
           '</span><span class="pull-right ' + actionMenuCls + ' "><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>' +
@@ -414,7 +414,7 @@ export class ControllerClusterComponent {
 
         let controllerTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
           ' class="' + className + '">' +
-          '<span class="m-t-n-xxs fa fa-stop success-node ' + colorClass + '"></span>' +
+          '<span class="m-t-n-xxs fa fa-circle success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-tasks"></i><span class="p-l-sm _600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
           '<a class="more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h cluster-action-menu"></i></a></div></span></div>';
         if (data.os) {
