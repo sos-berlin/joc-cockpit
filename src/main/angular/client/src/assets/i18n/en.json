@@ -3020,7 +3020,7 @@
     "placeholder.filter": "Filter lines…",
     "placeholder.searchInVisible": "Search in visible lines…",
     "placeholder.runningTimeout": "1–57 seconds",
-    "placeholder.serviceId": "Select a service…",
+    "placeholder.serviceId": "Select service…",
     "message.copied": "Copied",
     "message.noEntries": "No log entries found",
     "message.noMatches": "No match for \"{{term}}\"",

@@ -3020,7 +3020,7 @@
     "placeholder.filter": "Filtrer les lignes…",
     "placeholder.searchInVisible": "Rechercher dans les lignes visibles…",
     "placeholder.runningTimeout": "1–57 secondes",
-    "placeholder.serviceId": "Select a service…",
+    "placeholder.serviceId": "Sélectionner un service…",
     "message.copied": "Copié",
     "message.noEntries": "Aucune entrée de journal trouvée",
     "message.noMatches": "Aucun résultat trouvé pour \"{{term}}\"",
@@ -3060,18 +3060,18 @@
     "tooltip.pasteCriteria": "**Ajouter des critères** : cette option applique ces critères à la recherche et aux filtres.",
     "tooltip.force": "Lorsque cette case est cochée, les lignes du journal sont chargées au-delà des limites définies par *Date jusqu'au* ou *Nombre de lignes*.",
     "tooltip.runningTimeout": "Délai d'attente facultatif en secondes (1 à 57) pour la récupération du journal d'exécution. S'il est défini, le serveur attend jusqu'à ce nombre de secondes pour recevoir de nouvelles entrées de journal avant de répondre.\n\nLaissez ce champ vide pour utiliser la valeur par défaut du serveur.",
-    "tooltip.serviceId": "Selects the JOC Cockpit service for which log output is displayed.",
+    "tooltip.serviceId": "Sélectionne le service JOC Cockpit dont les journaux sont affichés.",
     "serviceId": {
       "label.joc": "JOC",
       "label.cluster": "Cluster",
-      "label.history": "History",
-      "label.dailyPlan": "Daily plan",
-      "label.cleanUp": "Clean Up",
-      "label.monitor": "Monitor",
-      "label.logNotification": "Log Notification",
-      "label.reports": "Reports",
-      "label.authentication": "Authentication",
-      "label.audit": "Audit"
+      "label.history": "Historique",
+      "label.dailyPlan": "Plan Quotidien",
+      "label.cleanUp": "Assainissement",
+      "label.monitor": "Moniteur",
+      "label.logNotification": "Notification des Journaux",
+      "label.reports": "Rapports",
+      "label.authentication": "Authentification",
+      "label.audit": "Journal d'Audit"
     }
   },
   "login": {
