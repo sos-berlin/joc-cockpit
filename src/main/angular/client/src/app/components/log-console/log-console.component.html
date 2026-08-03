@@ -23,6 +23,7 @@
 
         <!-- Predefined quick-search dropdown -->
         <button class="btn btn-xs btn-default"
+                [class.log-predefined-btn--active]="activePredefined !== null"
                 nz-dropdown
                 [nzDropdownMenu]="predefinedMenu"
                 nzTrigger="click"
@@ -30,12 +31,18 @@
                 (nzVisibleChange)="predefinedOpen = $event"
                 [appRichTooltip]="predefinedOpen ? null : ('logConsole.tooltip.predefined' | translate)">
           <i nz-icon nzType="thunderbolt" nzTheme="outline"></i>
+          @if (activePredefined !== null) {
+            <span class="log-predefined-badge"></span>
+          }
         </button>
         <nz-dropdown-menu #predefinedMenu="nzDropdownMenu">
           <ul nz-menu>
             @for (p of predefined; track p.value) {
-              <li nz-menu-item (click)="applyPredefined(p.value)">
-                <a>{{ p.label | translate }}</a>
+              <li nz-menu-item (click)="applyPredefined(p)" [class.log-predefined-item--active]="activePredefined === p.value">
+                <span class="log-predefined-item">
+                  <i nz-icon nzType="check" nzTheme="outline" class="log-predefined-check" [style.visibility]="activePredefined === p.value ? 'visible' : 'hidden'"></i>
+                  <span>{{ p.label | translate }}</span>
+                </span>
               </li>
             }
           </ul>
@@ -432,6 +439,8 @@
               <div class="log-line log-line-{{entry.line.level.toLowerCase()}}"
                    [class.log-line-match]="isMatchLine(entry.line)"
                    [class.log-line--active]="activeLineIdx === entry.line.globalIdx"
+                   [class.log-line--startup-start]="entry.line.isStartupBoundary === 'START'"
+                   [class.log-line--startup-stop]="entry.line.isStartupBoundary === 'STOP'"
                    [attr.data-lineidx]="entry.line.globalIdx"
                    [style.border-left-color]="lineBorderColor(entry.line.level)"
                    (click)="onLineClick(entry.line.globalIdx)">
@@ -460,6 +469,8 @@
         <div class="log-line log-line-{{line.level.toLowerCase()}}"
              [class.log-line-match]="isMatchLine(line)"
              [class.log-line--active]="activeLineIdx === line.globalIdx"
+             [class.log-line--startup-start]="line.isStartupBoundary === 'START'"
+             [class.log-line--startup-stop]="line.isStartupBoundary === 'STOP'"
              [attr.data-lineidx]="line.globalIdx"
              [style.border-left-color]="lineBorderColor(line.level)"
              (click)="onLineClick(line.globalIdx)">

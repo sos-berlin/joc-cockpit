@@ -12,6 +12,7 @@ interface ParsedLine {
   timestamp: string;
   level: 'INFO' | 'WARN' | 'ERROR' | 'DEBUG' | 'TRACE' | 'OTHER';
   displayLevel?: string;
+  isStartupBoundary?: 'START' | 'STOP';
   text: string;
   raw: string;
   rawLower: string; // pre-lowercased for fast search comparisons
@@ -26,12 +27,15 @@ interface ContextBlock {
   collapsed: boolean;
 }
 
-const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}(?:Z|[+-]\d{2}(?:\d{2})?)?)\s+(BEGIN|INFO|WARN|ERROR|DEBUG|TRACE|FATAL|END)\s+/i;
+const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[,.]?\d{1,3})?(?:Z|[+-]\d{2}(?::?\d{2})?)?)\s+(BEGIN|INFO|WARN|ERROR|DEBUG|TRACE|FATAL|END)\s+/i;
 
 // ── Order ID parsing ────────────────────────────────────────────────────────
 // Matches JS7 Order IDs: #YYYY-MM-DD#<word chars, colon, hyphen>
 // e.g. #2026-05-22#P0, #2026-05-22#P0:1, #2026-05-22#F1:2-suffix
 const ORDER_ID_RE = /#\d{4}-\d{2}-\d{2}#[\w:-]+/g;
+
+const STARTUP_START_RE = /\bstartup\b.*\bstart\b/i;
+const STARTUP_STOP_RE  = /\bstartup\b.*\bstop\b/i;
 
 /**
  * Finds the JS7 Order ID token that contains `cursorIndex` in `text`.
@@ -106,12 +110,12 @@ function parseLine(raw: string): ParsedLine {
   return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
 }
 
-/** Predefined quick-search presets. */
-const PREDEFINED_SEARCHES: { label: string; value: string }[] = [
-  { label: 'logConsole.label.predefined.error', value: 'ERROR' },
-  { label: 'logConsole.label.predefined.warn', value: 'WARN' },
-  { label: 'logConsole.label.predefined.started', value: 'Started' },
-  { label: 'logConsole.label.predefined.shutdown', value: 'Shutdown' },
+/** Predefined quick-search presets. kind='boundary' items navigate startup boundaries directly. */
+const PREDEFINED_SEARCHES: { label: string; value: string; kind?: 'boundary'; boundary?: 'START' | 'STOP' }[] = [
+  { label: 'logConsole.label.predefined.error',    value: 'ERROR'    },
+  { label: 'logConsole.label.predefined.warn',     value: 'WARN'     },
+  { label: 'logConsole.label.predefined.started',  value: 'Started',  kind: 'boundary', boundary: 'START' },
+  { label: 'logConsole.label.predefined.shutdown', value: 'Shutdown', kind: 'boundary', boundary: 'STOP'  },
 ];
 
 /** Context line count options for filter mode. */
@@ -183,7 +187,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** When true, /log/next and /log/running send force=true to load lines past the dateTo/numOfLines boundary. */
   forceEnabled = false;
   /** Optional timeout (seconds, 1–57) sent as the timeout parameter to /log/running. null = omit parameter. */
-  runningTimeout: number | null = null;
+  runningTimeout: number | null = 30;
   /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
   /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
@@ -209,6 +213,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private readonly _searchDebounce = new Subject<string>();
   readonly predefined = PREDEFINED_SEARCHES;
   predefinedOpen = false;
+  activePredefined: string | null = null;
 
   // ── Filter term (controls which lines are visible) ─────────────────────────
   filterTerm = '';
@@ -308,6 +313,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   filteredLevelCounts: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
   /** globalIdx set of lines matching the search term — eliminates per-line re-evaluation in template. */
   private _matchLineSet = new Set<number>();
+  /** When set, search-match navigation targets startup boundary lines of this type instead of a text term. */
+  private _boundaryKind: 'START' | 'STOP' | null = null;
   /** Per-level sorted globalIdx arrays from filteredLines — eliminates querySelectorAll during navigation. */
   private levelLineMap = new Map<string, number[]>();
   /** True while the user has a live text selection inside the log body — used to suppress
@@ -471,16 +478,26 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.logSearch.clearTerm();
   }
 
-  applyPredefined(value: string): void {
-    this.unifiedTerm = value;
-    if (this.inputMode === 'filter') {
-      this.filterTerm = value;
-      this.commitFilter(value);
-    } else {
-      this.searchTerm = value;
-      this.commitSearch(value);
-      this.logSearch.setTerm(value);
+  applyPredefined(item: { label: string; value: string; kind?: 'boundary'; boundary?: 'START' | 'STOP' }): void {
+    this.activePredefined = item.value;
+    if (item.kind === 'boundary' && item.boundary) {
+      this._boundaryKind        = item.boundary;
+      this._committedSearchTerm = '';
+      this._cachedHighlightTerm = '';
+      this._searchJumpIdx       = null;
+      this.computeSearchMatches();
+      this.jumpToSearchMatch('next');
+      return;
     }
+    if (this.inputMode === 'filter') {
+      this.filterTerm = item.value;
+      this.commitFilter(item.value);
+    } else {
+      this.searchTerm = item.value;
+      this.commitSearch(item.value);
+      this.logSearch.setTerm(item.value);
+    }
+    this.jumpToSearchMatch('next');
   }
 
   // ── Copy / paste criteria across windows ──────────────────────────────────
@@ -489,6 +506,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const criteria = {
       inputMode: this.inputMode,
       term: this.unifiedTerm,
+      predefined: this.activePredefined,
       searchRegexMode: this.regexMode,
       searchReverse: this.reverseSearch,
       filterRegexMode: this.filterRegexMode,
@@ -568,6 +586,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.commitSearch(term);
         if (term) { this.logSearch.setTerm(term); } else { this.logSearch.clearTerm(); }
       }
+
+      // Restore predefined selection — re-apply via applyPredefined so boundary kind,
+      // match data, and navigation all re-initialise correctly.
+      const savedPredefined: string | null = typeof c.predefined === 'string' ? c.predefined : null;
+      if (savedPredefined) {
+        const predItem = this.predefined.find(p => p.value === savedPredefined);
+        if (predItem) { this.applyPredefined(predItem); }
+      } else {
+        this.activePredefined = null;
+      }
+
       this.cdr.markForCheck();
     } catch { /**/ }
   }
@@ -575,6 +604,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   // ── Unified input handlers ──────────────────────────────────────────────────────────
 
   onUnifiedTermChange(): void {
+    this.activePredefined = null;
     if (this.inputMode === 'filter') {
       this.filterTerm = this.unifiedTerm;
       this._filterDebounce.next(this.unifiedTerm);
@@ -585,6 +615,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   clearUnifiedInput(): void {
+    this._boundaryKind    = null;
+    this.activePredefined = null;
     this.unifiedTerm = '';
     if (this.inputMode === 'filter') {
       this.filterTerm = '';
@@ -741,6 +773,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this._committedFilterTerm === term && this._committedFilterRegexMode === this.filterRegexMode) return;
+    this._boundaryKind             = null;
     this._committedFilterTerm      = term;
     this._committedFilterRegexMode = this.filterRegexMode;
     this._compiledFilterRegExp     = (this.filterRegexMode && term) ? new RegExp(term, 'i') : null;
@@ -771,6 +804,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this._committedSearchTerm === term && this._committedRegexMode === this.regexMode) return;
+    this._boundaryKind        = null;
     this._committedSearchTerm = term;
     this._committedRegexMode  = this.regexMode;
     this._searchJumpIdx       = null;
@@ -847,7 +881,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       if ((fromCmp || toCmp) && l.timestamp) {
         // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
         // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
-        const ts = l.timestamp.replace(',', '.').replace(/(Z|[+-]\d{2}(?:\d{2})?)$/, '');
+        const ts = l.timestamp.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T').replace(/(Z|[+-]\d{2}(?::?\d{2})?)$/, '');
         if (fromCmp && ts < fromCmp) return false;
         // '\uffff' suffix ensures the whole last minute/second is included
         // when the user's toCmp has no sub-minute/sub-second precision.
@@ -876,33 +910,50 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    *  Called by computeFilteredLines() and directly by commitSearch() (when filteredLines is unchanged). */
   private computeSearchMatches(): void {
     this._matchLineSet.clear();
-    const term = this._committedSearchTerm;
-    if (term) {
+
+    if (this._boundaryKind) {
+      const kind = this._boundaryKind;
       for (const l of this.filteredLines) {
-        const matches = this.lineMatchesSearch(l);
-        // reverseSearch: navigate/highlight lines that do NOT contain the search term
-        if (this.reverseSearch ? !matches : matches) {
-          this._matchLineSet.add(l.globalIdx);
+        if (l.isStartupBoundary === kind) this._matchLineSet.add(l.globalIdx);
+      }
+    } else {
+      const term = this._committedSearchTerm;
+      if (term) {
+        for (const l of this.filteredLines) {
+          const matches = this.lineMatchesSearch(l);
+          // reverseSearch: navigate/highlight lines that do NOT contain the search term
+          if (this.reverseSearch ? !matches : matches) {
+            this._matchLineSet.add(l.globalIdx);
+          }
         }
       }
     }
+
     // Build sorted navigation index for prev/next search match.
     this._searchMatchIdxs = Array.from(this._matchLineSet).sort((a, b) => a - b);
 
     // Build per-occurrence positions for navigation.
+    // Boundary mode: one stop per boundary line (no per-token occurrence counting).
     // In reverse mode non-matching lines have no occurrences, so one stop per line.
     // In normal mode a term appearing N times in a line contributes N stops.
     this._searchMatchPositions = [];
-    if (term) {
+    if (this._boundaryKind) {
       for (const gi of this._searchMatchIdxs) {
-        const l = this.allLines[gi];
-        if (!l) continue;
-        if (this.reverseSearch) {
-          this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
-        } else {
-          const cnt = this._countOccurrences(l);
-          for (let i = 0; i < cnt; i++) {
-            this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+        this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
+      }
+    } else {
+      const term = this._committedSearchTerm;
+      if (term) {
+        for (const gi of this._searchMatchIdxs) {
+          const l = this.allLines[gi];
+          if (!l) continue;
+          if (this.reverseSearch) {
+            this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
+          } else {
+            const cnt = this._countOccurrences(l);
+            for (let i = 0; i < cnt; i++) {
+              this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+            }
           }
         }
       }
@@ -929,8 +980,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    * Used when double-clicking a timestamp to populate the date filter.
    */
   private timestampToDatetimeLocal(raw: string): string {
-    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?:\d{2})?)$/);
-    const iso = raw.replace(',', '.');
+    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?::?\d{2})?)$/);
+    const iso = raw.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T');
     if (offsetMatch) {
       const offset = offsetMatch[1];
       const normalizedIso = (offset !== 'Z' && offset.length === 3) ? iso + '00' : iso;
@@ -942,7 +993,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
-      const m = moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz);
+      const m = moment.tz(iso, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss'], sourceTz);
       if (this._useProfileTz && this.profileTz) {
         return m.tz(this.profileTz).format('YYYY-MM-DDTHH:mm:ss');
       }
@@ -983,7 +1034,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.levelVisible(l.level)) return false;
       if ((fromCmp || toCmp) && l.timestamp) {
         // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
-        const ts = l.timestamp.replace(',', '.').replace(/(Z|[+-]\d{2}(?:\d{2})?)$/, '');
+        const ts = l.timestamp.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T').replace(/(Z|[+-]\d{2}(?::?\d{2})?)$/, '');
         if (fromCmp && ts < fromCmp) return false;
         if (toCmp && ts > toCmp + '\uffff') return false;
       }
@@ -1498,10 +1549,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (!raw) return raw;
     // If the timestamp carries an embedded tz offset (Z, +02, +0530), convert directly
     // using that offset — the response timezone field is irrelevant for these lines.
-    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?:\d{2})?)$/);
+    const offsetMatch = raw.match(/(Z|[+-]\d{2}(?::?\d{2})?)$/);
     if (offsetMatch) {
       const offset = offsetMatch[1];
-      const iso = raw.replace(',', '.');
+      const iso = raw.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T');
       // Normalize +HH (no minutes, length 3) to +HHMM so moment.parseZone parses correctly.
       const normalizedIso = (offset !== 'Z' && offset.length === 3) ? iso + '00' : iso;
       const m = moment.parseZone(normalizedIso);
@@ -1511,13 +1562,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       return m.format('YYYY-MM-DD HH:mm:ssZ');
     }
     // No offset in timestamp — use the controller/agent timezone from the response.
-    const iso = raw.replace(',', '.');
+    const iso = raw.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T');
     const sourceTz = this.timeZone || this.request?.timeZone || '';
     if (sourceTz) {
       if (this._useProfileTz && this.profileTz) {
-        return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
+        return moment.tz(iso, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss'], sourceTz).tz(this.profileTz).format('YYYY-MM-DD HH:mm:ss');
       } else {
-        return moment.tz(iso, 'YYYY-MM-DDTHH:mm:ss.SSS', sourceTz).format('YYYY-MM-DD HH:mm:ssZ');
+        return moment.tz(iso, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss'], sourceTz).format('YYYY-MM-DD HH:mm:ssZ');
       }
     }
     return iso.replace('T', ' ').slice(0, 23);
@@ -1770,6 +1821,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           parsed.key = entry.key;
           parsed.globalIdx = this.allLines.length;
+          if (parsed.level === 'INFO' && parsed.rawLower.includes('startup')) {
+            if (STARTUP_START_RE.test(parsed.raw))      parsed.isStartupBoundary = 'START';
+            else if (STARTUP_STOP_RE.test(parsed.raw))  parsed.isStartupBoundary = 'STOP';
+          }
           this.allLines.push(parsed);
         }
       }
@@ -1856,6 +1911,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       } else {
         parsed.key = entry.key;
         parsed.globalIdx = newLines.length;
+        if (parsed.level === 'INFO' && parsed.rawLower.includes('startup')) {
+          if (STARTUP_START_RE.test(parsed.raw))      parsed.isStartupBoundary = 'START';
+          else if (STARTUP_STOP_RE.test(parsed.raw))  parsed.isStartupBoundary = 'STOP';
+        }
         newLines.push(parsed);
       }
     }
@@ -2188,14 +2247,16 @@ export class LogConsoleModalComponent implements OnInit {
     let dateFrom: string;
     if (this.form.dateMode === 'specific' && this.form.dateFromDate) {
       const localStr = buildDateStr(this.form.dateFromDate, this.form.dateFromTime, '00:00:00');
-      dateFrom = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      // dateFrom = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      dateFrom = localStr;
     } else {
       dateFrom = this.form.dateFrom?.trim() || '0d';
     }
     let dateTo: string | undefined;
     if (this.form.dateMode === 'specific' && this.form.dateToDate) {
       const localStr = buildDateStr(this.form.dateToDate, this.form.dateToTime, '23:59:59');
-      dateTo = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      // dateTo = moment.tz(localStr, 'YYYY-MM-DD HH:mm:ss', tz).utc().format('YYYY-MM-DDTHH:mm:ss[Z]');
+      dateTo = localStr;
     } else {
       dateTo = this.form.dateTo?.trim() || undefined;
     }

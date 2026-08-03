@@ -500,6 +500,8 @@ export class RichTooltipDirective implements OnInit, OnDestroy {
   @HostListener('keydown.enter', ['$event'])
   @HostListener('keydown.space', ['$event'])
   onKeyActivate(e: KeyboardEvent): void {
+    const tag = (this.elementRef.nativeElement as HTMLElement).tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
     if (!this.content || this.tooltipDisabled) return;
     e.preventDefault();
     this.overlayRef ? this.closeWithAnimation() : this.open();

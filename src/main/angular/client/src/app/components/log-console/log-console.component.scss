@@ -208,6 +208,24 @@
 .log-line-info  { background: rgba( 17, 113, 166, 0.04); }
 .log-line-debug { background: rgba(165,   0, 165, 0.04); }
 
+// ─── Startup boundary highlights ───────────────────────────────────────────
+.log-line--startup-start {
+  background: rgba(40, 167, 69, 0.08) !important;
+  border-top: 2px solid rgba(40, 167, 69, 0.55) !important;
+}
+
+.log-line--startup-stop {
+  background: rgba(220, 53, 69, 0.08) !important;
+  border-bottom: 2px solid rgba(220, 53, 69, 0.55) !important;
+}
+
+// When boundary lines are also match lines (boundary predefined active),
+// amber highlight wins on background; the colored border is preserved above.
+.log-line-match.log-line--startup-start,
+.log-line-match.log-line--startup-stop {
+  background: rgba(255, 175, 30, 0.22) !important;
+}
+
 // ─── Log source inline heading ──────────────────────────────────────────────
 .log-source-inline {
   display: flex;
@@ -276,6 +294,42 @@
   white-space: nowrap;
   margin: 0;
   flex-shrink: 0;
+}
+
+// ─── Predefined quick-search active state ────────────────────────────────────
+.log-predefined-btn--active {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  position: relative;
+}
+
+.log-predefined-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: block;
+}
+
+.log-predefined-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.log-predefined-check {
+  font-size: 11px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.log-predefined-item--active > a,
+.log-predefined-item--active .log-predefined-item {
+  color: var(--primary);
+  font-weight: 600;
 }
 
 // ─── Timezone toggle ──────────────────────────────────────────────────────────
