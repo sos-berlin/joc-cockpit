@@ -1706,15 +1706,12 @@ export class LogViewComponent implements AfterViewInit {
         }
 
         for (let x in dom) {
-          if (dom.length > 2 && x == '0') {
-            continue;
-          }
           if (dom[x] && dom[x].style) {
             dom[x].style.background = color;
           }
         }
 
-        dom[dom.length > 2 ? 1 : dom.length - 1].scrollIntoView({behavior: 'smooth', block: 'center'});
+        (treeElemById || dom[dom.length - 1]).scrollIntoView({behavior: 'smooth', block: 'center'});
         if (dom.length > 0) {
           for (let x in dom) {
             if (dom[x] && dom[x].style) {

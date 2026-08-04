@@ -99,6 +99,9 @@ export class HeaderComponent {
     if (sessionStorage['$SOS$REQUESTORREQUESTS']) {
       this.requestorEvent = JSON.parse(sessionStorage['$SOS$REQUESTORREQUESTS']);
     }
+    if (sessionStorage['$SOS$NOTES']) {
+      this.notesEvent = JSON.parse(sessionStorage['$SOS$NOTES']);
+    }
 
     if (sessionStorage.getItem('isApprover')) {
       this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'));
@@ -177,6 +180,7 @@ export class HeaderComponent {
   clearNotesEvent(): void {
     setTimeout(() => {
       this.notesEvent = {};
+      sessionStorage.removeItem('$SOS$NOTES');
       this.cdr.markForCheck();
     }, 250);
   }
@@ -383,14 +387,21 @@ export class HeaderComponent {
             }
 
             for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
-              this.approvalEvent = res.eventsFromApprovalRequests[j];
+              if (res.eventsFromApprovalRequests[j].eventType === 'ApproverNotification') {
+                this.approvalEvent = res.eventsFromApprovalRequests[j];
+                sessionStorage['$SOS$APPROVALREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
+              }
             }
             for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
-                          this.requestorEvent = res.eventsFromApprovalRequests[j];
-                        }
+              if (res.eventsFromApprovalRequests[j].eventType === 'RequestorNotification') {
+                this.requestorEvent = res.eventsFromApprovalRequests[j];
+                sessionStorage['$SOS$REQUESTORREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
+              }
+            }
             for (let j = 0; j < res.eventsFromNotes.length; j++) {
-                          this.notesEvent = res.eventsFromNotes[j];
-                        }
+              this.notesEvent = res.eventsFromNotes[j];
+              sessionStorage['$SOS$NOTES'] = JSON.stringify(res.eventsFromNotes[j]);
+            }
 
 
             for (let j = 0; j < res.eventsFromOrderMonitoring.length; j++) {

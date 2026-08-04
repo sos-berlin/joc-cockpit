@@ -49,7 +49,8 @@ import {
   NegativeTimeRegexValidator,
   NegativeRelativeTimeRegexValidator,
   TimeValidatorRelativeStartReqexDirective,
-  TagValidator
+  TagValidator,
+  MultiUnitRelativeDateValidatorDirective
 } from '../../directives/core.directive';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
@@ -105,7 +106,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,
-  FacetValidator, AutofocusDirective];
+  FacetValidator, AutofocusDirective, MultiUnitRelativeDateValidatorDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
   SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent,

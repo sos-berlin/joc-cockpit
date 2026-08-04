@@ -1456,3 +1456,21 @@ export class TimeValidatorRelativeReqexDirective implements Validator {
     };
   }
 }
+
+@Directive({
+  standalone: false,
+  selector: '[multiUnitRelativeDateValidatorRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => MultiUnitRelativeDateValidatorDirective), multi: true}
+  ]
+})
+export class MultiUnitRelativeDateValidatorDirective implements Validator {
+  MULTI_UNIT_RE = /^\s*[+]?(\d+)([yMwdhms])(\s*[+-]?\d+[yMwdhms])*\s*$/;
+  validate(c: AbstractControl): {[key: string]: any} | null {
+    const v = c.value;
+    if (v == null || v === '' || /^\s*$/.test(v) || this.MULTI_UNIT_RE.test(v)) {
+      return null;
+    }
+    return {validateRelativeDateRegex: true};
+  }
+}

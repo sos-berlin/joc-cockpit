@@ -46,7 +46,7 @@
           <div [ngClass]="{'has-error': (dateFrom.dirty || dateFrom.touched) && dateFrom.invalid}">
             <input #dateFrom="ngModel" nz-input [(ngModel)]="form.dateFrom" name="dateFrom"
                    class="w-full" required autocomplete="off"
-                   relativeDateValidatorRegex
+                   multiUnitRelativeDateValidatorRegex
                    [placeholder]="'logConsole.placeholder.relativeDateFrom' | translate" />
             @if ((dateFrom.dirty || dateFrom.touched) && dateFrom.errors?.['required']) {
               <div class="help-block text-danger">{{ 'error.message.requiredError' | translate }}</div>
@@ -88,7 +88,7 @@
           <div [ngClass]="{'has-error': (dateTo.dirty || dateTo.touched) && dateTo.invalid}">
             <input #dateTo="ngModel" nz-input [(ngModel)]="form.dateTo" name="dateTo"
                    class="w-full" autocomplete="off"
-                   relativeDateValidatorRegex
+                   multiUnitRelativeDateValidatorRegex
                    [placeholder]="'logConsole.placeholder.relativeDateTo' | translate" />
             @if ((dateTo.dirty || dateTo.touched) && dateTo.errors?.['validateRelativeDateRegex']) {
               <div class="help-block text-danger">{{ 'common.message.invalid' | translate }}</div>

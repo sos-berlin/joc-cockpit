@@ -34,8 +34,8 @@ const TIMESTAMP_RE = /^(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[,.]?\d{1,3})?(
 // e.g. #2026-05-22#P0, #2026-05-22#P0:1, #2026-05-22#F1:2-suffix
 const ORDER_ID_RE = /#\d{4}-\d{2}-\d{2}#[\w:-]+/g;
 
-const STARTUP_START_RE = /\bstartup\b.*\bstart\b/i;
-const STARTUP_STOP_RE  = /\bstartup\b.*\bstop\b/i;
+const STARTUP_START_RE = /\b[Ii][Nn][Ff][Oo]\b.*\bStartUp\b.*\bSTART\b/;
+const STARTUP_STOP_RE  = /\b[Ii][Nn][Ff][Oo]\b.*\bStartUp\b.*\bSTOP\b/;
 
 /**
  * Finds the JS7 Order ID token that contains `cursorIndex` in `text`.
@@ -1821,7 +1821,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           parsed.key = entry.key;
           parsed.globalIdx = this.allLines.length;
-          if (parsed.level === 'INFO' && parsed.rawLower.includes('startup')) {
+          if (parsed.raw.includes('StartUp')) {
             if (STARTUP_START_RE.test(parsed.raw))      parsed.isStartupBoundary = 'START';
             else if (STARTUP_STOP_RE.test(parsed.raw))  parsed.isStartupBoundary = 'STOP';
           }

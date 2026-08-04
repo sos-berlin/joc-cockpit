@@ -36,12 +36,11 @@
           <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
-          <div  (click)="navToApprovalsApp(0, 'PENDING')" class="cursor primary-text-hover-color" >
-            {{approvalEvent?.numOfPendingApprovals}} -
-            @if (approvalEvent?.numOfPendingApprovals) {
-              <span>{{ 'monitor.approvalRequest.label' | translate }}.ApproverNotification</span>
-            }
-          </div>
+          @if (approvalEvent?.numOfPendingApprovals) {
+            <div  (click)="navToApprovalsApp(0, 'PENDING')" class="cursor primary-text-hover-color" >
+              {{approvalEvent?.numOfPendingApprovals}} - <span>{{ 'monitor.approvalRequest.label.ApproverNotification' | translate }}</span>
+            </div>
+          }
         </div>
       </ng-template>
 
@@ -50,12 +49,16 @@
           <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor">{{ 'common.button.clear' | translate }}</a>
         </div>
         <div class="notification">
-          <div (click)="navToApprovalsReq('APPROVED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfApprovedRequests}} - @if (requestorEvent?.numOfApprovedRequests) {<span>{{ 'monitor.approvalRequest.label.numOfApprovedRequests' | translate }}</span>}
-          </div>
-          <div (click)="navToApprovalsReq('REJECTED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfRejectedRequests}} - @if (requestorEvent?.numOfRejectedRequests) {<span>{{ 'monitor.approvalRequest.label.numOfRejectedRequests' | translate }}</span>}
-          </div>
+          @if (requestorEvent?.numOfApprovedRequests) {
+            <div (click)="navToApprovalsReq('APPROVED')" class="cursor primary-text-hover-color" >
+              {{requestorEvent?.numOfApprovedRequests}} - <span>{{ 'monitor.approvalRequest.label.numOfApprovedRequests' | translate }}</span>
+            </div>
+          }
+          @if (requestorEvent?.numOfRejectedRequests) {
+            <div (click)="navToApprovalsReq('REJECTED')" class="cursor primary-text-hover-color" >
+              {{requestorEvent?.numOfRejectedRequests}} - <span>{{ 'monitor.approvalRequest.label.numOfRejectedRequests' | translate }}</span>
+            </div>
+          }
         </div>
       </ng-template>
       <ng-template #problemEventTemp>
@@ -154,7 +157,7 @@
           </a>
       </li>
       }
-      @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && isRequestor && preferences.isFeatureEnabled) {
+      @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && isRequestor) {
       <li class="nav-item">
           <a class="nav-link pointer text-warning" style="top: 3px">
             <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"

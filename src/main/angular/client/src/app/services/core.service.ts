@@ -2846,6 +2846,9 @@ private checkParentNode(lastPos, data, item, nodes): any {
         for (let i in nodes) {
           if (parentNode) {
             if (nodes[i].title === parentNode.title && nodes[i].position === parentNode.position) {
+              if (nodes[i].children && data.title === 'Job') {
+                nodes[i].children.push(data);
+              }
               obj.flag = true;
               continue;
             }
