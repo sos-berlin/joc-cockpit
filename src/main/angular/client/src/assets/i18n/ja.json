@@ -3203,6 +3203,9 @@
         "pending": "保留",
         "approved": "承認",
         "rejected": "却下"
+      },
+      "section": {
+        "details": "Approval Details"
       }
     },
     "approvers": {

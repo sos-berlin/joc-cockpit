@@ -271,7 +271,7 @@ gridster-item[style] {
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       gap: 2px;
       margin: 8px 4px;
       cursor: pointer;

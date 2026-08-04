@@ -3203,6 +3203,9 @@
         "pending": "Ожидает",
         "approved": "Согласован",
         "rejected": "Отклонён"
+      },
+      "section": {
+        "details": "Approval Details"
       }
     },
     "approvers": {

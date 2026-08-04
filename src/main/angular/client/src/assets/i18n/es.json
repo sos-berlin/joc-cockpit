@@ -3203,6 +3203,9 @@
         "pending": "Pendiente",
         "approved": "Aprobado",
         "rejected": "Rechazado"
+      },
+      "section": {
+        "details": "Approval Details"
       }
     },
     "approvers": {

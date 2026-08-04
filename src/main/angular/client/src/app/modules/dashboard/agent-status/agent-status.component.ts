@@ -27,17 +27,14 @@ export class AgentStatusComponent {
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    onHover: (event: any, elements: any[]) => {
+      event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+    },
     plugins: {
       legend: {
         position: 'right',
         labels: {
           color: 'rgba(255, 255, 255, 0.7)'
-        },
-        onHover: function (e: any) {
-          e.native.target.style.cursor = 'pointer';
-        },
-        onLeave: function (e: any) {
-          e.native.target.style.cursor = 'default';
         },
         onClick: (event, item, legend) => {
           this.navToAgentView(item.text);
