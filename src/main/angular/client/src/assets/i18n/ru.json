@@ -3010,7 +3010,6 @@
     "label.predefined.started": "запущен",
     "label.predefined.shutdown": "Завершён",
     "label.force": "Без ограничений",
-    "label.runningTimeout": "Тайм-аут (с)",
     "label.serviceId": "Журнал JOC Cockpit",
     "placeholder.selectDate": "Выберите дату",
     "placeholder.selectTime": "Выберите время",
@@ -3019,7 +3018,6 @@
     "placeholder.numOfLines": "например 100 500 1000 (оставьте пустым для всех строк)",
     "placeholder.filter": "Фильтровать строки…",
     "placeholder.searchInVisible": "Поиск среди отображаемых строк…",
-    "placeholder.runningTimeout": "1-57 секунд",
     "placeholder.serviceId": "Выберите JOC Cockpit журнал…",
     "message.copied": "Скопировано",
     "message.noEntries": "Записи журнала не найдены",
@@ -3059,7 +3057,6 @@
     "tooltip.copyCriteria": "**Скопировать критерии** поиска и фильтрации для использования в других окнах журнала.",
     "tooltip.pasteCriteria": "**Вставить критерии** поиска и фильтрации.",
     "tooltip.force": "Если этот флажок установлен, записи журнала загружаются без учёта ограничений *Время по* и *Количество строк*.",
-    "tooltip.runningTimeout": "Необязательный тайм-аут в секундах (1-57) для получения текущего журнала. Если указано значение, сервер будет ожидать появления новых записей журнала не более указанного числа секунд, прежде чем отправить ответ.\n\nОставьте поле пустым, чтобы использовать значение по умолчанию, заданное на сервере.",
     "tooltip.serviceId": "Выбрать источник журнала ^JOC Cockpit^ для отображения.",
     "serviceId": {
       "label.joc": "JOC",
@@ -3203,10 +3200,7 @@
         "pending": "Ожидает",
         "approved": "Согласован",
         "rejected": "Отклонён"
-      },
-      "section": {
-        "details": "Детали согласования"
-      }      
+      }
     },
     "approvers": {
       "section": {

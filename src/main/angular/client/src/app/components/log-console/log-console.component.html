@@ -367,14 +367,6 @@
             [attr.aria-label]="'force'"></label>
           </span>
         }
-        @if (lastLogLineReached) {
-          <span class="log-force-timeout">
-            <span [appRichTooltip]="'logConsole.tooltip.runningTimeout' | translate">{{'logConsole.label.runningTimeout' | translate}}</span>
-            <nz-input-number class="log-running-timeout-input" [(ngModel)]="runningTimeout" nzSize="small"
-               [nzMin]="1" [nzMax]="57" [nzStep]="1" [nzPrecision]="0" [nzPlaceHolder]="'logConsole.placeholder.runningTimeout' | translate">
-            </nz-input-number>
-          </span>
-        }
         @if (allLines.length > 0) {
           <span class="log-jump-line-count">{{ activeLineIdx !== null ? activeLineIdx + 1 : '\u2013' }}/{{ allLines.length }}</span>
         }

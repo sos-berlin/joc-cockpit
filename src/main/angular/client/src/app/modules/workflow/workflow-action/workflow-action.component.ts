@@ -889,8 +889,11 @@ export class AddOrderModalComponent {
       .then(() => {
         this.activeModal.close('Done');
       })
-      .catch(() => {
+      .catch((error) => {
         this.submitted = false;
+        if (error.status == 433){
+          this.activeModal.destroy();
+        }
       });
   }
 

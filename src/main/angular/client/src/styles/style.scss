@@ -11212,3 +11212,7 @@ li.nav-item.tab-active .tab-help-icon:hover {
   .ant-modal-content { resize: both; overflow: auto; min-width: 480px; min-height: 320px; max-width: 98vw; max-height: 96vh; }
   .ant-modal-body { padding: 0; overflow: hidden; }
 }
+
+.ant-popover-inner-content {
+  width: 100% !important;
+}

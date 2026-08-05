@@ -3010,7 +3010,6 @@
     "label.predefined.started": "Iniciado",
     "label.predefined.shutdown": "Apagado",
     "label.force": "Cargar más allá de los límites",
-    "label.runningTimeout": "Timeout",
     "label.serviceId": "Service",
     "placeholder.selectDate": "Seleccionar fecha",
     "placeholder.selectTime": "Seleccionar hora",
@@ -3019,7 +3018,6 @@
     "placeholder.numOfLines": "ej. 100, 500, 1000 (dejar vacío para todas las líneas)",
     "placeholder.filter": "Filtrar líneas…",
     "placeholder.searchInVisible": "Buscar en líneas visibles…",
-    "placeholder.runningTimeout": "1–57 segundos",
     "placeholder.serviceId": "Select a service…",
     "message.copied": "Copiado",
     "message.noEntries": "No se encontraron entradas de log",
@@ -3059,7 +3057,6 @@
     "tooltip.copyCriteria": "**Copiar criterios** de búsqueda y filtro para poder aplicarlos a otra vista de log.",
     "tooltip.pasteCriteria": "**Pegar Criterios** aplica la configuración de búsqueda y filtro copiada previamente desde otra ventana de log.\n\nSe habilita una vez que se han copiado criterios.",
     "tooltip.force": "Cuando está marcado, las líneas de log se cargan más allá de los límites de *Fecha hasta* o *Número de líneas*.",
-    "tooltip.runningTimeout": "Tiempo de espera opcional en segundos (1–57) para obtener el log en ejecución. Si se especifica, el servidor espera hasta esa cantidad de segundos por nuevas entradas de log antes de responder.\n\nDéjelo vacío para usar el valor predeterminado del servidor.",
     "tooltip.serviceId": "Selects the JOC Cockpit service for which log output is displayed.",
     "serviceId": {
       "label.joc": "JOC",
@@ -3203,9 +3200,6 @@
         "pending": "Pendiente",
         "approved": "Aprobado",
         "rejected": "Rechazado"
-      },
-      "section": {
-        "details": "Approval Details"
       }
     },
     "approvers": {

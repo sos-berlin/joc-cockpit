@@ -186,8 +186,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   numOfLinesReached = false;
   /** When true, /log/next and /log/running send force=true to load lines past the dateTo/numOfLines boundary. */
   forceEnabled = false;
-  /** Optional timeout (seconds, 1–57) sent as the timeout parameter to /log/running. null = omit parameter. */
-  runningTimeout: number | null = 30;
   /** Timezone returned by the API in each response — the Controller/Agent's own timezone. */
   timeZone = '';
   /** preferences.logTimezone: true = convert to user profile tz; false = display in controller tz */
@@ -263,6 +261,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   readonly contextOptions = CONTEXT_OPTIONS;
 
   followTail = false;
+  private _atBottom = false;
 
   @ViewChild('logBody') logBodyRef?: ElementRef<HTMLElement>;
   @ViewChild('searchInput') searchInputRef?: ElementRef<HTMLInputElement>;
@@ -271,6 +270,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private searchSub?: Subscription;
   private debounceSub?: Subscription;
   private pollTimer?: ReturnType<typeof setTimeout>;
+  private _activePollSub?: Subscription;
   private readonly POLL_INTERVAL_MS = 3000;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   // Cache key = `${committedTerm}\x00${text}` so changing the search term naturally
@@ -331,7 +331,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** Debounce subject for date filter input changes (150ms). */
   private readonly _dateFilterDebounce = new Subject<void>();
   /** preferences.numOfNextLogLines: max lines returned per running-log poll request. */
-  private numOfNextLogLines: number | undefined;
+  private numOfNextLogLines: number | undefined = 1000;
 
   constructor(
     private coreService: CoreService,
@@ -425,7 +425,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.logTimezone = prefs.logTimezone === true;
         this.profileTz   = prefs.zone || '';
         if (prefs.numOfLogLines)     this.maxLogLines     = Number(prefs.numOfLogLines)     || 2500;
-        if (prefs.numOfNextLogLines) this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || undefined;
+        if (prefs.numOfNextLogLines) this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || 1000;
       } catch { /**/ }
     }
     if (!this.profileTz) {
@@ -446,6 +446,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed = true;
     this.clearPollTimer();
+    this._activePollSub?.unsubscribe();
+    this._activePollSub = undefined;
+    if (this.copyFeedbackTimer !== undefined) {
+      clearTimeout(this.copyFeedbackTimer);
+      this.copyFeedbackTimer = undefined;
+    }
+    if (this._lineClickTimer !== undefined) {
+      clearTimeout(this._lineClickTimer);
+      this._lineClickTimer = undefined;
+    }
     this.searchSub?.unsubscribe();
     this.debounceSub?.unsubscribe();
     this._searchDebounce.complete();
@@ -1467,12 +1477,22 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   scrollToTop(): void {
     const el = this.logBodyRef?.nativeElement;
-    if (el) el.scrollTop = 0;
+    if (el) {
+      el.scrollTop = 0;
+      if (this.filteredLines.length > 0) {
+        this.activeLineIdx = this.filteredLines[0].globalIdx;
+      }
+    }
   }
 
   scrollToBottom(): void {
     const el = this.logBodyRef?.nativeElement;
-    if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
+    if (el) {
+      setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
+      if (this.filteredLines.length > 0) {
+        this.activeLineIdx = this.filteredLines[this.filteredLines.length - 1].globalIdx;
+      }
+    }
   }
 
   toggleFollowTail(): void {
@@ -1486,7 +1506,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onForceEnabledChange(): void {
-    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached) && this.followTail) {
+    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached) && this.followTail && this._atBottom) {
       this.scheduleNextPoll();
     }
   }
@@ -1607,8 +1627,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.numOfLinesReached   = !!res.numOfLinesReached;
         this.firstLogLineReached = false;
         this.timeZone = res.timeZone || '';
+        if (!this.request?.dateTo && !this.request?.numOfLines) {
+          this.forceEnabled = true;
+        }
         this.isLoading = false;
-        if (this.followTail) this.scrollToBottom();
+        if (this.followTail && this._atBottom) this.scrollToBottom();
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
@@ -1624,11 +1647,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if ((this.dateToReached || this.numOfLinesReached) && !this.forceEnabled) return;
     this.isLoadingNext = true;
     const body: any = { logToken: this.logToken, key: this.lastKey };
-    const limit = this.request.limit ?? this.numOfNextLogLines;
+    const limit = this.numOfNextLogLines;
     if (limit) body.limit = limit;
     if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached)) body.force = true;
-    this.coreService.post(this.getNextApiUrl(), body).subscribe({
+    this._activePollSub = this.coreService.post(this.getNextApiUrl(), body).subscribe({
       next: (res: any) => {
+        this._activePollSub = undefined;
         if (this.destroyed) return;
         const entries: {key: string, line: string}[] = res.logLines || [];
         if (entries.length > 0) {
@@ -1639,11 +1663,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.dateToReached       = !!res.dateToReached;
         this.numOfLinesReached   = !!res.numOfLinesReached;
         this.isLoadingNext = false;
-        if (this.followTail) this.scrollToBottom();
+        if (this.followTail && this._atBottom) this.scrollToBottom();
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
       error: () => {
+        this._activePollSub = undefined;
         this.isLoadingNext = false;
         this._safeMarkForCheck();
       }
@@ -1660,7 +1685,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.isLoadingPrev = true;
     const body: any = { logToken: this.logToken, key: this.firstKey };
-    const limit = this.request.limit ?? this.numOfNextLogLines;
+    const limit = this.numOfNextLogLines;
     if (limit) body.limit = limit;
     this.coreService.post(this.getPrevApiUrl(), body).subscribe({
       next: (res: any) => {
@@ -1687,12 +1712,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if ((this.dateToReached || this.numOfLinesReached) && !this.forceEnabled) return;
     this.isLoadingNext = true;
     const body: any = { logToken: this.logToken, key: this.lastKey };
-    const limit = this.request.limit ?? this.numOfNextLogLines;
+    const limit = this.numOfNextLogLines;
     if (limit) body.limit = limit;
     if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached)) body.force = true;
-    if (this.runningTimeout) body.timeout = this.runningTimeout;
-    this.coreService.post(this.getRunningApiUrl(), body).subscribe({
+    this._activePollSub = this.coreService.post(this.getRunningApiUrl(), body).subscribe({
       next: (res: any) => {
+        this._activePollSub = undefined;
         if (this.destroyed) return;
         const entries: {key: string, line: string}[] = res.logLines || [];
         if (entries.length > 0) {
@@ -1704,11 +1729,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.dateToReached     = !!res.dateToReached;
         this.numOfLinesReached = !!res.numOfLinesReached;
         this.isLoadingNext = false;
-        if (this.followTail) this.scrollToBottom();
+        if (this.followTail && this._atBottom) this.scrollToBottom();
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
       error: () => {
+        this._activePollSub = undefined;
         this.isLoadingNext = false;
         this._safeMarkForCheck();
       }
@@ -1771,8 +1797,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private scheduleNextPoll(): void {
     this.clearPollTimer();
     const limitReached   = this.dateToReached || this.numOfLinesReached;
-    const canPollNext    = this.followTail && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
-    const canPollRunning = this.followTail && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
+    const canPollNext    = this.followTail && this._atBottom && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
+    const canPollRunning = this.followTail && this._atBottom && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
     if (canPollNext || canPollRunning) {
       this.pollTimer = setTimeout(() => {
         // Do not poll while the user has an active text selection — the response
@@ -1796,6 +1822,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this.pollTimer !== undefined) {
       clearTimeout(this.pollTimer);
       this.pollTimer = undefined;
+    }
+  }
+
+  private cancelActivePollFetch(): void {
+    if (this._activePollSub) {
+      this._activePollSub.unsubscribe();
+      this._activePollSub = undefined;
+      this.isLoadingNext = false;
     }
   }
 
@@ -1836,8 +1870,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Context blocks are O(n) full scan — only recompute on the final chunk.
       if (isLastChunk) {
         this.computeContextBlocks();
-        // Only scroll once — on the final chunk — to avoid repeated layout reflows.
-        if (this.followTail) this.scrollToBottom();
+        // Scroll to last new line only when follow-tail is on and no line is anchored.
+        if (this.followTail && this.activeLineIdx === null && this.filteredLines.length > 0) {
+          this.scrollToBottom();
+        }
         onComplete?.();
       } else {
         setTimeout(processChunk, 0);
@@ -1861,12 +1897,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const excess = this.allLines.length - maxLines;
 
     if (direction === 'top') {
+      // Subtract stats and evict highlight cache entries before splicing — O(excess).
+      this._subtractLevelStats(0, excess);
+      this._evictHighlightCache(0, excess);
       // Remove oldest (top) lines after appending newer lines at bottom.
       this.allLines.splice(0, excess);
-      // Re-index all remaining lines (globalIdx must equal position in allLines).
-      for (let i = 0; i < this.allLines.length; i++) {
-        this.allLines[i].globalIdx = i;
-      }
       // Keep activeLineIdx in sync; null it out if the active line was trimmed.
       if (this.activeLineIdx !== null) {
         this.activeLineIdx = this.activeLineIdx < excess ? null : this.activeLineIdx - excess;
@@ -1874,7 +1909,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Update firstKey to the new first line and signal older lines exist above.
       this.firstKey = this.allLines[0]?.key || null;
       this.firstLogLineReached = false;
+      // Re-index in 500-line chunks to spread the O(n) cost across frames.
+      // To undo: remove this call + _reindexThenFinalize() + _finalizeAfterTrim(),
+      //          restore the for-loop here, and move _finalizeAfterTrim() body inline.
+      this._reindexThenFinalize();
     } else {
+      // Subtract stats and evict highlight cache entries before splicing — O(excess).
+      this._subtractLevelStats(this.allLines.length - excess, this.allLines.length);
+      this._evictHighlightCache(this.allLines.length - excess, this.allLines.length);
       // Remove newest (bottom) lines after prepending older lines at top.
       this.allLines.splice(this.allLines.length - excess, excess);
       // No re-indexing needed — top lines retain their globalIdx values.
@@ -1884,12 +1926,38 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Update lastKey to the new last line and signal newer lines exist below.
       this.lastKey = this.allLines[this.allLines.length - 1]?.key || null;
       this.lastLogLineReached = false;
+      this._finalizeAfterTrim();
     }
+  }
 
+  // Splits the O(n) re-index loop into 500-line chunks, then calls _finalizeAfterTrim().
+  private _reindexThenFinalize(): void {
+    const CHUNK_SIZE = 500;
+    let offset = 0;
+    const processChunk = () => {
+      if (this.destroyed) return;
+      const end = Math.min(offset + CHUNK_SIZE, this.allLines.length);
+      for (let i = offset; i < end; i++) {
+        this.allLines[i].globalIdx = i;
+      }
+      offset = end;
+      if (offset < this.allLines.length) {
+        setTimeout(processChunk, 0);
+      } else {
+        this._finalizeAfterTrim();
+      }
+    };
+    setTimeout(processChunk, 0);
+  }
+
+  // Shared post-trim cleanup: rebuild filtered view, trigger render, defer context blocks.
+  private _finalizeAfterTrim(): void {
     this.levelJumpIndices.clear();
-    this.rebuildLevelStats();
     this.computeFilteredLines();
-    this.computeContextBlocks();
+    this._safeMarkForCheck();
+    setTimeout(() => {
+      if (!this.destroyed) this.computeContextBlocks();
+    }, 0);
   }
 
   private prependLogEntries(entries: {key: string, line: string}[]): void {
@@ -1897,58 +1965,110 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const oldScrollHeight = el ? el.scrollHeight : 0;
     const oldScrollTop    = el ? el.scrollTop    : 0;
 
+    const CHUNK_SIZE = 500;
+    let offset = 0;
     const newLines: ParsedLine[] = [];
-    for (const entry of entries) {
-      const cleaned = entry.line.replace(/\r?\n$/, '');
-      if (!cleaned.trim()) continue;
-      const parsed = parseLine(cleaned);
-      if (!parsed.timestamp && newLines.length > 0) {
-        const prev = newLines[newLines.length - 1];
-        prev.text += '\n' + parsed.text;
-        prev.raw  += '\n' + parsed.raw;
-        prev.rawLower = prev.raw.toLowerCase();
-        prev.key = entry.key;
-      } else {
-        parsed.key = entry.key;
-        parsed.globalIdx = newLines.length;
-        if (parsed.level === 'INFO' && parsed.rawLower.includes('startup')) {
-          if (STARTUP_START_RE.test(parsed.raw))      parsed.isStartupBoundary = 'START';
-          else if (STARTUP_STOP_RE.test(parsed.raw))  parsed.isStartupBoundary = 'STOP';
+
+    const processChunk = () => {
+      if (this.destroyed) return;
+      const end = Math.min(offset + CHUNK_SIZE, entries.length);
+      for (let i = offset; i < end; i++) {
+        const entry = entries[i];
+        const cleaned = entry.line.replace(/\r?\n$/, '');
+        if (!cleaned.trim()) continue;
+        const parsed = parseLine(cleaned);
+        if (!parsed.timestamp && newLines.length > 0) {
+          const prev = newLines[newLines.length - 1];
+          prev.text += '\n' + parsed.text;
+          prev.raw  += '\n' + parsed.raw;
+          prev.rawLower = prev.raw.toLowerCase();
+          prev.key = entry.key;
+        } else {
+          parsed.key = entry.key;
+          parsed.globalIdx = newLines.length;
+          if (parsed.raw.includes('StartUp')) {
+            if (STARTUP_START_RE.test(parsed.raw))      parsed.isStartupBoundary = 'START';
+            else if (STARTUP_STOP_RE.test(parsed.raw))  parsed.isStartupBoundary = 'STOP';
+          }
+          newLines.push(parsed);
         }
-        newLines.push(parsed);
       }
-    }
-    if (newLines.length === 0) return;
+      offset = end;
 
-    // Shift globalIdx of all existing lines to make room for the prepended block.
-    const shift = newLines.length;
-    for (const line of this.allLines) {
-      line.globalIdx += shift;
-    }
-    // Keep activeLineIdx in sync with the shifted globalIdx values.
-    if (this.activeLineIdx !== null) {
-      this.activeLineIdx += shift;
-    }
-    this.allLines = [...newLines, ...this.allLines];
+      if (offset < entries.length) {
+        setTimeout(processChunk, 0);
+        return;
+      }
 
-    // Full rebuild needed since globalIdx values changed across all lines.
-    this.rebuildLevelStats();
-    this.levelJumpIndices.clear();
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+      // All entries parsed — merge and rebuild.
+      if (newLines.length === 0) return;
 
-    // Restore scroll position so the viewport doesn't jump to the top.
-    if (el) {
-      setTimeout(() => {
-        el.scrollTop = oldScrollTop + (el.scrollHeight - oldScrollHeight);
-      }, 0);
-    }
+      // Shift globalIdx of all existing lines to make room for the prepended block.
+      const shift = newLines.length;
+      for (const line of this.allLines) {
+        line.globalIdx += shift;
+      }
+      // Keep activeLineIdx in sync with the shifted globalIdx values.
+      if (this.activeLineIdx !== null) {
+        this.activeLineIdx += shift;
+      }
+      this.allLines = [...newLines, ...this.allLines];
+
+      // Full rebuild needed since globalIdx values changed across all lines.
+      this.rebuildLevelStats();
+      this.levelJumpIndices.clear();
+      this.computeFilteredLines();
+      this.computeContextBlocks();
+
+      if (this.followTail && this.activeLineIdx === null && this.filteredLines.length > 0) {
+        // Unanchored follow-tail — navigate to first new prepended line.
+        this.activeLineIdx = this.filteredLines[0].globalIdx;
+        if (el) setTimeout(() => { el.scrollTop = 0; }, 0);
+      } else if (el) {
+        // Restore scroll position so the viewport doesn't jump to the top.
+        setTimeout(() => {
+          el.scrollTop = oldScrollTop + (el.scrollHeight - oldScrollHeight);
+        }, 0);
+      }
+      this._safeMarkForCheck();
+    };
+
+    processChunk();
   }
 
   private rebuildLevelStats(): void {
     this.levelCounts = { error: 0, warn: 0, info: 0, debug: 0, trace: 0, other: 0 };
     this.hasInfo = this.hasWarn = this.hasError = this.hasDebug = this.hasTrace = false;
     this.updateLevelStats(0);
+  }
+
+  private _evictHighlightCache(from: number, to: number): void {
+    for (let i = from; i < to; i++) {
+      this.allLines[i].text = '';
+      this.allLines[i].raw = '';
+      this.allLines[i].rawLower = '';
+    }
+    this.highlightCache.clear();
+  }
+
+  private _subtractLevelStats(from: number, to: number): void {
+    const c = { ...this.levelCounts };
+    for (let i = from; i < to; i++) {
+      switch (this.allLines[i].level) {
+        case 'ERROR': c['error']--; break;
+        case 'WARN':  c['warn']--;  break;
+        case 'INFO':  c['info']--;  break;
+        case 'DEBUG': c['debug']--; break;
+        case 'TRACE': c['trace']--; break;
+        default:      c['other']--; break;
+      }
+    }
+    this.hasError = c['error'] > 0;
+    this.hasWarn  = c['warn']  > 0;
+    this.hasInfo  = c['info']  > 0;
+    this.hasDebug = c['debug'] > 0;
+    this.hasTrace = c['trace'] > 0;
+    this.levelCounts = c;
   }
 
   private getApiUrl(): string {
@@ -1987,10 +2107,29 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const el = event.target as HTMLElement;
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150;
     const atTop    = el.scrollTop <= 150;
-    if (atBottom && !this.isLoadingNext && !this.isLoadingPrev && !this.lastLogLineReached) {
-      this.fetchNext();
-    } else if (atTop && !this.isLoadingPrev && !this.isLoadingNext && !this.firstLogLineReached && this.allLines.length > 0) {
-      this.fetchPrev();
+    const wasAtBottom = this._atBottom;
+    this._atBottom = atBottom;
+    if (this.followTail) {
+      if (!atBottom && wasAtBottom) {
+        // User left the bottom — pause follow-tail polling.
+        this.clearPollTimer();
+      } else if (atBottom && !wasAtBottom) {
+        // User returned to bottom — unanchor and resume follow-tail polling.
+        this.activeLineIdx = null;
+        this.scheduleNextPoll();
+      }
+      // If paused and reached top — cancel any in-flight poll fetch then load previous lines.
+      if (atTop && !atBottom && !this.isLoadingPrev && !this.firstLogLineReached && this.allLines.length > 0) {
+        this.cancelActivePollFetch();
+        this.fetchPrev();
+      }
+    } else {
+      // Normal scroll (follow-tail off).
+      if (atBottom && !this.isLoadingNext && !this.isLoadingPrev && !this.lastLogLineReached) {
+        this.fetchNext();
+      } else if (atTop && !this.isLoadingPrev && !this.isLoadingNext && !this.firstLogLineReached && this.allLines.length > 0) {
+        this.fetchPrev();
+      }
     }
   }
 
@@ -2021,7 +2160,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (r.dateTo)     req.dateTo     = r.dateTo;
     if (r.timeZone)   req.timeZone   = r.timeZone;
     if (r.numOfLines) req.numOfLines = r.numOfLines;
-    if (r.limit)      req.limit      = r.limit;
+    req.limit      = this.numOfNextLogLines;
     return req;
   }
 }

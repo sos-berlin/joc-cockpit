@@ -40,11 +40,11 @@ export class SystemLogPageComponent implements OnInit {
       subagentId:   p['subagentId']   || undefined,
       serviceId:    p['serviceId']    || undefined,
       level:        p['level']        || 'INFO',
-      dateFrom:     p['dateFrom']     || '1d',
+      dateFrom:     p['dateFrom']     || '0d',
       dateTo:       p['dateTo']       || undefined,
       timeZone:     p['timeZone']     || undefined,
-      numOfLines:   p['numOfLines']   ? Number(p['numOfLines']) : 2500,
-      limit:        p['limit']   ? Number(p['limit']) : 250
+      numOfLines:   p['numOfLines']   ? Number(p['numOfLines']) : undefined,
+      limit:        p['limit']   ? Number(p['limit']) : 1000
     };
     document.title = this.buildTitle(this.request);
   }

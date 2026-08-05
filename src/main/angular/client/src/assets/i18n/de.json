@@ -3010,7 +3010,6 @@
     "label.predefined.started": "Gestartet",
     "label.predefined.shutdown": "Heruntergefahren",
     "label.force": "Über die Grenzen hinaus laden",
-    "label.runningTimeout": "Zeitlimit",
     "label.serviceId": "Dienst",
     "placeholder.selectDate": "Datum auswählen",
     "placeholder.selectTime": "Zeit auswählen",
@@ -3019,7 +3018,6 @@
     "placeholder.numOfLines": "z.B. 100, 500, 1000 (leer lassen, um alle Zeilen anzuzueigen)",
     "placeholder.filter": "Zeilen filtern…",
     "placeholder.searchInVisible": "Suchen in angezeigten Zeilen…",
-    "placeholder.runningTimeout": "1–57 Sekunden",
     "placeholder.serviceId": "Dienst auswählen…",
     "message.copied": "Kopiert",
     "message.noEntries": "Keine Protokolleinträge gefunden",
@@ -3059,7 +3057,6 @@
     "tooltip.copyCriteria": "**Kriterien kopieren** für die Suche und Filterung, damit diese auch in anderen Protokollfenstern verwendet werden können.",
     "tooltip.pasteCriteria": "**Kriterien einfügen** wendet diese auf die Suche und Filter an.",
     "tooltip.force": "Wenn dieses Kontrollkästchen aktiviert ist, werden Protokolleinträge über die Grenzen von *Datum bis* oder *Anzahl der Zeilen* hinaus geladen.",
-    "tooltip.runningTimeout": "Optionaler Zeitlimit in Sekunden (1–57) für das Abrufen des laufenden Protokolls. Wenn dieser Wert festgelegt ist, wartet der Server bis zu angegebenen Anzahl Sekunden auf neue Protokolleinträge, bevor er antwortet.\n\nLassen Sie das Feld leer, um die Voreinstellung des Servers zu verwenden.",
     "tooltip.serviceId": "Wählt einen JOC Cockpit Dienst, für den Protokollausgaben angezeigt werden.",
     "serviceId": {
       "label.joc": "JOC",
@@ -3203,9 +3200,6 @@
         "pending": "Anstehend",
         "approved": "Autorisiert",
         "rejected": "Abgelehnt"
-      },
-      "section": {
-        "details": "Approval Details"
       }
     },
     "approvers": {
