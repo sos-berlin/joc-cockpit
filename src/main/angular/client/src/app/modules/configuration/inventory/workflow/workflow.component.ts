@@ -4653,6 +4653,8 @@ export class WorkflowComponent {
           }
           return {name: k, value: val};
         });
+      } else {
+        this.variableDeclarations.parameters = [];
       }
     }
   }
