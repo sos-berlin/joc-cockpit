@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  
+
 })
 export class LayoutComponent {
   preferences: any = {};
@@ -30,6 +30,7 @@ export class LayoutComponent {
   interval: any;
   tabsMap = new Map();
   currentTime = '';
+  surveyDate = '';
   subscription1: any = Subscription;
   subscription2: any = Subscription;
   subscription3: any = Subscription;
@@ -122,7 +123,7 @@ export class LayoutComponent {
     }
   }
 
-  refresh(args: { eventSnapshots: any[] }): void {
+  refresh(args: { eventSnapshots: any[]; surveyDate?: string }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if ((args.eventSnapshots[j].eventType === 'ProblemEvent' || args.eventSnapshots[j].eventType === 'ProblemAsHintEvent' || args.eventSnapshots[j].eventType === 'NodeLossProblemEvent') && args.eventSnapshots[j].message) {
@@ -136,6 +137,9 @@ export class LayoutComponent {
           }
         }
       }
+    }
+    if (args.surveyDate) {
+      this.surveyDate = this.coreService.stringToDate(this.preferences, args.surveyDate);
     }
   }
 
@@ -769,7 +773,7 @@ export class LayoutComponent {
     preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
     preferences.enableTagging = false;
-    preferences.numOfLogLines = 2500;
+    preferences.numOfLogLines = 7000;
     preferences.numOfNextLogLines = 1000;
     preferences.orderStateColors = [
       {
@@ -894,7 +898,7 @@ export class LayoutComponent {
         data.showGlossary = true;
       }
       if (data.numOfLogLines === undefined) {
-        data.numOfLogLines = 2500;
+        data.numOfLogLines = 7000;
       }
       if (data.numOfNextLogLines === undefined) {
         data.numOfNextLogLines = 1000;

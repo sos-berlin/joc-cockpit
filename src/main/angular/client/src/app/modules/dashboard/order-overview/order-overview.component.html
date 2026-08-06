@@ -42,43 +42,43 @@
       <div class="stat-grid">
         <a class="stat-tile" (click)="navigate('PENDING')" [appRichTooltip]="'dashboard.tooltip.pending' | translate">
           <div class="stat-label">{{ 'common.label.pending' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.pending || 0" [ngClass]="{'light-yellow': orders.pending > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.pending || 0" [ngClass]="{'light-yellow': orders.pending > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('SCHEDULED')" [appRichTooltip]="'dashboard.tooltip.scheduled' | translate">
           <div class="stat-label">{{ 'common.label.scheduled' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.scheduled || 0" [ngClass]="{'gold': orders.scheduled > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.scheduled || 0" [ngClass]="{'gold': orders.scheduled > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('INPROGRESS')" [appRichTooltip]="'dashboard.tooltip.incomplete' | translate">
           <div class="stat-label">{{ 'common.label.incomplete' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.inProgress || 0" [ngClass]="{'light-blue': orders.inProgress > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.inProgress || 0" [ngClass]="{'light-blue': orders.inProgress > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('RUNNING')" [appRichTooltip]="'dashboard.tooltip.running' | translate">
           <div class="stat-label">{{ 'common.label.running' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.running || 0" [ngClass]="{'green': orders.running > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.running || 0" [ngClass]="{'green': orders.running > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('SUSPENDED')" [appRichTooltip]="'dashboard.tooltip.suspended' | translate">
           <div class="stat-label">{{ 'common.label.suspended' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.suspended || 0" [ngClass]="{'orange': orders.suspended > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.suspended || 0" [ngClass]="{'orange': orders.suspended > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('COMPLETED')" [appRichTooltip]="'dashboard.tooltip.completed' | translate">
           <div class="stat-label">{{ 'common.label.completed' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue': orders.terminated > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.terminated || 0" [ngClass]="{'dark-blue': orders.terminated > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('PROMPTING')" [appRichTooltip]="'dashboard.tooltip.prompting' | translate">
           <div class="stat-label">{{ 'common.label.prompting' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green': orders.prompting > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.prompting || 0" [ngClass]="{'light-green': orders.prompting > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('WAITING')" [appRichTooltip]="'dashboard.tooltip.waiting' | translate">
           <div class="stat-label">{{ 'common.label.waiting' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green': orders.waiting > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.waiting || 0" [ngClass]="{'yellow-green': orders.waiting > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('BLOCKED')" [appRichTooltip]="'dashboard.tooltip.blocked' | translate">
           <div class="stat-label">{{ 'common.label.blocked' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta': orders.blocked > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.blocked || 0" [ngClass]="{'mangenta': orders.blocked > 0 && proxyIsCoupled}"></div>
         </a>
         <a class="stat-tile" (click)="navigate('FAILED')" [appRichTooltip]="'dashboard.tooltip.failed' | translate">
           <div class="stat-label">{{ 'common.label.failed' | translate }}</div>
-          <div class="stat-count text-lg _600" [innerHtml]="orders.failed || 0" [ngClass]="{'red': orders.failed > 0}"></div>
+          <div class="stat-count text-lg _600" [innerHtml]="orders.failed || 0" [ngClass]="{'red': orders.failed > 0 && proxyIsCoupled}"></div>
         </a>
       </div>
     }

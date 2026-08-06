@@ -167,7 +167,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   isLoadingNext = false;
   isLoadingPrev = false;
   isDownloading = false;
-  maxLogLines = 2500;
+  maxLogLines = 7000;
   /** Session token returned by /log — passed as logToken in /log/next and /log/prev. */
   logToken: string | null = null;
   /** Cursor key of the first line in the buffer — sent as key in /log/prev requests. */
@@ -272,6 +272,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private pollTimer?: ReturnType<typeof setTimeout>;
   private _activePollSub?: Subscription;
   private readonly POLL_INTERVAL_MS = 3000;
+  private _isProcessingTrim = false;
+  private _scrollToBottomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   // Cache key = `${committedTerm}\x00${text}` so changing the search term naturally
   // invalidates all prior entries without a manual clear, and the same text+term pair
@@ -424,7 +426,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         const prefs = JSON.parse(sessionStorage['preferences']);
         this.logTimezone = prefs.logTimezone === true;
         this.profileTz   = prefs.zone || '';
-        if (prefs.numOfLogLines)     this.maxLogLines     = Number(prefs.numOfLogLines)     || 2500;
+        if (prefs.numOfLogLines)     this.maxLogLines     = Number(prefs.numOfLogLines)     || 7000;
         if (prefs.numOfNextLogLines) this.numOfNextLogLines = Number(prefs.numOfNextLogLines) || 1000;
       } catch { /**/ }
     }
@@ -1488,7 +1490,11 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   scrollToBottom(): void {
     const el = this.logBodyRef?.nativeElement;
     if (el) {
-      setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
+      clearTimeout(this._scrollToBottomTimer);
+      this._scrollToBottomTimer = setTimeout(() => {
+        this._scrollToBottomTimer = undefined;
+        el.scrollTop = el.scrollHeight;
+      }, 0);
       if (this.filteredLines.length > 0) {
         this.activeLineIdx = this.filteredLines[this.filteredLines.length - 1].globalIdx;
       }
@@ -1631,7 +1637,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           this.forceEnabled = true;
         }
         this.isLoading = false;
-        if (this.followTail && this._atBottom) this.scrollToBottom();
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
@@ -1655,17 +1660,22 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this._activePollSub = undefined;
         if (this.destroyed) return;
         const entries: {key: string, line: string}[] = res.logLines || [];
-        if (entries.length > 0) {
-          this.lastKey = entries[entries.length - 1].key || this.lastKey;
-          this.processLogEntries(entries, () => this.trimBuffer('top'));
-        }
         this.lastLogLineReached  = !!res.lastLogLineReached;
         this.dateToReached       = !!res.dateToReached;
         this.numOfLinesReached   = !!res.numOfLinesReached;
-        this.isLoadingNext = false;
-        if (this.followTail && this._atBottom) this.scrollToBottom();
-        this.scheduleNextPoll();
-        this._safeMarkForCheck();
+        if (entries.length > 0) {
+          this.lastKey = entries[entries.length - 1].key || this.lastKey;
+          this.processLogEntries(entries, () => {
+            this.trimBuffer('top');
+            this.isLoadingNext = false;
+            this.scheduleNextPoll();
+            this._safeMarkForCheck();
+          });
+        } else {
+          this.isLoadingNext = false;
+          this.scheduleNextPoll();
+          this._safeMarkForCheck();
+        }
       },
       error: () => {
         this._activePollSub = undefined;
@@ -1693,12 +1703,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         const entries: {key: string, line: string}[] = res.logLines || [];
         if (entries.length > 0) {
           this.firstKey = entries[0].key || this.firstKey;
-          this.prependLogEntries(entries);
-          this.trimBuffer('bottom');
+          this.prependLogEntries(entries, () => {
+            this.firstLogLineReached = !!res.firstLogLineReached;
+            this._safeMarkForCheck();
+            // Defer trim to after the scroll-restore setTimeout fires so Angular renders
+            // the prepend-only state first — giving the restore a correct scrollHeight delta.
+            // isLoadingPrev stays true across both timeouts, blocking any re-trigger.
+            setTimeout(() => {
+              this.trimBuffer('bottom');
+              this.isLoadingPrev = false;
+              this._safeMarkForCheck();
+            }, 0);
+          });
+        } else {
+          this.firstLogLineReached = !!res.firstLogLineReached;
+          this.isLoadingPrev = false;
+          this._safeMarkForCheck();
         }
-        this.firstLogLineReached = !!res.firstLogLineReached;
-        this.isLoadingPrev = false;
-        this._safeMarkForCheck();
       },
       error: () => {
         this.isLoadingPrev = false;
@@ -1720,18 +1741,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this._activePollSub = undefined;
         if (this.destroyed) return;
         const entries: {key: string, line: string}[] = res.logLines || [];
-        if (entries.length > 0) {
-          this.lastKey = entries[entries.length - 1].key || this.lastKey;
-          this.processLogEntries(entries, () => this.trimBuffer('top'));
-        }
         if (res.logToken) this.logToken = res.logToken;
         this.isLogComplete     = res.isComplete === true;
         this.dateToReached     = !!res.dateToReached;
         this.numOfLinesReached = !!res.numOfLinesReached;
-        this.isLoadingNext = false;
-        if (this.followTail && this._atBottom) this.scrollToBottom();
-        this.scheduleNextPoll();
-        this._safeMarkForCheck();
+        if (entries.length > 0) {
+          this.lastKey = entries[entries.length - 1].key || this.lastKey;
+          this.processLogEntries(entries, () => {
+            this.trimBuffer('top');
+            this.isLoadingNext = false;
+            this.scheduleNextPoll();
+            this._safeMarkForCheck();
+          });
+        } else {
+          this.isLoadingNext = false;
+          this.scheduleNextPoll();
+          this._safeMarkForCheck();
+        }
       },
       error: () => {
         this._activePollSub = undefined;
@@ -1870,8 +1896,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Context blocks are O(n) full scan — only recompute on the final chunk.
       if (isLastChunk) {
         this.computeContextBlocks();
-        // Scroll to last new line only when follow-tail is on and no line is anchored.
-        if (this.followTail && this.activeLineIdx === null && this.filteredLines.length > 0) {
+        // Scroll to last new line whenever follow-tail is on and viewport is at the bottom.
+        if (this.followTail && this._atBottom && this.filteredLines.length > 0) {
           this.scrollToBottom();
         }
         onComplete?.();
@@ -1909,9 +1935,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Update firstKey to the new first line and signal older lines exist above.
       this.firstKey = this.allLines[0]?.key || null;
       this.firstLogLineReached = false;
+      // Cancel any pending scrollToBottom — re-fired in _finalizeAfterTrim once DOM settles,
+      // preventing a stale scrollHeight scroll event from firing during re-index.
+      clearTimeout(this._scrollToBottomTimer);
+      this._scrollToBottomTimer = undefined;
       // Re-index in 500-line chunks to spread the O(n) cost across frames.
       // To undo: remove this call + _reindexThenFinalize() + _finalizeAfterTrim(),
       //          restore the for-loop here, and move _finalizeAfterTrim() body inline.
+      this._isProcessingTrim = true;
       this._reindexThenFinalize();
     } else {
       // Subtract stats and evict highlight cache entries before splicing — O(excess).
@@ -1926,6 +1957,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Update lastKey to the new last line and signal newer lines exist below.
       this.lastKey = this.allLines[this.allLines.length - 1]?.key || null;
       this.lastLogLineReached = false;
+      this.dateToReached = false;
+      this.numOfLinesReached = false;
       this._finalizeAfterTrim();
     }
   }
@@ -1952,15 +1985,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   // Shared post-trim cleanup: rebuild filtered view, trigger render, defer context blocks.
   private _finalizeAfterTrim(): void {
+    this._isProcessingTrim = false;
     this.levelJumpIndices.clear();
     this.computeFilteredLines();
     this._safeMarkForCheck();
+    // Re-fire the scroll that was cancelled before re-index, now that DOM is settled.
+    // Also restart the poll timer here — the timer set in onComplete() can be killed by a
+    // scroll event during the async re-index; restarting it here ensures reliable continuation.
+    if (this.followTail && this._atBottom) {
+      this.scrollToBottom();
+      this.scheduleNextPoll();
+    }
     setTimeout(() => {
       if (!this.destroyed) this.computeContextBlocks();
     }, 0);
   }
 
-  private prependLogEntries(entries: {key: string, line: string}[]): void {
+  private prependLogEntries(entries: {key: string, line: string}[], onComplete?: () => void): void {
     const el = this.logBodyRef?.nativeElement;
     const oldScrollHeight = el ? el.scrollHeight : 0;
     const oldScrollTop    = el ? el.scrollTop    : 0;
@@ -2020,16 +2061,14 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       this.computeFilteredLines();
       this.computeContextBlocks();
 
-      if (this.followTail && this.activeLineIdx === null && this.filteredLines.length > 0) {
-        // Unanchored follow-tail — navigate to first new prepended line.
-        this.activeLineIdx = this.filteredLines[0].globalIdx;
-        if (el) setTimeout(() => { el.scrollTop = 0; }, 0);
-      } else if (el) {
-        // Restore scroll position so the viewport doesn't jump to the top.
+      if (el) {
         setTimeout(() => {
           el.scrollTop = oldScrollTop + (el.scrollHeight - oldScrollHeight);
         }, 0);
       }
+      // onComplete runs after merge: trimBuffer fires on the real allLines length,
+      // and isLoadingPrev stays true until here so scroll events can't re-trigger fetchPrev.
+      onComplete?.();
       this._safeMarkForCheck();
     };
 
@@ -2108,23 +2147,25 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150;
     const atTop    = el.scrollTop <= 150;
     const wasAtBottom = this._atBottom;
+    // Always update scroll state so pause/resume is never missed.
     this._atBottom = atBottom;
+    // Always propagate the pause signal — user leaving the bottom must stop the poll
+    // even if a trim re-index is in progress.
+    if (this.followTail && !atBottom && wasAtBottom) {
+      this.clearPollTimer();
+    }
+    // Block fetch operations only (not scroll-state updates) during trim re-index.
+    if (this._isProcessingTrim) return;
     if (this.followTail) {
-      if (!atBottom && wasAtBottom) {
-        // User left the bottom — pause follow-tail polling.
-        this.clearPollTimer();
-      } else if (atBottom && !wasAtBottom) {
-        // User returned to bottom — unanchor and resume follow-tail polling.
+      if (atBottom && !wasAtBottom) {
         this.activeLineIdx = null;
         this.scheduleNextPoll();
       }
-      // If paused and reached top — cancel any in-flight poll fetch then load previous lines.
       if (atTop && !atBottom && !this.isLoadingPrev && !this.firstLogLineReached && this.allLines.length > 0) {
         this.cancelActivePollFetch();
         this.fetchPrev();
       }
     } else {
-      // Normal scroll (follow-tail off).
       if (atBottom && !this.isLoadingNext && !this.isLoadingPrev && !this.lastLogLineReached) {
         this.fetchNext();
       } else if (atTop && !this.isLoadingPrev && !this.isLoadingNext && !this.firstLogLineReached && this.allLines.length > 0) {

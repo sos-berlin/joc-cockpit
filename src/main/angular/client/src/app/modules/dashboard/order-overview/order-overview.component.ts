@@ -22,6 +22,7 @@ export class OrderOverviewComponent {
   isLoaded = false;
   filters: any = {};
   subscription: Subscription;
+  proxyIsCoupled: boolean = false;
 
   dateFilterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -69,7 +70,7 @@ export class OrderOverviewComponent {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/WorkflowStateChanged/) || args.eventSnapshots[j].eventType === 'ProxyCoupled'
-          || args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          || args.eventSnapshots[j].eventType === 'ProxyDecoupled' || args.eventSnapshots[j].eventType === 'ControllerStateChanged') {
           this.getSnapshot();
           break;
         }
@@ -91,6 +92,7 @@ export class OrderOverviewComponent {
     this.coreService.post('orders/overview/snapshot', obj).subscribe({
       next: (res: any) => {
         this.orders = res.orders;
+        this.proxyIsCoupled = res.proxyIsCoupled;
         this.isLoaded = true;
         this.cdr.markForCheck();
       }, error: (err) => {

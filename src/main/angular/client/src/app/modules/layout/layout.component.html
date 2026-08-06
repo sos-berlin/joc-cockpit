@@ -13,10 +13,13 @@
         }
         <span class="m-r-sm"><span class="text-muted">{{ 'common.label.time' | translate }}</span>:
                 <i [innerHtml]="currentTime" class="text-dark _500"></i></span>
-        @if (sessionTimeout >= 0) {
+        @if (surveyDate) {
           <i class="fa fa-circle-o circle"></i>
+          <span class="m-r-sm"><span class="text-muted">{{ 'dashboard.label.surveyDate' | translate }}</span>:
+                  <i [innerHtml]="surveyDate" class="text-dark _500"></i></span>
         }
         @if (sessionTimeout >= 0) {
+          <i class="fa fa-circle-o circle"></i>
           <span class="m-r-sm"><span class="text-muted">{{ 'common.label.remainingSessionTime' | translate }}</span>:
                   <span [innerHtml]="remainingSessionTime" class="text-orange"></span></span>
         }
