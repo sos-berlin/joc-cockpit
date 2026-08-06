@@ -336,7 +336,7 @@ gridster-item[style] {
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       gap: 2px;
       margin: 8px 4px;
       cursor: pointer;
@@ -370,7 +370,7 @@ gridster-item[style] {
         display: flex;
         flex-direction: column-reverse;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-end;
         gap: 2px;
         margin: 8px 4px;
         cursor: pointer;
@@ -519,43 +519,36 @@ gridster-item[style] {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  // Flex layout for icon + text alignment
-  .icon-bg {
+  // Tile: number on top (column-reverse), label below — same pattern as the
+  // Orders/History counter widgets, so all four numbers stay on one row
+  // regardless of how many lines a label wraps to.
+  .stat-tile {
     display: flex;
+    flex-direction: column-reverse;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 4px;
+    justify-content: flex-end;
+    gap: 2px;
+    margin: 8px 4px;
+    border-right: 1px solid var(--border-color);
 
-    // Primary-tinted icon circle instead of raw page-bg colour
-    i {
-      background: color-mix(in srgb, var(--primary) 8%, var(--bg-box)) !important;
-    }
-
-    // Override the position: relative; top: 7px hack
-    .text {
-      top: 0;
-      margin-left: 0;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      color: var(--text-muted);
-    }
+    &:nth-child(4n) { border-right: none; }
   }
 
-  .count {
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .stat-count {
     font-size: 22px;
     font-weight: 600;
     line-height: 1.2;
     color: var(--text-color);
-    text-transform: none;
-    letter-spacing: 0;
     text-align: center;
-  }
-
-  .icon-color {
-    opacity: 0.65;
-    font-size: 20px !important;
   }
 }
 

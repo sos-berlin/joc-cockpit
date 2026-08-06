@@ -10,33 +10,21 @@
   <div [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}" class="box-body text-overflow">
     @if (!notAuthenticate && isLoaded) {
       <div class="stat-grid">
-        <div [appRichTooltip]="'dashboard.tooltip.workflows' | translate" class="icon-bg">
-          <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
-          <div class="text">
-            <div class="count">{{statistics.numOfWorkflows || 0}}</div>
-            {{'dashboard.label.workflows' | translate}}
-          </div>
+        <div [appRichTooltip]="'dashboard.tooltip.workflows' | translate" class="stat-tile">
+          <div class="stat-label">{{'dashboard.label.workflows' | translate}}</div>
+          <div class="stat-count">{{statistics.numOfWorkflows || 0}}</div>
         </div>
-        <div [appRichTooltip]="'dashboard.tooltip.jobs' | translate" class="icon-bg">
-          <i class="icon-color" nz-icon nzTheme="outline" nzType="menu-unfold"></i>
-          <div class="text">
-            <div class="count">{{statistics.numOfJobs || 0}}</div>
-            {{'dashboard.label.jobs' | translate}}
-          </div>
+        <div [appRichTooltip]="'dashboard.tooltip.jobs' | translate" class="stat-tile">
+          <div class="stat-label">{{'dashboard.label.jobs' | translate}}</div>
+          <div class="stat-count">{{statistics.numOfJobs || 0}}</div>
         </div>
-        <div [appRichTooltip]="'dashboard.tooltip.locks' | translate" class="icon-bg">
-          <i class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
-          <div class="text">
-            <div class="count">{{statistics.numOfLocks || 0}}</div>
-            {{'dashboard.label.locks' | translate}}
-          </div>
+        <div [appRichTooltip]="'dashboard.tooltip.locks' | translate" class="stat-tile">
+          <div class="stat-label">{{'dashboard.label.locks' | translate}}</div>
+          <div class="stat-count">{{statistics.numOfLocks || 0}}</div>
         </div>
-        <div [appRichTooltip]="'dashboard.tooltip.schedules' | translate" class="icon-bg">
-          <i class="icon-color" nz-icon nzTheme="outline" nzType="schedule"></i>
-          <div class="text">
-            <div class="count">{{statistics.numOfSchedules || 0}}</div>
-            {{'dashboard.label.schedules' | translate}}
-          </div>
+        <div [appRichTooltip]="'dashboard.tooltip.schedules' | translate" class="stat-tile">
+          <div class="stat-label">{{'dashboard.label.schedules' | translate}}</div>
+          <div class="stat-count">{{statistics.numOfSchedules || 0}}</div>
         </div>
       </div>
     }
