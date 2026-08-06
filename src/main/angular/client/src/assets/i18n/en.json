@@ -20,7 +20,7 @@
   "ClusterFailoverToBeConfirmed": "Fail-over to be confirmed",
   "healthy": "healthy",
   "ACTIVE": "active",
-  "DEAD": "dead",
+  "DEAD": "inoperable",
   "DISABLED": "disabled",
   "FAILED": "failed",
   "HEALTHY": "healthy",

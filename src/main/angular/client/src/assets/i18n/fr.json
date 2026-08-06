@@ -20,7 +20,7 @@
   "ClusterFailoverToBeConfirmed": "Bascule à confirmer",
   "healthy": "sain",
   "ACTIVE": "actif",
-  "DEAD": "arrêté",
+  "DEAD": "inopérable",
   "DISABLED": "désactivé",
   "FAILED": "échoué",
   "HEALTHY": "sain",

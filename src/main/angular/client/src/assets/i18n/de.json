@@ -20,7 +20,7 @@
   "ClusterFailoverToBeConfirmed": "Umschalten bestätigen",
   "healthy": "betriebsfähig",
   "ACTIVE": "aktiv",
-  "DEAD": "tot",
+  "DEAD": "nicht-betriebsfähig",
   "DISABLED": "deaktiviert",
   "FAILED": "Fehlgeschlagen",
   "HEALTHY": "betriebsfähig",
