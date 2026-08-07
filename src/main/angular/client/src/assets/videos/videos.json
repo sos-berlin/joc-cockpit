@@ -91,5 +91,10 @@
     "id": "jY86uZ4pckg",
     "title": "Finish instruction",
     "description": "How to configure the Finish Instruction"
+  },
+  "fork-join-instruction": {
+    "id": "hJTFw0FSziw",
+    "title": "Fork/Join instruction",
+    "description": "How to configure the Fork/Join Instruction"
   }
 }

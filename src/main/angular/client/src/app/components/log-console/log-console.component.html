@@ -457,7 +457,7 @@
           <span>{{ 'logConsole.message.noMatches' | translate: { term: filterTerm } }}</span>
         </div>
       }
-      @for (line of filteredLines; track line.globalIdx) {
+      @for (line of filteredLines; track line) {
         <div class="log-line log-line-{{line.level.toLowerCase()}}"
              [class.log-line-match]="isMatchLine(line)"
              [class.log-line--active]="activeLineIdx === line.globalIdx"

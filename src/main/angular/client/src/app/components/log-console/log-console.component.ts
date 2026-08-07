@@ -15,7 +15,8 @@ interface ParsedLine {
   isStartupBoundary?: 'START' | 'STOP';
   text: string;
   raw: string;
-  rawLower: string; // pre-lowercased for fast search comparisons
+  rawLower: string;            // pre-lowercased for fast search comparisons
+  timestampNormalized: string; // pre-normalized timestamp for fast date comparisons
   globalIdx: number; // index in allLines, set by processLogEntries
 }
 
@@ -105,9 +106,10 @@ function parseLine(raw: string): ParsedLine {
     else if (lvlStr === 'TRACE')                        level = 'TRACE';
     else if (lvlStr === 'BEGIN') { level = 'INFO'; displayLevel = 'BEGIN'; }
     else if (lvlStr === 'END') { level = 'INFO'; displayLevel = 'END'; }
-    return { timestamp: m[1], level, displayLevel, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
+    const timestampNormalized = m[1].replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T').replace(/(Z|[+-]\d{2}(?::?\d{2})?)$/, '');
+    return { timestamp: m[1], timestampNormalized, level, displayLevel, text: raw.slice(m[0].length).replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
   }
-  return { timestamp: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
+  return { timestamp: '', timestampNormalized: '', level: 'OTHER', text: raw.replace(/\r?\n$/, ''), raw, rawLower, globalIdx: 0 };
 }
 
 /** Predefined quick-search presets. kind='boundary' items navigate startup boundaries directly. */
@@ -273,6 +275,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _activePollSub?: Subscription;
   private readonly POLL_INTERVAL_MS = 3000;
   private _isProcessingTrim = false;
+  private _userLeftBottom = false;
   private _scrollToBottomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
   // Cache key = `${committedTerm}\x00${text}` so changing the search term naturally
@@ -290,6 +293,17 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _committedRegexMode = false;
   /** Non-global RegExp for .test() checks in line filtering (regex mode only). */
   private _compiledSearchRegExp: RegExp | null = null;
+  /** Global RegExp reused by _countOccurrences — avoids constructing a new RegExp per matched line. */
+  private _compiledSearchRegExpGI: RegExp | null = null;
+  /** Cached level+date-only pool built by computeFilteredLines; reused by computeContextBlocks. */
+  private _levelDatePool: ParsedLine[] | null = null;
+  /** Incremented by every computeFilteredLines call and _computeFilteredLinesChunked start;
+   *  in-flight async chunks self-abort when they see a mismatch. */
+  private _filterVersion = 0;
+  /** Incremented by every computeSearchMatches call and _computeSearchMatchesChunked start;
+   *  in-flight async chunks self-abort when they see a mismatch. */
+  private _searchVersion = 0;
+  private readonly FILTER_CHUNK_SIZE = 500;
   /** Sorted globalIdx array of lines matching the current search term — for prev/next navigation. */
   _searchMatchIdxs: number[] = [];
   /** 0-based index into _searchMatchIdxs for the currently active navigation position. */
@@ -400,9 +414,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     // Debounced date filter — recomputes filtered lines 150ms after last input change.
     this.debounceSub.add(
       this._dateFilterDebounce.pipe(debounceTime(150)).subscribe(() => {
-        this.computeFilteredLines();
-        this.computeContextBlocks();
-        this.cdr.markForCheck();
+        this._computeFilteredLinesChunked(() => {
+          this._safeMarkForCheck();
+          setTimeout(() => { if (!this.destroyed) { this.computeContextBlocks(); this.cdr.markForCheck(); } }, 0);
+        });
       })
     );
     // Sync with global search state (apply immediately — another window already debounced).
@@ -690,8 +705,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onFilterChange(): void {
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+    this._computeFilteredLinesChunked(() => {
+      this._safeMarkForCheck();
+      setTimeout(() => { if (!this.destroyed) { this.computeContextBlocks(); this.cdr.markForCheck(); } }, 0);
+    });
   }
 
   onFilterTermChange(): void {
@@ -711,15 +728,15 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   toggleReverseFilter(): void {
     this.reverseFilter = !this.reverseFilter;
-    this.computeFilteredLines();
-    this.computeContextBlocks();
-    this.cdr.markForCheck();
+    this._computeFilteredLinesChunked(() => {
+      this._safeMarkForCheck();
+      setTimeout(() => { if (!this.destroyed) { this.computeContextBlocks(); this.cdr.markForCheck(); } }, 0);
+    });
   }
 
   toggleReverseSearch(): void {
     this.reverseSearch = !this.reverseSearch;
-    this.computeSearchMatches();
-    this._safeMarkForCheck();
+    this._computeSearchMatchesChunked(() => { this._safeMarkForCheck(); });
   }
 
   onDateFilterChange(): void {
@@ -730,8 +747,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   clearDateFilter(): void {
     this.dateFilterFromStr = '';
     this.dateFilterToStr   = '';
-    this.computeFilteredLines();
-    this.computeContextBlocks();
+    this._computeFilteredLinesChunked(() => {
+      this._safeMarkForCheck();
+      setTimeout(() => { if (!this.destroyed) { this.computeContextBlocks(); this.cdr.markForCheck(); } }, 0);
+    });
   }
 
   clearDateFrom(): void {
@@ -790,9 +809,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this._committedFilterRegexMode = this.filterRegexMode;
     this._compiledFilterRegExp     = (this.filterRegexMode && term) ? new RegExp(term, 'i') : null;
     this._searchJumpIdx            = null;
-    this.computeFilteredLines();
-    this.computeContextBlocks();
-    this._safeMarkForCheck();
+    this._computeFilteredLinesChunked(() => {
+      this._safeMarkForCheck();
+      setTimeout(() => { if (!this.destroyed) { this.computeContextBlocks(); this.cdr.markForCheck(); } }, 0);
+    });
   }
 
   // ── Search commitment & cache management ──────────────────────────────────
@@ -821,15 +841,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this._committedRegexMode  = this.regexMode;
     this._searchJumpIdx       = null;
     // Build compiled RegExp for .test() in filtering — non-global to avoid lastIndex mutation.
-    this._compiledSearchRegExp = (this.regexMode && term) ? new RegExp(term, 'i') : null;
+    this._compiledSearchRegExp   = (this.regexMode && term) ? new RegExp(term, 'i')  : null;
+    // Global variant reused by _countOccurrences — avoids constructing a new RegExp per matched line.
+    this._compiledSearchRegExpGI = (this.regexMode && term) ? new RegExp(term, 'gi') : null;
     // Force highlight RegExp to be rebuilt in highlightText().
     // NOTE: highlightCache is now keyed by term+text, so no manual clear is needed —
     // the new term naturally produces new cache entries while old ones age out.
     this._cachedHighlightTerm = '';
-    this.computeSearchMatches();
     // Use _safeMarkForCheck: the data update above is safe, but the resulting DOM
     // render (innerHTML rewrites) must not destroy an active text selection.
-    this._safeMarkForCheck();
+    this._computeSearchMatchesChunked(() => { this._safeMarkForCheck(); });
   }
 
   /** Called when the regex mode toggle is clicked — forces recommit with the new mode. */
@@ -867,7 +888,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const term = this._committedSearchTerm;
     if (!term) return 0;
     if (this._committedRegexMode && this._compiledSearchRegExp) {
-      return (l.raw.match(new RegExp(this._compiledSearchRegExp.source, 'gi')) ?? []).length;
+      const re = this._compiledSearchRegExpGI ?? new RegExp(this._compiledSearchRegExp.source, 'gi');
+      return (l.raw.match(re) ?? []).length;
     }
     let count = 0, pos = 0;
     const hay = l.rawLower;
@@ -877,30 +899,32 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private computeFilteredLines(): void {
+    ++this._filterVersion; // abort any in-flight _computeFilteredLinesChunked
     // Convert user-entered times to controller tz for comparison.
     // When logTimezone=true the user sees/enters profile-tz times, so we offset them back.
     const fromCmp   = this.toControllerTzStr(this.dateFilterFromStr);
     const toCmp     = this.toControllerTzStr(this.dateFilterToStr);
     const hasFilter = !!this._committedFilterTerm;
+    const hasDate   = !!(fromCmp || toCmp);
 
-    this.filteredLines = this.allLines.filter(l => {
+    // Build and cache the level+date pool — reused by computeContextBlocks to avoid a duplicate scan.
+    this._levelDatePool = this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
-      if (hasFilter) {
-        const matches = this.lineMatchesFilter(l);
-        // reverseFilter: keep lines that do NOT match the filter term
-        if (this.reverseFilter ? matches : !matches) return false;
-      }
-      if ((fromCmp || toCmp) && l.timestamp) {
-        // Normalize: "2026-01-15T10:22:33,123" → "2026-01-15T10:22:33.123"
-        // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
-        const ts = l.timestamp.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T').replace(/(Z|[+-]\d{2}(?::?\d{2})?)$/, '');
-        if (fromCmp && ts < fromCmp) return false;
-        // '\uffff' suffix ensures the whole last minute/second is included
-        // when the user's toCmp has no sub-minute/sub-second precision.
-        if (toCmp && ts > toCmp + '\uffff') return false;
+      if (hasDate && l.timestampNormalized) {
+        if (fromCmp && l.timestampNormalized < fromCmp) return false;
+        // '\uffff' suffix ensures the whole last minute/second is included.
+        if (toCmp && l.timestampNormalized > toCmp + '\uffff') return false;
       }
       return true;
     });
+
+    this.filteredLines = hasFilter
+      ? this._levelDatePool.filter(l => {
+          const matches = this.lineMatchesFilter(l);
+          // reverseFilter: keep lines that do NOT match the filter term
+          return this.reverseFilter ? !matches : matches;
+        })
+      : this._levelDatePool;
 
     // ── Rebuild derived lookup structures from filteredLines ──────────────────
     const lm = new Map<string, number[]>();
@@ -921,6 +945,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   /** Rebuilds the search-match set and prev/next navigation arrays from the current filteredLines.
    *  Called by computeFilteredLines() and directly by commitSearch() (when filteredLines is unchanged). */
   private computeSearchMatches(): void {
+    ++this._searchVersion; // abort any in-flight _computeSearchMatchesChunked
     this._matchLineSet.clear();
 
     if (this._boundaryKind) {
@@ -970,6 +995,127 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     }
+  }
+
+  /** Chunked async version of computeFilteredLines — only for user-triggered paths.
+   *  Internal data-loading paths (processLogEntries, _finalizeAfterTrim, etc.) call
+   *  computeFilteredLines() directly (synchronous) so their callers always see a complete result. */
+  private _computeFilteredLinesChunked(onDone?: () => void): void {
+    const myVersion = ++this._filterVersion;
+    const fromCmp   = this.toControllerTzStr(this.dateFilterFromStr);
+    const toCmp     = this.toControllerTzStr(this.dateFilterToStr);
+    const hasFilter = !!this._committedFilterTerm;
+    const hasDate   = !!(fromCmp || toCmp);
+
+    const levelDatePool: ParsedLine[]  = [];
+    const textFiltered: ParsedLine[]   = [];
+    let offset = 0;
+
+    const processChunk = () => {
+      if (myVersion !== this._filterVersion || this.destroyed) return;
+      const end = Math.min(offset + this.FILTER_CHUNK_SIZE, this.allLines.length);
+      for (let i = offset; i < end; i++) {
+        const l = this.allLines[i];
+        if (!this.levelVisible(l.level)) continue;
+        if (hasDate && l.timestampNormalized) {
+          if (fromCmp && l.timestampNormalized < fromCmp) continue;
+          if (toCmp && l.timestampNormalized > toCmp + '\uffff') continue;
+        }
+        levelDatePool.push(l);
+        if (hasFilter) {
+          const matches = this.lineMatchesFilter(l);
+          if (this.reverseFilter ? !matches : matches) textFiltered.push(l);
+        }
+      }
+      offset = end;
+      if (offset < this.allLines.length) {
+        setTimeout(processChunk, 0);
+        return;
+      }
+      if (myVersion !== this._filterVersion || this.destroyed) return;
+
+      this._levelDatePool = levelDatePool;
+      this.filteredLines  = hasFilter ? textFiltered : levelDatePool;
+
+      const lm = new Map<string, number[]>();
+      const fc: Record<string, number> = { error: 0, warn: 0, info: 0, debug: 0, trace: 0 };
+      for (const l of this.filteredLines) {
+        const key = l.level.toLowerCase();
+        if (!lm.has(key)) lm.set(key, []);
+        lm.get(key)!.push(l.globalIdx);
+        if (key in fc) fc[key]++;
+      }
+      this.levelLineMap        = lm;
+      this.filteredLevelCounts = fc;
+
+      this._safeMarkForCheck();
+      this._computeSearchMatchesChunked(onDone);
+    };
+    setTimeout(processChunk, 0);
+  }
+
+  /** Chunked async version of computeSearchMatches — only for user-triggered search changes. */
+  private _computeSearchMatchesChunked(onDone?: () => void): void {
+    const myVersion   = ++this._searchVersion;
+    const snapshot    = this.filteredLines; // snapshot; a sync computeFilteredLines mid-flight increments _searchVersion and aborts us
+    const term        = this._committedSearchTerm;
+    const boundaryKind = this._boundaryKind;
+
+    if (!term && !boundaryKind) {
+      this._matchLineSet         = new Set<number>();
+      this._searchMatchIdxs      = [];
+      this._searchMatchPositions = [];
+      onDone?.();
+      return;
+    }
+
+    const matchLineSet = new Set<number>();
+    let offset = 0;
+
+    const processChunk = () => {
+      if (myVersion !== this._searchVersion || this.destroyed) return;
+      const end = Math.min(offset + this.FILTER_CHUNK_SIZE, snapshot.length);
+      for (let i = offset; i < end; i++) {
+        const l = snapshot[i];
+        if (boundaryKind) {
+          if (l.isStartupBoundary === boundaryKind) matchLineSet.add(l.globalIdx);
+        } else if (term) {
+          const matches = this.lineMatchesSearch(l);
+          if (this.reverseSearch ? !matches : matches) matchLineSet.add(l.globalIdx);
+        }
+      }
+      offset = end;
+      if (offset < snapshot.length) {
+        setTimeout(processChunk, 0);
+        return;
+      }
+      if (myVersion !== this._searchVersion || this.destroyed) return;
+
+      this._matchLineSet      = matchLineSet;
+      this._searchMatchIdxs   = Array.from(matchLineSet).sort((a, b) => a - b);
+
+      this._searchMatchPositions = [];
+      if (boundaryKind) {
+        for (const gi of this._searchMatchIdxs) {
+          this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
+        }
+      } else if (term) {
+        for (const gi of this._searchMatchIdxs) {
+          const l = this.allLines[gi];
+          if (!l) continue;
+          if (this.reverseSearch) {
+            this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: 0 });
+          } else {
+            const cnt = this._countOccurrences(l);
+            for (let i = 0; i < cnt; i++) {
+              this._searchMatchPositions.push({ globalIdx: gi, occurrenceInLine: i });
+            }
+          }
+        }
+      }
+      onDone?.();
+    };
+    setTimeout(processChunk, 0);
   }
 
   /**
@@ -1042,13 +1188,13 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     // using it would leave only match lines → all consecutive → one giant block.
     const fromCmp = this.toControllerTzStr(this.dateFilterFromStr);
     const toCmp   = this.toControllerTzStr(this.dateFilterToStr);
-    const pool = this.allLines.filter(l => {
+    const hasDate = !!(fromCmp || toCmp);
+    // Reuse the pool built by computeFilteredLines when available; avoids a duplicate O(n) scan.
+    const pool = this._levelDatePool ?? this.allLines.filter(l => {
       if (!this.levelVisible(l.level)) return false;
-      if ((fromCmp || toCmp) && l.timestamp) {
-        // Strip embedded tz offset (Z, +02, +0530) before lexicographic compare.
-        const ts = l.timestamp.replace(',', '.').replace(/^(\d{4}-\d{2}-\d{2}) /, '$1T').replace(/(Z|[+-]\d{2}(?::?\d{2})?)$/, '');
-        if (fromCmp && ts < fromCmp) return false;
-        if (toCmp && ts > toCmp + '\uffff') return false;
+      if (hasDate && l.timestampNormalized) {
+        if (fromCmp && l.timestampNormalized < fromCmp) return false;
+        if (toCmp && l.timestampNormalized > toCmp + '\uffff') return false;
       }
       return true;
     });
@@ -1494,6 +1640,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       this._scrollToBottomTimer = setTimeout(() => {
         this._scrollToBottomTimer = undefined;
         el.scrollTop = el.scrollHeight;
+        // Explicit sync — if scrollTop was already at its maximum the browser clamps
+        // silently with no scroll event, leaving _atBottom stale at false.
+        this._atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150;
       }, 0);
       if (this.filteredLines.length > 0) {
         this.activeLineIdx = this.filteredLines[this.filteredLines.length - 1].globalIdx;
@@ -1504,6 +1653,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   toggleFollowTail(): void {
     this.followTail = !this.followTail;
     if (this.followTail) {
+      this._userLeftBottom = false;
       this.scrollToBottom();
       this.scheduleNextPoll();
     } else {
@@ -1512,7 +1662,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onForceEnabledChange(): void {
-    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached) && this.followTail && this._atBottom) {
+    if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached) && this.followTail && !this._userLeftBottom) {
       this.scheduleNextPoll();
     }
   }
@@ -1796,6 +1946,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoadingNext = false;
     this.isLoadingPrev = false;
     this.activeLineIdx = null;
+    this._userLeftBottom = false;
     this.levelJumpIndices.clear();
     this.levelLastDir.clear();
     this.levelLineMap.clear();
@@ -1823,8 +1974,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private scheduleNextPoll(): void {
     this.clearPollTimer();
     const limitReached   = this.dateToReached || this.numOfLinesReached;
-    const canPollNext    = this.followTail && this._atBottom && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
-    const canPollRunning = this.followTail && this._atBottom && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
+    const canPollNext    = this.followTail && !this._userLeftBottom && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
+    const canPollRunning = this.followTail && !this._userLeftBottom && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
     if (canPollNext || canPollRunning) {
       this.pollTimer = setTimeout(() => {
         // Do not poll while the user has an active text selection — the response
@@ -1897,7 +2048,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       if (isLastChunk) {
         this.computeContextBlocks();
         // Scroll to last new line whenever follow-tail is on and viewport is at the bottom.
-        if (this.followTail && this._atBottom && this.filteredLines.length > 0) {
+        if (this.followTail && !this._userLeftBottom && this.filteredLines.length > 0) {
           this.scrollToBottom();
         }
         onComplete?.();
@@ -1985,19 +2136,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   // Shared post-trim cleanup: rebuild filtered view, trigger render, defer context blocks.
   private _finalizeAfterTrim(): void {
-    this._isProcessingTrim = false;
     this.levelJumpIndices.clear();
     this.computeFilteredLines();
+    const el = this.logBodyRef?.nativeElement;
+    if (el) el.style.overflowAnchor = 'none';
     this._safeMarkForCheck();
-    // Re-fire the scroll that was cancelled before re-index, now that DOM is settled.
-    // Also restart the poll timer here — the timer set in onComplete() can be killed by a
-    // scroll event during the async re-index; restarting it here ensures reliable continuation.
-    if (this.followTail && this._atBottom) {
+    if (this.followTail && !this._userLeftBottom) {
       this.scrollToBottom();
       this.scheduleNextPoll();
     }
     setTimeout(() => {
+      this._isProcessingTrim = false;
       if (!this.destroyed) this.computeContextBlocks();
+      if (el) el.style.overflowAnchor = '';
+      if (this.followTail && !this._userLeftBottom) {
+        if (!this._atBottom) this.scrollToBottom();
+        if (!this.pollTimer) this.scheduleNextPoll();
+      }
     }, 0);
   }
 
@@ -2149,15 +2304,23 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const wasAtBottom = this._atBottom;
     // Always update scroll state so pause/resume is never missed.
     this._atBottom = atBottom;
-    // Always propagate the pause signal — user leaving the bottom must stop the poll
-    // even if a trim re-index is in progress.
-    if (this.followTail && !atBottom && wasAtBottom) {
-      this.clearPollTimer();
-    }
     // Block fetch operations only (not scroll-state updates) during trim re-index.
     if (this._isProcessingTrim) return;
     if (this.followTail) {
-      if (atBottom && !wasAtBottom) {
+      // Treat a departure from the bottom as user-intentional only when the trim+reindex
+      // is not in progress. Chrome scroll anchoring fires synchronously during the Angular
+      // CD that removes trimmed DOM elements; _isProcessingTrim=true at that moment blocks
+      // it from being mistaken for a user scroll. Adding content at the bottom never fires
+      // a scroll event (scrollTop is unchanged), so no guard on isLoadingNext is needed.
+      if (!atBottom && wasAtBottom && !this._isProcessingTrim) {
+        this._userLeftBottom = true;
+        this.clearPollTimer();
+        this.activeLineIdx = null;
+        clearTimeout(this._scrollToBottomTimer);
+        this._scrollToBottomTimer = undefined;
+      }
+      if (atBottom && !wasAtBottom && !this._isProcessingTrim) {
+        this._userLeftBottom = false;
         this.activeLineIdx = null;
         this.scheduleNextPoll();
       }

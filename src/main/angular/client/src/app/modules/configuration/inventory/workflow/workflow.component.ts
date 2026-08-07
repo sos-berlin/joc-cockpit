@@ -16353,7 +16353,9 @@ export class WorkflowComponent {
       key = 'if-instruction';
     }  else if (type == 'Finish') {
       key = 'finish-instruction';
-    } 
+    } else if (type == 'Fork') {
+      key = 'fork-join-instruction'
+    }
     this.coreService.openVideoPage(key);
   }
 
