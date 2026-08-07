@@ -324,6 +324,7 @@ static generateChildStoreObject(children): any {
     this.searchText = '';
     this.changedFilter = false;
     this.priorityFilter = this.priorityFilter === p ? '' : p;
+    this.persistFilter();
     this.applyFilter();
   }
 
@@ -331,6 +332,7 @@ static generateChildStoreObject(children): any {
     this.searchText = '';
     this.priorityFilter = '';
     this.changedFilter = !this.changedFilter;
+    this.persistFilter();
     this.applyFilter();
   }
 
@@ -338,6 +340,7 @@ static generateChildStoreObject(children): any {
     this.searchText = '';
     this.priorityFilter = '';
     this.changedFilter = false;
+    this.persistFilter();
     this.applyFilter();
   }
 
@@ -380,10 +383,19 @@ static generateChildStoreObject(children): any {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
+    if (sessionStorage['settingsFilter']) {
+      const savedFilter = JSON.parse(sessionStorage['settingsFilter']);
+      this.priorityFilter = savedFilter.priorityFilter;
+      this.changedFilter = savedFilter.changedFilter;
+    }
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
     });
     this.loadSetting();
+  }
+
+  private persistFilter(): void {
+    sessionStorage['settingsFilter'] = JSON.stringify({priorityFilter: this.priorityFilter, changedFilter: this.changedFilter});
   }
 
   drop(event: CdkDragDrop<string[]>): void {

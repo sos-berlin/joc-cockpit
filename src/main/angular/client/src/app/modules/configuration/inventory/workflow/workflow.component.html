@@ -214,10 +214,6 @@
           </div>
           <div id="outlineContainer"></div>
           <div id="graph"></div>
-          <div class="card p-a pos-abt text-18 prev-next-icon" [hidden]="!editor?.graph || !editor?.graph.getSelectionCell()">
-            <a (click)="prev()" class="text-primary-hover"><span nz-icon nzType="left-circle" nzTheme="outline"></span></a>
-            <a (click)="next()" class="text-primary-hover m-l-12"><span nz-icon nzType="right-circle" nzTheme="outline"></span></a>
-          </div>
           <div class="dropContainer" id="dropContainer2">
             <div class="dropContainer">{{ 'workflow.message.dropHereToRemoveInstruction' | translate }}</div>
           </div>
@@ -244,7 +240,7 @@
     <div appResizable class="sidebar sidebar-property-panel bg-white" id="property-panel">
       <div class="b-b m-a">
         <h5 class="p-b-xs">
-          @if (preferences.showVideoHelpPages && selectedNode && (selectedNode.type == 'Job' || selectedNode.type == 'Try' || selectedNode.type == 'Cycle' || selectedNode.type == 'If' || selectedNode.type == 'Finish')) {
+          @if (preferences.showVideoHelpPages && selectedNode && (selectedNode.type == 'Job' || selectedNode.type == 'Try' || selectedNode.type == 'Cycle' || selectedNode.type == 'If' || selectedNode.type == 'Finish' || selectedNode.type == 'Fork')) {
             <i (click)="videoPage(selectedNode.type)" [appRichTooltip]="'common.tooltip.video' | translate" class="help-info-dashboard cur-point fa fa-play-circle text-20"></i>
           }
           <span>{{ 'workflow.label.properties' | translate }}</span>
