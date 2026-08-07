@@ -5717,53 +5717,6 @@ export class WorkflowComponent {
     }
   }
 
-  prev(): void {
-    this.navToNextCell(false);
-  }
-
-  next(): void {
-    this.navToNextCell(true);
-  }
-
-  private navToNextCell(flag: boolean): void {
-    let cells = this.editor.graph.getSelectionCells();
-    const self = this;
-    if (cells && cells.length > 0) {
-      switchToNextCell(cells[0], 0);
-    }
-
-    function switchToNextCell(cell, index) {
-      let nextCell;
-      if (flag) {
-        const edges = self.editor.graph.getOutgoingEdges(cell);
-        nextCell = edges[index].target;
-      } else {
-        const edges = self.editor.graph.getIncomingEdges(cell);
-        nextCell = edges[index].source;
-      }
-
-      if (nextCell && nextCell.value?.tagName !== 'Process') {
-        if (self.workflowService.checkClosingCell(nextCell.value.tagName) || nextCell.value.tagName === 'Catch') {
-          if (nextCell.value.tagName === 'Join' || nextCell.value.tagName === 'EndIf') {
-            const _edges = self.editor.graph.getIncomingEdges(nextCell);
-            for (let i = 0; i < _edges.length; i++) {
-              if (_edges[i].source.id == cell.id) {
-                if (i !== _edges.length - 1) {
-                  nextCell = _edges[i].source.parent;
-                  index = i + 1;
-                }
-                break;
-              }
-            }
-          }
-          switchToNextCell(nextCell, index);
-        } else {
-          self.selectSearchNode(nextCell.getAttribute('uuid'), true);
-        }
-      }
-    }
-  }
-
   @HostListener('window:click', ['$event'])
   onClick(event): void {
     this.searchNode.isVisible = true;
