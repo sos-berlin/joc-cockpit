@@ -3059,7 +3059,7 @@
     "tooltip.force": "Wenn dieses Kontrollkästchen aktiviert ist, werden Protokolleinträge über die Grenzen von *Datum bis* oder *Anzahl der Zeilen* hinaus geladen.",
     "tooltip.serviceId": "Wählt einen JOC Cockpit Dienst, für den Protokollausgaben angezeigt werden.",
     "serviceId": {
-      "label.joc": "JOC",
+      "label.joc": "JOC Cockpit API",
       "label.cluster": "Cluster",
       "label.history": "Historie",
       "label.dailyPlan": "Tagesplan",

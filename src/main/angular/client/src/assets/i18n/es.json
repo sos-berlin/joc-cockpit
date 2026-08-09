@@ -3059,7 +3059,7 @@
     "tooltip.force": "Cuando está marcado, las líneas de log se cargan más allá de los límites de *Fecha hasta* o *Número de líneas*.",
     "tooltip.serviceId": "Selecciona el servicio de JOC Cockpit para el cual se muestra el output del log.",
     "serviceId": {
-      "label.joc": "JOC",
+      "label.joc": "JOC Cockpit API",
       "label.cluster": "Clúster",
       "label.history": "Historial",
       "label.dailyPlan": "Plan Diario",

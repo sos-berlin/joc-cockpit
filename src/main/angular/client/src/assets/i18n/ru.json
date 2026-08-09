@@ -3059,7 +3059,7 @@
     "tooltip.force": "Если этот флажок установлен, записи журнала загружаются без учёта ограничений *Время по* и *Количество строк*.",
     "tooltip.serviceId": "Выбрать источник журнала ^JOC Cockpit^ для отображения.",
     "serviceId": {
-      "label.joc": "JOC",
+      "label.joc": "JOC Cockpit API",
       "label.cluster": "Служба кластера JOC",
       "label.history": "Служба истории",
       "label.dailyPlan": "Служба дневного плана",

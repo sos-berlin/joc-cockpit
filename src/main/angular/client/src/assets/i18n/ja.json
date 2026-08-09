@@ -3059,7 +3059,7 @@
     "tooltip.force": "チェックすると、APIに**force=true**を送信することで、*終了日*または*行数*の制限を超えてログ行が読み込まれます",
     "tooltip.runningTimeout": "実行中のログポーリングのオプションタイムアウト時間（1～57秒）。設定すると、サーバーは新しいログエントリをこの時間まで待機してから応答します。空のままにするとサーバーのデフォルト値が使用されます",
     "serviceId": {
-      "label.joc": "JOC",
+      "label.joc": "JOC Cockpit API",
       "label.cluster": "Cluster",
       "label.history": "History",
       "label.dailyPlan": "Daily plan",

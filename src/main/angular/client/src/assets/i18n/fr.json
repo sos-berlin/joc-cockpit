@@ -3059,7 +3059,7 @@
     "tooltip.force": "Lorsque cette case est cochée, les lignes du journal sont chargées au-delà des limites définies par *Date jusqu'au* ou *Nombre de lignes*.",
     "tooltip.serviceId": "Sélectionne le service JOC Cockpit dont les journaux sont affichés.",
     "serviceId": {
-      "label.joc": "JOC",
+      "label.joc": "JOC Cockpit API",
       "label.cluster": "Cluster",
       "label.history": "Historique",
       "label.dailyPlan": "Plan Quotidien",
