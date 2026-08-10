@@ -366,7 +366,7 @@ export class ControllerClusterComponent {
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
           '<br><span class="_600">' + labelSurveyDate + ' : </span>' + self.coreService.stringToDate(self.preferences, data.surveyDate);
 
-        let str = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
+        let str = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate.replace(/'/g, '&#39;') + '\'' +
           ' class="' + className + '"   >' +
           '<span class="m-t-n-xxs fa fa-circle success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-television"></i><span class="p-l-sm _600">' + data.title +
@@ -412,7 +412,7 @@ export class ControllerClusterComponent {
           '<br><span class="_600">' + labelStartedAt + ' : </span>' + d1 +
           '<br><span class="_600">' + labelSurveyDate + ' : </span>' + self.coreService.stringToDate(self.preferences, data.surveyDate);
 
-        let controllerTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
+        let controllerTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate.replace(/'/g, '&#39;') + '\'' +
           ' class="' + className + '">' +
           '<span class="m-t-n-xxs fa fa-circle success-node ' + colorClass + '"></span>' +
           '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-tasks"></i><span class="p-l-sm _600">' + data.title + '</span><span class="pull-right"><div class="btn-group dropdown " >' +

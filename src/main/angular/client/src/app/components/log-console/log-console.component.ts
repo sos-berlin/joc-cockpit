@@ -2385,7 +2385,7 @@ export class LogConsoleModalComponent implements OnInit {
     role:            '',
     agentId:         '',
     subagentId:      '',
-    serviceId:       '',
+    serviceId:       'JOC',
     level:           'INFO',
     dateMode:        'relative' as 'relative' | 'specific',
     dateFrom:        '0d',

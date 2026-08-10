@@ -461,7 +461,7 @@ export class UpdateKeyModalComponent {
       if (this.securityLevel !== 'HIGH') {
         if (this.algorithm.keyAlg === 'PGP') {
           obj = {privateKey: this.data.privateKey};
-        } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
+        } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA' || this.algorithm.keyAlg === 'MLDSA') {
           obj = {privateKey: this.data.privateKey, certificate: this.data.certificate};
         }
       } else {
@@ -470,7 +470,7 @@ export class UpdateKeyModalComponent {
         } else {
           if (this.algorithm.keyAlg === 'PGP') {
             obj = {publicKey: this.data.publicKey};
-          } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA') {
+          } else if (this.algorithm.keyAlg === 'RSA' || this.algorithm.keyAlg === 'ECDSA' || this.algorithm.keyAlg === 'MLDSA') {
             obj = {publicKey: this.data.publicKey, certificate: this.data.certificate};
           }
         }
@@ -806,7 +806,7 @@ export class RemoveKeyModalComponent {
   standalone: false,
   selector: 'app-user',
   templateUrl: './user.component.html',
-  
+
 })
 export class UserComponent {
   zones: any = [];
