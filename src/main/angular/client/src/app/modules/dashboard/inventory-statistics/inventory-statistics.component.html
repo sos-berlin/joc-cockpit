@@ -7,7 +7,7 @@
       <span>{{ 'dashboard.label.inventory' | translate }}</span>
     </h3>
   </div>
-  <div [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}" class="box-body text-overflow">
+  <div class="box-body">
     @if (!notAuthenticate && isLoaded) {
       <div class="stat-grid">
         <div [appRichTooltip]="'dashboard.tooltip.workflows' | translate" class="stat-tile">
