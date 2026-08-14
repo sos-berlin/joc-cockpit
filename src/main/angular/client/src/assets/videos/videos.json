@@ -96,5 +96,10 @@
     "id": "hJTFw0FSziw",
     "title": "Fork/Join instruction",
     "description": "How to configure the Fork/Join Instruction"
+  },
+  "fail-instruction": {
+    "id": "poMrltCcORs",
+    "title": "Fail instruction",
+    "description": "How to configure the Fail Instruction"
   }
 }

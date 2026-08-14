@@ -16308,6 +16308,8 @@ export class WorkflowComponent {
       key = 'finish-instruction';
     } else if (type == 'Fork') {
       key = 'fork-join-instruction'
+    } else if (type == 'Fail') {
+      key = 'fail-instruction'
     }
     this.coreService.openVideoPage(key);
   }
