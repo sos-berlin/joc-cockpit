@@ -4984,7 +4984,7 @@
     "button.unstop": "Entstoppen",
     "button.transitionOrders": "Aufträge in neue Version übertragen",
     "button.format": "Formatieren",
-    "button.showSegmentView": "Show segment view",
+    "button.showSegmentView": "Segmentierte Ansicht anzeigen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
@@ -5254,7 +5254,7 @@
       "stickySubagent": "^StickySubagent Anweisung|stickysubagent-instruction^ ziehen und ablegen, um die Verwendung desselben ^Subagent^en in einem ^Subagenten-Cluster|subagent-cluster^ zur ^Job^-Ausführung im Anweisungsblock zu vereinbaren.",
       "option": "^Options Anweisung|options-instruction^ ziehen und ablegen, um Fehlerbehandlung für die ^Lock Anweisung|lock-instruction^ and ^ConsumeNotices Anweisung|consumenotices-instruction^ einzuführen.",
       "paste": "**Paste** ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden.",
-      "segment": "Segment"
+      "segment": "Ziehen Sie ein **Segment** per Drag & Drop in die Ansicht *KONFIGURATION* oder *ARBEITSABLÄUFE*, um damit die enthaltenen Teile des ^Arbeitsablaufs|workflows^ ein- oder auszublenden.\n\n**Segmente** dienen dazu, den Fokus auf relevante Teile größerer Arbeitsabläufe zu richten."
     }
   },
   "xml": {

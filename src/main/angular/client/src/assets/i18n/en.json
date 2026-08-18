@@ -5254,7 +5254,7 @@
       "stickySubagent": "Drag & drop ^StickySubagent Instruction^ to force use of the same ^Subagent^ in a ^Subagent Cluster^ for ^Job^ execution in the instruction block.",
       "option": "Drag & drop ^Options Instruction^ to rule error handling for the ^Lock Instruction^ and ^ConsumeNotices Instruction^.",
       "paste": "Drag & drop **Paste** to insert one or more instructions that have previously been copied using the instruction's 3-dots action menu.",
-      "segment": "Segment"
+      "segment": "Drag & drop a **Segment** that is used to expand and collapse included parts of a ^Workflow^ in the *CONFIGURATION* view and *WORKFLOWS* view.\n\n**Segments** are used to focus on relevant parts of larger Workflows."
     }
   },
   "xml": {
