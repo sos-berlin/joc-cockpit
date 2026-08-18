@@ -4941,6 +4941,8 @@
     "label.duration": "期間",
     "label.historyDetails": "詳細履歴",
     "label.addBulkOrderToWorkflows": "オーダー一括追加",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -4982,6 +4984,7 @@
     "button.unstop": "停止解除",
     "button.transitionOrders": "オーダートランジション",
     "button.format": "再フォーマット",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "ジョブプロパティ",
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
@@ -5250,7 +5253,8 @@
       "caseElse": "Case Else",
       "stickySubagent": "Sticky Subagent",
       "option": "Option",
-      "paste": "Paste"
+      "paste": "Paste",
+      "segment": "Segment"
     }
   },
   "xml": {

@@ -4941,6 +4941,8 @@
     "label.duration": "Duration",
     "label.historyDetails": "History Details",
     "label.addBulkOrderToWorkflows": "Add Bulk Orders",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
@@ -4982,6 +4984,7 @@
     "button.unstop": "Unstop",
     "button.transitionOrders": "Transfer Orders to latest Version",
     "button.format": "Reformat",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
@@ -5250,7 +5253,8 @@
       "caseElse": "Drag & drop ^CaseElse Instruction^ for processing if all checks from ^CaseWhen Instruction^s fail.",
       "stickySubagent": "Drag & drop ^StickySubagent Instruction^ to force use of the same ^Subagent^ in a ^Subagent Cluster^ for ^Job^ execution in the instruction block.",
       "option": "Drag & drop ^Options Instruction^ to rule error handling for the ^Lock Instruction^ and ^ConsumeNotices Instruction^.",
-      "paste": "Drag & drop **Paste** to insert one or more instructions that have previously been copied using the instruction's 3-dots action menu."
+      "paste": "Drag & drop **Paste** to insert one or more instructions that have previously been copied using the instruction's 3-dots action menu.",
+      "segment": "Segment"
     }
   },
   "xml": {

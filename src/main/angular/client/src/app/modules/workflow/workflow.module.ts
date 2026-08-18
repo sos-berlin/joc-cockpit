@@ -15,6 +15,7 @@ import {
   DependentWorkflowComponent,
   WorkflowGraphicalComponent
 } from './workflow-graphical/workflow-graphical.component';
+import {WorkflowSegmentComponent} from './workflow-segment/workflow-segment.component';
 import {WorkflowHistoryComponent, WorkflowTemplateComponent} from './workflow-history/workflow-history.component';
 import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar.component';
 import {TypeComponent} from './workflow-type/type.component';
@@ -53,6 +54,7 @@ import {JobProgressBarComponent} from '../../components/job-progress-bar/job-pro
     TypeComponent,
     BulkAddOrderComponent,
     JobProgressBarComponent,
+    WorkflowSegmentComponent,
   ],
   exports: [
     OrderListSidebarComponent,

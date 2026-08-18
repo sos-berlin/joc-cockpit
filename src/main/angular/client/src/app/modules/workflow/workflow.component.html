@@ -985,6 +985,9 @@
                             <i (click)="navToDetailView('grid', workflow)"
                                [appRichTooltip]="'workflow.button.showGraphicalView' | translate"
                                class="cursor fa fa-th p-l-xs p-r-xs"></i>
+                            <i (click)="navToDetailView('segment', workflow)"
+                               [appRichTooltip]="'workflow.button.showSegmentView' | translate"
+                               class="cursor fa fa-th-large p-l-xs p-r-xs"></i>
                             @if (workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies) {
                               <i
                                 (click)="showDependency(workflow)"

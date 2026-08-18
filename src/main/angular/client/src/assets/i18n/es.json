@@ -4612,7 +4612,7 @@
     "tooltip.listOfCert": "Si se selecciona el Esquema de Autenticación de **dos factores**, se puede elegir de la lista un ^Servicio de Identidad|identity-service^ basado en certificado.\n\nTambién es posible seleccionar un Servicio de Identidad basado en FIDO en otra lista.",
     "--------ADD CONTROLLER ROLE TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Add Controller Role, Source: controller-dialog.html, Fields: js7Controller, role",
     "tooltip.js7Controller": "Selecciona el ^Controlador|controller^ al que se aplican los permisos del rol.\n\nSi hay varios Controladores conectados a JOC Cockpit, se usarán los permisos configurados como *default* o los permisos configurados para cada Controlador individual.\n\nA las cuentas de usuario se les pueden asignar diferentes conjuntos de permisos para cada Controlador que usen.",
-    "tooltip.role": "Selecciona los roles a los que se deben aplicar los permisos individuales para el ^Controlador|controller^ seleccionado.\n\nSi hay varios Controladores conectados a JOC Cockpit, en los roles seleccionados se usarán los permisos configurados como *default* o los permisos configurados para cada Controlador individual.\n\nA los usuarios se les pueden asignar diferentes conjuntos de permisos para cada Controlador que usen.",    "--------FOLDER MODAL TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Folder, Source: folder-modal.html, Fields: folders, recursive",
+    "tooltip.role": "Selecciona los roles a los que se deben aplicar los permisos individuales para el ^Controlador|controller^ seleccionado.\n\nSi hay varios Controladores conectados a JOC Cockpit, en los roles seleccionados se usarán los permisos configurados como *default* o los permisos configurados para cada Controlador individual.\n\nA los usuarios se les pueden asignar diferentes conjuntos de permisos para cada Controlador que usen.",
      "--------FOLDER MODAL TOOLTIPS------------": "Page: Manage Identity Service, Sub-tab: -, Pop-up: Folder, Source: folder-modal.html, Fields: folders, recursive",
     "tooltip.folders": "Selecciona la carpeta del ^Inventario|inventory^ para la cual se está configurando un rol.\n\nPuede seleccionar varias carpetas.\n\nAl asignar carpetas a los roles, puede restringir los permisos de los usuarios a carpetas específicas.",
     "tooltip.recursive": "Incluye las subcarpetas a las que se deben aplicar los mismos permisos.",
@@ -4941,6 +4941,8 @@
     "label.duration": "Duración",
     "label.historyDetails": "Detalles del historial",
     "label.addBulkOrderToWorkflows": "Agregar Órdenes masivas",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "Agregar ciclo",
     "button.zoomIn": "Acercar",
     "button.zoomOut": "Alejar",
@@ -4982,6 +4984,7 @@
     "button.unstop": "Dejar de detener",
     "button.transitionOrders": "Transferir órdenes a la última versión",
     "button.format": "Reformatear",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "Propiedades del Job",
     "tab.jobOptions": "Opciones del Job",
     "tab.nodeProperties": "Propiedades del nodo",
@@ -5250,7 +5253,8 @@
       "caseElse": "Arrastre y suelte la ^Instrucción CaseElse|caseelse-instruction^ para el procesamiento si fallan todas las verificaciones de las ^Instrucciones CaseWhen|casewhen-instruction^.",
       "stickySubagent": "Arrastre y suelte la ^Instrucción StickySubagent|stickysubagent-instruction^ para forzar el uso del mismo ^Subagent^e en un ^Clúster de Subagentes|subagent-cluster^ para la ejecución de ^Job^ en el bloque de instrucciones.",
       "option": "Arrastre y suelte la ^Instrucción Options|options-instruction^ para regir el manejo de errores de la ^Instrucción Lock|lock-instruction^ y la ^Instrucción ConsumeNotices|consumenotices-instruction^.",
-      "paste": "Arrastre y suelte **Pegar** para insertar una o más instrucciones que se hayan copiado previamente mediante el menú de acciones de 3 puntos de la instrucción."
+      "paste": "Arrastre y suelte **Pegar** para insertar una o más instrucciones que se hayan copiado previamente mediante el menú de acciones de 3 puntos de la instrucción.",
+      "segment": "Segment"
     }
   },
   "xml": {

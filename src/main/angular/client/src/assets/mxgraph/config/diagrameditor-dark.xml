@@ -158,6 +158,13 @@
         </mxCell>
       </Options>
     </add>
+    <add as="Segment">
+      <Segment displayLabel="segment">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Segment>
+    </add>
     <add as="Prompt">
       <Prompt displayLabel="prompt">
         <mxCell vertex="1">
@@ -278,6 +285,8 @@
     <add as="StickySubagent" template="StickySubagent" style="stickySubagent" icon="./assets/mxgraph/images/white-sticky-subagent.png"/>
     <hr/>
     <add as="Options" template="Options" style="options" icon="./assets/mxgraph/images/white-options.png"/>
+    <hr/>
+    <add as="Segment" template="Segment" style="segment" icon="./assets/mxgraph/images/white-segment.png"/>
     <hr/>
     <add as="Paste" template="symbol" style="symbol" icon="./assets/mxgraph/images/white-paste.png"/>
   </mxDefaultToolbar>

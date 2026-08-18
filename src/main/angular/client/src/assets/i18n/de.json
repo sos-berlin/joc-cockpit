@@ -4941,6 +4941,8 @@
     "label.duration": "Dauer",
     "label.historyDetails": "Details der Historie",
     "label.addBulkOrderToWorkflows": "Gruppe von Aufträgen hinzufügen",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -4982,6 +4984,7 @@
     "button.unstop": "Entstoppen",
     "button.transitionOrders": "Aufträge in neue Version übertragen",
     "button.format": "Formatieren",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",
@@ -5250,7 +5253,8 @@
       "caseElse": "^CaseElse Anweisung|caseelse-instruction^ ziehen und ablegen zur Verarbeitung, falls alle anderen Bedingungen aus ^CaseWhen Anweisungen|casewhen-instruction^ fehlschlagen.",
       "stickySubagent": "^StickySubagent Anweisung|stickysubagent-instruction^ ziehen und ablegen, um die Verwendung desselben ^Subagent^en in einem ^Subagenten-Cluster|subagent-cluster^ zur ^Job^-Ausführung im Anweisungsblock zu vereinbaren.",
       "option": "^Options Anweisung|options-instruction^ ziehen und ablegen, um Fehlerbehandlung für die ^Lock Anweisung|lock-instruction^ and ^ConsumeNotices Anweisung|consumenotices-instruction^ einzuführen.",
-      "paste": "**Paste** ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden."
+      "paste": "**Paste** ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden.",
+      "segment": "Segment"
     }
   },
   "xml": {

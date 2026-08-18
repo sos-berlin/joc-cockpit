@@ -4941,6 +4941,8 @@
     "label.duration": "Durée",
     "label.historyDetails": "Details de l'Historique",
     "label.addBulkOrderToWorkflows": "Ajouter des Ordres en bloc",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -4982,6 +4984,7 @@
     "button.unstop": "Débloquer",
     "button.transitionOrders": "Transférer les Ordres vers la dernière version",
     "button.format": "Reformat",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
@@ -5250,7 +5253,8 @@
       "caseElse": "Glisser-déposer l'^Instruction CaseElse|caseelse-instruction^ pour traiter si toutes les vérifications des ^Instructions CaseWhen|casewhen-instruction^ échouent.",
       "stickySubagent": "Glisser-déposer l'^Instruction StickySubagent|stickysubagent-instruction^ pour imposer l'utilisation du même ^Sous-Agent|subagent^ au sein d'un ^Cluster de Sous-Agents|subagent-cluster^ pour l'exécution des ^Tâches|job^ dans le bloc d'instruction.",
       "option": "Glisser-déposer l'^Instruction Options|options-instruction^ pour définir la gestion des erreurs pour l'^Instruction Lock|lock-instruction^ et l'^Instruction ConsumeNotices|consumenotices-instruction^.",
-      "paste": "Glisser-déposer **Paste** pour insérer une ou plusieurs instructions préalablement copiées à l'aide du menu contextuel (représenté par trois points) de l'instruction."
+      "paste": "Glisser-déposer **Paste** pour insérer une ou plusieurs instructions préalablement copiées à l'aide du menu contextuel (représenté par trois points) de l'instruction.",
+      "segment": "Segment"
     }
   },
   "xml": {

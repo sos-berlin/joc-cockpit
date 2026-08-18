@@ -4941,6 +4941,8 @@
     "label.duration": "Длительность",
     "label.historyDetails": "Детали истории",
     "label.addBulkOrderToWorkflows": "Добавить группу заданий",
+    "label.segment": "Segment",
+    "label.segmentEnd": "Segment End",
     "button.addScheme": "Добавить цикл",
     "button.zoomIn": "Увеличить",
     "button.zoomOut": "Уменьшить",
@@ -4982,6 +4984,7 @@
     "button.unstop": "Снять остановку",
     "button.transitionOrders": "Перенести задания в новую версию",
     "button.format": "Форматировать",
+    "button.showSegmentView": "Show segment view",
     "tab.jobProperties": "Свойства",
     "tab.jobOptions": "Параметры выполнения",
     "tab.nodeProperties": "Свойства узла задачи",
@@ -5250,7 +5253,8 @@
       "caseElse": "Перетащите ^инструкцию CaseElse|caseelse-instruction^, чтобы определить обработку, если ни одно из условий ^инструкций CaseWhen|casewhen-instruction^ не выполнено.",
       "stickySubagent": "Перетащите ^инструкцию StickySubagent|stickysubagent-instruction^, чтобы использовать один и тот же ^субагент|subagent^ из ^кластера субагентов|subagent-cluster^ для выполнения ^задачи|job^ в пределах блока инструкций.",
       "option": "Перетащите ^инструкцию Options|options-instruction^, чтобы задать обработку ошибок для ^инструкций Lock|lock-instruction^ и ^ConsumeNotices|consumenotices-instruction^.",
-      "paste": "Перетащите **Paste**, чтобы вставить одну или несколько инструкций, ранее скопированных через меню действий (три точки) соответствующей инструкции."
+      "paste": "Перетащите **Paste**, чтобы вставить одну или несколько инструкций, ранее скопированных через меню действий (три точки) соответствующей инструкции.",
+      "segment": "Segment"
     }
   },
   "xml": {

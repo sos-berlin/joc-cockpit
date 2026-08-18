@@ -345,7 +345,7 @@ export class WorkflowGraphicalComponent {
 
   ngOnDestroy(): void {
     if (!this.isModal) {
-      $('#workflowGraphId').remove();
+      $(this.graphContainer.nativeElement).closest('#workflowGraphId').remove();
       $('.mxTooltip').css({visibility: 'hidden'});
     }
   }

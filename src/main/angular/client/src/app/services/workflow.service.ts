@@ -150,6 +150,30 @@ export class WorkflowService {
         '</linearGradient>\n' +
         '</defs>\n' +
         '</svg>';
+    } else if (name === 'segment') {
+      const fillColor = colorCode || '#90CAF9';
+      svg = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
+        '<path d="M28.0797 46.669L47.1716 27.5771C48.7337 26.015 48.7337 23.4824 47.1716 21.9203L28.0797 2.82841C26.5176 1.26631 23.9849 1.26631 22.4228 2.82841L3.33095 21.9203C1.76885 23.4824 1.76885 26.015 3.33095 27.5771L22.4228 46.669C23.9849 48.2311 26.5176 48.2311 28.0797 46.669Z" fill="url(#paint0_linear_seg_1)" stroke="' + fillColor + '"/>\n' +
+        '<path d="M14 18 h22 v1.5 h-22 z M14 32 h22 v1.5 h-22 z M14 18 h1.5 v15.5 h-1.5 z M34.5 18 h1.5 v15.5 h-1.5 z M14 22 h22 v1.5 h-22 z M16.5 19.5 h8 v1.2 h-8 z M16.5 25 h11 v1.2 h-11 z M16.5 27.5 h8 v1.2 h-8 z M16.5 30 h10 v1.2 h-10 z" fill="' + color + '"/>\n' +
+        '<defs>\n' +
+        '<linearGradient id="paint0_linear_seg_1" x1="25.2513" y1="-1.86563e-05" x2="25.2513" y2="49.4975" gradientUnits="userSpaceOnUse">\n' +
+        '<stop stop-color="' + fillColor + '"/>\n' +
+        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
+        '</linearGradient>\n' +
+        '</defs>\n' +
+        '</svg>';
+    } else if (name === 'closeSegment') {
+      const fillColor = colorCode || '#90CAF9';
+      svg = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
+        '<path d="M27.5771 46.669L46.669 27.5771C48.2311 26.015 48.2311 23.4824 46.669 21.9203L27.5771 2.82841C26.015 1.26631 23.4824 1.26631 21.9203 2.82841L2.82839 21.9203C1.26629 23.4824 1.26629 26.015 2.82839 27.5771L21.9203 46.669C23.4824 48.2311 26.015 48.2311 27.5771 46.669Z" fill="url(#paint0_linear_seg_2)" stroke="' + fillColor + '"/>\n' +
+        '<path d="M14 18 h22 v1.5 h-22 z M14 32 h22 v1.5 h-22 z M14 18 h1.5 v15.5 h-1.5 z M34.5 18 h1.5 v15.5 h-1.5 z M14 28 h22 v1.5 h-22 z M22.5 29.5 h8 v1.2 h-8 z M16.5 20 h11 v1.2 h-11 z M16.5 22.5 h8 v1.2 h-8 z M16.5 25 h10 v1.2 h-10 z" fill="' + color + '"/>\n' +
+        '<defs>\n' +
+        '<linearGradient id="paint0_linear_seg_2" x1="24.7487" y1="-1.86563e-05" x2="24.7487" y2="49.4975" gradientUnits="userSpaceOnUse">\n' +
+        '<stop stop-color="' + fillColor + '"/>\n' +
+        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
+        '</linearGradient>\n' +
+        '</defs>\n' +
+        '</svg>';
     } else if (name === 'admissionTime') {
       const fillColor = colorCode || '#ffd96a';
 
@@ -523,6 +547,8 @@ export class WorkflowService {
     WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('options', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('closeOptions', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('segment', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('closeSegment', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('admissionTime', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('finish', colorCode, theme, graph);
@@ -1439,6 +1465,22 @@ export class WorkflowService {
             } else {
               v2 = closingNode(v1, v1.id, parent, 'Options');
             }
+          } else if (json.instructions[x].TYPE === 'Segment') {
+            _node.setAttribute('displayLabel', 'segment');
+            if (json.instructions[x].label) {
+              _node.setAttribute('label', json.instructions[x].label);
+            }
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('segment', colorCode, self.theme) : 'segment');
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1, path, versionId);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'segment', 'segment', v1);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'Segment');
+            } else {
+              v2 = closingNode(v1, v1.id, parent, 'Segment');
+            }
           } else if (json.instructions[x].TYPE === 'AdmissionTime') {
             _node.setAttribute('displayLabel', 'admissionTimes');
 
@@ -1554,7 +1596,7 @@ export class WorkflowService {
 
           if (x > 0) {
             const prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'CaseWhen' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'ConsumeNotices' && prev.TYPE !== 'If' && prev.TYPE !== 'When' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && prev.TYPE !== 'StickySubagent' && prev.TYPE !== 'Options' && prev.TYPE !== 'AdmissionTime' && prev.TYPE !== 'Cycle' && prev.TYPE !== 'ElseWhen' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'CaseWhen' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'ConsumeNotices' && prev.TYPE !== 'If' && prev.TYPE !== 'When' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && prev.TYPE !== 'StickySubagent' && prev.TYPE !== 'Options' && prev.TYPE !== 'AdmissionTime' && prev.TYPE !== 'Cycle' && prev.TYPE !== 'ElseWhen' && prev.TYPE !== 'Segment' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -1824,8 +1866,8 @@ export class WorkflowService {
     }
 
     function closingNode(branches: any, targetId: any, parent: any, type: any): any {
-      const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'AdmissionTime' ? 'EndAdmissionTime' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
-      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'AdmissionTime' ? 'admissionTimeEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
+      const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'Segment' ? 'EndSegment' : type === 'AdmissionTime' ? 'EndAdmissionTime' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
+      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'Segment' ? 'segmentEnd' : type === 'AdmissionTime' ? 'admissionTimeEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
@@ -1836,6 +1878,8 @@ export class WorkflowService {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, self.theme) : 'closeStickySubagent');
       } else if (type === 'Options') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
+      } else if (type === 'Segment') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeSegment', colorCode, self.theme) : 'closeSegment');
       } else if (type === 'AdmissionTime') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, self.theme) : 'closeAdmissionTime');
       } else if (type === 'Retry') {
@@ -1860,7 +1904,7 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
-          const _label = type === 'When' ? 'endWhen' : type === 'ElseWhen' ? 'endElse' : type === 'CaseWhen' ? 'endCase' : type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'AdmissionTime' ? 'endAdmissionTime' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
+          const _label = type === 'When' ? 'endWhen' : type === 'ElseWhen' ? 'endElse' : type === 'CaseWhen' ? 'endCase' : type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'Segment' ? 'endSegment' : type === 'AdmissionTime' ? 'endAdmissionTime' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
           connectInstruction(endNode, v1, _label, _label, parent);
         }
       } else {
@@ -2522,18 +2566,18 @@ export class WorkflowService {
 
   isInstructionCollapsible(tagName: string): boolean {
     return (tagName === 'Fork' || tagName === 'CaseWhen' || tagName === 'ForkList' || tagName === 'If' || tagName === 'When' || tagName === 'Retry' || tagName === 'Options' || tagName === 'AdmissionTime'
-      || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'Try' || tagName === 'ConsumeNotices');
+      || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'Try' || tagName === 'ConsumeNotices' || tagName === 'Segment');
   }
 
   isOnlyInstruction(tagName: string): boolean {
     return (tagName === 'ForkList' || tagName === 'Retry' || tagName === 'Options' || tagName === 'AdmissionTime'
-      || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'When' || tagName === 'ConsumeNotices');
+      || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'When' || tagName === 'ConsumeNotices' || tagName === 'Segment');
   }
 
   getLabelName(tagName: string): string {
     return tagName === 'Fork' ? 'join' : tagName === 'Retry' ? 'endRetry' : tagName === 'ConsumeNotices' ? 'endConsumeNotices'
       : tagName === 'Lock' ? 'endLock' : tagName === 'StickySubagent' ? 'endStickySubagent' : tagName === 'ForkList' ? 'endForkList'
-        : tagName === 'Catch' ? 'catch' : tagName === 'If' ? 'endIf' : tagName === 'Cycle' ? 'endCycle' : tagName === 'Options' ? 'endOptions' : tagName === 'AdmissionTime' ? 'endAdmissionTime' : tagName === 'Try' ? 'endTry' : tagName === 'CaseWhen' ? 'endCase' : tagName === 'When' ? 'endWhen' : 'endElse';
+        : tagName === 'Catch' ? 'catch' : tagName === 'If' ? 'endIf' : tagName === 'Cycle' ? 'endCycle' : tagName === 'Options' ? 'endOptions' : tagName === 'AdmissionTime' ? 'endAdmissionTime' : tagName === 'Try' ? 'endTry' : tagName === 'CaseWhen' ? 'endCase' : tagName === 'When' ? 'endWhen' : tagName === 'Segment' ? 'endSegment' : 'endElse';
   }
 
   isSingleInstruction(tagName: string): boolean {
@@ -2543,7 +2587,7 @@ export class WorkflowService {
 
   checkClosingCell(tagName: string): boolean {
     return tagName === 'Join' || tagName === 'EndCase' || tagName === 'EndIf' || tagName === 'EndWhen' || tagName === 'EndForkList' || tagName === 'EndTry' || tagName === 'EndStickySubagent'
-      || tagName === 'EndRetry' || tagName === 'EndCycle' || tagName === 'EndElse' || tagName === 'EndLock' || tagName === 'EndConsumeNotices' || tagName === 'EndOptions' || tagName === 'EndAdmissionTime';
+      || tagName === 'EndRetry' || tagName === 'EndCycle' || tagName === 'EndElse' || tagName === 'EndLock' || tagName === 'EndConsumeNotices' || tagName === 'EndOptions' || tagName === 'EndAdmissionTime' || tagName === 'EndSegment';
   }
 
   exportInPng(name: string, isModal = false): void {

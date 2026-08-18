@@ -6473,7 +6473,7 @@ export class WorkflowComponent {
         "Sleep", "Prompt", "Admission<br>Times", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
-        "Options", "Paste"
+        "Options", "Segment", "Paste"
       ];
 
       var tooltipKeys = [
@@ -6484,7 +6484,7 @@ export class WorkflowComponent {
         'workflow.toolbar.admissionTimes', 'workflow.toolbar.addOrder', 'workflow.toolbar.postNotices',
         'workflow.toolbar.expectNotices', 'workflow.toolbar.consumeNotices', 'workflow.toolbar.if',
         'workflow.toolbar.case', 'workflow.toolbar.caseWhen', 'workflow.toolbar.caseElse',
-        'workflow.toolbar.stickySubagent', 'workflow.toolbar.option', 'workflow.toolbar.paste'
+        'workflow.toolbar.stickySubagent', 'workflow.toolbar.option', 'workflow.toolbar.segment', 'workflow.toolbar.paste'
       ];
 
       var $img = $(this);
@@ -10438,7 +10438,7 @@ export class WorkflowComponent {
               if ((drpTargt.value.tagName != 'CaseWhen' && drpTargt.value.tagName != 'Connection') && (dragElement.match('when') || dragElement.match('elseWhen'))) {
                 return
               }
-              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('admissionTime') || dragElement.match('try') || dragElement.match('if')) {
+              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('segment') || dragElement.match('admissionTime') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
 
                 if (selectedCell) {
@@ -10856,7 +10856,7 @@ export class WorkflowComponent {
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'admissionTime' || _type === 'cycle' || _type === 'elseWhen' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'segment' || _type === 'admissionTime' || _type === 'cycle' || _type === 'elseWhen' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
@@ -10884,7 +10884,7 @@ export class WorkflowComponent {
                       graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
                       graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
                     } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
-                      cells[0].value.tagName === 'Options' ||
+                      cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'Segment' ||
                       cells[0].value.tagName === 'AdmissionTime' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
@@ -11336,7 +11336,8 @@ export class WorkflowComponent {
         (sourName === 'Lock' && tarName === 'EndLock') ||
         (sourName === 'Options' && tarName === 'EndOptions') ||
         (sourName === 'AdmissionTime' && tarName === 'EndAdmissionTime') ||
-        (sourName === 'StickySubagent' && tarName === 'EndStickySubagent');
+        (sourName === 'StickySubagent' && tarName === 'EndStickySubagent') ||
+        (sourName === 'Segment' && tarName === 'EndSegment');
     }
 
     function getLastNodeAndConnect(name, parent, parentCell, cell, cells): any {
@@ -11398,6 +11399,10 @@ export class WorkflowComponent {
         label1 = 'forkList';
         label2 = 'endForkList';
         v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 72, 72, 'forkList');
+      } else if (name === 'Segment') {
+        label1 = 'segment';
+        label2 = 'endSegment';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndSegment', 'segmentEnd', parentCell.id), 0, 0, 68, 68, 'closeSegment');
       }
 
       if (cell) {
@@ -13483,6 +13488,11 @@ export class WorkflowComponent {
           _node.setAttribute('displayLabel', 'options');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'options');
+        } else if (title.match('segment')) {
+          _node = doc.createElement('Segment');
+          _node.setAttribute('displayLabel', 'segment');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'segment');
         } else if (title.match('admissionTime')) {
           _node = doc.createElement('AdmissionTime');
           _node.setAttribute('displayLabel', 'admissionTime');
@@ -13535,7 +13545,7 @@ export class WorkflowComponent {
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('displayLabel');
-              if (!(_type === 'retry' || _type === 'cycle' || _type === 'elseWhen' || _type === 'lock' || _type === 'options' || _type === 'admissionTime' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+              if (!(_type === 'retry' || _type === 'cycle' || _type === 'elseWhen' || _type === 'lock' || _type === 'options' || _type === 'admissionTime' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch' || _type === 'segment')) {
                 targetCell.setParent(targetCell.source.getParent());
                 clickedCell.setParent(targetCell.source.getParent());
               }
@@ -13560,7 +13570,7 @@ export class WorkflowComponent {
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
             } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
-              clickedCell.value.tagName === 'Options' ||
+              clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'Segment' ||
               clickedCell.value.tagName === 'AdmissionTime' || clickedCell.value.tagName === 'ConsumeNotices') {
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
@@ -13579,19 +13589,7 @@ export class WorkflowComponent {
               graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
             }
             graph.insertEdge(parent, null, getConnectionNode(''), v1, targetCell.target);
-            for (let x = 0; x < targetCell.source.edges.length; x++) {
-              if (targetCell.source.edges[x].id === targetCell.id) {
-                const _sourCellName = targetCell.source.value.tagName;
-                const _tarCellName = targetCell.target.value.tagName;
-                if (targetCell.target && self.workflowService.isSingleInstruction(_sourCellName) &&
-                  self.workflowService.isSingleInstruction(_tarCellName)) {
-                  graph.getModel().remove(targetCell.source.edges[x]);
-                } else {
-                  targetCell.source.removeEdge(targetCell.source.edges[x], true);
-                }
-                break;
-              }
-            }
+            graph.getModel().remove(targetCell);
 
             setTimeout(() => {
               graph.getModel().beginUpdate();
@@ -13616,12 +13614,7 @@ export class WorkflowComponent {
           } else {
             graph.insertEdge(defaultParent, null, getConnectionNode(displayLabel), targetCell.source, clickedCell);
             const e1 = graph.insertEdge(defaultParent, null, getConnectionNode(displayLabel), clickedCell, targetCell.target);
-            for (let i = 0; i < targetCell.source.edges.length; i++) {
-              if (targetCell.id === targetCell.source.edges[i].id) {
-                targetCell.source.removeEdge(targetCell.source.edges[i], true);
-                break;
-              }
-            }
+            graph.getModel().remove(targetCell);
             setTimeout(() => {
               checkConnectionLabel(clickedCell, e1, true);
             }, 0);
@@ -13656,7 +13649,7 @@ export class WorkflowComponent {
         if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
           return 'inValid';
         }
-        if (title.match('fork') || title.match('caseWhen') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('admissionTime') || title.match('try') || title.match('if') || title.match('when') || title.match('elseWhen')) {
+        if (title.match('fork') || title.match('caseWhen') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('admissionTime') || title.match('try') || title.match('if') || title.match('when') || title.match('elseWhen') || title.match('segment')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -13858,6 +13851,8 @@ export class WorkflowComponent {
         displayLabel = 'stickySubagent';
       } else if (dropTargetName === 'Options') {
         displayLabel = 'options';
+      } else if (dropTargetName === 'Segment') {
+        displayLabel = 'segment';
       } else if (dropTargetName === 'AdmissionTime') {
         displayLabel = 'admissionTimes';
       } else if (dropTargetName === 'ConsumeNotices') {
@@ -13898,7 +13893,7 @@ export class WorkflowComponent {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 72, 72, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
-          cell.value.tagName === 'Options' ||
+          cell.value.tagName === 'Options' || cell.value.tagName === 'Segment' ||
           cell.value.tagName === 'AdmissionTime' || cell.value.tagName === 'ConsumeNotices') {
           v1 = createEndVertex(parent, cell.value.tagName, cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
@@ -14004,6 +13999,8 @@ export class WorkflowComponent {
           checkLabel = 'EndStickySubagent';
         } else if (dropTargetName === 'Options') {
           checkLabel = 'EndOptions';
+        } else if (dropTargetName === 'Segment') {
+          checkLabel = 'EndSegment';
         } else if (dropTargetName === 'AdmissionTime') {
           checkLabel = 'EndAdmissionTime';
         } else if (dropTargetName === 'ConsumeNotices') {
@@ -14043,8 +14040,30 @@ export class WorkflowComponent {
             }
           }
           if (target1 && target2) {
-            graph.insertEdge(parent, null, getConnectionNode(displayLabel), target2, target1.target);
-            graph.getModel().remove(target1);
+            if (_dropTarget.value.tagName === 'Try') {
+              let catchCell = null;
+              const edgesToRemove = [];
+              for (let k = 0; k < _dropTarget.edges.length; k++) {
+                const _edge = _dropTarget.edges[k];
+                if (_edge.source && _edge.source.id === _dropTarget.id && _edge.target) {
+                  const tTag = _edge.target.value.tagName;
+                  if (tTag === 'Catch') {
+                    if (!catchCell) { catchCell = _edge.target; }
+                    edgesToRemove.push(_edge);
+                  } else if (tTag === 'EndTry') {
+                    self.nodeMap.set(_dropTarget.id, _edge.target.id);
+                    edgesToRemove.push(_edge);
+                  }
+                }
+              }
+              for (let k = 0; k < edgesToRemove.length; k++) { graph.getModel().remove(edgesToRemove[k]); }
+              if (catchCell) {
+                graph.insertEdge(parent, null, getConnectionNode(displayLabel), target2, catchCell);
+              }
+            } else {
+              graph.insertEdge(parent, null, getConnectionNode(displayLabel), target2, target1.target);
+              graph.getModel().remove(target1);
+            }
           } else if (self.nodeMap.has(_dropTarget.id)) {
             const target = graph.getModel().getCell(self.nodeMap.get(_dropTarget.id));
             graph.insertEdge(parent, null, getConnectionNode(displayLabel), target2, target);
@@ -15281,6 +15300,12 @@ export class WorkflowComponent {
             }
             delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Options') {
+            json.instructions[x].block = {
+              instructions: json.instructions[x].instructions
+                ?? json.instructions[x].block?.instructions
+            };
+            delete json.instructions[x].instructions;
+          } else if (json.instructions[x].TYPE === 'Segment') {
             json.instructions[x].block = {
               instructions: json.instructions[x].instructions
                 ?? json.instructions[x].block?.instructions

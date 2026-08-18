@@ -109,6 +109,10 @@
                       class="btn btn-grey btn-sm">
                 <i class="fa fa-bars"></i>
               </button>
+              <button (click)="setView('segment')" [ngClass]="{'btn-primary': pageView=='segment'}"
+                      class="btn btn-grey btn-sm">
+                <i class="fa fa-th-large"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -410,6 +414,21 @@
                   </div>
                 </div>
               </div>
+            }
+            @if (pageView === 'segment' && workFlowJson.instructions) {
+              <app-workflow-segment
+                [controllerId]="schedulerIds.selected"
+                [jobMap]="jobMap"
+                [jobs]="workflow.jobs"
+                [orderPreparation]="orderPreparation"
+                [orders]="workflow.orders"
+                [permission]="permission"
+                [preferences]="preferences"
+                [recursiveCals]="recursiveCals"
+                [reload]="isReload"
+                [workFlowJson]="workFlowJson"
+                [workflowFilters]="workflowFilters">
+              </app-workflow-segment>
             }
             <div class="scrollTop-btn">
               <a (click)="scrollTop()">

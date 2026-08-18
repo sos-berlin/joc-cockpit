@@ -23,7 +23,7 @@ export class NodePositionComponent {
   @Input() reload: boolean;
 
   nodes: any = [];
-  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'AdmissionTime', 'StickySubagent', 'ForkList','CaseWhen'];
+  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'AdmissionTime', 'StickySubagent', 'ForkList', 'CaseWhen', 'Segment'];
 
   @Output() onBlur = new EventEmitter<string>();
 
@@ -263,7 +263,7 @@ export class NodePositionComponent {
               }
             }
             else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
-              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'AdmissionTime' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
+              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'AdmissionTime' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent' || json.instructions[x].TYPE === 'Segment') {
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
