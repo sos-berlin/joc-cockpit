@@ -32,7 +32,7 @@ import {JobProgressBarComponent} from '../../components/job-progress-bar/job-pro
         NzDrawerModule,
         WorkflowRoutingModule,
         NzTooltipDirective,
-        NzSpaceCompactComponent
+        NzSpaceCompactComponent,
     ],
   declarations: [
     WorkflowComponent,

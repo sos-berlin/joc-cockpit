@@ -187,7 +187,7 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
@@ -201,7 +201,7 @@
                         </a>
                       </li>
                     }
-                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
@@ -227,7 +227,7 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
@@ -241,7 +241,7 @@
                         </a>
                       </li>
                     }
-                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
@@ -357,7 +357,7 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
@@ -371,7 +371,7 @@
                         </a>
                       </li>
                     }
-                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
@@ -415,7 +415,7 @@
                 </button>
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="skip(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
@@ -429,7 +429,7 @@
                         </a>
                       </li>
                     }
-                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
+                    @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
                       <li (click)="stop(instruction);" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>

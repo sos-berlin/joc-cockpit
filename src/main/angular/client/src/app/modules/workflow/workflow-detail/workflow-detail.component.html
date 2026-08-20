@@ -109,10 +109,12 @@
                       class="btn btn-grey btn-sm">
                 <i class="fa fa-bars"></i>
               </button>
-              <button (click)="setView('segment')" [ngClass]="{'btn-primary': pageView=='segment'}"
-                      class="btn btn-grey btn-sm">
-                <i class="fa fa-th-large"></i>
-              </button>
+              @if (hasSegmentInstruction) {
+                <button (click)="setView('segment')" [ngClass]="{'btn-primary': pageView=='segment'}"
+                        class="btn btn-grey btn-sm">
+                  <i class="fa fa-th-large"></i>
+                </button>
+              }
             </div>
           </div>
         </div>

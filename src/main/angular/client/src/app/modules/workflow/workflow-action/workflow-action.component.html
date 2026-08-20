@@ -11,6 +11,11 @@
       <li (click)="navToDetailView('grid')" nz-menu-item>
         <a>{{ 'workflow.button.showGraphicalView' | translate }}</a>
       </li>
+      @if (workflow.hasSegments) {
+        <li (click)="navToDetailView('segment')" nz-menu-item>
+          <a>{{ 'workflow.button.showSegmentView' | translate }}</a>
+        </li>
+      }
       <li nz-menu-divider></li>
       @if (permission.currentController.orders.create) {
         <li (click)="addOrder(workflow);"

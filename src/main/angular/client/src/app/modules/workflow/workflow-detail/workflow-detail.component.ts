@@ -57,6 +57,7 @@ export class WorkflowDetailComponent {
   subscription: Subscription;
   workflowObjects = new Map();
   countObj = {count: 0};
+  hasSegmentInstruction = false;
 
   filterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -497,6 +498,7 @@ export class WorkflowDetailComponent {
           this.workflowObjects = new Map();
           this.countObj = {count: 0};
           this.workFlowJson = res.workflow;
+          this.hasSegmentInstruction = this.checkHasSegmentInstruction(res.workflow.instructions || []);
           this.workflowService.convertTryToRetry(res.workflow, (jobMap) => {
             this.jobMap = jobMap;
           }, res.workflow.jobs, this.countObj, true);
@@ -520,6 +522,25 @@ export class WorkflowDetailComponent {
         this.cdr.markForCheck();
       }, error: () => this.loading = true
     });
+  }
+
+  private checkHasSegmentInstruction(instructions: any[]): boolean {
+    if (!Array.isArray(instructions)) return false;
+    for (const inst of instructions) {
+      if (inst.TYPE === 'Segment') return true;
+      if (this.checkHasSegmentInstruction(inst.instructions || [])) return true;
+      if (inst.block?.instructions && this.checkHasSegmentInstruction(inst.block.instructions)) return true;
+      if (inst.then?.instructions && this.checkHasSegmentInstruction(inst.then.instructions)) return true;
+      if (inst.else?.instructions && this.checkHasSegmentInstruction(inst.else.instructions)) return true;
+      if (inst.catch?.instructions && this.checkHasSegmentInstruction(inst.catch.instructions)) return true;
+      if (inst.body?.instructions && this.checkHasSegmentInstruction(inst.body.instructions)) return true;
+      if (inst.branches) {
+        for (const b of inst.branches) {
+          if (this.checkHasSegmentInstruction(b.instructions || [])) return true;
+        }
+      }
+    }
+    return false;
   }
 
   private getOrders(workflow, isReload?): void {

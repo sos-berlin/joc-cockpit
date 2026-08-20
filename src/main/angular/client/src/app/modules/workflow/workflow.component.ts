@@ -1402,6 +1402,9 @@ export class WorkflowComponent {
         this.workflowFilters.mapObj = new Map();
         this.loading = false;
         this.workflows = res.workflows;
+        this.workflows.forEach(w => {
+          w.hasSegments = this.hasSegmentInstructions(w.instructions || []);
+        });
         this.workflows = this.orderPipe.transform(this.workflows, this.workflowFilters.filter.sortBy, this.workflowFilters.reverse);
         this.searchInResult();
         if (this.object.mapOfCheckedId.size > 0) {
@@ -1570,6 +1573,49 @@ export class WorkflowComponent {
   navToDetailView(view, workflow): void {
     this.coreService.getWorkflowDetailTab().pageView = view;
     this.router.navigate(['/workflows/workflow_detail', workflow.path, workflow.versionId]).then();
+  }
+
+  togglePanel(workflow): void {
+    if (workflow.show) {
+      this.hidePanelFuc(workflow);
+    } else {
+      if (workflow.hasSegments === undefined) {
+        workflow.hasSegments = this.hasSegmentInstructions(workflow.instructions || []);
+      }
+      workflow.panelView = workflow.hasSegments ? 'segment' : 'tabular';
+      workflow.isExpand = true;
+      this.showPanelFuc(workflow);
+    }
+  }
+
+  showSegmentView(workflow): void {
+    if (workflow.hasSegments === undefined) {
+      workflow.hasSegments = this.hasSegmentInstructions(workflow.instructions || []);
+    }
+    if (!workflow.hasSegments) return;
+    workflow.panelView = 'segment';
+    if (!workflow.show) {
+      this.showPanelFuc(workflow);
+    }
+  }
+
+  private hasSegmentInstructions(instructions: any[]): boolean {
+    if (!Array.isArray(instructions)) return false;
+    for (const inst of instructions) {
+      if (inst.TYPE === 'Segment') return true;
+      if (this.hasSegmentInstructions(inst.instructions || [])) return true;
+      if (inst.block?.instructions && this.hasSegmentInstructions(inst.block.instructions)) return true;
+      if (inst.then?.instructions && this.hasSegmentInstructions(inst.then.instructions)) return true;
+      if (inst.else?.instructions && this.hasSegmentInstructions(inst.else.instructions)) return true;
+      if (inst.catch?.instructions && this.hasSegmentInstructions(inst.catch.instructions)) return true;
+      if (inst.body?.instructions && this.hasSegmentInstructions(inst.body.instructions)) return true;
+      if (inst.branches) {
+        for (const b of inst.branches) {
+          if (this.hasSegmentInstructions(b.instructions || [])) return true;
+        }
+      }
+    }
+    return false;
   }
 
   addOrder(workflow): void {
@@ -1919,6 +1965,12 @@ export class WorkflowComponent {
   }
 
   showPanelFuc(workflow, flag = true, setObj?): void {
+    if (workflow.hasSegments === undefined) {
+      workflow.hasSegments = this.hasSegmentInstructions(workflow.instructions || []);
+    }
+    if (!workflow.panelView) {
+      workflow.panelView = workflow.hasSegments ? 'segment' : 'tabular';
+    }
     if (flag && workflow.numOfOrders > 0 && workflow.path) {
       this.getOrders({
         compact: true,
@@ -1930,6 +1982,8 @@ export class WorkflowComponent {
     workflow.configuration = this.coreService.clone(workflow);
     setTimeout(() => {
       this.workflowService.convertTryToRetry(workflow.configuration, null, workflow.jobs, {count: 0, setObj});
+      // New reference so app-workflow-segment's ngOnChanges fires with the now-normalized instructions
+      workflow.configuration = Object.assign({}, workflow.configuration);
       this.updatePanelHeight();
     }, 0);
 
@@ -2624,6 +2678,7 @@ export class WorkflowComponent {
                       res.orders[j].position[o] = 'cycle';
                     }
                   }
+                  res.orders[j].positionString = res.orders[j].position.join('/');
                   this.workflows[i].orders.push(res.orders[j]);
                   const state = res.orders[j].state._text.toLowerCase();
                   if (this.workflows[i].ordersSummary[state]) {

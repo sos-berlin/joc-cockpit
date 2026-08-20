@@ -1,6 +1,12 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CoreService } from '../../../services/core.service';
 
+interface OrderStateSummary {
+  state: string;
+  severity: number;
+  count: number;
+}
+
 interface SegmentItem {
   id: string;
   name: string;
@@ -8,9 +14,23 @@ interface SegmentItem {
   orderCount: number;
   ordersSummary: { state: string; count: number; severity: number }[];
   worstSeverity: number;
-  workFlowJson: any;
+  displayTree: DisplayItem[];
   isExpanded: boolean;
-  children: SegmentItem[];
+  contentHeight: number;
+  isSynthetic: boolean; // true = loose instructions grouped as "Step N", not a real Segment instruction
+}
+
+interface DisplayItem {
+  kind: 'job' | 'container' | 'branch-label' | 'segment';
+  icon: string;
+  label: string;
+  subLabel?: string;
+  depth: number;
+  positionPath: any[];
+  positionKey: string;       // pre-serialized JSON.stringify(positionPath) — computed once at build time
+  positionString?: string;
+  orderStates: OrderStateSummary[];
+  segmentItem?: SegmentItem;
 }
 
 @Component({
@@ -21,56 +41,236 @@ interface SegmentItem {
 export class WorkflowSegmentComponent implements OnChanges {
   @Input() workFlowJson: any = {};
   @Input() orders: any[] = [];
+  @Input() orderReload: boolean;
   @Input() jobs: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};
-  @Input() controllerId: any;
-  @Input() workflowFilters: any = {};
-  @Input() orderPreparation: any = {};
-  @Input() recursiveCals: any = [];
-  @Input() reload: boolean;
-  @Input() jobMap: any;
 
   segments: SegmentItem[] = [];
+  private segIdCounter = 0;
+  // Maintained incrementally by toggleSegment; persists across structural rebuilds
+  private expandedByName = new Map<string, boolean>();
 
   constructor(public coreService: CoreService, private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['workFlowJson'] || changes['orders']) {
+    if (changes['workFlowJson']) {
+      // Structural change — rebuild the entire tree
       this.buildSegments();
+    } else if (changes['orders'] || changes['orderReload']) {
+      // Only orders changed — stamp states on existing tree, no structural rebuild
+      this.refreshOrderStates();
     }
   }
+
+  // ── Structural build (runs only when workFlowJson changes) ───────────────
 
   private countJobs(instructions: any[]): number {
     if (!Array.isArray(instructions)) return 0;
     let count = 0;
     for (const inst of instructions) {
       if (inst.TYPE === 'Job') count++;
-      count += this.countJobs(inst.instructions);
+      count += this.countJobs(inst.instructions || []);
       if (inst.block?.instructions) count += this.countJobs(inst.block.instructions);
-      if (inst.then) count += this.countJobs(inst.then.instructions);
-      if (inst.else) count += this.countJobs(inst.else.instructions);
-      if (inst.catch) count += this.countJobs(inst.catch.instructions);
-      if (inst.body) count += this.countJobs(inst.body.instructions);
+      if (inst.then?.instructions) count += this.countJobs(inst.then.instructions);
+      if (inst.else?.instructions) count += this.countJobs(inst.else.instructions);
+      if (inst.catch?.instructions) count += this.countJobs(inst.catch.instructions);
+      if (inst.body?.instructions) count += this.countJobs(inst.body.instructions);
       if (inst.branches) {
-        for (const b of inst.branches) count += this.countJobs(b.instructions);
+        for (const b of inst.branches) count += this.countJobs(b.instructions || []);
+      }
+      if (inst.cases) {
+        for (const c of inst.cases) count += this.countJobs(c.then?.instructions || []);
       }
     }
     return count;
   }
 
-  private buildOrderSummary(orders: any[]): { summary: { state: string; count: number; severity: number }[]; worstSeverity: number } {
-    const map: { [key: string]: { count: number; severity: number } } = {};
-    let worstSeverity = 0;
-    for (const o of orders) {
-      const key = o.state?._text || 'UNKNOWN';
-      const sev = o.state?.severity || 0;
-      if (!map[key]) map[key] = { count: 0, severity: sev };
-      map[key].count++;
-      if (sev > worstSeverity) worstSeverity = sev;
+  private buildDisplayTree(instructions: any[], depth: number, basePath: any[]): DisplayItem[] {
+    const items: DisplayItem[] = [];
+    if (!Array.isArray(instructions)) return items;
+
+    for (let i = 0; i < instructions.length; i++) {
+      const inst = instructions[i];
+      const type: string = inst.TYPE || '';
+
+      if (!type || type === 'EndSegment' || type === 'ImplicitEnd' ||
+          type === 'EndLock' || type === 'EndOptions' || type === 'EndAdmissionTime' ||
+          type === 'Join' || type === 'ForkJoin') {
+        continue;
+      }
+
+      if (type === 'Segment') {
+        const childInstructions = inst.block?.instructions || inst.instructions || [];
+        const name = inst.label || inst.name || 'Segment';
+        const childDisplayTree = this.buildDisplayTree(childInstructions, 0, basePath);
+        this.populateOrderStates(childDisplayTree);
+        const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(childDisplayTree);
+        const childExpanded = this.expandedByName.get(name) ?? false;
+        const childSeg: SegmentItem = {
+          id: 'seg_' + (this.segIdCounter++),
+          name,
+          jobCount: this.countJobs(childInstructions),
+          orderCount,
+          ordersSummary: summary,
+          worstSeverity,
+          displayTree: childDisplayTree,
+          isExpanded: childExpanded,
+          contentHeight: 0, // computed after tree is fully built
+          isSynthetic: false,
+        };
+        const segPos = [...basePath, i];
+        items.push({
+          kind: 'segment', icon: 'fa-object-group', label: name,
+          depth, positionPath: segPos, positionKey: JSON.stringify(segPos),
+          orderStates: [], segmentItem: childSeg,
+        });
+        continue;
+      }
+
+      const currentPath = [...basePath, i];
+      const instPos: any[] = inst.position || currentPath;
+      const instPosKey = JSON.stringify(instPos);
+      const instPosStr: string | undefined = inst.positionString;
+      const childInstr = inst.block?.instructions || inst.instructions || [];
+
+      switch (type) {
+        case 'Job':
+          items.push({
+            kind: 'job', icon: 'fa-cog', depth,
+            label: inst.label || inst.jobName || 'Job',
+            subLabel: this.jobs?.[inst.jobName]?.agentName || undefined,
+            positionPath: instPos, positionKey: instPosKey, positionString: instPosStr,
+            orderStates: [],
+          });
+          break;
+
+        case 'Retry':
+          items.push({
+            kind: 'container', icon: 'fa-repeat', depth,
+            label: 'Retry',
+            subLabel: inst.maxTries ? '(max ' + inst.maxTries + 'x)' : undefined,
+            positionPath: instPos, positionKey: instPosKey, positionString: instPosStr,
+            orderStates: [],
+          });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'try+0']));
+          break;
+
+        case 'Try': {
+          items.push({ kind: 'container', icon: 'fa-shield', label: 'Try', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'try+0']));
+          if (inst.catch?.instructions?.length) {
+            const catchPos = inst.catch?.position || [...instPos, 'catch'];
+            items.push({ kind: 'branch-label', icon: 'fa-exclamation-triangle', label: 'Catch', depth: depth + 1, positionPath: catchPos, positionKey: JSON.stringify(catchPos), orderStates: [] });
+            items.push(...this.buildDisplayTree(inst.catch.instructions, depth + 2, catchPos));
+          }
+          break;
+        }
+
+        case 'If': {
+          items.push({ kind: 'container', icon: 'fa-random', label: 'If', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          if (inst.then?.instructions?.length) {
+            const thenPos = [...instPos, 'then'];
+            items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: 'Then', depth: depth + 1, positionPath: thenPos, positionKey: JSON.stringify(thenPos), orderStates: [] });
+            items.push(...this.buildDisplayTree(inst.then.instructions, depth + 2, thenPos));
+          }
+          if (inst.else?.instructions?.length) {
+            const elsePos = [...instPos, 'else'];
+            items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: 'Else', depth: depth + 1, positionPath: elsePos, positionKey: JSON.stringify(elsePos), orderStates: [] });
+            items.push(...this.buildDisplayTree(inst.else.instructions, depth + 2, elsePos));
+          }
+          break;
+        }
+
+        case 'CaseWhen': {
+          items.push({ kind: 'container', icon: 'fa-list-alt', label: 'Case', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          if (inst.cases?.length) {
+            // Format 1: cases = [{ predicate, then: { instructions } }]
+            inst.cases.forEach((c: any, ci: number) => {
+              const casePath = [...instPos, ci === 0 ? 'then' : 'then+' + (ci * 2)];
+              items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: c.predicate || ('Case ' + (ci + 1)), depth: depth + 1, positionPath: casePath, positionKey: JSON.stringify(casePath), orderStates: [] });
+              items.push(...this.buildDisplayTree(c.then?.instructions || [], depth + 2, casePath));
+            });
+          } else if (inst.instructions?.length) {
+            // Format 2: instructions = [{ TYPE:'When'|'ElseWhen', predicate, instructions }]
+            inst.instructions.forEach((w: any) => {
+              const whenPos: any[] = w.position || instPos;
+              items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: w.TYPE === 'ElseWhen' ? 'Else' : 'When', depth: depth + 1, positionPath: whenPos, positionKey: JSON.stringify(whenPos), positionString: w.positionString, orderStates: [] });
+              items.push(...this.buildDisplayTree(w.instructions || [], depth + 2, whenPos));
+            });
+          }
+          break;
+        }
+
+        case 'Fork':
+        case 'ForkList': {
+          items.push({ kind: 'container', icon: 'fa-code-fork', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          (inst.branches || []).forEach((b: any, bi: number) => {
+            const branchId = b.branchId || b.id || b.name || String(bi);
+            const branchPath = [...instPos, 'fork+' + branchId];
+            items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: b.name || branchId, depth: depth + 1, positionPath: branchPath, positionKey: JSON.stringify(branchPath), orderStates: [] });
+            items.push(...this.buildDisplayTree(b.instructions || [], depth + 2, branchPath));
+          });
+          break;
+        }
+
+        case 'Lock':
+          items.push({ kind: 'container', icon: 'fa-lock', label: 'Lock', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
+          break;
+
+        case 'Cycle':
+          items.push({ kind: 'container', icon: 'fa-refresh', label: 'Cycle', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'cycle']));
+          break;
+
+        case 'Options':
+        case 'AdmissionTime':
+          items.push({ kind: 'container', icon: 'fa-clock-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
+          break;
+
+        case 'StickySubagent':
+          items.push({ kind: 'container', icon: 'fa-link', label: 'StickySubagent', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
+          break;
+
+        case 'ConsumeNotices':
+        case 'ExpectNotices':
+        case 'PostNotices':
+          items.push({ kind: 'job', icon: 'fa-bell', label: type.replace('Notices', ' Notice'), depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        case 'AddOrder':
+          items.push({ kind: 'job', icon: 'fa-plus-circle', label: 'Add Order', subLabel: inst.workflowPath || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        case 'Fail':
+          items.push({ kind: 'job', icon: 'fa-ban', label: 'Fail', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        case 'Finish':
+          items.push({ kind: 'job', icon: 'fa-check-circle', label: 'Finish', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        case 'Prompt':
+          items.push({ kind: 'job', icon: 'fa-comment', label: 'Prompt', subLabel: inst.question || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        case 'Sleep':
+          items.push({ kind: 'job', icon: 'fa-clock-o', label: 'Sleep', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          break;
+
+        default:
+          if (childInstr.length > 0) {
+            items.push({ kind: 'container', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+            items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
+          } else {
+            items.push({ kind: 'job', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          }
+      }
     }
-    const summary = Object.entries(map).map(([state, v]) => ({ state, count: v.count, severity: v.severity }));
-    return { summary, worstSeverity };
+    return items;
   }
 
   private buildSegments(): void {
@@ -79,66 +279,200 @@ export class WorkflowSegmentComponent implements OnChanges {
       return;
     }
 
-    const orders = this.orders || [];
     const allInstructions: any[] = this.workFlowJson.instructions;
-    let idCounter = 0;
+    this.segIdCounter = 0;
 
-    const buildTree = (instructions: any[], isRoot: boolean): SegmentItem[] => {
-      if (!Array.isArray(instructions)) return [];
-      const result: SegmentItem[] = [];
-      for (const inst of instructions) {
-        if (inst.TYPE === 'Segment') {
-          const childInstructions = inst.block?.instructions || inst.instructions || [];
-          const { summary, worstSeverity } = this.buildOrderSummary(orders);
-          result.push({
-            id: 'seg_' + (idCounter++),
-            name: inst.label || inst.name || 'Segment',
-            jobCount: this.countJobs(childInstructions),
-            orderCount: orders.length,
-            ordersSummary: summary,
-            worstSeverity,
-            workFlowJson: { ...this.workFlowJson, instructions: childInstructions },
-            isExpanded: isRoot && result.length === 0,
-            children: buildTree(childInstructions, false),
-          });
-        } else {
-          result.push(...buildTree(inst.instructions || [], false));
-          if (inst.block?.instructions) result.push(...buildTree(inst.block.instructions, false));
-          if (inst.then?.instructions) result.push(...buildTree(inst.then.instructions, false));
-          if (inst.else?.instructions) result.push(...buildTree(inst.else.instructions, false));
-          if (inst.catch?.instructions) result.push(...buildTree(inst.catch.instructions, false));
-          if (inst.body?.instructions) result.push(...buildTree(inst.body.instructions, false));
-          if (inst.branches) {
-            for (const b of inst.branches) result.push(...buildTree(b.instructions || [], false));
-          }
-        }
-      }
-      return result;
-    };
+    const result: SegmentItem[] = [];
+    let stepCounter = 0;
+    let buffer: any[] = [];
 
-    const tree = buildTree(allInstructions, true);
-
-    if (tree.length === 0) {
-      const { summary, worstSeverity } = this.buildOrderSummary(orders);
-      this.segments = [{
-        id: 'seg_all',
-        name: this.workFlowJson.name || 'All Jobs',
-        jobCount: this.countJobs(allInstructions),
-        orderCount: orders.length,
+    const flushBuffer = () => {
+      if (buffer.length === 0) return;
+      stepCounter++;
+      const name = 'Step ' + stepCounter;
+      const displayTree = this.buildDisplayTree(buffer, 0, []);
+      this.populateOrderStates(displayTree);
+      const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+      result.push({
+        id: 'seg_' + (this.segIdCounter++),
+        name,
+        jobCount: this.countJobs(buffer),
+        orderCount,
         ordersSummary: summary,
         worstSeverity,
-        workFlowJson: this.workFlowJson,
-        isExpanded: true,
-        children: [],
+        displayTree,
+        isExpanded: this.expandedByName.has(name) ? this.expandedByName.get(name)! : false,
+        contentHeight: 0,
+        isSynthetic: true,
+      });
+      buffer = [];
+    };
+
+    for (const inst of allInstructions) {
+      if (inst.TYPE === 'Segment') {
+        flushBuffer();
+        const childInstructions = inst.block?.instructions || inst.instructions || [];
+        const name = inst.label || inst.name || 'Segment';
+        const displayTree = this.buildDisplayTree(childInstructions, 0, []);
+        this.populateOrderStates(displayTree);
+        const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+        result.push({
+          id: 'seg_' + (this.segIdCounter++),
+          name,
+          jobCount: this.countJobs(childInstructions),
+          orderCount,
+          ordersSummary: summary,
+          worstSeverity,
+          displayTree,
+          isExpanded: this.expandedByName.has(name) ? this.expandedByName.get(name)! : result.length === 0,
+          contentHeight: 0,
+          isSynthetic: false,
+        });
+      } else {
+        buffer.push(inst);
+      }
+    }
+    flushBuffer();
+
+    if (result.length === 0) {
+      // No Segment instructions at all — show everything in one card
+      const name = this.workFlowJson.name || 'All Jobs';
+      const displayTree = this.buildDisplayTree(allInstructions, 0, []);
+      this.populateOrderStates(displayTree);
+      const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+      this.segments = [{
+        id: 'seg_all',
+        name,
+        jobCount: this.countJobs(allInstructions),
+        orderCount,
+        ordersSummary: summary,
+        worstSeverity,
+        displayTree,
+        isExpanded: this.expandedByName.has(name) ? this.expandedByName.get(name)! : true,
+        contentHeight: 0,
+        isSynthetic: false,
       }];
     } else {
-      this.segments = tree;
+      this.segments = result;
+    }
+    this.recomputeAllHeights();
+    this.cdr.markForCheck();
+  }
+
+  // ── Order-state refresh (runs only when orders/orderReload changes) ───────
+  // Stamps orderStates on existing DisplayItem objects in-place — no tree rebuild.
+
+  private refreshOrderStates(): void {
+    for (const seg of this.segments) {
+      this.populateOrderStates(seg.displayTree);
+      this.refreshNestedSegments(seg.displayTree);
+      const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(seg.displayTree);
+      seg.ordersSummary = summary;
+      seg.worstSeverity = worstSeverity;
+      seg.orderCount = orderCount;
     }
     this.cdr.markForCheck();
   }
 
+  private refreshNestedSegments(displayTree: DisplayItem[]): void {
+    for (const item of displayTree) {
+      if (item.kind === 'segment' && item.segmentItem) {
+        const seg = item.segmentItem;
+        this.populateOrderStates(seg.displayTree);
+        this.refreshNestedSegments(seg.displayTree);
+        const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(seg.displayTree);
+        seg.ordersSummary = summary;
+        seg.worstSeverity = worstSeverity;
+        seg.orderCount = orderCount;
+      }
+    }
+  }
+
+  // ── Shared utilities ──────────────────────────────────────────────────────
+
+  private populateOrderStates(displayTree: DisplayItem[]): void {
+    const orderMap = new Map<string, Map<string, { severity: number; count: number }>>();
+    const psMap = new Map<string, Map<string, { severity: number; count: number }>>();
+
+    for (const order of this.orders || []) {
+      const state = order.state?._text || 'UNKNOWN';
+      const severity = order.state?.severity ?? 0;
+      if (order.position) {
+        const posKey = JSON.stringify(order.position);
+        if (!orderMap.has(posKey)) orderMap.set(posKey, new Map());
+        const sm = orderMap.get(posKey)!;
+        if (!sm.has(state)) sm.set(state, { severity, count: 0 });
+        sm.get(state)!.count++;
+      }
+      if (order.positionString) {
+        if (!psMap.has(order.positionString)) psMap.set(order.positionString, new Map());
+        const sm = psMap.get(order.positionString)!;
+        if (!sm.has(state)) sm.set(state, { severity, count: 0 });
+        sm.get(state)!.count++;
+      }
+    }
+
+    for (const item of displayTree) {
+      if (item.kind === 'segment') continue;
+      // Use pre-serialized positionKey — avoids JSON.stringify on every render tick
+      const byPos = orderMap.get(item.positionKey);
+      const byStr = item.positionString ? psMap.get(item.positionString) : undefined;
+      const stateMap = byPos || byStr;
+      item.orderStates = stateMap
+        ? Array.from(stateMap.entries()).map(([state, v]) => ({ state, severity: v.severity, count: v.count }))
+        : [];
+    }
+  }
+
+  private summaryFromDisplayTree(displayTree: DisplayItem[]): { summary: { state: string; count: number; severity: number }[]; worstSeverity: number; orderCount: number } {
+    const map: { [key: string]: { count: number; severity: number } } = {};
+    let worstSeverity = 0;
+    let orderCount = 0;
+    for (const item of displayTree) {
+      if (item.kind === 'segment') continue;
+      for (const os of item.orderStates) {
+        if (!map[os.state]) map[os.state] = { count: 0, severity: os.severity };
+        map[os.state].count += os.count;
+        orderCount += os.count;
+        if (os.severity > worstSeverity) worstSeverity = os.severity;
+      }
+    }
+    const summary = Object.entries(map).map(([state, v]) => ({ state, count: v.count, severity: v.severity }));
+    return { summary, worstSeverity, orderCount };
+  }
+
+  // ── Height computation ────────────────────────────────────────────────────
+
+  private computeContentHeight(displayTree: DisplayItem[]): number {
+    let height = 0;
+    for (const item of displayTree) {
+      if (item.kind === 'segment' && item.segmentItem) {
+        const nested = item.segmentItem;
+        // Recursively compute and assign nested segment's own contentHeight first
+        nested.contentHeight = this.computeContentHeight(nested.displayTree);
+        height += 36; // header row
+        if (nested.isExpanded) {
+          height += nested.contentHeight;
+        }
+      } else {
+        height += 28;
+      }
+    }
+    return Math.min(height + 10, 400);
+  }
+
+  private recomputeAllHeights(): void {
+    for (const seg of this.segments) {
+      seg.contentHeight = this.computeContentHeight(seg.displayTree);
+    }
+  }
+
+  // ── Public ────────────────────────────────────────────────────────────────
+
   toggleSegment(seg: SegmentItem): void {
     seg.isExpanded = !seg.isExpanded;
+    this.expandedByName.set(seg.name, seg.isExpanded);
+    this.recomputeAllHeights();
     this.cdr.markForCheck();
   }
 }

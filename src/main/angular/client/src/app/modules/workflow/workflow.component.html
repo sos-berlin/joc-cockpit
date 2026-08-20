@@ -629,6 +629,9 @@
                                 <i class="icon-workflows-icon"></i>&nbsp;
                                 <i (click)="navToDetailView('list', workflow)" class="cursor fa fa-list"></i>
                                 <i (click)="navToDetailView('grid', workflow)" class="cursor fa fa-th p-l-xs p-r-xs"></i>
+                                @if (workflow.hasSegments) {
+                                  <i (click)="navToDetailView('segment', workflow)" class="cursor fa fa-th-large p-r-xs"></i>
+                                }
                                 @if (workflow.documentationName) {
                                   <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
                                      class="cursor fa fa-book p-l-xs p-r-xs"></i>
@@ -956,24 +959,10 @@
                           </td>
                           <td>
                           <span class="show-in-single-line">
-                            @if (!workflow.show) {
-                              <i (click)="workflow.isExpand = true;showPanelFuc(workflow)"
-                                 [appRichTooltip]="'common.tooltip.expandAll' | translate"
-                                 class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel"></i>
-                            }
-                            @if (workflow.show) {
-                              <i (click)="workflow.isExpand = false;hidePanelFuc(workflow)"
-                                 [appRichTooltip]="'common.tooltip.collapseAll' | translate"
-                                 class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel"></i>
-                            }
-                            @if (!workflow.show) {
-                              <i (click)="showPanelFuc(workflow)"
-                                 class="cursor fa fa-caret-down fa-lg p-l-xxs t-n-1 pos-rel"></i>
-                            }
-                            @if (workflow.show) {
-                              <i (click)="hidePanelFuc(workflow)"
-                                 class="cursor fa fa-caret-up fa-lg p-l-xxs t-n-1 pos-rel"></i>
-                            }
+                            <i (click)="togglePanel(workflow)"
+                               [appRichTooltip]="(workflow.show ? 'common.tooltip.collapseAll' : 'common.tooltip.expandAll') | translate"
+                               class="cursor fa p-l-xs p-r-xs t-n-1 pos-rel"
+                               [ngClass]="workflow.show ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
                             @if (permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC') {
                               <i
                                 (click)="addOrder(workflow)"
@@ -984,10 +973,12 @@
                                class="cursor fa fa-list p-l-xs"></i>
                             <i (click)="navToDetailView('grid', workflow)"
                                [appRichTooltip]="'workflow.button.showGraphicalView' | translate"
-                               class="cursor fa fa-th p-l-xs p-r-xs"></i>
-                            <i (click)="navToDetailView('segment', workflow)"
-                               [appRichTooltip]="'workflow.button.showSegmentView' | translate"
-                               class="cursor fa fa-th-large p-l-xs p-r-xs"></i>
+                               class="cursor fa fa-th p-l-xs"></i>
+                            @if (workflow.hasSegments) {
+                              <i (click)="navToDetailView('segment', workflow)"
+                                 [appRichTooltip]="'workflow.button.showSegmentView' | translate"
+                                 class="cursor fa fa-th-large p-l-xs p-r-xs"></i>
+                            }
                             @if (workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies) {
                               <i
                                 (click)="showDependency(workflow)"
@@ -1176,29 +1167,72 @@
                             <td colspan="17">
                               <div class="m-a-sm">
                                 <div class="hover">
-                                  <a class="text-primary noExl">{{ 'workflow.label.start' | translate }}</a>
-                                  <span class="expand-collapse-btn">
+                                  @if (workflow.hasSegments) {
+                                    <div class="d-flex align-items-center" [ngClass]="workflow.panelView==='segment' ? 'justify-content-end' : 'justify-content-between'">
+                                      @if (workflow.panelView==='tabular') {
+                                        <div>
+                                          <a class="text-primary noExl">{{ 'workflow.label.start' | translate }}</a>
+                                          <span class="expand-collapse-btn">
+                                            <i (click)="workflow.isExpand = true;"
+                                              [appRichTooltip]="'common.tooltip.expandAll' | translate"
+                                              class="cursor fa fa-lg fa-angle-double-down"></i>
+                                            <i (click)="workflow.isExpand = false;"
+                                              [appRichTooltip]="'common.tooltip.collapseAll' | translate"
+                                              class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
+                                          </span>
+                                        </div>
+                                      }
+
+                                      <div class="d-flex align-items-center justify-content-between">
+                                        <a class="cursor noExl text-sm m-r-xs"
+                                          [ngClass]="workflow.panelView==='segment' ? 'text-primary' : 'text-muted'"
+                                          (click)="workflow.panelView='segment'">
+                                          <i class="fa fa-th-large m-r-xxs"></i>{{'workflow.button.showSegmentView' | translate}}
+                                        </a>
+                                        <span class="text-muted text-sm">|</span>
+                                        <a class="cursor noExl text-sm m-l-xs"
+                                          [ngClass]="workflow.panelView==='tabular' ? 'text-primary' : 'text-muted'"
+                                          (click)="workflow.panelView='tabular'">
+                                          <i class="fa fa-list m-r-xxs"></i>{{'workflow.button.showTabularView' | translate}}
+                                        </a>
+                                      </div>
+                                    </div>
+                                  } @else {
+                                    <a class="text-primary noExl">{{ 'workflow.label.start' | translate }}</a>
+                                    <span class="expand-collapse-btn">
                                       <i (click)="workflow.isExpand = true;"
-                                         [appRichTooltip]="'common.tooltip.expandAll' | translate"
-                                         class="cursor fa fa-lg fa-angle-double-down"></i>
+                                        [appRichTooltip]="'common.tooltip.expandAll' | translate"
+                                        class="cursor fa fa-lg fa-angle-double-down"></i>
                                       <i (click)="workflow.isExpand = false;"
-                                         [appRichTooltip]="'common.tooltip.collapseAll' | translate"
-                                         class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
+                                        [appRichTooltip]="'common.tooltip.collapseAll' | translate"
+                                        class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                                     </span>
+                                  }
                                 </div>
-                                <app-type (bulkUpdate)="bulkUpdate($event)" [multiSelect]="true" [clearCheckboxes]="clearCheckboxes" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
-                                          (isProcessing)="processingHandler($event)"
-                                          (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
-                                          [configuration]="workflow.configuration"
-                                          [expandAll]="workflow.isExpand" [jobs]="workflow.configuration.jobs"
-                                          [orderPreparation]="workflow.configuration.orderPreparation"
-                                          [orderReload]="workflow.orderReload" [orders]="workflow.orders"
-                                          [permission]="permission"
-                                          [preferences]="preferences"
-                                          [schedulerId]="schedulerIds.selected"
-                                          [workflowFilters] = "workflowFilters"
-                                          [searchText]="workflowFilters.searchText"
-                                          [timezone]="workflow.configuration.timeZone" [dayOffset]="workflow.configuration.dayOffset" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
+                                @if (workflow.panelView === 'segment') {
+                                  <app-workflow-segment
+                                    [workFlowJson]="workflow.configuration"
+                                    [orders]="workflow.orders"
+                                    [orderReload]="workflow.orderReload"
+                                    [jobs]="workflow.configuration?.jobs"
+                                    [permission]="permission"
+                                    [preferences]="preferences">
+                                  </app-workflow-segment>
+                                } @else {
+                                  <app-type (bulkUpdate)="bulkUpdate($event)" [multiSelect]="true" [clearCheckboxes]="clearCheckboxes" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
+                                            (isProcessing)="processingHandler($event)"
+                                            (onClick)="viewHistory($event)" (update)="updatePanelHeight()"
+                                            [configuration]="workflow.configuration"
+                                            [expandAll]="workflow.isExpand" [jobs]="workflow.configuration.jobs"
+                                            [orderPreparation]="workflow.configuration.orderPreparation"
+                                            [orderReload]="workflow.orderReload" [orders]="workflow.orders"
+                                            [permission]="permission"
+                                            [preferences]="preferences"
+                                            [schedulerId]="schedulerIds.selected"
+                                            [workflowFilters] = "workflowFilters"
+                                            [searchText]="workflowFilters.searchText"
+                                            [timezone]="workflow.configuration.timeZone" [dayOffset]="workflow.configuration.dayOffset" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
+                                }
                               </div>
                             </td>
                           </tr>

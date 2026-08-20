@@ -11216,3 +11216,15 @@ li.nav-item.tab-active .tab-help-icon:hover {
 .ant-popover-inner-content {
   width: 100% !important;
 }
+
+.segment-box {
+  border-left: 3px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.segment-box:hover {
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 25%, transparent);
+    border-color: var(--primary);
+  }
