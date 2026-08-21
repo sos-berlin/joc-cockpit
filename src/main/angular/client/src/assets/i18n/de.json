@@ -5255,6 +5255,11 @@
       "option": "^Options Anweisung|options-instruction^ ziehen und ablegen, um Fehlerbehandlung für die ^Lock Anweisung|lock-instruction^ and ^ConsumeNotices Anweisung|consumenotices-instruction^ einzuführen.",
       "paste": "**Paste** ziehen und ablegen, um eine oder mehrere Anweisungen einzufügen, die zuvor mittels 3-Punkt Aktionsmenü der jeweiligen Anweisung kopiert wurden.",
       "segment": "Ziehen Sie ein **Segment** per Drag & Drop in die Ansicht *KONFIGURATION* oder *ARBEITSABLÄUFE*, um damit die enthaltenen Teile des ^Arbeitsablaufs|workflows^ ein- oder auszublenden.\n\n**Segmente** dienen dazu, den Fokus auf relevante Teile größerer Arbeitsabläufe zu richten."
+    },
+    "segmentView": {
+      "tooltip.prev": "Previous segments",
+      "tooltip.next": "Next segments",
+      "tooltip.running": "Jump to running order"
     }
   },
   "xml": {

@@ -1,13 +1,13 @@
 <div class="segment-view p-a-sm">
   <ng-template #segmentTpl let-seg="seg" let-depth="depth">
     <div class="box m-b-sm segment-box" [style.margin-left.px]="depth * 16"
-         [style.border-left]="seg.isSynthetic ? '3px solid #9E9E9E' : '3px solid #4CAF50'">
+         [style.border-color]="seg.isSynthetic ? 'var(--dimgrey)' : 'var(--blue)'">
       <!-- Segment header -->
       <div class="segment-header p-a-xs cursor d-flex align-items-center" (click)="toggleSegment(seg)"
            style="gap:6px;background:var(--bg-box)">
         <i class="fa" [ngClass]="seg.isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" style="width:12px"></i>
         <b>{{ seg.name }}</b>
-        <span class="label label-default m-l-xxs text-11">{{ seg.jobCount }} {{ seg.jobCount === 1 ? 'Job' : 'Jobs' }}</span>
+        <span class="label label-default m-l-xxs text-11">{{ seg.jobLabel }}</span>
         @for (entry of seg.ordersSummary; track entry.state) {
           <span [ngClass]="coreService.getColor(entry.severity, 'bg')" class="label m-r-xxs text-11">
             {{ entry.state | translate }}: {{ entry.count }}
@@ -27,17 +27,93 @@
                       <ng-container *ngTemplateOutlet="segmentTpl; context: { seg: item.segmentItem, depth: 0 }"></ng-container>
                     </div>
                   } @else {
-                    <div class="d-flex align-items-center" style="padding:3px 0;"
+                    <div class="d-flex align-items-center" style="padding:3px 0;margin-left:3px;"
                          [style.padding-left.px]="item.depth * 14">
+                      @if (item.kind === 'job' || item.kind === 'container') {
+                        <div class="btn-group dropdown" style="margin-left:-10px">
+                          <button [nzDropdownMenu]="itemMenu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #itemMenu="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              @if (item.instructionRef?.TYPE !== 'Segment') {
+                                @if (item.instructionRef?.label && permission?.controllerDefaults?.orders?.managePositions && (!item.instructionRef?.state || (item.instructionRef?.state?._text !== 'SKIPPED' && item.instructionRef?.state?._text !== 'STOPPED_AND_SKIPPED'))) {
+                                  <li (click)="skip(item)" nz-menu-item><a><span>{{ 'workflow.button.skip' | translate }}</span></a></li>
+                                }
+                                @if (item.instructionRef?.label && permission?.controllerDefaults?.orders?.managePositions && (item.instructionRef?.state?._text === 'SKIPPED' || item.instructionRef?.state?._text === 'STOPPED_AND_SKIPPED')) {
+                                  <li (click)="unskip(item)" nz-menu-item><a><span>{{ 'workflow.button.unskip' | translate }}</span></a></li>
+                                }
+                                @if (permission?.controllerDefaults?.orders?.managePositions && (!item.instructionRef?.state || (item.instructionRef?.state?._text !== 'STOPPED' && item.instructionRef?.state?._text !== 'STOPPED_AND_SKIPPED'))) {
+                                  <li (click)="stop(item)" nz-menu-item><a><span>{{ 'workflow.button.stop' | translate }}</span></a></li>
+                                }
+                                @if (permission?.controllerDefaults?.orders?.managePositions && (item.instructionRef?.state?._text === 'STOPPED' || item.instructionRef?.state?._text === 'STOPPED_AND_SKIPPED')) {
+                                  <li (click)="unstop(item)" nz-menu-item><a><span>{{ 'workflow.button.unstop' | translate }}</span></a></li>
+                                }
+                              }
+                              @if (item.kind === 'job') {
+                                <li (click)="showConfiguration(item)" nz-menu-item><a><span>{{ 'common.button.showConfiguration' | translate }}</span></a></li>
+                                <li [nzDisabled]="!item.instructionRef?.documentationName" (click)="item.instructionRef?.documentationName && showDocumentation(item)" nz-menu-item>
+                                  <a><span>{{ 'common.button.viewDocumentation' | translate }}</span></a>
+                                </li>
+                                @if (permission?.currentController?.orders?.view && item.instructionRef?.TYPE === 'Job') {
+                                  <li (click)="viewHistory(item)" nz-menu-item><a><span>{{ 'common.button.showHistory' | translate }}</span></a></li>
+                                }
+                              }
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      }
                       <i class="fa m-r-xs text-muted text-11" [ngClass]="item.icon" style="width:12px;flex-shrink:0"></i>
                       <span class="text-sm" [class.text-muted]="item.kind !== 'job'">{{ item.label }}</span>
                       @if (item.subLabel) {
                         <small class="text-muted m-l-xs">{{ item.subLabel }}</small>
                       }
+                      @if (item.instructionRef?.state?._text) {
+                        <span [ngClass]="coreService.getColor(item.instructionRef.state.severity, 'bg')"
+                              class="label m-l-xs text-xs">{{ item.instructionRef.state._text | translate }}</span>
+                      }
                       @for (os of item.orderStates; track os.state) {
                         <span [ngClass]="coreService.getColor(os.severity, 'bg')"
                               class="label m-l-xs text-xs">
                           {{ os.state | translate }}{{ os.count > 1 ? ': ' + os.count : '' }}
+                        </span>
+                      }
+                      @if (item.ordersAtPos?.length) {
+                        <span class="m-l-md">
+                          @for (order of (item.ordersAtPos | orderBy:'scheduledFor':true | slice:0:3); track order.orderId) {
+                            <span class="d-inline-flex align-items-center m-r-xs">
+                              <app-order-action [order]="order" [permission]="permission" [preferences]="preferences"
+                                                [viewContainerRef]="viewContainerRef" [schedulerId]="schedulerId"
+                                                (isChanged)="changedHandler($event)"></app-order-action>
+                              <span style="position:relative;top:2px">
+                                @if (!order.marked) {
+                                  <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>
+                                }
+                                @if (order.marked) {
+                                  <span [ngClass]="coreService.getColor(order.state.severity, 'bg')" class="half-circle half-circle-left"></span>
+                                  <span [ngClass]="coreService.getColor(order.marked.severity, 'bg')" class="half-circle half-circle-right"></span>
+                                }
+                                @if (order.state && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
+                                  <a (click)="showLog(order)" class="text-hover-primary p-l-xs p-r-sm">{{ coreService.getModifiedOrderId(order, '') }}</a>
+                                }
+                                @if (!order.state || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING') {
+                                  <span class="p-l-xs p-r-sm text-muted">{{ coreService.getModifiedOrderId(order, '') }}</span>
+                                }
+                                @if (order.scheduledFor && !order.scheduledNever) {
+                                  <i class="text-sm text-muted">{{ order.scheduledFor | stringToDate }}</i>
+                                }
+                                @if (order.scheduledNever) {
+                                  <i class="text-sm text-muted">{{ 'common.label.never' | translate }}</i>
+                                }
+                              </span>
+                            </span>
+                          }
+                          @if (item.ordersAtPos.length > 3) {
+                            <span class="remaining-order-count" (click)="showAllOrders(item.ordersAtPos)">
+                              <i class="remaining-order-count-i">{{ 'workflow.label.showOther' | translate }}</i>
+                              <span class="remaining-order-count-span">{{ item.ordersAtPos.length - 3 }}</span>
+                            </span>
+                          }
                         </span>
                       }
                     </div>
@@ -51,7 +127,25 @@
     </div>
   </ng-template>
 
-  @for (seg of segments; track seg.id) {
+  <div class="d-flex align-items-center justify-content-between m-b-xs" style="gap:8px">
+    <div class="d-flex align-items-center justify-content-start" style="gap:8px">
+      <button class="btn btn-xs btn-default" [disabled]="!hasPrev" (click)="loadPrev()" [appRichTooltip]="'workflow.segmentView.tooltip.prev' | translate">
+        <i class="fa fa-chevron-up m-r-xxs"></i>
+      </button>
+      <button class="btn btn-xs btn-default" [disabled]="!hasNext" (click)="loadNext()" [appRichTooltip]="'workflow.segmentView.tooltip.next' | translate">
+        <i class="fa fa-chevron-down m-l-xxs"></i>
+      </button>
+      <button class="btn btn-xs btn-primary" [disabled]="!hasActiveOutsideWindow" (click)="jumpToActive()" [appRichTooltip]="'workflow.segmentView.tooltip.running' | translate">
+        <i class="fa m-r-xxs" [ngClass]="activeIsAbove ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+      </button>
+    </div>
+
+    @if (hasPrev || hasNext) {
+      <small class="text-muted">Showing {{ windowStart + 1 }}–{{ windowEnd }} of {{ segments.length }}</small>
+    }
+  </div>
+
+  @for (seg of visibleSegments; track seg.id) {
     <ng-container *ngTemplateOutlet="segmentTpl; context: { seg: seg, depth: 0 }"></ng-container>
   }
 

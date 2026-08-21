@@ -1216,7 +1216,9 @@
                                     [orderReload]="workflow.orderReload"
                                     [jobs]="workflow.configuration?.jobs"
                                     [permission]="permission"
-                                    [preferences]="preferences">
+                                    [preferences]="preferences"
+                                    [schedulerId]="schedulerIds.selected"
+                                    (onClick)="viewHistory($event)">
                                   </app-workflow-segment>
                                 } @else {
                                   <app-type (bulkUpdate)="bulkUpdate($event)" [multiSelect]="true" [clearCheckboxes]="clearCheckboxes" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"

@@ -419,17 +419,13 @@
             }
             @if (pageView === 'segment' && workFlowJson.instructions) {
               <app-workflow-segment
-                [controllerId]="schedulerIds.selected"
-                [jobMap]="jobMap"
+                [schedulerId]="schedulerIds.selected"
                 [jobs]="workflow.jobs"
-                [orderPreparation]="orderPreparation"
                 [orders]="workflow.orders"
                 [permission]="permission"
                 [preferences]="preferences"
-                [recursiveCals]="recursiveCals"
-                [reload]="isReload"
                 [workFlowJson]="workFlowJson"
-                [workflowFilters]="workflowFilters">
+                (onClick)="viewHistory($event)">
               </app-workflow-segment>
             }
             <div class="scrollTop-btn">

@@ -1,5 +1,8 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { CoreService } from '../../../services/core.service';
+import { ScriptModalComponent } from '../script-modal/script-modal.component';
+import { CommentModalComponent } from '../../../components/comment-modal/comment.component';
 
 interface OrderStateSummary {
   state: string;
@@ -11,6 +14,7 @@ interface SegmentItem {
   id: string;
   name: string;
   jobCount: number;
+  jobLabel: string;   // precomputed "N Job" / "N Jobs" — avoids ternary on every CD cycle
   orderCount: number;
   ordersSummary: { state: string; count: number; severity: number }[];
   worstSeverity: number;
@@ -31,36 +35,66 @@ interface DisplayItem {
   positionString?: string;
   orderStates: OrderStateSummary[];
   segmentItem?: SegmentItem;
+  instructionRef?: any;      // pointer to original instruction — used by skip/stop/showConfig; zero memory cost
+  ordersAtPos?: any[];       // full order objects at this position — used for per-row order dots + action menus
 }
 
 @Component({
   standalone: false,
   selector: 'app-workflow-segment',
   templateUrl: './workflow-segment.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkflowSegmentComponent implements OnChanges {
+export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   @Input() workFlowJson: any = {};
   @Input() orders: any[] = [];
   @Input() orderReload: boolean;
   @Input() jobs: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};
+  @Input() schedulerId: string = '';
+  @Output() onClick = new EventEmitter<any>();
 
   segments: SegmentItem[] = [];
   private segIdCounter = 0;
   // Maintained incrementally by toggleSegment; persists across structural rebuilds
   private expandedByName = new Map<string, boolean>();
+  // Memoized order lookup maps — rebuilt once per order change, shared across all segments
+  private _orderMap = new Map<string, Map<string, { severity: number; count: number }>>();
+  private _psMap = new Map<string, Map<string, { severity: number; count: number }>>();
+  private _rawOrdersMap = new Map<string, any[]>();
+  private _rawOrdersPsMap = new Map<string, any[]>();
+  private _refreshTimer: any = null;
 
-  constructor(public coreService: CoreService, private cdr: ChangeDetectorRef) {}
+  // ── Windowed slice ────────────────────────────────────────────────────────
+  private readonly WINDOW_SIZE = 5;
+  visibleSegments: SegmentItem[] = [];
+  windowStart = 0;
+  windowEnd = 0;
+  private anchorIndex = -1;
+  // Whether user has manually shifted the window (locks anchoring to not re-center)
+  private userMovedWindow = false;
+  hasPrev = false;
+  hasNext = false;
+
+  constructor(public coreService: CoreService, private cdr: ChangeDetectorRef, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['workFlowJson']) {
-      // Structural change — rebuild the entire tree
+      this.buildOrderMaps();
       this.buildSegments();
     } else if (changes['orders'] || changes['orderReload']) {
-      // Only orders changed — stamp states on existing tree, no structural rebuild
-      this.refreshOrderStates();
+      if (this._refreshTimer) clearTimeout(this._refreshTimer);
+      this._refreshTimer = setTimeout(() => {
+        this.buildOrderMaps();
+        this.refreshOrderStates();
+        this._refreshTimer = null;
+      }, 150);
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this._refreshTimer) clearTimeout(this._refreshTimer);
   }
 
   // ── Structural build (runs only when workFlowJson changes) ───────────────
@@ -107,10 +141,12 @@ export class WorkflowSegmentComponent implements OnChanges {
         this.populateOrderStates(childDisplayTree);
         const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(childDisplayTree);
         const childExpanded = this.expandedByName.get(name) ?? false;
+        const childJobCount = this.countJobs(childInstructions);
         const childSeg: SegmentItem = {
           id: 'seg_' + (this.segIdCounter++),
           name,
-          jobCount: this.countJobs(childInstructions),
+          jobCount: childJobCount,
+          jobLabel: childJobCount + (childJobCount === 1 ? ' Job' : ' Jobs'),
           orderCount,
           ordersSummary: summary,
           worstSeverity,
@@ -141,7 +177,7 @@ export class WorkflowSegmentComponent implements OnChanges {
             label: inst.label || inst.jobName || 'Job',
             subLabel: this.jobs?.[inst.jobName]?.agentName || undefined,
             positionPath: instPos, positionKey: instPosKey, positionString: instPosStr,
-            orderStates: [],
+            orderStates: [], instructionRef: inst,
           });
           break;
 
@@ -151,13 +187,13 @@ export class WorkflowSegmentComponent implements OnChanges {
             label: 'Retry',
             subLabel: inst.maxTries ? '(max ' + inst.maxTries + 'x)' : undefined,
             positionPath: instPos, positionKey: instPosKey, positionString: instPosStr,
-            orderStates: [],
+            orderStates: [], instructionRef: inst,
           });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'try+0']));
           break;
 
         case 'Try': {
-          items.push({ kind: 'container', icon: 'fa-shield', label: 'Try', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-shield', label: 'Try', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'try+0']));
           if (inst.catch?.instructions?.length) {
             const catchPos = inst.catch?.position || [...instPos, 'catch'];
@@ -168,7 +204,7 @@ export class WorkflowSegmentComponent implements OnChanges {
         }
 
         case 'If': {
-          items.push({ kind: 'container', icon: 'fa-random', label: 'If', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-random', label: 'If', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           if (inst.then?.instructions?.length) {
             const thenPos = [...instPos, 'then'];
             items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: 'Then', depth: depth + 1, positionPath: thenPos, positionKey: JSON.stringify(thenPos), orderStates: [] });
@@ -183,7 +219,7 @@ export class WorkflowSegmentComponent implements OnChanges {
         }
 
         case 'CaseWhen': {
-          items.push({ kind: 'container', icon: 'fa-list-alt', label: 'Case', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-list-alt', label: 'Case', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           if (inst.cases?.length) {
             // Format 1: cases = [{ predicate, then: { instructions } }]
             inst.cases.forEach((c: any, ci: number) => {
@@ -204,7 +240,7 @@ export class WorkflowSegmentComponent implements OnChanges {
 
         case 'Fork':
         case 'ForkList': {
-          items.push({ kind: 'container', icon: 'fa-code-fork', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-code-fork', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           (inst.branches || []).forEach((b: any, bi: number) => {
             const branchId = b.branchId || b.id || b.name || String(bi);
             const branchPath = [...instPos, 'fork+' + branchId];
@@ -215,58 +251,58 @@ export class WorkflowSegmentComponent implements OnChanges {
         }
 
         case 'Lock':
-          items.push({ kind: 'container', icon: 'fa-lock', label: 'Lock', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-lock', label: 'Lock', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
           break;
 
         case 'Cycle':
-          items.push({ kind: 'container', icon: 'fa-refresh', label: 'Cycle', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-refresh', label: 'Cycle', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, [...instPos, 'cycle']));
           break;
 
         case 'Options':
         case 'AdmissionTime':
-          items.push({ kind: 'container', icon: 'fa-clock-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-clock-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
           break;
 
         case 'StickySubagent':
-          items.push({ kind: 'container', icon: 'fa-link', label: 'StickySubagent', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'container', icon: 'fa-link', label: 'StickySubagent', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
           break;
 
         case 'ConsumeNotices':
         case 'ExpectNotices':
         case 'PostNotices':
-          items.push({ kind: 'job', icon: 'fa-bell', label: type.replace('Notices', ' Notice'), depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-bell', label: type.replace('Notices', ' Notice'), depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         case 'AddOrder':
-          items.push({ kind: 'job', icon: 'fa-plus-circle', label: 'Add Order', subLabel: inst.workflowPath || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-plus-circle', label: 'Add Order', subLabel: inst.workflowPath || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         case 'Fail':
-          items.push({ kind: 'job', icon: 'fa-ban', label: 'Fail', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-ban', label: 'Fail', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         case 'Finish':
-          items.push({ kind: 'job', icon: 'fa-check-circle', label: 'Finish', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-check-circle', label: 'Finish', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         case 'Prompt':
-          items.push({ kind: 'job', icon: 'fa-comment', label: 'Prompt', subLabel: inst.question || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-comment', label: 'Prompt', subLabel: inst.question || undefined, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         case 'Sleep':
-          items.push({ kind: 'job', icon: 'fa-clock-o', label: 'Sleep', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+          items.push({ kind: 'job', icon: 'fa-clock-o', label: 'Sleep', depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           break;
 
         default:
           if (childInstr.length > 0) {
-            items.push({ kind: 'container', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+            items.push({ kind: 'container', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
             items.push(...this.buildDisplayTree(childInstr, depth + 1, instPos));
           } else {
-            items.push({ kind: 'job', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [] });
+            items.push({ kind: 'job', icon: 'fa-circle-o', label: type, depth, positionPath: instPos, positionKey: instPosKey, positionString: instPosStr, orderStates: [], instructionRef: inst });
           }
       }
     }
@@ -293,10 +329,12 @@ export class WorkflowSegmentComponent implements OnChanges {
       const displayTree = this.buildDisplayTree(buffer, 0, []);
       this.populateOrderStates(displayTree);
       const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+      const jc = this.countJobs(buffer);
       result.push({
         id: 'seg_' + (this.segIdCounter++),
         name,
-        jobCount: this.countJobs(buffer),
+        jobCount: jc,
+        jobLabel: jc + (jc === 1 ? ' Job' : ' Jobs'),
         orderCount,
         ordersSummary: summary,
         worstSeverity,
@@ -316,10 +354,12 @@ export class WorkflowSegmentComponent implements OnChanges {
         const displayTree = this.buildDisplayTree(childInstructions, 0, []);
         this.populateOrderStates(displayTree);
         const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+        const jc2 = this.countJobs(childInstructions);
         result.push({
           id: 'seg_' + (this.segIdCounter++),
           name,
-          jobCount: this.countJobs(childInstructions),
+          jobCount: jc2,
+          jobLabel: jc2 + (jc2 === 1 ? ' Job' : ' Jobs'),
           orderCount,
           ordersSummary: summary,
           worstSeverity,
@@ -328,7 +368,8 @@ export class WorkflowSegmentComponent implements OnChanges {
           contentHeight: 0,
           isSynthetic: false,
         });
-      } else {
+      } else if (inst.TYPE && !['ImplicitEnd', 'EndSegment', 'EndLock', 'EndOptions',
+                                  'EndAdmissionTime', 'Join', 'ForkJoin'].includes(inst.TYPE)) {
         buffer.push(inst);
       }
     }
@@ -340,10 +381,12 @@ export class WorkflowSegmentComponent implements OnChanges {
       const displayTree = this.buildDisplayTree(allInstructions, 0, []);
       this.populateOrderStates(displayTree);
       const { summary, worstSeverity, orderCount } = this.summaryFromDisplayTree(displayTree);
+      const jcAll = this.countJobs(allInstructions);
       this.segments = [{
         id: 'seg_all',
         name,
-        jobCount: this.countJobs(allInstructions),
+        jobCount: jcAll,
+        jobLabel: jcAll + (jcAll === 1 ? ' Job' : ' Jobs'),
         orderCount,
         ordersSummary: summary,
         worstSeverity,
@@ -356,6 +399,8 @@ export class WorkflowSegmentComponent implements OnChanges {
       this.segments = result;
     }
     this.recomputeAllHeights();
+    this.userMovedWindow = false;
+    this.initWindow();
     this.cdr.markForCheck();
   }
 
@@ -371,6 +416,7 @@ export class WorkflowSegmentComponent implements OnChanges {
       seg.worstSeverity = worstSeverity;
       seg.orderCount = orderCount;
     }
+    this.updateAnchorOnRefresh();
     this.cdr.markForCheck();
   }
 
@@ -390,37 +436,47 @@ export class WorkflowSegmentComponent implements OnChanges {
 
   // ── Shared utilities ──────────────────────────────────────────────────────
 
-  private populateOrderStates(displayTree: DisplayItem[]): void {
-    const orderMap = new Map<string, Map<string, { severity: number; count: number }>>();
-    const psMap = new Map<string, Map<string, { severity: number; count: number }>>();
-
+  // Build lookup maps once per order change — shared across all populateOrderStates calls this cycle
+  private buildOrderMaps(): void {
+    this._orderMap = new Map();
+    this._psMap = new Map();
+    this._rawOrdersMap = new Map();
+    this._rawOrdersPsMap = new Map();
     for (const order of this.orders || []) {
       const state = order.state?._text || 'UNKNOWN';
       const severity = order.state?.severity ?? 0;
       if (order.position) {
         const posKey = JSON.stringify(order.position);
-        if (!orderMap.has(posKey)) orderMap.set(posKey, new Map());
-        const sm = orderMap.get(posKey)!;
+        if (!this._orderMap.has(posKey)) this._orderMap.set(posKey, new Map());
+        const sm = this._orderMap.get(posKey)!;
         if (!sm.has(state)) sm.set(state, { severity, count: 0 });
         sm.get(state)!.count++;
+        if (!this._rawOrdersMap.has(posKey)) this._rawOrdersMap.set(posKey, []);
+        this._rawOrdersMap.get(posKey)!.push(order);
       }
       if (order.positionString) {
-        if (!psMap.has(order.positionString)) psMap.set(order.positionString, new Map());
-        const sm = psMap.get(order.positionString)!;
+        if (!this._psMap.has(order.positionString)) this._psMap.set(order.positionString, new Map());
+        const sm = this._psMap.get(order.positionString)!;
         if (!sm.has(state)) sm.set(state, { severity, count: 0 });
         sm.get(state)!.count++;
+        if (!this._rawOrdersPsMap.has(order.positionString)) this._rawOrdersPsMap.set(order.positionString, []);
+        this._rawOrdersPsMap.get(order.positionString)!.push(order);
       }
     }
+  }
 
+  private populateOrderStates(displayTree: DisplayItem[]): void {
     for (const item of displayTree) {
       if (item.kind === 'segment') continue;
-      // Use pre-serialized positionKey — avoids JSON.stringify on every render tick
-      const byPos = orderMap.get(item.positionKey);
-      const byStr = item.positionString ? psMap.get(item.positionString) : undefined;
+      const byPos = this._orderMap.get(item.positionKey);
+      const byStr = item.positionString ? this._psMap.get(item.positionString) : undefined;
       const stateMap = byPos || byStr;
       item.orderStates = stateMap
         ? Array.from(stateMap.entries()).map(([state, v]) => ({ state, severity: v.severity, count: v.count }))
         : [];
+      item.ordersAtPos = this._rawOrdersMap.get(item.positionKey)
+        || (item.positionString ? this._rawOrdersPsMap.get(item.positionString) : undefined)
+        || [];
     }
   }
 
@@ -467,12 +523,213 @@ export class WorkflowSegmentComponent implements OnChanges {
     }
   }
 
+  // ── Windowed slice ────────────────────────────────────────────────────────
+
+  private findAnchorIndex(): number {
+    for (let i = 0; i < this.segments.length; i++) {
+      if (this.segments[i].orderCount > 0) return i;
+    }
+    return -1;
+  }
+
+  private centerWindowOn(index: number): void {
+    this.windowStart = Math.max(0, index - 2);
+    this.windowEnd = Math.min(this.segments.length, this.windowStart + this.WINDOW_SIZE);
+    if (this.windowEnd - this.windowStart < this.WINDOW_SIZE) {
+      this.windowStart = Math.max(0, this.windowEnd - this.WINDOW_SIZE);
+    }
+  }
+
+  private initWindow(): void {
+    const anchor = this.findAnchorIndex();
+    this.anchorIndex = anchor;
+    if (anchor >= 0) {
+      this.centerWindowOn(anchor);
+      const anchorSeg = this.segments[anchor];
+      if (!this.expandedByName.has(anchorSeg.name)) {
+        this.expandedByName.set(anchorSeg.name, true);
+        anchorSeg.isExpanded = true;
+        anchorSeg.contentHeight = this.computeContentHeight(anchorSeg.displayTree);
+      }
+    } else {
+      this.windowStart = 0;
+      this.windowEnd = Math.min(this.WINDOW_SIZE, this.segments.length);
+    }
+    this.updateVisibleSegments();
+  }
+
+  private updateAnchorOnRefresh(): void {
+    const newAnchor = this.findAnchorIndex();
+    if (newAnchor === this.anchorIndex) return;
+    this.anchorIndex = newAnchor;
+    if (newAnchor < 0) return;
+    if (newAnchor >= this.windowStart && newAnchor < this.windowEnd) {
+      // Anchor is already in view — expand but don't re-center
+      const seg = this.segments[newAnchor];
+      if (!seg.isExpanded) {
+        this.expandedByName.set(seg.name, true);
+        seg.isExpanded = true;
+        this.recomputeAllHeights();
+      }
+      this.updateVisibleSegments();
+      return;
+    }
+    if (this.userMovedWindow) {
+      // User has manually navigated — do not hijack their position
+      return;
+    }
+    // Anchor outside window — re-center
+    this.centerWindowOn(newAnchor);
+    const seg = this.segments[newAnchor];
+    if (!seg.isExpanded) {
+      this.expandedByName.set(seg.name, true);
+      seg.isExpanded = true;
+      this.recomputeAllHeights();
+    }
+    this.updateVisibleSegments();
+  }
+
+  private updateVisibleSegments(): void {
+    this.visibleSegments = this.segments.slice(this.windowStart, this.windowEnd);
+    this.hasPrev = this.windowStart > 0;
+    this.hasNext = this.windowEnd < this.segments.length;
+  }
+
+  // ── Instruction actions (skip / stop / showConfig) ───────────────────────
+
+  private skipOrStop(item: DisplayItem, operation: string, auditLog?: any): void {
+    const obj: any = { controllerId: this.schedulerId };
+    if (auditLog) obj.auditLog = auditLog;
+    if (operation === 'Skip' || operation === 'Unskip') {
+      obj.labels = [item.instructionRef.label];
+      obj.workflowPath = this.workFlowJson.path;
+    } else {
+      obj.positions = [item.instructionRef.position || item.positionPath];
+      obj.workflowId = { path: this.workFlowJson.path, versionId: this.workFlowJson.versionId };
+    }
+    this.coreService.post('workflow/' + operation.toLowerCase(), obj).subscribe();
+  }
+
+  private skipOperation(item: DisplayItem, operation: string): void {
+    if (this.preferences?.auditLog) {
+      const modalRef = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzData: { operationType: operation, title: '' },
+        nzFooter: null,
+        nzAutofocus: null,
+      });
+      modalRef.afterClose.subscribe(result => {
+        if (result) this.skipOrStop(item, operation, result);
+      });
+    } else {
+      this.skipOrStop(item, operation);
+    }
+  }
+
+  skip(item: DisplayItem): void { this.skipOperation(item, 'Skip'); }
+  unskip(item: DisplayItem): void { this.skipOperation(item, 'Unskip'); }
+  stop(item: DisplayItem): void { this.skipOperation(item, 'Stop'); }
+  unstop(item: DisplayItem): void { this.skipOperation(item, 'Unstop'); }
+
+  showConfiguration(item: DisplayItem): void {
+    const inst = item.instructionRef;
+    if (!inst) return;
+    if (inst.TYPE === 'Job') {
+      const job = this.jobs?.[inst.jobName];
+      if (!job?.executable) return;
+      const exe = job.executable;
+      const isScript = exe.TYPE === 'ShellScriptExecutable' || exe.internalType === 'JavaScript_Graal' || exe.internalType === 'Python_Graal';
+      const nzData = {
+        data: isScript ? exe.script : exe.className,
+        isScript,
+        agentName: inst.agentName || job.agentName,
+        subagentClusterId: inst.subagentClusterId || job.subagentClusterId,
+        workflowPath: this.workFlowJson?.path,
+        admissionTime: job.admissionTimeScheme,
+        timezone: this.workFlowJson?.timeZone,
+        jobName: inst.jobName,
+        mode: exe.TYPE === 'ShellScriptExecutable' ? 'shell' : exe.TYPE === 'Python' ? 'python' : 'javascript',
+        readonly: true,
+        schedulerId: this.schedulerId,
+      };
+      this.modal.create({ nzTitle: undefined, nzContent: ScriptModalComponent, nzClassName: 'lg script-editor2', nzData, nzFooter: null, nzAutofocus: null, nzClosable: false, nzMaskClosable: false });
+    } else if (inst.TYPE === 'Sleep') {
+      this.modal.create({ nzTitle: undefined, nzContent: ScriptModalComponent, nzClassName: 'lg script-editor2', nzData: { duration: inst.duration, readonly: true, timezone: this.workFlowJson?.timeZone, workflowPath: this.workFlowJson?.path }, nzFooter: null, nzAutofocus: null, nzClosable: false, nzMaskClosable: false });
+    }
+  }
+
+  showDocumentation(item: DisplayItem): void {
+    if (item.instructionRef?.documentationName) {
+      this.coreService.showDocumentation(item.instructionRef.documentationName, this.preferences);
+    }
+  }
+
+  viewHistory(item: DisplayItem): void {
+    this.onClick.emit({ jobName: item.instructionRef?.jobName, path: this.workFlowJson?.path });
+  }
+
+  showLog(order: any): void {
+    if (order.state && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
+      this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, this.workFlowJson?.path, this.viewContainerRef);
+    }
+  }
+
+  showAllOrders(orders: any[]): void {
+    this.onClick.emit({ action: 'showOrders', orders });
+  }
+
+  changedHandler(_data: any): void {
+    this.cdr.markForCheck();
+  }
+
   // ── Public ────────────────────────────────────────────────────────────────
+
+  get hasActiveOutsideWindow(): boolean {
+    return this.anchorIndex >= 0 &&
+      (this.anchorIndex < this.windowStart || this.anchorIndex >= this.windowEnd);
+  }
+
+  get activeIsAbove(): boolean {
+    return this.anchorIndex >= 0 && this.anchorIndex < this.windowStart;
+  }
+
+  jumpToActive(): void {
+    if (this.anchorIndex < 0) return;
+    this.userMovedWindow = false;
+    this.centerWindowOn(this.anchorIndex);
+    const seg = this.segments[this.anchorIndex];
+    if (!seg.isExpanded) {
+      this.expandedByName.set(seg.name, true);
+      seg.isExpanded = true;
+      this.recomputeAllHeights();
+    }
+    this.updateVisibleSegments();
+    this.cdr.markForCheck();
+  }
 
   toggleSegment(seg: SegmentItem): void {
     seg.isExpanded = !seg.isExpanded;
     this.expandedByName.set(seg.name, seg.isExpanded);
     this.recomputeAllHeights();
+    this.cdr.markForCheck();
+  }
+
+  loadNext(): void {
+    if (!this.hasNext) return;
+    this.userMovedWindow = true;
+    this.windowStart = this.windowEnd;
+    this.windowEnd = Math.min(this.windowEnd + this.WINDOW_SIZE, this.segments.length);
+    this.updateVisibleSegments();
+    this.cdr.markForCheck();
+  }
+
+  loadPrev(): void {
+    if (!this.hasPrev) return;
+    this.userMovedWindow = true;
+    this.windowEnd = this.windowStart;
+    this.windowStart = Math.max(0, this.windowStart - this.WINDOW_SIZE);
+    this.updateVisibleSegments();
     this.cdr.markForCheck();
   }
 }

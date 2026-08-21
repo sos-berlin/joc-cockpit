@@ -5255,6 +5255,11 @@
       "option": "Arrastre y suelte la ^Instrucción Options|options-instruction^ para regir el manejo de errores de la ^Instrucción Lock|lock-instruction^ y la ^Instrucción ConsumeNotices|consumenotices-instruction^.",
       "paste": "Arrastre y suelte **Pegar** para insertar una o más instrucciones que se hayan copiado previamente mediante el menú de acciones de 3 puntos de la instrucción.",
       "segment": "Segment"
+    },
+    "segmentView": {
+      "tooltip.prev": "Previous segments",
+      "tooltip.next": "Next segments",
+      "tooltip.running": "Jump to running order"
     }
   },
   "xml": {
