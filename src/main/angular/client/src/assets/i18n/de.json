@@ -5257,9 +5257,9 @@
       "segment": "Ziehen Sie ein **Segment** per Drag & Drop in die Ansicht *KONFIGURATION* oder *ARBEITSABLÄUFE*, um damit die enthaltenen Teile des ^Arbeitsablaufs|workflows^ ein- oder auszublenden.\n\n**Segmente** dienen dazu, den Fokus auf relevante Teile größerer Arbeitsabläufe zu richten."
     },
     "segmentView": {
-      "tooltip.prev": "Previous segments",
-      "tooltip.next": "Next segments",
-      "tooltip.running": "Jump to running order"
+      "tooltip.prev": "Voriges Segment",
+      "tooltip.next": "Nächstes Segment",
+      "tooltip.running": "Zum Segment mit ^laufenden|running^ ^Aufträgen|order^"
     }
   },
   "xml": {

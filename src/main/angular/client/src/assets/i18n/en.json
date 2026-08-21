@@ -5257,9 +5257,9 @@
       "segment": "Drag & drop a **Segment** that is used to expand and collapse included parts of a ^Workflow^ in the *CONFIGURATION* view and *WORKFLOWS* view.\n\n**Segments** are used to focus on relevant parts of larger Workflows."
     },
     "segmentView": {
-      "tooltip.prev": "Previous segments",
-      "tooltip.next": "Next segments",
-      "tooltip.running": "Jump to running order"
+      "tooltip.prev": "Previous segment",
+      "tooltip.next": "Next segment",
+      "tooltip.running": "Jump to segment with ^running^ ^Order^s"
     }
   },
   "xml": {
