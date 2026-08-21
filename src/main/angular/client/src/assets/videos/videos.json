@@ -101,5 +101,11 @@
     "id": "poMrltCcORs",
     "title": "Fail instruction",
     "description": "How to configure the Fail Instruction"
+  },
+  "lock-instruction": {
+    "id": "bdcJ9-6v6vw",
+    "title": "Lock instruction",
+    "description": "How to configure the Lock Instruction"
   }
+ 
 }

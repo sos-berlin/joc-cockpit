@@ -236,12 +236,14 @@
                   (click)="collapseAll()">
             <i class="fa fa-compress text"></i>
           </button>
-          <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
-            <span>{{ 'reporting.button.groupByName' | translate }}</span>
-          </button>
-          <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
-            <span>{{ 'reporting.button.groupByTemplate' | translate }}</span>
-          </button>
+          <div class="btn-group">
+            <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
+              <span>{{ 'reporting.button.groupByName' | translate }}</span>
+            </button>
+            <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
+              <span>{{ 'reporting.button.groupByTemplate' | translate }}</span>
+            </button>
+          </div>
         </div>
       }
     </div>

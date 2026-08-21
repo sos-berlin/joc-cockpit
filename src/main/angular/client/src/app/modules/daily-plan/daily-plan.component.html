@@ -1017,43 +1017,47 @@
                                   [appRichTooltip]="'common.button.collapseDetails' | translate">
                             <i class="fa fa-compress text"></i>
                           </button>
-                          <button (click)="groupByWorkflow('')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
-                                  class="btn btn-grey btn-sm hidden-btn-text">
-                            <i class="icon icon-orders-icon"></i>
-                            <span>{{ 'dailyPlan.button.groupByOrder' | translate }}</span>
-                          </button>
-                          <button (click)="groupByWorkflow('ORDER')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
-                                  class="btn btn-grey btn-sm hidden-btn-text">
-                            <i class="icon icon-calendar-icon"></i>
-                            <span>{{ 'dailyPlan.button.groupByScheduleTemplate' | translate }}</span>
-                          </button>
-                          <button (click)="groupByWorkflow('WORKFLOW')"
-                                  [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
-                                  class="btn btn-grey btn-sm hidden-btn-text">
-                            <i class="icon icon-workflows-icon"></i>
-                            <span>{{ 'dailyPlan.button.groupByWorkflow' | translate }}</span>
-                          </button>
-                          @if (showMoreAdvanceOptions) {
-                            <button (click)="filterByOrders('')"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
-                                    class="btn btn-grey btn-sm hidden-btn-text m-l-12">
+                          <div class="btn-group">
+                            <button (click)="groupByWorkflow('')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy===''}"
+                                    class="btn btn-grey btn-sm hidden-btn-text">
                               <i class="icon icon-orders-icon"></i>
-                              <span>{{ 'dailyPlan.label.all' | translate }}</span>
+                              <span>{{ 'dailyPlan.button.groupByOrder' | translate }}</span>
                             </button>
-                            <button (click)="filterByOrders('ONETIMEORDERS')"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
+                            <button (click)="groupByWorkflow('ORDER')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='ORDER'}"
                                     class="btn btn-grey btn-sm hidden-btn-text">
                               <i class="icon icon-calendar-icon"></i>
-                              <span>{{ 'dailyPlan.label.oneTimeOrders' | translate }}</span>
+                              <span>{{ 'dailyPlan.button.groupByScheduleTemplate' | translate }}</span>
                             </button>
-                            <button (click)="filterByOrders('CYCLICORDER')"
-                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
+                            <button (click)="groupByWorkflow('WORKFLOW')"
+                                    [ngClass]="{'btn-primary': dailyPlanFilters.filter.groupBy==='WORKFLOW'}"
                                     class="btn btn-grey btn-sm hidden-btn-text">
                               <i class="icon icon-workflows-icon"></i>
-                              <span>{{ 'dailyPlan.label.cyclicOrders' | translate }}</span>
+                              <span>{{ 'dailyPlan.button.groupByWorkflow' | translate }}</span>
                             </button>
+                          </div>
+                          @if (showMoreAdvanceOptions) {
+                            <div class="btn-group m-l-12">
+                              <button (click)="filterByOrders('')"
+                                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy===''}"
+                                      class="btn btn-grey btn-sm hidden-btn-text">
+                                <i class="icon icon-orders-icon"></i>
+                                <span>{{ 'dailyPlan.label.all' | translate }}</span>
+                              </button>
+                              <button (click)="filterByOrders('ONETIMEORDERS')"
+                                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='ONETIMEORDERS'}"
+                                      class="btn btn-grey btn-sm hidden-btn-text">
+                                <i class="icon icon-calendar-icon"></i>
+                                <span>{{ 'dailyPlan.label.oneTimeOrders' | translate }}</span>
+                              </button>
+                              <button (click)="filterByOrders('CYCLICORDER')"
+                                      [ngClass]="{'btn-primary': dailyPlanFilters.filter.filterBy==='CYCLICORDER'}"
+                                      class="btn btn-grey btn-sm hidden-btn-text">
+                                <i class="icon icon-workflows-icon"></i>
+                                <span>{{ 'dailyPlan.label.cyclicOrders' | translate }}</span>
+                              </button>
+                            </div>
                           }
                           <button (click)="showSearchPanel ? cancel() : advancedSearch()"
                                   class="btn btn-sm inline pull-right m-l btn-grey">

@@ -38,7 +38,7 @@
           @if (auditLog.type === 'AUDITLOG') {
             <div class="btn-group dropdown">
               <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'"
-                      class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
+                      class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" type="button">
                 @if (adtLog.filter.date) {
                   <span> {{ selectedDateLabel | translate }} </span>

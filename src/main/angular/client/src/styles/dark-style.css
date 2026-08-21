@@ -371,20 +371,17 @@ input[type=search] {
 
 .btn-default,
 .btn-grey {
-  color: var(--text-color);
-  background-color: var(--box-color);
-  border-color: var(--bg-box)
+  background: transparent;
+  border: 1px solid;
+  border-radius: 10px;
+  color: var(--text-muted);
 }
 
 .btn-grey.active.focus,
 .btn-grey:hover {
-  color: var(--white);
-  background-color: var(--bg-footer);
-  border-color: var(--bg-footer)
-}
-
-.btn:hover {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .4) !important
+  color: var(--primary);
+  border: 1px solid;
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
 }
 
 .text-dark,
@@ -555,15 +552,17 @@ div.order-panel div {
 }
 
 .card {
-  border-radius: 0;
+  border-radius: 10px;
   -webkit-box-shadow: 0 2px 4px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02) !important;
   box-shadow: 0 2px 4px var(--box-shadow), 0 -1px 0 rgba(255, 255, 255, .02) !important;
-  border: none
+  border: 1px solid var(--border-color);
+  transition: box-shadow 180ms ease, border-color 180ms ease
 }
 
 .card:hover {
-  -webkit-box-shadow: 0 2px 6px rgba(255, 255, 255, .2) !important;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, .2) !important
+  -webkit-box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 25%, transparent) !important;
+  border-color: var(--primary)
 }
 
 .box-shadow-z0 {

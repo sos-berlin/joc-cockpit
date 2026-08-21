@@ -312,6 +312,34 @@ export class SafeHtmlPipe implements PipeTransform {
 
 @Pipe({
   standalone: false,
+  name: 'mailTemplatePreview'})
+export class MailTemplatePreviewPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) {
+  }
+
+  transform(value: string): any {
+    if (!value) {
+      return this.sanitized.bypassSecurityTrustHtml(value);
+    }
+    const resetStyle = '<style>body { margin: 0; }</style>';
+    const wrapOpen = '<div style="display: inline-block; overflow: hidden; border-radius: 10px;">';
+    const wrapClose = '</div>';
+
+    let wrapped = value;
+    if (/<body[^>]*>/i.test(wrapped) && /<\/body>/i.test(wrapped)) {
+      wrapped = wrapped.replace(/(<body[^>]*>)/i, `$1${wrapOpen}`).replace(/<\/body>/i, `${wrapClose}</body>`);
+    } else {
+      wrapped = `${wrapOpen}${wrapped}${wrapClose}`;
+    }
+    wrapped = /<\/head>/i.test(wrapped)
+      ? wrapped.replace(/<\/head>/i, `${resetStyle}</head>`)
+      : `${resetStyle}${wrapped}`;
+    return this.sanitized.bypassSecurityTrustHtml(wrapped);
+  }
+}
+
+@Pipe({
+  standalone: false,
   name: 'filter'
 })
 export class SearchPipe implements PipeTransform {

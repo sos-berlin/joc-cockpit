@@ -11,6 +11,7 @@ import {PerfectScrollbarModule} from "../perfect-scrollbar/perfect-scrollbar.mod
 import {
   DecodeSpacePipe,
   SafeHtmlPipe,
+  MailTemplatePreviewPipe,
   SearchPipe,
   OrderPipe,
   HighlightSearch,
@@ -22,7 +23,7 @@ import {
 import {Shared3Module} from './shared3.module';
 
 const MODULES = [Shared3Module, PerfectScrollbarModule, NzEmptyModule, NzCheckboxModule, NzTreeModule, NzIconModule];
-const PIPES = [StringDatePipe,PreferredDatePipe, TimeInStringFormatPipe, StringTimePipe,NoRoundNumberPipe, DecodeSpacePipe, SafeHtmlPipe, SearchPipe, ByteToSizePipe, OrderPipe, HighlightSearch, StringToLinkPipe];
+const PIPES = [StringDatePipe,PreferredDatePipe, TimeInStringFormatPipe, StringTimePipe,NoRoundNumberPipe, DecodeSpacePipe, SafeHtmlPipe, MailTemplatePreviewPipe, SearchPipe, ByteToSizePipe, OrderPipe, HighlightSearch, StringToLinkPipe];
 const EXPORTS = [...PIPES, EmptyDataComponent, BreadcrumbsComponent, OrderActionComponent];
 
 @NgModule({

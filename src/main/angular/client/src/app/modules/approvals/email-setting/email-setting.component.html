@@ -175,7 +175,7 @@
                   @if (previewRegistration) {
                     <div class="b-a"
                          style="min-height: 104px;max-height: 450px;overflow: auto">
-                      <iframe [srcdoc]="currentObj.body | safeHtml"
+                      <iframe [srcdoc]="currentObj.body | mailTemplatePreview"
                               class="mail-template"></iframe>
                     </div>
                   }
@@ -203,7 +203,7 @@
       <a (click)="fullScreen = false;" class="pos-abt text-18 r-18"><i
         class="fa fa-minus-square-o text-hover-primary"></i></a>
       @if (fullScreen) {
-        <iframe [srcdoc]="currentObj.body | safeHtml"
+        <iframe [srcdoc]="currentObj.body | mailTemplatePreview"
                 class="mail-template-full"></iframe>
       }
     </div>

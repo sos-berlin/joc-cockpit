@@ -1223,7 +1223,7 @@
                         @if (previewRegistration) {
                           <div class="b-a"
                                style="min-height: 104px;max-height: 450px;overflow: auto">
-                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | mailTemplatePreview"
                                     class="mail-template"></iframe>
                           </div>
                         }
@@ -1303,7 +1303,7 @@
                         ></textarea>
                         @if (preview) {
                           <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
-                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | mailTemplatePreview"
                                     class="mail-template"></iframe>
                           </div>
                         }
@@ -1396,7 +1396,7 @@
                         ></textarea>
                         @if (preview) {
                           <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
-                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | mailTemplatePreview"
                                     class="mail-template"></iframe>
                           </div>
                         }
@@ -1413,15 +1413,15 @@
             <a (click)="fullScreen = false;fullScreen2 = false;fullScreen3 = false;" class="pos-abt text-18 r-18"><i
               class="fa fa-minus-square-o text-hover-primary"></i></a>
             @if (fullScreen2) {
-              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | mailTemplatePreview"
                       class="mail-template-full"></iframe>
             }
             @if (fullScreen) {
-              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | mailTemplatePreview"
                       class="mail-template-full"></iframe>
             }
             @if (fullScreen3) {
-              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | mailTemplatePreview"
                       class="mail-template-full"></iframe>
             }
           </ng-container>
