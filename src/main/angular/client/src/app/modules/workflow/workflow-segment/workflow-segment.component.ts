@@ -37,6 +37,7 @@ interface DisplayItem {
   segmentItem?: SegmentItem;
   instructionRef?: any;      // pointer to original instruction — used by skip/stop/showConfig; zero memory cost
   ordersAtPos?: any[];       // full order objects at this position — used for per-row order dots + action menus
+  extraPositionKeys?: string[]; // for Join: additional positionKeys from other branches
 }
 
 @Component({
@@ -56,6 +57,7 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   @Output() onClick = new EventEmitter<any>();
 
   segments: SegmentItem[] = [];
+  sideBar: any = { isVisible: false, orders: [] };
   private segIdCounter = 0;
   // Maintained incrementally by toggleSegment; persists across structural rebuilds
   private expandedByName = new Map<string, boolean>();
@@ -65,17 +67,6 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   private _rawOrdersMap = new Map<string, any[]>();
   private _rawOrdersPsMap = new Map<string, any[]>();
   private _refreshTimer: any = null;
-
-  // ── Windowed slice ────────────────────────────────────────────────────────
-  private readonly WINDOW_SIZE = 5;
-  visibleSegments: SegmentItem[] = [];
-  windowStart = 0;
-  windowEnd = 0;
-  private anchorIndex = -1;
-  // Whether user has manually shifted the window (locks anchoring to not re-center)
-  private userMovedWindow = false;
-  hasPrev = false;
-  hasNext = false;
 
   constructor(public coreService: CoreService, private cdr: ChangeDetectorRef, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {}
 
@@ -247,6 +238,15 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
             items.push({ kind: 'branch-label', icon: 'fa-angle-right', label: b.name || branchId, depth: depth + 1, positionPath: branchPath, positionKey: JSON.stringify(branchPath), orderStates: [] });
             items.push(...this.buildDisplayTree(b.instructions || [], depth + 2, branchPath));
           });
+          if (inst.join?.positionStrings?.length) {
+            const joinPosKeys = (inst.join.positionStrings as any[]).map((p: any) => JSON.stringify(p));
+            items.push({
+              kind: 'container', icon: 'fa-compress', label: 'Join',
+              depth, positionPath: inst.join.positionStrings[0] || [], positionKey: joinPosKeys[0],
+              orderStates: [], instructionRef: inst,
+              extraPositionKeys: joinPosKeys.slice(1),
+            });
+          }
           break;
         }
 
@@ -399,8 +399,6 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
       this.segments = result;
     }
     this.recomputeAllHeights();
-    this.userMovedWindow = false;
-    this.initWindow();
     this.cdr.markForCheck();
   }
 
@@ -416,7 +414,6 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
       seg.worstSeverity = worstSeverity;
       seg.orderCount = orderCount;
     }
-    this.updateAnchorOnRefresh();
     this.cdr.markForCheck();
   }
 
@@ -470,13 +467,29 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
       if (item.kind === 'segment') continue;
       const byPos = this._orderMap.get(item.positionKey);
       const byStr = item.positionString ? this._psMap.get(item.positionString) : undefined;
-      const stateMap = byPos || byStr;
+      let stateMap: Map<string, { severity: number; count: number }> | undefined = byPos || byStr;
+      let rawOrders: any[] = this._rawOrdersMap.get(item.positionKey)
+        || (item.positionString ? this._rawOrdersPsMap.get(item.positionString) : undefined)
+        || [];
+      if (item.extraPositionKeys?.length) {
+        const merged: Map<string, { severity: number; count: number }> = new Map(stateMap || []);
+        for (const key of item.extraPositionKeys) {
+          const extra = this._orderMap.get(key);
+          if (extra) {
+            for (const [state, v] of extra) {
+              const existing = merged.get(state);
+              if (existing) { existing.count += v.count; } else { merged.set(state, { ...v }); }
+            }
+          }
+          const extraRaw = this._rawOrdersMap.get(key);
+          if (extraRaw) rawOrders = rawOrders.concat(extraRaw);
+        }
+        stateMap = merged.size > 0 ? merged : undefined;
+      }
       item.orderStates = stateMap
         ? Array.from(stateMap.entries()).map(([state, v]) => ({ state, severity: v.severity, count: v.count }))
         : [];
-      item.ordersAtPos = this._rawOrdersMap.get(item.positionKey)
-        || (item.positionString ? this._rawOrdersPsMap.get(item.positionString) : undefined)
-        || [];
+      item.ordersAtPos = rawOrders;
     }
   }
 
@@ -485,7 +498,17 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
     let worstSeverity = 0;
     let orderCount = 0;
     for (const item of displayTree) {
-      if (item.kind === 'segment') continue;
+      if (item.kind === 'segment') {
+        if (item.segmentItem) {
+          for (const os of item.segmentItem.ordersSummary) {
+            if (!map[os.state]) map[os.state] = { count: 0, severity: os.severity };
+            map[os.state].count += os.count;
+            orderCount += os.count;
+            if (os.severity > worstSeverity) worstSeverity = os.severity;
+          }
+        }
+        continue;
+      }
       for (const os of item.orderStates) {
         if (!map[os.state]) map[os.state] = { count: 0, severity: os.severity };
         map[os.state].count += os.count;
@@ -521,78 +544,6 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
     for (const seg of this.segments) {
       seg.contentHeight = this.computeContentHeight(seg.displayTree);
     }
-  }
-
-  // ── Windowed slice ────────────────────────────────────────────────────────
-
-  private findAnchorIndex(): number {
-    for (let i = 0; i < this.segments.length; i++) {
-      if (this.segments[i].orderCount > 0) return i;
-    }
-    return -1;
-  }
-
-  private centerWindowOn(index: number): void {
-    this.windowStart = Math.max(0, index - 2);
-    this.windowEnd = Math.min(this.segments.length, this.windowStart + this.WINDOW_SIZE);
-    if (this.windowEnd - this.windowStart < this.WINDOW_SIZE) {
-      this.windowStart = Math.max(0, this.windowEnd - this.WINDOW_SIZE);
-    }
-  }
-
-  private initWindow(): void {
-    const anchor = this.findAnchorIndex();
-    this.anchorIndex = anchor;
-    if (anchor >= 0) {
-      this.centerWindowOn(anchor);
-      const anchorSeg = this.segments[anchor];
-      if (!this.expandedByName.has(anchorSeg.name)) {
-        this.expandedByName.set(anchorSeg.name, true);
-        anchorSeg.isExpanded = true;
-        anchorSeg.contentHeight = this.computeContentHeight(anchorSeg.displayTree);
-      }
-    } else {
-      this.windowStart = 0;
-      this.windowEnd = Math.min(this.WINDOW_SIZE, this.segments.length);
-    }
-    this.updateVisibleSegments();
-  }
-
-  private updateAnchorOnRefresh(): void {
-    const newAnchor = this.findAnchorIndex();
-    if (newAnchor === this.anchorIndex) return;
-    this.anchorIndex = newAnchor;
-    if (newAnchor < 0) return;
-    if (newAnchor >= this.windowStart && newAnchor < this.windowEnd) {
-      // Anchor is already in view — expand but don't re-center
-      const seg = this.segments[newAnchor];
-      if (!seg.isExpanded) {
-        this.expandedByName.set(seg.name, true);
-        seg.isExpanded = true;
-        this.recomputeAllHeights();
-      }
-      this.updateVisibleSegments();
-      return;
-    }
-    if (this.userMovedWindow) {
-      // User has manually navigated — do not hijack their position
-      return;
-    }
-    // Anchor outside window — re-center
-    this.centerWindowOn(newAnchor);
-    const seg = this.segments[newAnchor];
-    if (!seg.isExpanded) {
-      this.expandedByName.set(seg.name, true);
-      seg.isExpanded = true;
-      this.recomputeAllHeights();
-    }
-    this.updateVisibleSegments();
-  }
-
-  private updateVisibleSegments(): void {
-    this.visibleSegments = this.segments.slice(this.windowStart, this.windowEnd);
-    this.hasPrev = this.windowStart > 0;
-    this.hasNext = this.windowEnd < this.segments.length;
   }
 
   // ── Instruction actions (skip / stop / showConfig) ───────────────────────
@@ -676,35 +627,11 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   }
 
   showAllOrders(orders: any[]): void {
-    this.onClick.emit({ action: 'showOrders', orders });
-  }
-
-  changedHandler(_data: any): void {
+    this.sideBar = { isVisible: true, orders };
     this.cdr.markForCheck();
   }
 
-  // ── Public ────────────────────────────────────────────────────────────────
-
-  get hasActiveOutsideWindow(): boolean {
-    return this.anchorIndex >= 0 &&
-      (this.anchorIndex < this.windowStart || this.anchorIndex >= this.windowEnd);
-  }
-
-  get activeIsAbove(): boolean {
-    return this.anchorIndex >= 0 && this.anchorIndex < this.windowStart;
-  }
-
-  jumpToActive(): void {
-    if (this.anchorIndex < 0) return;
-    this.userMovedWindow = false;
-    this.centerWindowOn(this.anchorIndex);
-    const seg = this.segments[this.anchorIndex];
-    if (!seg.isExpanded) {
-      this.expandedByName.set(seg.name, true);
-      seg.isExpanded = true;
-      this.recomputeAllHeights();
-    }
-    this.updateVisibleSegments();
+  changedHandler(_data: any): void {
     this.cdr.markForCheck();
   }
 
@@ -715,21 +642,4 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  loadNext(): void {
-    if (!this.hasNext) return;
-    this.userMovedWindow = true;
-    this.windowStart = this.windowEnd;
-    this.windowEnd = Math.min(this.windowEnd + this.WINDOW_SIZE, this.segments.length);
-    this.updateVisibleSegments();
-    this.cdr.markForCheck();
-  }
-
-  loadPrev(): void {
-    if (!this.hasPrev) return;
-    this.userMovedWindow = true;
-    this.windowEnd = this.windowStart;
-    this.windowStart = Math.max(0, this.windowStart - this.WINDOW_SIZE);
-    this.updateVisibleSegments();
-    this.cdr.markForCheck();
-  }
 }

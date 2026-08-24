@@ -5255,11 +5255,6 @@
       "option": "Перетащите ^инструкцию Options|options-instruction^, чтобы задать обработку ошибок для ^инструкций Lock|lock-instruction^ и ^ConsumeNotices|consumenotices-instruction^.",
       "paste": "Перетащите **Paste**, чтобы вставить одну или несколько инструкций, ранее скопированных через меню действий (три точки) соответствующей инструкции.",
       "segment": "Segment"
-    },
-    "segmentView": {
-      "tooltip.prev": "Previous segments",
-      "tooltip.next": "Next segments",
-      "tooltip.running": "Jump to running order"
     }
   },
   "xml": {

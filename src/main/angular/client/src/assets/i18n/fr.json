@@ -5255,11 +5255,6 @@
       "option": "Glisser-déposer l'^Instruction Options|options-instruction^ pour définir la gestion des erreurs pour l'^Instruction Lock|lock-instruction^ et l'^Instruction ConsumeNotices|consumenotices-instruction^.",
       "paste": "Glisser-déposer **Paste** pour insérer une ou plusieurs instructions préalablement copiées à l'aide du menu contextuel (représenté par trois points) de l'instruction.",
       "segment": "Glisser-déposez un **Segment** permettant de développer ou de réduire certaines parties d'un ^Workflow^ dans les vues *CONFIGURATION* et *WORKFLOWS*.\n\nLes **Segments** permettent de se concentrer sur les parties pertinentes de Workflows plus larges."
-    },
-    "segmentView": {
-      "tooltip.prev": "Segments précédents",
-      "tooltip.next": "Segments suivants",
-      "tooltip.running": "Vers le segment avec des ^Ordres|order^ ^en exécution|running^"
     }
   },
   "xml": {

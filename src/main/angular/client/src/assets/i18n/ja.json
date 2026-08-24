@@ -5255,11 +5255,6 @@
       "option": "Option",
       "paste": "Paste",
       "segment": "Segment"
-    },
-    "segmentView": {
-      "tooltip.prev": "Previous segments",
-      "tooltip.next": "Next segments",
-      "tooltip.running": "Jump to running order"
     }
   },
   "xml": {
