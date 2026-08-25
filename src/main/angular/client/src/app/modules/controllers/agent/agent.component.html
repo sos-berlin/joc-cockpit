@@ -64,9 +64,9 @@
           </div>
         </div>
         @if (pageView=='grid') {
-          <div class="row m-t-xs">
+          <div class="card-grid m-t-xs">
             @for (cluster of data; track cluster.subagentClusterId) {
-              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="card-grid-item">
                 <div [ngClass]="cluster.syncState ? coreService.getColor(cluster.syncState.severity,'border') :''" class="box card">
                   <div class="box-body">
                     @if (permission.joc && permission.joc.administration.controllers.manage) {
@@ -76,11 +76,16 @@
                       </label>
                     }
                     <div [ngClass]="{'m-l-md': permission.joc && permission.joc.administration.controllers.manage}"
-                         class="text-left block-ellipsis">
-                       <span (click)="selectedClusterFn(cluster)" class="text-left cursor">
+                         class="card-icon-row">
+                       <span (click)="selectedClusterFn(cluster)" class="cursor">
                          <i class="fa fa-server text-sm p-r-xs"></i>
-                         <span [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"></span>
                        </span>
+                    </div>
+                    <div [ngClass]="{'m-l-md': permission.joc && permission.joc.administration.controllers.manage}"
+                         class="card-name-row">
+                       <span (click)="selectedClusterFn(cluster)"
+                             [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"
+                             class="card-name cursor"></span>
                     </div>
                     @if (permission.joc && permission.joc.administration.controllers.manage) {
                       <div class="btn-group dropdown pull-right abt-dropdown">

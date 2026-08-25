@@ -697,25 +697,27 @@
                 }
                 <div>
                   @if (pageView=='grid' && data.length>0) {
-                    <div [hidden]="!loading" class="row">
-                      <div class="w-full">
-                        @for (order of data; track order) {
-                          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                            <div class="box card">
-                              <div class="box-body">
-                                <div>
-                                  <label class="pos-abt">
-                                    <label [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
-                                           [nzDisabled]="order.positionIsImplicitEnd"
-                                           nz-checkbox
-                                           (nzCheckedChange)="onItemChecked(order, $event)" ></label>
-                                  </label>
-                                  <div class="text-left block-ellipsis m-l-md">
-                                    <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
-                                    <span [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"
-                                          [appRichTooltip]="order.title"></span>
-                                  </div>
-                                  <div class="btn-group dropdown pull-right abt-dropdown ">
+                    <div [hidden]="!loading" class="card-grid">
+                      @for (order of data; track order) {
+                        <div class="card-grid-item">
+                          <div class="box card">
+                            <div class="box-body">
+                              <div>
+                                <label class="pos-abt">
+                                  <label [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
+                                         [nzDisabled]="order.positionIsImplicitEnd"
+                                         nz-checkbox
+                                         (nzCheckedChange)="onItemChecked(order, $event)" ></label>
+                                </label>
+                                <div class="card-icon-row m-l-md">
+                                  <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
+                                </div>
+                                <div class="card-name-row m-l-md">
+                                  <span [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"
+                                        [appRichTooltip]="order.title"
+                                        class="card-name"></span>
+                                </div>
+                                <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
                                                       [order]="order"
                                                       [viewContainerRef]="viewContainerRef"
@@ -912,7 +914,6 @@
                           </div>
                         }
                       </div>
-                    </div>
                   }
                   @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage)) {
                     <div class="text-center font14 box p-a-10 m-b-12">

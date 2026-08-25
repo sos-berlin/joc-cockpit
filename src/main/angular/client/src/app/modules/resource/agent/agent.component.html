@@ -114,32 +114,34 @@
       <div class="col-sm-12">
         <div>
           @if (pageView=='grid' && data.length>0) {
-            <div [hidden]="loading" class="row ">
+            <div [hidden]="loading" class="card-grid">
               @if (selectedAgentId) {
-                <div class="col-md-12 m-b">
+                <div class="card-grid-full m-b">
                   <a (click)="backToList()"><i class="fa fa-arrow-circle-left config-back-btn"
                                                [appRichTooltip]="'inventory.button.backToList' | translate"></i></a>
                   {{selectedAgentId}}
                 </div>
               }
               @for (cluster of data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse; track cluster) {
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                <div class="card-grid-item">
                   <div [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'border') : cluster.healthState ? coreService.getColor(cluster.healthState.severity,'border') : ''"
                        class="box card">
                     <div class="box-body">
                       <div>
                         <div (click)="showSubagentList(cluster)" [ngClass]="{'cursor' : cluster.subagents}"
-                             class="text-left block-ellipsis">
+                             class="card-icon-row">
                           <span [ngClass]="cluster.state ? coreService.getColor(cluster.state.severity,'text'): cluster.healthState ? coreService.getColor(cluster.healthState.severity,'text') : ''"
-                                class="fa fa-stop pos-abt m-t-xs text-xs"></span>&nbsp;
+                                class="fa fa-stop text-xs"></span>&nbsp;
                           @if (!cluster.url) {
-                            <i class="m-l-12" nz-icon
+                            <i nz-icon
                                [appRichTooltip]="'agent.label.cluster' | translate" nzTheme="outline" nzType="cluster" style="position: relative;top:1px"></i>&nbsp;
                           }
-                          <span (click)="navToController(cluster, null);$event.stopPropagation()"
-                                [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
+                        </div>
+                        <div (click)="navToController(cluster, null)" [ngClass]="{'cursor' : cluster.subagents}"
+                             class="card-name-row">
+                          <span [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
                                 [appRichTooltip]="cluster.path"
-                                class="text text-ellipsis1 cursor m-l-sm"></span>
+                                class="card-name cursor"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown

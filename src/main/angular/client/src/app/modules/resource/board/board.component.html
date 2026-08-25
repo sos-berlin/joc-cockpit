@@ -117,50 +117,51 @@
         <div id="rightPanel">
           <div [ngClass]="{'show': isLoading}" class="hide">
             @if (pageView=='grid' && data.length > 0) {
-              <div [hidden]="loading" class="row ">
+              <div [hidden]="loading" class="card-grid">
                 @for (item of data  | groupBy: 'path1'; track item) {
-                  <div class="w-full">
-                    <div class="col-sm-12 m-b-10">
-                      <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
-                    </div>
-                    @for (board of item.value; track board) {
-                      <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <div class="box card">
-                          <div class="box-body">
-                            <div class="text-left block-ellipsis">
-                              <span class="text-left">
-                                <i class="text-sm" nz-icon nzTheme="outline"
-                                   nzType="pushpin"></i>&nbsp;
-                                @if (board.documentationName) {
-                                  <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
-                                     class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                                }
-                                <span [innerHtml]="board.name | highlight : boardsFilters.searchText"></span>
-                              </span>
-                            </div>
-                            <div class="btn-group dropdown pull-right abt-dropdown ">
-                              <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
-                                 nzTrigger="click">
-                                <i class="text fa fa-ellipsis-h"></i></a>
-                              <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                                <ul nz-menu>
-                                  @if (permission.currentController && permission.currentController.noticeBoards.post) {
-                                    <li (click)="post(board)" nz-menu-item>
-                                      <a>{{ 'resource.board.button.post' | translate }}</a>
-                                    </li>
-                                  }
-                                  @if (permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders) {
-                                    <li (click)="delete(board, null)" nz-menu-item>
-                                      <a>{{ 'resource.board.button.deleteAll' | translate }}</a>
-                                    </li>
-                                  }
-                                  <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
-                                    <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
+                  <div class="card-grid-full m-b-10">
+                    <span class="text inline"><i class="fa fa-folder-o"></i>&nbsp; {{item.key}}</span>
+                  </div>
+                  @for (board of item.value; track board) {
+                    <div class="card-grid-item">
+                      <div class="box card">
+                        <div class="box-body">
+                          <div class="card-icon-row">
+                            <i class="text-sm" nz-icon nzTheme="outline"
+                               nzType="pushpin"></i>&nbsp;
+                            @if (board.documentationName) {
+                              <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
+                                 class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                            }
+                          </div>
+                          <div class="card-name-row">
+                            <span [innerHtml]="board.name | highlight : boardsFilters.searchText"
+                                  [appRichTooltip]="board.name"
+                                  class="card-name"></span>
+                          </div>
+                          <div class="btn-group dropdown pull-right abt-dropdown ">
+                            <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
+                               nzTrigger="click">
+                              <i class="text fa fa-ellipsis-h"></i></a>
+                            <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                              <ul nz-menu>
+                                @if (permission.currentController && permission.currentController.noticeBoards.post) {
+                                  <li (click)="post(board)" nz-menu-item>
+                                    <a>{{ 'resource.board.button.post' | translate }}</a>
                                   </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                                }
+                                @if (permission.currentController.noticeBoards.delete && board.numOfNotices !== board.numOfExpectingOrders) {
+                                  <li (click)="delete(board, null)" nz-menu-item>
+                                    <a>{{ 'resource.board.button.deleteAll' | translate }}</a>
+                                  </li>
+                                }
+                                <li (click)="coreService.copyLink('board',board.name)" nz-menu-item>
+                                  <a>{{ 'common.button.copyLinkToObject' | translate }}</a>
+                                </li>
+                              </ul>
+                            </nz-dropdown-menu>
+                          </div>
+                          <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
                               <span>{{ 'resource.board.label.deploymentDate' | translate }} </span>:
                               <span [innerHtml]="board.versionDate | stringToDate | highlight : boardsFilters.searchText"
                                     class="text-black-dk"></span>
@@ -192,8 +193,7 @@
                         </div>
                       </div>
                     }
-                  </div>
-                }
+                  }
               </div>
             }
             @if (pageView=='list' && tree.length > 0) {

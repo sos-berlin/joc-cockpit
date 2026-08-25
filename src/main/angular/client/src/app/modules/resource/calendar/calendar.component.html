@@ -128,29 +128,30 @@
         <div id="rightPanel">
           <div [ngClass]="{'show': isLoading}" class="hide">
             @if (pageView=='grid' && data.length>0) {
-              <div [hidden]="loading" class="row">
+              <div [hidden]="loading" class="card-grid">
                 @for (item of data  | groupBy: 'path1'; track item) {
-                  <div class="w-full">
-                    <div class="col-sm-12" style="margin-bottom: 10px">
-                      <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
-                    </div>
-                    @for (calendar of item.value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse; track calendar) {
-                      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                        <div class="box card">
-                          <div class="box-body">
-                            <div>
-                              <div class="text-left block-ellipsis">
-                                <span [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"
-                                      class="text-sm fa"></span>&nbsp;
-                                @if (calendar.documentationName) {
-                                  <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
-                                     class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                                }
-                                <a (click)="previewCalendar(calendar)" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"
-                                   [appRichTooltip]="calendar.title"
-                                   class="text-primary-hover"></a>
-                              </div>
-                              <div class="btn-group dropdown pull-right abt-dropdown ">
+                  <div class="card-grid-full" style="margin-bottom: 10px">
+                    <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
+                  </div>
+                  @for (calendar of item.value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse; track calendar) {
+                    <div class="card-grid-item">
+                      <div class="box card">
+                        <div class="box-body">
+                          <div>
+                            <div class="card-icon-row">
+                              <span [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"
+                                    class="text-sm fa"></span>&nbsp;
+                              @if (calendar.documentationName) {
+                                <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
+                                   class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                              }
+                            </div>
+                            <div class="card-name-row">
+                              <a (click)="previewCalendar(calendar)" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"
+                                 [appRichTooltip]="calendar.title"
+                                 class="card-name text-primary-hover"></a>
+                            </div>
+                            <div class="btn-group dropdown pull-right abt-dropdown ">
                                 <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
                                    nzTrigger="click">
                                   <i class="text fa fa-ellipsis-h"></i></a>
@@ -205,8 +206,7 @@
                         </div>
                       </div>
                     }
-                  </div>
-                }
+                  }
               </div>
             }
             @if (pageView==='list' && tree.length > 0) {
