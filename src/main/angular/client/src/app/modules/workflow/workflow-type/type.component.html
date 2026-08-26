@@ -168,6 +168,7 @@
   </div>
 </ng-template>
 @for (instruction of configuration.instructions; track instruction) {
+  @if (instruction['TYPE'] !== 'Segment') {
   <div>
     <ul class="m-b-0">
       <li>
@@ -727,7 +728,7 @@
             </div>
           </div>
         }
-        @if ((instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Options'  || instruction['TYPE'] === 'AdmissionTime' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'ConsumeNotices' || instruction['TYPE'] === 'Segment') && (instruction.show)) {
+        @if ((instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Options'  || instruction['TYPE'] === 'AdmissionTime' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'ConsumeNotices') && (instruction.show)) {
           <div>
             @if (instruction.instructions && instruction.instructions.length > 0) {
               <div>
@@ -767,6 +768,18 @@
       </li>
     </ul>
   </div>
+  } @else {
+    @if (instruction.instructions && instruction.instructions.length > 0) {
+      <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)" (isProcessing)="processingHandler($event)"
+                (onClick)="viewHistory($event)"
+                [addOrderToWorkflows]="addOrderToWorkflows" [configuration]="instruction" [expandAll]="expandAll"
+                [expectedNoticeBoards]="expectedNoticeBoards" [jobs]="jobs"
+                [orderPreparation]="orderPreparation" [permission]="permission" [postNoticeBoards]="postNoticeBoards"
+                [preferences]="preferences" [recursiveCals]="recursiveCals"
+                [schedulerId]="schedulerId" [timezone]="timezone" [dayOffset]="dayOffset" [workflowFilters]="workflowFilters"
+                [workflowObj]="workflowObj"></app-type>
+    }
+  }
 }
 @if (isFirst) {
   <div>

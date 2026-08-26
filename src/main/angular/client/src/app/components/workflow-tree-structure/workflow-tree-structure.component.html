@@ -133,6 +133,7 @@
 </ng-template>
 
 @for (instruction of configuration.instructions; track trackByInstruction($index, instruction); let i = $index) {
+  @if (instruction.TYPE !== 'Segment') {
   <div>
     <ul class="m-b-0">
       <li (dragend)="dragend($event)" (dragenter)="drag($event);">
@@ -494,4 +495,12 @@
       </li>
     </ul>
   </div>
+  } @else {
+    @if (instruction.instructions && instruction.instructions.length > 0) {
+      <app-workflow-tree-structure [configuration]="instruction" [disabledDrag]="disabledDrag"
+                                   [expandAll]="expandAll" [jobs]="jobs" [orders]="orders"
+                                   [timezone]="timezone" [dayOffset]="dayOffset">
+      </app-workflow-tree-structure>
+    }
+  }
 }

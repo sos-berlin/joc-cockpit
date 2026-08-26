@@ -1208,6 +1208,13 @@
                                   }
                                 </div>
                                 @if (workflow.panelView === 'segment') {
+                                  <app-workflow-magnet
+                                    [workFlowJson]="workflow.configuration"
+                                    [orders]="workflow.orders"
+                                    [permission]="permission"
+                                    [preferences]="preferences"
+                                    [schedulerId]="schedulerIds.selected">
+                                  </app-workflow-magnet>
                                   <app-workflow-segment
                                     [workFlowJson]="workflow.configuration"
                                     [orders]="workflow.orders"

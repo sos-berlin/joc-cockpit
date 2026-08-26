@@ -1590,7 +1590,11 @@ export class WorkflowService {
           if (v1) {
             json.instructions[x].id = v1.id;
             if (self.isInstructionCollapsible(json.instructions[x].TYPE)) {
-              v1.collapsed = json.instructions[x].isCollapsed == '1';
+              if (json.instructions[x].TYPE === 'Segment') {
+                v1.collapsed = json.instructions[x].isCollapsed !== false;
+              } else {
+                v1.collapsed = json.instructions[x].isCollapsed == '1';
+              }
             }
           }
 

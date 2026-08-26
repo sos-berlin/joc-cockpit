@@ -63,7 +63,10 @@
                           </nz-dropdown-menu>
                         </div>
                       }
-                      <i class="fa m-r-xs text-muted text-11" [ngClass]="item.icon" style="width:12px;flex-shrink:0"></i>
+                      <!-- <i class="fa m-r-xs text-muted text-11" [ngClass]="item.icon" style="width:12px;flex-shrink:0"></i> -->
+                      @if (item.kind === 'job' && permission?.currentController?.orders?.view) {
+                        <i class="fa fa-history m-r-xs text-muted text-hover-primary cursor text-11" (click)="viewHistory(item)"></i>
+                      }
                       @if (item.kind === 'job') {
                         <a class="text-sm text-hover-primary cursor" (click)="showConfiguration(item)">{{ item.label }}</a>
                       } @else {
@@ -71,9 +74,6 @@
                       }
                       @if (item.subLabel) {
                         <small class="text-muted m-l-xs">{{ item.subLabel }}</small>
-                      }
-                      @if (item.kind === 'job' && permission?.currentController?.orders?.view) {
-                        <i class="fa fa-history m-l-xs text-muted text-hover-primary cursor" style="font-size:11px" (click)="viewHistory(item)"></i>
                       }
                       @if (item.instructionRef?.state?._text && item.kind !== 'job') {
                         <span [ngClass]="coreService.getColor(item.instructionRef.state.severity, 'bg')"

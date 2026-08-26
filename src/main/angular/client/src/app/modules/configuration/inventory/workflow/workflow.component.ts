@@ -8908,6 +8908,8 @@ export class WorkflowComponent {
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
         if (cell.collapsed) {
           obj.isCollapsed = cell.collapsed;
+        } else if (cell.value.tagName === 'Segment') {
+          obj.isCollapsed = false;
         }
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
           const edges = getOutgoingEdges(cell);
@@ -15544,6 +15546,33 @@ export class WorkflowComponent {
     }
   }
 
+  private normalizeActualJSON(jsonStr: string): any {
+    const obj = JSON.parse(jsonStr);
+    const strip = (instructions: any[]): void => {
+      if (!Array.isArray(instructions)) { return; }
+      for (const inst of instructions) {
+        delete inst.uuid;
+        delete inst.id;
+        delete inst.isCollapsed;
+        if (inst.instructions) { strip(inst.instructions); }
+        if (inst.block?.instructions) { strip(inst.block.instructions); }
+        if (inst.try?.instructions) { strip(inst.try.instructions); }
+        if (inst.catch?.instructions) { strip(inst.catch.instructions); }
+        if (inst.cycleWorkflow?.instructions) { strip(inst.cycleWorkflow.instructions); }
+        if (inst.branches) {
+          for (const b of inst.branches) {
+            strip(b.workflow?.instructions || b.instructions || []);
+          }
+        }
+        if (inst.cases) {
+          for (const c of inst.cases) { strip(c.instructions || []); }
+        }
+      }
+    };
+    if (obj.instructions) { strip(obj.instructions); }
+    return obj;
+  }
+
   private saveJSON(noValidate): void {
 
     if (this.selectedNode) {
@@ -15565,7 +15594,10 @@ export class WorkflowComponent {
     }
     this.checkJobInstruction(data);
 
-    const instructionsChanged = !isEqual(this.workflow.actual, JSON.stringify(data));
+    const instructionsChanged = !isEqual(
+      this.normalizeActualJSON(this.workflow.actual),
+      JSON.parse(JSON.stringify(data))
+    );
     const orderPrepChanged = !isEqual(
       JSON.stringify(this.lastSavedOrderPreparation),
       JSON.stringify(this.orderPreparation || {})

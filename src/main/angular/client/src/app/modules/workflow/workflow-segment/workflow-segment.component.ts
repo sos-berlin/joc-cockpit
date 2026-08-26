@@ -67,6 +67,7 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   private _rawOrdersMap = new Map<string, any[]>();
   private _rawOrdersPsMap = new Map<string, any[]>();
   private _refreshTimer: any = null;
+  private _prevHadOrders = new Map<string, boolean>(); // keyed by seg.name — tracks order presence across polls
 
   constructor(public coreService: CoreService, private cdr: ChangeDetectorRef, private modal: NzModalService, public viewContainerRef: ViewContainerRef) {}
 
@@ -399,6 +400,10 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
       this.segments = result;
     }
     this.recomputeAllHeights();
+    this._prevHadOrders.clear();
+    for (const seg of this.segments) {
+      this._prevHadOrders.set(seg.name, seg.orderCount > 0);
+    }
     this.cdr.markForCheck();
   }
 
@@ -414,6 +419,7 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
       seg.worstSeverity = worstSeverity;
       seg.orderCount = orderCount;
     }
+    this.applyAutoExpandCollapse();
     this.cdr.markForCheck();
   }
 
@@ -633,6 +639,28 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
 
   changedHandler(_data: any): void {
     this.cdr.markForCheck();
+  }
+
+  private applyAutoExpandCollapse(): void {
+    const autoMode = this.segments.some(seg => seg.isExpanded);
+    let heightChanged = false;
+    for (const seg of this.segments) {
+      const prevHad = this._prevHadOrders.get(seg.name) ?? false;
+      const nowHas = seg.orderCount > 0;
+      if (autoMode) {
+        if (!prevHad && nowHas && !seg.isExpanded) {
+          seg.isExpanded = true;
+          this.expandedByName.set(seg.name, true);
+          heightChanged = true;
+        } else if (prevHad && !nowHas && seg.isExpanded) {
+          seg.isExpanded = false;
+          this.expandedByName.set(seg.name, false);
+          heightChanged = true;
+        }
+      }
+      this._prevHadOrders.set(seg.name, nowHas);
+    }
+    if (heightChanged) this.recomputeAllHeights();
   }
 
   toggleSegment(seg: SegmentItem): void {
