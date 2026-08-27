@@ -3519,6 +3519,7 @@
     "label.numOfLogLines": "ログ表示行数",
     "label.numOfNextLogLines": "ログ読み込み行数",
     "label.includeDependencies": "依存関係を含む",
+    "label.magnetWindow": "Magnet Window",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -3598,7 +3599,8 @@
       "tooltip.showGlossary": "ツールチップグロッサリー有効化",
       "tooltip.numOfLogLines": "ログ画面表示行数",
       "tooltip.numOfNextLogLines": "ログ読み込み行数",
-      "tooltip.includeDependencies": "依存関係を含む"
+      "tooltip.includeDependencies": "依存関係を含む",
+      "tooltip.magnetWindow": "Magnet Window"
     },
     "permission": {
       "label.order": "オーダー",
@@ -4943,6 +4945,10 @@
     "label.addBulkOrderToWorkflows": "オーダー一括追加",
     "label.segment": "Segment",
     "label.segmentEnd": "Segment End",
+    "label.magnetize": "Magnetize",
+    "label.includeChildren": "Include child orders ({{count}})",
+    "label.releaseChildren": "Release child orders ({{count}})",
+    "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
@@ -5097,6 +5103,10 @@
     "tooltip.jobResourceNames": "ジョブリソース名",
     "tooltip.agent": "^エージェント|agent^",
     "tooltip.delay": "遅延",
+    "tooltip.addMagnet": "Attach magnet — follow this order",
+    "tooltip.releaseMagnet": "Release magnet",
+    "tooltip.includeChildren": "Include {{count}} child order(s)",
+    "tooltip.releaseChildren": "Release {{count}} child order(s)",
     "tooltip.state": {
       "in_sync": "同期済",
       "suspended": "一時停止",

@@ -3519,6 +3519,7 @@
     "label.numOfLogLines": "Nombre de lignes dans la vue du journal",
     "label.numOfNextLogLines": "Nombre de lignes prochaines à charger dans la vue du journal",
     "label.includeDependencies": "Gestion des dépendances",
+    "label.magnetWindow": "Magnet Window",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -3598,7 +3599,8 @@
       "tooltip.showGlossary": "Si activé, les infobulles affichent des liens vers les entrées du glossaire, ce qui est utile pour les utilisateurs novices de JS7.\n\nLes utilisateurs expérimentés pourraient préférer que les infobulles contiennent moins de liens.",
       "tooltip.numOfLogLines": "Le nombre de lignes de journalisation pouvant être affichées dans la vue Journal dépend des ressources système disponibles pour le rendu, telles que le processeur et la mémoire.\n\nLes utilisateurs peuvent ajuster cette valeur en fonction des capacités de leur système.",
       "tooltip.numOfNextLogLines": "Dans la vue du journal, vous pouvez charger le nombre spécifié de lignes précédentes ou suivantes de la sortie du journal.\n\nLe nombre total de lignes dans la vue du journal reste inchangé et les sorties de journal antérieures ou postérieures sont ignorées.",
-      "tooltip.includeDependencies": "Définit la valeur par défaut pour les opérations d'^Inventaire|inventory^ d'inclure les objets dépendants, par exemple, une ^Ressource de Tâche|job-resource^ référencée par un ^Workflow^ ou une ^Planification|schedule^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'opération aux objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix)."
+      "tooltip.includeDependencies": "Définit la valeur par défaut pour les opérations d'^Inventaire|inventory^ d'inclure les objets dépendants, par exemple, une ^Ressource de Tâche|job-resource^ référencée par un ^Workflow^ ou une ^Planification|schedule^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'opération aux objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix).",
+      "tooltip.magnetWindow": "Magnet Window"
     },
     "permission": {
       "label.order": "Ordre",
@@ -4943,6 +4945,10 @@
     "label.addBulkOrderToWorkflows": "Ajouter des Ordres en bloc",
     "label.segment": "Segment",
     "label.segmentEnd": "Segment End",
+    "label.magnetize": "Magnetize",
+    "label.includeChildren": "Include child orders ({{count}})",
+    "label.releaseChildren": "Release child orders ({{count}})",
+    "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",
@@ -5097,6 +5103,10 @@
     "tooltip.jobResourceNames": "Met à jour des références aux ^Ressources de Tâche|job-resource^ dans les objets sélectionnés.",
     "tooltip.agent": "Met à jour l'^Agent^ associé aux ^Sources d'Ordres de Fichiers|file-order-source^ sélectionnées.",
     "tooltip.delay": "Met à jour le *Délai* pendant lequel le système attend que les fichiers entrants soient complets dans les objets ^Source d'Ordres de Fichiers|file-order-source^ sélectionnées.",
+    "tooltip.addMagnet": "Attach magnet — follow this order",
+    "tooltip.releaseMagnet": "Release magnet",
+    "tooltip.includeChildren": "Include {{count}} child order(s)",
+    "tooltip.releaseChildren": "Release {{count}} child order(s)",
     "tooltip.state": {
       "in_sync": "Un ^Workflow^ est synchronisé lorsqu'il est ^déployé|deployment^ sur le ^Contrôleur^.",
       "suspended": "Un ^Workflow^ est suspendu lorsqu'il est mis en pause par l'utilisateur.",

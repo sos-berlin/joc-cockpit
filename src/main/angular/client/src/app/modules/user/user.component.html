@@ -584,6 +584,17 @@
                                          class="w-xl"></nz-input-number>
                       </div>
                     </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span [appRichTooltip]="'profile.preferences.tooltip.magnetWindow' | translate">
+                          {{ 'profile.label.magnetWindow' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-input-number (nzBlur)="changeConfiguration()" [(ngModel)]="preferences.magnetWindow" [nzMin]="1" [nzMax]="5"
+                         [nzStep]="1" class="w-xl"></nz-input-number>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

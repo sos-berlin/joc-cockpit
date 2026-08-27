@@ -3519,6 +3519,7 @@
     "label.numOfLogLines": "Anzahl Zeilen in Protokollansicht",
     "label.numOfNextLogLines": "Anzahl nächster Zeilen laden in Protokollansicht",
     "label.includeDependencies": "Handhabung von Abhängigkeiten",
+    "label.magnetWindow": "Magnet Window",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3598,7 +3599,8 @@
       "tooltip.showGlossary": "Wenn aktiviert, werden in den Kurzinfos Links zu Glossareinträgen angezeigt, was für Benutzer hilfreich ist, die JS7 noch nicht kennen.\n\nErfahrene Benutzer bevorzugen ggf. weniger Links in den Kurzinfos.",
       "tooltip.numOfLogLines": "Die Anzahl Zeilen der Protokollausgabe, die in der Protokollansicht angezeigt werden können, hängt von den Systemressourcen wie CPU und Arbeitsspeicher ab, die zur Darstellung benötigt werden.\n\nBenutzer können den Wert an die Leistungsfähigkeit ihres Systems anpassen.",
       "tooltip.numOfNextLogLines": "In der Protokollansicht können Sie die angegebene Anzahl vorheriger oder nächster Zeilen der Protokollausgabe laden.\n\nDabei wird davon ausgegangen, dass die Gesamtzahl der Zeilen in der Protokollansicht unverändert bleibt und frühere oder spätere Protokollausgaben verworfen werden.",
-      "tooltip.includeDependencies": "Legt die Voreinstellung für Inventaroperationen fest, ob abhängige Objekte einbezogen werden, bspw. eine ^Job-Ressource|job-resource^, auf die ein ^Arbeitsablauf|workflow^ verweist, oder einen ^Zeitplan|schedule^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Notwendige**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Matrix der Abhängigkeiten](context:help:dependencies-matrix)."
+      "tooltip.includeDependencies": "Legt die Voreinstellung für Inventaroperationen fest, ob abhängige Objekte einbezogen werden, bspw. eine ^Job-Ressource|job-resource^, auf die ein ^Arbeitsablauf|workflow^ verweist, oder einen ^Zeitplan|schedule^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Notwendige**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Matrix der Abhängigkeiten](context:help:dependencies-matrix).",
+      "tooltip.magnetWindow": "Magnet Window"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -4943,6 +4945,10 @@
     "label.addBulkOrderToWorkflows": "Gruppe von Aufträgen hinzufügen",
     "label.segment": "Segment",
     "label.segmentEnd": "Segment End",
+    "label.magnetize": "Magnetize",
+    "label.includeChildren": "Include child orders ({{count}})",
+    "label.releaseChildren": "Release child orders ({{count}})",
+    "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
@@ -5097,6 +5103,10 @@
     "tooltip.jobResourceNames": "Aktualisiert Verweise auf ^Job-Ressourcen|job-resource^ in den ausgewählten Objekten.",
     "tooltip.agent": "Aktualisiert die Zuordnung des ^Agent^en in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
     "tooltip.delay": "Aktualisiert die *Verzögerung*, mit der auf die Vollständigkeit eingehender Dateien gewartet wird, in den ausgewählten ^Dateiauftragsquellen|file-order-source^.",
+    "tooltip.addMagnet": "Attach magnet — follow this order",
+    "tooltip.releaseMagnet": "Release magnet",
+    "tooltip.includeChildren": "Include {{count}} child order(s)",
+    "tooltip.releaseChildren": "Release {{count}} child order(s)",
     "tooltip.state": {
       "in_sync": "Ein ^Arbeitsablauf|workflow^ ist synchron, wenn er auf den ^Controller^ ^ausgerollt|deployment^ ist.",
       "suspended": "Ein ^Arbeitsablauf|workflow^ ist ausgesetzt, wenn er durch den Benutzer pausiert wird.",

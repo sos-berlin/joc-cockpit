@@ -75,7 +75,7 @@
                       @if (item.subLabel) {
                         <small class="text-muted m-l-xs">{{ item.subLabel }}</small>
                       }
-                      @if (item.instructionRef?.state?._text && item.kind !== 'job') {
+                      @if (item.instructionRef?.state?._text) {
                         <span [ngClass]="coreService.getColor(item.instructionRef.state.severity, 'bg')"
                               class="label m-l-xs text-xs">{{ item.instructionRef.state._text | translate }}</span>
                       }

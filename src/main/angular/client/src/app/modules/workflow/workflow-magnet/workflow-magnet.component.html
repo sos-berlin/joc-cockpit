@@ -4,31 +4,36 @@
     <!-- Order strip: one chip per active order with toggle -->
     <div class="magnet-strip d-flex align-items-center flex-wrap p-a-xs">
       <span class="text-xs text-muted m-r-sm" style="white-space:nowrap">
-        <i class="fa fa-magnet m-r-xxs"></i>Magnetize
-        <!-- {{ 'workflow.label.magnetize' | translate }} -->
+        <i class="fa fa-magnet m-r-xxs"></i>
+        {{ 'workflow.label.magnetize' | translate }}
       </span>
-      @for (order of activeOrders; track order.orderId) {
-        <!-- <button type="button"
+      @for (order of visibleOrders; track order.orderId) {
+        <button type="button"
                 class="magnet-chip m-r-xs m-b-xxs"
                 [class.magnet-chip--active]="isMagnetized(order.orderId)"
+                [class.magnet-chip--child]="isChildOrder(order)"
                 (click)="toggleMagnet(order.orderId)"
-                [appRichTooltip]="(isMagnetized(order.orderId) ? ('workflow.tooltip.releaseMagnet' | translate) : ('workflow.tooltip.addMagnet' | translate))"> -->
-          <button type="button"
-                class="magnet-chip m-r-xs m-b-xxs"
-                [class.magnet-chip--active]="isMagnetized(order.orderId)"
-                (click)="toggleMagnet(order.orderId)"
-                [appRichTooltip]="(isMagnetized(order.orderId) ? 'Release magnet' : 'Attach magnet — follow this order')">
-          <i class="fa fa-magnet m-r-xxs"
-             [style.color]="isMagnetized(order.orderId) ? 'var(--primary)' : 'var(--text-muted)'"></i>
+                [appRichTooltip]="(isMagnetized(order.orderId) ? ('workflow.tooltip.releaseMagnet' | translate) : ('workflow.tooltip.addMagnet' | translate))">
+          @if (isChildOrder(order)) {
+            <i class="fa fa-level-down m-r-xxs text-muted" style="font-size:9px"></i>
+          } @else {
+            <i class="fa fa-magnet m-r-xxs"
+               [style.color]="isMagnetized(order.orderId) ? 'var(--primary)' : 'var(--text-muted)'"></i>
+          }
           <span [ngClass]="coreService.getColor(order.state?.severity, 'text')">●</span>
           <span class="m-l-xxs text-xs">{{ coreService.getModifiedOrderId(order, '') }}</span>
+        </button>
+      }
+      @if (hiddenOrderCount > 0) {
+        <button type="button" class="magnet-chip magnet-chip--more m-r-xs m-b-xxs" (click)="openDrawer()">
+          <span class="text-xs text-muted">+{{ hiddenOrderCount }} {{ 'workflow.label.showOther' | translate }}</span>
         </button>
       }
     </div>
 
     <!-- Swim lane cards: one per magnetized order -->
     @for (card of magnetCards; track card.orderId) {
-      <div class="magnet-card box m-b-xs">
+      <div class="magnet-card box m-t-xs">
 
         <!-- Card header -->
         <div class="magnet-card__header d-flex align-items-center p-a-xs" style="gap:8px">
@@ -36,6 +41,17 @@
           <span class="text-sm text-bold">{{ 'workflow.label.order' | translate }}: {{ coreService.getModifiedOrderId(card.order, '') }}</span>
           <span [ngClass]="coreService.getColor(card.order.state?.severity, 'bg')"
                 class="label text-xs">{{ card.order.state?._text | translate }}</span>
+          @if (!isChildOrder(card.order) && hasChildren(card.orderId)) {
+            <button type="button"
+                    class="btn btn-xs"
+                    [class.btn-primary]="areChildrenMagnetized(card.orderId)"
+                    [class.btn-default]="!areChildrenMagnetized(card.orderId)"
+                    (click)="toggleChildrenForParent(card.orderId, $event)"
+                    [appRichTooltip]="areChildrenMagnetized(card.orderId) ? ('workflow.tooltip.releaseChildren' | translate:{count: childCount(card.orderId)}) : ('workflow.tooltip.includeChildren' | translate:{count: childCount(card.orderId)})">
+              <i class="fa fa-level-down m-r-xxs"></i>
+              {{ areChildrenMagnetized(card.orderId) ? ('workflow.label.releaseChildren' | translate:{count: childCount(card.orderId)}) : ('workflow.label.includeChildren' | translate:{count: childCount(card.orderId)}) }}
+            </button>
+          }
           @if (card.breadcrumb) {
             <span class="text-xs text-muted" style="margin-left:auto">{{ card.breadcrumb }}</span>
           }
@@ -50,8 +66,7 @@
         <!-- Swim lane row -->
         <div class="magnet-card__lane p-x-sm p-b-sm">
           @if (card.slots.length === 0) {
-            <!-- <span class="text-xs text-muted">{{ 'workflow.label.positionNotFound' | translate }}</span> -->
-             <span class="text-xs text-muted">Current position not yet available</span>
+            <span class="text-xs text-muted">{{ 'workflow.label.positionNotFound' | translate }}</span>
           } @else {
             <div class="d-flex align-items-center flex-wrap" style="gap:0">
               @if (card.hasMore.before) {
@@ -65,13 +80,11 @@
                 <div class="magnet-slot"
                      [class.magnet-slot--current]="slot.isCurrent"
                      [class.magnet-slot--past]="slot.isPast && !slot.isCurrent">
-                  <i class="fa text-10 m-r-xxs"
-                     [ngClass]="slot.icon"
-                     [style.color]="slot.isCurrent ? 'var(--primary)' : 'inherit'"></i>
-                  <span class="text-xs">{{ slot.label }}</span>
                   @if (slot.isCurrent) {
                     <i class="fa fa-map-marker magnet-position-marker"></i>
                   }
+                  <i class="fa m-r-xxs" style="font-size:10px;opacity:.7" [ngClass]="slot.icon"></i>
+                  <span>{{ slot.label }}</span>
                 </div>
               }
               @if (card.hasMore.after) {
@@ -84,6 +97,91 @@
 
       </div>
     }
+
+    <!-- Overflow orders drawer (bulk-select) -->
+    <nz-drawer (nzOnClose)="closeDrawer()" [nzVisible]="drawerVisible" nzPlacement="right">
+      <ng-container *nzDrawerContent>
+        <div (click)="closeDrawer()" class="close-btn"></div>
+
+        <!-- Header -->
+        <div class="text-center m-t-md m-b text">
+          <i class="fa fa-magnet" style="color:var(--primary)"></i>&nbsp;
+          <span class="_600 b-b p-b-sm m-l-sm">{{ 'workflow.label.magnetize' | translate }}</span>
+        </div>
+
+        <!-- Order table -->
+        <div class="p-a-sm">
+          <div class="table-responsive" style="max-height:75vh;overflow-y:auto">
+            <nz-table [nzBordered]="true"
+                      [nzData]="activeOrders"
+                      [nzShowPagination]="false"
+                      [nzSize]="'small'">
+              <thead>
+                <tr>
+                  <th [nzChecked]="isAllDrawerSelected"
+                      [nzIndeterminate]="isSomeDrawerSelected"
+                      [nzShowCheckbox]="true"
+                      (nzCheckedChange)="toggleSelectAllInDrawer($event)"></th>
+                  <th>{{ 'order.label.orderId' | translate }}</th>
+                  <th>{{ 'order.label.state' | translate }}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody (click)="$event.preventDefault()">
+                @for (order of activeOrders; track order.orderId) {
+                  <tr [class.active]="isDrawerSelected(order.orderId)"
+                      style="cursor:pointer"
+                      (click)="toggleDrawerSelection(order.orderId)">
+                    <td [nzShowCheckbox]="true"
+                        [nzChecked]="isDrawerSelected(order.orderId)"
+                        (click)="$event.stopPropagation()"
+                        (nzCheckedChange)="toggleDrawerSelection(order.orderId)"></td>
+                    <td>
+                      <span class="show-in-single-line">
+                        @if (isChildOrder(order)) {
+                          <i class="fa fa-level-down text-muted p-r-xs" style="font-size:9px"></i>
+                        }
+                        {{ coreService.getModifiedOrderId(order, '') }}
+                      </span>
+                    </td>
+                    <td nowrap>
+                      @if (order.state) {
+                        <span [ngClass]="coreService.getColor(order.state.severity, 'bg')" class="label">
+                          {{ order.state._text | translate }}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      @if (hasChildren(order.orderId)) {
+                        <button type="button"
+                                class="btn btn-grey btn-sm"
+                                [class.btn-primary]="getDirectChildrenPublic(order.orderId).every(c => isDrawerSelected(c.orderId))"
+                                (click)="toggleDrawerChildSelection(order.orderId, $event)"
+                                [appRichTooltip]="getDirectChildrenPublic(order.orderId).every(c => isDrawerSelected(c.orderId)) ? ('workflow.tooltip.releaseChildren' | translate:{count: childCount(order.orderId)}) : ('workflow.tooltip.includeChildren' | translate:{count: childCount(order.orderId)})">
+                          <i class="fa fa-level-down m-r-xxs"></i>{{ childCount(order.orderId) }}
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-right p-l-sm p-r-sm p-b-sm">
+          <button type="button" class="btn btn-sm btn-default m-r-xs" (click)="closeDrawer()">
+            {{ 'common.button.cancel' | translate }}
+          </button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="applyMagnetFromDrawer()">
+            <i class="fa fa-magnet m-r-xxs"></i>
+            {{ 'workflow.label.magnetize' | translate }}
+          </button>
+        </div>
+
+      </ng-container>
+    </nz-drawer>
 
   </div>
 }
@@ -115,6 +213,23 @@
   .magnet-chip--active {
     border-color: var(--primary);
     background: var(--primary-light, rgba(24,144,255,.08));
+  }
+  .magnet-chip--more {
+    border-style: dashed;
+    opacity: .75;
+  }
+  .magnet-chip--more:hover {
+    border-style: solid;
+    border-color: var(--primary);
+    opacity: 1;
+  }
+  .magnet-chip--more:hover span,
+  .magnet-chip--more:hover i {
+    color: var(--primary) !important;
+  }
+  .magnet-chip--child {
+    border-style: dashed;
+    margin-left: 8px;
   }
   .magnet-card {
     border-left: 3px solid var(--primary);

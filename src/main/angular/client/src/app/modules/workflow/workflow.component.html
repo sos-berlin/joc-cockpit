@@ -1226,6 +1226,13 @@
                                     (onClick)="viewHistory($event)">
                                   </app-workflow-segment>
                                 } @else {
+                                  <app-workflow-magnet
+                                    [workFlowJson]="workflow.configuration"
+                                    [orders]="workflow.orders"
+                                    [permission]="permission"
+                                    [preferences]="preferences"
+                                    [schedulerId]="schedulerIds.selected">
+                                  </app-workflow-magnet>
                                   <app-type (bulkUpdate)="bulkUpdate($event)" [multiSelect]="true" [clearCheckboxes]="clearCheckboxes" (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"
                                             (isProcessing)="processingHandler($event)"
                                             (onClick)="viewHistory($event)" (update)="updatePanelHeight()"

@@ -775,6 +775,7 @@ export class LayoutComponent {
     preferences.enableTagging = false;
     preferences.numOfLogLines = 7000;
     preferences.numOfNextLogLines = 1000;
+    preferences.magnetWindow = 3;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -902,6 +903,9 @@ export class LayoutComponent {
       }
       if (data.numOfNextLogLines === undefined) {
         data.numOfNextLogLines = 1000;
+      }
+      if (data.magnetWindow === undefined) {
+        data.magnetWindow = 3;
       }
       // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
       if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {
