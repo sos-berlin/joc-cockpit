@@ -625,11 +625,17 @@
                                      (nzCheckedChange)="onItemChecked(workflow, $event)"></label>
                             </label>
                             <div class="card-icon-row m-l-md">
-                              <i class="icon-workflows-icon"></i>&nbsp;
-                              <i (click)="navToDetailView('list', workflow)" class="cursor fa fa-list"></i>
-                              <i (click)="navToDetailView('grid', workflow)" class="cursor fa fa-th p-l-xs p-r-xs"></i>
+                              <i class="icon-workflows-icon" [appRichTooltip]="'breadcrumb.label.workflow' | translate"></i>&nbsp;
+                              <i (click)="navToDetailView('list', workflow)"
+                                 [appRichTooltip]="'workflow.button.showTabularView' | translate"
+                                 class="cursor fa fa-list"></i>
+                              <i (click)="navToDetailView('grid', workflow)"
+                                 [appRichTooltip]="'workflow.button.showGraphicalView' | translate"
+                                 class="cursor fa fa-th p-l-xs p-r-xs"></i>
                               @if (workflow.hasSegments) {
-                                <i (click)="navToDetailView('segment', workflow)" class="cursor fa fa-th-large p-r-xs"></i>
+                                <i (click)="navToDetailView('segment', workflow)"
+                                   [appRichTooltip]="'workflow.button.showSegmentView' | translate"
+                                   class="cursor fa fa-th-large p-r-xs"></i>
                               }
                               @if (workflow.documentationName) {
                                 <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
@@ -688,7 +694,7 @@
                                 @if (workflow.numOfOrders>1) {
                                   <span>{{ 'order.label.orders' | translate }}</span>
                                 }
-                                @if (!workflow.numOfOrder || workflow.numOfOrders < 2) {
+                                @if (!workflow.numOfOrders || workflow.numOfOrders < 2) {
                                   <span>{{ 'workflow.label.order' | translate }}</span>
                                 }
                               </span>
