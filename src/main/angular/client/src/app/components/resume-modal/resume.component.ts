@@ -27,6 +27,7 @@ export class ResumeOrderModalComponent {
   comments: any = {};
   position: any;
   positions: any;
+  positionMap = new Map<string, any>();
   variables: any = [];
   constants = [];
   allowVariable = true;
@@ -152,11 +153,37 @@ export class ResumeOrderModalComponent {
               }
             }
           });
-          this.positions = res.positions.map((pos) => pos.positionString);
+          this.positionMap = new Map((res.positions || []).map((pos) => [pos.positionString, pos.position]));
+          this.positions = Array.from(this.positionMap.keys());
+        } else {
+          this.positions = [];
         }
+        this.checkPositions();
         this.cdr.markForCheck();
-      }, error: () => { this.positions = []; this.cdr.markForCheck(); }
+      }, error: () => { this.positions = []; this.checkPositions(); this.cdr.markForCheck(); }
     });
+  }
+
+  private resetInstructionState(instructions: any[]): void {
+    if (!instructions) { return; }
+    for (const inst of instructions) {
+      delete inst.show;
+      delete inst.order;
+      delete inst.enabled;
+      if (inst.branches) {
+        for (const b of inst.branches) {
+          delete b.show;
+          delete b.order;
+          this.resetInstructionState(b.instructions);
+        }
+      }
+      this.resetInstructionState(inst.instructions);
+      if (inst.block) { this.resetInstructionState(inst.block.instructions); }
+      if (inst.try) { this.resetInstructionState(inst.try.instructions); }
+      if (inst.catch) { this.resetInstructionState(inst.catch.instructions); }
+      if (inst.then) { this.resetInstructionState(inst.then.instructions); }
+      if (inst.else) { this.resetInstructionState(inst.else.instructions); }
+    }
   }
 
   private getWorkflow(): void {
@@ -166,11 +193,13 @@ export class ResumeOrderModalComponent {
     }).subscribe((res: any) => {
       this.workflow = {};
       this.workflow.jobs = res.workflow.jobs;
-      this.workflow.configuration = {instructions: res.workflow.instructions};
+      const cloned = JSON.parse(JSON.stringify(res.workflow.instructions));
+      this.resetInstructionState(cloned);
+      this.workflow.configuration = {instructions: cloned};
       this.timezone = res.workflow.timeZone;
       this.dayOffset = res.workflow.dayOffset;
       this.checkPositions();
-      const elementId = this.order?.positionString;
+      const elementId = this.order?.positionString?.replace(/\/(\d+)/g, ':$1') ?? this.order?.positionString;
       setTimeout(() => {
         this.scrollToElementById(elementId);
       }, 100);
@@ -180,12 +209,44 @@ export class ResumeOrderModalComponent {
 
 
   private checkPositions(): void {
-    if (this.positions) {
-      this.coreService.convertTryToRetry(this.workflow.configuration, this.positions, '', true, this.order);
-    } else {
-      setTimeout(() => {
-        this.checkPositions();
-      }, 50);
+    if (!this.workflow?.configuration || this.positions == null) { return; }
+    const normalizedOrder = this.order?.positionString
+      ? {...this.order, positionString: this.order.positionString.replace(/\/(\d+)/g, ':$1')}
+      : this.order;
+    this.coreService.convertTryToRetry(this.workflow.configuration, this.positions, '', true, normalizedOrder);
+    this.enableSegmentHeaders(this.workflow.configuration.instructions);
+    this.cdr.markForCheck();
+  }
+
+  private hasEnabledChild(instructions: any[]): boolean {
+    if (!instructions) { return false; }
+    for (const inst of instructions) {
+      if (inst.enabled) { return true; }
+      if (inst.instructions && this.hasEnabledChild(inst.instructions)) { return true; }
+      if (inst.branches) {
+        for (const b of inst.branches) {
+          if (this.hasEnabledChild(b.instructions)) { return true; }
+        }
+      }
+    }
+    return false;
+  }
+
+  private enableSegmentHeaders(instructions: any[]): void {
+    if (!instructions) { return; }
+    for (const inst of instructions) {
+      if (inst.TYPE === 'Segment' && inst.instructions?.length > 0) {
+        if (this.hasEnabledChild(inst.instructions)) {
+          inst.enabled = true;
+        }
+        this.enableSegmentHeaders(inst.instructions);
+      } else {
+        if (inst.instructions) { this.enableSegmentHeaders(inst.instructions); }
+        if (inst.branches) { inst.branches.forEach(b => this.enableSegmentHeaders(b.instructions)); }
+        if (inst.catch?.instructions) { this.enableSegmentHeaders(inst.catch.instructions); }
+        if (inst.then?.instructions) { this.enableSegmentHeaders(inst.then.instructions); }
+        if (inst.else?.instructions) { this.enableSegmentHeaders(inst.else.instructions); }
+      }
     }
   }
 
@@ -290,6 +351,11 @@ export class ResumeOrderModalComponent {
     this.updateOrder(position, index);
   }
 
+  onSegmentHover(instruction: any): void {
+    instruction.show = true;
+    this.cdr.markForCheck();
+  }
+
   openEditor(data): void {
     const modal = this.modal.create({
       nzTitle: undefined,
@@ -354,7 +420,14 @@ export class ResumeOrderModalComponent {
           delete json.instructions[x].order;
           if (position === json.instructions[x].positionString) {
             json.instructions[x].order = self.order;
-            self.position = json.instructions[x].position;
+            if (json.instructions[x].TYPE === 'Segment' && json.instructions[x].instructions?.length > 0) {
+              const firstValid = json.instructions[x].instructions.find(
+                (child: any) => self.positionMap.has(child.positionString)
+              );
+              self.position = firstValid ? self.positionMap.get(firstValid.positionString) : null;
+            } else {
+              self.position = json.instructions[x].position ?? self.positionMap.get(position);
+            }
           }
           if (json.instructions[x].TYPE === 'Fork') {
             if (json.instructions[x].branches) {
@@ -363,7 +436,7 @@ export class ResumeOrderModalComponent {
                   delete json.instructions[x].branches[i].order;
                   if (position === json.instructions[x].branches[i].positionString) {
                     json.instructions[x].branches[i].order = self.order;
-                    self.position = json.instructions[x].branches[i].position;
+                    self.position = json.instructions[x].branches[i].position ?? self.positionMap.get(position);
                   }
                   recursive(json.instructions[x].branches[i]);
                 }
@@ -388,7 +461,7 @@ export class ResumeOrderModalComponent {
               delete json.instructions[x].catch.order;
               if (position === json.instructions[x].catch.positionString) {
                 json.instructions[x].catch.order = self.order;
-                self.position = json.instructions[x].catch.position;
+                self.position = json.instructions[x].catch.position ?? self.positionMap.get(position);
               }
               recursive(json.instructions[x].catch);
             }
@@ -397,7 +470,7 @@ export class ResumeOrderModalComponent {
             delete json.instructions[x].then.order;
             if (position === json.instructions[x].then.positionString) {
               json.instructions[x].then.order = self.order;
-              self.position = json.instructions[x].then.position;
+              self.position = json.instructions[x].then.position ?? self.positionMap.get(position);
             }
             recursive(json.instructions[x].then);
           }
@@ -405,7 +478,7 @@ export class ResumeOrderModalComponent {
             delete json.instructions[x].else.order;
             if (position === json.instructions[x].else.positionString) {
               json.instructions[x].else.order = self.order;
-              self.position = json.instructions[x].else.position;
+              self.position = json.instructions[x].else.position ?? self.positionMap.get(position);
             }
             recursive(json.instructions[x].else);
           }

@@ -21,6 +21,7 @@ export class WorkflowTreeStructureComponent {
   @Input() expandAll;
   @Input() disabledDrag: boolean;
   @Output() onDrop: EventEmitter<any> = new EventEmitter();
+  @Output() onSegmentHover: EventEmitter<any> = new EventEmitter();
   position: '';
   permission: any = {};
 
@@ -47,6 +48,12 @@ export class WorkflowTreeStructureComponent {
 
   collapse(node): void {
     node.show = !node.show;
+  }
+
+  segmentDragEnter(instruction: any): void {
+    if (instruction.enabled && !instruction.show) {
+      this.onSegmentHover.emit(instruction);
+    }
   }
 
   recursiveUpdate(node, flag): void {

@@ -201,7 +201,8 @@
                class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
           </span>
         </div>
-        <app-workflow-tree-structure (onDrop)="onDrop($event)" [configuration]="workflow.configuration"
+        <app-workflow-tree-structure (onDrop)="onDrop($event)" (onSegmentHover)="onSegmentHover($event)"
+                                     [configuration]="workflow.configuration"
                                      [disabledDrag]="disabledDrag" [expandAll]="workflow.isExpand" [jobs]="workflow.jobs"
                                      [orders]="orders" [timezone]="timezone" [dayOffset]="dayOffset"></app-workflow-tree-structure>
       </div>
