@@ -3520,6 +3520,8 @@
     "label.numOfNextLogLines": "Количество дополнительно загружаемых строк",
     "label.includeDependencies": "Обработка зависимостей",
     "label.magnetWindow": "Magnet Window",
+    "label.magnetAutoStates": "Auto-magnetize Orders by state",
+    "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
     "button.resetPreferences": "Сбросить настройки профиля",
     "button.groupLimit": "Применить ко всем",
     "button.changePassword": "Изменить пароль",
@@ -3600,7 +3602,9 @@
       "tooltip.numOfLogLines": "Количество строк журнала, отображаемых при показе журнала, зависит от системных ресурсов, необходимых для их отображения, таких как процессор и оперативная память.\n\nПользователь может подобрать значение в соответствии с производительностью своей системы.",
       "tooltip.numOfNextLogLines": "При показе журнала можно загружать указанное количество предыдущих или следующих строк.\n\nПри этом предполагается, что общее количество отображаемых строк остаётся неизменным: более ранние или более поздние записи журнала заменяются.",
       "tooltip.includeDependencies": "Определяет, следует ли по умолчанию включать зависимые объекты при выполнении операций с инвентарём. Например, ^ресурс задач|job-resource^, на который ссылается ^рабочий процесс|workflow^, или ^расписание|schedule^, ссылающееся на рабочий процесс.\n\nЗависимые объекты могут находиться в других папках.\n\nДоступны следующие варианты:\n- **Все**: все ссылающиеся и связанные объекты рекурсивно.\n- **Только прямые**: объекты, непосредственно ссылающиеся на выбранный объект или объекты, на которые он ссылается.\n- **Нет**: только выбранные объекты.\n\nПодробности см. [Матрица зависимостей](context:help:dependencies-matrix).",
-      "tooltip.magnetWindow": "Magnet Window"
+      "tooltip.magnetWindow": "Magnet Window",
+      "tooltip.magnetAutoStates": "Magnet Auto States",
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
     },
     "permission": {
       "label.order": "Задание",
@@ -4948,6 +4952,8 @@
     "label.magnetize": "Magnetize",
     "label.includeChildren": "Include child orders ({{count}})",
     "label.releaseChildren": "Release child orders ({{count}})",
+    "label.magnetizeAllChildren": "Magnetize All Children",
+    "label.releaseAllChildren": "Release All Children",
     "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "Добавить цикл",
     "button.zoomIn": "Увеличить",
@@ -5107,6 +5113,8 @@
     "tooltip.releaseMagnet": "Release magnet",
     "tooltip.includeChildren": "Include {{count}} child order(s)",
     "tooltip.releaseChildren": "Release {{count}} child order(s)",
+    "tooltip.magnetizeAllChildren": "Magnetize All Children",
+    "tooltip.releaseAllChildren": "Release All Children",
     "tooltip.state": {
       "in_sync": "^Рабочий процесс|workflow^ синхронизирован, если он ^развёрнут|deployment^ на ^контроллере|controller^.",
       "suspended": "^Рабочий процесс|workflow^ приостановлен, если его выполнение приостановлено пользователем.",

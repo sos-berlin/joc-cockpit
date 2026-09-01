@@ -29,6 +29,18 @@
           <span class="text-xs text-muted">+{{ hiddenOrderCount }} {{ 'workflow.label.showOther' | translate }}</span>
         </button>
       }
+      @if (hasAnyParentWithChildren) {
+        <button type="button"
+                class="magnet-chip m-b-xxs"
+                style="margin-left:auto"
+                [class.magnet-chip--active]="areAllChildrenMagnetized"
+                (click)="toggleAllChildren()"
+                [appRichTooltip]="(areAllChildrenMagnetized ? ('workflow.tooltip.releaseAllChildren' | translate) : ('workflow.tooltip.magnetizeAllChildren' | translate))">
+          <i class="fa fa-sitemap m-r-xxs"
+             [style.color]="areAllChildrenMagnetized ? 'var(--primary)' : 'var(--text-muted)'"></i>
+          <span class="text-xs">{{ (areAllChildrenMagnetized ? 'workflow.label.releaseAllChildren' : 'workflow.label.magnetizeAllChildren') | translate }}</span>
+        </button>
+      }
     </div>
 
     <!-- Swim lane cards: one per magnetized order -->

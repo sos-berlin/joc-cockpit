@@ -159,6 +159,41 @@ export class WorkflowMagnetComponent implements OnChanges, OnDestroy {
     this.cdr.markForCheck();
   }
 
+  get hasAnyParentWithChildren(): boolean {
+    return this.activeOrders.some(o => !this.isChildOrder(o) && this.hasChildren(o.orderId));
+  }
+
+  get areAllChildrenMagnetized(): boolean {
+    const parents = this.activeOrders.filter(o => !this.isChildOrder(o) && this.hasChildren(o.orderId));
+    return parents.length > 0 && parents.every(p => this.areChildrenMagnetized(p.orderId));
+  }
+
+  toggleAllChildren(): void {
+    const parents = this.activeOrders.filter(o => !this.isChildOrder(o) && this.hasChildren(o.orderId));
+    if (this.areAllChildrenMagnetized) {
+      parents.forEach(p => this.getDirectChildren(p.orderId).forEach(c => this.magnetizedOrderIds.delete(c.orderId)));
+    } else {
+      parents.forEach(p => this.getDirectChildren(p.orderId).forEach(c => this.magnetizedOrderIds.add(c.orderId)));
+    }
+    this.buildMagnetCards();
+    this.cdr.markForCheck();
+  }
+
+  private applyAutoMagnet(): void {
+    const states: string[] = this.preferences?.magnetAutoStates || [];
+    if (states.length === 0) return;
+    const includeChildren = !!this.preferences?.magnetAutoIncludeChildren;
+    for (const order of this.activeOrders) {
+      const stateText = order.state?._text;
+      if (stateText && states.includes(stateText)) {
+        this.magnetizedOrderIds.add(order.orderId);
+        if (includeChildren) {
+          this.getDirectChildren(order.orderId).forEach(c => this.magnetizedOrderIds.add(c.orderId));
+        }
+      }
+    }
+  }
+
   private get window(): number {
     const w = this.preferences?.magnetWindow;
     return (typeof w === 'number' && w >= 1 && w <= 5) ? Math.round(w) : 3;
@@ -180,6 +215,7 @@ export class WorkflowMagnetComponent implements OnChanges, OnDestroy {
       this._refreshTimer = setTimeout(() => {
         this.allSortedOrders = this.sortByParentChild(this.orders || []);
         this.activeOrders = this.allSortedOrders.filter(o => o.position != null);
+        this.applyAutoMagnet();
         this.buildMagnetCards();
         this._refreshTimer = null;
         this.cdr.markForCheck();

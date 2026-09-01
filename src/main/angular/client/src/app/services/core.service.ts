@@ -3389,7 +3389,10 @@ private checkParentNode(lastPos, data, item, nodes): any {
                 parent.join.positionStrings = positionArr;
                 if (order) {
                   parent.join.unique = arr.join('$');
-                  if (positions.indexOf(json.instructions[x].positionString) > -1) {
+                  const implEndPos = json.instructions[x].positionString;
+                  const branchPfx = implEndPos ? implEndPos.split(':').slice(0, -1).join(':') : null;
+                  if (positions.indexOf(implEndPos) > -1 ||
+                      (branchPfx && positions.some((p: string) => p.startsWith(branchPfx + ':')))) {
                     parent.join.enabled = true;
                   }
                 }

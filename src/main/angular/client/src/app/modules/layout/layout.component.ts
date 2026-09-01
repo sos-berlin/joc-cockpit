@@ -776,6 +776,8 @@ export class LayoutComponent {
     preferences.numOfLogLines = 7000;
     preferences.numOfNextLogLines = 1000;
     preferences.magnetWindow = 3;
+    preferences.magnetAutoStates = [];
+    preferences.magnetAutoIncludeChildren = false;
     preferences.orderStateColors = [
       {
         "state": "pending",
@@ -906,6 +908,12 @@ export class LayoutComponent {
       }
       if (data.magnetWindow === undefined) {
         data.magnetWindow = 3;
+      }
+      if (!Array.isArray(data.magnetAutoStates)) {
+        data.magnetAutoStates = [];
+      }
+      if (data.magnetAutoIncludeChildren === undefined) {
+        data.magnetAutoIncludeChildren = false;
       }
       // Migration: showTooltipInfo (old boolean) → tooltipDelay (new numeric)
       if (data.showTooltipInfo === true && data.tooltipDelay === undefined) {

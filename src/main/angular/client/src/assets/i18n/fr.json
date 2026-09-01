@@ -3520,6 +3520,8 @@
     "label.numOfNextLogLines": "Nombre de lignes prochaines à charger dans la vue du journal",
     "label.includeDependencies": "Gestion des dépendances",
     "label.magnetWindow": "Nombre max. d'instructions avant/après Magnet",
+    "label.magnetAutoStates": "Auto-magnetize Orders by state",
+    "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
     "button.resetPreferences": "Réinitialiser les Préférences du Profil",
     "button.groupLimit": "Limite de groupe",
     "button.changePassword": "Changer le mot de passe",
@@ -3600,7 +3602,9 @@
       "tooltip.numOfLogLines": "Le nombre de lignes de journalisation pouvant être affichées dans la vue Journal dépend des ressources système disponibles pour le rendu, telles que le processeur et la mémoire.\n\nLes utilisateurs peuvent ajuster cette valeur en fonction des capacités de leur système.",
       "tooltip.numOfNextLogLines": "Dans la vue du journal, vous pouvez charger le nombre spécifié de lignes précédentes ou suivantes de la sortie du journal.\n\nLe nombre total de lignes dans la vue du journal reste inchangé et les sorties de journal antérieures ou postérieures sont ignorées.",
       "tooltip.includeDependencies": "Définit la valeur par défaut pour les opérations d'^Inventaire|inventory^ d'inclure les objets dépendants, par exemple, une ^Ressource de Tâche|job-resource^ référencée par un ^Workflow^ ou une ^Planification|schedule^ faisant référence à un Workflow.\n\nLes objets dépendants peuvent se trouver dans d'autres dossiers.\n\nLes options suivantes sont proposées:\n- **Tous**: les objets référençants et référencés de manière récursive.\n- **Obligatoires**: les objets qui référencent directement ou sont référencés par un objet sélectionné.\n- **Aucun**: limite l'opération aux objets sélectionnés.\n\nPour plus de dètails, voir [Matrice de Dépendance](context:help:dependencies-matrix).",
-      "tooltip.magnetWindow": "Spécifie le nombre maximal d'instructions, telles que des ^Tâches|job^, qui s'affichent avant et après la position actuelle d'un ^Ordre|order^ magnétisé."
+      "tooltip.magnetWindow": "Spécifie le nombre maximal d'instructions, telles que des ^Tâches|job^, qui s'affichent avant et après la position actuelle d'un ^Ordre|order^ magnétisé.",
+      "tooltip.magnetAutoStates": "Magnet Auto States",
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
     },
     "permission": {
       "label.order": "Ordre",
@@ -4948,6 +4952,8 @@
     "label.magnetize": "Magnetiser",
     "label.includeChildren": "Magnétiser les ^Ordres|order^ enfants ({{count}})",
     "label.releaseChildren": "Démagnétiser les ^Ordres|order^ enfants ({{count}})",
+    "label.magnetizeAllChildren": "Magnetize All Children",
+    "label.releaseAllChildren": "Release All Children",
     "label.positionNotFound": "Position actuelle n'est pas disponible",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
@@ -5107,6 +5113,8 @@
     "tooltip.releaseMagnet": "Le magnet est relâché et le couloir de l'^Ordre|order^ n'apparaît plus.",
     "tooltip.includeChildren": "Magnétiser les ^Ordres|order^ enfants consiste à ajouter un magnet à chaque Ordre. Les Ordres magnétisés s'affichent dans des couloirs individuels indiquant la position/instruction actuelle de l'Ordre et les instructions environnantes.",
     "tooltip.releaseChildren": "La démagnétisation des ^Ordres|order^ enfants signifie que les magnets seront relâchés des Ordres enfants et que les couloirs seront supprimés.",
+    "tooltip.magnetizeAllChildren": "Magnetize All Children",
+    "tooltip.releaseAllChildren": "Release All Children",
     "tooltip.state": {
       "in_sync": "Un ^Workflow^ est synchronisé lorsqu'il est ^déployé|deployment^ sur le ^Contrôleur^.",
       "suspended": "Un ^Workflow^ est suspendu lorsqu'il est mis en pause par l'utilisateur.",

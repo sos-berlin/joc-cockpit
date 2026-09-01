@@ -28,7 +28,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-filter-workflow-content',
   templateUrl: './filter-dialog.html',
-  
+
 })
 export class FilterModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -78,7 +78,7 @@ export class FilterModalComponent {
   standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
-  
+
 })
 export class SearchComponent {
   @Input() schedulerIds: any;
@@ -594,10 +594,16 @@ export class SingleWorkflowComponent {
   viewOrders(workflow): void {
     this.sideBar = {
       isVisible: true,
+      loading: true,
       orders: workflow.orders,
       workflow: workflow.path,
       orderPreparation: workflow.orderPreparation
     };
+    if (workflow.numOfOrders > 0 && !(workflow.orders?.length > 0)) {
+      this.loadOrders(this.date);
+    } else {
+      this.sideBar.loading = false;
+    }
   }
 
   navToDetailView(view, workflow): void {
@@ -2359,7 +2365,7 @@ export class WorkflowComponent {
       versionId: workflow.versionId,
       orderPreparation: workflow.orderPreparation
     };
-    if (!workflow.show && workflow.numOfOrders > 0) {
+    if (workflow.numOfOrders > 0 && !(workflow.orders?.length > 0)) {
       this.getOrders({
         compact: true,
         controllerId: this.schedulerIds.selected,

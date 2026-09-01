@@ -1136,6 +1136,16 @@ export class UserComponent {
     this.savePreferences();
   }
 
+  readonly magnetAutoStateOptions = [
+    {value: 'FAILED'},
+    {value: 'SUSPENDED'},
+    {value: 'BLOCKED'},
+    {value: 'WAITING'},
+    {value: 'INPROGRESS'},
+    {value: 'RUNNING'},
+    {value: 'PROMPTING'},
+  ];
+
   changeView(): void {
     const views = {
       dailyPlan: this.preferences.pageView,

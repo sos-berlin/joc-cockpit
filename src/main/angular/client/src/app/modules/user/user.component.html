@@ -595,6 +595,33 @@
                          [nzStep]="1" class="w-xl"></nz-input-number>
                       </div>
                     </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span [appRichTooltip]="'profile.preferences.tooltip.magnetAutoStates' | translate">
+                          {{ 'profile.label.magnetAutoStates' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()"
+                          [attributeName]="'magnetAutoStates'"
+                          [classNames]="'w-xl'"
+                          [isMultiple]="true"
+                          [listArray]="magnetAutoStateOptions"
+                          [object]="preferences"
+                          [optionLabel]="'value'"
+                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span [appRichTooltip]="'profile.preferences.tooltip.magnetAutoIncludeChildren' | translate">
+                          {{ 'profile.label.magnetAutoIncludeChildren' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <label nz-checkbox [(ngModel)]="preferences.magnetAutoIncludeChildren" (ngModelChange)="changeConfiguration()"></label>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

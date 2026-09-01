@@ -3520,6 +3520,8 @@
     "label.numOfNextLogLines": "Load number of next lines in Log view",
     "label.includeDependencies": "Default dependency handling",
     "label.magnetWindow": "Max. number of instructions before/after Magnet",
+    "label.magnetAutoStates": "Auto-magnetize Orders by state",
+    "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3600,7 +3602,9 @@
       "tooltip.numOfLogLines": "The number of lines of log output that can be made available in the Log view depends on system resources such as CPU and memory for rendering.\n\nUsers can adjust the value to match their system's capabilities.",
       "tooltip.numOfNextLogLines": "The Log view offers loading the indicated number of previous or next lines of log output.\n\nThis considers that the overall **Number of lines in Log view** remains the same and that earlier or later log entries are dropped.",
       "tooltip.includeDependencies": "Specifies the default for inventory operations if dependent objects should be included, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders.\n- **All**: all referencing and referenced objects recursively.\n- **Required**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits the operation to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
-      "tooltip.magnetWindow": "Specifies the max. number of instructions such as jobs that are displayed before and after the current position of a magnetized ^Order^."
+      "tooltip.magnetWindow": "Specifies the max. number of instructions such as jobs that are displayed before and after the current position of a magnetized ^Order^.",
+      "tooltip.magnetAutoStates": "Magnet Auto States",
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
     },
     "permission": {
       "label.order": "Order",
@@ -4948,6 +4952,8 @@
     "label.magnetize": "Magnetize",
     "label.includeChildren": "Magnetize child ^Order^s ({{count}})",
     "label.releaseChildren": "Demagnetize child ^Order^s ({{count}})",
+    "label.magnetizeAllChildren": "Magnetize All Children",
+    "label.releaseAllChildren": "Release All Children",
     "label.positionNotFound": "Current position not available",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
@@ -5107,6 +5113,8 @@
     "tooltip.releaseMagnet": "The magnet is released and the ^Order^'s swim lane is no longer displayed.",
     "tooltip.includeChildren": "Magnetizing child orders includes to add a magnet to each Order. Magnetized Orders are displayed in individual swim lanes with the Order's current position/instruction and surrounding instructions.",
     "tooltip.releaseChildren": "Demagnetizing child orders means that magnets will be released from child orders and swim lanes will be dropped.",
+    "tooltip.magnetizeAllChildren": "Magnetize All Children",
+    "tooltip.releaseAllChildren": "Release All Children",
     "tooltip.state": {
       "in_sync": "A ^Workflow^ is synchronized if it has been ^deployed|deployment^ to the ^Controller^.",
       "suspended": "A ^Workflow^ is suspended when it is paused by the user.",

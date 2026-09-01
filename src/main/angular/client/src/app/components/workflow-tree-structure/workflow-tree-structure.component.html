@@ -474,7 +474,7 @@
         @if (instruction.join) {
           <div [ngClass]="{'drop-area': instruction.join.enabled}"
                id="{{instruction.join.unique}}">
-            <span [ngClass]="{'drop-area-text' : instruction.enabled}" class="_600 inst-text"
+            <span [ngClass]="{'drop-area-text' : instruction.join.enabled}" class="_600 inst-text"
                   id="{{instruction.join.unique}}$">
               {{'workflow.label.join' | translate}}
             </span>
@@ -512,7 +512,9 @@
               <i (click)="collapse(instruction)"
                  [ngClass]="{'fa-minus': (expandAll || instruction.show)}"
                  class="fa fa-plus pr-2"></i>
-              <span class="_600">{{ instruction.label || instruction.name || instruction.TYPE }}</span>
+              <span [ngClass]="{'drop-area-text': instruction.enabled}"
+                    class="_600"
+                    id="{{instruction.positionString}}$">{{ instruction.label || instruction.name || instruction.TYPE }}</span>
             </div>
             @if (expandAll || instruction.show) {
               <app-workflow-tree-structure (onDrop)="onDrop.emit($event)" (onSegmentHover)="onSegmentHover.emit($event)"

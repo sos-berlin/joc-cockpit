@@ -3520,6 +3520,8 @@
     "label.numOfNextLogLines": "ログ読み込み行数",
     "label.includeDependencies": "依存関係を含む",
     "label.magnetWindow": "Magnet Window",
+    "label.magnetAutoStates": "Auto-magnetize Orders by state",
+    "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",
@@ -3600,7 +3602,9 @@
       "tooltip.numOfLogLines": "ログ画面表示行数",
       "tooltip.numOfNextLogLines": "ログ読み込み行数",
       "tooltip.includeDependencies": "依存関係を含む",
-      "tooltip.magnetWindow": "Magnet Window"
+      "tooltip.magnetWindow": "Magnet Window",
+      "tooltip.magnetAutoStates": "Magnet Auto States",
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
     },
     "permission": {
       "label.order": "オーダー",
@@ -4948,6 +4952,8 @@
     "label.magnetize": "Magnetize",
     "label.includeChildren": "Include child orders ({{count}})",
     "label.releaseChildren": "Release child orders ({{count}})",
+    "label.magnetizeAllChildren": "Magnetize All Children",
+    "label.releaseAllChildren": "Release All Children",
     "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
@@ -5107,6 +5113,8 @@
     "tooltip.releaseMagnet": "Release magnet",
     "tooltip.includeChildren": "Include {{count}} child order(s)",
     "tooltip.releaseChildren": "Release {{count}} child order(s)",
+    "tooltip.magnetizeAllChildren": "Magnetize All Children",
+    "tooltip.releaseAllChildren": "Release All Children",
     "tooltip.state": {
       "in_sync": "同期済",
       "suspended": "一時停止",

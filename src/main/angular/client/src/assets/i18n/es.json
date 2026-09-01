@@ -3520,6 +3520,8 @@
     "label.numOfNextLogLines": "Cantidad de líneas siguientes en vista de Logs",
     "label.includeDependencies": "Manejo de dependencias por defecto",
     "label.magnetWindow": "Magnet Window",
+    "label.magnetAutoStates": "Auto-magnetize Orders by state",
+    "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
     "button.resetPreferences": "Restablecer preferencias del perfil",
     "button.groupLimit": "Límite de grupo",
     "button.changePassword": "Cambiar contraseña",
@@ -3600,7 +3602,9 @@
       "tooltip.numOfLogLines": "El número de líneas del output del log que pueden estar disponibles en la vista de Log depende de recursos del sistema como la CPU y la memoria para el renderizado.\n\nLos usuarios pueden ajustar el valor según las capacidades de su sistema.",
       "tooltip.numOfNextLogLines": "La vista de Log permite cargar el número indicado de líneas anteriores o siguientes del output del log.\n\nEsto considera que el **Número de líneas en la vista de Log** general permanece igual y que las entradas de log anteriores o posteriores se descartan.",
       "tooltip.includeDependencies": "Especifica el valor por defecto para las operaciones de ^Inventario|inventory^ respecto a si deben incluirse objetos dependientes, por ejemplo, un ^Recurso de Job|job-resource^ referenciado por un ^Workflow^ o una ^Planificación|schedule^ que referencia un Workflow.\n\nLos objetos dependientes pueden estar ubicados en otras carpetas.\n- **Todos**: todos los objetos que referencian y son referenciados, de forma recursiva.\n- **Requerido**: objetos que referencian directamente o son referenciados directamente por un objeto seleccionado.\n- **Ninguno**: limita la operación a los objetos seleccionados.\n\nPara más detalles, consulte [Matriz de Dependencias](context:help:dependencies-matrix).",
-      "tooltip.magnetWindow": "Magnet Window"
+      "tooltip.magnetWindow": "Magnet Window",
+      "tooltip.magnetAutoStates": "Magnet Auto States",
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
     },
     "permission": {
       "label.order": "Orden",
@@ -4948,6 +4952,8 @@
     "label.magnetize": "Magnetize",
     "label.includeChildren": "Include child orders ({{count}})",
     "label.releaseChildren": "Release child orders ({{count}})",
+    "label.magnetizeAllChildren": "Magnetize All Children",
+    "label.releaseAllChildren": "Release All Children",
     "label.positionNotFound": "Current position not yet available",
     "button.addScheme": "Agregar ciclo",
     "button.zoomIn": "Acercar",
@@ -5107,6 +5113,8 @@
     "tooltip.releaseMagnet": "Release magnet",
     "tooltip.includeChildren": "Include {{count}} child order(s)",
     "tooltip.releaseChildren": "Release {{count}} child order(s)",
+    "tooltip.magnetizeAllChildren": "Magnetize All Children",
+    "tooltip.releaseAllChildren": "Release All Children",
     "tooltip.state": {
       "in_sync": "Un ^Workflow^ está sincronizado si ha sido ^desplegado|deployment^ al ^Controlador|controller^.",
       "suspended": "Un ^Workflow^ está suspendido cuando el usuario lo pausa.",

@@ -342,6 +342,14 @@ export class ResumeOrderModalComponent {
             flag = true;
             break;
           }
+          // Segment-inside-branch: ImplicitEnd positionString may not be in positions;
+          // match by branch prefix (all but last component of ImplicitEnd positionString).
+          const branchPrefix = positionArr[j] ? positionArr[j].split(':').slice(0, -1).join(':') : null;
+          if (branchPrefix && this.positions[i].startsWith(branchPrefix + ':')) {
+            index = j;
+            flag = true;
+            break;
+          }
         }
         if (flag) {
           break;
@@ -414,6 +422,17 @@ export class ResumeOrderModalComponent {
   private updateOrder(position, index = -1): void {
     const self = this;
 
+    function findFirstValidInSubtree(instructions: any[]): any {
+      for (const child of instructions) {
+        if (self.positionMap.has(child.positionString)) { return child; }
+        if (child.instructions?.length) {
+          const deep = findFirstValidInSubtree(child.instructions);
+          if (deep) { return deep; }
+        }
+      }
+      return null;
+    }
+
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
@@ -421,9 +440,7 @@ export class ResumeOrderModalComponent {
           if (position === json.instructions[x].positionString) {
             json.instructions[x].order = self.order;
             if (json.instructions[x].TYPE === 'Segment' && json.instructions[x].instructions?.length > 0) {
-              const firstValid = json.instructions[x].instructions.find(
-                (child: any) => self.positionMap.has(child.positionString)
-              );
+              const firstValid = findFirstValidInSubtree(json.instructions[x].instructions);
               self.position = firstValid ? self.positionMap.get(firstValid.positionString) : null;
             } else {
               self.position = json.instructions[x].position ?? self.positionMap.get(position);
