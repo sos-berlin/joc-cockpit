@@ -4424,6 +4424,7 @@
     "label.iamOidcGroupClaims": "OIDC Claims",
     "label.iamOidcGroupScopes": "OIDC Scopes",
     "label.iamOidcGroupRolesMap": "OIDC сопоставление групп и ролей",
+    "label.iamOidcGroupExtractQuery": "OIDC Group Extract Query",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcFlowType": "Тип потока",
@@ -4559,7 +4560,8 @@
     "placeholder.iamOidcTruststorePassword": "Введите пароль Truststore OIDC",
     "placeholder.iamOidcUserAttribute": "Введите атрибут имени пользователя OIDC",
     "placeholder.iamOidcGroupClaims": "Введите Claims OIDC",
-    "placeholder.iamOidcGroupScopes": "Введите Scopes OIDC",    
+    "placeholder.iamOidcGroupScopes": "Введите Scopes OIDC",
+    "placeholder.iamOidcGroupExtractQuery": "Enter OIDC Group Extract Query",
     "placeholder.iamFidoTimeout": "Введите тайм-аут в секундах",
     "placeholder.iamFidoTransports": "Введите транспорты",
     "placeholder.iamFidoUserVerification": "Введите параметр проверки пользователя",
@@ -4697,7 +4699,8 @@
         "iamOidcImage": "Если указано изображение OIDC, оно отображается в окне входа.\n\nМожно использовать PNG-файлы размером до 1 МБ.\n\nОптимальный размер отображения - 64×64 пикселя.",
         "iamOidcGroupClaims": "Для OIDC Claims указываются группы, в которых состоит пользователь.\n\nКаждая группа может быть сопоставлена с одной или несколькими ролями JS7.",
         "iamOidcGroupScopes": "OIDC Scopes определяют набор OIDC Claims.",
-        "iamOidcGroupRolesMap": "Членства в OIDC-группах сопоставляются с одной или несколькими ролями JS7."
+        "iamOidcGroupRolesMap": "Членства в OIDC-группах сопоставляются с одной или несколькими ролями JS7.",
+        "iamOidcGroupExtractQuery": "OIDC Group Extract Query"
       },
       "webauthn": {
         "iamTimeout": "Время ожидания при проверке пользователя.\n\nЕсли этот интервал превышен, процесс регистрации или аутентификации прерывается.",

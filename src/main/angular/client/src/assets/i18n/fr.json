@@ -4424,6 +4424,7 @@
     "label.iamOidcGroupClaims": "OIDC Claims",
     "label.iamOidcGroupScopes": "OIDC Scopes",
     "label.iamOidcGroupRolesMap": "OIDC Group/Roles Mapping",
+    "label.iamOidcGroupExtractQuery": "OIDC Group Extract Query",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcFlowType": "Flow Type",
@@ -4561,6 +4562,7 @@
     "placeholder.iamOidcTruststorePassword": "Entrer le OIDC Truststore Password",
     "placeholder.iamOidcGroupClaims": "Entrer OIDC Claims",
     "placeholder.iamOidcGroupScopes": "Entrer OIDC Scopes",
+    "placeholder.iamOidcGroupExtractQuery": "Enter OIDC Group Extract Query",
     "placeholder.iamFidoTimeout": "Entrer le Timeout en secondes",
     "placeholder.iamFidoTransports": "Sélectionner Transport",
     "placeholder.iamFidoUserVerification": "Sélectionner User Verification",
@@ -4697,7 +4699,8 @@
         "iamOidcImage": "Si une Image OIDC est spécifiée, elle s'affiche sur l'écran de connexion.\n\nLes fichiers image de type .png sont autorisés avec une taille maximale de 1 Mo.\n\nLes images sont affichées de manière optimale avec une largeur et une hauteur de 96 pixels.",
         "iamOidcGroupClaims": "Les OIDC Claims spécifient les groupes auxquels le compte utilisateur en question appartient.\n\nChaque groupe peut être associé à un ou plusieurs rôles dans le JS7.",
         "iamOidcGroupScopes": "Les OIDC Scopes définissent un ensemble de Claims.",
-        "iamOidcGroupRolesMap": "Les appartenances à des groupes OIDC sont respectivement mappées sur un ou plusieurs rôles JS7."
+        "iamOidcGroupRolesMap": "Les appartenances à des groupes OIDC sont respectivement mappées sur un ou plusieurs rôles JS7.",
+        "iamOidcGroupExtractQuery": "OIDC Group Extract Query"
       },
       "webauthn": {
         "iamTimeout": "Le Timeout appliqué à la vérification de l'utilisateur.\n\nSi le délai est dépassé, le flux d'enregistrement/authentification est annulé.",

@@ -844,6 +844,25 @@
               </div>
             }
             <div class="form-group row">
+              <label [appRichTooltip]="'user.tooltips.oidc.iamOidcGroupExtractQuery' | translate"
+                     class="col-sm-4 form-control-label">{{ 'user.label.iamOidcGroupExtractQuery' | translate }}
+              </label>
+              <div [ngClass]="{'has-error' : ((iamOidcGroupExtractQuery.dirty || iamOidcGroupExtractQuery.touched) && iamOidcGroupExtractQuery.invalid)}"
+                   class="col-sm-6">
+                <input #iamOidcGroupExtractQuery="ngModel" [(ngModel)]="currentObj.iamOidcGroupExtractQuery"
+                       [placeholder]="'user.placeholder.iamOidcGroupExtractQuery' | translate"
+                       autocomplete="off" class="form-control" maxlength="255" pattern="^[^<>]*$"
+                       name="iamOidcGroupExtractQuery" type="text">
+                @if (iamOidcGroupExtractQuery.invalid && (iamOidcGroupExtractQuery.dirty || iamOidcGroupExtractQuery.touched)) {
+                  <div class="text-danger help-block">
+                    @if (iamOidcGroupExtractQuery.errors['pattern']) {
+                      <div>{{ 'common.message.invalid' | translate }}</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group row">
               <label [appRichTooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate"
                      class="col-sm-12 _600">{{ 'user.label.iamOidcGroupRolesMap' | translate }}</label>
             </div>

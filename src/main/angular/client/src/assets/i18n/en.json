@@ -4424,6 +4424,7 @@
     "label.iamOidcGroupClaims": "OIDC Claims",
     "label.iamOidcGroupScopes": "OIDC Scopes",
     "label.iamOidcGroupRolesMap": "OIDC Group/Roles Mapping",
+    "label.iamOidcGroupExtractQuery": "OIDC Group Extract Query",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcClientCredentialsFlow": "Client Credentials Flow",
@@ -4560,6 +4561,7 @@
     "placeholder.iamOidcUserAttribute": "Enter OIDC User Name Attribute",
     "placeholder.iamOidcGroupClaims": "Enter OIDC Claims",
     "placeholder.iamOidcGroupScopes": "Enter OIDC Scopes",
+    "placeholder.iamOidcGroupExtractQuery": "Enter OIDC Group Extract Query",
     "placeholder.iamFidoTimeout": "Enter Timeout in seconds",
     "placeholder.iamFidoTransports": "Select Transport",
     "placeholder.iamFidoUserVerification": "Select User Verification",
@@ -4697,7 +4699,8 @@
         "iamOidcImage": "If an OIDC Image is specified, then it will be displayed with the login screen.\n\nImage files of type .png are allowed with a maximum size of 1 MB.\n\nImages are best displayed using a width and height of 96 pixels.",
         "iamOidcGroupClaims": "OIDC Claims specify the groups for which the user account in question has membership. Each group can be mapped to one or more roles in JS7.",
         "iamOidcGroupScopes": "OIDC Scopes define a set of Claims.",
-        "iamOidcGroupRolesMap": "OIDC group memberships are each mapped to one or more JS7 roles."
+        "iamOidcGroupRolesMap": "OIDC group memberships are each mapped to one or more JS7 roles.",
+        "iamOidcGroupExtractQuery": "OIDC Group Extract Query"
       },
       "webauthn": {
         "iamTimeout": "The Timeout applied for User Verification.\n\nIf the Timeout is exceeded, then the registration/authentication flow will be cancelled.",

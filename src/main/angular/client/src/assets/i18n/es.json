@@ -4424,6 +4424,7 @@
     "label.iamOidcGroupClaims": "Claims OIDC",
     "label.iamOidcGroupScopes": "Ámbitos OIDC",
     "label.iamOidcGroupRolesMap": "Mapeo de grupos/roles OIDC",
+    "label.iamOidcGroupExtractQuery": "OIDC Group Extract Query",
     "label.iamOidcAuthenticationCodeFlow": "Flujo de código de autorización",
     "label.iamOidcImplicitFlow": "Flujo implícito",
     "label.iamOidcClientCredentialsFlow": "Flujo de credenciales de cliente",
@@ -4560,6 +4561,7 @@
     "placeholder.iamOidcUserAttribute": "Ingresar atributo de nombre de usuario OIDC",
     "placeholder.iamOidcGroupClaims": "Ingresar Claims OIDC",
     "placeholder.iamOidcGroupScopes": "Ingresar ámbitos OIDC",
+    "placeholder.iamOidcGroupExtractQuery": "Enter OIDC Group Extract Query",
     "placeholder.iamFidoTimeout": "Ingresar timeout en segundos",
     "placeholder.iamFidoTransports": "Seleccionar transporte",
     "placeholder.iamFidoUserVerification": "Seleccionar verificación de usuario",
@@ -4697,7 +4699,8 @@
         "iamOidcImage": "Si se especifica una Imagen OIDC, se mostrará en la pantalla de inicio de sesión.\n\nSe permiten archivos de imagen de tipo .png.",
         "iamOidcGroupClaims": "Los Claims OIDC especifican los grupos de los cuales la cuenta de usuario en cuestión es miembro. Cada grupo puede mapearse a uno o más roles en JS7.",
         "iamOidcGroupScopes": "Los Ámbitos OIDC definen un conjunto de Claims.",
-        "iamOidcGroupRolesMap": "Las membresías de grupo OIDC se mapean cada una a uno o más roles de JS7."
+        "iamOidcGroupRolesMap": "Las membresías de grupo OIDC se mapean cada una a uno o más roles de JS7.",
+        "iamOidcGroupExtractQuery": "OIDC Group Extract Query"
       },
       "webauthn": {
         "iamTimeout": "El Timeout aplicado para la Verificación del usuario.\n\nSi el Timeout es superado, el flujo de registración/autenticación será cancelado.",
