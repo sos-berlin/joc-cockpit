@@ -2901,6 +2901,7 @@
     "label.enterColor": "Ingresar color",
     "label.resetDefault": "Restablecer valores predeterminados",
     "label.showHelpPages": "Habilitar Ayuda contextual",
+    "label.includeDependencies": "Default dependency handling",
     "button.resetPreferences": "Restablecer preferencias del perfil",
     "button.groupLimit": "Límite de grupo",
     "button.changePassword": "Cambiar contraseña",

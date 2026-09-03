@@ -2901,6 +2901,7 @@
     "label.enterColor": "色入力",
     "label.resetDefault": "初期設定にリセット",
     "label.showHelpPages": "ヘルプページ表示",
+    "label.includeDependencies": "Default dependency handling",
     "button.resetPreferences": "プリファレンスリセット",
     "button.groupLimit": "グループリミット",
     "button.changePassword": "パスワード変更",

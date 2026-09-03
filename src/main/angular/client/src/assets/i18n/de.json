@@ -2901,6 +2901,7 @@
     "label.enterColor": "Farben angeben",
     "label.resetDefault": "Auf Voreinstellung zurücksetzen",
     "label.showHelpPages": "Kontexthilfe anzeigen",
+    "label.includeDependencies": "Default dependency handling",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",

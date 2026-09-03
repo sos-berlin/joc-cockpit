@@ -621,6 +621,22 @@
                     </nz-radio-group>
                   </div>
                 </div>
+
+                <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark">
+                        <span>
+                          {{ 'profile.label.includeDependencies' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <nz-radio-group [(ngModel)]="preferences.includeDependencies" (ngModelChange)="changeConfiguration()">
+                          @for (option of includeDependenciesOptions; track $index) {
+                            <label nz-radio [nzValue]="option.value"><span>{{ option.name | translate }}</span></label>
+                          }
+                        </nz-radio-group>
+                      </div>
+                    </div>
+
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark" >{{ 'profile.label.showHelpPages' | translate }}</div>
                   <div class="col-md-6">
