@@ -2674,6 +2674,7 @@
           "criticality": "^ジョブ|job^の重要度を通知に使用することで、インシデントの緊急性をより明確に区別することができます。",
           "failOnOutputErr": "^ジョブ|job^がstderrに出力を書き込んだ場合、これはエラーとみなされ、^オーダー|order^は失敗ステートになります。",
           "warnOnOutputErr": "stderr出力で警告",
+          "maxWaitForStdouterr": "Max Wait For Stdout/Stderr",
           "admissionTime": "許可時間",
           "skipIfNoAdmissionForOrderDay": "許可時間ではないときはスキップ",
           "skipIfNoAdmissionForOrderDayForInstruction": "許可時間が^オーダー|order^日と一致しない場合、その^ジョブ|job^はスキップされます。例えば、許可時間が月曜日と火曜日に設定されているにもかかわらず、オーダー日が水曜日に予定されている場合、そのジョブは実行されません。月曜日と火曜日には、オーダーは許可時間が到来するまで、待機状態となります。",
@@ -4424,6 +4425,7 @@
     "label.iamOidcGroupClaims": "OIDCグループクレーム",
     "label.iamOidcGroupScopes": "OIDCグループスコープ",
     "label.iamOidcGroupRolesMap": "OIDCグループロールマップ",
+    "label.iamOidcGroupExtractQuery": "OIDC Group Extract Query",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
     "label.iamOidcFlowType": "Flowタイプ",
@@ -4560,6 +4562,7 @@
     "placeholder.iamOidcUserAttribute": "OIDCユーザー属性入力",
     "placeholder.iamOidcGroupClaims": "OIDCグループクレーム入力",
     "placeholder.iamOidcGroupScopes": "OIDCグループスコープクレーム入力",
+    "placeholder.iamOidcGroupExtractQuery": "Enter OIDC Group Extract Query",
     "placeholder.iamFidoTimeout": "ミリ秒でタイムアウト入力",
     "placeholder.iamFidoTransports": "トランスポート選択",
     "placeholder.iamFidoUserVerification": "ユーザー確認選択",
@@ -4697,7 +4700,8 @@
         "iamOidcImage": "OIDCイメージ",
         "iamOidcGroupClaims": "OIDCグループクレーム",
         "iamOidcGroupScopes": "OIDCグループスコープ",
-        "iamOidcGroupRolesMap": "OIDCグループロールマップ"
+        "iamOidcGroupRolesMap": "OIDCグループロールマップ",
+        "iamOidcGroupExtractQuery": "OIDC Group Extract Query"
       },
       "webauthn": {
         "iamTimeout": "タイムアウト",
@@ -4872,6 +4876,7 @@
     "label.logLevel": "ログレベル",
     "label.failOnOutputErr": "stderr出力でエラー",
     "label.warnOnOutputErr": "stderr出力で警告",
+    "label.maxWaitForStdouterr": "Max Wait For Stdout/Stderr",
     "label.showConfiguration": "ジョブ定義表示",
     "label.allowUndeclared": "宣言されていない変数を許可",
     "label.boardNames": "通知ボード名",
