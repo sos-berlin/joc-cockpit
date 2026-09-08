@@ -748,6 +748,15 @@ export class CoreService {
     });
   }
 
+  downloadAsBlob(url: string, options: any): Observable<any> {
+    const headers: any = {
+      Accept: 'application/octet-stream',
+      responseType: 'blob',
+      observe: 'response'
+    };
+    return this.http.post(url, options, headers);
+  }
+
   plainData(url: string, options: any): Observable<any> {
     const headers: any = {
       Accept: 'text/plain',

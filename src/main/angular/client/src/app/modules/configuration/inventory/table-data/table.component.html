@@ -88,28 +88,31 @@
           }
         </button>
       }
-      @if (mapOfCheckedId.size > 0 && !isTrash) {
+      @if (mapOfCheckedId.size > 0 && !isTrash && permission.joc.inventory.deploy && securityLevel !== 'HIGH' &&
+      (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) &&
+      (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH')) {
         <button (click)="deployAll()" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-rocket p-r-xs"></i>
-          @if (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
-          && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH') {
-            <span >{{ 'inventory.button.deploy' | translate }}</span>
-          }
-          @if ((objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
-            || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
-            <span >{{ 'inventory.button.release' | translate }}</span>
-          }
+          <span >{{ 'inventory.button.deploy' | translate }}</span>
+        </button>
+      }
+      @if (mapOfCheckedId.size > 0 && !isTrash && permission.joc.inventory.deploy &&
+      (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) &&
+      (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
+        <button (click)="deployAll()" class="btn btn-sm btn-grey m-l-12">
+          <i class="fa fa-rocket p-r-xs"></i>
+          <span >{{ 'inventory.button.release' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash && (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
-        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT')) {
+        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
         <button (click)="revokeAll(true)" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
           <span  >{{ 'inventory.button.revoke' | translate }}</span>
         </button>
       }
-      @if (mapOfCheckedId.size > 0 && !isTrash && ((objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
-        || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT'))) {
+      @if (mapOfCheckedId.size > 0 && !isTrash && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
+        || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
         <button (click)="revokeAll(false)" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
           <span  >{{ 'inventory.button.recall' | translate }}</span>
@@ -319,7 +322,7 @@
                         <a >{{ 'common.button.showDependencies' | translate }}</a>
                       </li>
                     }
-                    @if (permission.joc.inventory.manage) {
+                    @if (permission.joc.inventory.manage && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
                       <li nz-menu-divider>
                         }
                     @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
@@ -336,14 +339,14 @@
                         <a >{{ 'inventory.button.revoke' | translate }}</a>
                       </li>
                     }
-                    @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') {
+                    @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
                       <li (click)="releaseObject(data)"
                           [nzDisabled]="!data.valid"
                           nz-menu-item>
                         <a >{{ 'inventory.button.release' | translate }}</a>
                       </li>
                     }
-                    @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') {
+                    @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
                       <li (click)="recallObject(data)"
                           [nzDisabled]="!data.released"
                           nz-menu-item>
