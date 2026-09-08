@@ -5522,22 +5522,36 @@ export class XmlEditorComponent {
 
 
   downloadSchema(objType, schemaIdentifier): void {
-    let link = window.location.origin + '/joc/api/xmleditor/schema/download?controllerId='
-      + this.schedulerIds.selected + '&objectType=' + objType +
-      '&accessToken=' + this.authService.accessTokenId;
+    const options: any = {
+      controllerId: this.schedulerIds.selected,
+      objectType: objType
+    };
+
     if (objType !== 'NOTIFICATION') {
-      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+      options.schemaIdentifier = schemaIdentifier;
     }
-    $('#tmpFrame').attr('src', link);
+
+    this.coreService.download(
+      'xmleditor/schema/download',
+      options,
+      schemaIdentifier ? `${schemaIdentifier}.xsd` : 'schema.xsd',
+      (success: boolean) => {
+        if (!success) {
+          console.error('Failed to download XSD schema.');
+        }
+      }
+    );
   }
 
   showXSD(objType, schemaIdentifier): void {
-    let windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
-    let link = window.location.origin + '/joc/api/xmleditor/schema/download?show=true&controllerId='
-      + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
-      + this.authService.accessTokenId;
+    const windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
+    const options: any = {
+      controllerId: this.schedulerIds.selected,
+      objectType: objType,
+      show: true
+    };
     if (objType !== 'NOTIFICATION') {
-      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+      options.schemaIdentifier = schemaIdentifier;
     }
 
     let newWindow;
@@ -5546,10 +5560,20 @@ export class XmlEditorComponent {
     } else {
       newWindow = window.open('assets/preview.html', '_blank');
     }
-    const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + link + '"></iframe>';
-    setTimeout(() => {
-      newWindow.document.body.innerHTML = (iframeContent);
-    }, 50);
+
+    this.coreService.downloadAsBlob('xmleditor/schema/download', options).subscribe({
+      next: (response: any) => {
+        const blobUrl = URL.createObjectURL(response.body);
+        const iframeContent = '<iframe width="100%" height="100%" frameborder="0" src="' + blobUrl + '"></iframe>';
+        setTimeout(() => {
+          newWindow.document.body.innerHTML = (iframeContent);
+        }, 50);
+      }, error: () => {
+        if (newWindow) {
+          newWindow.close();
+        }
+      }
+    });
   }
 
   save2(self): void {
