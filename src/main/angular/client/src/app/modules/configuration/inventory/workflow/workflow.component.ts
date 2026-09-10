@@ -75,6 +75,7 @@ declare const mxImageShape: any;
 declare const mxRhombus: any;
 declare const mxLabel: any;
 declare const mxKeyHandler: any;
+declare const mxCellOverlay: any;
 declare const $: any;
 
 @Directive({
@@ -5348,6 +5349,9 @@ export class WorkflowComponent {
   allNodes: any = [];
   tags: any = [];
   skipXMLToJSONConversion = false;
+  // Synthetic background-rectangle cells drawn behind each Segment's content
+  _segmentContainerCells: any[] = [];
+  private _isDrawingSegmentContainers = false;
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
@@ -8376,6 +8380,350 @@ export class WorkflowComponent {
     }
   }
 
+  // ===== SEGMENT CONTAINER POST-LAYOUT PASS =====
+  // After mxHierarchicalLayout runs, draws a non-interactive dashed rectangle behind
+  // each Segment's content. The Segment header bar is the selectable identity;
+  // this rectangle is purely visual and never intercepts clicks or moves.
+  private drawSegmentContainers(graph: any): void {
+    if (this._isDrawingSegmentContainers) { return; }
+    this._isDrawingSegmentContainers = true;
+    try {
+      this._drawSegmentContainersImpl(graph);
+    } finally {
+      this._isDrawingSegmentContainers = false;
+    }
+  }
+
+  private _drawSegmentContainersImpl(graph: any): void {
+    const self = this;
+
+    if (!graph || !graph.view) { return; }
+
+    // Collect all cells recursively (handles Try→Catch nesting etc.)
+    const allCells: any[] = [];
+    const collectCells = (parent: any) => {
+      const children = graph.getChildCells(parent) || [];
+      for (const c of children) {
+        allCells.push(c);
+        if (graph.getModel().getChildCount(c) > 0) { collectCells(c); }
+      }
+    };
+    collectCells(graph.getDefaultParent());
+
+    const segCells = allCells.filter((c: any) => c.vertex && c.value?.tagName === 'Segment');
+
+    const isDark = !(self.preferences?.theme === 'light' || self.preferences?.theme === 'lighter' || !self.preferences?.theme);
+    const colorCode = isDark ? '#90CAF9' : '#1E88E5';
+    const basePADDING = 10;
+    const translate = graph.view.getTranslate();
+    const scale = graph.view.getScale();
+
+    // Pre-pass: build a Set of inner-cell ids for each Segment, then derive nesting depth.
+    // Depth = number of other Segments whose inner-cell set contains this Segment cell.
+    // This reuses the same forward BFS + inner BFS already used in the main loop below.
+    const segInnerIdSets = new Map<string, Set<string>>();
+    for (const sc of segCells) {
+      let ec: any = allCells.find(
+        (c: any) => c.vertex && c.value?.tagName === 'EndSegment'
+          && c.value?.getAttribute('targetId') === sc.id
+      );
+      if (!ec) {
+        const fv = new Set<string>([sc.id]);
+        const fq: any[] = [];
+        for (const e of (sc.edges || [])) {
+          if (e.source?.id === sc.id && e.target && !fv.has(e.target.id)) { fq.push(e.target); }
+        }
+        while (fq.length > 0 && !ec) {
+          const cur = fq.shift();
+          if (!cur || fv.has(cur.id)) { continue; }
+          fv.add(cur.id);
+          if (cur.vertex && cur.value?.tagName === 'EndSegment') { ec = cur; break; }
+          for (const e of (cur.edges || [])) {
+            if (e.source?.id === cur.id && e.target && !fv.has(e.target.id)) { fq.push(e.target); }
+          }
+        }
+      }
+      const idSet = new Set<string>();
+      if (ec) {
+        const ie = (sc.edges || []).find((e: any) => e.source?.id === sc.id && e.target?.id !== ec.id);
+        if (ie) {
+          const bv = new Set<string>([sc.id, ec.id]);
+          const bq: any[] = [ie.target];
+          while (bq.length > 0) {
+            const cur = bq.shift();
+            if (!cur || bv.has(cur.id)) { continue; }
+            bv.add(cur.id);
+            if (cur.vertex) { idSet.add(cur.id); }
+            for (const e of (cur.edges || [])) {
+              if (e.source?.id === cur.id && e.target && !bv.has(e.target.id)) { bq.push(e.target); }
+            }
+          }
+        }
+      }
+      segInnerIdSets.set(sc.id, idSet);
+    }
+    // depth for each Segment = how many other Segments transitively contain it
+    const segDepths = new Map<string, number>();
+    for (const sc of segCells) {
+      let depth = 0;
+      for (const [otherId, otherIds] of segInnerIdSets) {
+        if (otherId !== sc.id && otherIds.has(sc.id)) { depth++; }
+      }
+      segDepths.set(sc.id, depth);
+    }
+
+    // Process segments deepest-first so inner containers are fully bounded before
+    // their parent computes its own bounding box (fix b: containment guarantee).
+    const sortedSegCells = [...segCells].sort(
+      (a, b) => (segDepths.get(b.id) ?? 0) - (segDepths.get(a.id) ?? 0)
+    );
+
+    // Single transaction: remove old containers and insert new ones atomically,
+    // so mxAutoSaveManager receives only one CHANGE event for the whole pass.
+    graph.getModel().beginUpdate();
+    try {
+      // Remove ALL SegmentContainer cells directly from the model, bypassing the
+      // overridden graph.removeCells() whose SegmentContainer filter would silently
+      // skip these cells and leave orphan boxes on the canvas.
+      const allExistingContainers = graph.getChildCells(graph.getDefaultParent())
+        .filter((c: any) => c.value?.tagName === 'SegmentContainer');
+      for (const c of allExistingContainers) {
+        graph.getModel().remove(c);
+      }
+      this._segmentContainerCells = [];
+
+      const remainingContainers = graph.getChildCells(graph.getDefaultParent())
+        .filter((c: any) => c.value?.tagName === 'SegmentContainer');
+
+      if (sortedSegCells.length === 0) { return; }
+
+      // fix (a): minimum gap in display-coord pixels between sibling containers
+      const MIN_GAP = 10;
+      // fix (b): bounding boxes keyed by segCell.id, populated as each segment is processed
+      //          (deepest-first), so outer segments can expand to enclose inner boxes
+      const computedBoxMap = new Map<string, {bx: number; by: number; bw: number; bh: number}>();
+      const computedBoxesThisPass: Array<{bx: number; by: number; bw: number; bh: number; segCellId: string}> = [];
+
+      for (const segCell of sortedSegCells) {
+        // Find matching EndSegment
+        let endCell = allCells.find(
+          (c: any) => c.vertex && c.value?.tagName === 'EndSegment'
+            && c.value?.getAttribute('targetId') === segCell.id
+        );
+        if (!endCell) {
+          // Forward BFS from segCell to find EndSegment by reachability (handles missing/wrong targetId)
+          const fwdVisited = new Set<string>([segCell.id]);
+          const fwdQueue: any[] = [];
+          for (const e of (segCell.edges || [])) {
+            if (e.source?.id === segCell.id && e.target && !fwdVisited.has(e.target.id)) {
+              fwdQueue.push(e.target);
+            }
+          }
+          while (fwdQueue.length > 0 && !endCell) {
+            const curr = fwdQueue.shift();
+            if (!curr || fwdVisited.has(curr.id)) { continue; }
+            fwdVisited.add(curr.id);
+            if (curr.vertex && curr.value?.tagName === 'EndSegment') {
+              endCell = curr; break;
+            }
+            for (const e of (curr.edges || [])) {
+              if (e.source?.id === curr.id && e.target && !fwdVisited.has(e.target.id)) {
+                fwdQueue.push(e.target);
+              }
+            }
+          }
+        }
+        if (!endCell) { continue; }
+
+        const segState = graph.view.getState(segCell);
+        if (!segState) { continue; }
+
+        const isCollapsed = !!segCell.collapsed;
+
+        // BFS: collect all inner cells between Segment and EndSegment
+        const innerEntryEdge = (segCell.edges || []).find(
+          (e: any) => e.source?.id === segCell.id && e.target?.id !== endCell.id
+        );
+        const isEmptySeg = !innerEntryEdge;
+
+        // Always collect inner cells regardless of collapsed state, needed for both bbox and setVisible
+        const visited = new Set<string>([segCell.id, endCell.id]);
+        const queue: any[] = [];
+        if (!isEmptySeg && innerEntryEdge) { queue.push(innerEntryEdge.target); }
+        const innerCells: any[] = [];
+        while (queue.length > 0) {
+          const curr = queue.shift();
+          if (!curr || visited.has(curr.id)) { continue; }
+          visited.add(curr.id);
+          if (curr.vertex) { innerCells.push(curr); }
+          for (const e of (curr.edges || [])) {
+            if (e.source?.id === curr.id && e.target && !visited.has(e.target.id)) { queue.push(e.target); }
+          }
+        }
+
+        // Depth-scaled padding and dash style: outermost Segments get more padding so
+        // nested containers are visibly offset from their parent's border, not touching it.
+        const depth = segDepths.get(segCell.id) ?? 0;
+        const PADDING = basePADDING + depth * 6;
+        // Alternate dash pattern per depth level so nested boxes remain distinguishable
+        // even where padding is tight (depth 0 = long dash, depth 1 = short, depth 2 = long, …)
+        const dashPattern = depth % 2 === 0 ? '8 4' : '4 4';
+
+        // Compute bounding box in display coordinates.
+        // Top anchor = top of the Segment header bar; container wraps header + all inner cells.
+        let bx: number, by: number, bw: number, bh: number;
+
+        if (isCollapsed) {
+          bx = segState.x - PADDING;
+          by = segState.y - PADDING;
+          bw = segState.width + 2 * PADDING;
+          bh = segState.height + 2 * PADDING;
+        } else {
+          let minX = segState.x;
+          let minY = segState.y;
+          let maxX = segState.x + segState.width;
+          let maxY = segState.y + segState.height;
+
+          for (const ic of innerCells) {
+            // fix (b): if this inner cell is itself a Segment with an already-computed box
+            // (deepest-first ordering guarantees it), use that box's full extent (including
+            // its own PADDING) so the outer container strictly encloses the inner one.
+            const precomputed = computedBoxMap.get(ic.id);
+            if (precomputed) {
+              minX = Math.min(minX, precomputed.bx);
+              maxX = Math.max(maxX, precomputed.bx + precomputed.bw);
+              maxY = Math.max(maxY, precomputed.by + precomputed.bh);
+              continue;
+            }
+            const st = graph.view.getState(ic);
+            if (!st) { continue; }
+            minX = Math.min(minX, st.x);
+            maxX = Math.max(maxX, st.x + st.width);
+            maxY = Math.max(maxY, st.y + st.height);
+          }
+
+          const endState = graph.view.getState(endCell);
+          if (endState) {
+            maxY = Math.max(maxY, endState.y + endState.height);
+          }
+
+          bx = minX - PADDING;
+          by = minY - PADDING;
+          bw = (maxX - minX) + 2 * PADDING;
+          bh = (maxY - minY) + 2 * PADDING;
+        }
+
+        // fix (a): enforce minimum gap between sibling (non-nested) containers.
+        // Nested pairs (one contains the other) are skipped via the nesting-relationship check.
+        for (const other of computedBoxesThisPass) {
+          if (segInnerIdSets.get(segCell.id)?.has(other.segCellId)) { continue; }
+          if (segInnerIdSets.get(other.segCellId)?.has(segCell.id)) { continue; }
+
+          const xOverlap = bx < (other.bx + other.bw) && (bx + bw) > other.bx;
+          if (!xOverlap) { continue; }
+          // Current box's top is too close to other box's bottom
+          const gapFromTop = by - (other.by + other.bh);
+          if (gapFromTop >= 0 && gapFromTop < MIN_GAP) {
+            const deficit = MIN_GAP - gapFromTop;
+            by += deficit;
+            bh = Math.max(0, bh - deficit);
+          }
+          // Current box's bottom is too close to other box's top
+          const gapFromBottom = other.by - (by + bh);
+          if (gapFromBottom >= 0 && gapFromBottom < MIN_GAP) {
+            bh = Math.max(0, bh - (MIN_GAP - gapFromBottom));
+          }
+        }
+        computedBoxMap.set(segCell.id, {bx, by, bw, bh});
+        computedBoxesThisPass.push({bx, by, bw, bh, segCellId: segCell.id});
+
+        const cellX = bx / scale - translate.x;
+        const cellY = by / scale - translate.y;
+        const cellW = bw / scale;
+        const cellH = bh / scale;
+
+        const doc = mxUtils.createXmlDocument();
+        const cNode = doc.createElement('SegmentContainer');
+        cNode.setAttribute('segmentId', segCell.id);
+        const containerStyle = 'rounded=0;fillColor=none;strokeColor=' + colorCode +
+          ';dashed=1;dashPattern=' + dashPattern + ';strokeWidth=1.5;pointerEvents=0;noLabel=1;foldable=0;';
+        const containerCell = graph.insertVertex(
+          graph.getDefaultParent(), null, cNode, cellX, cellY, cellW, cellH, containerStyle
+        );
+        // Send behind all content so it never intercepts clicks
+        graph.orderCells(true, [containerCell]);
+        this._segmentContainerCells.push(containerCell);
+
+        // Apply collapse/expand at DOM/view level ONLY — never via graph.getModel().setVisible().
+        // model.setVisible() fires mxEvent.CHANGE which triggers mxAutoSaveManager →
+        // xmlToJsonParser → updateWorkflow cascade, and can also corrupt Connection edge
+        // cells in the model. DOM toggling is invisible to the serializer so
+        // traversCells/checkEmptyObjects always see the complete instruction graph.
+        const edgesToToggle: any[] = [];
+        if (innerEntryEdge) { edgesToToggle.push(innerEntryEdge); }
+        for (const ic of innerCells) {
+          for (const e of (ic.edges || [])) {
+            if (!edgesToToggle.find((x: any) => x.id === e.id)) { edgesToToggle.push(e); }
+          }
+        }
+        // Always include EndSegment's INCOMING edges in collapse toggling, regardless of
+        // whether the segment has inner content. Without this, an empty/collapsed Segment's
+        // Segment→EndSegment edge stays visible and creates a double-arrow gap.
+        // The OUTGOING edge from EndSegment is intentionally excluded: it must remain
+        // visible as the single exit arrow from the collapsed box to the following node.
+        for (const e of (endCell.edges || [])) {
+          if (e.target?.id === endCell.id) {
+            if (!edgesToToggle.find((x: any) => x.id === e.id)) { edgesToToggle.push(e); }
+            // Remove the arrowhead at the invisible 2×2 EndSegment anchor so the path
+            // through it renders as one continuous line; the outgoing edge carries the
+            // real arrowhead to the next node.
+            graph.setCellStyles(mxConstants.STYLE_ENDARROW, 'none', [e]);
+          }
+        }
+        const displayValue = isCollapsed ? 'none' : '';
+        for (const c of [...innerCells, ...edgesToToggle]) {
+          const st = graph.view.getState(c);
+          if (st) {
+            if (st.node) { (st.node as any).style.display = displayValue; }
+            if (st.text && st.text.node) { (st.text.node as any).style.display = displayValue; }
+          }
+        }
+      }
+    } finally {
+      graph.getModel().endUpdate();
+    }
+
+    // Add/refresh chevron overlay on each Segment cell (outside model-update, view-level only)
+    for (const segCell of segCells) {
+      const existing = graph.getCellOverlays(segCell) || [];
+      for (const o of existing) {
+        if ((o as any)._isSegmentChevron) { graph.removeCellOverlay(segCell, o); }
+      }
+      const isCollapsedNow = !!segCell.collapsed;
+      const chevronImg = isCollapsedNow
+        ? new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12)
+        : new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
+      const chevronOverlay = new mxCellOverlay(chevronImg, isCollapsedNow ? 'Expand' : 'Collapse');
+      (chevronOverlay as any)._isSegmentChevron = true;
+      chevronOverlay.align = mxConstants.ALIGN_LEFT;
+      chevronOverlay.verticalAlign = mxConstants.ALIGN_TOP;
+      chevronOverlay.offset = new mxPoint(4, 2);
+      chevronOverlay.addListener(mxEvent.CLICK, (_sender: any, _evt: any) => {
+        const geo = graph.getModel().getGeometry(segCell);
+        if (geo && !geo.alternateBounds) {
+          // Initialize alternateBounds so swapBounds inside foldCells never operates on null,
+          // which can corrupt geometry and cause traversCells to throw mid-walk.
+          const clonedGeo = geo.clone();
+          clonedGeo.alternateBounds = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
+          graph.getModel().setGeometry(segCell, clonedGeo);
+        }
+        graph.foldCells(!graph.isCellCollapsed(segCell), false, [segCell], null, null);
+      });
+      graph.addCellOverlay(segCell, chevronOverlay);
+    }
+  }
+  // ===== END SEGMENT CONTAINER POST-LAYOUT PASS =====
+
   private updateWorkflow(graph, jobMap): void {
     this.selectedNode = null;
     const scrollValue: any = {};
@@ -8396,6 +8744,7 @@ export class WorkflowComponent {
       // Updates the display
       graph.getModel().endUpdate();
       WorkflowService.executeLayout(graph, this.preferences);
+      this.drawSegmentContainers(graph);
       this.skipXMLToJSONConversion = true;
     }
 
@@ -8440,6 +8789,7 @@ export class WorkflowComponent {
       // Updates the display
       graph.getModel().endUpdate();
       WorkflowService.executeLayout(graph, this.preferences);
+      this.drawSegmentContainers(graph);
     }
   }
 
@@ -8530,6 +8880,9 @@ export class WorkflowComponent {
   }
 
   private traversCells(node, graph): void {
+    if (node === graph.getModel()) {
+      const all = graph.getChildCells(graph.getDefaultParent());
+    }
 
     let startNode;
     const nodes = [];
@@ -8543,6 +8896,9 @@ export class WorkflowComponent {
 
     function findFirstNode(data): void {
       for (const prop in node.cells) {
+        if (node.cells[prop]?.value?.tagName === 'SegmentContainer') {
+          continue; // decorative decorator, intentionally edge-less — never an orphan
+        }
         if (!node.cells[prop]?.edge && node.cells[prop]?.edges?.length === 0) {
           node.cells[prop].setParent(graph.getDefaultParent());
           graph.removeCells([node.cells[prop]], true);
@@ -8906,11 +9262,7 @@ export class WorkflowComponent {
     function creatJSONObject(cell: any, list: any[]): any {
       const obj = createObject(cell);
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-        if (cell.collapsed) {
-          obj.isCollapsed = cell.collapsed;
-        } else if (cell.value.tagName === 'Segment') {
-          obj.isCollapsed = false;
-        }
+        obj.isCollapsed = !!cell.collapsed;
         if (cell.value.tagName === 'If' || cell.value.tagName === 'Fork') {
           const edges = getOutgoingEdges(cell);
           const main = {endNode: ''};
@@ -9111,7 +9463,18 @@ export class WorkflowComponent {
     if (jsonObject.instructions.length > 0) {
       this.workflow.configuration = this.coreService.clone(jsonObject);
     } else {
-      this.workflow.configuration = {};
+      // Only wipe if the graph is genuinely empty (nothing but Start/End placeholders).
+      // If real instruction cells exist, the walker produced a wrong empty result
+      // (e.g. SegmentContainer orphan-removal mid-walk) -- keep the last known-good config.
+      const _wipeGraph = this.editor?.graph;
+      const _hasRealContent = _wipeGraph && _wipeGraph.getChildCells(_wipeGraph.getDefaultParent())
+        .some((c: any) => c.vertex && c.value?.tagName
+          && !['Process', 'Connector', 'Connection', 'SegmentContainer'].includes(c.value.tagName));
+      if (_hasRealContent) {
+        console.warn('[SEGMENT DEBUG] xmlToJsonParser produced empty instructions but graph has real content -- keeping previous configuration, not wiping.');
+      } else {
+        this.workflow.configuration = {};
+      }
     }
   }
 
@@ -9124,7 +9487,11 @@ export class WorkflowComponent {
       const graph = this.editor.graph;
       const model = graph.getModel();
       if (model.root) {
-        this.traversCells(model, graph);
+        try {
+          this.traversCells(model, graph);
+        } catch (e) {
+          console.error('[SEGMENT DEBUG] traversCells threw:', e);
+        }
       }
     }
     this.implicitSave = false;
@@ -9174,6 +9541,16 @@ export class WorkflowComponent {
         mxGraph.prototype.cellsLocked = true;
         mxGraph.prototype.foldingEnabled = true;
         mxGraph.prototype.cellsCloneable = false;
+        // Segment cells use a custom chevron overlay for collapse/
+        // expand (added in drawSegmentContainers) — suppress mxGraph's
+        // own native fold icon for them specifically, since it was
+        // rendering directly on top of the custom chevron, causing a
+        // cluttered/overlapping icon cluster at the top-left corner.
+        const origIsFoldingIcon = mxGraph.prototype.isFoldingIcon;
+        mxGraph.prototype.isFoldingIcon = function (state: any) {
+          if (state?.cell?.value?.tagName === 'Segment') { return false; }
+          return origIsFoldingIcon.apply(this, arguments);
+        };
         mxConstants.DROP_TARGET_COLOR = 'green';
         mxConstants.CURSOR_MOVABLE_VERTEX = 'move';
         mxConstants.VERTEX_SELECTION_DASHED = false;
@@ -9776,6 +10153,14 @@ export class WorkflowComponent {
           return false;
         };
 
+        // Suppress native mxGraph fold icon for Segment cells (Bug 1 & 2 fix)
+        graph.getFoldingImage = function (state) {
+          if (state && state.cell && state.cell.value?.tagName === 'Segment') {
+            return null;
+          }
+          return mxGraph.prototype.getFoldingImage.apply(this, arguments);
+        };
+
         /**
          * Function: isCellSelectable
          *
@@ -9783,6 +10168,12 @@ export class WorkflowComponent {
          */
         graph.isCellSelectable = function (cell) {
           if (!cell || self.isTrash) {
+            return false;
+          }
+          if (cell.value?.tagName === 'SegmentContainer') {
+            return false;
+          }
+          if (cell.value?.tagName === 'EndSegment') {
             return false;
           }
           return !cell.edge;
@@ -10037,7 +10428,9 @@ export class WorkflowComponent {
          */
         graph.isCellMovable = function (cell) {
           if (cell.value && !self.isTrash) {
-            return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process' && !self.workflowService.checkClosingCell(cell.value.tagName);
+            return !cell.edge && cell.value.tagName !== 'Catch' && cell.value.tagName !== 'Process'
+              && cell.value.tagName !== 'SegmentContainer'
+              && !self.workflowService.checkClosingCell(cell.value.tagName);
           } else {
             return false;
           }
@@ -10292,6 +10685,18 @@ export class WorkflowComponent {
         // Returns the type as the tooltip for column cells
         graph.getTooltipForCell = function (cell) {
           return self.workflowService.getTooltipForCell(cell);
+        };
+
+        // When native getDropTarget resolves to a SegmentContainer, re-resolve to the real cell underneath
+        const origGetDropTarget = mxDragSource.prototype.getDropTarget;
+        mxDragSource.prototype.getDropTarget = function (graph, x, y, evt) {
+          const target = origGetDropTarget.apply(this, arguments);
+          if (target && target.value?.tagName === 'SegmentContainer') {
+            const segId = target.value.getAttribute('segmentId');
+            const segCell = segId ? graph.getModel().getCell(segId) : null;
+            return segCell || target.getParent() || target;
+          }
+          return target;
         };
 
         /**
@@ -10626,6 +11031,7 @@ export class WorkflowComponent {
           }
           if (flag) {
             WorkflowService.executeLayout(graph, self.preferences);
+            self.drawSegmentContainers(graph);
           }
         };
 
@@ -10652,6 +11058,8 @@ export class WorkflowComponent {
             return cells;
           }
           if (typeof flag != 'boolean') {
+            // SegmentContainer cells are internal decorators, never real instructions — skip entirely
+            cells = (cells || []).filter((c: any) => c?.value?.tagName !== 'SegmentContainer');
             if (cells && cells.length) {
               deleteInstructionFromJSON(cells);
             }
@@ -10707,6 +11115,7 @@ export class WorkflowComponent {
             this.model.endUpdate();
           }
           WorkflowService.executeLayout(graph, self.preferences);
+          self.drawSegmentContainers(graph);
           return cells;
         };
 
@@ -10810,6 +11219,8 @@ export class WorkflowComponent {
          * Event to check if connector is valid or not on drop of new instruction
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
+          // SegmentContainer is a non-interactive background rectangle; never a drop target
+          if (cell?.value?.tagName === 'SegmentContainer') { return false; }
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -10979,6 +11390,7 @@ export class WorkflowComponent {
         self.centered();
 
         WorkflowService.executeLayout(graph, self.preferences);
+        self.drawSegmentContainers(graph);
 
         const mgr = new mxAutoSaveManager(graph);
         mgr.save = function () {
@@ -10998,7 +11410,15 @@ export class WorkflowComponent {
                     if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
                       graph.setEnabled(true);
                     } else {
-                      self.reloadDummyXml(graph);
+                      const _hasReal1 = graph.getChildCells(graph.getDefaultParent())
+                        .some((c: any) => c.vertex && c.value?.tagName
+                          && !['Process', 'Connector', 'Connection', 'SegmentContainer'].includes(c.value.tagName));
+                      if (_hasReal1) {
+                        console.warn('[SEGMENT DEBUG] Skipping reloadDummyXml -- graph has real content despite empty configuration.');
+                        graph.setEnabled(true);
+                      } else {
+                        self.reloadDummyXml(graph);
+                      }
                     }
                     self.validateJSON();
                   }
@@ -11012,7 +11432,15 @@ export class WorkflowComponent {
             if (self.workflow.configuration && self.workflow.configuration.instructions && self.workflow.configuration.instructions.length > 0) {
               graph.setEnabled(true);
             } else {
-              self.reloadDummyXml(graph);
+              const _hasReal2 = graph.getChildCells(graph.getDefaultParent())
+                .some((c: any) => c.vertex && c.value?.tagName
+                  && !['Process', 'Connector', 'Connection', 'SegmentContainer'].includes(c.value.tagName));
+              if (_hasReal2) {
+                console.warn('[SEGMENT DEBUG] Skipping reloadDummyXml -- graph has real content despite empty configuration.');
+                graph.setEnabled(true);
+              } else {
+                self.reloadDummyXml(graph);
+              }
             }
           }
         };
@@ -11404,7 +11832,7 @@ export class WorkflowComponent {
       } else if (name === 'Segment') {
         label1 = 'segment';
         label2 = 'endSegment';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndSegment', 'segmentEnd', parentCell.id), 0, 0, 68, 68, 'closeSegment');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndSegment', 'segmentEnd', parentCell.id), 0, 0, 2, 2, 'closeSegment');
       }
 
       if (cell) {
@@ -12302,6 +12730,17 @@ export class WorkflowComponent {
           graph.getModel().execute(editLabel);
         } finally {
           graph.getModel().endUpdate();
+          if (obj.cell?.value?.tagName === 'Segment') {
+            const _newLabel = self.selectedNode.newObj.label || '';
+            const _newWidth = WorkflowService.computeSegmentHeaderWidth(_newLabel);
+            const _segGeo = graph.getModel().getGeometry(obj.cell);
+            if (_segGeo && _segGeo.width !== _newWidth) {
+              const _segGeoCopy = _segGeo.clone();
+              _segGeoCopy.width = _newWidth;
+              graph.getModel().setGeometry(obj.cell, _segGeoCopy);
+              self.drawSegmentContainers(graph);
+            }
+          }
           if (self.hasLicense) {
             if (self.selectedNode.type === 'ForkList') {
               self.updateForkListOrStickySubagentJobs(self.selectedNode, false);
@@ -13320,6 +13759,9 @@ export class WorkflowComponent {
       if (tagName == 'ForkList') {
         return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 72, 72, closeTag);
       }
+      if (tagName === 'Segment') {
+        return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 2, 2, closeTag);
+      }
       return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 68, 68, closeTag);
     }
 
@@ -13494,7 +13936,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Segment');
           _node.setAttribute('displayLabel', 'segment');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'segment');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.computeSegmentHeaderWidth('segment'), 32, 'segment');
         } else if (title.match('admissionTime')) {
           _node = doc.createElement('AdmissionTime');
           _node.setAttribute('displayLabel', 'admissionTime');
@@ -13629,6 +14071,7 @@ export class WorkflowComponent {
           customizedChangeEvent();
         }
         WorkflowService.executeLayout(graph, self.preferences);
+        self.drawSegmentContainers(graph);
       }
       result = '';
     }
@@ -13855,6 +14298,31 @@ export class WorkflowComponent {
         displayLabel = 'options';
       } else if (dropTargetName === 'Segment') {
         displayLabel = 'segment';
+        // Remove the direct Segment -> EndSegment edge before new child is wired in,
+        // so the generic wiring logic never sees two outgoing edges on the Segment cell.
+        const directEdge = (_dropTarget.edges || []).find(
+          (e: any) => e.source?.id === _dropTarget.id && e.target?.value?.tagName === 'EndSegment'
+        );
+        if (directEdge) {
+          if (!self.nodeMap.has(_dropTarget.id)) {
+            self.nodeMap.set(_dropTarget.id, directEdge.target.id);
+          }
+          graph.getModel().remove(directEdge);
+        }
+        // ===== CASE 2b: Block drop on Segment body when it already has children =====
+        // Dropping directly on a non-empty Segment body is ambiguous. Auto-expand
+        // collapsed segments; for expanded non-empty segments, block the drop so the
+        // user must target an explicit arrow inside. This guard is ONLY for Segment.
+        const _segHasChildren = (_dropTarget.edges || []).some(
+          (e: any) => e.source?.id === _dropTarget.id && e.target?.value?.tagName !== 'EndSegment'
+        );
+        if (_segHasChildren) {
+          if (graph.isCellCollapsed(_dropTarget)) {
+            graph.foldCells(false, false, [_dropTarget], null, null);
+          }
+          return;
+        }
+        // ===== END CASE 2b =====
       } else if (dropTargetName === 'AdmissionTime') {
         displayLabel = 'admissionTimes';
       } else if (dropTargetName === 'ConsumeNotices') {

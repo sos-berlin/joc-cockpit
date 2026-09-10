@@ -29,13 +29,89 @@ export class WorkflowService {
     }
   }
 
+  static computeSegmentHeaderWidth(label: string): number {
+    const minWidth = 120;
+    const iconReserve = 40; // space for chevron + 3-dot overlays
+    const estimatedTextWidth = (label || '').length * 7;
+    return Math.max(minWidth, estimatedTextWidth + iconReserve);
+  }
+
   /**
    * Reformat the layout
    */
   static executeLayout(graph: any, prefrences): void {
     mxHierarchicalLayout.prototype.interRankCellSpacing = parseInt(prefrences.interRankCellSpacing) * 0.4;
-    mxHierarchicalLayout.prototype.intraCellSpacing = parseInt(prefrences.intraCellSpacing) * 0.3;
+    // intraCellSpacing controls horizontal gap between sibling branch
+    // cells at the same rank (e.g. Fork branches). Extra spacing is
+    // only needed when a Fork's branches themselves contain Segment
+    // cells — that's the specific case where decorative Segment
+    // containers can crowd each other. Plain Job-only Fork branches
+    // never had this problem and should keep the original base
+    // spacing, not be widened unnecessarily.
+    let maxBranchCount = 0;
+    try {
+      // Fork/Join cells are not always direct children of the default
+      // parent (unlike Segment/Job/etc) — recurse into nested children,
+      // matching the same pattern already used in drawSegmentContainers.
+      const collectAllCellsForLayout = (parent: any): any[] => {
+        const children = graph.getChildCells(parent) || [];
+        let result = [...children];
+        for (const c of children) {
+          if (graph.getModel().getChildCount(c) > 0) {
+            result = result.concat(collectAllCellsForLayout(c));
+          }
+        }
+        return result;
+      };
+      const allCellsForLayout = collectAllCellsForLayout(graph.getDefaultParent());
+      const forkCells = allCellsForLayout.filter((c: any) => c.value?.tagName === 'Fork');
+      // Walk forward through any intermediate Connection/Connector
+      // cells to find the real branch head instruction — the Fork's
+      // direct edge target isn't always the branch's real first
+      // instruction (there can be a connector cell in between).
+      const resolveBranchHead = (startCell: any): any => {
+        let curr = startCell;
+        let hops = 0;
+        while (curr && hops < 5) {
+          const tag = curr.value?.tagName;
+          if (tag && tag !== 'Connection' && tag !== 'Connector') { return curr; }
+          const outEdge = (curr.edges || [])
+            .find((e: any) => e.source?.id === curr.id);
+          curr = outEdge?.target || null;
+          hops++;
+        }
+        return curr;
+      };
+      maxBranchCount = forkCells.reduce((max: number, fork: any) => {
+        const branchEdges = (fork.edges || [])
+          .filter((e: any) => e.source?.id === fork.id);
+        const hasSegmentBranch = branchEdges.some((e: any) => {
+          const head = resolveBranchHead(e.target);
+          return head?.value?.tagName === 'Segment';
+        });
+        if (!hasSegmentBranch) { return max; }
+        return Math.max(max, branchEdges.length);
+      }, 0);
+    } catch (e) {
+      // Defensive: fall back to no boost if graph isn't fully
+      // initialized yet, rather than letting this throw.
+      maxBranchCount = 0;
+    }
+
+    const baseMultiplier = 0.3; // original, unboosted spacing for plain forks
+    const intraMultiplier = maxBranchCount === 0
+      ? baseMultiplier
+      : maxBranchCount <= 3
+        ? 1.3
+        : Math.min(1.3 + (maxBranchCount - 3) * 0.25, 3.0);
+
+    mxHierarchicalLayout.prototype.intraCellSpacing = parseInt(prefrences.intraCellSpacing) * intraMultiplier;
     const layout = new mxHierarchicalLayout(graph, prefrences.orientation);
+    const origIsVertexIgnored = layout.isVertexIgnored.bind(layout);
+    layout.isVertexIgnored = function(vertex: any) {
+      if (vertex?.value?.tagName === 'SegmentContainer') { return true; }
+      return origIsVertexIgnored(vertex);
+    };
     layout.execute(graph.getDefaultParent());
   }
 
@@ -151,29 +227,44 @@ export class WorkflowService {
         '</defs>\n' +
         '</svg>';
     } else if (name === 'segment') {
+      // Segment header bar: thin rectangle with dashed border + label, no diamond icon
       const fillColor = colorCode || '#90CAF9';
-      svg = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
-        '<path d="M28.0797 46.669L47.1716 27.5771C48.7337 26.015 48.7337 23.4824 47.1716 21.9203L28.0797 2.82841C26.5176 1.26631 23.9849 1.26631 22.4228 2.82841L3.33095 21.9203C1.76885 23.4824 1.76885 26.015 3.33095 27.5771L22.4228 46.669C23.9849 48.2311 26.5176 48.2311 28.0797 46.669Z" fill="url(#paint0_linear_seg_1)" stroke="' + fillColor + '"/>\n' +
-        '<path d="M14 18 h22 v1.5 h-22 z M14 32 h22 v1.5 h-22 z M14 18 h1.5 v15.5 h-1.5 z M34.5 18 h1.5 v15.5 h-1.5 z M14 22 h22 v1.5 h-22 z M16.5 19.5 h8 v1.2 h-8 z M16.5 25 h11 v1.2 h-11 z M16.5 27.5 h8 v1.2 h-8 z M16.5 30 h10 v1.2 h-10 z" fill="' + color + '"/>\n' +
-        '<defs>\n' +
-        '<linearGradient id="paint0_linear_seg_1" x1="25.2513" y1="-1.86563e-05" x2="25.2513" y2="49.4975" gradientUnits="userSpaceOnUse">\n' +
-        '<stop stop-color="' + fillColor + '"/>\n' +
-        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
-        '</linearGradient>\n' +
-        '</defs>\n' +
-        '</svg>';
+      const headerFill = theme === 'dark' ? '#1a3a5c' : '#e8f4fd';
+      if (graph) {
+        const segStyle: any = {};
+        segStyle.rounded = 0;
+        segStyle.fillColor = headerFill;
+        segStyle.strokeColor = fillColor;
+        segStyle.dashed = 1;
+        segStyle.dashPattern = '8 4';
+        segStyle.strokeWidth = 1.5;
+        segStyle.align = 'left';
+        segStyle.spacingLeft = 32;
+        segStyle.verticalAlign = 'middle';
+        segStyle.fontColor = '#3d464d';
+        segStyle.fontSize = 11;
+        segStyle.fontStyle = 1;
+        segStyle.html = 1;
+        graph.getStylesheet().putCellStyle(name, segStyle);
+        return null;
+      } else {
+        return 'rounded=0;fillColor=' + headerFill + ';strokeColor=' + fillColor +
+          ';dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;spacingLeft=32;verticalAlign=middle;fontColor=#3d464d;fontSize=11;fontStyle=1;html=1;';
+      }
     } else if (name === 'closeSegment') {
-      const fillColor = colorCode || '#90CAF9';
-      svg = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">\n' +
-        '<path d="M27.5771 46.669L46.669 27.5771C48.2311 26.015 48.2311 23.4824 46.669 21.9203L27.5771 2.82841C26.015 1.26631 23.4824 1.26631 21.9203 2.82841L2.82839 21.9203C1.26629 23.4824 1.26629 26.015 2.82839 27.5771L21.9203 46.669C23.4824 48.2311 26.015 48.2311 27.5771 46.669Z" fill="url(#paint0_linear_seg_2)" stroke="' + fillColor + '"/>\n' +
-        '<path d="M14 18 h22 v1.5 h-22 z M14 32 h22 v1.5 h-22 z M14 18 h1.5 v15.5 h-1.5 z M34.5 18 h1.5 v15.5 h-1.5 z M14 28 h22 v1.5 h-22 z M22.5 29.5 h8 v1.2 h-8 z M16.5 20 h11 v1.2 h-11 z M16.5 22.5 h8 v1.2 h-8 z M16.5 25 h10 v1.2 h-10 z" fill="' + color + '"/>\n' +
-        '<defs>\n' +
-        '<linearGradient id="paint0_linear_seg_2" x1="24.7487" y1="-1.86563e-05" x2="24.7487" y2="49.4975" gradientUnits="userSpaceOnUse">\n' +
-        '<stop stop-color="' + fillColor + '"/>\n' +
-        '<stop offset="1" stop-color="' + color2 + '"/>\n' +
-        '</linearGradient>\n' +
-        '</defs>\n' +
-        '</svg>';
+      // EndSegment is an invisible 2×2 anchor — serves only as the exit-arrow hook point
+      if (graph) {
+        const closeStyle: any = {};
+        closeStyle.opacity = 0;
+        closeStyle.strokeColor = 'none';
+        closeStyle.fillColor = 'none';
+        closeStyle.noLabel = 1;
+        closeStyle.foldable = 0;
+        graph.getStylesheet().putCellStyle(name, closeStyle);
+        return null;
+      } else {
+        return 'opacity=0;strokeColor=none;fillColor=none;noLabel=1;foldable=0;';
+      }
     } else if (name === 'admissionTime') {
       const fillColor = colorCode || '#ffd96a';
 
@@ -1470,7 +1561,8 @@ export class WorkflowService {
             if (json.instructions[x].label) {
               _node.setAttribute('label', json.instructions[x].label);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('segment', colorCode, self.theme) : 'segment');
+            const _segInitLabel = json.instructions[x].label || 'segment';
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.computeSegmentHeaderWidth(_segInitLabel), 32, isGraphView ? WorkflowService.setStyleToSymbol('segment', colorCode, self.theme) : 'segment');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1883,7 +1975,7 @@ export class WorkflowService {
       } else if (type === 'Options') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
       } else if (type === 'Segment') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeSegment', colorCode, self.theme) : 'closeSegment');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 2, 2, isGraphView ? WorkflowService.setStyleToSymbol('closeSegment', colorCode, self.theme) : 'closeSegment');
       } else if (type === 'AdmissionTime') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, self.theme) : 'closeAdmissionTime');
       } else if (type === 'Retry') {
@@ -2139,6 +2231,19 @@ export class WorkflowService {
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
         let x = cell.getAttribute('displayLabel');
+        if (cell.value?.tagName === 'Segment') {
+          // User-defined label set via Properties panel takes priority over the generic
+          // translated "Segment" fallback. 'label' is round-tripped through JSON via
+          // json.instructions[x].label ↔ cell.getAttribute('label').
+          const userLabel = cell.getAttribute('label');
+          if (userLabel && userLabel.trim().length > 0) {
+            return userLabel;
+          }
+          this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+            str = translatedValue;
+          });
+          return str;
+        }
         if (cell.value?.tagName === 'Connection') {
           if (x === 'then' || x === 'else') {
             this.translate.get('workflow.label.' + x).subscribe(translatedValue => {

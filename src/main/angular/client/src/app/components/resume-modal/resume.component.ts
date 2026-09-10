@@ -215,7 +215,69 @@ export class ResumeOrderModalComponent {
       : this.order;
     this.coreService.convertTryToRetry(this.workflow.configuration, this.positions, '', true, normalizedOrder);
     this.enableSegmentHeaders(this.workflow.configuration.instructions);
+    this.expandToOrderPosition(this.workflow.configuration.instructions);
     this.cdr.markForCheck();
+  }
+
+  // Walk the already-built tree (after convertTryToRetry has set instruction.order on
+  // the target node) and set show=true on every ancestor along the path to that node.
+  // Returns true when the active order position has been found in this subtree.
+  private expandToOrderPosition(instructions: any[]): boolean {
+    if (!instructions) { return false; }
+    for (const inst of instructions) {
+      // Direct hit: this instruction IS the order position
+      if (inst.order) {
+        inst.show = true;
+        return true;
+      }
+      // Recurse into block-level children
+      if (inst.instructions?.length > 0) {
+        if (this.expandToOrderPosition(inst.instructions)) {
+          inst.show = true;
+          return true;
+        }
+      }
+      // Fork / ForkList branches
+      if (inst.branches?.length > 0) {
+        for (const branch of inst.branches) {
+          if (branch.order) {
+            branch.show = true;
+            inst.show = true;
+            return true;
+          }
+          if (this.expandToOrderPosition(branch.instructions)) {
+            branch.show = true;
+            inst.show = true;
+            return true;
+          }
+        }
+      }
+      // Try catch
+      if (inst.catch?.instructions?.length > 0) {
+        if (this.expandToOrderPosition(inst.catch.instructions)) {
+          inst.catch.show = true;
+          inst.show = true;
+          return true;
+        }
+      }
+      // If/When then
+      if (inst.then?.instructions?.length > 0) {
+        if (this.expandToOrderPosition(inst.then.instructions)) {
+          inst.then.show = true;
+          inst.show = true;
+          return true;
+        }
+      }
+      // If else
+      if (inst.else?.instructions?.length > 0) {
+        if (this.expandToOrderPosition(inst.else.instructions)) {
+          inst.else.show = true;
+          inst.show = true;
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private hasEnabledChild(instructions: any[]): boolean {
