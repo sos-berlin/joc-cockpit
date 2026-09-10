@@ -68,9 +68,18 @@ export class OrderTemplateComponent {
         data.children = res.children;
         data.level = count + 1;
         data.states = res.states;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(this.historyView.current);
       }, error: () => data.loading = false
     });
+  }
+
+  onChildPageChange(history: any, page: number): void {
+    this.coreService.paginateChildren(history, page);
+  }
+
+  onChildPageSizeChange(history: any, size: number): void {
+    this.coreService.paginateChildren(history, 1, size);
   }
 
   navToWorkflowTab(workflow): void {
@@ -1074,6 +1083,7 @@ export class SingleHistoryComponent {
         data.children = res.children;
         data.states = res.states;
         data.loading = false;
+        this.coreService.paginateChildren(data);
       }, error: () => data.loading = false
     });
   }
@@ -2531,6 +2541,7 @@ export class HistoryComponent {
         data.level = 1;
         data.children = res.children;
         data.states = res.states;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(this.historyFilters.current);
         this.cdr.markForCheck();
       }, error: () => data.loading = false
@@ -3086,6 +3097,7 @@ export class HistoryComponent {
         data.level = count;
         data.children = res.children;
         data.states = res.states;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(this.historyFilters.current);
         this.cdr.markForCheck();
       }, error: () => data.loading = false
@@ -3175,6 +3187,7 @@ export class HistoryComponent {
         data.level = count;
         data.children = res.children;
         data.states = res.states;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(this.historyFilters.current);
         this.cdr.markForCheck();
       }, error: () => data.loading = false

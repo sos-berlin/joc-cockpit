@@ -48,6 +48,7 @@ export class WorkflowTemplateComponent {
         data.level = count + 1;
         data.states = res.states;
         data.loading = false;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(null);
         this.cdr.markForCheck();
       }, error: () => {
@@ -55,6 +56,16 @@ export class WorkflowTemplateComponent {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  onChildPageChange(history: any, page: number): void {
+    this.coreService.paginateChildren(history, page);
+    this.cdr.markForCheck();
+  }
+
+  onChildPageSizeChange(history: any, size: number): void {
+    this.coreService.paginateChildren(history, 1, size);
+    this.cdr.markForCheck();
   }
 
   downloadLog(obj): void {
@@ -273,7 +284,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
   private reloadOrderChildren(data: any): void {
     if (!data.historyId) return;
-    
+
     data.loading = true;
     const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
@@ -285,6 +296,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.states = res.states;
         data.level = 1;
         data.loading = false;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(null);
         this.cdr.markForCheck();
       }, error: () => {
@@ -341,6 +353,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.children = res.children;
         data.states = res.states;
         data.loading = false;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(null);
         this.cdr.markForCheck();
       }, error: () => {
@@ -370,6 +383,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
         data.children = res.children;
         data.states = res.states;
         data.loading = false;
+        this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(null);
         this.cdr.markForCheck();
       }, error: () => {

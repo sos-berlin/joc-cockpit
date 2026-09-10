@@ -24,6 +24,7 @@ import {ScriptModalComponent} from './script-modal/script-modal.component';
 import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {NzSpaceCompactComponent} from "ng-zorro-antd/space";
+import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {JobProgressBarComponent} from '../../components/job-progress-bar/job-progress-bar.component';
 
 @NgModule({
@@ -34,6 +35,7 @@ import {JobProgressBarComponent} from '../../components/job-progress-bar/job-pro
         WorkflowRoutingModule,
         NzTooltipDirective,
         NzSpaceCompactComponent,
+        NzPaginationModule,
     ],
   declarations: [
     WorkflowComponent,

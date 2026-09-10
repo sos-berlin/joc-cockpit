@@ -1,8 +1,8 @@
 @if (history.states && history.states.length> 0 && !history.loading) {
   <tr>
     <td class="p-a-b-b-0" colspan="8">
-      <nz-table #innerChildTable [nzData]="history.states" [nzFrontPagination]="false" [nzShowPagination]="false"
-                class="m-a-0 inner-table" nzSize="small">
+      <nz-table #innerChildTable [nzData]="history.states" [nzPageSize]="20"
+                [nzShowPagination]="history.states.length > 20" class="m-a-0 inner-table" nzSize="small">
         <thead>
         <tr>
           <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}">{{ 'history.label.state' | translate }}</span>
@@ -30,14 +30,14 @@
   </tr>
 }
 
-@for (child of history.children; track child; let i = $index) {
+@for (child of history.pagedChildren || []; track child; let i = $index) {
   @if (child.task) {
     <tr>
       <td class="p-a-b-b-0" colspan="8">
         <nz-table #innerChildTaskTable [nzData]="[child.task]" [nzLoading]="history.loading"
                   [nzFrontPagination]="false" [nzShowPagination]="false"
                   class="m-a-0 inner-table" nzSize="small">
-          @if ((i > 0 && !history.children[i-1].task) || i==0) {
+          @if ((i > 0 && !history.pagedChildren[i-1].task) || i==0) {
             <thead>
             <tr>
               <th><span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}">{{ 'history.label.job' | translate }}</span>
@@ -159,4 +159,20 @@
     </td>
     </tr>
   }
+}
+@if (history.children && history.children.length > (history.childPageSize || 20)) {
+  <tr>
+    <td class="p-t-sm p-b-sm p-r-sm" colspan="8">
+      <nz-pagination class="pull-right"
+                     [nzPageIndex]="history.childPage || 1"
+                     [nzPageSize]="history.childPageSize || 20"
+                     [nzPageSizeOptions]="[10, 20, 50, 100]"
+                     [nzShowSizeChanger]="true"
+                     [nzSize]="'small'"
+                     [nzTotal]="history.children.length"
+                     (nzPageIndexChange)="onChildPageChange(history, $event)"
+                     (nzPageSizeChange)="onChildPageSizeChange(history, $event)">
+      </nz-pagination>
+    </td>
+  </tr>
 }

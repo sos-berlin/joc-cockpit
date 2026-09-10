@@ -13,6 +13,7 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {FileTransferService} from '../../services/file-transfer.service';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {WorkflowModule} from '../workflow/workflow.module';
 
 @NgModule({
@@ -21,6 +22,7 @@ import {WorkflowModule} from '../workflow/workflow.module';
         HistoryRoutingModule,
         NzTabsModule,
         NzTooltipDirective,
+        NzPaginationModule,
         WorkflowModule
     ],
   providers: [FileTransferService],

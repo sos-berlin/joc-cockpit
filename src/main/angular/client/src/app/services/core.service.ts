@@ -2267,6 +2267,18 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
     }, 100);
   }
 
+  paginateChildren(node: any, page?: number, pageSize?: number): void {
+    if (!node) {
+      return;
+    }
+    node.childPageSize = pageSize || node.childPageSize || 20;
+    const total = node.children ? node.children.length : 0;
+    const maxPage = Math.max(1, Math.ceil(total / node.childPageSize));
+    node.childPage = Math.min(page || node.childPage || 1, maxPage);
+    const start = (node.childPage - 1) * node.childPageSize;
+    node.pagedChildren = total ? node.children.slice(start, start + node.childPageSize) : [];
+  }
+
   calFileTransferRowWidth(): Array<string> {
     const arr: Array<number> = [];
     const arr2 = [];
