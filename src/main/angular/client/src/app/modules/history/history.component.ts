@@ -1991,7 +1991,11 @@ export class HistoryComponent {
           this.historys = this.setDuration(res);
           this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
           this.isLoading = true;
-          this.searchInResult();
+          if (!isLoading) {
+            this.mergeOldData();
+          } else {
+            this.searchInResult();
+          }
           this.cdr.markForCheck();
         }, error: () => {
           this.data = [];
@@ -3048,54 +3052,31 @@ export class HistoryComponent {
   }
 
   private mergeOldData(): void {
-    const oldEntires = clone(this.data);
     const arr = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < oldEntires.length; j++) {
-        if (arr[i].orderId === oldEntires[j].orderId) {
-          if (oldEntires[j].show) {
-            arr[i].show = true;
-            arr[i].children = oldEntires[j].children;
-            this.recursiveMerge(arr[i], 1);
-          }
-          oldEntires.splice(j, 1);
-          break;
-        }
+    this.data = this.coreService.mergeById(this.data, arr, 'orderId');
+    this.data.forEach((item: any) => {
+      if (item.show && item.historyId) {
+        this.recursiveMerge(item, 1);
       }
-    }
-    this.data = arr;
+    });
   }
 
   private recursiveMerge(data, count): void {
-    data.loading = true;
     const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
-    const perviousArr = data.children.filter((value) => {
-      return value.order;
-    });
-
     this.coreService.post('order/history', obj).subscribe({
       next: (res: any) => {
-        for (let i = 0; i < res.children.length; i++) {
-          if (res.children[i].order) {
-            for (let j = 0; j < perviousArr.length; j++) {
-              if (res.children[i].order.orderId === perviousArr[j].orderId) {
-                if (perviousArr[j].show) {
-                  res.children[i].order.show = true;
-                  res.children[i].order.children = perviousArr[j].children;
-                  this.recursiveMerge(res.children[i].order, ++count);
-                }
-                perviousArr.splice(j, 1);
-                break;
-              }
-            }
+        const mergedChildren = this.coreService.mergeOrderChildren(data.children, res.children);
+        for (let i = 0; i < mergedChildren.length; i++) {
+          if (mergedChildren[i].order && mergedChildren[i].order.show) {
+            this.recursiveMerge(mergedChildren[i].order, ++count);
           }
         }
+        data.children = mergedChildren;
         data.loading = false;
         data.level = count;
-        data.children = res.children;
         data.states = res.states;
         this.coreService.paginateChildren(data);
         this.coreService.calRowWidth(this.historyFilters.current);

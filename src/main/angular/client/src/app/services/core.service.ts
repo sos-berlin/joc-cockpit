@@ -2279,6 +2279,51 @@ getTimeZoneList(callback?: (timezones: string[]) => void): any {
     node.pagedChildren = total ? node.children.slice(start, start + node.childPageSize) : [];
   }
 
+  mergeById(existing: any[], incoming: any[], idField: string): any[] {
+    const existingMap = new Map<any, any>();
+    (existing || []).forEach(item => {
+      if (item && item[idField] != null) {
+        existingMap.set(item[idField], item);
+      }
+    });
+    return (incoming || []).map(newItem => {
+      const id = newItem ? newItem[idField] : null;
+      const existingItem = id != null ? existingMap.get(id) : null;
+      if (existingItem) {
+        Object.assign(existingItem, newItem);
+        return existingItem;
+      }
+      return newItem;
+    });
+  }
+
+  mergeOrderChildren(existing: any[], incoming: any[]): any[] {
+    const existingMap = new Map<string, any>();
+    (existing || []).forEach(item => {
+      if (item && item.task && item.task.taskId != null) {
+        existingMap.set('task:' + item.task.taskId, item);
+      } else if (item && item.order && item.order.historyId != null) {
+        existingMap.set('order:' + item.order.historyId, item);
+      }
+    });
+    return (incoming || []).map(newItem => {
+      if (newItem && newItem.task && newItem.task.taskId != null) {
+        const existingItem = existingMap.get('task:' + newItem.task.taskId);
+        if (existingItem && existingItem.task) {
+          Object.assign(existingItem.task, newItem.task);
+          return existingItem;
+        }
+      } else if (newItem && newItem.order && newItem.order.historyId != null) {
+        const existingItem = existingMap.get('order:' + newItem.order.historyId);
+        if (existingItem && existingItem.order) {
+          Object.assign(existingItem.order, newItem.order);
+          return existingItem;
+        }
+      }
+      return newItem;
+    });
+  }
+
   calFileTransferRowWidth(): Array<string> {
     const arr: Array<number> = [];
     const arr2 = [];

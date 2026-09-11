@@ -95,7 +95,6 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   jobHistory: any = [];
   workflowFilters: any = {};
   subscription: Subscription;
-  private expandedOrderState: Map<string, any> = new Map();
   private expandedTaskState: Map<string, any> = new Map();
   private expandedJobState: Map<string, any> = new Map();
 
@@ -285,14 +284,13 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   private reloadOrderChildren(data: any): void {
     if (!data.historyId) return;
 
-    data.loading = true;
     const obj = {
       controllerId: data.controllerId || this.schedulerIds.selected,
       historyId: data.historyId
     };
     this.coreService.post('order/history', obj).subscribe({
       next: (res: any) => {
-        data.children = res.children;
+        data.children = this.coreService.mergeOrderChildren(data.children, res.children);
         data.states = res.states;
         data.level = 1;
         data.loading = false;
@@ -307,9 +305,6 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   loadOrderHistory(): void {
-    // Preserve expanded state before loading
-    this.preserveExpandedState(this.orderHistory, this.expandedOrderState, 'historyId');
-    
     const obj = {
       controllerId: this.schedulerIds.selected,
       orders: [{workflowPath: this.workflow.name}],
@@ -317,8 +312,12 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     };
     this.coreService.post('orders/history', obj).subscribe({
       next: (res: any) => {
-        // Restore expanded state after loading
-        this.orderHistory = this.restoreExpandedState(res.history, this.expandedOrderState, 'historyId');
+        this.orderHistory = this.coreService.mergeById(this.orderHistory, res.history, 'historyId');
+        this.orderHistory.forEach(item => {
+          if (item.show && item.historyId) {
+            this.reloadOrderChildren(item);
+          }
+        });
         this.loading = false;
         this.cdr.markForCheck();
       }, error: () => {
