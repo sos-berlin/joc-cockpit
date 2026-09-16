@@ -5339,6 +5339,7 @@ export class WorkflowComponent {
   isLoading = true;
   isUpdate: boolean;
   isStore = false;
+  _pendingStoreFailure = false;
   error: boolean;
   cutCell: any = [];
   copyId: any = [];
@@ -6756,8 +6757,12 @@ export class WorkflowComponent {
     }
   }
 
-  @HostListener('window:beforeunload')
-  beforeunload(): void {
+  @HostListener('window:beforeunload', ['$event'])
+  beforeunload(event: any): void {
+    if (this._pendingStoreFailure) {
+      event.preventDefault();
+      event.returnValue = true;
+    }
     if (this.data.type) {
       this.ngOnDestroy();
     }
@@ -7026,6 +7031,7 @@ export class WorkflowComponent {
     this.history = {past: [], present: {}, future: [], type: 'new'};
     this.isLoading = true;
     this.invalidMsg = '';
+    this._pendingStoreFailure = false;
     const obj: any = {
       objectType: this.objectType,
       path: this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name
@@ -15684,6 +15690,7 @@ export class WorkflowComponent {
         this.isStore = false;
         this.ref.markForCheck();
         if (res.path === this.workflow.path) {
+          this._pendingStoreFailure = false;
           this.isLocalChange = res.path;
           this.lastModified = res.configurationDate;
           this.workflow.actual = JSON.stringify(data);
@@ -15700,6 +15707,7 @@ export class WorkflowComponent {
           }
           this.ref.detectChanges();
         }
+        this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
       }, error: (err: any) => {
         if (request.objectType === 'WORKFLOW') {
           if (err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('Could not resolve type id \'ElseWhen\' as a subtype of') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')) {
@@ -15709,10 +15717,12 @@ export class WorkflowComponent {
           }
         }
         this.isStore = false
+        if (request.path === this.workflow.path) {
+          this._pendingStoreFailure = true;
+        }
         this.ref.markForCheck();
       }
     });
-    this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
   }
 
   private storeJobTags(path = null, copyObject = null, isWorkflow = false): void {

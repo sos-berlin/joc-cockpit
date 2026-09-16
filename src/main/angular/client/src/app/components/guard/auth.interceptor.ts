@@ -188,6 +188,9 @@ export class AuthInterceptor implements HttpInterceptor {
                           title = translatedValue;
                         });
                         this.toasterService.error(title, msg);
+                      } else {
+                        const code = err.error.error.code || '';
+                        this.toasterService.error(err.error.error.message, code);
                       }
                     } else if (err.error.error.message) {
                       const code = err.error.error.code || '';
