@@ -227,29 +227,18 @@ export class WorkflowService {
         '</defs>\n' +
         '</svg>';
     } else if (name === 'segment') {
-      // Segment header bar: thin rectangle with dashed border + label, no diamond icon
-      const fillColor = colorCode || '#90CAF9';
-      const headerFill = theme === 'dark' ? '#1a3a5c' : '#e8f4fd';
+      // Segment is an invisible 2×2 anchor — label and border are rendered by the SegmentContainer overlay
       if (graph) {
         const segStyle: any = {};
-        segStyle.rounded = 0;
-        segStyle.fillColor = headerFill;
-        segStyle.strokeColor = fillColor;
-        segStyle.dashed = 1;
-        segStyle.dashPattern = '8 4';
-        segStyle.strokeWidth = 1.5;
-        segStyle.align = 'left';
-        segStyle.spacingLeft = 32;
-        segStyle.verticalAlign = 'middle';
-        segStyle.fontColor = '#3d464d';
-        segStyle.fontSize = 11;
-        segStyle.fontStyle = 1;
-        segStyle.html = 1;
+        segStyle.opacity = 0;
+        segStyle.strokeColor = 'none';
+        segStyle.fillColor = 'none';
+        segStyle.noLabel = 1;
+        segStyle.foldable = 0;
         graph.getStylesheet().putCellStyle(name, segStyle);
         return null;
       } else {
-        return 'rounded=0;fillColor=' + headerFill + ';strokeColor=' + fillColor +
-          ';dashed=1;dashPattern=8 4;strokeWidth=1.5;align=left;spacingLeft=32;verticalAlign=middle;fontColor=#3d464d;fontSize=11;fontStyle=1;html=1;';
+        return 'opacity=0;strokeColor=none;fillColor=none;noLabel=1;foldable=0;';
       }
     } else if (name === 'closeSegment') {
       // EndSegment is an invisible 2×2 anchor — serves only as the exit-arrow hook point
@@ -1562,7 +1551,7 @@ export class WorkflowService {
               _node.setAttribute('label', json.instructions[x].label);
             }
             const _segInitLabel = json.instructions[x].label || 'segment';
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.computeSegmentHeaderWidth(_segInitLabel), 32, isGraphView ? WorkflowService.setStyleToSymbol('segment', colorCode, self.theme) : 'segment');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 2, 2, isGraphView ? WorkflowService.setStyleToSymbol('segment', colorCode, self.theme) : 'segment');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -2231,6 +2220,9 @@ export class WorkflowService {
         return '<i class="text-white text-xs cursor">' + count + '</i>';
       } else {
         let x = cell.getAttribute('displayLabel');
+        if (cell.value?.tagName === 'SegmentContainer') {
+          return cell.getAttribute('label') || '';
+        }
         if (cell.value?.tagName === 'Segment') {
           // User-defined label set via Properties panel takes priority over the generic
           // translated "Segment" fallback. 'label' is round-tripped through JSON via

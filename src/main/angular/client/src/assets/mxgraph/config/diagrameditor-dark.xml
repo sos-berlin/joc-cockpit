@@ -161,7 +161,7 @@
     <add as="Segment">
       <Segment displayLabel="segment">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="2" height="2"/>
         </mxCell>
       </Segment>
     </add>

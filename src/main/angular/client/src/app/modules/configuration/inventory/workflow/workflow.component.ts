@@ -8569,15 +8569,21 @@ export class WorkflowComponent {
         // even where padding is tight (depth 0 = long dash, depth 1 = short, depth 2 = long, …)
         const dashPattern = depth % 2 === 0 ? '8 4' : '4 4';
 
+        // Segment label — needed for both collapsed width and container label rendering
+        const segLabel = segCell.value?.getAttribute?.('label') || segCell.value?.getAttribute?.('displayLabel') || '';
+
         // Compute bounding box in display coordinates.
-        // Top anchor = top of the Segment header bar; container wraps header + all inner cells.
+        // Top anchor = invisible 2×2 anchor; container wraps all inner cells.
         let bx: number, by: number, bw: number, bh: number;
 
         if (isCollapsed) {
-          bx = segState.x - PADDING;
+          const labelForWidth = segLabel || 'Segment';
+          const collapsedWidth = WorkflowService.computeSegmentHeaderWidth(labelForWidth) * scale;
+          // Center the collapsed box on the Segment vertex so the incoming arrow hits the middle
+          bx = segState.x + segState.width / 2 - collapsedWidth / 2;
           by = segState.y - PADDING;
-          bw = segState.width + 2 * PADDING;
-          bh = segState.height + 2 * PADDING;
+          bw = collapsedWidth;
+          bh = Math.max(36 * scale, segState.height + 2 * PADDING);
         } else {
           let minX = segState.x;
           let minY = segState.y;
@@ -8620,18 +8626,41 @@ export class WorkflowComponent {
           if (segInnerIdSets.get(other.segCellId)?.has(segCell.id)) { continue; }
 
           const xOverlap = bx < (other.bx + other.bw) && (bx + bw) > other.bx;
-          if (!xOverlap) { continue; }
-          // Current box's top is too close to other box's bottom
-          const gapFromTop = by - (other.by + other.bh);
-          if (gapFromTop >= 0 && gapFromTop < MIN_GAP) {
-            const deficit = MIN_GAP - gapFromTop;
-            by += deficit;
-            bh = Math.max(0, bh - deficit);
+          const yOverlap = by < (other.by + other.bh) && (by + bh) > other.by;
+
+          // Vertically-stacked siblings: adjust vertical gaps
+          if (xOverlap && !yOverlap) {
+            const gapFromTop = by - (other.by + other.bh);
+            if (gapFromTop >= 0 && gapFromTop < MIN_GAP) {
+              const deficit = MIN_GAP - gapFromTop;
+              by += deficit;
+              bh = Math.max(0, bh - deficit);
+            }
+            const gapFromBottom = other.by - (by + bh);
+            if (gapFromBottom >= 0 && gapFromBottom < MIN_GAP) {
+              bh = Math.max(0, bh - (MIN_GAP - gapFromBottom));
+            }
           }
-          // Current box's bottom is too close to other box's top
-          const gapFromBottom = other.by - (by + bh);
-          if (gapFromBottom >= 0 && gapFromBottom < MIN_GAP) {
-            bh = Math.max(0, bh - (MIN_GAP - gapFromBottom));
+
+          // Side-by-side siblings (fork branches): adjust horizontal gaps
+          if (yOverlap) {
+            // other is to the left: trim current box's left padding
+            if (other.bx < bx) {
+              const gapFromLeft = bx - (other.bx + other.bw);
+              if (gapFromLeft < MIN_GAP) {
+                const newBx = other.bx + other.bw + MIN_GAP;
+                const shift = newBx - bx;
+                if (shift > 0) { bx = newBx; bw = Math.max(0, bw - shift); }
+              }
+            }
+            // other is to the right: trim current box's right padding
+            if (other.bx > bx) {
+              const gapFromRight = other.bx - (bx + bw);
+              if (gapFromRight < MIN_GAP) {
+                const newBw = Math.max(0, other.bx - MIN_GAP - bx);
+                if (newBw < bw) { bw = newBw; }
+              }
+            }
           }
         }
         computedBoxMap.set(segCell.id, {bx, by, bw, bh});
@@ -8645,8 +8674,15 @@ export class WorkflowComponent {
         const doc = mxUtils.createXmlDocument();
         const cNode = doc.createElement('SegmentContainer');
         cNode.setAttribute('segmentId', segCell.id);
+        if (segLabel) { cNode.setAttribute('label', segLabel); }
+        const labelFontColor = isDark ? '#fafafa' : '#3d464d';
+        const labelStyleStr = segLabel
+          ? (isCollapsed
+            ? 'align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;'
+            : 'align=left;verticalAlign=top;spacingLeft=44;spacingTop=3;fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;')
+          : 'noLabel=1;';
         const containerStyle = 'rounded=0;fillColor=none;strokeColor=' + colorCode +
-          ';dashed=1;dashPattern=' + dashPattern + ';strokeWidth=1.5;pointerEvents=0;noLabel=1;foldable=0;';
+          ';dashed=1;dashPattern=' + dashPattern + ';strokeWidth=1.5;pointerEvents=0;foldable=0;' + labelStyleStr;
         const containerCell = graph.insertVertex(
           graph.getDefaultParent(), null, cNode, cellX, cellY, cellW, cellH, containerStyle
         );
@@ -8693,7 +8729,7 @@ export class WorkflowComponent {
       graph.getModel().endUpdate();
     }
 
-    // Add/refresh chevron overlay on each Segment cell (outside model-update, view-level only)
+    // Remove any stale chevron overlays from previous renders (chevrons removed; fold via double-click)
     for (const segCell of segCells) {
       const existing = graph.getCellOverlays(segCell) || [];
       for (const o of existing) {
@@ -8707,7 +8743,16 @@ export class WorkflowComponent {
       (chevronOverlay as any)._isSegmentChevron = true;
       chevronOverlay.align = mxConstants.ALIGN_LEFT;
       chevronOverlay.verticalAlign = mxConstants.ALIGN_TOP;
-      chevronOverlay.offset = new mxPoint(4, 2);
+      const _cCell = (self._segmentContainerCells || []).find((c: any) =>
+        c.value?.getAttribute?.('segmentId') === segCell.id
+      );
+      const _cSt = _cCell ? graph.view.getState(_cCell) : null;
+      const _sSt = graph.view.getState(segCell);
+      if (_cSt && _sSt) {
+        chevronOverlay.offset = new mxPoint(_cSt.x - _sSt.x + 4, _cSt.y - _sSt.y + 4);
+      } else {
+        chevronOverlay.offset = new mxPoint(4, 2);
+      }
       chevronOverlay.addListener(mxEvent.CLICK, (_sender: any, _evt: any) => {
         const geo = graph.getModel().getGeometry(segCell);
         if (geo && !geo.alternateBounds) {
@@ -9961,7 +10006,19 @@ export class WorkflowComponent {
             img = mxUtils.createImage('./assets/images/menu.svg');
             let x = state.x - (20 * state.shape.scale);
             let y = state.y - (8 * state.shape.scale);
-            if (state.cell.value.tagName !== 'Job') {
+            if (state.cell.value.tagName === 'Segment') {
+              const _cCell = (self._segmentContainerCells || []).find((c: any) =>
+                c.value?.getAttribute?.('segmentId') === state.cell.id
+              );
+              const _cSt = _cCell ? graph.view.getState(_cCell) : null;
+              if (_cSt) {
+                x = _cSt.x + 4;
+                y = _cSt.y + 2;
+              } else {
+                y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
+                x = x + 2;
+              }
+            } else if (state.cell.value.tagName !== 'Job') {
               y = y + (state.cell.geometry.height / 2 * state.shape.scale) - 4;
               x = x + 2;
             }
@@ -10001,7 +10058,26 @@ export class WorkflowComponent {
             img.style.height = (18 * state.shape.scale) + 'px';
             state.view.graph.container.appendChild(img);
             this.images.push(img);
-            highlightDescendantVertices(state.cell);
+            if (state.cell.value.tagName === 'Segment') {
+              // Use SegmentContainer bounds for the hover overlay instead of Segment→EndSegment BFS bounds
+              const _cCell = (self._segmentContainerCells || []).find((c: any) =>
+                c.value?.getAttribute?.('segmentId') === state.cell.id
+              );
+              const _cSt = _cCell ? graph.view.getState(_cCell) : null;
+              if (_cSt) {
+                highlight = document.createElement('div');
+                highlight.style.position = 'absolute';
+                highlight.style.zIndex = '-1';
+                highlight.style.left = _cSt.x + 'px';
+                highlight.style.top = _cSt.y + 'px';
+                highlight.style.width = _cSt.width + 'px';
+                highlight.style.height = _cSt.height + 'px';
+                highlight.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+                graph.container.appendChild(highlight);
+              }
+            } else {
+              highlightDescendantVertices(state.cell);
+            }
           }
         }
 
@@ -10197,7 +10273,22 @@ export class WorkflowComponent {
             if (self.isTrash) {
               return;
             }
-            const cell = me.getCell();
+            let cell = me.getCell();
+            // SegmentContainer has pointerEvents=0 so DOM hit-test misses it.
+            // When mouse is over empty container space, resolve to the Segment vertex
+            // so 3-dots (mxIconSet) shows on hover and click selects the Segment.
+            if (!cell) {
+              const mx = me.getGraphX();
+              const my = me.getGraphY();
+              for (const cCell of (self._segmentContainerCells || [])) {
+                const cSt = graph.view.getState(cCell);
+                if (cSt && mx >= cSt.x && mx <= cSt.x + cSt.width && my >= cSt.y && my <= cSt.y + cSt.height) {
+                  const segId = cCell.value?.getAttribute?.('segmentId');
+                  const segCell = segId ? graph.getModel().getCell(segId) : null;
+                  if (segCell) { cell = segCell; break; }
+                }
+              }
+            }
             if (me.consumed && cell) {
               if (!self.display) {
                 if (!self.isCellDragging && !dragStart) {
@@ -10241,7 +10332,7 @@ export class WorkflowComponent {
                   }
                   this.currentState = tmp;
                   if (this.currentState != null) {
-                    this.dragEnter(me.getEvent(), this.currentState, me.getCell());
+                    this.dragEnter(me.getEvent(), this.currentState, cell);
                   }
                 }
               }
@@ -10444,6 +10535,32 @@ export class WorkflowComponent {
          * Overrides method to provide a cell collapse/expandable on double click
          */
         graph.dblClick = function (evt, cell) {
+          // Resolve Segment from SegmentContainer area (pointerEvents=0 so cell may be null)
+          let segTarget: any = cell?.value?.tagName === 'Segment' ? cell : null;
+          if (!segTarget) {
+            const offset = mxUtils.getOffset(graph.container);
+            const gx = mxEvent.getClientX(evt) - offset.x + graph.container.scrollLeft;
+            const gy = mxEvent.getClientY(evt) - offset.y + graph.container.scrollTop;
+            for (const cCell of (self._segmentContainerCells || [])) {
+              const cSt = graph.view.getState(cCell);
+              if (cSt && gx >= cSt.x && gx <= cSt.x + cSt.width && gy >= cSt.y && gy <= cSt.y + cSt.height) {
+                const segId = cCell.value?.getAttribute?.('segmentId');
+                segTarget = segId ? graph.getModel().getCell(segId) : null;
+                if (segTarget) { break; }
+              }
+            }
+          }
+          if (segTarget) {
+            const geo = graph.getModel().getGeometry(segTarget);
+            if (geo && !geo.alternateBounds) {
+              const clonedGeo = geo.clone();
+              clonedGeo.alternateBounds = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
+              graph.getModel().setGeometry(segTarget, clonedGeo);
+            }
+            graph.foldCells(!graph.isCellCollapsed(segTarget), false, [segTarget], null, null);
+            return;
+          }
+
           if (cell != null && cell.vertex == 1) {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || self.workflowService.isSingleInstruction(cell.value.tagName)) {
 
@@ -10524,6 +10641,19 @@ export class WorkflowComponent {
                 mxe.consume();
               }
               return;
+            }
+          }
+          // When click lands on empty space, resolve to Segment if inside a SegmentContainer
+          if (!cell) {
+            const mx = me.getGraphX();
+            const my = me.getGraphY();
+            for (const cCell of (self._segmentContainerCells || [])) {
+              const cSt = graph.view.getState(cCell);
+              if (cSt && mx >= cSt.x && mx <= cSt.x + cSt.width && my >= cSt.y && my <= cSt.y + cSt.height) {
+                const segId = cCell.value?.getAttribute?.('segmentId');
+                const segCell = segId ? graph.getModel().getCell(segId) : null;
+                if (segCell) { cell = segCell; break; }
+              }
             }
           }
           if (cell && !dragStart) {
@@ -10687,14 +10817,15 @@ export class WorkflowComponent {
           return self.workflowService.getTooltipForCell(cell);
         };
 
-        // When native getDropTarget resolves to a SegmentContainer, re-resolve to the real cell underneath
+        // SegmentContainer → resolve to Segment vertex so the drop() / createClickInstruction path
+        // works normally. dragOver swaps in the SegmentContainer view state for the full-box highlight.
         const origGetDropTarget = mxDragSource.prototype.getDropTarget;
         mxDragSource.prototype.getDropTarget = function (graph, x, y, evt) {
           const target = origGetDropTarget.apply(this, arguments);
           if (target && target.value?.tagName === 'SegmentContainer') {
             const segId = target.value.getAttribute('segmentId');
             const segCell = segId ? graph.getModel().getCell(segId) : null;
-            return segCell || target.getParent() || target;
+            if (segCell) { return segCell; }
           }
           return target;
         };
@@ -10720,7 +10851,16 @@ export class WorkflowComponent {
           // Highlights the drop target under the mouse
           if (this.currentHighlight != null && _graph.isDropEnabled()) {
             this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
-            const state = _graph.getView().getState(this.currentDropTarget);
+            let state = _graph.getView().getState(this.currentDropTarget);
+            // Segment vertex was resolved from SegmentContainer: use the container's full-box state
+            // for the highlight and pass the SegmentContainer cell to checkValidTarget.
+            if (this.currentDropTarget?.value?.tagName === 'Segment') {
+              const _cCell = (self._segmentContainerCells || []).find((c: any) =>
+                c.value?.getAttribute?.('segmentId') === this.currentDropTarget.id
+              );
+              const _cSt = _cCell ? _graph.getView().getState(_cCell) : null;
+              if (_cSt) { state = _cSt; }
+            }
             if (state && state.cell) {
               result = checkValidTarget(state.cell, this.dragElement.getAttribute('src'));
               this.currentHighlight.highlightColor = result === 'inValid' ? '#ff0000' : 'green';
@@ -11219,8 +11359,9 @@ export class WorkflowComponent {
          * Event to check if connector is valid or not on drop of new instruction
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
-          // SegmentContainer is a non-interactive background rectangle; never a drop target
-          if (cell?.value?.tagName === 'SegmentContainer') { return false; }
+          // SegmentContainer is always a valid drop target — occupancy check is done by
+          // checkValidTarget (for highlight color) and by createClickInstruction (flag guard).
+          if (cell?.value?.tagName === 'SegmentContainer') { return true; }
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -12731,15 +12872,8 @@ export class WorkflowComponent {
         } finally {
           graph.getModel().endUpdate();
           if (obj.cell?.value?.tagName === 'Segment') {
-            const _newLabel = self.selectedNode.newObj.label || '';
-            const _newWidth = WorkflowService.computeSegmentHeaderWidth(_newLabel);
-            const _segGeo = graph.getModel().getGeometry(obj.cell);
-            if (_segGeo && _segGeo.width !== _newWidth) {
-              const _segGeoCopy = _segGeo.clone();
-              _segGeoCopy.width = _newWidth;
-              graph.getModel().setGeometry(obj.cell, _segGeoCopy);
-              self.drawSegmentContainers(graph);
-            }
+            // Segment vertex is an invisible 2×2 anchor — just redraw the container overlay with the new label
+            self.drawSegmentContainers(graph);
           }
           if (self.hasLicense) {
             if (self.selectedNode.type === 'ForkList') {
@@ -13936,7 +14070,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Segment');
           _node.setAttribute('displayLabel', 'segment');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.computeSegmentHeaderWidth('segment'), 32, 'segment');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 2, 2, 'segment');
         } else if (title.match('admissionTime')) {
           _node = doc.createElement('AdmissionTime');
           _node.setAttribute('displayLabel', 'admissionTime');
@@ -14080,6 +14214,19 @@ export class WorkflowComponent {
      * Function: To validate instruction is valid for drop or not
      */
     function checkValidTarget(targetCell, title): string {
+      // SegmentContainer: allow drop when Segment has no instruction yet, block when occupied
+      if (targetCell?.value?.tagName === 'SegmentContainer') {
+        const segId = targetCell.value.getAttribute('segmentId');
+        const segCell = segId ? graph.getModel().getCell(segId) : null;
+        if (segCell && segCell.edges) {
+          const hasInstruction = segCell.edges.some((e: any) =>
+            e.source?.id === segCell.id && e.target &&
+            !self.workflowService.checkClosingCell(e.target.value?.tagName)
+          );
+          return hasInstruction ? 'inValid' : 'valid';
+        }
+        return 'valid';
+      }
       const tagName = targetCell.value.tagName;
       if (tagName === 'Process') {
         if (targetCell.getAttribute('title') === 'start' || targetCell.getAttribute('title') === 'end') {
