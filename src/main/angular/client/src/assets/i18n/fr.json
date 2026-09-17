@@ -5118,8 +5118,8 @@
     "tooltip.releaseMagnet": "Le magnet est relâché et le couloir de l'^Ordre|order^ n'apparaît plus.",
     "tooltip.includeChildren": "Magnétiser les ^Ordres|order^ enfants consiste à ajouter un magnet à chaque Ordre. Les Ordres magnétisés s'affichent dans des couloirs individuels indiquant la position/instruction actuelle de l'Ordre et les instructions environnantes.",
     "tooltip.releaseChildren": "La démagnétisation des ^Ordres|order^ enfants signifie que les magnets seront relâchés des Ordres enfants et que les couloirs seront supprimés.",
-    "tooltip.magnetizeAllChildren": "Magnetize All Children",
-    "tooltip.releaseAllChildren": "Release All Children",
+    "tooltip.magnetizeAllChildren": "Magnétiser les ^Ordres|order^ enfants affiche chaque Ordre enfant dans son couloir, avec sa position actuelle et l'instruction correspondante, ainsi que les instructions environnantes.",
+    "tooltip.releaseAllChildren": "La démagnétisation des ^Ordres|order^ enfants supprimera les magnets et fera disparaître les couloirs des Ordres enfants.",
     "tooltip.state": {
       "in_sync": "Un ^Workflow^ est synchronisé lorsqu'il est ^déployé|deployment^ sur le ^Contrôleur^.",
       "suspended": "Un ^Workflow^ est suspendu lorsqu'il est mis en pause par l'utilisateur.",
