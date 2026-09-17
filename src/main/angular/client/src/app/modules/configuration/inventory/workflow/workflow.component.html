@@ -71,9 +71,9 @@
                   }
                   @if (!isLoading) {
                     <span>
-                    <span (click)="validate()" [ngClass]="!workflow.valid ? 'cursor badge-danger':'badge-success'"
+                    <span (click)="validate()" [ngClass]="(!workflow.valid || _pendingStoreFailure) ? 'cursor badge-danger':'badge-success'"
                           class="badge m-r-12">
-                      @if (!workflow.valid) {
+                      @if (!workflow.valid || _pendingStoreFailure) {
                         <span [appRichTooltip]="invalidMsg | translate">
                           <span>{{ 'inventory.label.notValid' | translate }}</span>
                           @if (invalidMsg) {
@@ -81,7 +81,7 @@
                           }
                         </span>
                       }
-                      @if (workflow.valid) {
+                      @if (workflow.valid && !_pendingStoreFailure) {
                         <span>{{ 'inventory.label.valid' | translate }}</span>
                       }
                     </span>
@@ -110,7 +110,7 @@
                   @if (permission.joc && permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
                     <button
                       (click)="deploy()"
-                      [disabled]="!workflow.valid && !workflow.hasDeployments"
+                      [disabled]="(!workflow.valid && !workflow.hasDeployments) || _pendingStoreFailure"
                       class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                       <i class="fa fa-rocket p-r-xs"></i>
                       <span>{{ 'inventory.button.deploy' | translate }}</span>
