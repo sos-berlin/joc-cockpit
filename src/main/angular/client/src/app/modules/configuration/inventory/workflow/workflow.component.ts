@@ -8510,6 +8510,7 @@ export class WorkflowComponent {
       const computedBoxMap = new Map<string, {bx: number; by: number; bw: number; bh: number}>();
       const computedBoxesThisPass: Array<{bx: number; by: number; bw: number; bh: number; segCellId: string}> = [];
 
+      let segCellIdx = 0;
       for (const segCell of sortedSegCells) {
         // Find matching EndSegment
         let endCell = allCells.find(
@@ -8583,13 +8584,42 @@ export class WorkflowComponent {
         let bx: number, by: number, bw: number, bh: number;
 
         if (isCollapsed) {
-          const labelForWidth = segLabel || 'Segment';
-          const collapsedWidth = WorkflowService.computeSegmentHeaderWidth(labelForWidth) * scale;
-          // Center the collapsed box on the Segment vertex so the incoming arrow hits the middle
-          bx = segState.x + segState.width / 2 - collapsedWidth / 2;
+          // Use the same horizontal extent as the expanded box would have — inner cell view
+          // states are valid even when DOM-hidden, so this gives the correct branch width.
+          // This ensures fork branches occupy the same horizontal space whether collapsed or
+          // expanded, preventing SegmentContainer overlap in mixed collapse states.
+          let colMinX = segState.x;
+          let colMaxX = segState.x + segState.width;
+          let hasInnerExtent = false;
+
+          for (const ic of innerCells) {
+            const precomputed = computedBoxMap.get(ic.id);
+            if (precomputed) {
+              colMinX = Math.min(colMinX, precomputed.bx);
+              colMaxX = Math.max(colMaxX, precomputed.bx + precomputed.bw);
+              hasInnerExtent = true;
+              continue;
+            }
+            // Try view state first (valid when cell is visible); fall back to model geometry.
+            const st = graph.view.getState(ic);
+            if (!st) { continue; }
+            colMinX = Math.min(colMinX, st.x);
+            colMaxX = Math.max(colMaxX, st.x + st.width);
+            hasInnerExtent = true;
+          }
+
           by = segState.y - PADDING;
-          bw = collapsedWidth;
           bh = Math.max(36 * scale, segState.height + 2 * PADDING);
+
+          if (hasInnerExtent) {
+            bx = colMinX - PADDING;
+            bw = (colMaxX - colMinX) + 2 * PADDING;
+          } else {
+            // Empty segment: fall back to label-width centred on the Segment vertex.
+            const collapsedWidth = WorkflowService.computeSegmentHeaderWidth(segLabel || 'Segment') * scale;
+            bx = segState.x + segState.width / 2 - collapsedWidth / 2;
+            bw = collapsedWidth;
+          }
         } else {
           let minX = segState.x;
           let minY = segState.y;
@@ -8625,8 +8655,11 @@ export class WorkflowComponent {
           bh = (maxY - minY) + 2 * PADDING;
         }
 
-        // fix (a): enforce minimum gap between sibling (non-nested) containers.
+        // fix (a): enforce minimum gap between vertically-stacked sibling containers.
         // Nested pairs (one contains the other) are skipped via the nesting-relationship check.
+        // Fork siblings (side-by-side, yOverlap=true) are not trimmed here — their boxes
+        // naturally encompass all instruction cells, and visual distinction comes from the
+        // per-segment color palette assigned above.
         for (const other of computedBoxesThisPass) {
           if (segInnerIdSets.get(segCell.id)?.has(other.segCellId)) { continue; }
           if (segInnerIdSets.get(other.segCellId)?.has(segCell.id)) { continue; }
@@ -8645,27 +8678,6 @@ export class WorkflowComponent {
             const gapFromBottom = other.by - (by + bh);
             if (gapFromBottom >= 0 && gapFromBottom < MIN_GAP) {
               bh = Math.max(0, bh - (MIN_GAP - gapFromBottom));
-            }
-          }
-
-          // Side-by-side siblings (fork branches): adjust horizontal gaps
-          if (yOverlap) {
-            // other is to the left: trim current box's left padding
-            if (other.bx < bx) {
-              const gapFromLeft = bx - (other.bx + other.bw);
-              if (gapFromLeft < MIN_GAP) {
-                const newBx = other.bx + other.bw + MIN_GAP;
-                const shift = newBx - bx;
-                if (shift > 0) { bx = newBx; bw = Math.max(0, bw - shift); }
-              }
-            }
-            // other is to the right: trim current box's right padding
-            if (other.bx > bx) {
-              const gapFromRight = other.bx - (bx + bw);
-              if (gapFromRight < MIN_GAP) {
-                const newBw = Math.max(0, other.bx - MIN_GAP - bx);
-                if (newBw < bw) { bw = newBw; }
-              }
             }
           }
         }
@@ -8688,7 +8700,7 @@ export class WorkflowComponent {
             : 'align=left;verticalAlign=top;spacingLeft=44;spacingTop=3;fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;')
           : 'noLabel=1;';
         const containerStyle = 'rounded=0;fillColor=none;strokeColor=' + colorCode +
-          ';dashed=1;dashPattern=' + dashPattern + ';strokeWidth=1.5;pointerEvents=0;foldable=0;' + labelStyleStr;
+          ';dashed=1;dashPattern=' + dashPattern + ';strokeWidth=1;pointerEvents=0;foldable=0;' + labelStyleStr;
         const containerCell = graph.insertVertex(
           graph.getDefaultParent(), null, cNode, cellX, cellY, cellW, cellH, containerStyle
         );
@@ -8735,42 +8747,12 @@ export class WorkflowComponent {
       graph.getModel().endUpdate();
     }
 
-    // Remove any stale chevron overlays from previous renders (chevrons removed; fold via double-click)
+    // Remove any stale chevron overlays left from previous renders
     for (const segCell of segCells) {
       const existing = graph.getCellOverlays(segCell) || [];
       for (const o of existing) {
         if ((o as any)._isSegmentChevron) { graph.removeCellOverlay(segCell, o); }
       }
-      const isCollapsedNow = !!segCell.collapsed;
-      const chevronImg = isCollapsedNow
-        ? new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12)
-        : new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
-      const chevronOverlay = new mxCellOverlay(chevronImg, isCollapsedNow ? 'Expand' : 'Collapse');
-      (chevronOverlay as any)._isSegmentChevron = true;
-      chevronOverlay.align = mxConstants.ALIGN_LEFT;
-      chevronOverlay.verticalAlign = mxConstants.ALIGN_TOP;
-      const _cCell = (self._segmentContainerCells || []).find((c: any) =>
-        c.value?.getAttribute?.('segmentId') === segCell.id
-      );
-      const _cSt = _cCell ? graph.view.getState(_cCell) : null;
-      const _sSt = graph.view.getState(segCell);
-      if (_cSt && _sSt) {
-        chevronOverlay.offset = new mxPoint(_cSt.x - _sSt.x + 4, _cSt.y - _sSt.y + 4);
-      } else {
-        chevronOverlay.offset = new mxPoint(4, 2);
-      }
-      chevronOverlay.addListener(mxEvent.CLICK, (_sender: any, _evt: any) => {
-        const geo = graph.getModel().getGeometry(segCell);
-        if (geo && !geo.alternateBounds) {
-          // Initialize alternateBounds so swapBounds inside foldCells never operates on null,
-          // which can corrupt geometry and cause traversCells to throw mid-walk.
-          const clonedGeo = geo.clone();
-          clonedGeo.alternateBounds = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
-          graph.getModel().setGeometry(segCell, clonedGeo);
-        }
-        graph.foldCells(!graph.isCellCollapsed(segCell), false, [segCell], null, null);
-      });
-      graph.addCellOverlay(segCell, chevronOverlay);
     }
   }
   // ===== END SEGMENT CONTAINER POST-LAYOUT PASS =====
@@ -9857,30 +9839,39 @@ export class WorkflowComponent {
                 };
               }
             }
-          } else if (graph.getView().getState(this.cells[0])) {
-            const originalShape = graph.getView().getState(this.cells[0]).shape;
-            this.pBounds = originalShape.bounds;
-            if (this.cells[0].value.tagName === 'Job') {
-              shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
-              shape.image = originalShape.image;
-            } else if (this.cells[0].value.tagName === 'If' || this.cells[0].value.tagName === 'When' || this.cells[0].value.tagName === 'Cycle' || this.cells[0].value.tagName === 'ElseWhen' || this.cells[0].value.tagName === 'Try' || this.cells[0].value.tagName === 'Retry') {
-              shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
-            } else {
-              shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cells[0].value.tagName, originalShape.image), null, originalShape.stroke + 1);
+          } else {
+            // Segment vertex (2×2 invisible) may lack a fresh view state during a repaint.
+            // Force-validate it so this.shape is always assigned, letting graphHandler.mouseMove
+            // call me.consume() — which is required for the drop-here removal box to appear.
+            if (this.cells[0]?.value?.tagName === 'Segment' && !graph.getView().getState(this.cells[0])) {
+              graph.view.validateCell(this.cells[0]);
             }
-            shape.isRounded = originalShape.isRounded;
-            shape.gradient = originalShape.gradient;
-            shape.boundingBox = originalShape.boundingBox;
-            shape.style = originalShape.style;
-            shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
-              mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
-            shape.init(this.graph.getView().getOverlayPane());
-            shape.pointerEvents = false;
-            // Workaround for artifacts on iOS
-            if (mxClient.IS_IOS) {
-              shape.getSvgScreenOffset = function () {
-                return 0;
-              };
+            const cellState0 = graph.getView().getState(this.cells[0]);
+            if (cellState0) {
+              const originalShape = cellState0.shape;
+              this.pBounds = originalShape.bounds;
+              if (this.cells[0].value.tagName === 'Job') {
+                shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
+                shape.image = originalShape.image;
+              } else if (this.cells[0].value.tagName === 'If' || this.cells[0].value.tagName === 'When' || this.cells[0].value.tagName === 'Cycle' || this.cells[0].value.tagName === 'ElseWhen' || this.cells[0].value.tagName === 'Try' || this.cells[0].value.tagName === 'Retry') {
+                shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
+              } else {
+                shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cells[0].value.tagName, originalShape.image), null, originalShape.stroke + 1);
+              }
+              shape.isRounded = originalShape.isRounded;
+              shape.gradient = originalShape.gradient;
+              shape.boundingBox = originalShape.boundingBox;
+              shape.style = originalShape.style;
+              shape.dialect = (this.graph.dialect != mxConstants.DIALECT_SVG) ?
+                mxConstants.DIALECT_VML : mxConstants.DIALECT_SVG;
+              shape.init(this.graph.getView().getOverlayPane());
+              shape.pointerEvents = false;
+              // Workaround for artifacts on iOS
+              if (mxClient.IS_IOS) {
+                shape.getSvgScreenOffset = function () {
+                  return 0;
+                };
+              }
             }
           }
           return shape;
@@ -10264,7 +10255,7 @@ export class WorkflowComponent {
 
         // Changes fill color to red on mouseover
         graph.addMouseListener({
-          currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null,
+          currentState: null, previousStyle: null, currentHighlight: null, currentIconSet: null, hoveredContainerCell: null,
           mouseDown: function (sender, me) {
             if (self.isTrash) {
               return;
@@ -10283,17 +10274,40 @@ export class WorkflowComponent {
             // SegmentContainer has pointerEvents=0 so DOM hit-test misses it.
             // When mouse is over empty container space, resolve to the Segment vertex
             // so 3-dots (mxIconSet) shows on hover and click selects the Segment.
+            // Use model geometry (not view state) — view state can be null during repaints,
+            // which would cause cell to stay null and break isCellDragging / dropContainer2.
+            let matchedContainerCell: any = null;
             if (!cell) {
               const mx = me.getGraphX();
               const my = me.getGraphY();
+              const sc = graph.view.scale;
+              const ttx = graph.view.translate.x;
+              const tty = graph.view.translate.y;
               for (const cCell of (self._segmentContainerCells || [])) {
-                const cSt = graph.view.getState(cCell);
-                if (cSt && mx >= cSt.x && mx <= cSt.x + cSt.width && my >= cSt.y && my <= cSt.y + cSt.height) {
+                const geo = graph.getModel().getGeometry(cCell);
+                if (!geo) { continue; }
+                const sx = (geo.x + ttx) * sc;
+                const sy = (geo.y + tty) * sc;
+                const sw = geo.width * sc;
+                const sh = geo.height * sc;
+                if (mx >= sx && mx <= sx + sw && my >= sy && my <= sy + sh) {
                   const segId = cCell.value?.getAttribute?.('segmentId');
                   const segCell = segId ? graph.getModel().getCell(segId) : null;
-                  if (segCell) { cell = segCell; break; }
+                  if (segCell) { cell = segCell; matchedContainerCell = cCell; break; }
                 }
               }
+            }
+            // Hover highlight: light fill when cursor is over a SegmentContainer's empty area.
+            if (matchedContainerCell !== this.hoveredContainerCell) {
+              if (this.hoveredContainerCell) {
+                const prevSt = graph.view.getState(this.hoveredContainerCell);
+                if (prevSt?.shape?.node) { (prevSt.shape.node as SVGElement).style.fill = ''; }
+              }
+              if (matchedContainerCell) {
+                const cSt = graph.view.getState(matchedContainerCell);
+                if (cSt?.shape?.node) { (cSt.shape.node as SVGElement).style.fill = 'rgba(0, 147, 212, 0.08)'; }
+              }
+              this.hoveredContainerCell = matchedContainerCell;
             }
             if (me.consumed && cell) {
               if (!self.display) {
@@ -10537,36 +10551,111 @@ export class WorkflowComponent {
           return cells;
         };
 
+        // Allow interacting with a Segment (hover, click, double-click, and — critically —
+        // starting a drag to move/reorder/remove it) by pressing/hovering anywhere inside
+        // its SegmentContainer box, not just its tiny header cell.
+        //
+        // The previous approach here tried to fix this by intercepting the native DOM
+        // 'mousedown' on graph.container and re-dispatching a synthetic mousedown at the
+        // header's exact screen position. That's fragile — it depends on assumptions about
+        // exactly which event mxGraph listens for and where — and was replaced with an
+        // override of graph.getCellAt(), reasoning that every mouse event resolves its cell
+        // through that one method. That was directionally right but incomplete: getCellAt's
+        // x/y are screen-pixel coordinates, and it's invoked from inside
+        // graph.updateMouseEvent(), which is the actual function that sets me.state on the
+        // mxMouseEvent — and that's the field mxRubberband's mouseDown checks directly
+        // (`me.getState() == null`) to decide whether to start rubber-band selecting. Rather
+        // than rely on getCellAt being reached correctly through every internal call path,
+        // override updateMouseEvent itself: it runs once per mouse event, before any
+        // listener (rubberband, graphHandler, click, dblclick) sees that event, so patching
+        // it here guarantees me.state is set correctly for literally everything downstream.
+        const findSegmentCellForScreenPoint = (sx: number, sy: number): any => {
+          const hits = (self._segmentContainerCells || []).filter((cCell: any) => {
+            const st = graph.view.getState(cCell);
+            return st && sx >= st.x && sx <= st.x + st.width && sy >= st.y && sy <= st.y + st.height;
+          });
+          if (hits.length === 0) { return null; }
+          // Pick the innermost (smallest-area) box when segments are nested.
+          const hit = hits.reduce((a: any, b: any) => {
+            const sa = graph.view.getState(a);
+            const sb = graph.view.getState(b);
+            return (sa.width * sa.height <= sb.width * sb.height) ? a : b;
+          });
+          const segId = hit.value?.getAttribute?.('segmentId');
+          return segId ? graph.getModel().getCell(segId) : null;
+        };
+
+        const origUpdateMouseEvent = graph.updateMouseEvent;
+        graph.updateMouseEvent = function (me: any, evtName: any) {
+          const result = origUpdateMouseEvent.apply(this, arguments);
+          if (me.getState() == null && me.graphX != null && me.graphY != null) {
+            const segCell = findSegmentCellForScreenPoint(me.graphX, me.graphY);
+            if (segCell) {
+              const segState = graph.view.getState(segCell);
+              if (segState) { me.state = segState; }
+            }
+          }
+          return result;
+        };
+
+        // Keep the getCellAt redirect too — it's what graph.getDropTarget() (and therefore
+        // mxDragSource's mid-drag drop-target lookup) resolves through, which
+        // updateMouseEvent above doesn't cover.
+        const origGetCellAt = graph.getCellAt;
+        graph.getCellAt = function (x, y, parent, vertices, edges, ignoreFn) {
+          const cell = origGetCellAt.apply(this, arguments);
+          if (cell == null || cell.value?.tagName === 'SegmentContainer') {
+            const segCell = findSegmentCellForScreenPoint(x, y);
+            if (segCell) { return segCell; }
+          }
+          return cell;
+        };
+
+        // Defense in depth, and the most direct fix of the three: rather than depend on
+        // exactly how/where this mxGraph build internally resolves me.state before notifying
+        // listeners (the updateMouseEvent override above assumes a method name that may not
+        // match every build), patch the two listeners whose behavior we actually care about,
+        // right where they read that state:
+        //  - mxRubberband.mouseDown starts the selection-marquee precisely when
+        //    me.getState() == null — this is what was drawing the blue rubber-band box
+        //    instead of starting a drag.
+        //  - mxGraphHandler.mouseDown is what would otherwise start moving the Segment, but
+        //    only proceeds when me.getState() != null.
+        // Both listeners receive the SAME mxMouseEvent instance for a given native event, so
+        // fixing its state once, at the top of either wrapper, is enough for both — and since
+        // we're wrapping the functions themselves (not adding another listener), this doesn't
+        // depend on registration order between graphHandler/rubberband/our own listeners.
+        // mxGraphHandler.prototype.mouseMove is already successfully overridden elsewhere in
+        // this file, confirming these are the right, real prototypes for this build.
+        const fixSegmentStateOnEvent = (me: any): void => {
+          if (me.getState() != null) { return; }
+          const gx = me.getGraphX ? me.getGraphX() : me.graphX;
+          const gy = me.getGraphY ? me.getGraphY() : me.graphY;
+          if (gx == null || gy == null) { return; }
+          const segCell = findSegmentCellForScreenPoint(gx, gy);
+          if (segCell) {
+            const segState = graph.view.getState(segCell);
+            if (segState) { me.setState(segState); }
+          }
+        };
+
+        const origGraphHandlerMouseDown = mxGraphHandler.prototype.mouseDown;
+        mxGraphHandler.prototype.mouseDown = function (sender: any, me: any) {
+          fixSegmentStateOnEvent(me);
+          return origGraphHandlerMouseDown.apply(this, arguments);
+        };
+
+        const origRubberbandMouseDown = mxRubberband.prototype.mouseDown;
+        mxRubberband.prototype.mouseDown = function (sender: any, me: any) {
+          fixSegmentStateOnEvent(me);
+          return origRubberbandMouseDown.apply(this, arguments);
+        };
+
+
         /**
          * Overrides method to provide a cell collapse/expandable on double click
          */
         graph.dblClick = function (evt, cell) {
-          // Resolve Segment from SegmentContainer area (pointerEvents=0 so cell may be null)
-          let segTarget: any = cell?.value?.tagName === 'Segment' ? cell : null;
-          if (!segTarget) {
-            const offset = mxUtils.getOffset(graph.container);
-            const gx = mxEvent.getClientX(evt) - offset.x + graph.container.scrollLeft;
-            const gy = mxEvent.getClientY(evt) - offset.y + graph.container.scrollTop;
-            for (const cCell of (self._segmentContainerCells || [])) {
-              const cSt = graph.view.getState(cCell);
-              if (cSt && gx >= cSt.x && gx <= cSt.x + cSt.width && gy >= cSt.y && gy <= cSt.y + cSt.height) {
-                const segId = cCell.value?.getAttribute?.('segmentId');
-                segTarget = segId ? graph.getModel().getCell(segId) : null;
-                if (segTarget) { break; }
-              }
-            }
-          }
-          if (segTarget) {
-            const geo = graph.getModel().getGeometry(segTarget);
-            if (geo && !geo.alternateBounds) {
-              const clonedGeo = geo.clone();
-              clonedGeo.alternateBounds = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
-              graph.getModel().setGeometry(segTarget, clonedGeo);
-            }
-            graph.foldCells(!graph.isCellCollapsed(segTarget), false, [segTarget], null, null);
-            return;
-          }
-
           if (cell != null && cell.vertex == 1) {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || self.workflowService.isSingleInstruction(cell.value.tagName)) {
 
@@ -10649,6 +10738,34 @@ export class WorkflowComponent {
               return;
             }
           }
+          // Border-line click on SegmentContainer → toggle segment fold
+          {
+            const BORDER_HIT = 8;
+            const gx = me.getGraphX();
+            const gy = me.getGraphY();
+            for (const cCell of (self._segmentContainerCells || [])) {
+              const cSt = graph.view.getState(cCell);
+              if (!cSt) { continue; }
+              if (gx < cSt.x - BORDER_HIT || gx > cSt.x + cSt.width + BORDER_HIT) { continue; }
+              if (gy < cSt.y - BORDER_HIT || gy > cSt.y + cSt.height + BORDER_HIT) { continue; }
+              const interior = gx > cSt.x + BORDER_HIT && gx < cSt.x + cSt.width - BORDER_HIT
+                            && gy > cSt.y + BORDER_HIT && gy < cSt.y + cSt.height - BORDER_HIT;
+              if (interior) { continue; }
+              const segId = cCell.value?.getAttribute?.('segmentId');
+              const segCell = segId ? graph.getModel().getCell(segId) : null;
+              if (segCell) {
+                const geo = graph.getModel().getGeometry(segCell);
+                if (geo && !geo.alternateBounds) {
+                  const clonedGeo = geo.clone();
+                  clonedGeo.alternateBounds = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
+                  graph.getModel().setGeometry(segCell, clonedGeo);
+                }
+                graph.foldCells(!graph.isCellCollapsed(segCell), false, [segCell], null, null);
+                return;
+              }
+            }
+          }
+
           // When click lands on empty space, resolve to Segment if inside a SegmentContainer
           if (!cell) {
             const mx = me.getGraphX();
@@ -11262,6 +11379,7 @@ export class WorkflowComponent {
           }
           WorkflowService.executeLayout(graph, self.preferences);
           self.drawSegmentContainers(graph);
+          setTimeout(() => { self.workflowService.center(graph); }, 200);
           return cells;
         };
 
