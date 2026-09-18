@@ -86,7 +86,132 @@
                               <app-order-action [order]="order" [permission]="permission" [preferences]="preferences"
                                                 [viewContainerRef]="viewContainerRef" [schedulerId]="schedulerId"
                                                 (isChanged)="changedHandler($event)"></app-order-action>
-                              <span style="position:relative;top:2px">
+                              <ng-template #contentTemplate>
+                                <div class="p-l-sm">
+                                  <span> {{ 'order.label.state' | translate }} </span>:
+                                  <span [ngClass]="coreService.getColor(order.state.severity, 'text')" class="_600"> {{order.state._text |  translate}}</span>
+                                  @if (order.marked) {
+                                    <span [ngClass]="coreService.getColor(order.marked.severity, 'text')"
+                                          class="_600">/{{order.marked._text | translate}}</span>
+                                  }
+                                </div>
+                                @if (order.state._reason) {
+                                  <div class="p-l-sm">
+                                    <span> {{ 'common.label.comment' | translate }} </span>:
+                                    <span class="_600"> {{order.state._reason}}</span>
+                                  </div>
+                                }
+                                @if (order.question) {
+                                  <div class="p-l-sm">
+                                    <span> {{ 'workflow.label.prompt' | translate }} </span>:
+                                    <span class="_600"> {{order.question}}</span>
+                                  </div>
+                                }
+                                @if (order.obstacles && order.obstacles.length > 0) {
+                                  <div class="p-l-sm">
+                                    @for (obstacle of order.obstacles; track obstacle) {
+                                      <div>
+                                        <span> {{obstacle.type | translate}} </span>
+                                        @if (obstacle['until']) {
+                                          <span class="_600">:&nbsp;{{obstacle['until'] | stringToDate}}</span>
+                                        }
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                                @if (order.lastOutcome) {
+                                  <div class="p-l-sm">
+                                    <span> {{ 'order.label.lastOutcome' | translate }} </span>:
+                                    <span class="_600">{{order.lastOutcome.TYPE}}</span>
+                                  </div>
+                                }
+                                @if (!order.cyclicOrder) {
+                                  <div class="p-l-sm">
+                                    <span> {{ 'order.label.scheduledFor' | translate }} </span>:
+                                    @if (!order.scheduledNever) {
+                                      <span class="_600">{{order.scheduledFor | stringToDate}}</span>
+                                    }
+                                    @if (order.scheduledNever) {
+                                      <span class="_600">{{ 'common.label.never' | translate }}</span>
+                                    }
+                                  </div>
+                                }
+                                @if (order.expectedNotices) {
+                                  <div class="p-l-sm">
+                                    <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
+                                    @for (notice of order.expectedNotices; track notice) {
+                                      <div class="p-l-sm">
+                                        {{notice['boardName']}}
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                                @if (order.cyclicOrder) {
+                                  <div class="m-a-sm m-t-0">
+                                    <div class="_600 m-b-xs">{{ 'dailyPlan.label.cyclicOrder' | translate }}</div>
+                                    <span class="_600 p-l-sm">{{ 'dailyPlan.label.begin' | translate }}</span>:
+                                    {{order.cyclicOrder.firstStart | stringToDate}}
+                                    <br>
+                                    <span class="_600 p-l-sm">{{ 'dailyPlan.label.end' | translate }}</span>:
+                                    {{order.cyclicOrder.lastStart | stringToDate}}
+                                    <br>
+                                    <span class="_600 p-l-sm">{{ 'order.label.orders' | translate }}</span>:
+                                    {{order.cyclicOrder.count}}
+                                  </div>
+                                }
+                                @if (order.cycleState) {
+                                  <div class="m-a-sm m-t-0">
+                                    <div class="_600 m-b-xs">{{ 'order.cycleState.label.cycleState' | translate }}</div>
+                                    @if (order.cycleState.since) {
+                                      <span>
+                                        <span class="_600 p-l-sm">{{ 'order.cycleState.label.since' | translate }}</span>:
+                                        {{order.cycleState.since | stringToDate}}
+                                      </span>
+                                    }
+                                    @if (order.cycleState.next) {
+                                      <span>
+                                        <span class="_600 p-l-sm">{{ 'order.cycleState.label.next' | translate }}</span>:
+                                        {{order.cycleState.next | stringToDate}}
+                                      </span>
+                                    }
+                                    <br>
+                                    <span class="_600 p-l-sm">{{ 'order.cycleState.label.index' | translate }}</span>:
+                                    {{order.cycleState.index}}
+                                  </div>
+                                }
+                                @if (order.retryState) {
+                                  <div class="m-a-sm m-t-0">
+                                    <div class="_600 m-b-xs">{{ 'order.retryState.label.retryState' | translate }}</div>
+                                    @if (order.retryState.next) {
+                                      <span>
+                                        <span class="_600 p-l-sm">{{ 'order.retryState.label.next' | translate }}</span>:
+                                        {{ order.retryState.next | stringToDate }}
+                                      </span>
+                                    }
+                                    <br>
+                                    <span class="_600 p-l-sm">{{ 'order.retryState.label.attempt' | translate }}</span>:
+                                    {{ order.retryState.attempt }}
+                                  </div>
+                                }
+                                @if (order.sleepState) {
+                                  <div class="m-a-sm m-t-0">
+                                    <div class="_600 m-b-xs">{{ 'order.sleepState.label.sleepState' | translate }}</div>
+                                    @if (order.sleepState.until) {
+                                      <span>
+                                        <span class="_600 p-l-sm">{{ 'order.sleepState.label.until' | translate }}</span>:
+                                        {{order.sleepState.until | stringToDate}}
+                                      </span>
+                                    }
+                                  </div>
+                                }
+                                @if (order.priority) {
+                                  <div class="p-l-sm">
+                                    <span> {{ 'order.label.priority' | translate }} </span>:
+                                    <span class="_600">{{order.priority}}</span>
+                                  </div>
+                                }
+                              </ng-template>
+                              <span (mouseover)="getObstacles(order)" [appRichTooltip]="contentTemplate" style="position:relative;top:2px">
                                 @if (!order.marked) {
                                   <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>
                                 }

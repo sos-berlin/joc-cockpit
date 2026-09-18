@@ -504,34 +504,34 @@
                         <span>{{ 'order.label.allOrders' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.pending' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.pending' | translate">{{ 'common.label.pending' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.scheduled' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.scheduled' | translate">{{ 'common.label.scheduled' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.incomplete' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.incomplete' | translate">{{ 'common.label.incomplete' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.running' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.running' | translate">{{ 'common.label.running' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.suspended' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.suspended' | translate">{{ 'common.label.suspended' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.completed' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.completed' | translate">{{ 'common.label.completed' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.prompting' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.prompting' | translate">{{ 'common.label.prompting' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.waiting' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.waiting' | translate">{{ 'common.label.waiting' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <span>{{ 'common.label.blocked' | translate }}</span>
+                        <span [appRichTooltip]="'dashboard.tooltip.blocked' | translate">{{ 'common.label.blocked' | translate }}</span>
                       </td>
                       <td [width]="'9.09%'">
-                        <div>{{ 'common.label.failed' | translate }}</div>
+                        <div [appRichTooltip]="'dashboard.tooltip.failed' | translate">{{ 'common.label.failed' | translate }}</div>
                       </td>
                     </tr>
                     <tr class="text-center">
@@ -1225,6 +1225,7 @@
                                     [workFlowJson]="workflow.configuration"
                                     [orders]="workflow.orders"
                                     [orderReload]="workflow.orderReload"
+                                    [instructionReload]="workflow.instructionReload"
                                     [jobs]="workflow.configuration?.jobs"
                                     [permission]="permission"
                                     [preferences]="preferences"

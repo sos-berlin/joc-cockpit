@@ -50,6 +50,7 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   @Input() workFlowJson: any = {};
   @Input() orders: any[] = [];
   @Input() orderReload: boolean;
+  @Input() instructionReload: boolean;
   @Input() jobs: any = {};
   @Input() permission: any = {};
   @Input() preferences: any = {};
@@ -82,6 +83,8 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
         this.refreshOrderStates();
         this._refreshTimer = null;
       }, 150);
+    } else if (changes['instructionReload']) {
+      this.cdr.markForCheck();
     }
   }
 
@@ -629,6 +632,19 @@ export class WorkflowSegmentComponent implements OnChanges, OnDestroy {
   showLog(order: any): void {
     if (order.state && order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING') {
       this.coreService.showOrderLogWindow(order.orderId, this.schedulerId, this.workFlowJson?.path, this.viewContainerRef);
+    }
+  }
+
+  getObstacles(order: any): void {
+    if ((order.state._text === 'INPROGRESS' || (order.state._text === 'WAITING' && order.state._reason === 'WAITING_FOR_ADMISSION')) && !order.obstacles) {
+      order.obstacles = [];
+      this.coreService.post('order/obstacles', {
+        controllerId: this.schedulerId,
+        orderId: order.orderId
+      }).subscribe((res: any) => {
+        order.obstacles = res.obstacles;
+        this.cdr.markForCheck();
+      });
     }
   }
 

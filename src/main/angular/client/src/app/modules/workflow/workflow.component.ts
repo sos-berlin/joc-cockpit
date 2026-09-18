@@ -659,6 +659,7 @@ export class SingleWorkflowComponent {
           if (this.workflows[0].show) {
             this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, {count: 0});
             this.workflowService.compareAndMergeInstructions(this.workflows[0].configuration.instructions, res.workflow.instructions);
+            this.workflows[0].instructionReload = !this.workflows[0].instructionReload;
           }
           this.cdr.markForCheck();
         } else {
@@ -2497,7 +2498,9 @@ export class WorkflowComponent {
                   if (this.workflows[i].show) {
                     this.workflowService.convertTryToRetry(res.workflow, null, res.workflow.jobs, {count: 0});
                     this.workflowService.compareAndMergeInstructions(this.workflows[i].configuration.instructions, res.workflow.instructions);
+                    this.workflows[i].instructionReload = !this.workflows[i].instructionReload;
                   }
+                  this.cdr.markForCheck();
                 }
               });
             }
