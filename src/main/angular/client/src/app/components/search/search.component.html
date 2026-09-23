@@ -264,103 +264,110 @@
                 </div>
               }
 
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.countJobs' | translate"
+              <div class="b-a m-b-sm section-box">
+                <div class="section-box-header">
+                  <small class="_600 section-box-title">{{ 'Workflows' | translate }}</small>
+                </div>
+                <div class="p-a-sm">
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.countJobs' | translate"
 >{{ 'inventory.search.label.countJobs' | translate }}</label>
-                <label class="col-md-2 col-lg-2 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.from' | translate">{{ 'inventory.search.label.from' | translate }}
-                </label>
-                <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom">
-                  </nz-input-number>
-                </div>
-                <label class="col-md-2 col-lg-2 text-center form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.to' | translate">{{ 'inventory.search.label.to' | translate }}
-                </label>
-                <div class="col-md-2 col-lg-2">
-                  <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.jobName' | translate"
->{{ 'inventory.search.label.jobName' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <label class="w-full">
-                    <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()"
-                           class="form-control" name="jobName" [(ngModel)]="searchObj.advanced.jobName">
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 block-ellipsis w-full"
-                       [appRichTooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
->{{ 'inventory.search.label.jobNameExactMatch' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch"
-                         (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()"
-                         name="jobNameExactMatch"></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.jobCriticality' | translate"
->{{ 'inventory.search.label.jobCriticality' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <app-select-input [isAllowClear]="true" [placeholder]="'inventory.placeholder.selectCriticality'"
-                                    [name]="'criticality'" [classNames]="'w-full'" [object]="searchObj.advanced"
-                                    [attributeName]="'jobCriticality'" [optionLabel]="'name'" [optionValue]="'value'"
-                                    [listArray]="jobCriticality"></app-select-input>
-
-                </div>
-              </div>
-              @if (searchObj.returnType === ENUM.WORKFLOW) {
-                <div class="form-group row">
-                  <label class="col-md-4 col-lg-3 form-control-label"
-                         [appRichTooltip]="'inventory.search.tooltips.jobScript' | translate"
->{{ 'inventory.search.label.jobScript' | translate }}</label>
-                  <div class="col-md-8 col-lg-9">
-                    <input autocomplete="off" type="text" class="form-control" name="jobScript"
-                           [(ngModel)]="searchObj.advanced.jobScript">
+                    <label class="col-md-2 col-lg-2 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.from' | translate">{{ 'inventory.search.label.from' | translate }}
+                    </label>
+                    <div class="col-md-2 col-lg-2">
+                      <nz-input-number [nzMin]="0" name="from" [(ngModel)]="searchObj.advanced.jobCountFrom">
+                      </nz-input-number>
+                    </div>
+                    <label class="col-md-2 col-lg-2 text-center form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.to' | translate">{{ 'inventory.search.label.to' | translate }}
+                    </label>
+                    <div class="col-md-2 col-lg-2">
+                      <nz-input-number [nzMin]="0" name="to" [(ngModel)]="searchObj.advanced.jobCountTo"></nz-input-number>
+                    </div>
                   </div>
-                </div>
-              }
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.argumentName' | translate"
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.jobName' | translate"
+>{{ 'inventory.search.label.jobName' | translate }}</label>
+                    <div class="col-md-8 col-lg-9">
+                      <label class="w-full">
+                        <input type="text" autocomplete="off" (change)="isJobSearch = false;object.mapOfCheckedId.clear()"
+                               class="form-control" name="jobName" [(ngModel)]="searchObj.advanced.jobName">
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 block-ellipsis w-full"
+                           [appRichTooltip]="'inventory.search.tooltips.jobNameExactMatch' | translate"
+>{{ 'inventory.search.label.jobNameExactMatch' | translate }}</label>
+                    <div class="col-md-8 col-lg-9">
+                      <label nz-checkbox [(ngModel)]="searchObj.advanced.jobNameExactMatch"
+                             (nzCheckedChange)="isJobSearch = false;object.mapOfCheckedId.clear()"
+                             name="jobNameExactMatch"></label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.jobCriticality' | translate"
+>{{ 'inventory.search.label.jobCriticality' | translate }}</label>
+                    <div class="col-md-8 col-lg-9">
+                      <app-select-input [isAllowClear]="true" [placeholder]="'inventory.placeholder.selectCriticality'"
+                                        [name]="'criticality'" [classNames]="'w-full'" [object]="searchObj.advanced"
+                                        [attributeName]="'jobCriticality'" [optionLabel]="'name'" [optionValue]="'value'"
+                                        [listArray]="jobCriticality"></app-select-input>
+
+                    </div>
+                  </div>
+                  @if (searchObj.returnType === ENUM.WORKFLOW) {
+                    <div class="form-group row">
+                      <label class="col-md-4 col-lg-3 form-control-label"
+                             [appRichTooltip]="'inventory.search.tooltips.jobScript' | translate"
+>{{ 'inventory.search.label.jobScript' | translate }}</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input autocomplete="off" type="text" class="form-control" name="jobScript"
+                               [(ngModel)]="searchObj.advanced.jobScript">
+                      </div>
+                    </div>
+                  }
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.argumentName' | translate"
 >{{ 'inventory.search.label.argumentName' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="name"
-                         [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.argumentValue' | translate"
+                    <div class="col-md-8 col-lg-9">
+                      <input autocomplete="off" type="text" class="form-control" name="name"
+                             [(ngModel)]="searchObj.advanced.argumentName" placeholder="{{'common.placeholder.name' | translate}}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.argumentValue' | translate"
 >{{ 'inventory.search.label.argumentValue' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="value"
-                         [(ngModel)]="searchObj.advanced.argumentValue"
-                         placeholder="{{'common.placeholder.value' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.environmentName' | translate"
+                    <div class="col-md-8 col-lg-9">
+                      <input autocomplete="off" type="text" class="form-control" name="value"
+                             [(ngModel)]="searchObj.advanced.argumentValue"
+                             placeholder="{{'common.placeholder.value' | translate}}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.environmentName' | translate"
 >{{ 'inventory.search.label.environmentName' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="envName"
-                         [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-4 col-lg-3 form-control-label"
-                       [appRichTooltip]="'inventory.search.tooltips.environmentValue' | translate"
+                    <div class="col-md-8 col-lg-9">
+                      <input autocomplete="off" type="text" class="form-control" name="envName"
+                             [(ngModel)]="searchObj.advanced.envName" placeholder="{{'common.placeholder.name' | translate}}">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-4 col-lg-3 form-control-label"
+                           [appRichTooltip]="'inventory.search.tooltips.environmentValue' | translate"
 >{{ 'inventory.search.label.environmentValue' | translate }}</label>
-                <div class="col-md-8 col-lg-9">
-                  <input autocomplete="off" type="text" class="form-control" name="envValue"
-                         [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
+                    <div class="col-md-8 col-lg-9">
+                      <input autocomplete="off" type="text" class="form-control" name="envValue"
+                             [(ngModel)]="searchObj.advanced.envValue" placeholder="{{'common.placeholder.value' | translate}}">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
