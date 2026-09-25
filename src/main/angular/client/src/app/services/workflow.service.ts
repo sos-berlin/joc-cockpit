@@ -3,6 +3,8 @@ import {clone, isArray, isEmpty, isNaN, sortBy} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from './core.service';
 import {StringDatePipe} from '../pipes/core.pipe';
+import {BLOCK_SCOPE_METRICS, DEFAULT_BLOCK_SCOPE_TAGS} from './block-scope.renderer';
+import {applyBlockShiftPass, flowDirection, layoutClassicPerWorkflow, layoutOrientation, reserveCollapsedSegmentBoxes, resolveWorkflowLayout} from './block-shift.layout';
 
 declare const mxHierarchicalLayout: any;
 declare const mxTooltipHandler: any;
@@ -29,6 +31,48 @@ export class WorkflowService {
     }
   }
 
+  /**
+   * Instruction shape sizes: 70% of the original 72 / 68 / 70 px and 110x40
+   * Catch. Job (180x40) and Segment (2x2 anchors) keep their size. The symbol
+   * pictures are SVG images and scale with the shape automatically.
+   */
+  static readonly DIAMOND_SIZE = 50;      // was 72: If, Try, Retry, Cycle, Case, When, closers, ...
+  static readonly SYMBOL_SIZE = 48;       // was 68: Fork, Lock, Sleep, Prompt, Notices, ...
+  static readonly START_END_SIZE = 49;    // was 70: Start / End circles
+  static readonly CATCH_WIDTH = 77;       // was 110 (100 when dropped)
+  static readonly CATCH_HEIGHT = 28;      // was 40
+
+  /**
+   * Clears what a layout left on the arrows (bend points, label positions, the
+   * routing flags the indented / hierarchical layouts set), so the next layout
+   * starts clean. For switching between the indented and classic layouts
+   * without rebuilding the graph. Call inside a model update.
+   */
+  static resetEdgeLayout(graph: any): void {
+    const model = graph.getModel();
+    const edges: any[] = [];
+    for (const id of Object.keys(model.cells || {})) {
+      const e = model.cells[id];
+      if (!e || !e.edge) {
+        continue;
+      }
+      edges.push(e);
+      const g = model.getGeometry(e);
+      if (g && ((g.points && g.points.length > 0) || g.offset || g.x || g.y)) {
+        const ng = g.clone();
+        ng.points = null;
+        ng.offset = null;
+        ng.x = 0;
+        ng.y = 0;
+        model.setGeometry(e, ng);
+      }
+    }
+    if (edges.length > 0) {
+      graph.setCellStyles('noEdgeStyle', null, edges);
+      graph.setCellStyles('orthogonal', null, edges);
+    }
+  }
+
   static computeSegmentHeaderWidth(label: string): number {
     const minWidth = 120;
     const iconReserve = 40; // space for chevron + 3-dot overlays
@@ -40,19 +84,18 @@ export class WorkflowService {
    * Reformat the layout
    */
   static executeLayout(graph: any, prefrences): void {
-    mxHierarchicalLayout.prototype.interRankCellSpacing = parseInt(prefrences.interRankCellSpacing) * 0.4;
-    // intraCellSpacing controls horizontal gap between sibling branch
-    // cells at the same rank (e.g. Fork branches). Extra spacing is
-    // only needed when a Fork's branches themselves contain Segment
-    // cells — that's the specific case where decorative Segment
-    // containers can crowd each other. Plain Job-only Fork branches
-    // never had this problem and should keep the original base
-    // spacing, not be widened unnecessarily.
+    const baseRankSpacing = parseInt(prefrences.interRankCellSpacing) * 0.4;
+    // New (indented) or old (classic) layout: the user's choice, see
+    // setWorkflowLayoutMode(). Classic = mxGraph's hierarchical layout exactly
+    // as before the indented layout (no block pass, no extra spacing).
+    const layoutMode = resolveWorkflowLayout();
+    const classic = layoutMode === 'classic';
+    // Block scopes (Try/If tints) add padding above and below each block. Two
+    // stacked scopes need room for both paddings, so enforce a minimum rank gap
+    // when any enabled block type is present. See block-scope.renderer.ts.
+    let hasBlockScopes = false;
     let maxBranchCount = 0;
     try {
-      // Fork/Join cells are not always direct children of the default
-      // parent (unlike Segment/Job/etc) — recurse into nested children,
-      // matching the same pattern already used in drawSegmentContainers.
       const collectAllCellsForLayout = (parent: any): any[] => {
         const children = graph.getChildCells(parent) || [];
         let result = [...children];
@@ -64,11 +107,8 @@ export class WorkflowService {
         return result;
       };
       const allCellsForLayout = collectAllCellsForLayout(graph.getDefaultParent());
+      hasBlockScopes = allCellsForLayout.some((c: any) => DEFAULT_BLOCK_SCOPE_TAGS.includes(c.value?.tagName));
       const forkCells = allCellsForLayout.filter((c: any) => c.value?.tagName === 'Fork');
-      // Walk forward through any intermediate Connection/Connector
-      // cells to find the real branch head instruction — the Fork's
-      // direct edge target isn't always the branch's real first
-      // instruction (there can be a connector cell in between).
       const resolveBranchHead = (startCell: any): any => {
         let curr = startCell;
         let hops = 0;
@@ -87,14 +127,14 @@ export class WorkflowService {
           .filter((e: any) => e.source?.id === fork.id);
         const hasSegmentBranch = branchEdges.some((e: any) => {
           const head = resolveBranchHead(e.target);
-          return head?.value?.tagName === 'Segment';
+          const headTag = head?.value?.tagName;
+          // Segment frames and block scope tints both widen a branch.
+          return headTag === 'Segment' || (!classic && DEFAULT_BLOCK_SCOPE_TAGS.includes(headTag));
         });
         if (!hasSegmentBranch) { return max; }
         return Math.max(max, branchEdges.length);
       }, 0);
     } catch (e) {
-      // Defensive: fall back to no boost if graph isn't fully
-      // initialized yet, rather than letting this throw.
       maxBranchCount = 0;
     }
 
@@ -105,14 +145,87 @@ export class WorkflowService {
         ? 1.3
         : Math.min(1.3 + (maxBranchCount - 3) * 0.25, 3.0);
 
+    mxHierarchicalLayout.prototype.interRankCellSpacing = (hasBlockScopes && !classic && !isNaN(baseRankSpacing))
+      ? Math.max(baseRankSpacing, BLOCK_SCOPE_METRICS.minRankSpacing)
+      : baseRankSpacing;
     mxHierarchicalLayout.prototype.intraCellSpacing = parseInt(prefrences.intraCellSpacing) * intraMultiplier;
-    const layout = new mxHierarchicalLayout(graph, prefrences.orientation);
+    // preferences.workflowLayout ('vertical' = top to bottom, 'horizontal' =
+    // left to right) decides the direction when set; otherwise orientation.
+    // A configured hierarchical layout (Classic mode, or fallback). A factory,
+    // because the Classic dependency display lays out each workflow separately.
+    const makeLayout = () => {
+    const layout = new mxHierarchicalLayout(graph, layoutOrientation(prefrences.workflowLayout, prefrences.orientation));
     const origIsVertexIgnored = layout.isVertexIgnored.bind(layout);
     layout.isVertexIgnored = function(vertex: any) {
       if (vertex?.value?.tagName === 'SegmentContainer') { return true; }
       return origIsVertexIgnored(vertex);
     };
-    layout.execute(graph.getDefaultParent());
+    // Which cells an arrow connects: from the MODEL, not the arrow's drawn
+    // state. mxHierarchicalLayout normally asks the drawn state (e.g. an arrow
+    // from a step hidden in a collapsed Segment is drawn from the Segment).
+    // The layout now runs inside the model update of loading / folding, where
+    // drawn states are still from before the change: steps jumped to the top
+    // right, gaps stayed after collapsing. mxGraphView.getVisibleTerminal gives
+    // the same answer computed from the model's collapsed / visible flags.
+    layout.getVisibleTerminal = function(edge: any, source: boolean) {
+      const cache = source ? this.edgeSourceTermCache : this.edgesTargetTermCache;
+      const cached = cache.get(edge);
+      if (cached != null) {
+        return cached;
+      }
+      let terminal = this.graph.view.getVisibleTerminal(edge, source);
+      if (terminal != null) {
+        if (this.isPort(terminal)) {
+          terminal = this.graph.model.getParent(terminal);
+        }
+        cache.put(edge, terminal);
+      }
+      return terminal;
+    };
+    return layout;
+    };
+    const layout = makeLayout();
+    graph.getModel().__blockLayoutMode = 'hierarchical';
+    graph.getModel().__blockLayoutDir = flowDirection(prefrences.workflowLayout, prefrences.orientation);
+    const runBlockPass = () => applyBlockShiftPass(graph, prefrences.orientation,
+      mxHierarchicalLayout.prototype.intraCellSpacing,
+      mxHierarchicalLayout.prototype.interRankCellSpacing,
+      prefrences.workflowLayout);
+    // The indented layout computes every position itself, so the (slow, on
+    // large workflows) hierarchical layout is not needed first. It is tried for
+    // EVERY workflow, not only those with blocks (Try, If, ...): a workflow of
+    // only Segments and jobs, or a plain job chain, is indented too (as one
+    // column). Only when the indented pass cannot handle the workflow does the
+    // hierarchical layout run.
+    const indented = layoutMode === 'indented';
+    if (indented && runBlockPass()) {
+      return;
+    }
+    // Hierarchical layout (classic, or the indented pass declined). Collapsed
+    // Segment boxes get their size for the layout, so it leaves room for them.
+    const model = graph.getModel();
+    model.beginUpdate();
+    try {
+      const restoreSegments = reserveCollapsedSegmentBoxes(graph);
+      try {
+        // Classic with several workflows (the order view's dependency display):
+        // each workflow laid out on its own, dependents beside the main one
+        // across the flow, cross connections on a lane. Otherwise (the editor, a
+        // single workflow) the plain layout.
+        const horizontalFlow = flowDirection(prefrences.workflowLayout, prefrences.orientation) === 'horizontal';
+        if (!(classic && layoutClassicPerWorkflow(graph, makeLayout, mxHierarchicalLayout.prototype.interRankCellSpacing, horizontalFlow, restoreSegments))) {
+          layout.execute(graph.getDefaultParent());
+          if (hasBlockScopes && layoutMode === 'structured') {
+            // Structured layout: refine the hierarchical result; see DEFAULT_WORKFLOW_LAYOUT.
+            runBlockPass();
+          }
+        }
+      } finally {
+        restoreSegments();
+      }
+    } finally {
+      model.endUpdate();
+    }
   }
 
   static svgToImageURL(svgString: string): string {
@@ -227,7 +340,6 @@ export class WorkflowService {
         '</defs>\n' +
         '</svg>';
     } else if (name === 'segment') {
-      // Segment is an invisible 2×2 anchor — label and border are rendered by the SegmentContainer overlay
       if (graph) {
         const segStyle: any = {};
         segStyle.opacity = 0;
@@ -241,7 +353,6 @@ export class WorkflowService {
         return 'opacity=0;strokeColor=none;fillColor=none;noLabel=1;foldable=0;';
       }
     } else if (name === 'closeSegment') {
-      // EndSegment is an invisible 2×2 anchor — serves only as the exit-arrow hook point
       if (graph) {
         const closeStyle: any = {};
         closeStyle.opacity = 0;
@@ -1096,7 +1207,7 @@ export class WorkflowService {
       if (json.instructions && json.instructions.length > 0) {
         const _node = doc.createElement('Process');
         _node.setAttribute('title', 'start');
-        const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
+        const v1 = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.START_END_SIZE, WorkflowService.START_END_SIZE, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
 
         let wf: any;
         if (isGraphView && colorCode && colorCode !== '#90C7F5') {
@@ -1145,7 +1256,7 @@ export class WorkflowService {
           }
           const _node2 = doc.createElement('Process');
           _node2.setAttribute('title', 'end');
-          const v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
+          const v2 = graph.insertVertex(defaultParent, null, _node2, 0, 0, WorkflowService.START_END_SIZE, WorkflowService.START_END_SIZE, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
           connectInstruction(end, v2, '', '', defaultParent);
         }
       }
@@ -1198,7 +1309,7 @@ export class WorkflowService {
             if (json.instructions[x].unsuccessful !== undefined) {
               _node.setAttribute('unsuccessful', json.instructions[x].unsuccessful);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('finish', colorCode, self.theme) : 'finish');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('finish', colorCode, self.theme) : 'finish');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1212,13 +1323,13 @@ export class WorkflowService {
             if (json.instructions[x].uncatchable !== undefined) {
               _node.setAttribute('uncatchable', json.instructions[x].uncatchable);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('fail', colorCode, self.theme) : 'fail');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('fail', colorCode, self.theme) : 'fail');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
           } else if (json.instructions[x].TYPE === 'Break') {
             _node.setAttribute('displayLabel', 'break');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('break', colorCode, self.theme) : 'break');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('break', colorCode, self.theme) : 'break');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1227,7 +1338,7 @@ export class WorkflowService {
             if (json.instructions[x].duration !== undefined) {
               _node.setAttribute('duration', json.instructions[x].duration);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('sleep', colorCode, self.theme) : 'sleep');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('sleep', colorCode, self.theme) : 'sleep');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1262,7 +1373,7 @@ export class WorkflowService {
                 _node.setAttribute('blockPosition', (json.instructions[x].blockPosition));
               }
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('addOrder', colorCode, self.theme) : 'addOrder');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1286,7 +1397,7 @@ export class WorkflowService {
             if (json.instructions[x].noticeBoardNames !== undefined) {
               _node.setAttribute('noticeBoardNames', isArray(json.instructions[x].noticeBoardNames) ? json.instructions[x].noticeBoardNames.join(',') : json.instructions[x].noticeBoardNames);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1299,7 +1410,7 @@ export class WorkflowService {
             if (json.instructions[x].question !== undefined) {
               _node.setAttribute('question', json.instructions[x].question);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('prompt', colorCode, self.theme) : 'prompt');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('prompt', colorCode, self.theme) : 'prompt');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1308,7 +1419,7 @@ export class WorkflowService {
             if ((type || (json.instructions[x].TYPE === 'ForkListEnd') || json.instructions[x].TYPE === 'CycleEnd') && useString) {
               v1 = null;
             } else {
-              v1 = graph.insertVertex(parent, null, _node, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.START_END_SIZE, WorkflowService.START_END_SIZE, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70' + (colorCode ? ';strokeColor=' + colorCode : ';'));
               if (mapObj.vertixMap && json.instructions[x].position) {
                 mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
               }
@@ -1321,7 +1432,7 @@ export class WorkflowService {
             if (json.instructions[x].whenNotAnnounced !== undefined) {
               _node.setAttribute('whenNotAnnounced', json.instructions[x].whenNotAnnounced);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1339,7 +1450,7 @@ export class WorkflowService {
             if (json.instructions[x].whenNotAnnounced !== undefined) {
               _node.setAttribute('whenNotAnnounced', json.instructions[x].whenNotAnnounced);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('consumeNotices', colorCode, self.theme) : 'consumeNotices');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('consumeNotices', colorCode, self.theme) : 'consumeNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1361,7 +1472,7 @@ export class WorkflowService {
             if (json.instructions[x].joinIfFailed !== undefined) {
               _node.setAttribute('joinIfFailed', json.instructions[x].joinIfFailed);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('fork', colorCode, self.theme) : 'fork');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('fork', colorCode, self.theme) : 'fork');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1379,7 +1490,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'CaseWhen') {
             _node.setAttribute('displayLabel', 'caseWhen');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('caseWhen', colorCode, self.theme) : 'caseWhen');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('caseWhen', colorCode, self.theme) : 'caseWhen');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1396,7 +1507,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'When') {
             _node.setAttribute('displayLabel', 'when');
             _node.setAttribute('predicate', json.instructions[x].predicate);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1409,7 +1520,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'ElseWhen') {
             _node.setAttribute('displayLabel', 'elseWhen');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1446,7 +1557,7 @@ export class WorkflowService {
             if (json.instructions[x].result !== undefined) {
               _node.setAttribute('result', JSON.stringify(json.instructions[x].result));
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('forkList', colorCode, self.theme) : 'forkList');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('forkList', colorCode, self.theme) : 'forkList');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1460,7 +1571,7 @@ export class WorkflowService {
           } else if (json.instructions[x].TYPE === 'If') {
             _node.setAttribute('displayLabel', 'if');
             _node.setAttribute('predicate', json.instructions[x].predicate);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1477,7 +1588,7 @@ export class WorkflowService {
             _node.setAttribute('displayLabel', 'retry');
             _node.setAttribute('maxTries', json.instructions[x].maxTries || (json.instructions[x].maxTries == 0 ? 0 : ''));
             _node.setAttribute('retryDelays', json.instructions[x].retryDelays ? json.instructions[x].retryDelays.toString() : '');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1496,7 +1607,7 @@ export class WorkflowService {
             if (json.instructions[x].demands !== undefined) {
               _node.setAttribute('demands', isArray(json.instructions[x].demands) ? JSON.stringify(json.instructions[x].demands) : '[]');
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('lock', colorCode, self.theme) : 'lock');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('lock', colorCode, self.theme) : 'lock');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1518,7 +1629,7 @@ export class WorkflowService {
             if (json.instructions[x].subagentClusterIdExpr !== undefined) {
               _node.setAttribute('subagentClusterIdExpr', json.instructions[x].subagentClusterIdExpr);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('stickySubagent', colorCode, self.theme) : 'stickySubagent');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('stickySubagent', colorCode, self.theme) : 'stickySubagent');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1534,7 +1645,7 @@ export class WorkflowService {
             if (json.instructions[x].stopOnFailure !== undefined) {
               _node.setAttribute('stopOnFailure', json.instructions[x].stopOnFailure);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('options', colorCode, self.theme) : 'options');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('options', colorCode, self.theme) : 'options');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1571,7 +1682,7 @@ export class WorkflowService {
             if (json.instructions[x].skipIfNoAdmissionForOrderDay !== undefined) {
               _node.setAttribute('skipIfNoAdmissionForOrderDay', json.instructions[x].skipIfNoAdmissionForOrderDay);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68,
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE,
               isGraphView ? WorkflowService.setStyleToSymbol('admissionTime', colorCode, self.theme) : 'admissionTime');
 
             if (mapObj.vertixMap && json.instructions[x].position) {
@@ -1594,7 +1705,7 @@ export class WorkflowService {
             if (json.instructions[x].onlyOnePeriod !== undefined) {
               _node.setAttribute('onlyOnePeriod', json.instructions[x].onlyOnePeriod);
             }
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1607,7 +1718,7 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'Try') {
             _node.setAttribute('displayLabel', 'try');
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
@@ -1615,7 +1726,7 @@ export class WorkflowService {
             node.setAttribute('displayLabel', 'catch');
             node.setAttribute('targetId', v1.id);
             node.setAttribute('uuid', json.instructions[x].uuid);
-            const cv1 = graph.insertVertex(v1, null, node, 0, 0, 110, 40, (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
+            const cv1 = graph.insertVertex(v1, null, node, 0, 0, WorkflowService.CATCH_WIDTH, WorkflowService.CATCH_HEIGHT, (json.instructions[x].catch && json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) ?
               (isGraphView ? WorkflowService.setStyleToVertex('catch', colorCode, self.theme) : 'catch') : (isGraphView ? WorkflowService.setStyleToVertex('dashRectangle', colorCode, self.theme) : 'dashRectangle'));
             if (mapObj.vertixMap && json.instructions[x].catch && json.instructions[x].catch.position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].catch.position), cv1);
@@ -1723,7 +1834,7 @@ export class WorkflowService {
               if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
                 v1 = cell;
               } else {
-                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('postNotices', colorCode, self.theme) : 'postNotices');
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
@@ -1741,7 +1852,7 @@ export class WorkflowService {
               if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
                 v1 = cell;
               } else {
-                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
@@ -1760,7 +1871,7 @@ export class WorkflowService {
               if (cell && cell.getAttribute('uuid') == json.compressData[i].instructions[x].uuid) {
                 v1 = cell;
               } else {
-                v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('consumeNotices', colorCode, self.theme) : 'consumeNotices');
+                v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('consumeNotices', colorCode, self.theme) : 'consumeNotices');
                 if (mapObj.vertixMap && json.compressData[i].instructions[x].position) {
                   mapObj.vertixMap.set(JSON.stringify(json.compressData[i].instructions[x].position), v1);
                 }
@@ -1820,7 +1931,7 @@ export class WorkflowService {
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('join', colorCode, self.theme) : 'join');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('join', colorCode, self.theme) : 'join');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       if (isArray(branches)) {
         if (branches.length === 0) {
@@ -1874,7 +1985,7 @@ export class WorkflowService {
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('if', colorCode, self.theme) : 'if');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       let flag = true;
       if (branches.then && branches.then.instructions) {
@@ -1915,7 +2026,7 @@ export class WorkflowService {
       if (target) {
         _node.setAttribute('targetId', target);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
       mapObj.nodeMap.set(target.toString(), v1.id.toString());
 
       connectInstruction(x, v1, 'endWhen', 'endWhen', parent);
@@ -1928,7 +2039,7 @@ export class WorkflowService {
       if (target.id) {
         _node.setAttribute('targetId', target.id);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
       mapObj.nodeMap.set(target.id.toString(), v1.id.toString());
       let flag = true;
       if (branches.then && branches.then.instructions) {
@@ -1958,25 +2069,25 @@ export class WorkflowService {
       }
       let v1;
       if (type === 'Lock') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeLock', colorCode, self.theme) : 'closeLock');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('closeLock', colorCode, self.theme) : 'closeLock');
       } else if (type === 'StickySubagent') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, self.theme) : 'closeStickySubagent');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, self.theme) : 'closeStickySubagent');
       } else if (type === 'Options') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
       } else if (type === 'Segment') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 2, 2, isGraphView ? WorkflowService.setStyleToSymbol('closeSegment', colorCode, self.theme) : 'closeSegment');
       } else if (type === 'AdmissionTime') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, self.theme) : 'closeAdmissionTime');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, self.theme) : 'closeAdmissionTime');
       } else if (type === 'Retry') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else if (type === 'ConsumeNotices') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
       } else if (type === 'CaseWhen') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('caseWhen', colorCode, self.theme) : 'caseWhen');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('caseWhen', colorCode, self.theme) : 'caseWhen');
       } else if (type === 'When') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
       } else if (type === 'ElseWhen') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -2007,9 +2118,9 @@ export class WorkflowService {
 
       let v1;
       if (type === 'Cycle') {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('cycle', colorCode, self.theme) : 'cycle');
       } else {
-        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('close' + type, colorCode, self.theme) : 'close' + type);
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToSymbol('close' + type, colorCode, self.theme) : 'close' + type);
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -2053,7 +2164,7 @@ export class WorkflowService {
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
+      const v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'try');
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
       connectInstruction(x, v1, 'endTry', 'endTry', parent);
@@ -2224,9 +2335,6 @@ export class WorkflowService {
           return cell.getAttribute('label') || '';
         }
         if (cell.value?.tagName === 'Segment') {
-          // User-defined label set via Properties panel takes priority over the generic
-          // translated "Segment" fallback. 'label' is round-tripped through JSON via
-          // json.instructions[x].label ↔ cell.getAttribute('label').
           const userLabel = cell.getAttribute('label');
           if (userLabel && userLabel.trim().length > 0) {
             return userLabel;
@@ -3601,7 +3709,8 @@ export class WorkflowService {
     const dom = document.getElementById('graph');
     let x = 0.5;
     let y = 0.2;
-    if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+    // Direction from preferences.workflowLayout ('vertical'/'horizontal'), else orientation.
+    if (flowDirection(this.preferences.workflowLayout, this.preferences.orientation) === 'horizontal') {
       x = 0.2;
       y = 0.5;
     }

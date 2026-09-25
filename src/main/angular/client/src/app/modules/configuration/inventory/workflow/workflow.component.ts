@@ -29,6 +29,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {RichTooltipRegistry, mdToHtml} from '../../../../directives/rich-tooltip.directive';
 import {RichTooltipContentComponent} from '../../../../components/rich-tooltip/rich-tooltip-content.component';
 import {WorkflowService} from '../../../../services/workflow.service';
+import {BlockScopeRenderer} from '../../../../services/block-scope.renderer';
+import {COLLAPSED_SEGMENT_LEAD, flowDirection, getWorkflowLayoutMode, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../../services/block-shift.layout';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
@@ -5353,6 +5355,23 @@ export class WorkflowComponent {
   // Synthetic background-rectangle cells drawn behind each Segment's content
   _segmentContainerCells: any[] = [];
   private _isDrawingSegmentContainers = false;
+  // Draws Try/If/... scope tints in the background pane (never model cells)
+  private blockScopeRenderer: BlockScopeRenderer | null = null;
+  // Same scopes (tints and rails only) in the minimap's own graph
+  private blockScopeMinimapRenderer: BlockScopeRenderer | null = null;
+  private minimapOutline: any = null;
+
+  /** New (indented) or old (classic) layout; toggled from the toolbar, remembered in this browser. */
+  layoutMode: WorkflowLayoutMode = getWorkflowLayoutMode();
+
+  /** Minimap visible? Toggled from the toolbar, remembered in this browser. */
+  showMinimap: boolean = (() => {
+    try {
+      return sessionStorage.getItem('workflowShowMinimap') === '1';
+    } catch (e) {
+      return false;
+    }
+  })();
   objectType = InventoryObject.WORKFLOW;
   invalidMsg: string;
   inventoryConf: any;
@@ -5561,6 +5580,14 @@ export class WorkflowComponent {
       this.saveJSON(false);
     }
     try {
+      if (this.blockScopeRenderer) {
+        this.blockScopeRenderer.destroy();
+        this.blockScopeRenderer = null;
+      }
+      if (this.blockScopeMinimapRenderer) {
+        this.blockScopeMinimapRenderer.destroy();
+        this.blockScopeMinimapRenderer = null;
+      }
       if (this.editor) {
         this.editor.destroy();
         mxOutline.prototype.destroy();
@@ -5866,7 +5893,28 @@ export class WorkflowComponent {
             outln.innerHTML = '';
             mxOutline.prototype.minScale = 0.001;
             mxOutline.prototype.enabled = true;
-            new mxOutline(editor.graph, outln);
+            const outline = new mxOutline(editor.graph, outln);
+            self.minimapOutline = outline;
+            if (self.blockScopeRenderer) {
+              self.blockScopeRenderer.destroy();
+            }
+            if (self.blockScopeMinimapRenderer) {
+              self.blockScopeMinimapRenderer.destroy();
+              self.blockScopeMinimapRenderer = null;
+            }
+            if (outline && outline.outline) {
+              self.blockScopeMinimapRenderer = new BlockScopeRenderer(outline.outline, {
+                getPreferences: () => self.preferences,
+                getNodeMap: () => self.nodeMap,
+                minimap: true
+              });
+              self.blockScopeMinimapRenderer.install();
+            }
+            self.blockScopeRenderer = new BlockScopeRenderer(editor.graph, {
+              getPreferences: () => self.preferences,
+              getNodeMap: () => self.nodeMap
+            });
+            self.blockScopeRenderer.install();
             cb();
           }
         };
@@ -6016,6 +6064,44 @@ export class WorkflowComponent {
     }
 
     recursive(obj);
+  }
+
+  /**
+   * Toolbar: switch between the new indented layout and the old (classic)
+   * hierarchical layout. The workflow is redrawn from scratch, so nothing of
+   * the other layout (arrow bends, label positions) is left over.
+   */
+  toggleLayoutMode(): void {
+    this.closeMenu();
+    this.layoutMode = this.layoutMode === 'classic' ? 'indented' : 'classic';
+    setWorkflowLayoutMode(this.layoutMode);
+    const graph = this.editor ? this.editor.graph : null;
+    if (!graph) {
+      return;
+    }
+    // Only the layout changes: the cells already in the graph are laid out
+    // again. The workflow (JSON) is not rebuilt, converted or stored (no
+    // updateXMLJSON / convertTryToRetry / storeJSON), exactly like folding.
+    graph.getModel().beginUpdate();
+    try {
+      WorkflowService.resetEdgeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
+    } finally {
+      graph.getModel().endUpdate();
+    }
+    this.drawSegmentContainers(graph);
+  }
+
+  /** Toolbar: hide / show the minimap. The graph takes over its space while hidden. */
+  toggleMinimap(): void {
+    this.closeMenu();
+    this.showMinimap = !this.showMinimap;
+    try {
+      sessionStorage.setItem('workflowShowMinimap', this.showMinimap ? '1' : '0');
+    } catch (e) {
+      // storage unavailable: the choice lasts for this session only
+    }
+    this.checkGraphHeight();
   }
 
   zoomIn(): void {
@@ -6593,20 +6679,17 @@ export class WorkflowComponent {
       closeTimer = setTimeout(doClose, 150);
     };
 
-    /** Called when cursor enters another CDK overlay pane (e.g. glossary popover).
-     *  Watches via document mouseover until cursor lands outside all overlay panes
-     *  and outside the trigger element, then schedules close. */
     const watchExternalOverlay = () => {
       removeDocListener();
       docOverListener = (e: MouseEvent) => {
         const target = e.target as Element | null;
         if (!target) return;
-        // Cursor is on trigger or inside any overlay pane � keep open
+        
         if (el.contains(target) || target.closest('.cdk-overlay-pane')) {
           cancelClose();
           return;
         }
-        // Cursor truly left � close and stop watching
+        
         scheduleClose();
         removeDocListener();
       };
@@ -6646,13 +6729,13 @@ export class WorkflowComponent {
         cancelClose();
         removeDocListener();
       });
-      // Track drag-to-select so tooltip doesn't close while user selects text
+
       overlayRef.overlayElement.addEventListener('mousedown', () => { isDragging = true; });
       document.addEventListener('mouseup', panelMouseUpHandler, true);
       overlayRef.overlayElement.addEventListener('mouseleave', (event: MouseEvent) => {
         if (isDragging || contextMenuOpen) return;
         const related = event.relatedTarget as Element | null;
-        // Cursor moved into another overlay pane (e.g. glossary popover) � don't close yet
+
         if (related && related.closest('.cdk-overlay-pane')) {
           cancelClose();
           watchExternalOverlay();
@@ -6660,7 +6743,7 @@ export class WorkflowComponent {
         }
         scheduleClose();
       });
-      // Keep tooltip open while the native context menu is visible so user can click Copy
+
       overlayRef.overlayElement.addEventListener('contextmenu', () => {
         contextMenuOpen = true;
         const reset = () => {
@@ -6670,9 +6753,6 @@ export class WorkflowComponent {
         document.addEventListener('mousedown', reset, true);
       });
 
-      // Intercept Ctrl+C/A/X at capture phase so mxGraph doesn't see them when text
-      // is selected inside our tooltip. stopPropagation (no preventDefault) lets the
-      // browser copy normally while preventing the mxGraph ghost-tooltip at (0,0).
       keyCaptureHandler = (e: KeyboardEvent) => {
         if (!(e.ctrlKey || e.metaKey)) return;
         const k = e.key.toLowerCase();
@@ -6682,14 +6762,13 @@ export class WorkflowComponent {
         try {
           const range = sel.getRangeAt(0);
           if (overlayRef.overlayElement.contains(range.commonAncestorContainer)) {
-            e.stopPropagation(); // keep mxGraph from handling Ctrl+C as "copy cells"
-            // No preventDefault � browser clipboard operation proceeds normally
+            e.stopPropagation(); 
           }
         } catch { /* ignore */ }
       };
       document.addEventListener('keydown', keyCaptureHandler, true);
 
-      // Handle action links: [text](context:type:param) � context help / video
+      
       overlayRef.overlayElement.addEventListener('click', (e: MouseEvent) => {
         const anchor = (e.target as HTMLElement).closest('[data-rt-action-type]') as HTMLElement | null;
         if (!anchor) return;
@@ -6725,7 +6804,6 @@ export class WorkflowComponent {
     el.addEventListener('mouseleave', (event: MouseEvent) => {
       if (openTimer) { clearTimeout(openTimer); openTimer = null; }
       const related = event.relatedTarget as Element | null;
-      // Cursor moved directly from icon into an overlay pane � don't close yet
       if (related && related.closest('.cdk-overlay-pane')) {
         cancelClose();
         watchExternalOverlay();
@@ -6734,10 +6812,9 @@ export class WorkflowComponent {
       scheduleClose();
     });
 
-    // Click toggles the tooltip open/closed
     el.addEventListener('click', (e: MouseEvent) => {
-      e.stopPropagation();  // prevent bubbling to ancestor [appRichTooltip] directives
-      cancelClose();        // cancel any pending close (e.g. from mouseleave during click)
+      e.stopPropagation(); 
+      cancelClose();        
       if (openTimer) { clearTimeout(openTimer); openTimer = null; }
       if (!e.isTrusted) return;
       if (overlayRef) { doClose(); } else { open(); }
@@ -6909,7 +6986,7 @@ export class WorkflowComponent {
     if (event) {
       this.selectedNode.obj.noticeBoardName = '';
       const doc = this.cm.codeEditor.getDoc();
-      const cursor = doc.getCursor();  // gets the line number in the cursor position
+      const cursor = doc.getCursor();  
       if (this.cm.codeEditor.getSelection()) {
         let text = this.cm.codeEditor.getValue();
         text = text.replace(this.cm.codeEditor.getSelection(), event);
@@ -6956,7 +7033,14 @@ export class WorkflowComponent {
           dom.css({height: ht, 'scroll-top': '0'});
           const outln = $('#outlineContainer');
           const graphEle = $('#graph');
-          if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+          if (!this.showMinimap) {
+            // Minimap hidden: the graph uses the full area (the same default
+            // sizes each mode already relies on for its other dimension).
+            outln.hide();
+            graphEle.css({width: '', height: ''});
+            $('.prev-next-icon').css({bottom: ''});
+          } else if (this.isHorizontalFlow()) {
+            outln.show();
             outln.css({
               height: '112px',
               top: 'calc(100vh - ' + (top + 89) + 'px',
@@ -6966,8 +7050,13 @@ export class WorkflowComponent {
             graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)'});
             $('.prev-next-icon').css({bottom: '116px'});
           } else {
+            outln.show();
             graphEle.css({width: 'calc(100% - 154px)'});
             outln.css({height: ht, 'scroll-top': '0'});
+          }
+          if (this.showMinimap && this.minimapOutline) {
+            // Redraw the minimap at its (possibly new) size after being hidden.
+            this.minimapOutline.update(true);
           }
           graphEle.animate({
             scrollTop: 0
@@ -6975,6 +7064,11 @@ export class WorkflowComponent {
         }
       }, 10);
     }
+  }
+
+  /** Flow direction: preferences.workflowLayout ('vertical'/'horizontal'), else orientation. */
+  private isHorizontalFlow(): boolean {
+    return flowDirection(this.preferences?.workflowLayout, this.preferences?.orientation) === 'horizontal';
   }
 
   private validateJSON(): void {
@@ -8386,22 +8480,33 @@ export class WorkflowComponent {
     }
   }
 
-  // ===== SEGMENT CONTAINER POST-LAYOUT PASS =====
-  // After mxHierarchicalLayout runs, draws a non-interactive dashed rectangle behind
-  // each Segment's content. The Segment header bar is the selectable identity;
-  // this rectangle is purely visual and never intercepts clicks or moves.
   private drawSegmentContainers(graph: any): void {
     if (this._isDrawingSegmentContainers) { return; }
     this._isDrawingSegmentContainers = true;
     try {
+      // Pass 1: block scopes WITHOUT segment frames (old frames are still at
+      // pre-layout positions), so Segment containers below can enclose them.
+      if (this.blockScopeRenderer) {
+        this.blockScopeRenderer.draw({includeSegmentFrames: false});
+      }
       this._drawSegmentContainersImpl(graph);
     } finally {
       this._isDrawingSegmentContainers = false;
+      // Pass 2: final block scopes, sized around the freshly built Segment frames.
+      if (this.blockScopeRenderer) {
+        this.blockScopeRenderer.draw();
+      }
     }
   }
 
   private _drawSegmentContainersImpl(graph: any): void {
     const self = this;
+    // Layout the last pass produced (set by WorkflowService.executeLayout).
+    const layoutModel = graph.getModel();
+    const indentedLayout = layoutModel.__blockLayoutMode === 'indented';
+    const flowHorizontal = layoutModel.__blockLayoutDir
+      ? layoutModel.__blockLayoutDir === 'horizontal' : self.isHorizontalFlow();
+    const indentedTopDown = indentedLayout && !flowHorizontal;
 
     if (!graph || !graph.view) { return; }
 
@@ -8424,9 +8529,6 @@ export class WorkflowComponent {
     const translate = graph.view.getTranslate();
     const scale = graph.view.getScale();
 
-    // Pre-pass: build a Set of inner-cell ids for each Segment, then derive nesting depth.
-    // Depth = number of other Segments whose inner-cell set contains this Segment cell.
-    // This reuses the same forward BFS + inner BFS already used in the main loop below.
     const segInnerIdSets = new Map<string, Set<string>>();
     for (const sc of segCells) {
       let ec: any = allCells.find(
@@ -8468,7 +8570,7 @@ export class WorkflowComponent {
       }
       segInnerIdSets.set(sc.id, idSet);
     }
-    // depth for each Segment = how many other Segments transitively contain it
+
     const segDepths = new Map<string, number>();
     for (const sc of segCells) {
       let depth = 0;
@@ -8478,19 +8580,12 @@ export class WorkflowComponent {
       segDepths.set(sc.id, depth);
     }
 
-    // Process segments deepest-first so inner containers are fully bounded before
-    // their parent computes its own bounding box (fix b: containment guarantee).
     const sortedSegCells = [...segCells].sort(
       (a, b) => (segDepths.get(b.id) ?? 0) - (segDepths.get(a.id) ?? 0)
     );
 
-    // Single transaction: remove old containers and insert new ones atomically,
-    // so mxAutoSaveManager receives only one CHANGE event for the whole pass.
     graph.getModel().beginUpdate();
     try {
-      // Remove ALL SegmentContainer cells directly from the model, bypassing the
-      // overridden graph.removeCells() whose SegmentContainer filter would silently
-      // skip these cells and leave orphan boxes on the canvas.
       const allExistingContainers = graph.getChildCells(graph.getDefaultParent())
         .filter((c: any) => c.value?.tagName === 'SegmentContainer');
       for (const c of allExistingContainers) {
@@ -8503,22 +8598,17 @@ export class WorkflowComponent {
 
       if (sortedSegCells.length === 0) { return; }
 
-      // fix (a): minimum gap in display-coord pixels between sibling containers
       const MIN_GAP = 10;
-      // fix (b): bounding boxes keyed by segCell.id, populated as each segment is processed
-      //          (deepest-first), so outer segments can expand to enclose inner boxes
       const computedBoxMap = new Map<string, {bx: number; by: number; bw: number; bh: number}>();
       const computedBoxesThisPass: Array<{bx: number; by: number; bw: number; bh: number; segCellId: string}> = [];
 
       let segCellIdx = 0;
       for (const segCell of sortedSegCells) {
-        // Find matching EndSegment
         let endCell = allCells.find(
           (c: any) => c.vertex && c.value?.tagName === 'EndSegment'
             && c.value?.getAttribute('targetId') === segCell.id
         );
         if (!endCell) {
-          // Forward BFS from segCell to find EndSegment by reachability (handles missing/wrong targetId)
           const fwdVisited = new Set<string>([segCell.id]);
           const fwdQueue: any[] = [];
           for (const e of (segCell.edges || [])) {
@@ -8547,13 +8637,11 @@ export class WorkflowComponent {
 
         const isCollapsed = !!segCell.collapsed;
 
-        // BFS: collect all inner cells between Segment and EndSegment
         const innerEntryEdge = (segCell.edges || []).find(
           (e: any) => e.source?.id === segCell.id && e.target?.id !== endCell.id
         );
         const isEmptySeg = !innerEntryEdge;
 
-        // Always collect inner cells regardless of collapsed state, needed for both bbox and setVisible
         const visited = new Set<string>([segCell.id, endCell.id]);
         const queue: any[] = [];
         if (!isEmptySeg && innerEntryEdge) { queue.push(innerEntryEdge.target); }
@@ -8568,26 +8656,15 @@ export class WorkflowComponent {
           }
         }
 
-        // Depth-scaled padding and dash style: outermost Segments get more padding so
-        // nested containers are visibly offset from their parent's border, not touching it.
         const depth = segDepths.get(segCell.id) ?? 0;
         const PADDING = basePADDING + depth * 6;
-        // Alternate dash pattern per depth level so nested boxes remain distinguishable
-        // even where padding is tight (depth 0 = long dash, depth 1 = short, depth 2 = long, …)
         const dashPattern = depth % 2 === 0 ? '8 4' : '4 4';
 
-        // Segment label — needed for both collapsed width and container label rendering
         const segLabel = segCell.value?.getAttribute?.('label') || segCell.value?.getAttribute?.('displayLabel') || '';
 
-        // Compute bounding box in display coordinates.
-        // Top anchor = invisible 2×2 anchor; container wraps all inner cells.
         let bx: number, by: number, bw: number, bh: number;
 
         if (isCollapsed) {
-          // Use the same horizontal extent as the expanded box would have — inner cell view
-          // states are valid even when DOM-hidden, so this gives the correct branch width.
-          // This ensures fork branches occupy the same horizontal space whether collapsed or
-          // expanded, preventing SegmentContainer overlap in mixed collapse states.
           let colMinX = segState.x;
           let colMaxX = segState.x + segState.width;
           let hasInnerExtent = false;
@@ -8600,7 +8677,13 @@ export class WorkflowComponent {
               hasInnerExtent = true;
               continue;
             }
-            // Try view state first (valid when cell is visible); fall back to model geometry.
+            // Block scope tint (Try/If/...) inside this Segment: keep the frame outside it.
+            const blockBoxC = self.blockScopeRenderer ? self.blockScopeRenderer.getBox(ic.id) : undefined;
+            if (blockBoxC) {
+              colMinX = Math.min(colMinX, blockBoxC.x);
+              colMaxX = Math.max(colMaxX, blockBoxC.x + blockBoxC.width);
+              hasInnerExtent = true;
+            }
             const st = graph.view.getState(ic);
             if (!st) { continue; }
             colMinX = Math.min(colMinX, st.x);
@@ -8615,9 +8698,15 @@ export class WorkflowComponent {
             bx = colMinX - PADDING;
             bw = (colMaxX - colMinX) + 2 * PADDING;
           } else {
-            // Empty segment: fall back to label-width centred on the Segment vertex.
             const collapsedWidth = WorkflowService.computeSegmentHeaderWidth(segLabel || 'Segment') * scale;
-            bx = segState.x + segState.width / 2 - collapsedWidth / 2;
+            if (indentedTopDown) {
+              // Indented, top-down: the box starts just left of the start point and
+              // extends right, so the arrow runs along its left part and the header
+              // sits beside it (the layout reserves exactly this width).
+              bx = segState.x + segState.width / 2 - COLLAPSED_SEGMENT_LEAD * scale;
+            } else {
+              bx = segState.x + segState.width / 2 - collapsedWidth / 2;
+            }
             bw = collapsedWidth;
           }
         } else {
@@ -8627,19 +8716,26 @@ export class WorkflowComponent {
           let maxY = segState.y + segState.height;
 
           for (const ic of innerCells) {
-            // fix (b): if this inner cell is itself a Segment with an already-computed box
-            // (deepest-first ordering guarantees it), use that box's full extent (including
-            // its own PADDING) so the outer container strictly encloses the inner one.
             const precomputed = computedBoxMap.get(ic.id);
             if (precomputed) {
               minX = Math.min(minX, precomputed.bx);
+              minY = Math.min(minY, precomputed.by);   // left-right: nested boxes can be above
               maxX = Math.max(maxX, precomputed.bx + precomputed.bw);
               maxY = Math.max(maxY, precomputed.by + precomputed.bh);
               continue;
             }
+            // Block scope tint (Try/If/...) inside this Segment: keep the frame outside it.
+            const blockBox = self.blockScopeRenderer ? self.blockScopeRenderer.getBox(ic.id) : undefined;
+            if (blockBox) {
+              minX = Math.min(minX, blockBox.x);
+              minY = Math.min(minY, blockBox.y);
+              maxX = Math.max(maxX, blockBox.x + blockBox.width);
+              maxY = Math.max(maxY, blockBox.y + blockBox.height);
+            }
             const st = graph.view.getState(ic);
             if (!st) { continue; }
             minX = Math.min(minX, st.x);
+            minY = Math.min(minY, st.y);   // left-right: branches spread above the start point
             maxX = Math.max(maxX, st.x + st.width);
             maxY = Math.max(maxY, st.y + st.height);
           }
@@ -8655,11 +8751,6 @@ export class WorkflowComponent {
           bh = (maxY - minY) + 2 * PADDING;
         }
 
-        // fix (a): enforce minimum gap between vertically-stacked sibling containers.
-        // Nested pairs (one contains the other) are skipped via the nesting-relationship check.
-        // Fork siblings (side-by-side, yOverlap=true) are not trimmed here — their boxes
-        // naturally encompass all instruction cells, and visual distinction comes from the
-        // per-segment color palette assigned above.
         for (const other of computedBoxesThisPass) {
           if (segInnerIdSets.get(segCell.id)?.has(other.segCellId)) { continue; }
           if (segInnerIdSets.get(other.segCellId)?.has(segCell.id)) { continue; }
@@ -8667,7 +8758,6 @@ export class WorkflowComponent {
           const xOverlap = bx < (other.bx + other.bw) && (bx + bw) > other.bx;
           const yOverlap = by < (other.by + other.bh) && (by + bh) > other.by;
 
-          // Vertically-stacked siblings: adjust vertical gaps
           if (xOverlap && !yOverlap) {
             const gapFromTop = by - (other.by + other.bh);
             if (gapFromTop >= 0 && gapFromTop < MIN_GAP) {
@@ -8694,9 +8784,17 @@ export class WorkflowComponent {
         cNode.setAttribute('segmentId', segCell.id);
         if (segLabel) { cNode.setAttribute('label', segLabel); }
         const labelFontColor = isDark ? '#fafafa' : '#3d464d';
+        // Collapsed header: centred on the box in the classic layouts. In the
+        // indented layout the arrow runs through the start point, so keep the text
+        // beside it: right of the arrow top-down, below it left-right.
+        const collapsedAlign = !indentedLayout
+          ? 'align=center;verticalAlign=middle;'
+          : (flowHorizontal
+            ? 'align=center;verticalAlign=bottom;spacingBottom=2;'
+            : 'align=left;verticalAlign=middle;spacingLeft=' + (COLLAPSED_SEGMENT_LEAD + 10) + ';');
         const labelStyleStr = segLabel
           ? (isCollapsed
-            ? 'align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;'
+            ? collapsedAlign + 'fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;'
             : 'align=left;verticalAlign=top;spacingLeft=44;spacingTop=3;fontSize=11;fontStyle=1;fontColor=' + labelFontColor + ';html=1;')
           : 'noLabel=1;';
         const containerStyle = 'rounded=0;fillColor=none;strokeColor=' + colorCode +
@@ -8704,15 +8802,10 @@ export class WorkflowComponent {
         const containerCell = graph.insertVertex(
           graph.getDefaultParent(), null, cNode, cellX, cellY, cellW, cellH, containerStyle
         );
-        // Send behind all content so it never intercepts clicks
+
         graph.orderCells(true, [containerCell]);
         this._segmentContainerCells.push(containerCell);
 
-        // Apply collapse/expand at DOM/view level ONLY — never via graph.getModel().setVisible().
-        // model.setVisible() fires mxEvent.CHANGE which triggers mxAutoSaveManager →
-        // xmlToJsonParser → updateWorkflow cascade, and can also corrupt Connection edge
-        // cells in the model. DOM toggling is invisible to the serializer so
-        // traversCells/checkEmptyObjects always see the complete instruction graph.
         const edgesToToggle: any[] = [];
         if (innerEntryEdge) { edgesToToggle.push(innerEntryEdge); }
         for (const ic of innerCells) {
@@ -8720,17 +8813,11 @@ export class WorkflowComponent {
             if (!edgesToToggle.find((x: any) => x.id === e.id)) { edgesToToggle.push(e); }
           }
         }
-        // Always include EndSegment's INCOMING edges in collapse toggling, regardless of
-        // whether the segment has inner content. Without this, an empty/collapsed Segment's
-        // Segment→EndSegment edge stays visible and creates a double-arrow gap.
-        // The OUTGOING edge from EndSegment is intentionally excluded: it must remain
-        // visible as the single exit arrow from the collapsed box to the following node.
+
         for (const e of (endCell.edges || [])) {
           if (e.target?.id === endCell.id) {
             if (!edgesToToggle.find((x: any) => x.id === e.id)) { edgesToToggle.push(e); }
-            // Remove the arrowhead at the invisible 2×2 EndSegment anchor so the path
-            // through it renders as one continuous line; the outgoing edge carries the
-            // real arrowhead to the next node.
+
             graph.setCellStyles(mxConstants.STYLE_ENDARROW, 'none', [e]);
           }
         }
@@ -8742,12 +8829,19 @@ export class WorkflowComponent {
             if (st.text && st.text.node) { (st.text.node as any).style.display = displayValue; }
           }
         }
+        // When collapsed, mxGraph re-attaches arrows from the hidden steps to the
+        // Segment's start point and keeps drawing them with their labels. Hiding
+        // the label via the DOM does not survive a redraw, so also use the style.
+        const labelledEdges = edgesToToggle.filter((e: any) => e && e.edge);
+        if (labelledEdges.length > 0) {
+          graph.setCellStyles(mxConstants.STYLE_NOLABEL, isCollapsed ? '1' : null, labelledEdges);
+        }
       }
     } finally {
       graph.getModel().endUpdate();
     }
 
-    // Remove any stale chevron overlays left from previous renders
+
     for (const segCell of segCells) {
       const existing = graph.getCellOverlays(segCell) || [];
       for (const o of existing) {
@@ -8755,7 +8849,6 @@ export class WorkflowComponent {
       }
     }
   }
-  // ===== END SEGMENT CONTAINER POST-LAYOUT PASS =====
 
   private updateWorkflow(graph, jobMap): void {
     this.selectedNode = null;
@@ -8773,10 +8866,13 @@ export class WorkflowComponent {
       const mapObj = {nodeMap: this.nodeMap, jobMap};
       this.workflowService.createWorkflow(this.workflow.configuration, this.editor, mapObj);
       this.nodeMap = mapObj.nodeMap;
+      // Lay out inside the same model update: mxGraph then renders the workflow
+      // once, already positioned, instead of once at 0,0 and again after layout
+      // (a full re-render each time, the main cost on large workflows).
+      WorkflowService.executeLayout(graph, this.preferences);
     } finally {
       // Updates the display
       graph.getModel().endUpdate();
-      WorkflowService.executeLayout(graph, this.preferences);
       this.drawSegmentContainers(graph);
       this.skipXMLToJSONConversion = true;
     }
@@ -8808,13 +8904,13 @@ export class WorkflowComponent {
       const defaultParent = graph.getDefaultParent();
       const startNode = doc.createElement('Process');
       startNode.setAttribute('title', 'start');
-      const v1 = graph.insertVertex(defaultParent, null, startNode, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+      const v1 = graph.insertVertex(defaultParent, null, startNode, 0, 0, WorkflowService.START_END_SIZE, WorkflowService.START_END_SIZE, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
       const mainNode = doc.createElement('Process');
       mainNode.setAttribute('title', 'dragAndDrop');
       const v2 = graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;');
       const endNode = doc.createElement('Process');
       endNode.setAttribute('title', 'end');
-      const v3 = graph.insertVertex(defaultParent, null, endNode, 0, 0, 70, 70, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
+      const v3 = graph.insertVertex(defaultParent, null, endNode, 0, 0, WorkflowService.START_END_SIZE, WorkflowService.START_END_SIZE, 'ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;shadow=0;opacity=70;');
       graph.insertEdge(defaultParent, null, doc.createElement('Connector'), v1, v2, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
       graph.insertEdge(defaultParent, null, doc.createElement('Connector'), v2, v3, 'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;jettySize=auto;orthogonalLoop=1;dashed=1;shadow=0;opacity=50;');
 
@@ -8865,7 +8961,7 @@ export class WorkflowComponent {
       $('.sidebar-close').css({...transitionCSS, right: self.propertyPanelWidth + 'px'});
       $('#property-panel').css({...transitionCSS, width: self.propertyPanelWidth + 'px'}).show();
       $('.sidebar-open').css({...transitionCSS, right: '-20px'});
-      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+      if (self.isHorizontalFlow()) {
         outln.css({width: $('.graph-container').width() + 'px'});
       }
       self.centered(true);
@@ -8880,7 +8976,7 @@ export class WorkflowComponent {
       $('.sidebar-open').css({...transitionCSS, right: '0'});
       $('#property-panel').css(transitionCSS).hide();
       $('.sidebar-close').css({...transitionCSS, right: '-20px'});
-      if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+      if (self.isHorizontalFlow()) {
         outln.css({width: $('.graph-container').width() + 'px'});
       }
       self.centered(true);
@@ -9496,9 +9592,7 @@ export class WorkflowComponent {
     if (jsonObject.instructions.length > 0) {
       this.workflow.configuration = this.coreService.clone(jsonObject);
     } else {
-      // Only wipe if the graph is genuinely empty (nothing but Start/End placeholders).
-      // If real instruction cells exist, the walker produced a wrong empty result
-      // (e.g. SegmentContainer orphan-removal mid-walk) -- keep the last known-good config.
+
       const _wipeGraph = this.editor?.graph;
       const _hasRealContent = _wipeGraph && _wipeGraph.getChildCells(_wipeGraph.getDefaultParent())
         .some((c: any) => c.vertex && c.value?.tagName
@@ -9574,11 +9668,6 @@ export class WorkflowComponent {
         mxGraph.prototype.cellsLocked = true;
         mxGraph.prototype.foldingEnabled = true;
         mxGraph.prototype.cellsCloneable = false;
-        // Segment cells use a custom chevron overlay for collapse/
-        // expand (added in drawSegmentContainers) — suppress mxGraph's
-        // own native fold icon for them specifically, since it was
-        // rendering directly on top of the custom chevron, causing a
-        // cluttered/overlapping icon cluster at the top-left corner.
         const origIsFoldingIcon = mxGraph.prototype.isFoldingIcon;
         mxGraph.prototype.isFoldingIcon = function (state: any) {
           if (state?.cell?.value?.tagName === 'Segment') { return false; }
@@ -9840,9 +9929,6 @@ export class WorkflowComponent {
               }
             }
           } else {
-            // Segment vertex (2×2 invisible) may lack a fresh view state during a repaint.
-            // Force-validate it so this.shape is always assigned, letting graphHandler.mouseMove
-            // call me.consume() — which is required for the drop-here removal box to appear.
             if (this.cells[0]?.value?.tagName === 'Segment' && !graph.getView().getState(this.cells[0])) {
               graph.view.validateCell(this.cells[0]);
             }
@@ -10092,7 +10178,9 @@ export class WorkflowComponent {
             highlight = null;
             if (cell?.parent) {
               const _state = graph.view.getState(cell.parent);
-              if (_state && _state.shape && _state.shape.bounds.width > 72) {
+              // Hover enlarges the shape by 1.3; shrink back only if it is currently
+              // larger than its normal drawn size (works for any shape size / zoom).
+              if (_state && _state.shape && _state.shape.bounds.width > _state.width + 0.5) {
                 _state.shape.bounds.x = _state.shape.bounds.x + (_state.shape.bounds.width - _state.shape.bounds.width / 1.3) / 2;
                 _state.shape.bounds.y = _state.shape.bounds.y + (_state.shape.bounds.height - _state.shape.bounds.height / 1.3) / 2;
                 _state.shape.bounds.width = _state.shape.bounds.width / 1.3;
@@ -10125,7 +10213,7 @@ export class WorkflowComponent {
               const childCell = model.getChildAt(cell, i);
               if (model.isVertex(childCell)) {
                 const state = graph.view.getState(childCell);
-                if (!(self.preferences.orientation == 'east' || self.preferences.orientation == 'west')) {
+                if (!self.isHorizontalFlow()) {
                   if (state?.x) {
                     if (obj.minX == null) {
                       obj.minX = state.x;
@@ -10172,7 +10260,7 @@ export class WorkflowComponent {
             const lastCell = graph.getModel().getCell(targetId);
             const state = graph.view.getState(parentCell);
             const state2 = graph.view.getState(lastCell);
-            if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+            if (self.isHorizontalFlow()) {
               if (((state2.y + state2.height) > obj.maxX) || obj.maxX == null) {
                 obj.maxX = state2.y + state2.height;
               } else if (((state2.y) < obj.minX) || obj.minX == null) {
@@ -10189,7 +10277,7 @@ export class WorkflowComponent {
             highlight = document.createElement('div');
             highlight.style.position = 'absolute';
             highlight.style.zIndex = -1;
-            if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+            if (self.isHorizontalFlow()) {
               highlight.style.top = obj.minX - 10 + 'px';
               highlight.style.left = (state.x - 10) + 'px';
               highlight.style.height = (obj.maxX - obj.minX + 20) + 'px';
@@ -10271,11 +10359,6 @@ export class WorkflowComponent {
               return;
             }
             let cell = me.getCell();
-            // SegmentContainer has pointerEvents=0 so DOM hit-test misses it.
-            // When mouse is over empty container space, resolve to the Segment vertex
-            // so 3-dots (mxIconSet) shows on hover and click selects the Segment.
-            // Use model geometry (not view state) — view state can be null during repaints,
-            // which would cause cell to stay null and break isCellDragging / dropContainer2.
             let matchedContainerCell: any = null;
             if (!cell) {
               const mx = me.getGraphX();
@@ -10551,31 +10634,13 @@ export class WorkflowComponent {
           return cells;
         };
 
-        // Allow interacting with a Segment (hover, click, double-click, and — critically —
-        // starting a drag to move/reorder/remove it) by pressing/hovering anywhere inside
-        // its SegmentContainer box, not just its tiny header cell.
-        //
-        // The previous approach here tried to fix this by intercepting the native DOM
-        // 'mousedown' on graph.container and re-dispatching a synthetic mousedown at the
-        // header's exact screen position. That's fragile — it depends on assumptions about
-        // exactly which event mxGraph listens for and where — and was replaced with an
-        // override of graph.getCellAt(), reasoning that every mouse event resolves its cell
-        // through that one method. That was directionally right but incomplete: getCellAt's
-        // x/y are screen-pixel coordinates, and it's invoked from inside
-        // graph.updateMouseEvent(), which is the actual function that sets me.state on the
-        // mxMouseEvent — and that's the field mxRubberband's mouseDown checks directly
-        // (`me.getState() == null`) to decide whether to start rubber-band selecting. Rather
-        // than rely on getCellAt being reached correctly through every internal call path,
-        // override updateMouseEvent itself: it runs once per mouse event, before any
-        // listener (rubberband, graphHandler, click, dblclick) sees that event, so patching
-        // it here guarantees me.state is set correctly for literally everything downstream.
         const findSegmentCellForScreenPoint = (sx: number, sy: number): any => {
           const hits = (self._segmentContainerCells || []).filter((cCell: any) => {
             const st = graph.view.getState(cCell);
             return st && sx >= st.x && sx <= st.x + st.width && sy >= st.y && sy <= st.y + st.height;
           });
           if (hits.length === 0) { return null; }
-          // Pick the innermost (smallest-area) box when segments are nested.
+
           const hit = hits.reduce((a: any, b: any) => {
             const sa = graph.view.getState(a);
             const sb = graph.view.getState(b);
@@ -10598,35 +10663,35 @@ export class WorkflowComponent {
           return result;
         };
 
-        // Keep the getCellAt redirect too — it's what graph.getDropTarget() (and therefore
-        // mxDragSource's mid-drag drop-target lookup) resolves through, which
-        // updateMouseEvent above doesn't cover.
         const origGetCellAt = graph.getCellAt;
+        let _cellAtBeneathPass = false;
         graph.getCellAt = function (x, y, parent, vertices, edges, ignoreFn) {
+
+          if (parent?.value?.tagName === 'SegmentContainer') { return null; }
+
           const cell = origGetCellAt.apply(this, arguments);
-          if (cell == null || cell.value?.tagName === 'SegmentContainer') {
-            const segCell = findSegmentCellForScreenPoint(x, y);
-            if (segCell) { return segCell; }
+
+          if (!_cellAtBeneathPass && (cell == null || cell.value?.tagName === 'SegmentContainer')) {
+            _cellAtBeneathPass = true;
+            try {
+
+              const cellBeneath = origGetCellAt.call(this, x, y, parent, vertices, edges,
+                (state: any, px: number, py: number) =>
+                  state?.cell?.value?.tagName === 'SegmentContainer' ||
+                  (ignoreFn && ignoreFn(state, px, py))
+              );
+              if (cellBeneath) { return cellBeneath; }
+
+              const segCell = findSegmentCellForScreenPoint(x, y);
+              if (segCell) { return segCell; }
+            } finally {
+              _cellAtBeneathPass = false;
+            }
           }
+
           return cell;
         };
 
-        // Defense in depth, and the most direct fix of the three: rather than depend on
-        // exactly how/where this mxGraph build internally resolves me.state before notifying
-        // listeners (the updateMouseEvent override above assumes a method name that may not
-        // match every build), patch the two listeners whose behavior we actually care about,
-        // right where they read that state:
-        //  - mxRubberband.mouseDown starts the selection-marquee precisely when
-        //    me.getState() == null — this is what was drawing the blue rubber-band box
-        //    instead of starting a drag.
-        //  - mxGraphHandler.mouseDown is what would otherwise start moving the Segment, but
-        //    only proceeds when me.getState() != null.
-        // Both listeners receive the SAME mxMouseEvent instance for a given native event, so
-        // fixing its state once, at the top of either wrapper, is enough for both — and since
-        // we're wrapping the functions themselves (not adding another listener), this doesn't
-        // depend on registration order between graphHandler/rubberband/our own listeners.
-        // mxGraphHandler.prototype.mouseMove is already successfully overridden elsewhere in
-        // this file, confirming these are the right, real prototypes for this build.
         const fixSegmentStateOnEvent = (me: any): void => {
           if (me.getState() != null) { return; }
           const gx = me.getGraphX ? me.getGraphX() : me.graphX;
@@ -10635,7 +10700,15 @@ export class WorkflowComponent {
           const segCell = findSegmentCellForScreenPoint(gx, gy);
           if (segCell) {
             const segState = graph.view.getState(segCell);
-            if (segState) { me.setState(segState); }
+            if (segState) {
+              // mxGraph 4.2.2's mxMouseEvent has no setState(): set the property
+              // getState() reads (use setState() where a newer version has it).
+              if (typeof me.setState === 'function') {
+                me.setState(segState);
+              } else {
+                me.state = segState;
+              }
+            }
           }
         };
 
@@ -10652,16 +10725,14 @@ export class WorkflowComponent {
         };
 
 
-        /**
-         * Overrides method to provide a cell collapse/expandable on double click
-         */
+
         graph.dblClick = function (evt, cell) {
           if (cell != null && cell.vertex == 1) {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || self.workflowService.isSingleInstruction(cell.value.tagName)) {
 
               mxDragSource.prototype.currentHighlight = new mxCellHighlight(graph,
                 (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
-              // Highlights the drop target under the mouse
+
               if (mxDragSource.prototype.currentHighlight != null) {
                 const state = graph.getView().getState(cell);
                 if (state && state.cell) {
@@ -10673,10 +10744,6 @@ export class WorkflowComponent {
           }
         };
 
-        /**
-         * Function: handle a click event
-         *
-         */
         let count = 0, lastClickId = 0, time = 0;
         graph.click = function (me) {
           if (me.state?.cell?.id && me.state?.cell?.value?.tagName == 'Job') {
@@ -10738,7 +10805,7 @@ export class WorkflowComponent {
               return;
             }
           }
-          // Border-line click on SegmentContainer → toggle segment fold
+
           {
             const BORDER_HIT = 8;
             const gx = me.getGraphX();
@@ -10766,7 +10833,6 @@ export class WorkflowComponent {
             }
           }
 
-          // When click lands on empty space, resolve to Segment if inside a SegmentContainer
           if (!cell) {
             const mx = me.getGraphX();
             const my = me.getGraphY();
@@ -10927,24 +10993,85 @@ export class WorkflowComponent {
           }
         };
 
-        /**
-         * Overrides method to provide a cell label in the display
-         * @param cell
-         */
+
         graph.convertValueToString = function (cell) {
           return self.workflowService.convertValueToString(cell, graph, self.jobs);
         };
 
-        // Returns the type as the tooltip for column cells
         graph.getTooltipForCell = function (cell) {
           return self.workflowService.getTooltipForCell(cell);
         };
 
-        // SegmentContainer → resolve to Segment vertex so the drop() / createClickInstruction path
-        // works normally. dragOver swaps in the SegmentContainer view state for the full-box highlight.
+
+        const findNearestInnerCellInSegment = (segCell: any, x: number, y: number): any => {
+          const endSegId = self.nodeMap?.get(segCell.id);
+          const endSegCell = endSegId ? graph.getModel().getCell(endSegId) : null;
+          const entryEdge = (segCell.edges || []).find((e: any) =>
+            e.source?.id === segCell.id && e.target && e.target.id !== endSegCell?.id
+          );
+          if (!entryEdge?.target) { return null; }
+
+          let best: any = null;
+          let bestDist = Infinity;
+          const consider = (cand: any): void => {
+            if (!cand) { return; }
+            const st = graph.view.getState(cand);
+            if (!st) { return; }
+            const dx = Math.max(st.x - x, 0, x - (st.x + st.width));
+            const dy = Math.max(st.y - y, 0, y - (st.y + st.height));
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < bestDist) { bestDist = d; best = cand; }
+          };
+
+          consider(entryEdge);
+
+          const boundary = new Set<string>([segCell.id, endSegCell?.id].filter(Boolean));
+          const seenCells = new Set<string>();
+          const seenEdges = new Set<string>();
+          const queue: any[] = [entryEdge.target];
+
+          while (queue.length > 0) {
+            const curr = queue.shift();
+            if (!curr || seenCells.has(curr.id)) { continue; }
+            seenCells.add(curr.id);
+            consider(curr);
+            for (const e of (curr.edges || [])) {
+              if (e.source?.id !== curr.id || !e.target) { continue; }
+              if (!seenEdges.has(e.id)) {
+                seenEdges.add(e.id);
+                consider(e);
+              }
+              if (!boundary.has(e.target.id) && !seenCells.has(e.target.id)) {
+                queue.push(e.target);
+              }
+            }
+          }
+          return best;
+        };
+
         const origGetDropTarget = mxDragSource.prototype.getDropTarget;
         mxDragSource.prototype.getDropTarget = function (graph, x, y, evt) {
           const target = origGetDropTarget.apply(this, arguments);
+
+          if (target && target.value?.tagName === 'Segment') {
+
+            const segState = graph.view.getState(target);
+            const isDirectHeaderHit = segState &&
+              x >= segState.x && x <= segState.x + segState.width &&
+              y >= segState.y && y <= segState.y + segState.height;
+
+            if (!isDirectHeaderHit) {
+              const hasInstruction = (target.edges || []).some((e: any) =>
+                e.source?.id === target.id && e.target &&
+                !self.workflowService.checkClosingCell(e.target.value?.tagName)
+              );
+              if (hasInstruction) {
+                const nearest = findNearestInnerCellInSegment(target, x, y);
+                if (nearest) { return nearest; }
+              }
+            }
+          }
+
           if (target && target.value?.tagName === 'SegmentContainer') {
             const segId = target.value.getAttribute('segmentId');
             const segCell = segId ? graph.getModel().getCell(segId) : null;
@@ -10953,10 +11080,6 @@ export class WorkflowComponent {
           return target;
         };
 
-        /**
-         * To check drop target is valid or not on hover
-         *
-         */
         mxDragSource.prototype.dragOver = function (_graph, evt) {
           dragStart = true;
           const offset = mxUtils.getOffset(_graph.container);
@@ -10971,12 +11094,9 @@ export class WorkflowComponent {
             mxToolbar.prototype.resetMode(true);
           }
           checkState();
-          // Highlights the drop target under the mouse
           if (this.currentHighlight != null && _graph.isDropEnabled()) {
             this.currentDropTarget = this.getDropTarget(_graph, x, y, evt);
             let state = _graph.getView().getState(this.currentDropTarget);
-            // Segment vertex was resolved from SegmentContainer: use the container's full-box state
-            // for the highlight and pass the SegmentContainer cell to checkValidTarget.
             if (this.currentDropTarget?.value?.tagName === 'Segment') {
               const _cCell = (self._segmentContainerCells || []).find((c: any) =>
                 c.value?.getAttribute?.('segmentId') === this.currentDropTarget.id
@@ -11366,7 +11486,10 @@ export class WorkflowComponent {
          * checked. Default is false.
          * evt - Optional native event that triggered the invocation.
          */
-        mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
+        // On this graph only: mxGraph.prototype is shared by every graph on the page
+    // (editor, order view, dependency dialog), and an override there made one view
+    // lay out another view's graph when a block or Segment was folded.
+    graph.foldCells = function (collapse, recurse, cells, checkFoldable) {
           recurse = (recurse != null) ? recurse : true;
           this.stopEditing(false);
           this.model.beginUpdate();
@@ -11374,10 +11497,12 @@ export class WorkflowComponent {
             this.cellsFolded(cells, collapse, recurse, checkFoldable);
             this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
               'collapse', collapse, 'recurse', recurse, 'cells', cells));
+            // Lay out in the same update: one render of the expanded / collapsed
+            // workflow instead of two (expanding a large Segment was slow).
+            WorkflowService.executeLayout(graph, self.preferences);
           } finally {
             this.model.endUpdate();
           }
-          WorkflowService.executeLayout(graph, self.preferences);
           self.drawSegmentContainers(graph);
           setTimeout(() => { self.workflowService.center(graph); }, 200);
           return cells;
@@ -11483,8 +11608,6 @@ export class WorkflowComponent {
          * Event to check if connector is valid or not on drop of new instruction
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
-          // SegmentContainer is always a valid drop target — occupancy check is done by
-          // checkValidTarget (for highlight color) and by createClickInstruction (flag guard).
           if (cell?.value?.tagName === 'SegmentContainer') { return true; }
           if (cell && cell.value) {
             self.droppedCell = null;
@@ -11553,11 +11676,11 @@ export class WorkflowComponent {
                       }
                     }
                     if (cells[0].value.tagName === 'Fork') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
+                      v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'join');
                     } else if (cells[0].value.tagName === 'CaseWhen') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
-                      const v2 = graph.insertVertex(cells[0], null, getCellNode('When', 'when', cells[0].id), 0, 0, 72, 72, 'when');
-                      const v3 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'caseWhen');
+                      const v2 = graph.insertVertex(cells[0], null, getCellNode('When', 'when', cells[0].id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
+                      const v3 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
                       graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v2);
                       graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
                       graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
@@ -11566,18 +11689,18 @@ export class WorkflowComponent {
                       cells[0].value.tagName === 'AdmissionTime' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'if');
                     } else if (cells[0].value.tagName === 'When') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
                     } else if (cells[0].value.tagName === 'Retry') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'retry');
                     } else if (cells[0].value.tagName === 'Cycle') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'cycle');
                     } else if (cells[0].value.tagName === 'ElseWhen') {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, 72, 72, 'elseWhen');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'elseWhen');
                     } else {
-                      v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
-                      v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'try');
+                      v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, WorkflowService.CATCH_WIDTH, WorkflowService.CATCH_HEIGHT, 'dashRectangle');
                       graph.insertEdge(parent, null, getConnectionNode('try'), cells[0], v2);
                       graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
                     }
@@ -12045,55 +12168,55 @@ export class WorkflowComponent {
       if (name === 'If') {
         label1 = 'then';
         label2 = 'endIf';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 72, 72, 'if');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'if');
       } else if (name === 'Fork') {
         label1 = 'branch';
         label2 = 'join';
-        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, 'join');
+        v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'join');
       } else if (name === 'Retry') {
         label1 = 'retry';
         label2 = 'endRetry';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 72, 72, 'retry');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'retry');
       } else if (name === 'CaseWhen') {
         label1 = 'caseWhen';
         label2 = 'endCase';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', parentCell.id), 0, 0, 68, 68, 'caseWhen');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'caseWhen');
       } else if (name === 'When') {
         label1 = 'when';
         label2 = 'endWhen';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', parentCell.id), 0, 0, 72, 72, 'when');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
       } else if (name === 'ElseWhen') {
         label1 = 'elseWhen';
         label2 = 'endElse';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', parentCell.id), 0, 0, 72, 72, 'elseWhen');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'elseWhen');
       } else if (name === 'Lock') {
         label1 = 'lock';
         label2 = 'endLock';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', parentCell.id), 0, 0, 68, 68, 'lock');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndLock', 'lockEnd', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'lock');
       } else if (name === 'StickySubagent') {
         label1 = 'stickySubagent';
         label2 = 'endStickySubagent';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', parentCell.id), 0, 0, 68, 68, 'stickySubagent');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndStickySubagent', 'stickySubagentEnd', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'stickySubagent');
       } else if (name === 'Options') {
         label1 = 'options';
         label2 = 'endOptions';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndOptions', 'optionsEnd', parentCell.id), 0, 0, 68, 68, 'options');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndOptions', 'optionsEnd', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'options');
       } else if (name === 'AdmissionTime') {
         label1 = 'admissionTime';
         label2 = 'endAdmissionTime';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndAdmissionTime', 'admissionTimeEnd', parentCell.id), 0, 0, 68, 68, 'admissionTime');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndAdmissionTime', 'admissionTimeEnd', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'admissionTime');
       } else if (name === 'ConsumeNotices') {
         label1 = 'consumeNotices';
         label2 = 'endConsumeNotices';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndConsumeNotices', 'lockConsumeNotices', parentCell.id), 0, 0, 68, 68, 'consumeNotices');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndConsumeNotices', 'lockConsumeNotices', parentCell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'consumeNotices');
       } else if (name === 'Cycle') {
         label1 = 'cycle';
         label2 = 'endCycle';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, 72, 72, 'cycle');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'cycle');
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, 72, 72, 'forkList');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndForkList', 'forkListEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'forkList');
       } else if (name === 'Segment') {
         label1 = 'segment';
         label2 = 'endSegment';
@@ -12163,8 +12286,8 @@ export class WorkflowComponent {
       let _sour, _tar;
       if (cellName === 'Try') {
         let v2, v3, _middle;
-        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', parentCell.id), 0, 0, 72, 72, 'try');
-        v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'catch', parentCell.id), 0, 0, 100, 40, 'dashRectangle');
+        v2 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', parentCell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'try');
+        v3 = graph.insertVertex(parent, null, getCellNode('Catch', 'catch', parentCell.id), 0, 0, WorkflowService.CATCH_WIDTH, WorkflowService.CATCH_HEIGHT, 'dashRectangle');
         if (cell) {
           if (cell.edges) {
             for (let i = 0; i < cell.edges.length; i++) {
@@ -14015,12 +14138,12 @@ export class WorkflowComponent {
       let closeTag = 'close' + tagName;
       let lastEndTag = tagName.substring(0, 1).toLowerCase() + tagName.substring(1, tagName.length) + 'End';
       if (tagName == 'ForkList') {
-        return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 72, 72, closeTag);
+        return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, closeTag);
       }
       if (tagName === 'Segment') {
         return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 2, 2, closeTag);
       }
-      return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, 68, 68, closeTag);
+      return graph.insertVertex(parent, null, getCellNode(endTag, lastEndTag, id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, closeTag);
     }
 
     /**
@@ -14105,91 +14228,91 @@ export class WorkflowComponent {
           _node = doc.createElement('Finish');
           _node.setAttribute('displayLabel', 'finish');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'finish');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'finish');
         } else if (title.match('fail')) {
           _node = doc.createElement('Fail');
           _node.setAttribute('displayLabel', 'fail');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fail');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'fail');
         } else if (title.match('break')) {
           _node = doc.createElement('Break');
           _node.setAttribute('displayLabel', 'break');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'break');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'break');
         } else if (title.match('sleep')) {
           _node = doc.createElement('Sleep');
           _node.setAttribute('displayLabel', 'sleep');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'sleep');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'sleep');
         } else if (title.match('addOrder')) {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('displayLabel', 'addOrder');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'addOrder');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'addOrder');
         } else if (title.match('fork-list')) {
           _node = doc.createElement('ForkList');
           _node.setAttribute('displayLabel', 'forkList');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'forkList');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'forkList');
         } else if (title.match('fork')) {
           _node = doc.createElement('Fork');
           _node.setAttribute('displayLabel', 'fork');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fork');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'fork');
         } else if (title.match('caseWhen')) {
           _node = doc.createElement('CaseWhen');
           _node.setAttribute('displayLabel', 'caseWhen');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'caseWhen');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'caseWhen');
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('displayLabel', 'if');
           _node.setAttribute('predicate', '$returnCode > 0');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'if');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'if');
         } else if (title.match('when')) {
           _node = doc.createElement('When');
           _node.setAttribute('displayLabel', 'when');
           _node.setAttribute('predicate', '$returnCode > 0');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'when');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
           _node.setAttribute('maxTries', '10');
           _node.setAttribute('retryDelays', '60');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'retry');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'retry');
         } else if (title.match('cycle')) {
           _node = doc.createElement('Cycle');
           _node.setAttribute('displayLabel', 'cycle');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'cycle');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'cycle');
         } else if (title.match('elseWhen')) {
           _node = doc.createElement('ElseWhen');
           _node.setAttribute('displayLabel', 'elseWhen');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'elseWhen');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'elseWhen');
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('displayLabel', 'lock');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'lock');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'lock');
         } else if (title.match('sticky')) {
           _node = doc.createElement('StickySubagent');
           _node.setAttribute('displayLabel', 'stickySubagent');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'stickySubagent');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'stickySubagent');
         } else if (title.match('consume')) {
           _node = doc.createElement('ConsumeNotices');
           _node.setAttribute('displayLabel', 'consumeNotices');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'consumeNotices');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'consumeNotices');
         } else if (title.match('options')) {
           _node = doc.createElement('Options');
           _node.setAttribute('displayLabel', 'options');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'options');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'options');
         } else if (title.match('segment')) {
           _node = doc.createElement('Segment');
           _node.setAttribute('displayLabel', 'segment');
@@ -14199,27 +14322,27 @@ export class WorkflowComponent {
           _node = doc.createElement('AdmissionTime');
           _node.setAttribute('displayLabel', 'admissionTime');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'admissionTime');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'admissionTime');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('displayLabel', 'try');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'try');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'try');
         } else if (title.match('await')) {
           _node = doc.createElement('ExpectNotices');
           _node.setAttribute('displayLabel', 'expectNotices');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'expectNotices');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'expectNotices');
         } else if (title.match('publish')) {
           _node = doc.createElement('PostNotices');
           _node.setAttribute('displayLabel', 'postNotices');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'postNotices');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'postNotices');
         } else if (title.match('prompt')) {
           _node = doc.createElement('Prompt');
           _node.setAttribute('displayLabel', 'prompt');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'prompt');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'prompt');
         }
         if (targetCell.value.tagName !== 'Connection') {
           if (result === 'select') {
@@ -14257,31 +14380,31 @@ export class WorkflowComponent {
           if (self.workflowService.isInstructionCollapsible(clickedCell.value.tagName)) {
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
-              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
+              v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'join');
             } else if (clickedCell.value.tagName === 'CaseWhen') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
-              const v2 = graph.insertVertex(clickedCell, null, getCellNode('When', 'when', null), 0, 0, 72, 72, 'when');
-              const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'caseWhen');
+              const v2 = graph.insertVertex(clickedCell, null, getCellNode('When', 'when', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
+              const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
               graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v2);
               graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
               graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
             } else if (clickedCell.value.tagName === 'If') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'if');
             } else if (clickedCell.value.tagName === 'When') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
             } else if (clickedCell.value.tagName === 'Retry') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'retry');
             } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
               clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'Segment' ||
               clickedCell.value.tagName === 'AdmissionTime' || clickedCell.value.tagName === 'ConsumeNotices') {
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'cycle');
             } else if (clickedCell.value.tagName === 'ElseWhen') {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, 72, 72, 'elseWhen');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'elseWhen');
             } else {
-              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
-              v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
+              v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'try');
+              v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, WorkflowService.CATCH_WIDTH, WorkflowService.CATCH_HEIGHT, 'dashRectangle');
               graph.insertEdge(parent, null, getConnectionNode('try'), clickedCell, v2);
               graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
             }
@@ -14338,7 +14461,7 @@ export class WorkflowComponent {
      * Function: To validate instruction is valid for drop or not
      */
     function checkValidTarget(targetCell, title): string {
-      // SegmentContainer: allow drop when Segment has no instruction yet, block when occupied
+
       if (targetCell?.value?.tagName === 'SegmentContainer') {
         const segId = targetCell.value.getAttribute('segmentId');
         const segCell = segId ? graph.getModel().getCell(segId) : null;
@@ -14569,8 +14692,6 @@ export class WorkflowComponent {
         displayLabel = 'options';
       } else if (dropTargetName === 'Segment') {
         displayLabel = 'segment';
-        // Remove the direct Segment -> EndSegment edge before new child is wired in,
-        // so the generic wiring logic never sees two outgoing edges on the Segment cell.
         const directEdge = (_dropTarget.edges || []).find(
           (e: any) => e.source?.id === _dropTarget.id && e.target?.value?.tagName === 'EndSegment'
         );
@@ -14580,10 +14701,6 @@ export class WorkflowComponent {
           }
           graph.getModel().remove(directEdge);
         }
-        // ===== CASE 2b: Block drop on Segment body when it already has children =====
-        // Dropping directly on a non-empty Segment body is ambiguous. Auto-expand
-        // collapsed segments; for expanded non-empty segments, block the drop so the
-        // user must target an explicit arrow inside. This guard is ONLY for Segment.
         const _segHasChildren = (_dropTarget.edges || []).some(
           (e: any) => e.source?.id === _dropTarget.id && e.target?.value?.tagName !== 'EndSegment'
         );
@@ -14614,24 +14731,24 @@ export class WorkflowComponent {
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
         let v1, v2, v3, _label;
         if (cell.value.tagName === 'Fork') {
-          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
+          v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, WorkflowService.SYMBOL_SIZE, WorkflowService.SYMBOL_SIZE, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'CaseWhen') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, 72, 72, 'caseWhen');
-          v2 = graph.insertVertex(cell, null, getCellNode('When', 'when', cell.id), 0, 0, 72, 72, 'when');
-          v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'caseWhen');
+          v2 = graph.insertVertex(cell, null, getCellNode('When', 'when', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
+          v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v2);
           graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
           graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
         } else if (cell.value.tagName === 'If') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 72, 72, 'if');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'if');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'When') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'when');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Retry') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 72, 72, 'retry');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
           cell.value.tagName === 'Options' || cell.value.tagName === 'Segment' ||
@@ -14639,14 +14756,14 @@ export class WorkflowComponent {
           v1 = createEndVertex(parent, cell.value.tagName, cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 72, 72, 'cycle');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'cycle');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ElseWhen') {
-          v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', cell.id), 0, 0, 72, 72, 'elseWhen');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'elseWhen');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
-          v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
-          v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, 72, 72, 'try');
+          v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, WorkflowService.CATCH_WIDTH, WorkflowService.CATCH_HEIGHT, 'dashRectangle');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', cell.id), 0, 0, WorkflowService.DIAMOND_SIZE, WorkflowService.DIAMOND_SIZE, 'try');
           graph.insertEdge(parent, null, getConnectionNode('try'), cell, v2);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);

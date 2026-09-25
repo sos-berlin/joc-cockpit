@@ -16,6 +16,8 @@ import {Subscription} from 'rxjs';
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
+import {BlockScopeRenderer} from '../../../services/block-scope.renderer';
+import {flowDirection, getWorkflowLayoutMode, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../services/block-shift.layout';
 import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -240,6 +242,22 @@ export class WorkflowGraphicalComponent {
   job: any;
   stopInstruction: any;
   graph: any;
+
+  /** Minimap visible? Shared with the workflow editor, remembered in this browser (shown until the user hides it). */
+  showMinimap: boolean = (() => {
+    try {
+      return sessionStorage.getItem('workflowShowMinimap') === '1';
+    } catch (e) {
+      return false;
+    }
+  })();
+  private minimapOutline: any = null;
+
+  /** New (indented) or old (classic) layout; shared with the editor, remembered in this browser. */
+  layoutMode: WorkflowLayoutMode = getWorkflowLayoutMode();
+  /** Block guides / labels and Segment frames (this view has no Segment code of its own). */
+  private blockScopeRenderer: BlockScopeRenderer | null = null;
+  private blockScopeMinimapRenderer: BlockScopeRenderer | null = null;
   nodes = [];
   vertixMap = new Map();
   mapObj = new Map();
@@ -280,7 +298,7 @@ export class WorkflowGraphicalComponent {
     if (this.workflowFilters && this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
-    if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+    if (this.isHorizontalFlow()) {
       const containerElement: HTMLElement = this.outlineContainer.nativeElement;
       containerElement.style.width = (dom.width() - 2) + 'px';
       containerElement.style.height = '112px';
@@ -290,6 +308,7 @@ export class WorkflowGraphicalComponent {
       dom.css({width: 'calc(100% - 154px)'});
     }
     this.coreService.slimscrollFunc(dom, ht, this.graph);
+    this.applyMinimapVisibility();   // honour a minimap the user hid earlier
 
     const panel = $('.left-property-panel');
     const transitionCSS = {transition: 'none'};
@@ -302,7 +321,7 @@ export class WorkflowGraphicalComponent {
       $('.sidebar-close').css({...transitionCSS, left: propertyPanelWidth + 'px', display: 'block'});
       $('#left-property-panel').css({...transitionCSS, width: propertyPanelWidth + 'px'}).show();
       $('.sidebar-open').css({...transitionCSS, display: 'none'});
-      if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+      if (this.isHorizontalFlow()) {
         const outln = $('#outlineContainer');
         outln.css({width: $('.graph-container').width() + 'px'});
       }
@@ -316,7 +335,7 @@ export class WorkflowGraphicalComponent {
       $('.sidebar-open').css({...transitionCSS, left: '1px', display: 'block'});
       $('#left-property-panel').css(transitionCSS).hide();
       $('.sidebar-close').css({...transitionCSS, display: 'none'});
-      if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+      if (this.isHorizontalFlow()) {
         const outln = $('#outlineContainer');
         outln.css({width: $('.graph-container').width() + 'px'});
       }
@@ -344,6 +363,7 @@ export class WorkflowGraphicalComponent {
   }
 
   ngOnDestroy(): void {
+    this.destroyScopeRenderers();
     if (!this.isModal) {
       $(this.graphContainer.nativeElement).closest('#workflowGraphId').remove();
       $('.mxTooltip').css({visibility: 'hidden'});
@@ -414,13 +434,145 @@ export class WorkflowGraphicalComponent {
       } else {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
         this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
-        new mxOutline(this.graph, this.outlineContainer.nativeElement);
+        const outline = new mxOutline(this.graph, this.outlineContainer.nativeElement);
+        this.installScopeRenderers(outline);
         this.createWorkflowGraph();
       }
     } catch (e) {
       mxUtils.alert('Cannot start application: ' + e.message);
       console.error(e);
     }
+  }
+
+  /**
+   * Block guides and labels, and Segment frames, as in the workflow editor. The
+   * renderers redraw themselves after every layout / fold / zoom.
+   */
+  private installScopeRenderers(outline: any): void {
+    this.destroyScopeRenderers();
+    this.minimapOutline = outline;
+    const prefs = () => this.preferences;
+    this.blockScopeRenderer = new BlockScopeRenderer(this.graph, {
+      getPreferences: prefs,
+      getNodeMap: () => this.nodeMap,
+      segments: true
+    });
+    this.blockScopeRenderer.install();
+    if (outline && outline.outline) {
+      this.blockScopeMinimapRenderer = new BlockScopeRenderer(outline.outline, {
+        getPreferences: prefs,
+        getNodeMap: () => this.nodeMap,
+        minimap: true,
+        segments: true
+      });
+      this.blockScopeMinimapRenderer.install();
+    }
+    // Click on a Segment's header (or its collapsed box) expands / collapses it.
+    this.graph.addListener(mxEvent.CLICK, (sender: any, evt: any) => {
+      if (evt.getProperty('cell') || !this.blockScopeRenderer) {
+        return;
+      }
+      const e = evt.getProperty('event');
+      if (!e) {
+        return;
+      }
+      const pt = mxUtils.convertPoint(this.graph.container, mxEvent.getClientX(e), mxEvent.getClientY(e));
+      const seg = this.blockScopeRenderer.segmentAt(pt.x, pt.y);
+      if (seg) {
+        this.graph.foldCells(!seg.collapsed, false, [seg]);
+      }
+    });
+  }
+
+  private destroyScopeRenderers(): void {
+    if (this.blockScopeRenderer) {
+      this.blockScopeRenderer.destroy();
+      this.blockScopeRenderer = null;
+    }
+    if (this.blockScopeMinimapRenderer) {
+      this.blockScopeMinimapRenderer.destroy();
+      this.blockScopeMinimapRenderer = null;
+    }
+  }
+
+  /** Toolbar: hide / show the minimap. The graph takes over its space while hidden. */
+  toggleMinimap(): void {
+    this.closeMenu();
+    this.showMinimap = !this.showMinimap;
+    try {
+      sessionStorage.setItem('workflowShowMinimap', this.showMinimap ? '1' : '0');
+    } catch (e) {
+      // storage unavailable: the choice lasts for this page only
+    }
+    this.applyMinimapVisibility();
+  }
+
+  /**
+   * Shows or hides the minimap. Top-down the minimap is a column on the right
+   * (the graph is 154px narrower while it is shown); left-right it is a strip
+   * placed over the bottom of the graph area.
+   */
+  private applyMinimapVisibility(): void {
+    const outline: HTMLElement = this.outlineContainer ? this.outlineContainer.nativeElement : null;
+    if (!outline) {
+      return;
+    }
+    const dom = this.isModal ? $('.graph2 #graph') : $('#graph');
+    // slimScroll wraps the graph element; keep its wrapper the same width.
+    const wrapper = dom.parent('.slimScrollDiv');
+    if (!this.showMinimap) {
+      outline.style.display = 'none';
+      if (!this.isHorizontalFlow()) {
+        dom.css({width: '100%'});
+        wrapper.css({width: '100%'});
+      }
+    } else {
+      outline.style.display = '';
+      if (!this.isHorizontalFlow()) {
+        dom.css({width: 'calc(100% - 154px)'});
+        wrapper.css({width: 'calc(100% - 154px)'});
+      } else {
+        outline.style.width = (dom.width() - 2) + 'px';
+        outline.style.height = '112px';
+        outline.style.top = 'auto';
+        outline.style.bottom = '16px';
+      }
+      if (this.minimapOutline) {
+        // Redraw the minimap at its size after being hidden.
+        setTimeout(() => this.minimapOutline && this.minimapOutline.update(true), 0);
+      }
+    }
+  }
+
+  /**
+   * Toolbar: switch between the new indented layout and the old (classic)
+   * hierarchical layout, redrawing the workflow from scratch.
+   */
+  toggleLayoutMode(): void {
+    this.closeMenu();
+    this.layoutMode = this.layoutMode === 'classic' ? 'indented' : 'classic';
+    setWorkflowLayoutMode(this.layoutMode);
+    if (!this.graph) {
+      return;
+    }
+    // Only the layout changes: the cells already in the graph are laid out
+    // again (the workflow is not rebuilt), with the order boxes taken out and
+    // put back around it, exactly like folding.
+    const graph = this.graph;
+    this.updateOrdersInGraph(true);
+    graph.getModel().beginUpdate();
+    try {
+      WorkflowService.resetEdgeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
+    } finally {
+      graph.getModel().endUpdate();
+    }
+    this.updateOrdersInGraph(false);
+  }
+
+  /** Flow direction: preferences.workflowLayout ('vertical'/'horizontal'), else orientation. */
+  isHorizontalFlow(): boolean {
+    return flowDirection(this.preferences?.workflowLayout, this.preferences?.orientation) === 'horizontal';
   }
 
   zoomIn(): void {
@@ -785,7 +937,10 @@ export class WorkflowGraphicalComponent {
     /**
      * Function: foldCells to collapse/expand
      */
-    mxGraph.prototype.foldCells = function (collapse, recurse, cells, checkFoldable) {
+    // On this graph only: mxGraph.prototype is shared by every graph on the page
+    // (editor, order view, dependency dialog), and an override there made one view
+    // lay out another view's graph when a block or Segment was folded.
+    graph.foldCells = function (collapse, recurse, cells, checkFoldable) {
       recurse = (recurse != null) ? recurse : true;
       if (cells == null) {
         cells = this.getFoldableCells(this.getSelectionCells(), collapse);
@@ -798,11 +953,11 @@ export class WorkflowGraphicalComponent {
         this.cellsFolded(cells, collapse, recurse, checkFoldable);
         this.fireEvent(new mxEventObject(mxEvent.FOLD_CELLS,
           'collapse', collapse, 'recurse', recurse, 'cells', cells));
-
+        // Lay out in the same update: one render instead of two.
+        WorkflowService.executeLayout(graph, self.preferences);
       } finally {
         this.model.endUpdate();
       }
-      WorkflowService.executeLayout(graph, self.preferences);
       self.updateOrdersInGraph(false);
       return cells;
     };
@@ -1011,7 +1166,7 @@ export class WorkflowGraphicalComponent {
           const childCell = model.getChildAt(cell, i);
           if (model.isVertex(childCell)) {
             const state = graph.view.getState(childCell);
-            if (!(self.preferences.orientation == 'east' || self.preferences.orientation == 'west')) {
+            if (!(self.isHorizontalFlow())) {
               if (state?.x) {
                 if (obj.minX == null) {
                   obj.minX = state.x;
@@ -1058,7 +1213,7 @@ export class WorkflowGraphicalComponent {
         const lastCell = graph.getModel().getCell(targetId);
         const state = graph.view.getState(parentCell);
         const state2 = graph.view.getState(lastCell);
-        if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        if (self.isHorizontalFlow()) {
           if (((state2.y + state2.height) > obj.maxX) || obj.maxX == null) {
             obj.maxX = state2.y + state2.height;
           }else if (((state2.y) < obj.minX) || obj.minX == null) {
@@ -1075,7 +1230,7 @@ export class WorkflowGraphicalComponent {
         highlight = document.createElement('div');
         highlight.style.position = 'absolute';
         highlight.style.zIndex = -1;
-        if (self.preferences.orientation == 'east' || self.preferences.orientation == 'west') {
+        if (self.isHorizontalFlow()) {
           highlight.style.top = obj.minX - 10 + 'px';
           highlight.style.left = (state.x - 10) + 'px';
           highlight.style.height = (obj.maxX - obj.minX + 20) + 'px';
@@ -1538,7 +1693,7 @@ export class WorkflowGraphicalComponent {
           _node.setAttribute('order', JSON.stringify(orders[i]));
           let x = node.geometry.x + node.geometry.width + 50 + (i * 8);
           let y = node.geometry.y - 40 + (i * 8);
-          if (this.preferences.orientation == 'east' || this.preferences.orientation == 'west') {
+          if (this.isHorizontalFlow()) {
             x = node.geometry.x + (node.geometry.width / 2) + 50 + (i * 8);
             y = node.geometry.y - node.geometry.height - 40 + (i * 8);
           }
@@ -1767,10 +1922,11 @@ export class WorkflowGraphicalComponent {
       this.nodeMap = mapObj.nodeMap;
       this.vertixMap = mapObj.vertixMap;
       this.updatePositions(this.workFlowJson, this.vertixMap);
+      // Lay out inside the same model update: one render, already positioned.
+      WorkflowService.executeLayout(this.graph, this.preferences);
     } finally {
       // Updates the display
       this.graph.getModel().endUpdate();
-      WorkflowService.executeLayout(this.graph, this.preferences);
       this.updateOrdersInGraph(false);
     }
   }

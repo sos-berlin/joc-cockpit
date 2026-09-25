@@ -21,140 +21,140 @@
     <add as="If">
       <If displayLabel="if" predicate="$returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </If>
     </add>
     <add as="CaseWhen">
       <CaseWhen displayLabel="caseWhen" predicate="$returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </CaseWhen>
     </add>
     <add as="When">
       <When displayLabel="when" predicate="$returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </When>
     </add>
     <add as="ElseWhen">
       <ElseWhen displayLabel="elseWhen" predicate="$returnCode > 0">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </ElseWhen>
     </add>
     <add as="AddOrder">
       <AddOrder displayLabel="addOrder">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </AddOrder>
     </add>
     <add as="Fork">
       <Fork displayLabel="fork">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Fork>
     </add>
     <add as="ForkList">
       <ForkList displayLabel="forkList">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="70" height="70"/>
+          <mxGeometry as="geometry" width="49" height="49"/>
         </mxCell>
       </ForkList>
     </add>
     <add as="Lock" >
       <Lock displayLabel="lock">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Lock>
     </add>
     <add as="Cycle" >
       <Cycle displayLabel="cycle">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </Cycle>
     </add>
     <add as="Retry">
       <Retry displayLabel="retry" maxTries="10" retryDelays="60">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </Retry>
     </add>
     <add as="Try">
       <Try displayLabel="try">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </Try>
     </add>
     <add as="Fail">
       <Fail displayLabel="fail">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Fail>
     </add>
     <add as="Finish">
       <Finish displayLabel="finish">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Finish>
     </add>
     <add as="Break">
       <Break displayLabel="break">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Break>
     </add>
     <add as="Sleep">
       <Sleep displayLabel="sleep">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Sleep>
     </add>
     <add as="ExpectNotices" >
       <ExpectNotices displayLabel="expectNotices">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </ExpectNotices>
     </add>
     <add as="PostNotices">
       <PostNotices displayLabel="postNotices">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </PostNotices>
     </add>
     <add as="ConsumeNotices">
       <ConsumeNotices displayLabel="consumeNotices">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </ConsumeNotices>
     </add>
     <add as="StickySubagent">
       <StickySubagent displayLabel="stickySubagent">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </StickySubagent>
     </add>
     <add as="Options">
       <Options displayLabel="options">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Options>
     </add>
@@ -168,21 +168,21 @@
     <add as="Prompt">
       <Prompt displayLabel="prompt">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Prompt>
     </add>
     <add as="AdmissionTime" >
       <AdmissionTime displayLabel="admissionTimes">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
+          <mxGeometry as="geometry" width="50" height="50"/>
         </mxCell>
       </AdmissionTime>
     </add>
     <add as="symbol">
       <Symbol displayLabel="Instruction">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
-          <mxGeometry as="geometry" width="68" height="68"/>
+          <mxGeometry as="geometry" width="48" height="48"/>
         </mxCell>
       </Symbol>
     </add>
