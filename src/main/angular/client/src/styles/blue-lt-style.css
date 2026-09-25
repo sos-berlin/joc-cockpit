@@ -7,11 +7,12 @@
   --background-color: #4e5c6a;
   --bar-color: #ffe8c9;
   --bg-box: #46525f;
+  --box-color: #46525f;
   --bg-footer: #65707d;
   --bg-dimgrey: #7c8d9e;
   --text-color: rgba(255, 255, 255, .87);
   --text-hover: rgba(0, 0, 0, .87);
-  --placholder-color: rgba(255, 255, 255, .5);
+  --placholder-color: rgba(255, 255, 255, .82);
   --text-muted: rgba(255, 255, 255, .6);
   --menu-hover: rgba(70, 82, 95, .7);
   --blue: #1690d4;
@@ -21,7 +22,7 @@
   --error-code: #ff5252;
   --mangenta: #d900d9;
   --bg-mangenta: #b966b9;
-  --border-color: rgba(233, 244, 255, .18);
+  --border-color: rgba(233, 244, 255, .25);
   --dark-border-color: rgba(233, 244, 255, .22);
   --box-shadow: rgba(255, 255, 255, 0.1);
   --row-selected: rgba(66, 89, 109, .87);
@@ -63,7 +64,7 @@ img.logo-for-dark{
 
 .form-control,
 .input-group-addon {
-  border-color: rgba(221, 221, 221, .2)
+  border-color: rgba(233, 244, 255, .45)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -793,6 +794,11 @@ pre#pre {
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
 
+.ant-dropdown-menu-item-selected,
+.ant-dropdown-menu-item-active {
+  background-color: var(--row-selected);
+}
+
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
@@ -1233,29 +1239,112 @@ div.jsoneditor-value.jsoneditor-invalid {
   border-right: 5px solid var(--background-color)
 }
 
-#upper-header {
-  background: #a6adb4 !important;
-}
-
-.log-body-new-window {
-  background-color: #a6adb4 !important;
-}
-
-.log-body-new-window .bg-white {
-  background-color: #949da5 !important;
-}
-
-.log-body-new-window #property-panel .rg-right {
-  background-color: #949da5 !important;
-}
-
 .ant-select-dropdown-menu-item-active{
   color: var(--background-color)
 }
 
-.log-body-new-window .tx_order .caret{
-  border-left: 5px solid #a6adb4;
-  border-right: 5px solid #a6adb4
+/* Log popup (order/task log viewer): the level badges/tags below are
+   hardcoded as pale, low-opacity outline chips in log-view.component.ts
+   and shared by every theme, so on this theme's dark background they read
+   as faint, washed-out text. Keep the outline style (no solid fill) but
+   use punchier, more saturated colors at full opacity, scoped to the popup. */
+.log-body-new-window .log-badge-main,
+.log-body-new-window .log-level-main,
+.log-body-new-window .log-badge-stdout,
+.log-body-new-window .log-level-stdout {
+  color: #c3c9ce;
+  background: transparent;
+  border-color: #c3c9ce;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-info,
+.log-body-new-window .log-level-info {
+  color: #aad4f0;
+  background: transparent;
+  border-color: #aad4f0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-trace,
+.log-body-new-window .log-level-trace {
+  color: #c0c0c0;
+  background: transparent;
+  border-color: #c0c0c0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-success,
+.log-body-new-window .log-level-success {
+  color: green;
+  border: 1px solid green;
+  background: transparent;
+  opacity: .9;
+}
+
+.log-body-new-window .log-badge-debug,
+.log-body-new-window .log-level-debug {
+  color: #80cbc4;
+  background: transparent;
+  border-color: #80cbc4;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-warn,
+.log-body-new-window .log-level-warn {
+  color: #ffc773;
+  background: transparent;
+  border-color: #ffc773;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-error,
+.log-body-new-window .log-level-error,
+.log-body-new-window .log-badge-fatal,
+.log-body-new-window .log-level-fatal,
+.log-body-new-window .log-badge-stderr,
+.log-body-new-window .log-level-stderr {
+  color: #ff9e9e;
+  background: transparent;
+  border-color: #ff9e9e;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-detail,
+.log-body-new-window .log-level-detail {
+  color: #90caf9;
+  background: transparent;
+  border-color: #90caf9;
+  opacity: 1;
+}
+
+.log-body-new-window .log-search-group {
+  border-color: rgba(255, 255, 255, .32);
+  background: rgba(255, 255, 255, .06);
+}
+
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-regex-checkbox {
+  border-color: rgba(255, 255, 255, .32);
+}
+
+.log-body-new-window .log-search-icon,
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-search-mode-caret,
+.log-body-new-window .log-regex-checkbox,
+.log-body-new-window .log-regex-label,
+.log-body-new-window .log-search-clear,
+.log-body-new-window .log-regex-error-icon {
+  color: rgba(255, 255, 255, .78);
+}
+
+.log-body-new-window .log-search-input {
+  color: rgba(255, 255, 255, .9);
+}
+
+.log-body-new-window .log-search-input::placeholder {
+  color: rgba(255, 255, 255, .68);
+  opacity: 1;
 }
 
 .upload-progress-bar {

@@ -121,7 +121,7 @@ export class DependenciesComponent {
     } else {
       this.loadAdditionalData();
     }
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
   }

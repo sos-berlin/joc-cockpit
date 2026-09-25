@@ -851,11 +851,16 @@ export class UserComponent {
 
   themeArray = [{value: 'lighter', name: 'profile.label.white'},
     {value: 'light', name: 'profile.label.light'},
+    {value: 'sandstone', name: 'profile.label.sandstone'},
+    {value: 'violet', name: 'profile.label.violet'},
     {value: 'blue-lt', name: 'profile.label.blueGrey'},
     {value: 'blue', name: 'profile.label.blue'},
     {value: 'cyan', name: 'profile.label.petrol'},
     {value: 'grey', name: 'profile.label.grey'},
-    {value: 'dark', name: 'profile.label.dark'},];
+    {value: 'dark', name: 'profile.label.dark'},
+    {value: 'graphite', name: 'profile.label.graphite'},
+    {value: 'emerald', name: 'profile.label.emerald'},
+    {value: 'midnight', name: 'profile.label.midnight'},];
 
   tooltipDelayOptions = [
     {value: -1,   name: 'profile.label.tooltipDelay.never'},

@@ -235,7 +235,7 @@ export class LogComponent {
             nodeClasses[i].style.background = 'transparent';
           }
         }
-        const color = (this.preferences.theme != 'light' && this.preferences.theme != 'lighter') ? 'rgba(230,247,255,0.5)' : '#e6f7ff';
+        const color = (this.preferences.theme != 'light' && this.preferences.theme != 'lighter' && this.preferences.theme != 'sandstone' && this.preferences.theme != 'violet') ? 'rgba(230,247,255,0.5)' : '#e6f7ff';
         const treeElemById: any = document.getElementById(node.origin.key);
         if (treeElemById) {
           treeElemById.style.background = color;

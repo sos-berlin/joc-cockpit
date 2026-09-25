@@ -843,6 +843,11 @@ pre#pre {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .2)
 }
 
+.ant-dropdown-menu-item-selected,
+.ant-dropdown-menu-item-active {
+  background-color: var(--row-selected);
+}
+
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
@@ -1242,6 +1247,105 @@ div.jsoneditor-value.jsoneditor-invalid {
     background-color: rgba(253, 70, 71, .58) !important
 }
 
+.log-body-new-window .log-badge-success,
+.log-body-new-window .log-level-success {
+  color: #56d364;
+  border: 1px solid rgba(63, 185, 80, .5);
+  background: rgba(63, 185, 80, .15);
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-main,
+.log-body-new-window .log-level-main,
+.log-body-new-window .log-badge-stdout,
+.log-body-new-window .log-level-stdout {
+  color: #c3c9ce;
+  background: transparent;
+  border-color: #c3c9ce;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-info,
+.log-body-new-window .log-level-info {
+  color: #aad4f0;
+  background: transparent;
+  border-color: #aad4f0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-trace,
+.log-body-new-window .log-level-trace {
+  color: #c0c0c0;
+  background: transparent;
+  border-color: #c0c0c0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-debug,
+.log-body-new-window .log-level-debug {
+  color: #80cbc4;
+  background: transparent;
+  border-color: #80cbc4;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-warn,
+.log-body-new-window .log-level-warn {
+  color: #ffc773;
+  background: transparent;
+  border-color: #ffc773;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-error,
+.log-body-new-window .log-level-error,
+.log-body-new-window .log-badge-fatal,
+.log-body-new-window .log-level-fatal,
+.log-body-new-window .log-badge-stderr,
+.log-body-new-window .log-level-stderr {
+  color: #ff9e9e;
+  background: transparent;
+  border-color: #ff9e9e;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-detail,
+.log-body-new-window .log-level-detail {
+  color: #79c0ff;
+  border: 1px solid rgba(56, 139, 253, .5);
+  background: rgba(56, 139, 253, .15);
+  opacity: 1;
+}
+
+.log-body-new-window .log-search-group {
+  border-color: rgba(255, 255, 255, .32);
+  background: rgba(255, 255, 255, .06);
+}
+
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-regex-checkbox {
+  border-color: rgba(255, 255, 255, .32);
+}
+
+.log-body-new-window .log-search-icon,
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-search-mode-caret,
+.log-body-new-window .log-regex-checkbox,
+.log-body-new-window .log-regex-label,
+.log-body-new-window .log-search-clear,
+.log-body-new-window .log-regex-error-icon {
+  color: rgba(255, 255, 255, .78);
+}
+
+.log-body-new-window .log-search-input {
+  color: rgba(255, 255, 255, .9);
+}
+
+.log-body-new-window .log-search-input::placeholder {
+  color: rgba(255, 255, 255, .68);
+  opacity: 1;
+}
+
 .upload-progress-bar {
   background-color: rgba(255, 140, 0, 0.2);
 }
@@ -1267,4 +1371,12 @@ div.jsoneditor-value.jsoneditor-invalid {
 }
 #bar-chart {
   background-color: var(--background-color)
+}
+
+.help-search-bar-inline .search-controls-inline .btn-icon {
+  background-color: transparent;
+}
+
+.help-search-bar-inline .search-controls-inline .btn-icon:disabled {
+  background-color: transparent;
 }

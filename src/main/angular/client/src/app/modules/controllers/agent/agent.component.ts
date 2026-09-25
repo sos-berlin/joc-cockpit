@@ -1558,7 +1558,7 @@ export class AgentComponent {
     let isAgentDraging = false;
     let movingAgent = null;
 
-    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+    if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' && this.preferences.theme !== 'sandstone' && this.preferences.theme !== 'violet' || !this.preferences.theme) {
       const style = graph.getStylesheet().getDefaultEdgeStyle();
       style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
       const style2 = graph.getStylesheet().getDefaultEdgeStyle();
@@ -2121,7 +2121,7 @@ export class AgentComponent {
     let priority = -1;
     let v1;
     let styleColor = '#fafafa';
-    if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
+    if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet') {
       styleColor = '#3d464d';
     }
     if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {

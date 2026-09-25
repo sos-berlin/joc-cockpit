@@ -21,6 +21,7 @@
   --red: #ff5252;
   --error-code: #ff3d3d;
   --bg-blue: #1591d4;
+  --blue: #64b5f6;
   --mangenta: #d900d9;
   --bg-mangenta: #b966b9;
   --row-selected: rgba(35, 52, 70, .5);
@@ -851,6 +852,11 @@ span ul li a {
   box-shadow: 0 2px 4px rgba(255, 255, 255, .3)
 }
 
+.ant-dropdown-menu-item-selected,
+.ant-dropdown-menu-item-active {
+  background-color: var(--row-selected);
+}
+
 .ant-select-dropdown {
   background-color: var(--bg-box) !important;
   color: rgba(255, 255, 255, .87);
@@ -1135,6 +1141,14 @@ JSON editor
   color: var(--text-color) !important
 }
 
+/* jsoneditor's own theme sets the *current* line's gutter number background
+   to a light grey (#dcdcdc) that isn't overridden anywhere above, while the
+   gutter text is forced white by the rule right above this — white-on-light
+   is unreadable on exactly the line the cursor is on. */
+.ace-jsoneditor .ace_gutter-active-line {
+  background-color: #4a5058 !important;
+}
+
 .ace-jsoneditor .ace_scroller {
   background-color: var(--bg-footer) !important;
 }
@@ -1210,66 +1224,73 @@ div.jsoneditor {
   background: rgba(255, 255, 255, 0.031);
 }
 
+/* JSON editor (jsoneditor/Ace, "Show/Edit JSON" dialog): every one of these
+   token colors was picked for a much lighter or darker background than
+   this theme's actual editor surface (var(--bg-footer) #656d78) — measured
+   contrast as low as 1.5:1. Lightened each while keeping its original hue
+   so syntax highlighting stays meaningfully distinct (checked ~3.3-4.4:1
+   against #656d78, the best achievable on this mid-tone background without
+   washing every token out to near-white). */
 .ace-jsoneditor .ace_paren {
-  color: #24C2C7;
+  color: #b8f2f5;
 }
 
 .ace-jsoneditor .ace_keyword {
-  color: #cda869;
+  color: #f5dca8;
 }
 
 .ace-jsoneditor .ace_keyword.ace_operator {
-  color: #fa8d6a;
+  color: #ffc199;
 }
 
 .ace-jsoneditor .ace_punctuation.ace_operator {
-  color: #fa8d6a;
+  color: #ffc199;
 }
 
 .ace-jsoneditor .ace_identifier {
 }
 
 .ace-jsoneditor .ace-statement {
-  color: #cda869;
+  color: #f5dca8;
 }
 
 .ace-jsoneditor .ace_constant {
-  color: #CF7EA9;
+  color: #f7c6e8;
 }
 
 .ace-jsoneditor .ace_constant.ace_language {
-  color: #CF7EA9;
+  color: #f7c6e8;
 }
 
 .ace-jsoneditor .ace_constant.ace_numeric {
-  color: #78CF8A;
+  color: #bde3a5;
 }
 
 .ace-jsoneditor .ace_invalid,
 .ace-jsoneditor .ace_deprecated {
   text-decoration: underline;
   font-style: italic;
-  color: #D2A8A1;
+  color: #ffd0c9;
 }
 
 .ace-jsoneditor .ace_support {
-  color: #9B859D;
+  color: #dcc9de;
 }
 
 .ace-jsoneditor .ace_support.ace_function {
-  color: #DAD085;
+  color: #f7edb8;
 }
 
 .ace-jsoneditor .ace_function.ace_buildin {
-  color: #9b859d;
+  color: #dcc9de;
 }
 
 .ace-jsoneditor .ace_string {
-  color: #8f9d6a;
+  color: #f0c4b0 !important;
 }
 
 .ace-jsoneditor .ace_string.ace_regexp {
-  color: #DAD085;
+  color: #f7edb8;
 }
 
 .ace-jsoneditor .ace_comment.ace_doc {
@@ -1277,11 +1298,15 @@ div.jsoneditor {
 
 .ace-jsoneditor .ace_definition,
 .ace-jsoneditor .ace_type {
-  color: #aac6e3;
+  color: #dcecfa;
 }
 
 .ace-jsoneditor .ace_variable {
-  color: #9999cc;
+  color: #d6d6f7;
+}
+
+.ace-jsoneditor .ace_text-layer {
+  color: #e4e4e4;
 }
 
 /* coloring of JSON in tree mode */
@@ -1431,6 +1456,105 @@ div.jsoneditor-value.jsoneditor-invalid {
   color: var(--bg-box);
 }
 
+.log-body-new-window .log-badge-success,
+.log-body-new-window .log-level-success {
+  color: #56d364;
+  border: 1px solid rgba(63, 185, 80, .5);
+  background: rgba(63, 185, 80, .15);
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-main,
+.log-body-new-window .log-level-main,
+.log-body-new-window .log-badge-stdout,
+.log-body-new-window .log-level-stdout {
+  color: #c3c9ce;
+  background: transparent;
+  border-color: #c3c9ce;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-info,
+.log-body-new-window .log-level-info {
+  color: #aad4f0;
+  background: transparent;
+  border-color: #aad4f0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-trace,
+.log-body-new-window .log-level-trace {
+  color: #c0c0c0;
+  background: transparent;
+  border-color: #c0c0c0;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-debug,
+.log-body-new-window .log-level-debug {
+  color: #80cbc4;
+  background: transparent;
+  border-color: #80cbc4;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-warn,
+.log-body-new-window .log-level-warn {
+  color: #ffc773;
+  background: transparent;
+  border-color: #ffc773;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-error,
+.log-body-new-window .log-level-error,
+.log-body-new-window .log-badge-fatal,
+.log-body-new-window .log-level-fatal,
+.log-body-new-window .log-badge-stderr,
+.log-body-new-window .log-level-stderr {
+  color: #ff9e9e;
+  background: transparent;
+  border-color: #ff9e9e;
+  opacity: 1;
+}
+
+.log-body-new-window .log-badge-detail,
+.log-body-new-window .log-level-detail {
+  color: #79c0ff;
+  border: 1px solid rgba(56, 139, 253, .5);
+  background: rgba(56, 139, 253, .15);
+  opacity: 1;
+}
+
+.log-body-new-window .log-search-group {
+  border-color: rgba(255, 255, 255, .32);
+  background: rgba(255, 255, 255, .06);
+}
+
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-regex-checkbox {
+  border-color: rgba(255, 255, 255, .32);
+}
+
+.log-body-new-window .log-search-icon,
+.log-body-new-window .log-search-mode-btn,
+.log-body-new-window .log-search-mode-caret,
+.log-body-new-window .log-regex-checkbox,
+.log-body-new-window .log-regex-label,
+.log-body-new-window .log-search-clear,
+.log-body-new-window .log-regex-error-icon {
+  color: rgba(255, 255, 255, .78);
+}
+
+.log-body-new-window .log-search-input {
+  color: rgba(255, 255, 255, .9);
+}
+
+.log-body-new-window .log-search-input::placeholder {
+  color: rgba(255, 255, 255, .68);
+  opacity: 1;
+}
+
 .upload-progress-bar {
   background-color: rgba(255, 140, 0, 0.2);
 }
@@ -1457,4 +1581,16 @@ div.jsoneditor-value.jsoneditor-invalid {
 
 #bar-chart {
   background-color: var(--background-color)
+}
+
+.ant-popover-inner-content {
+  background-color: var(--box-color);
+}
+
+.help-search-bar-inline .search-controls-inline .btn-icon {
+  background-color: transparent;
+}
+
+.help-search-bar-inline .search-controls-inline .btn-icon:disabled {
+  background-color: transparent;
 }

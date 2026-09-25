@@ -1,0 +1,206 @@
+:root{
+  --background-color: #faf6f0;
+  --rich-tooltip-bg: #ffffff;
+  --rich-tooltip-text: #4a4038;
+  --rich-tooltip-strong: #2a221a;
+  --rich-tooltip-code-bg: #f3ece0;
+  --rich-tooltip-border: rgba(58, 41, 26, 0.12);
+  --bg-box: #fff;
+  --text-color: #3a332c;
+  --text-hover: rgba(42, 34, 26, 0.9);
+  --text-muted: rgba(58, 51, 44, 0.62);
+  --border-color: #e8ddd0;
+  --menu-color: #f3ece0;
+  --menu-hover: #ece2d3;
+  --dark-border-color: #d9c6ae;
+  --light-yellow: #fdee00;
+  --bg-light-yellow: #fdee00;
+  --primary: #c2521f;
+  --secondary: #a8431a;
+  --hover-primary: #a8431a;
+  --default-btn: #f3ece0;
+  --default-btn-hover: #f8f2e8;
+  --date-selected: rgba(194, 82, 31, .5);
+  --date-selected-hover: rgba(194, 82, 31, 0.65);
+  --date-planned: rgba(168, 67, 26, 0.95);
+  --date-planned-hover: rgba(168, 67, 26, 0.8);
+}
+.bg-blue-color {
+  background-color: #faf6f0 !important
+}
+
+.text-white, .text-white:hover, a[href]:hover span.text-white {
+  color: #4a4038 !important
+}
+
+img.logo-for-light{
+  display: inline-block !important;
+}
+
+.cluster-rect, .rect {
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff), color-stop(1, #faf6f0));
+  background-image: -moz-linear-gradient(center bottom, #fff 37%, #faf6f0 69%);
+  -webkit-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(58, 41, 26, .15);
+  -moz-box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(58, 41, 26, .15);
+  box-shadow: inset 0 2px 9px rgba(255, 255, 255, .3), inset 0 -2px 6px rgba(58, 41, 26, .15)
+}
+
+.b-b, .b-l, .b-r, .b-t {
+  border-bottom: 1px solid rgba(217, 198, 174, .5)
+}
+
+.btn-grey.active.focus,
+.btn-grey:hover {
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+  border: 1px solid;
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+
+.rg-bottom, .rg-right {
+  background: #f3ece0 !important
+}
+
+.label.up {
+  background: grey;
+  color: #fff
+}
+
+.table > tbody > tr {
+  border-bottom: 2px solid #f3ece0
+}
+
+.table-bordered > tbody > tr {
+  border-bottom: 1px solid;
+  border-color: #f3ece0;
+}
+
+.table-bordered, .table > thead > tr > th {
+  border-color: #f3ece0
+}
+
+.backup {
+  background: #fff;
+  background: -webkit-linear-gradient(left, rgba(236, 226, 211, 1), #e6dac6);
+  background: -o-linear-gradient(right, rgba(236, 226, 211, 1), rgba(230, 218, 198, 1));
+  background: -moz-linear-gradient(right, rgba(236, 226, 211, 1), rgba(230, 218, 198, 1));
+  background: linear-gradient(to right, rgba(236, 226, 211, 1), rgba(230, 218, 198, 1))
+}
+
+.backup-top-header {
+  background: #241a13
+}
+.ant-dropdown-menu-item .ant-dropdown-menu-submenu-arrow-icon, .ant-dropdown-menu-submenu-title .ant-dropdown-menu-submenu-arrow-icon,
+.cluster-rect, .connection, .cluster, .icon-color, .ant-tree li,
+.ant-tabs,
+.ant-pagination-item a, .ant-pagination-prev a, .ant-pagination-next a,
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table, .ant-table-placeholder,
+.ant-pagination-disabled a,
+.ant-pagination-disabled:hover a,
+.ant-pagination-disabled:focus a,
+.ant-pagination-disabled .ant-pagination-item-link,
+.ant-pagination-disabled:hover .ant-pagination-item-link,
+.ant-pagination-disabled:focus .ant-pagination-item-link,
+.ant-select-arrow .ant-select-arrow-icon, .ant-result-title, .ant-result-subtitle,
+.ant-select-dropdown-menu-item,
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item-selected, .ant-select-dropdown-menu-item:hover,
+.ant-dropdown-menu-submenu-title,
+.ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a{
+  color: #3a332c;
+}
+
+.ant-checkbox-inner, .ant-radio-inner, .ant-tree-checkbox-inner {
+  border: 1px solid #d9c6ae;
+}
+
+.ant-checkbox-disabled .ant-checkbox-inner {
+  border-color:  #d9c6ae !important;
+}
+
+.ant-picker-cell {
+  color: rgba(58, 41, 26, .3);
+}
+
+.ant-picker-header button {
+  color: rgba(58, 41, 26, .6);
+}
+
+.ant-picker-header button:hover {
+  color: rgba(58, 41, 26, .9);
+}
+
+.ant-picker-panel-container {
+  box-shadow: 0 2px 8px rgba(58, 41, 26, .15);
+}
+
+div.jsoneditor-tree button.jsoneditor-button {
+  background: transparent url(../assets/images/jsoneditor-icons.svg);
+  background-position: 0 -48px;
+}
+
+div.jsoneditor-tree button.jsoneditor-contextmenu-button {
+  background: transparent url(../assets/images/jsoneditor-icons.svg);
+  background-position: -48px -72px;
+}
+
+.jsoneditor-contextmenu .jsoneditor-menu li button .jsoneditor-expand {
+  background: url("../assets/images/jsoneditor-icons.svg") 0 -72px;
+}
+
+.jsoneditor-contextmenu .jsoneditor-icon {
+  background-image: url("../assets/images/jsoneditor-icons.svg");
+}
+
+div.jsoneditor-tree button.jsoneditor-dragarea {
+  background: url("../assets/images/jsoneditor-icons.svg") -72px -72px;
+}
+
+div.jsoneditor-tree .jsoneditor-button.jsoneditor-schema-error {
+  background: url("../assets/images/jsoneditor-icons.svg") -168px -48px;
+}
+
+.jsoneditor-text-errors tr .jsoneditor-schema-error {
+  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px
+}
+
+.jsoneditor-text-errors tr.parse-error .jsoneditor-schema-error {
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
+}
+
+.jsoneditor-menu > .jsoneditor-modes > button,
+.jsoneditor-menu > button {
+  background: transparent url("../assets/images/jsoneditor-icons.svg");
+}
+
+.jsoneditor-search button {
+  background: url("../assets/images/jsoneditor-icons.svg");
+}
+
+.jsoneditor-statusbar > .jsoneditor-validation-error-icon {
+  background: url(../assets/images/jsoneditor-icons.svg) -168px -48px;
+}
+
+.jsoneditor-statusbar > .jsoneditor-parse-error-icon {
+  background: url(../assets/images/jsoneditor-icons.svg) -25px 0
+}
+
+.jsoneditor-frame {
+  background-color: #FFFFFF;
+}
+.timelineWrapper .row .taskBar {
+  background-color: #ded2bd !important;
+}
+#toolbarContainer div.draggable:hover {
+  background: #f6ede0 !important;
+}
+img.mxToolbarModeSelected {
+  background: #f6e7d8;
+}
+.btn-search {
+  background-color: #e2d3bf;
+}
+.property-panel .sidebar-open, .property-panel .sidebar-close {
+  background: url(../assets/images/left-tips.svg) center no-repeat;
+}

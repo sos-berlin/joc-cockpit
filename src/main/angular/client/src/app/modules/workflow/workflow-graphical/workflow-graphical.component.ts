@@ -433,7 +433,7 @@ export class WorkflowGraphicalComponent {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
-        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
+         this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
         const outline = new mxOutline(this.graph, this.outlineContainer.nativeElement);
         this.installScopeRenderers(outline);
         this.createWorkflowGraph();
@@ -892,7 +892,7 @@ export class WorkflowGraphicalComponent {
       dragEnter: function (evt, state, cell) {
         if (cell) {
           if (state.style) {
-            this.currentHighlight = new mxCellHighlight(graph, !(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6');
+            this.currentHighlight = new mxCellHighlight(graph, !(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || self.preferences.theme === 'sandstone' || self.preferences.theme === 'violet' || !self.preferences.theme) ? '#FF8000' : '#1171a6');
             this.currentHighlight.highlight(state);
           }
         } else {
@@ -1674,7 +1674,7 @@ export class WorkflowGraphicalComponent {
       let x = cell.geometry.x + cell.geometry.width - 5;
       let y = cell.geometry.y - 5;
       let color = '#0E8A8B';
-      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+      if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' && this.preferences.theme !== 'sandstone' && this.preferences.theme !== 'violet' || !this.preferences.theme) {
         color = '#d87600';
       }
       let countV = graph.insertVertex(parent, null, _nodeCount, x, y, 16, 16, 'order;fillColor=' + color + ';strokeColor=' + color + ';shadow=1');
@@ -1709,7 +1709,7 @@ export class WorkflowGraphicalComponent {
             _nodeCount.setAttribute('count', (branchOrders && branchOrders.length > 0) ? branchOrders.length : orders.length);
             _nodeCount.setAttribute('orders', (branchOrders && branchOrders.length > 0) ? JSON.stringify(branchOrders) : JSON.stringify(orders));
             let color = '#0E8A8B';
-            if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+            if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' && this.preferences.theme !== 'sandstone' && this.preferences.theme !== 'violet' || !this.preferences.theme) {
               color = '#d87600';
             }
             let countV = graph.insertVertex(parent, null, _nodeCount, x + 105, y, 16, 16, 'order;fillColor=' + color + ';strokeColor=' + color + ';shadow=1');

@@ -5888,7 +5888,7 @@ export class WorkflowComponent {
             self.editor = editor;
             new mxRubberband(editor.graph);
             self.initEditorConf(editor, false, false);
-            self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
+            self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || self.preferences.theme === 'sandstone' || self.preferences.theme === 'violet' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
             const outln = document.getElementById('outlineContainer');
             outln.innerHTML = '';
             mxOutline.prototype.minScale = 0.001;
@@ -8523,7 +8523,7 @@ export class WorkflowComponent {
 
     const segCells = allCells.filter((c: any) => c.vertex && c.value?.tagName === 'Segment');
 
-    const isDark = !(self.preferences?.theme === 'light' || self.preferences?.theme === 'lighter' || !self.preferences?.theme);
+    const isDark = !(self.preferences?.theme === 'light' || self.preferences?.theme === 'lighter' || self.preferences?.theme === 'sandstone' || self.preferences?.theme === 'violet' || !self.preferences?.theme);
     const colorCode = isDark ? '#90CAF9' : '#1E88E5';
     const basePADDING = 10;
     const translate = graph.view.getTranslate();
@@ -9003,7 +9003,7 @@ export class WorkflowComponent {
   }
 
   private loadConfig(): void {
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
   }
@@ -9963,7 +9963,7 @@ export class WorkflowComponent {
           return shape;
         };
 
-        if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' || !this.preferences.theme) {
+        if (this.preferences.theme !== 'light' && this.preferences.theme !== 'lighter' && this.preferences.theme !== 'sandstone' && this.preferences.theme !== 'violet' || !this.preferences.theme) {
           const style = graph.getStylesheet().getDefaultEdgeStyle();
           style[mxConstants.STYLE_FONTCOLOR] = '#ffffff';
           const style2 = graph.getStylesheet().getDefaultEdgeStyle();
@@ -10731,8 +10731,8 @@ export class WorkflowComponent {
             if (self.workflowService.isInstructionCollapsible(cell.value.tagName) || self.workflowService.isSingleInstruction(cell.value.tagName)) {
 
               mxDragSource.prototype.currentHighlight = new mxCellHighlight(graph,
-                (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
-
+                (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || self.preferences.theme === 'sandstone' || self.preferences.theme === 'violet' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
+              // Highlights the drop target under the mouse
               if (mxDragSource.prototype.currentHighlight != null) {
                 const state = graph.getView().getState(cell);
                 if (state && state.cell) {
@@ -10768,7 +10768,7 @@ export class WorkflowComponent {
           }
           if (count == 2) {
             mxDragSource.prototype.currentHighlight = new mxCellHighlight(graph,
-              (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
+              (!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || self.preferences.theme === 'sandstone' || self.preferences.theme === 'violet' || !self.preferences.theme) ? '#FF8000' : '#1171a6'), 2);
             // Highlights the drop target under the mouse
             if (mxDragSource.prototype.currentHighlight != null) {
               const state = graph.getView().getState(me.state?.cell);

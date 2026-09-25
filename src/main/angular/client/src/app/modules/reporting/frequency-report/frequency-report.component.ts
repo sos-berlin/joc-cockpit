@@ -418,7 +418,7 @@ removeCard(cardId: any): void {
           ctx.textAlign = 'center';
 
           // Set text color based on theme
-          if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+          if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme)) {
             ctx.fillStyle = 'white';
           } else {
             ctx.fillStyle = 'black';

@@ -123,7 +123,7 @@ export class GraphicalViewModalComponent {
         mxUtils.error('Browser is not supported!', 200, false);
       } else {
         this.graph = new mxGraph(this.graphContainer.nativeElement);
-        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
+        this.workflowService.init(!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme) ? 'dark' : 'light', this.graph);
         new mxOutline(this.graph, this.outlineContainer.nativeElement);
         setTimeout(() => {
           this.createWorkflowGraph();
