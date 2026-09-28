@@ -55,6 +55,10 @@ img.logo-for-dark{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 pre, .syntax-box {
   background-color: var(--bg-box)
 }
@@ -1196,15 +1200,15 @@ div.CodeEditor-selected {
 }
 
 .order-history-template0 {
-  background: #081410 !important;
+  background: #13241d !important;
 }
 
 .order-history-template1 {
-  background: var(--background-color) !important;
+  background: #152820 !important;
 }
 
 .order-history-template2 {
-  background: #234a3a !important;
+  background: #182d24 !important;
 }
 
 .order-history-template3 {

@@ -37,6 +37,10 @@ img.logo-for-light{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 .cluster-rect, .rect {
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff), color-stop(1, #f5f4fb));
   background-image: -moz-linear-gradient(center bottom, #fff 37%, #f5f4fb 69%);

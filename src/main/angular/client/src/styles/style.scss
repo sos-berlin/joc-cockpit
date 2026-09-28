@@ -7110,7 +7110,8 @@ button[disabled], html input[disabled] {
 }
 
 #graph {
-  background-image: url('../assets/images/grid.svg');
+  // background-image: url('../assets/images/grid.svg');
+  background-color: var(--bg-box) !important;
 }
 
 img.mxToolbarItem {
