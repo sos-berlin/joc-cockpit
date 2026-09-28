@@ -5011,6 +5011,8 @@
     "button.classicLayout": "Classic layout",
     "button.hideMinimap": "Hide mini map",
     "button.showMinimap": "Show mini map",
+    "button.verticalOrientation": "Vertical orientation",
+    "button.horizontalOrientation": "Horizontal orientation",
     "tab.jobProperties": "Свойства",
     "tab.jobOptions": "Параметры выполнения",
     "tab.nodeProperties": "Свойства узла задачи",

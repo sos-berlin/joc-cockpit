@@ -85,6 +85,10 @@ export type FlowDirection = 'vertical' | 'horizontal';
  * preferences.orientation (east/west = horizontal, anything else = vertical).
  */
 export function flowDirection(workflowLayout: any, orientation: any): FlowDirection {
+  const session = getSessionFlowDirection();
+  if (session) {
+    return session;   // switched in the toolbar for this session
+  }
   if (workflowLayout === 'vertical' || workflowLayout === 'horizontal') {
     return workflowLayout;
   }
@@ -93,6 +97,10 @@ export function flowDirection(workflowLayout: any, orientation: any): FlowDirect
 
 /** mxHierarchicalLayout direction for a flow direction ('north' = top-down, 'west' = left-right). */
 export function layoutOrientation(workflowLayout: any, orientation: any): string {
+  const session = getSessionFlowDirection();
+  if (session) {
+    return session === 'horizontal' ? 'west' : 'north';
+  }
   if (workflowLayout === 'vertical') {
     return 'north';
   }
@@ -152,6 +160,50 @@ function segmentPadding(cell: any): number {
     }
   }
   return SEGMENT_BASE_PADDING + depth * SEGMENT_DEPTH_PADDING;
+}
+
+/*
+ * Orientation switched in the toolbar for this browser session. The profile
+ * setting (preferences.workflowLayout / orientation) stays the default for new
+ * sessions. flowDirection() and layoutOrientation() check this first.
+ */
+const ORIENTATION_KEY = 'workflowOrientation';
+
+export function getSessionFlowDirection(): FlowDirection | null {
+  try {
+    const v = sessionStorage.getItem(ORIENTATION_KEY);
+    return v === 'vertical' || v === 'horizontal' ? v : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export function setSessionFlowDirection(dir: FlowDirection | null): void {
+  try {
+    if (dir) {
+      sessionStorage.setItem(ORIENTATION_KEY, dir);
+    } else {
+      sessionStorage.removeItem(ORIENTATION_KEY);
+    }
+  } catch (e) {
+    // storage unavailable: the choice lasts for this page only
+  }
+}
+
+/**
+ * Brings a preferences object (in memory, not saved) in line with the session
+ * orientation, so templates and code that read preferences.orientation (e.g.
+ * the minimap's position) agree with the layout.
+ */
+export function applySessionOrientation(preferences: any): void {
+  const dir = getSessionFlowDirection();
+  if (!dir || !preferences) {
+    return;
+  }
+  preferences.orientation = dir === 'horizontal' ? 'west' : 'north';
+  if (preferences.workflowLayout === 'vertical' || preferences.workflowLayout === 'horizontal') {
+    preferences.workflowLayout = dir;
+  }
 }
 
 /** Layout mode: an explicit mode passed in, else the user's choice (getWorkflowLayoutMode). */
@@ -1072,6 +1124,28 @@ class ShiftPass {
   }
 
   /** Same estimate the renderer uses when it places the label. */
+  /**
+   * Estimated width of the name drawn on a shape ("Case-When"): top-down the
+   * block label starts after it when it is wider than the shape.
+   */
+  private nameWidth(cell: any): number {
+    // Only a diamond's name is drawn on the shape; a symbol's is below it or
+    // not visible at all (editor), so it takes no room beside the shape.
+    if (!['If', 'Try', 'Retry', 'Cycle', 'CaseWhen', 'When', 'ElseWhen'].includes(tagOf(cell))) {
+      return 0;
+    }
+    let text = '';
+    try {
+      text = typeof this.graph.getLabel === 'function' ? String(this.graph.getLabel(cell) || '') : '';
+    } catch (e) {
+      text = '';
+    }
+    // Drawn smaller when it does not fit at 12px (WorkflowService.shapeName).
+    const size = /font-size:\s*(\d+)px/.exec(text);
+    const factor = size ? parseInt(size[1], 10) / 12 : 1;
+    return text.replace(/<[^>]*>/g, '').trim().length * 7 * factor;
+  }
+
   private labelWidth(opener: any): number {
     const cfg = BLOCK_SCOPE_CONFIG[tagOf(opener)];
     if (!cfg) {
@@ -1269,7 +1343,7 @@ class ShiftPass {
     // the parent's indent leaves, and needs no cross-axis room.
     const labelled = DEFAULT_BLOCK_SCOPE_TAGS.includes(tag) || tag === 'When' || tag === 'ElseWhen';
     const labelExt = labelled && !this.horizontal
-      ? 2 * SPINE + BLOCK_SCOPE_METRICS.labelGap + this.labelWidth(b.opener)
+      ? Math.max(2 * SPINE, SPINE + this.nameWidth(b.opener) / 2) + BLOCK_SCOPE_METRICS.labelGap + this.labelWidth(b.opener)
         + (b.opener.collapsed ? 10 : 0) * BLOCK_SCOPE_METRICS.labelCharWidth
       : 0;
     let width = Math.max(this.extent(b.opener), labelExt);

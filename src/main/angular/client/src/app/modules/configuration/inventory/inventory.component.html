@@ -173,7 +173,7 @@
   <div class="padding p-b-0">
     <div [hidden]="isLoading" class="inline w-full">
       <div [ngClass]="{'bg-white' : isTrash}" [ngStyle]="{'width': sideView.inventory ? sideView.inventory.width +'px' : 'auto'}" [sideView]="sideView.inventory" appResizable
-           class="sticky leftPanel editor " id="leftPanel">
+           [style.--tree-width]="(sideView.inventory?.width || 290) + 'px'" class="sticky leftPanel editor " id="leftPanel">
         <div class="pl-20 editor-tree">
           @if (!isTrash) {
             <div>

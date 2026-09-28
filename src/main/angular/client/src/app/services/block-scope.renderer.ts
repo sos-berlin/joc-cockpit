@@ -261,6 +261,18 @@ export const BLOCK_SCOPE_CONFIG: { [tag: string]: BlockScopeConfig } = {
  */
 const INDENT_GUIDE_OFFSET = 16;
 
+/**
+ * Light themes (same list as the workflow editor and graphical view use);
+ * every other theme gets the dark colours.
+ */
+const LIGHT_THEMES = ['light', 'lighter', 'sandstone', 'violet'];
+
+/** Openers whose name is drawn inside the shape (diamonds); symbols draw theirs below or not at all. */
+const NAME_ON_SHAPE_TAGS = ['If', 'Try', 'Retry', 'Cycle', 'CaseWhen', 'When', 'ElseWhen'];
+
+/** Estimated width per character of an instruction's name drawn on its shape (12px font). */
+const NAME_CHAR_WIDTH = 7;
+
 /** Indented layout guides: thin dashed lines (px at 100% zoom). They do not change on hover. */
 const GUIDE_WIDTH = 1;
 const GUIDE_DASH = [4, 3];
@@ -1472,7 +1484,11 @@ export class BlockScopeRenderer {
           const text = document.createElementNS(SVG_NS, 'text');
           // Left-right: just above the opener, right of the arrow that may come
           // down into its top. Top-down: to the right of the opener.
-          let lx = horizontal ? op.x + op.width / 2 + m.labelGap * scale : op.x + op.width + m.labelGap * scale;
+          // Top-down: after the shape, or after its own name where that is wider
+          // than the shape ("Case-When" on a small diamond), so the label keeps
+          // its distance from the name like the If's label does.
+          let lx = horizontal ? op.x + op.width / 2 + m.labelGap * scale
+                              : Math.max(op.x + op.width, this.nameRight(op)) + m.labelGap * scale;
           const ly = horizontal ? op.y - 5 * scale : op.y + op.height / 2 + fontSize * 0.35;
           // Step past labels of arrows touching this opener ("else", "job"...):
           // left-right they sit in the same band above the opener.
@@ -1661,6 +1677,36 @@ export class BlockScopeRenderer {
     }
   }
 
+  /**
+   * Right edge of the name drawn on a shape (display coords): mxGraph's
+   * measured text box when available, else an estimate centred on the shape.
+   */
+  private nameRight(state: any): number {
+    // Only a diamond's name is drawn on the shape and can spill past its sides.
+    // A symbol's name is drawn below it (graphical view) or not visibly at all
+    // (editor: present, but hidden), so it must not push the label away.
+    const tag = state && state.cell && state.cell.value ? state.cell.value.tagName : '';
+    if (!NAME_ON_SHAPE_TAGS.includes(tag)) {
+      return state.x + state.width;
+    }
+    // The measured text box where mxGraph has one, but never less than the
+    // estimate (a text box can be measured too small, e.g. before fonts load).
+    const bb = state && state.text && state.text.boundingBox;
+    const measured = bb && bb.width > 0 ? bb.x + bb.width : -Infinity;
+    let text = '';
+    try {
+      text = String(this.graph.getLabel(state.cell) || '');
+    } catch (e) {
+      text = '';
+    }
+    // Drawn smaller when it does not fit at 12px (WorkflowService.shapeName).
+    const size = /font-size:\s*(\d+)px/.exec(text);
+    const factor = size ? parseInt(size[1], 10) / 12 : 1;
+    text = text.replace(/<[^>]*>/g, '').trim();
+    const w = text.length * NAME_CHAR_WIDTH * factor * this.graph.getView().getScale();
+    return Math.max(measured, state.x + state.width / 2 + w / 2);
+  }
+
   // ------------------------------------------------------------------ hover
 
   private setHover(key: string | null): void {
@@ -1732,7 +1778,7 @@ export class BlockScopeRenderer {
 
   private isDarkTheme(): boolean {
     const p = this.options.getPreferences() || {};
-    return !(p.theme === 'light' || p.theme === 'lighter' || !p.theme);
+    return !(!p.theme || LIGHT_THEMES.includes(p.theme));
   }
 
   private isHorizontalFlow(): boolean {

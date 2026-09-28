@@ -7854,7 +7854,7 @@ tr.tr-border td {
 }
 
 .sidebar-hover-effect:hover {
-  width: 290px !important;
+  width: var(--tree-width, 290px) !important;
   box-shadow: 0 0 25px 0 rgba(0, 0, 0, .05);
   transition: all .25s;
   -webkit-transition: all .25s;

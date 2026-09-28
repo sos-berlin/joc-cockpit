@@ -5011,6 +5011,8 @@
     "button.classicLayout": "Affichage classique",
     "button.hideMinimap": "Masquer lentille",
     "button.showMinimap": "Afficher lentille",
+    "button.verticalOrientation": "Vertical orientation",
+    "button.horizontalOrientation": "Horizontal orientation",
     "tab.jobProperties": "Propriétés de Tâche",
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",

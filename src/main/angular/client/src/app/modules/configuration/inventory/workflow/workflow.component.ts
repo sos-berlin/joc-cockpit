@@ -30,7 +30,7 @@ import {RichTooltipRegistry, mdToHtml} from '../../../../directives/rich-tooltip
 import {RichTooltipContentComponent} from '../../../../components/rich-tooltip/rich-tooltip-content.component';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {BlockScopeRenderer} from '../../../../services/block-scope.renderer';
-import {COLLAPSED_SEGMENT_LEAD, flowDirection, getWorkflowLayoutMode, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../../services/block-shift.layout';
+import {applySessionOrientation, COLLAPSED_SEGMENT_LEAD, flowDirection, getWorkflowLayoutMode, setSessionFlowDirection, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../../services/block-shift.layout';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
@@ -5213,6 +5213,7 @@ export class HistoryLogDialogComponent {
 
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    applySessionOrientation(this.preferences);   // orientation switched in the toolbar this session
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
 
     if (this.modalData.objectName) this.objectName = this.modalData.objectName;
@@ -6092,6 +6093,59 @@ export class WorkflowComponent {
     this.drawSegmentContainers(graph);
   }
 
+  /** For the toolbar button: is the flow currently left-to-right? */
+  get horizontalFlow(): boolean {
+    return this.isHorizontalFlow();
+  }
+
+  /**
+   * Toolbar: switch between top-to-bottom and left-to-right for this session
+   * (the profile setting stays the default for new sessions). Only the view
+   * changes: the graph is laid out again, the workflow is not touched.
+   */
+  toggleOrientation(): void {
+    this.closeMenu();
+    setSessionFlowDirection(this.isHorizontalFlow() ? 'vertical' : 'horizontal');
+    applySessionOrientation(this.preferences);
+    const graph = this.editor ? this.editor.graph : null;
+    if (!graph) {
+      return;
+    }
+    graph.getModel().beginUpdate();
+    try {
+      WorkflowService.resetEdgeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
+    } finally {
+      graph.getModel().endUpdate();
+    }
+    this.drawSegmentContainers(graph);
+    this.checkGraphHeight();   // minimap: strip below (left-right) or column (top-down)
+    setTimeout(() => {
+      this.workflowService.center(graph);
+    }, 200);
+  }
+
+  /**
+   * The start of the block a closer (Try-End, If-End, Join, ...) belongs to:
+   * from nodeMap (opener id -> closer id, as the editor uses it to select both),
+   * else from the closer's targetId (set by createWorkflow). null if unknown.
+   */
+  private findBlockOpener(graph: any, closer: any): any {
+    const model = graph.getModel();
+    if (this.nodeMap) {
+      for (const [openerId, closerId] of this.nodeMap) {
+        if (String(closerId) === String(closer.id)) {
+          const opener = model.getCell(openerId);
+          if (opener) {
+            return opener;
+          }
+        }
+      }
+    }
+    const targetId = closer.value && closer.value.getAttribute ? closer.value.getAttribute('targetId') : null;
+    return targetId ? model.getCell(targetId) : null;
+  }
+
   /** Toolbar: hide / show the minimap. The graph takes over its space while hidden. */
   toggleMinimap(): void {
     this.closeMenu();
@@ -6101,7 +6155,7 @@ export class WorkflowComponent {
     } catch (e) {
       // storage unavailable: the choice lasts for this session only
     }
-    this.checkGraphHeight();
+    this.checkGraphHeight(true);   // keep the view where it is
   }
 
   zoomIn(): void {
@@ -7018,8 +7072,15 @@ export class WorkflowComponent {
     this.checkGraphHeight();
   }
 
-  private checkGraphHeight(): void {
+  /**
+   * Sizes the graph area and the minimap. keepScroll: keep the graph scrolled
+   * where it is (hiding / showing the minimap); otherwise (start-up, window
+   * resize) the graph is scrolled back to the top as before.
+   */
+  private checkGraphHeight(keepScroll = false): void {
     if (this.editor) {
+      const graphEl = document.getElementById('graph');
+      const scrollBefore = keepScroll && graphEl ? {left: graphEl.scrollLeft, top: graphEl.scrollTop} : null;
       setTimeout(() => {
         const dom = $('.graph-container');
 
@@ -7043,24 +7104,33 @@ export class WorkflowComponent {
             outln.show();
             outln.css({
               height: '112px',
-              top: 'calc(100vh - ' + (top + 89) + 'px',
+              top: 'calc(100vh - ' + (top + 89) + 'px)',
               width: dom.width() + 'px',
               'scroll-left': '0'
             });
-            graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)'});
+            // width: '' undoes the column layout's width after switching orientation
+            graphEle.css({height: 'calc(100vh - ' + (top + 124) + 'px)', width: ''});
             $('.prev-next-icon').css({bottom: '116px'});
           } else {
             outln.show();
-            graphEle.css({width: 'calc(100% - 154px)'});
-            outln.css({height: ht, 'scroll-top': '0'});
+            // height / top / width: '' undo the strip layout after switching orientation
+            graphEle.css({width: 'calc(100% - 154px)', height: ''});
+            outln.css({height: ht, top: '', width: '', 'scroll-top': '0'});
+            $('.prev-next-icon').css({bottom: ''});
           }
           if (this.showMinimap && this.minimapOutline) {
             // Redraw the minimap at its (possibly new) size after being hidden.
             this.minimapOutline.update(true);
           }
-          graphEle.animate({
-            scrollTop: 0
-          }, 300);
+          if (scrollBefore && graphEl) {
+            // Resizing can move the scroll position: put it back.
+            graphEl.scrollLeft = scrollBefore.left;
+            graphEl.scrollTop = scrollBefore.top;
+          } else {
+            graphEle.animate({
+              scrollTop: 0
+            }, 300);
+          }
         }
       }, 10);
     }
@@ -10916,7 +10986,13 @@ export class WorkflowComponent {
           // Handles the event if it has not been consumed
           if (cell) {
             if (self.workflowService.checkClosingCell(cell.value.tagName)) {
-              return;
+              // Clicking a block's end (Try-End, If-End, Join, ...) selects the
+              // block and shows its details, exactly like clicking its start.
+              const opener = self.findBlockOpener(graph, cell);
+              if (!opener) {
+                return;
+              }
+              cell = opener;
             }
             let isProceed = true;
             if (evt.ctrlKey) {
@@ -11492,6 +11568,13 @@ export class WorkflowComponent {
     graph.foldCells = function (collapse, recurse, cells, checkFoldable) {
           recurse = (recurse != null) ? recurse : true;
           this.stopEditing(false);
+          // Where the folded block is on screen now: kept there after the new
+          // layout (instead of re-centring the whole workflow, which jumped).
+          const anchorCell = cells && cells.length > 0 ? cells[0] : null;
+          const container = this.container;
+          const anchorState = anchorCell ? this.view.getState(anchorCell) : null;
+          const anchorBefore = anchorState && container
+            ? {x: anchorState.x - container.scrollLeft, y: anchorState.y - container.scrollTop} : null;
           this.model.beginUpdate();
           try {
             this.cellsFolded(cells, collapse, recurse, checkFoldable);
@@ -11504,7 +11587,18 @@ export class WorkflowComponent {
             this.model.endUpdate();
           }
           self.drawSegmentContainers(graph);
-          setTimeout(() => { self.workflowService.center(graph); }, 200);
+          // Keep the folded block where it was on screen (scroll by how far the
+          // layout moved it). Where the workflow cannot scroll, nothing moves.
+          const keepInPlace = () => {
+            const st = anchorCell ? graph.view.getState(anchorCell) : null;
+            if (!st || !anchorBefore || !container) {
+              return;
+            }
+            container.scrollLeft += (st.x - container.scrollLeft) - anchorBefore.x;
+            container.scrollTop += (st.y - container.scrollTop) - anchorBefore.y;
+          };
+          keepInPlace();
+          setTimeout(keepInPlace, 0);   // again once the browser has applied the new graph size
           return cells;
         };
 

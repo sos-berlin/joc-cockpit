@@ -479,7 +479,11 @@ export class WorkflowService {
       symbol.verticalAlign = 'top';
       symbol.verticalLabelPosition = 'bottom';
     } else {
-      symbol.fontSize = '70';
+      // No name on these symbols (it is shown in the tooltip). noLabel instead
+      // of a huge, transparent 70px label: mxGraph counts every label's box
+      // in the diagram's size, so hidden labels stretched the scroll area, the
+      // minimap's picture and the centring by up to ~300px beside a symbol.
+      symbol.noLabel = 1;
     }
     if (graph) {
       graph.getStylesheet().putCellStyle(name, symbol);
@@ -2363,6 +2367,10 @@ export class WorkflowService {
           this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
             str = translatedValue;
           });
+          // A name wider than its diamond ("Case-When" on the small shapes) is
+          // drawn smaller, and shortened with "..." if even that does not fit
+          // (the full name is then shown in the tooltip).
+          str = WorkflowService.shapeName(cell, str).html;
           let _state = cell.getAttribute('state');
           if (_state) {
             try {
@@ -2383,6 +2391,91 @@ export class WorkflowService {
   }
 
   public getTooltipForCell(cell: any): string {
+    const tip = this.getInstructionTooltip(cell);
+    // Name shortened on a diamond it does not fit (see shapeName): show it in full here.
+    const x = cell && mxUtils.isNode(cell.value) ? cell.getAttribute('displayLabel') : null;
+    if (x && (WorkflowService.DIAMOND_TAGS.includes(cell.value.tagName) || WorkflowService.SYMBOL_TAGS.includes(cell.value.tagName))) {
+      let name = '';
+      this.translate.get('workflow.label.' + x).subscribe(translatedValue => {
+        name = translatedValue;
+      });
+      if (name && WorkflowService.shapeName(cell, name).shortened && tip !== name) {
+        return '<b>' + name + '</b>' + (tip ? '</br>' + tip : '');
+      }
+    }
+    return tip;
+  }
+
+  /**
+   * Instructions drawn as a diamond with their name inside (setStyleToVertex
+   * 'rhombus', and Retry), including their ends.
+   */
+  static readonly DIAMOND_TAGS = ['If', 'EndIf', 'Try', 'EndTry', 'Retry', 'EndRetry', 'Cycle', 'EndCycle',
+    'CaseWhen', 'EndCase', 'When', 'EndWhen', 'ElseWhen', 'EndElse'];
+
+  /**
+   * Instructions drawn as a symbol. Where their name is drawn below the symbol
+   * (the graphical view's 'symbol' style), it gets SYMBOL_NAME_ROOM: the room
+   * before it reaches the next step or branch beside it.
+   */
+  static readonly SYMBOL_TAGS = ['Fork', 'Join', 'ForkList', 'EndForkList', 'Lock', 'EndLock', 'StickySubagent', 'EndStickySubagent',
+    'Options', 'EndOptions', 'AdmissionTime', 'EndAdmissionTime', 'ConsumeNotices', 'EndConsumeNotices', 'ExpectNotices',
+    'PostNotices', 'Sleep', 'Prompt', 'Finish', 'Fail', 'Break', 'AddOrder'];
+  static readonly SYMBOL_NAME_ROOM = 74;
+
+  /** Font size of a name that does not fit its diamond at the normal 12px. */
+  static readonly SMALL_NAME_SIZE = 9;
+
+  /**
+   * How an instruction's name is drawn inside its diamond (or below its symbol): at the normal 12px
+   * when it fits; else at SMALL_NAME_SIZE; else at that size shortened with
+   * "..." (shortened = true: the full name then goes into the tooltip).
+   * Measured with mxGraph's text measurement against the diamond's width less
+   * its narrow corners, so it works for every language. Other instructions are
+   * returned unchanged.
+   */
+  static shapeName(cell: any, name: string): { html: string; shortened: boolean } {
+    if (!name || !cell || !cell.value) {
+      return {html: name, shortened: false};
+    }
+    const tag = cell.value.tagName;
+    let room: number;
+    if (WorkflowService.DIAMOND_TAGS.includes(tag)) {
+      const geo = cell.geometry;
+      room = (geo && geo.width ? geo.width : WorkflowService.DIAMOND_SIZE) - 6;
+    } else if (WorkflowService.SYMBOL_TAGS.includes(tag) && String(cell.style || '').indexOf('symbol') === 0) {
+      // Name drawn below the symbol (graphical view). In the editor symbols do
+      // not draw their name, so it is left untouched there.
+      room = WorkflowService.SYMBOL_NAME_ROOM;
+    } else {
+      return {html: name, shortened: false};
+    }
+    const width = (text: string, size: number): number => {
+      let w = 0;
+      try {
+        const r = mxUtils.getSizeForString(text, size, mxConstants.DEFAULT_FONTFAMILY);
+        w = r ? r.width : 0;
+      } catch (e) {
+        w = 0;
+      }
+      return w > 0 ? w : text.length * size * 0.52;   // no measurement available: estimate
+    };
+    if (width(name, 12) <= room) {
+      return {html: name, shortened: false};
+    }
+    const small = WorkflowService.SMALL_NAME_SIZE;
+    const span = (text: string) => '<span style="font-size:' + small + 'px">' + mxUtils.htmlEntities(text) + '</span>';
+    if (width(name, small) <= room) {
+      return {html: span(name), shortened: false};
+    }
+    let cut = name.length - 1;
+    while (cut > 1 && width(name.substring(0, cut) + '\u2026', small) > room) {
+      cut--;
+    }
+    return {html: span(name.substring(0, cut) + '\u2026'), shortened: true};
+  }
+
+  private getInstructionTooltip(cell: any): string {
     let str = '';
     if (mxUtils.isNode(cell.value)) {
       if (cell.value.tagName === 'Process' || cell.value.tagName === 'Connection') {

@@ -17,7 +17,7 @@ import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {WorkflowService} from '../../../services/workflow.service';
 import {BlockScopeRenderer} from '../../../services/block-scope.renderer';
-import {flowDirection, getWorkflowLayoutMode, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../services/block-shift.layout';
+import {applySessionOrientation, flowDirection, getWorkflowLayoutMode, setSessionFlowDirection, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../services/block-shift.layout';
 import {DataService} from '../../../services/data.service';
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
@@ -292,21 +292,14 @@ export class WorkflowGraphicalComponent {
   }
 
   ngAfterViewInit(): void {
+    applySessionOrientation(this.preferences);   // orientation switched in the toolbar this session
     this.createEditor();
     const dom = this.isModal ? $('.graph2 #graph') : $('#graph');
     let ht = this.isModal ? 'calc(100vh - 182px)' : 'calc(100vh - 322px)';
     if (this.workflowFilters && this.workflowFilters.panelSize > 0) {
       ht = this.workflowFilters.panelSize + 'px';
     }
-    if (this.isHorizontalFlow()) {
-      const containerElement: HTMLElement = this.outlineContainer.nativeElement;
-      containerElement.style.width = (dom.width() - 2) + 'px';
-      containerElement.style.height = '112px';
-      containerElement.style.top = 'auto';
-      containerElement.style.bottom = '16px';
-    } else {
-      dom.css({width: 'calc(100% - 154px)'});
-    }
+    this.applyMinimapPlacement();
     this.coreService.slimscrollFunc(dom, ht, this.graph);
     this.applyMinimapVisibility();   // honour a minimap the user hid earlier
 
@@ -493,6 +486,66 @@ export class WorkflowGraphicalComponent {
       this.blockScopeMinimapRenderer.destroy();
       this.blockScopeMinimapRenderer = null;
     }
+  }
+
+  /**
+   * Minimap as a strip below the graph (left-right) or a column on the right
+   * (top-down). Each clears the other's inline sizes, as the orientation can be
+   * switched in the toolbar.
+   */
+  private applyMinimapPlacement(): void {
+    const dom = this.isModal ? $('.graph2 #graph') : $('#graph');
+    const containerElement: HTMLElement = this.outlineContainer ? this.outlineContainer.nativeElement : null;
+    if (!containerElement) {
+      return;
+    }
+    if (this.isHorizontalFlow()) {
+      dom.css({width: ''});
+      dom.parent('.slimScrollDiv').css({width: ''});
+      containerElement.style.width = (dom.width() - 2) + 'px';
+      containerElement.style.height = '112px';
+      containerElement.style.top = 'auto';
+      containerElement.style.bottom = '16px';
+    } else {
+      containerElement.style.width = '';
+      containerElement.style.height = '';
+      containerElement.style.top = '';
+      containerElement.style.bottom = '';
+      dom.css({width: 'calc(100% - 154px)'});
+    }
+  }
+
+  /** For the toolbar button: is the flow currently left-to-right? */
+  get horizontalFlow(): boolean {
+    return this.isHorizontalFlow();
+  }
+
+  /**
+   * Toolbar: switch between top-to-bottom and left-to-right for this session
+   * (the profile setting stays the default). Only the view changes.
+   */
+  toggleOrientation(): void {
+    this.closeMenu();
+    setSessionFlowDirection(this.isHorizontalFlow() ? 'vertical' : 'horizontal');
+    applySessionOrientation(this.preferences);
+    if (!this.graph) {
+      return;
+    }
+    const graph = this.graph;
+    this.updateOrdersInGraph(true);
+    graph.getModel().beginUpdate();
+    try {
+      WorkflowService.resetEdgeLayout(graph);
+      WorkflowService.executeLayout(graph, this.preferences);
+    } finally {
+      graph.getModel().endUpdate();
+    }
+    this.updateOrdersInGraph(false);
+    this.applyMinimapPlacement();
+    this.applyMinimapVisibility();
+    setTimeout(() => {
+      this.workflowService.center(graph);
+    }, 200);
   }
 
   /** Toolbar: hide / show the minimap. The graph takes over its space while hidden. */

@@ -64,6 +64,11 @@
                 <span class="nav-text"><i nz-icon nzTheme="outline" [nzType]="layoutMode === 'classic' ? 'menu-unfold' : 'apartment'"></i></span>
               </a>
             </li>
+            <li [appRichTooltip]="(horizontalFlow ? 'workflow.button.verticalOrientation' : 'workflow.button.horizontalOrientation') | translate" class="nav-item">
+              <a (click)="toggleOrientation()" class="nav-link">
+                <span class="nav-text"><i nz-icon nzTheme="outline" [nzType]="horizontalFlow ? 'rotate-left' : 'rotate-right'"></i></span>
+              </a>
+            </li>
             <li [appRichTooltip]="(showMinimap ? 'workflow.button.hideMinimap' : 'workflow.button.showMinimap') | translate" class="nav-item">
               <a (click)="toggleMinimap()" class="nav-link">
                 <span class="nav-text">
