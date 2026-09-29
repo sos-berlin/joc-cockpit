@@ -13,6 +13,7 @@ import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {KioskService} from "./kiosk.service";
+import {DateHelperService} from 'ng-zorro-antd/i18n';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import {NzModalService} from 'ng-zorro-antd/modal';
 import {HelpViewerComponent} from '../components/help-viewer/help-viewer.component';
@@ -70,8 +71,9 @@ export class CoreService {
   private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder,private modal: NzModalService) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService, private fb: FormBuilder,private modal: NzModalService, private dateHelper: DateHelperService) {
     this.init();
+    this.applyWeekStartToDatePicker();
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
     this.dashboard._dashboard.history = {};
@@ -628,11 +630,30 @@ export class CoreService {
     const arr = this.locales.filter((item: any) => {
       return localStorage['$SOS$LANG'] === item.lang;
     });
-    if (arr.length > 0) {
-      return arr[0];
-    } else {
-      return this.locales[0];
+    const locale = arr.length > 0 ? arr[0] : this.locales[0];
+    const weekStart = this.getWeekStart();
+    return weekStart != null ? {...locale, weekStart} : locale;
+  }
+
+  getWeekStart(): number | null {
+    try {
+      const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+      if (preferences.weekStart != null && preferences.weekStart !== '') {
+        return parseInt(preferences.weekStart, 10);
+      }
+    } catch (e) {
     }
+    return null;
+  }
+
+  // Date pickers start the week on the day chosen in the user profile preferences (Monday by default)
+  private applyWeekStartToDatePicker(): void {
+    const helper: any = this.dateHelper;
+    const defaultFirstDayOfWeek = helper.getFirstDayOfWeek.bind(helper);
+    helper.getFirstDayOfWeek = () => {
+      const weekStart = this.getWeekStart();
+      return weekStart != null ? weekStart : defaultFirstDayOfWeek();
+    };
   }
 
   get(url: string): Observable<any> {

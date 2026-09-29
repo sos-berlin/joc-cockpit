@@ -285,12 +285,8 @@
 
         headerRow.append(weekNumberCell);
       }
-      let d;
-      if(this.options.language.weekStart) {
-        d = this.options.language.weekStart;
-      } else{
-        d =  dates['en'].weekStart;
-      }
+      let weekStart = this.options.language.weekStart != null ? parseInt(this.options.language.weekStart, 10) : dates['en'].weekStart;
+      let d = weekStart;
       do {
         let headerCell = $(document.createElement('th'));
         headerCell.addClass('day-header');
@@ -312,7 +308,7 @@
         if (d >= 7)
           d = 0;
       }
-      while (d != (this.options.language.weekStart || dates['en'].weekStart))
+      while (d != weekStart)
 
       thead.append(headerRow);
       table.append(thead);
@@ -320,7 +316,6 @@
       /* Days */
       let currentDate = new Date(firstDate.getTime());
       let lastDate = new Date(this.options.startYear, m + 1, 0);
-      let weekStart = this.options.language.weekStart || dates['en'].weekStart;
 
       while (currentDate.getDay() != weekStart) {
         currentDate.setDate(currentDate.getDate() - 1);

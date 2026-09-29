@@ -57,6 +57,10 @@ img.logo-for-grey{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 .dropdown-menu,
 pre, .syntax-box {
   background-color: var(--bg-box)

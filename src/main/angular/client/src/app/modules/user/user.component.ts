@@ -896,6 +896,15 @@ export class UserComponent {
     {value: '250', name: '250%'}
   ];
 
+  weekDays = [
+    {value: 0, name: 'runtime.label.sunday'},
+    {value: 1, name: 'runtime.label.monday'},
+    {value: 2, name: 'runtime.label.tuesday'},
+    {value: 3, name: 'runtime.label.wednesday'},
+    {value: 4, name: 'runtime.label.thursday'},
+    {value: 5, name: 'runtime.label.friday'},
+    {value: 6, name: 'runtime.label.saturday'}
+  ];
   dateTimeFormat = [
     {index: 1, value: 'DD.MM.YYYY HH:mm:ss', name: 'Default (DD.MM.YYYY HH:mm:ss)'},
     {disable: true, value: '', name: '-----------------------------------------'},
@@ -1113,6 +1122,9 @@ export class UserComponent {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.configObj.controllerId = this.schedulerIds.selected;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    if (this.preferences.weekStart == null) {
+      this.preferences.weekStart = 1;
+    }
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
   }
 

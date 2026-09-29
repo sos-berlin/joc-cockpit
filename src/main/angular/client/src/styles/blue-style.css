@@ -57,6 +57,10 @@ img.logo-for-dark{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 a.text-dark:hover, a.text-dark:focus {
   color: #fff;
 }

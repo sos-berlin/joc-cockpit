@@ -58,6 +58,10 @@ img.logo-for-dark{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 pre, .syntax-box {
   background-color: var(--bg-box)
 }

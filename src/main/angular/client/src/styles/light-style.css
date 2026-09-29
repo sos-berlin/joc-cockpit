@@ -30,6 +30,18 @@ img.logo-for-default {
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
+.app-header img.logo-for-default {
+  display: none !important;
+}
+
+.app-header img.logo-for-dark {
+  display: inline-block !important;
+}
+
 .header-prussian-blue {
   background-color: #03254e !important;
 }

@@ -57,6 +57,10 @@ img.logo-for-dark{
   display: inline-block !important;
 }
 
+.app-header .navbar-brand.white {
+  background: transparent
+}
+
 .list-group-item.active > .label,
 .nav-pills > .active > a > .label {
   color: rgba(0, 0, 0, .87)
