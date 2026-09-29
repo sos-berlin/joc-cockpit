@@ -1592,7 +1592,13 @@ export class BlockScopeRenderer {
         const bx = this.indented && !horizontal
           ? ss.x + ss.width / 2 - 14 * scale          // COLLAPSED_SEGMENT_LEAD: box right of the start point
           : ss.x + ss.width / 2 - hw / 2;
-        box = {x: bx, y: ss.y - pad, width: hw, height: Math.max(36 * scale, ss.height + 2 * pad)};
+        // Indented top-down: exactly the box the layout reserved along the flow,
+        // start point 10px below its top, 36px high (SEGMENT_BASE_PADDING,
+        // COLLAPSED_SEGMENT_HEIGHT in block-shift.layout; literals, as that file
+        // imports this one).
+        box = this.indented && !horizontal
+          ? {x: bx, y: ss.y - 10 * scale, width: hw, height: 36 * scale}
+          : {x: bx, y: ss.y - pad, width: hw, height: Math.max(36 * scale, ss.height + 2 * pad)};
         header = box;
         if (this.indented && horizontal) {
           lx = box.x + box.width / 2; ly = box.y + box.height - 5 * scale; anchor = 'middle';   // below the arrow

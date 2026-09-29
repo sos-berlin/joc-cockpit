@@ -14,7 +14,7 @@
     <add as="Job">
       <Job jobName="job">
         <mxCell vertex="1">
-          <mxGeometry as="geometry" width="180" height="40"/>
+          <mxGeometry as="geometry" width="144" height="40"/>
         </mxCell>
       </Job>
     </add>

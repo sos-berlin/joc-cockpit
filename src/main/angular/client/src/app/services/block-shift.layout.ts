@@ -139,11 +139,32 @@ const STACK_GAP = 140;
 const INDENT_ORIGIN = 40;
 
 /**
+ * Top-down indented layout: the gap along the flow (between steps, before a
+ * block's end, the lane before branch heads) is this share of the rank gap the
+ * service passes in (profile rank spacing x 0.4, at least
+ * BLOCK_SCOPE_METRICS.minRankSpacing = 43 when blocks are present), so 43 -> 32.
+ * Less vertical scrolling. Never below INDENTED_MIN_RANK_GAP (an arrow label
+ * of 12px plus a few px on each side), and never more than the gap passed in.
+ * Left-right keeps the full gap (it only adds width there).
+ */
+export const INDENTED_VERTICAL_GAP_FACTOR = 0.75;
+const INDENTED_MIN_RANK_GAP = 30;
+
+/**
  * Top-down, indented layout: the component draws a collapsed Segment's box
  * starting this far left of the start point (spine) and extending to the right,
  * with the header text right of the arrow (see drawSegmentContainers).
  */
 export const COLLAPSED_SEGMENT_LEAD = 14;
+
+/**
+ * Top-down, indented layout: height of a collapsed Segment's box. The layout
+ * reserves it along the flow (box top = where the Segment's slot starts, start
+ * point SEGMENT_BASE_PADDING below that, end point at the box's bottom edge), so
+ * the gap between two collapsed Segments is the normal gap between steps.
+ * drawSegmentContainers and the renderer draw the box with this height.
+ */
+export const COLLAPSED_SEGMENT_HEIGHT = 36;
 
 /** Mirrors WorkflowService.computeSegmentHeaderWidth (the collapsed frame's width). */
 function segmentHeaderWidth(cell: any): number {
@@ -702,6 +723,9 @@ export function applyBlockShiftPass(graph: any, orientation: string, branchGap: 
   const mode = resolveWorkflowLayout(layoutPreference);
   if (mode === 'classic') {
     return false;   // old layout: mxGraph's hierarchical layout only
+  }
+  if (mode === 'indented' && direction !== 'horizontal' && isFinite(rankGap) && rankGap > 0) {
+    rankGap = Math.min(rankGap, Math.max(INDENTED_MIN_RANK_GAP, Math.round(rankGap * INDENTED_VERTICAL_GAP_FACTOR)));
   }
   try {
     const applied = new ShiftPass(graph, direction === 'horizontal' ? 'west' : 'north', branchGap, rankGap, mode).run();
@@ -1330,11 +1354,14 @@ class ShiftPass {
       // Top-down the collapsed box runs across the flow, from just left of the
       // start point to the right (COLLAPSED_SEGMENT_LEAD). Reserve that width so
       // collapsed Segments in parallel branches never overlap.
-      this.placeCell(b.opener, c0, f, pos);
-      const closerF = f + this.flowSize(b.opener) + this.rankGap;
+      // Along the flow the box is reserved as well (it used to hang 10px above
+      // the start point and past the end point into the gaps, so with a small
+      // rank gap collapsed Segments nearly touched).
+      this.placeCell(b.opener, c0, f + SEGMENT_BASE_PADDING, pos);
+      const closerF = f + COLLAPSED_SEGMENT_HEIGHT - this.flowSize(b.closer);
       this.placeCell(b.closer, c0, closerF, pos);
       const boxRight = SPINE - COLLAPSED_SEGMENT_LEAD + segmentHeaderWidth(b.opener);
-      return {bottom: closerF + this.flowSize(b.closer), width: Math.max(this.extent(b.opener), boxRight)};
+      return {bottom: f + COLLAPSED_SEGMENT_HEIGHT, width: Math.max(this.extent(b.opener), boxRight)};
     }
     this.placeCell(b.opener, c0, f, pos);
     const openerEnd = f + this.flowSize(b.opener);
@@ -1482,6 +1509,14 @@ class ShiftPass {
         // One shared lane just after the opener (not relative to each head: a
         // collapsed Segment's start point sits further along, in its frame).
         const lane = sEnd + step;
+        pts = [{f: lane, c: sp.s}, {f: lane, c: tp.s}];
+        end = {f: tLead, c: tp.s};
+      } else if (!this.horizontal && tagOf(dst) === 'Segment') {
+        // Top-down into a Segment in a deeper column: its start point sits just
+        // inside the frame, beside the header. Entering from the side ran the
+        // arrow head into the header text; come in from above on its spine,
+        // over a lane just above the frame.
+        const lane = Math.max(sEnd + 4, tLead - segExtra - 8);
         pts = [{f: lane, c: sp.s}, {f: lane, c: tp.s}];
         end = {f: tLead, c: tp.s};
       } else {

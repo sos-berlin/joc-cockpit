@@ -30,7 +30,7 @@ import {RichTooltipRegistry, mdToHtml} from '../../../../directives/rich-tooltip
 import {RichTooltipContentComponent} from '../../../../components/rich-tooltip/rich-tooltip-content.component';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {BlockScopeRenderer} from '../../../../services/block-scope.renderer';
-import {applySessionOrientation, COLLAPSED_SEGMENT_LEAD, flowDirection, getWorkflowLayoutMode, setSessionFlowDirection, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../../services/block-shift.layout';
+import {applySessionOrientation, COLLAPSED_SEGMENT_HEIGHT, COLLAPSED_SEGMENT_LEAD, flowDirection, getWorkflowLayoutMode, setSessionFlowDirection, setWorkflowLayoutMode, WorkflowLayoutMode} from '../../../../services/block-shift.layout';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {ValueEditorComponent} from '../../../../components/value-editor/value.component';
@@ -5502,6 +5502,10 @@ export class WorkflowComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.workflowPath = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
+    if (changes['data']) {
+      // A tooltip of the previous object must not stay on screen.
+      WorkflowService.hideTooltip(this.editor ? this.editor.graph : null);
+    }
     if (changes['copyObj'] && !changes['data']) {
       return;
     }
@@ -5885,6 +5889,10 @@ export class WorkflowComponent {
         xhr.request.onreadystatechange = function () {
           if (this.readyState === this.DONE) {
             const node = xhr.getDocumentElement();
+            if (self.editor) {
+              // The previous editor is replaced; its tooltip must not outlive it.
+              WorkflowService.discardTooltip(self.editor.graph);
+            }
             editor = new mxEditor(node);
             self.editor = editor;
             new mxRubberband(editor.graph);
@@ -8668,7 +8676,7 @@ export class WorkflowComponent {
 
       if (sortedSegCells.length === 0) { return; }
 
-      const MIN_GAP = 10;
+      const MIN_GAP = 10 * scale;
       const computedBoxMap = new Map<string, {bx: number; by: number; bw: number; bh: number}>();
       const computedBoxesThisPass: Array<{bx: number; by: number; bw: number; bh: number; segCellId: string}> = [];
 
@@ -8727,7 +8735,10 @@ export class WorkflowComponent {
         }
 
         const depth = segDepths.get(segCell.id) ?? 0;
-        const PADDING = basePADDING + depth * 6;
+        // Screen pixels, so scaled like everything else: the layout reserves this
+        // padding in graph units (unscaled, the frames grew relative to the
+        // workflow when zoomed out and crowded their neighbours).
+        const PADDING = (basePADDING + depth * 6) * scale;
         const dashPattern = depth % 2 === 0 ? '8 4' : '4 4';
 
         const segLabel = segCell.value?.getAttribute?.('label') || segCell.value?.getAttribute?.('displayLabel') || '';
@@ -8762,7 +8773,7 @@ export class WorkflowComponent {
           }
 
           by = segState.y - PADDING;
-          bh = Math.max(36 * scale, segState.height + 2 * PADDING);
+          bh = Math.max(COLLAPSED_SEGMENT_HEIGHT * scale, segState.height + 2 * PADDING);
 
           if (hasInnerExtent) {
             bx = colMinX - PADDING;
@@ -8774,6 +8785,9 @@ export class WorkflowComponent {
               // extends right, so the arrow runs along its left part and the header
               // sits beside it (the layout reserves exactly this width).
               bx = segState.x + segState.width / 2 - COLLAPSED_SEGMENT_LEAD * scale;
+              // Along the flow exactly the box the layout reserved (whatever the depth).
+              by = segState.y - basePADDING * scale;
+              bh = COLLAPSED_SEGMENT_HEIGHT * scale;
             } else {
               bx = segState.x + segState.width / 2 - collapsedWidth / 2;
             }
@@ -8902,9 +8916,25 @@ export class WorkflowComponent {
         // When collapsed, mxGraph re-attaches arrows from the hidden steps to the
         // Segment's start point and keeps drawing them with their labels. Hiding
         // the label via the DOM does not survive a redraw, so also use the style.
+        // Decided per arrow when expanded: an arrow with a hidden end (re-attached
+        // to a collapsed inner Segment) keeps its label hidden. Otherwise this
+        // expanded Segment, drawn after its collapsed inner ones, showed their
+        // labels again ("job-1-1-50" over the inner box's header).
         const labelledEdges = edgesToToggle.filter((e: any) => e && e.edge);
         if (labelledEdges.length > 0) {
-          graph.setCellStyles(mxConstants.STYLE_NOLABEL, isCollapsed ? '1' : null, labelledEdges);
+          if (isCollapsed) {
+            graph.setCellStyles(mxConstants.STYLE_NOLABEL, '1', labelledEdges);
+          } else {
+            const reattached = (e: any) => !graph.view.getState(e.source) || !graph.view.getState(e.target);
+            const hide = labelledEdges.filter(reattached);
+            const show = labelledEdges.filter((e: any) => !reattached(e));
+            if (hide.length > 0) {
+              graph.setCellStyles(mxConstants.STYLE_NOLABEL, '1', hide);
+            }
+            if (show.length > 0) {
+              graph.setCellStyles(mxConstants.STYLE_NOLABEL, null, show);
+            }
+          }
         }
       }
     } finally {
@@ -9700,6 +9730,7 @@ export class WorkflowComponent {
     }
     const self = this;
     const graph = editor.graph;
+    WorkflowService.hideTooltip(graph);
     let result: string;
     let dropTarget;
     let parentOfEdge;
@@ -14317,7 +14348,7 @@ export class WorkflowComponent {
           _node = doc.createElement('Job');
           _node.setAttribute('jobName', 'job');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 180, 40, 'job');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, WorkflowService.JOB_WIDTH, WorkflowService.JOB_HEIGHT, 'job');
         } else if (title.match('finish')) {
           _node = doc.createElement('Finish');
           _node.setAttribute('displayLabel', 'finish');

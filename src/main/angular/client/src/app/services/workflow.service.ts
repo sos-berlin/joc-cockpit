@@ -14,6 +14,7 @@ declare const mxImage: any;
 declare const mxConstants: any;
 declare const saveSvgAsPng: any;
 declare const mxOutline: any;
+declare const mxEvent: any;
 declare const $: any;
 
 @Injectable()
@@ -33,7 +34,7 @@ export class WorkflowService {
 
   /**
    * Instruction shape sizes: 70% of the original 72 / 68 / 70 px and 110x40
-   * Catch. Job (180x40) and Segment (2x2 anchors) keep their size. The symbol
+   * Catch. Job 144x40 (80% of the original 180). Segment (2x2 anchors) keeps its size. The symbol
    * pictures are SVG images and scale with the shape automatically.
    */
   static readonly DIAMOND_SIZE = 50;      // was 72: If, Try, Retry, Cycle, Case, When, closers, ...
@@ -41,6 +42,14 @@ export class WorkflowService {
   static readonly START_END_SIZE = 49;    // was 70: Start / End circles
   static readonly CATCH_WIDTH = 77;       // was 110 (100 when dropped)
   static readonly CATCH_HEIGHT = 28;      // was 40
+  static readonly JOB_WIDTH = 144;        // was 180
+  static readonly JOB_HEIGHT = 40;
+  /**
+   * Job names longer than this get 'p-l-md' (left padding), so the centred name
+   * does not run into the job icon at the box's left. Was 22 for 180px boxes;
+   * the box is 36px narrower, so about 6 characters fewer (~6px per character).
+   */
+  static readonly JOB_NAME_PAD_CHARS = 16;
 
   /**
    * Clears what a layout left on the arrows (bend points, label positions, the
@@ -73,6 +82,73 @@ export class WorkflowService {
     }
   }
 
+  /**
+   * Keeps a tooltip from staying on screen. mxGraph hides it when the mouse
+   * leaves the graph, but not when it leaves across the tooltip itself (the
+   * tooltip is a div on document.body). And with tooltip delay 0, a tooltip
+   * can be shown just after its graph was taken off the page, with nothing
+   * left to hide it. Called from init for every graph; safe to call twice.
+   */
+  static installTooltipGuards(graph: any): void {
+    const handler = graph && graph.tooltipHandler;
+    if (!handler || handler._jocTooltipGuards) {
+      return;
+    }
+    handler._jocTooltipGuards = true;
+    const hideOnLeave = (div: any) => {
+      if (!div || div._jocLeaveGuard) {
+        return;
+      }
+      div._jocLeaveGuard = true;
+      mxEvent.addListener(div, 'mouseleave', (evt: any) => {
+        const to = evt.relatedTarget;
+        const container = graph.container;
+        if (!to || !container || !container.contains(to)) {
+          handler.hide();
+        }
+      });
+    };
+    const init = handler.init;
+    handler.init = function (this: any) {
+      init.apply(this, arguments);
+      hideOnLeave(this.div);
+    };
+    hideOnLeave(handler.div);
+    const show = handler.show;
+    handler.show = function (this: any) {
+      const container = graph.container;
+      if (graph.destroyed || !container || !container.isConnected || container.getClientRects().length === 0) {
+        this.hideTooltip();
+        return;
+      }
+      show.apply(this, arguments);
+    };
+  }
+
+  /**
+   * Hides the graph's tooltip and stops its timer, and hides any other
+   * mxGraph tooltip still on the page. For redraws and object switches.
+   */
+  static hideTooltip(graph?: any): void {
+    if (graph && graph.tooltipHandler) {
+      graph.tooltipHandler.hide();
+    }
+    $('.mxTooltip').css({visibility: 'hidden'}).empty();
+  }
+
+  /**
+   * For a graph that is no longer used: hides its tooltip and removes the
+   * tooltip div for good (a later timer or mouse event cannot show it again).
+   * Only the tooltip handler is destroyed, so late callbacks that still touch
+   * the graph keep working.
+   */
+  static discardTooltip(graph: any): void {
+    WorkflowService.hideTooltip(graph);
+    if (graph && graph.tooltipHandler && !graph.tooltipHandler.destroyed) {
+      graph.tooltipHandler.destroy();
+    }
+  }
+
   static computeSegmentHeaderWidth(label: string): number {
     const minWidth = 120;
     const iconReserve = 40; // space for chevron + 3-dot overlays
@@ -94,6 +170,7 @@ export class WorkflowService {
     // stacked scopes need room for both paddings, so enforce a minimum rank gap
     // when any enabled block type is present. See block-scope.renderer.ts.
     let hasBlockScopes = false;
+    let hasSegments = false;
     let maxBranchCount = 0;
     try {
       const collectAllCellsForLayout = (parent: any): any[] => {
@@ -108,6 +185,7 @@ export class WorkflowService {
       };
       const allCellsForLayout = collectAllCellsForLayout(graph.getDefaultParent());
       hasBlockScopes = allCellsForLayout.some((c: any) => DEFAULT_BLOCK_SCOPE_TAGS.includes(c.value?.tagName));
+      hasSegments = allCellsForLayout.some((c: any) => c.value?.tagName === 'Segment');
       const forkCells = allCellsForLayout.filter((c: any) => c.value?.tagName === 'Fork');
       const resolveBranchHead = (startCell: any): any => {
         let curr = startCell;
@@ -145,7 +223,9 @@ export class WorkflowService {
         ? 1.3
         : Math.min(1.3 + (maxBranchCount - 3) * 0.25, 3.0);
 
-    mxHierarchicalLayout.prototype.interRankCellSpacing = (hasBlockScopes && !classic && !isNaN(baseRankSpacing))
+    // Segment frames need the same minimum (padding, header, a visible gap
+    // between frames); a small profile rank spacing squeezed them together.
+    mxHierarchicalLayout.prototype.interRankCellSpacing = ((hasBlockScopes || hasSegments) && !classic && !isNaN(baseRankSpacing))
       ? Math.max(baseRankSpacing, BLOCK_SCOPE_METRICS.minRankSpacing)
       : baseRankSpacing;
     mxHierarchicalLayout.prototype.intraCellSpacing = parseInt(prefrences.intraCellSpacing) * intraMultiplier;
@@ -728,6 +808,7 @@ export class WorkflowService {
     mxOutline.prototype.labelsVisible = true;
     mxOutline.prototype.updateOnPan = true;
     this.theme = theme;
+    WorkflowService.installTooltipGuards(graph);
     WorkflowService.setStyleToSymbol('fork', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('join', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('forkList', colorCode, theme, graph);
@@ -1298,9 +1379,9 @@ export class WorkflowService {
             }
             if (jobMap && jobMap.get(json.instructions[x].jobName) == '2') {
               let _colorCode = self.calculateShades('90C7F5')[arrayOfJobs.indexOf(json.instructions[x].jobName)];
-              v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, WorkflowService.setStyleToVertex('job', _colorCode, self.theme));
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.JOB_WIDTH, WorkflowService.JOB_HEIGHT, WorkflowService.setStyleToVertex('job', _colorCode, self.theme));
             } else {
-              v1 = graph.insertVertex(parent, null, _node, 0, 0, 180, 40, isGraphView ? WorkflowService.setStyleToVertex('job', colorCode, self.theme) : 'job');
+              v1 = graph.insertVertex(parent, null, _node, 0, 0, WorkflowService.JOB_WIDTH, WorkflowService.JOB_HEIGHT, isGraphView ? WorkflowService.setStyleToVertex('job', colorCode, self.theme) : 'job');
             }
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
@@ -2267,7 +2348,7 @@ export class WorkflowService {
             }
           }
         }
-        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), 22) + '"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
+        let str = '<div class="cursor workflow-title ' + getClass(cell.getAttribute('jobName'), WorkflowService.JOB_NAME_PAD_CHARS) + '"><i id="doc-type" class="cursor fa fa-book p-r-xs ' + className + '"></i>'
           + cell.getAttribute('jobName') + '</div>';
         if (state) {
           state = JSON.parse(state);

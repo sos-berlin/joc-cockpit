@@ -357,9 +357,11 @@ export class WorkflowGraphicalComponent {
 
   ngOnDestroy(): void {
     this.destroyScopeRenderers();
+    // The graph is not destroyed here, so its tooltip handler would live on
+    // (also in the dependency dialog) and could show a tooltip later.
+    WorkflowService.discardTooltip(this.graph);
     if (!this.isModal) {
       $(this.graphContainer.nativeElement).closest('#workflowGraphId').remove();
-      $('.mxTooltip').css({visibility: 'hidden'});
     }
   }
 
