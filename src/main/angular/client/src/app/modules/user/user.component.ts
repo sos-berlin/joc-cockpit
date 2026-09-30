@@ -881,6 +881,8 @@ export class UserComponent {
     {value: '50', name: '50'},
     {value: '100', name: '100'}];
 
+  workflowLayoutMode = [{value: 'indented', name: 'profile.label.indented'},
+    {value: 'classic', name: 'profile.label.classic'}];
 
   orientation = [{value: 'north', name: 'profile.label.vertical'},
     {value: 'west', name: 'profile.label.horizontal'}];

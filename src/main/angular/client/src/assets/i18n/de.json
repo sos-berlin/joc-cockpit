@@ -3529,6 +3529,9 @@
     "label.magnetWindow": "Max. Anzahl Instruktionen vor/nach Magnet",
     "label.magnetAutoStates": "Aufträge pro Zustand automatisch magnetisieren",
     "label.magnetAutoIncludeChildren": "Kindaufträge automatisch magnetisieren",
+    "label.workflowLayoutMode": "Layout Mode",
+    "label.indented": "Indented",
+    "label.classic": "Classic",
     "button.resetPreferences": "Einstellungen des Profils zurücksetzen",
     "button.groupLimit": "Limit für Einstellungsgruppe",
     "button.changePassword": "Kennwort ändern",
@@ -3612,7 +3615,8 @@
       "tooltip.includeDependencies": "Legt die Voreinstellung für Inventaroperationen fest, ob abhängige Objekte einbezogen werden, bspw. eine ^Job-Ressource|job-resource^, auf die ein ^Arbeitsablauf|workflow^ verweist, oder einen ^Zeitplan|schedule^, der auf einen Arbeitsablauf verweist.\n\nAbhängige Objekte können sich in anderen Ordnern befinden.\n\nFolgende Optionen werden angeboten:\n- **Alle**: alle referenzierenden und referenzierten Objekte rekursiv.\n- **Notwendige**: Objekte, die direkt ein ausgewähltes Objekt referenzieren oder von diesem referenziert werden.\n- **Keine**: nur die ausgewählten Objekte.\n\nFür Details siehe [Matrix der Abhängigkeiten](context:help:dependencies-matrix).",
       "tooltip.magnetWindow": "Legt die maximale Anzahl von Anweisungen, wie z.B. ^Job^s, fest, die vor und nach der aktuellen Position eines magnetisierten ^Auftrags|order^ angezeigt werden.",
       "tooltip.magnetAutoStates": "^Aufträge|order^ werden entsprechend den angegebenen Auftragszuständen automatisch magnetisiert.",
-      "tooltip.magnetAutoIncludeChildren": "Wenn ein Eltern^auftrag|order^ magnetisiert wird, gilt dies auch für Kindaufträge."
+      "tooltip.magnetAutoIncludeChildren": "Wenn ein Eltern^auftrag|order^ magnetisiert wird, gilt dies auch für Kindaufträge.",
+      "tooltip.workflowLayoutMode": "Layout Mode"
     },
     "permission": {
       "label.order": "Auftrag",
@@ -5015,6 +5019,10 @@
     "button.showMinimap": "Linse anzeigen",
     "button.verticalOrientation": "Vertikale Ausrichtung",
     "button.horizontalOrientation": "Horizontale Ausrichtung",
+    "button.expandChildInstructions": "Expand child instructions",
+    "button.collapseChildInstructions": "Collapse child instructions",
+    "button.nextLevel": "Next level",
+    "button.allLevels": "All levels",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

@@ -3529,6 +3529,9 @@
     "label.magnetWindow": "Magnet Window",
     "label.magnetAutoStates": "Auto-magnetize Orders by state",
     "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
+    "label.workflowLayoutMode": "Layout Mode",
+    "label.indented": "Indented",
+    "label.classic": "Classic",
     "button.resetPreferences": "Restablecer preferencias del perfil",
     "button.groupLimit": "Límite de grupo",
     "button.changePassword": "Cambiar contraseña",
@@ -3612,7 +3615,8 @@
       "tooltip.includeDependencies": "Especifica el valor por defecto para las operaciones de ^Inventario|inventory^ respecto a si deben incluirse objetos dependientes, por ejemplo, un ^Recurso de Job|job-resource^ referenciado por un ^Workflow^ o una ^Planificación|schedule^ que referencia un Workflow.\n\nLos objetos dependientes pueden estar ubicados en otras carpetas.\n- **Todos**: todos los objetos que referencian y son referenciados, de forma recursiva.\n- **Requerido**: objetos que referencian directamente o son referenciados directamente por un objeto seleccionado.\n- **Ninguno**: limita la operación a los objetos seleccionados.\n\nPara más detalles, consulte [Matriz de Dependencias](context:help:dependencies-matrix).",
       "tooltip.magnetWindow": "Magnet Window",
       "tooltip.magnetAutoStates": "Magnet Auto States",
-      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children",
+      "tooltip.workflowLayoutMode": "Layout Mode"
     },
     "permission": {
       "label.order": "Orden",
@@ -5015,6 +5019,10 @@
     "button.showMinimap": "Show mini map",
     "button.verticalOrientation": "Vertical orientation",
     "button.horizontalOrientation": "Horizontal orientation",
+    "button.expandChildInstructions": "Expand child instructions",
+    "button.collapseChildInstructions": "Collapse child instructions",
+    "button.nextLevel": "Next level",
+    "button.allLevels": "All levels",
     "tab.jobProperties": "Propiedades del Job",
     "tab.jobOptions": "Opciones del Job",
     "tab.nodeProperties": "Propiedades del nodo",

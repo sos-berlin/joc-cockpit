@@ -768,6 +768,7 @@ export class LayoutComponent {
     preferences.showMoreOptions = false;
     preferences.showGlossary = true;
     preferences.logTimezone = true;
+    preferences.workflowLayoutMode = 'indented';
     preferences.orientation = 'north';
     preferences.interRankCellSpacing = '100';
     preferences.intraCellSpacing = '100';
@@ -871,6 +872,9 @@ export class LayoutComponent {
       }
       if (!data.tabSize) {
         data.tabSize = 4;
+      }
+      if (!data.workflowLayoutMode) {
+        preferences.workflowLayoutMode = 'indented';
       }
       if (!data.orientation) {
         data.orientation = 'north';

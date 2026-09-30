@@ -61,7 +61,7 @@
             </li>
             <li [appRichTooltip]="(layoutMode === 'classic' ? 'workflow.button.indentedLayout' : 'workflow.button.classicLayout') | translate" class="nav-item">
               <a (click)="toggleLayoutMode()" class="nav-link">
-                <span class="nav-text"><i nz-icon nzTheme="outline" [nzType]="layoutMode === 'classic' ? 'apartment' : 'menu-unfold'"></i></span>
+                <span class="nav-text"><i nz-icon nzTheme="outline" [nzType]="layoutMode === 'classic' ? 'menu-unfold' : 'apartment'"></i></span>
               </a>
             </li>
             <li [appRichTooltip]="(horizontalFlow ? 'workflow.button.verticalOrientation' : 'workflow.button.horizontalOrientation') | translate" class="nav-item">

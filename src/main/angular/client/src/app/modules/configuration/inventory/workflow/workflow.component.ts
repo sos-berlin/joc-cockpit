@@ -6921,6 +6921,59 @@ export class WorkflowComponent {
     this.node = null;
   }
 
+  /**
+   * Block instructions inside `cell` that can be expanded / collapsed: only the
+   * nearest ones (allLevels false: "Next level") or all of them at any depth
+   * ("All levels"). Nested instructions are model children of their block.
+   */
+  childBlocks(graph: any, cell: any, allLevels: boolean): any[] {
+    const model = graph.getModel();
+    const blocks = [];
+    const visit = (parent: any) => {
+      const count = model.getChildCount(parent);
+      for (let i = 0; i < count; i++) {
+        const child = model.getChildAt(parent, i);
+        if (!model.isVertex(child)) {
+          continue;
+        }
+        if (model.getChildCount(child) > 0 && graph.isCellFoldable(child, !graph.isCellCollapsed(child))) {
+          blocks.push(child);
+          if (allLevels) {
+            visit(child);
+          }
+        } else {
+          visit(child);
+        }
+      }
+    };
+    if (cell) {
+      visit(cell);
+    }
+    return blocks;
+  }
+
+  /**
+   * Action menu of a block instruction: expand / collapse its child instructions,
+   * the next level or all levels. The block itself stays as it is, except that
+   * expanding opens it first when it is collapsed (else nothing would be seen).
+   * One fold and one layout; the block stays in place on screen.
+   */
+  foldChildBlocks(node: any, collapse: boolean, allLevels: boolean): void {
+    const graph = this.editor?.graph;
+    const cell = node?.cell;
+    if (!graph || !cell || !graph.isEnabled()) {
+      return;
+    }
+    const cells = this.childBlocks(graph, cell, allLevels).filter((c: any) => graph.isCellCollapsed(c) !== collapse);
+    if (!collapse && graph.isCellCollapsed(cell)) {
+      cells.unshift(cell);
+    }
+    if (cells.length > 0) {
+      graph.foldAnchor = cell;
+      graph.foldCells(collapse, false, cells, null, null);
+    }
+  }
+
   validate(): void {
     if (this.invalidMsg && this.invalidMsg.match(/orderPreparation/)) {
       this.selectedNode = null;
@@ -10212,7 +10265,8 @@ export class WorkflowComponent {
               mxUtils.bind(this, function (evt) {
                 self.node = {
                   cell: state.cell,
-                  isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName)
+                  isCloseable: self.workflowService.isInstructionCollapsible(state.cell.value.tagName),
+                  hasChildBlocks: self.childBlocks(graph, state.cell, false).length > 0
                 };
                 if (state.cell.value.tagName === 'Job') {
                   self.node.isJob = true;
@@ -11601,7 +11655,9 @@ export class WorkflowComponent {
           this.stopEditing(false);
           // Where the folded block is on screen now: kept there after the new
           // layout (instead of re-centring the whole workflow, which jumped).
-          const anchorCell = cells && cells.length > 0 ? cells[0] : null;
+          // foldAnchor: set by foldChildBlocks so the block whose menu was used stays in place.
+          const anchorCell = this.foldAnchor || (cells && cells.length > 0 ? cells[0] : null);
+          this.foldAnchor = null;
           const container = this.container;
           const anchorState = anchorCell ? this.view.getState(anchorCell) : null;
           const anchorBefore = anchorState && container

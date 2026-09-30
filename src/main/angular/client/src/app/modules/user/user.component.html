@@ -910,6 +910,19 @@
                   <div class="p-a-sm">
                     <div class="row">
                       <div class="col-md-4 col-lg-3 text-dark form-control-label">
+                        <span [appRichTooltip]="'profile.preferences.tooltip.workflowLayoutMode' | translate">
+                          {{ 'profile.label.workflowLayoutMode' | translate }}
+                        </span>
+                      </div>
+                      <div class="col-md-6">
+                        <app-select-input (modelChange)="changeConfiguration()" [attributeName]="'workflowLayoutMode'" [classNames]="'w-xl'"
+                                          [isSearchable]="false"
+                                          [listArray]="workflowLayoutMode" [object]="preferences" [optionLabel]="'name'"
+                                          [optionValue]="'value'"></app-select-input>
+                      </div>
+                    </div>
+                    <div class="row m-t">
+                      <div class="col-md-4 col-lg-3 text-dark form-control-label">
                         <span [appRichTooltip]="'profile.preferences.tooltip.orientation' | translate">
                           {{ 'profile.label.orientation' | translate }}
                         </span>

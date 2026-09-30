@@ -693,6 +693,16 @@ nz-space-compact > app-select-input {
     }
   }
 
+  .ant-dropdown-menu-submenu-title > a {
+    font-size: 13px !important;
+
+    i {
+      font-size: 14px !important;
+      padding-right: 4px;
+      color: var(--text-color);
+    }
+  }
+
   .ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title {
     padding: 8px 20px;
   }
@@ -7355,13 +7365,18 @@ body tr.mxPopupMenuItemHover {
 }
 
 div.mxTooltip {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  background: black;
-  font-size: 12px;
   position: absolute;
+  background: var(--rich-tooltip-bg);
+  border: 1px solid var(--rich-tooltip-border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.13), 0 2px 6px rgba(0, 0, 0, 0.08);
+  color: var(--rich-tooltip-text);
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 10px 14px;
+  max-width: min(320px, 90vw);
+  word-break: break-word;
   cursor: default;
-  padding: 6px 8px;
-  color: var(--white);
 }
 
 .z-index {

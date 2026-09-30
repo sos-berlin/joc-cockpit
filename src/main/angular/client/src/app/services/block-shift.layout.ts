@@ -46,10 +46,13 @@ export type WorkflowLayoutMode = 'indented' | 'structured' | 'classic';
 export const DEFAULT_WORKFLOW_LAYOUT: WorkflowLayoutMode = 'indented';
 
 /*
- * The user's choice between the new (indented) and the old (classic: mxGraph's
- * hierarchical layout as it was before the indented layout, no guides) layout.
- * Remembered in this browser and shared by the editor, the order view and the
- * dependency dialog. Until the user chooses, DEFAULT_WORKFLOW_LAYOUT applies.
+ * Layout mode (indented / classic: mxGraph's hierarchical layout as it was
+ * before the indented layout, no guides), shared by the editor, the order view
+ * and the dependency dialog. Same order as the orientation:
+ *   1. switched in the toolbar for this browser session (sessionStorage),
+ *   2. the profile setting (preferences.workflowLayoutMode), the default at the
+ *      start of a session,
+ *   3. DEFAULT_WORKFLOW_LAYOUT (e.g. a saved profile without the setting yet).
  */
 const LAYOUT_MODE_KEY = 'workflowLayoutMode';
 
@@ -66,7 +69,31 @@ export function getWorkflowLayoutMode(): WorkflowLayoutMode {
   } catch (e) {
     // storage unavailable
   }
-  return DEFAULT_WORKFLOW_LAYOUT;
+  const profile = getProfileLayoutMode();
+  return profile || DEFAULT_WORKFLOW_LAYOUT;
+}
+
+/** The profile setting, from the preferences the app keeps in sessionStorage. */
+function getProfileLayoutMode(): WorkflowLayoutMode | null {
+  try {
+    const raw = sessionStorage.getItem('preferences');
+    const v = raw ? JSON.parse(raw).workflowLayoutMode : null;
+    return v === 'indented' || v === 'classic' ? v : null;
+  } catch (e) {
+    return null;   // storage unavailable or preferences not valid JSON
+  }
+}
+
+/**
+ * Forgets the layout switched in the toolbar, so the profile setting applies
+ * again. Call after the profile's layout setting was saved.
+ */
+export function clearSessionWorkflowLayoutMode(): void {
+  try {
+    sessionStorage.removeItem(LAYOUT_MODE_KEY);
+  } catch (e) {
+    // storage unavailable
+  }
 }
 
 export function setWorkflowLayoutMode(mode: WorkflowLayoutMode): void {

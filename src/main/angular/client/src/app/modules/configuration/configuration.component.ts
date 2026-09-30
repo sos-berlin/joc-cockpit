@@ -58,7 +58,9 @@ export class ConfigurationComponent implements AfterViewInit, OnDestroy {
           top = 150;
         }
 
-        $('.sticky').css('top', top + 2);
+        document.querySelectorAll<HTMLElement>('.sticky').forEach(el => {
+          el.style.setProperty('top', (top + 2) + 'px', 'important');
+        });
         const sidebar = $('#sidebar');
         if (sidebar) {
           sidebar.css('top', (top - 17));

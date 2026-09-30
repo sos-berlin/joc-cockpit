@@ -3529,6 +3529,9 @@
     "label.magnetWindow": "Max. number of instructions before/after Magnet",
     "label.magnetAutoStates": "Auto-magnetize orders by state",
     "label.magnetAutoIncludeChildren": "Auto-magnetize child orders",
+    "label.workflowLayoutMode": "Layout Mode",
+    "label.indented": "Indented",
+    "label.classic": "Classic",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3612,7 +3615,8 @@
       "tooltip.includeDependencies": "Specifies the default for inventory operations if dependent objects should be included, for example, a ^Job Resource^ referenced by a ^Workflow^ or a ^Schedule^ referencing a Workflow.\n\nDependent objects can be located in other folders.\n- **All**: all referencing and referenced objects recursively.\n- **Required**: objects that are directly referencing or are referenced by a selected object.\n- **None**: limits the operation to selected objects.\n\nFor details see [Dependency Matrix](context:help:dependencies-matrix).",
       "tooltip.magnetWindow": "Specifies the max. number of instructions such as jobs that are displayed before and after the current position of a magnetized ^Order^.",
       "tooltip.magnetAutoStates": "^Order^s are magnetized automatically for the given Order states.",
-      "tooltip.magnetAutoIncludeChildren": "If a Parent ^Order^ is magnetized, then the same applies to Child Orders."
+      "tooltip.magnetAutoIncludeChildren": "If a Parent ^Order^ is magnetized, then the same applies to Child Orders.",
+      "tooltip.workflowLayoutMode": "Layout Mode"
     },
     "permission": {
       "label.order": "Order",
@@ -5015,6 +5019,10 @@
     "button.showMinimap": "Show mini map",
     "button.verticalOrientation": "Vertical orientation",
     "button.horizontalOrientation": "Horizontal orientation",
+    "button.expandChildInstructions": "Expand child instructions",
+    "button.collapseChildInstructions": "Collapse child instructions",
+    "button.nextLevel": "Next level",
+    "button.allLevels": "All levels",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

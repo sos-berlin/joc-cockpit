@@ -3529,6 +3529,9 @@
     "label.magnetWindow": "Magnet Window",
     "label.magnetAutoStates": "Auto-magnetize Orders by state",
     "label.magnetAutoIncludeChildren": "Auto-magnetize child Orders",
+    "label.workflowLayoutMode": "Layout Mode",
+    "label.indented": "Indented",
+    "label.classic": "Classic",
     "button.resetPreferences": "Сбросить настройки профиля",
     "button.groupLimit": "Применить ко всем",
     "button.changePassword": "Изменить пароль",
@@ -3612,7 +3615,8 @@
       "tooltip.includeDependencies": "Определяет, следует ли по умолчанию включать зависимые объекты при выполнении операций с инвентарём. Например, ^ресурс задач|job-resource^, на который ссылается ^рабочий процесс|workflow^, или ^расписание|schedule^, ссылающееся на рабочий процесс.\n\nЗависимые объекты могут находиться в других папках.\n\nДоступны следующие варианты:\n- **Все**: все ссылающиеся и связанные объекты рекурсивно.\n- **Только прямые**: объекты, непосредственно ссылающиеся на выбранный объект или объекты, на которые он ссылается.\n- **Нет**: только выбранные объекты.\n\nПодробности см. [Матрица зависимостей](context:help:dependencies-matrix).",
       "tooltip.magnetWindow": "Magnet Window",
       "tooltip.magnetAutoStates": "Magnet Auto States",
-      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children"
+      "tooltip.magnetAutoIncludeChildren": "Magnet Auto Include Children",
+      "tooltip.workflowLayoutMode": "Layout Mode"
     },
     "permission": {
       "label.order": "Задание",
@@ -5015,6 +5019,10 @@
     "button.showMinimap": "Show mini map",
     "button.verticalOrientation": "Vertical orientation",
     "button.horizontalOrientation": "Horizontal orientation",
+    "button.expandChildInstructions": "Expand child instructions",
+    "button.collapseChildInstructions": "Collapse child instructions",
+    "button.nextLevel": "Next level",
+    "button.allLevels": "All levels",
     "tab.jobProperties": "Свойства",
     "tab.jobOptions": "Параметры выполнения",
     "tab.nodeProperties": "Свойства узла задачи",
