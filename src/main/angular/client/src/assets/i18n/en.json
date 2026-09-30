@@ -3529,7 +3529,7 @@
     "label.magnetWindow": "Max. number of instructions before/after Magnet",
     "label.magnetAutoStates": "Auto-magnetize orders by state",
     "label.magnetAutoIncludeChildren": "Auto-magnetize child orders",
-    "label.workflowLayoutMode": "Layout Mode",
+    "label.workflowLayoutMode": "Layout",
     "label.indented": "indented",
     "label.classic": "classic",
     "button.resetPreferences": "Reset Profile Preferences",
@@ -3616,7 +3616,7 @@
       "tooltip.magnetWindow": "Specifies the max. number of instructions such as jobs that are displayed before and after the current position of a magnetized ^Order^.",
       "tooltip.magnetAutoStates": "^Order^s are magnetized automatically for the given Order states.",
       "tooltip.magnetAutoIncludeChildren": "If a Parent ^Order^ is magnetized, then the same applies to Child Orders.",
-      "tooltip.workflowLayoutMode": "Layout Mode"
+      "tooltip.workflowLayoutMode": "JOC Cockpit offers the following layouts:\n- **Indentend Layout** displays left-oriented instructions with indentation for nesting levels.\n- *Classic Layout** displays centered instructions without indentation.\n\nUsers can combine both layouts with vertical and horizontal orientation.\n\nFor example, deeply nested ^Fork Instruction^s are best displayed from **Indented Layout** with horizontal orientation."
     },
     "permission": {
       "label.order": "Order",
@@ -5019,10 +5019,10 @@
     "button.showMinimap": "Show mini map",
     "button.verticalOrientation": "Vertical orientation",
     "button.horizontalOrientation": "Horizontal orientation",
-    "button.expandChildInstructions": "Expand child instructions",
-    "button.collapseChildInstructions": "Collapse child instructions",
-    "button.nextLevel": "Next level",
-    "button.allLevels": "All levels",
+    "button.expandChildInstructions": "Expand nested block instructions",
+    "button.collapseChildInstructions": "Collapse nested block instructions",
+    "button.nextLevel": "next level",
+    "button.allLevels": "all levels",
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",

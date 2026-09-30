@@ -3616,7 +3616,7 @@
       "tooltip.magnetWindow": "Legt die maximale Anzahl von Anweisungen, wie z.B. ^Job^s, fest, die vor und nach der aktuellen Position eines magnetisierten ^Auftrags|order^ angezeigt werden.",
       "tooltip.magnetAutoStates": "^Aufträge|order^ werden entsprechend den angegebenen Auftragszuständen automatisch magnetisiert.",
       "tooltip.magnetAutoIncludeChildren": "Wenn ein Eltern^auftrag|order^ magnetisiert wird, gilt dies auch für Kindaufträge.",
-      "tooltip.workflowLayoutMode": "Layout Mode"
+      "tooltip.workflowLayoutMode": "JOC Cockpit bietet folgende Darstellungen an:\n- **Eingerückte Darstellung** zeigt linksbündige Anweisungen mit Einrückungen für Verschachtelungsebenen an.\n- **Klassische Darstellung** zeigt zentrierte Anweisungen ohne Einrückungen an.\n\nBenutzer können Darstellungsweisen mit vertikaler und horizontaler Ausrichtung kombinieren.\n\nBeispielsweise lassen sich tief verschachtelte ^Fork-Anweisungen|fork-instruction^ in der **Eingerückten Darstellung** mit horizontaler Ausrichtung übersichtlich anzeigen."
     },
     "permission": {
       "label.order": "Auftrag",
@@ -5019,10 +5019,10 @@
     "button.showMinimap": "Linse anzeigen",
     "button.verticalOrientation": "Vertikale Ausrichtung",
     "button.horizontalOrientation": "Horizontale Ausrichtung",
-    "button.expandChildInstructions": "Kind-Instruktionen aufklappen",
-    "button.collapseChildInstructions": "Kind-Instruktionen einklappen",
-    "button.nextLevel": "Nächste Ebene",
-    "button.allLevels": "Alle Ebenen",
+    "button.expandChildInstructions": "Block-Instruktionen aufklappen",
+    "button.collapseChildInstructions": "Block-Instruktionen einklappen",
+    "button.nextLevel": "nächste Ebene",
+    "button.allLevels": "alle Ebenen",
     "tab.jobProperties": "Job-Eigenschaften",
     "tab.jobOptions": "Job-Optionen",
     "tab.nodeProperties": "Knoten-Eigenschaften",

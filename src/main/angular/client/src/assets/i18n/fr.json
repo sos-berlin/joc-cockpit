@@ -3510,7 +3510,7 @@
     "label.tabSize": "Taille de tabulation",
     "label.listVariableCollapse": "Déplier les Variables de Tableau",
     "label.customizeWorkflowLayout": "Affichage du Workflow",
-    "label.orientation": "L'orientation",
+    "label.orientation": "Orientation",
     "label.interRankCellSpacing": "Espacement entre les instructions verticales",
     "label.intraCellSpacing": "Espacement entre les instructions horizontales",
     "label.edgeRounded": "Bords arrondis des connexions",
@@ -3616,7 +3616,7 @@
       "tooltip.magnetWindow": "Spécifie le nombre maximal d'instructions, telles que des ^Tâches|job^, qui s'affichent avant et après la position actuelle d'un ^Ordre|order^ magnétisé.",
       "tooltip.magnetAutoStates": "Les ^Ordres|order^ sont magnétisés automatiquement en fonction des états d'Ordre indiqués.",
       "tooltip.magnetAutoIncludeChildren": "Si un ^Ordre|order^ parent est magnétisé, il en va de même pour les Ordres enfants.",
-      "tooltip.workflowLayoutMode": "Layout Mode"
+      "tooltip.workflowLayoutMode": "JOC Cockpit propose les modes de mise en page suivants :\n- **Mise en page indentée** : affiche les instructions alignées à gauche avec une indentation correspondant aux niveaux d'imbrication.\n- **Mise en page classique** : affiche les instructions centrées sans indentation.\n\nLes utilisateurs peuvent combiner les modes de mise en page avec une orientation verticale ou horizontale.\n\nPar exemple, les ^Instructions Fork|fork-instruction^ fortement imbriquées s'affichent mieux en **Mise en page indentée** avec une orientation horizontale."
     },
     "permission": {
       "label.order": "Ordre",
@@ -5019,8 +5019,8 @@
     "button.showMinimap": "Afficher lentille",
     "button.verticalOrientation": "Orientation verticale",
     "button.horizontalOrientation": "Orientation horizontale",
-    "button.expandChildInstructions": "Développer les sous-instructions",
-    "button.collapseChildInstructions": "Masquer les sous-instructions",
+    "button.expandChildInstructions": "Développer les instructions imbriquées",
+    "button.collapseChildInstructions": "Masquer les instructions imbriquées",
     "button.nextLevel": "niveau suivant",
     "button.allLevels": "tous les niveaux",
     "tab.jobProperties": "Propriétés de Tâche",
