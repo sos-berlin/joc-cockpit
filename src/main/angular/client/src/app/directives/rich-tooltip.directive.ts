@@ -202,7 +202,7 @@ const RICH_TOOLTIP_VISUAL_CSS = `
   padding: 1px 5px;
   font-family: monospace;
   font-size: 11px;
-  color: var(--rich-tooltip-text, #374151);
+  color: var(--rich-tooltip-code-text, #1e40af);
 }
 .rich-tooltip-box a { color: var(--primary, rgb(14, 138, 139)); text-decoration: underline; }
 .rich-tooltip-box a:hover { opacity: 0.85; }

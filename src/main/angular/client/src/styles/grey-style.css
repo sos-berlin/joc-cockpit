@@ -40,7 +40,8 @@
   --rich-tooltip-bg: #2d3238;
   --rich-tooltip-text: rgba(255, 255, 255, 0.87);
   --rich-tooltip-strong: #ffffff;
-  --rich-tooltip-code-bg: rgba(255, 255, 255, 0.14);
+  --rich-tooltip-code-bg: #eef1f4;
+  --rich-tooltip-code-text: #1e3a5f;
   --rich-tooltip-border: rgba(255, 255, 255, 0.12);
 }
 

@@ -38,7 +38,8 @@
   --rich-tooltip-bg: #234a3a;
   --rich-tooltip-text: rgba(255, 255, 255, 0.9);
   --rich-tooltip-strong: #ffffff;
-  --rich-tooltip-code-bg: rgba(255, 255, 255, 0.14);
+  --rich-tooltip-code-bg: #e8f5ee;
+  --rich-tooltip-code-text: #14532d;
   --rich-tooltip-border: rgba(255, 255, 255, 0.14);
 }
 

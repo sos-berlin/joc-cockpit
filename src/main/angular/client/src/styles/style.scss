@@ -65,6 +65,7 @@
   --rich-tooltip-text: #374151;
   --rich-tooltip-strong: #111827;
   --rich-tooltip-code-bg: #f3f4f6;
+  --rich-tooltip-code-text: #1e40af;
   --rich-tooltip-border: rgba(0, 0, 0, 0.1);
 }
 
@@ -6084,7 +6085,7 @@ tr.disabled-row td:not(.menu):not(.chk) {
     padding: 1px 5px;
     font-family: monospace;
     font-size: 11px;
-    color: var(--rich-tooltip-text);
+    color: var(--rich-tooltip-code-text);
   }
   a {
     color: var(--primary);
@@ -6337,6 +6338,7 @@ tr.disabled-row td:not(.menu):not(.chk) {
   strong { color: var(--rich-tooltip-strong, #111827); }
   code {
     background: var(--rich-tooltip-code-bg, #f3f4f6);
+    color: var(--rich-tooltip-code-text, #1e40af);
     padding: 0.1em 0.3em;
     border-radius: 3px;
     font-size: 0.9em;
