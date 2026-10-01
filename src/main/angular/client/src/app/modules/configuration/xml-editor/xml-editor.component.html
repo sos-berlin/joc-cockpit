@@ -614,9 +614,12 @@
                                 <span (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)" [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"><a>{{ 'xml.button.gotoRefElement' | translate }}</a></span>
                               }
                               @if (node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML) {
-                                <span (mouseover)="getPos(node.id)" [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" data-placement="bottom" data-toggle="tooltip" id="{{node.id}}" title="{{node.text.doc[0].innerHTML}}">
+                                <span (mouseover)="getPos(node.id)" [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" [appRichTooltip]="infoTooltipXML">
                                     <i class="fa fa-info-circle m-t-sm"></i>
                                 </span>
+                                <ng-template #infoTooltipXML>
+                                  <div [innerHTML]="node.text.doc[0].innerHTML"></div>
+                                </ng-template>
                               }
                             </div>
                           </div>

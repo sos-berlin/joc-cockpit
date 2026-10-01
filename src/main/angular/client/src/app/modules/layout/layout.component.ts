@@ -874,7 +874,7 @@ export class LayoutComponent {
         data.tabSize = 4;
       }
       if (!data.workflowLayoutMode) {
-        preferences.workflowLayoutMode = 'indented';
+        data.workflowLayoutMode = 'indented';
       }
       if (!data.orientation) {
         data.orientation = 'north';

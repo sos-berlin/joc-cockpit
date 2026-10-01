@@ -5896,6 +5896,7 @@ export class WorkflowComponent {
             editor = new mxEditor(node);
             self.editor = editor;
             new mxRubberband(editor.graph);
+            self.installToolbarClearance(editor.graph);
             self.initEditorConf(editor, false, false);
             self.workflowService.init(!(self.preferences.theme === 'light' || self.preferences.theme === 'lighter' || self.preferences.theme === 'sandstone' || self.preferences.theme === 'violet' || !self.preferences.theme) ? 'dark' : 'light', editor.graph);
             const outln = document.getElementById('outlineContainer');
@@ -6919,6 +6920,56 @@ export class WorkflowComponent {
 
   closeMenu(): void {
     this.node = null;
+  }
+
+  /**
+   * The toolbar floats over the top-left of the drawing, and the layouts start
+   * the drawing about the toolbar's height from the top: the first row (and
+   * its action menu) was hidden under it. Keeps the top of the drawing below
+   * the toolbar plus room for the first row's block labels, by shifting the
+   * view (not the steps). Measured in screen pixels from the toolbar itself,
+   * so it holds at any zoom and in every layout and orientation. Runs after
+   * every model change (loading, layout, folding), every zoom and every view
+   * shift (centring, fit).
+   */
+  private installToolbarClearance(graph: any): void {
+    const LABEL_ROOM = 16;   // block labels / guides reach a little above the first row
+    let busy = false;
+    const keepClear = () => {
+      if (busy || !graph.container) {
+        return;
+      }
+      const toolbar = document.getElementById('toolbar-icons');
+      const rect = toolbar && toolbar.offsetParent ? toolbar.getBoundingClientRect() : null;
+      const clearance = rect && rect.height > 0
+        ? Math.max(0, rect.bottom - graph.container.getBoundingClientRect().top) + LABEL_ROOM
+        : 0;
+      const bounds = graph.getGraphBounds();
+      if (!bounds || (bounds.width === 0 && bounds.height === 0)) {
+        return;
+      }
+      const view = graph.view;
+      const t = view.translate;
+      // Never above the layout's own position (translate 0): without the
+      // toolbar the drawing goes back to where the layout put it.
+      const ty = Math.max(0, t.y + (clearance - bounds.y) / view.scale);
+      if (Math.abs(ty - t.y) > 0.5) {
+        busy = true;
+        try {
+          view.setTranslate(t.x, ty);
+        } finally {
+          busy = false;
+        }
+      }
+    };
+    graph.getModel().addListener(mxEvent.CHANGE, keepClear);
+    graph.view.addListener(mxEvent.SCALE, keepClear);
+    graph.view.addListener(mxEvent.SCALE_AND_TRANSLATE, keepClear);
+    // Centring (WorkflowService.center -> graph.center) moves the view too: for
+    // a drawing taller than the window (typical top-down) mxGraph puts its top
+    // exactly at the upper edge, under the toolbar. Our own shift is ignored
+    // (busy).
+    graph.view.addListener(mxEvent.TRANSLATE, keepClear);
   }
 
   /**
@@ -10968,6 +11019,9 @@ export class WorkflowComponent {
             for (const cCell of (self._segmentContainerCells || [])) {
               const cSt = graph.view.getState(cCell);
               if (!cSt) { continue; }
+              // A click on the frame's label (it starts 3px below the top edge)
+              // is not a border click: it opens the properties (below).
+              if (cSt.text?.node && evt.target && cSt.text.node.contains(evt.target)) { continue; }
               if (gx < cSt.x - BORDER_HIT || gx > cSt.x + cSt.width + BORDER_HIT) { continue; }
               if (gy < cSt.y - BORDER_HIT || gy > cSt.y + cSt.height + BORDER_HIT) { continue; }
               const interior = gx > cSt.x + BORDER_HIT && gx < cSt.x + cSt.width - BORDER_HIT
@@ -10988,6 +11042,12 @@ export class WorkflowComponent {
             }
           }
 
+          if (cell?.value?.tagName === 'SegmentContainer') {
+            // The frame itself was hit, e.g. its label: same as a click on the
+            // frame's background, i.e. the Segment (property editor).
+            const segId = cell.value.getAttribute?.('segmentId');
+            cell = (segId ? graph.getModel().getCell(segId) : null) || null;
+          }
           if (!cell) {
             const mx = me.getGraphX();
             const my = me.getGraphY();

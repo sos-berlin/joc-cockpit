@@ -214,7 +214,7 @@
                 <i (click)="approval.show = false;$event.stopPropagation()"
                    class="cursor fa fa-caret-up fa-lg"></i>
               }&nbsp;
-              <span [innerHtml]="approval['requestorStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
+              <span class="p-l-xs" [innerHtml]="approval['requestorStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()" nowrap>
               <span [innerHtml]="approval['title'] | highlight : filters.filter.searchText"></span>
