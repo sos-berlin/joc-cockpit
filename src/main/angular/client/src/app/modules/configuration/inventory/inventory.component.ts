@@ -17733,4 +17733,3 @@ export class InventoryComponent {
   }
 }
 
-
