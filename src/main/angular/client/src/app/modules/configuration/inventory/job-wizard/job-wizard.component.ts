@@ -1,5 +1,5 @@
 import {
-  
+
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -201,7 +201,7 @@ export class ApiRequestComponent {
         this.model.body = '';
       }
 
-      // — auth
+      // ï¿½ auth
       if (req.auth && typeof req.auth === 'object') {
         const a = req.auth as any;
         this.auth.type = a.type ?? 'None';
@@ -231,7 +231,7 @@ export class ApiRequestComponent {
         }
       }
 
-      // — return variables
+      // ï¿½ return variables
       const ret = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
       if (ret) {
         try {

@@ -85,7 +85,7 @@ export class ShowDependencyComponent {
   standalone: false,
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
-  
+
 })
 export class AddOrderModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);

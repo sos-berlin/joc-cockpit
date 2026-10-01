@@ -26,7 +26,7 @@ interface CalendarItem {
   standalone: false,
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html',
-  
+
 })
 export class AddRestrictionComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -1172,7 +1172,7 @@ export class AddRestrictionComponent {
   standalone: false,
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
-  
+
 })
 export class PeriodComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -1309,7 +1309,7 @@ export class PeriodComponent {
   standalone: false,
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
-  
+
 })
 export class RunTimeComponent implements OnChanges, OnDestroy {
   @Input() schedule: any;

@@ -12,7 +12,7 @@ import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
   standalone: false,
   selector: 'app-change-modal',
   templateUrl: './add-change-dialog.html',
-  
+
 })
 export class AddChangesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -710,7 +710,7 @@ export class AddChangesModalComponent {
   standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
-  
+
 })
 export class ChangesComponent {
   permission: any = {};
