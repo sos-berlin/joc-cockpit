@@ -85,7 +85,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "^5.9.0",
-    "@cyclonedx/cyclonedx-npm": "^5.0.0",
+    "@cyclonedx/cyclonedx-npm": "^6.0.0",
     "@types/underscore": "^1.11.4",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.0.1"
