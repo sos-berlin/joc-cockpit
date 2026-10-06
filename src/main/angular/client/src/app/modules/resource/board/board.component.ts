@@ -306,6 +306,7 @@ export class PostModalComponent {
   
 })
 export class SingleBoardComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   loading: boolean;
   controllerId: any = {};
   preferences: any = {};
@@ -494,6 +495,8 @@ export class SingleBoardComponent {
   
 })
 export class BoardComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
+  isLinkInObjectTitleEnabled = CoreService.isLinkInObjectTitleEnabled();
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};

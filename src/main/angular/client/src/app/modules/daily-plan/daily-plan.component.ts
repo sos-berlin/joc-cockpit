@@ -721,6 +721,7 @@ export class SearchComponent {
   
 })
 export class DailyPlanComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   objectType = 'DAILYPLAN';
   schedulerIds: any = {};
   preferences: any = {};

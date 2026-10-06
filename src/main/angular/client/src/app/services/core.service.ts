@@ -3796,6 +3796,27 @@ private checkParentNode(lastPos, data, item, nodes): any {
         sessionStorage['preferences'] = JSON.stringify(preferences);
       }
     }
+    if (result.policies) {
+      sessionStorage['policies'] = JSON.stringify(result.policies);
+    }
+  }
+
+  // Enabled unless the policy is explicitly 'disabled' (JOC-2303: a missing setting means enabled).
+  static isLinkInObjectTitleEnabled(): boolean {
+    try {
+      return String(JSON.parse(sessionStorage['policies'] || '{}')?.linkInObjectTitle ?? '').toLowerCase() !== 'disabled';
+    } catch (e) {
+      return true;
+    }
+  }
+
+  // Enabled unless the policy is explicitly 'disabled' (JOC-2303: a missing setting means enabled).
+  static isUserNotesEnabled(): boolean {
+    try {
+      return String(JSON.parse(sessionStorage['policies'] || '{}')?.userNotes ?? '').toLowerCase() !== 'disabled';
+    } catch (e) {
+      return true;
+    }
   }
 
   slimscrollFunc(dom: any, ht: any, graph): void {

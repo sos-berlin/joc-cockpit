@@ -68,6 +68,7 @@ export class TestMailComponent {
   templateUrl: './job-resource.component.html'
 })
 export class JobResourceComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -134,7 +135,7 @@ export class JobResourceComponent {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.jobResource.name) {
         const currentPath = this.jobResource.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.jobResource.hasNote) {
           this.jobResource.hasNote.notified = false;
           this.ref.markForCheck();
         }

@@ -136,6 +136,7 @@ export class RelativeMonthValidator implements Validator {
   templateUrl: './report.component.html'
 })
 export class ReportComponent implements OnChanges, OnDestroy {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -223,7 +224,7 @@ export class ReportComponent implements OnChanges, OnDestroy {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.report.name) {
         const currentPath = this.report.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.report.hasNote) {
           this.report.hasNote.notified = false;
           this.ref.markForCheck();
         }

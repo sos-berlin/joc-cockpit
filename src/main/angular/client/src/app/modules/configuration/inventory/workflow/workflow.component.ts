@@ -5291,6 +5291,7 @@ export class HistoryLogDialogComponent {
   styleUrls: ['./workflow.component.scss']
 })
 export class WorkflowComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() data: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -5450,7 +5451,7 @@ export class WorkflowComponent {
     });
     this.subscription3 = this.dataService.noteUpdated$.subscribe((update: { objectName: string; objectType: string; action: string }) => {
       if (this.data?.name && update.objectType === this.objectType) {
-        if (update.objectName === this.data.name) {
+        if (update.objectName === this.data.name && this.workflow?.hasNote) {
           this.workflow.hasNote.notified = false;
           this.ref.markForCheck();
         }
@@ -9334,7 +9335,7 @@ export class WorkflowComponent {
                           }
                         }
                         for (const x in edges) {
-                          if (edges[x].target.id == id) {
+                          if (edges[x].source && edges[x].target && edges[x].target.id == id) {
                             let sourceId = edges[x].source.id;
                             if (sourceId === data.catch.id) {
                               isCatch = true;
@@ -9342,7 +9343,9 @@ export class WorkflowComponent {
                             } else {
                               if (self.workflowService.checkClosingCell(edges[x].source.value.tagName)) {
                                 const targetCell = graph.getModel().getCell(edges[x].source.getAttribute('targetId'));
-                                sourceId = targetCell.id;
+                                if (targetCell) {
+                                  sourceId = targetCell.id;
+                                }
                               }
                               for (const y in data.catch.instructions) {
                                 if (data.catch.instructions[y].id == sourceId) {
@@ -9368,7 +9371,7 @@ export class WorkflowComponent {
                       if (!isFound2) {
                         const outgoingEdges2 = getOutgoingEdges(startNode);
                         for (const x in outgoingEdges2) {
-                          if (edges[x].target && edges[x].target.id == data.id) {
+                          if (outgoingEdges2[x].target && outgoingEdges2[x].target.id == data.id) {
                             isCatch = false;
                           }
                         }
@@ -9969,6 +9972,11 @@ export class WorkflowComponent {
                 }
               }
 
+              if (target?.value?.tagName === 'SegmentContainer') {
+                const segId = target.value.getAttribute('segmentId');
+                target = (segId ? graph.getModel().getCell(segId) : null) || target;
+              }
+
               let state = graph.getView().getState(target);
               let highlight = false;
               if (state != null && (this.isValidDropTarget(target, me) || (target && target.value.tagName === 'Try'))) {
@@ -10050,7 +10058,17 @@ export class WorkflowComponent {
                 } else {
                   this.setHighlightColor('#ff0000');
                 }
-                this.highlight.highlight(state);
+                // Segment target: outline the whole container box (as the toolbar dragOver does),
+                // not the 2x2 Segment anchor.
+                let drawState = state;
+                if (state.cell.value.tagName === 'Segment') {
+                  const _cCell = (self._segmentContainerCells || []).find((c: any) =>
+                    c.value?.getAttribute?.('segmentId') === state.cell.id
+                  );
+                  const _cSt = _cCell ? graph.getView().getState(_cCell) : null;
+                  if (_cSt) { drawState = _cSt; }
+                }
+                this.highlight.highlight(drawState);
               } else {
                 this.highlight.hide();
               }
@@ -10859,7 +10877,11 @@ export class WorkflowComponent {
         const origUpdateMouseEvent = graph.updateMouseEvent;
         graph.updateMouseEvent = function (me: any, evtName: any) {
           const result = origUpdateMouseEvent.apply(this, arguments);
-          if (me.getState() == null && me.graphX != null && me.graphY != null) {
+          // While dragging, a hit on the container's label (which still takes pointer events)
+          // must resolve to the Segment like its empty area does, or moves treat the frame as target.
+          const isContainerHitWhileDragging = this.isMouseDown &&
+            me.getState()?.cell?.value?.tagName === 'SegmentContainer';
+          if ((me.getState() == null || isContainerHitWhileDragging) && me.graphX != null && me.graphY != null) {
             const segCell = findSegmentCellForScreenPoint(me.graphX, me.graphY);
             if (segCell) {
               const segState = graph.view.getState(segCell);
@@ -11849,7 +11871,16 @@ export class WorkflowComponent {
          * Event to check if connector is valid or not on drop of new instruction
          */
         graph.isValidDropTarget = function (cell, cells, evt) {
-          if (cell?.value?.tagName === 'SegmentContainer') { return true; }
+          if (cell?.value?.tagName === 'SegmentContainer') {
+            // Cell moves: validate against the Segment so self.droppedCell targets it, instead of
+            // keeping whatever an earlier mouse move left there.
+            if (self.isCellDragging && cells && cells.length > 0) {
+              const segId = cell.value.getAttribute('segmentId');
+              const segCell = segId ? graph.getModel().getCell(segId) : null;
+              if (segCell) { return graph.isValidDropTarget(segCell, cells, evt); }
+            }
+            return true;
+          }
           if (cell && cell.value) {
             self.droppedCell = null;
             if (self.isCellDragging && cells && cells.length > 0) {
@@ -15075,6 +15106,11 @@ export class WorkflowComponent {
               graph.insertEdge(parent, null, getConnectionNode(displayLabel), cell, _dropTarget.edges[i].target);
             }
           }
+        }
+        // model.remove() on a vertex leaves its edges attached to a detached cell; they then
+        // decode with a null terminal and break traversCells, so drop the replaced edges first.
+        for (const e of (_dropTarget.edges || []).slice()) {
+          graph.getModel().remove(e);
         }
         graph.getModel().remove(_dropTarget);
       } else {

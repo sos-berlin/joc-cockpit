@@ -135,6 +135,7 @@
               <i (click)="coreService.navToInventoryTab(value?.schedulePath, 'SCHEDULE');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
+            @if (isUserNotesEnabled) {
             <i (click)="notesForSchedule(value?.schedulePath, value)"
                [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon
@@ -143,6 +144,7 @@
                class="cur-point text-14 p-0 p-r-xs"
                [ngClass]="{ 'blink-icon': value?.scheduleHasNote?.notified }"
                [style.color]="coreService.getColorByNoteSeverity(value?.scheduleHasNote?.severity)"></i>
+            }
             @if (isPathDisplay) {
               <span [innerHtml]="value?.schedulePath | highlight : dailyPlanFilters.searchText"></span>
             }
@@ -159,6 +161,7 @@
               <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
+            @if (isUserNotesEnabled) {
             <i (click)="notesForWorkflow(value?.workflowPath, value)"
                [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
                nz-icon
@@ -167,6 +170,7 @@
                class="cur-point text-14 p-0 p-r-xs"
                [ngClass]="{ 'blink-icon': value?.workflowHasNote?.notified }"
                [style.color]="coreService.getColorByNoteSeverity(value?.workflowHasNote?.severity)"></i>
+            }
              @if (isPathDisplay) {
                <a (click)="coreService.showWorkflow(value?.workflowPath);"
                   [innerHtml]="value?.workflowPath | highlight : dailyPlanFilters.searchText"

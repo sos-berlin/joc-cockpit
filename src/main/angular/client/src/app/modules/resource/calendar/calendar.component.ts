@@ -95,6 +95,7 @@ export class SingleCalendarComponent {
   
 })
 export class CalendarComponent {
+  isLinkInObjectTitleEnabled = CoreService.isLinkInObjectTitleEnabled();
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};

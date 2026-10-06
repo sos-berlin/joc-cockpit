@@ -25,6 +25,7 @@ import {Subscription} from "rxjs";
   templateUrl: './type.component.html',
 })
 export class TypeComponent {
+  isLinkInObjectTitleEnabled = CoreService.isLinkInObjectTitleEnabled();
   @Input() configuration;
   @Input() jobs;
   @Input() expandAll;

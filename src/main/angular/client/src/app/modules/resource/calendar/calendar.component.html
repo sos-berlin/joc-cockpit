@@ -311,7 +311,11 @@
                               <span> - </span>
                             }
                             <i class="text-muted">
-                              <span [innerHTML]="calendar.title | stringToLink"></span>
+                              @if (isLinkInObjectTitleEnabled) {
+                                <span [innerHTML]="calendar.title | stringToLink"></span>
+                              } @else {
+                                <span>{{ calendar.title }}</span>
+                              }
                             </i>
                           </td>
                           @if (isPathDisplay) {

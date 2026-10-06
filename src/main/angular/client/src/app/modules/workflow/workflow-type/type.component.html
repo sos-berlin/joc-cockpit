@@ -474,7 +474,11 @@
             }
             @if (instruction['TYPE'] === 'Job') {
               <span>
-                - <span [innerHTML]="jobs[instruction.jobName].title | stringToLink" class="text-muted"></span>
+                - @if (isLinkInObjectTitleEnabled) {
+                  <span [innerHTML]="jobs[instruction.jobName].title | stringToLink" class="text-muted"></span>
+                } @else {
+                  <span class="text-muted">{{ jobs[instruction.jobName].title }}</span>
+                }
                 @if (instruction.label) {
                   <span class="p-l-xs  _400">(</span>
                 }

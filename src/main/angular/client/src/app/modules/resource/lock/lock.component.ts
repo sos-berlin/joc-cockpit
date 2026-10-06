@@ -19,6 +19,7 @@ declare const $: any;
   
 })
 export class SingleLockComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   loading = false;
   controllerId: any = {};
   preferences: any = {};
@@ -139,6 +140,8 @@ export class SingleLockComponent {
   
 })
 export class LockComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
+  isLinkInObjectTitleEnabled = CoreService.isLinkInObjectTitleEnabled();
   isLoading = false;
   loading: boolean;
   schedulerIds: any = {};

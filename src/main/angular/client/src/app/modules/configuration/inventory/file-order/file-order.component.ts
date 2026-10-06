@@ -28,6 +28,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
   templateUrl: './file-order.component.html'
 })
 export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -94,7 +95,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.fileOrder.name) {
         const currentPath = this.fileOrder.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.fileOrder.hasNote) {
           this.fileOrder.hasNote.notified = false;
           this.ref.markForCheck();
         }

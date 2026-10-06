@@ -739,6 +739,8 @@ export class SingleWorkflowComponent {
   templateUrl: './workflow.component.html',
 })
 export class WorkflowComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
+  isLinkInObjectTitleEnabled = CoreService.isLinkInObjectTitleEnabled();
   isLoading = false;
   loading: boolean;
   isSearchHit: boolean;

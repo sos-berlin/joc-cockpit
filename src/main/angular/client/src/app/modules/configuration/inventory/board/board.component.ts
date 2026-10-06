@@ -18,6 +18,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
   templateUrl: './board.component.html'
 })
 export class BoardComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;

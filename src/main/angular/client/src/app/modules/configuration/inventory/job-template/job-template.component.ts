@@ -344,6 +344,7 @@ export class UpdateJobTemplatesComponent {
   templateUrl: './job-template.component.html'
 })
 export class JobTemplateComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() permission: any;
   @Input() preferences: any;
   @Input() schedulerId: any;
@@ -422,7 +423,7 @@ export class JobTemplateComponent {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.job.name) {
         const currentPath = this.job.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.job.hasNote) {
           this.job.hasNote.notified = false;
           this.ref.markForCheck();
         }

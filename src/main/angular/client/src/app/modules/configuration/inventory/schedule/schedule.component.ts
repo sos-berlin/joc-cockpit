@@ -33,6 +33,7 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
   templateUrl: './schedule.component.html',
 })
 export class ScheduleComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -108,7 +109,7 @@ export class ScheduleComponent {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.schedule.name) {
         const currentPath = this.schedule.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.schedule.hasNote) {
           this.schedule.hasNote.notified = false;
           this.ref.markForCheck();
         }

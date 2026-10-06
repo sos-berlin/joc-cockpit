@@ -16,6 +16,7 @@
               <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
             </span>
           }
+       @if (isUserNotesEnabled) {
        <i (click)="notes(job.name)"
           [appRichTooltip]="'inventory.notes.tooltip.notes' | translate"
           nz-icon
@@ -24,6 +25,7 @@
           class="cur-point text-16 m-r-sm ml-2"
           [ngClass]="{ 'blink-icon': job?.hasNote?.notified }"
           [style.color]="coreService.getColorByNoteSeverity(job?.hasNote?.severity)"></i>
+       }
         </span>
           <div class="inline pull-right">
             @if (!isTrash) {

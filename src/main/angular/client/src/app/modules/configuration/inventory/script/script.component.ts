@@ -24,6 +24,7 @@ import { NoteComponent } from 'src/app/components/notes/note.component';
   templateUrl: './script.component.html',
 })
 export class ScriptComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() permission: any;
   @Input() schedulerId: any;
@@ -84,7 +85,7 @@ export class ScriptComponent {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.script.name) {
         const currentPath = this.script.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.script.hasNote) {
           this.script.hasNote.notified = false;
           this.ref.markForCheck();
         }

@@ -37,6 +37,7 @@ export class HeaderComponent {
   requestorEvent: any = {};
   notesEvent: any = {};
   notesNotificationList: any = [];
+  isUserNotesEnabled = false;
 
   modalWidth = 800;
   modalHeight = 600;
@@ -126,6 +127,7 @@ export class HeaderComponent {
         this.showViews = showViews;
       }
     }
+    this.isUserNotesEnabled = CoreService.isUserNotesEnabled();
   }
 
   reloadSettings(): void {

@@ -1498,6 +1498,7 @@ export class FrequencyModalComponent {
 
 })
 export class CalendarComponent {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
@@ -1554,7 +1555,7 @@ export class CalendarComponent {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.calendar.name) {
         const currentPath = this.calendar.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.calendar.hasNote) {
           this.calendar.hasNote.notified = false;
           this.ref.markForCheck();
         }

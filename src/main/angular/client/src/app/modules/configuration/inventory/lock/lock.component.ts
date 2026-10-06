@@ -27,6 +27,7 @@ import {NoteComponent} from "../../../../components/notes/note.component";
   templateUrl: './lock.component.html'
 })
 export class LockComponent implements OnChanges, OnDestroy {
+  isUserNotesEnabled = CoreService.isUserNotesEnabled();
   @Input() preferences: any;
   @Input() schedulerId: any;
   @Input() data: any;
@@ -71,7 +72,7 @@ export class LockComponent implements OnChanges, OnDestroy {
     this.subscription4 = this.dataService.noteUpdated$.subscribe((update: any) => {
       if (update && update.objectType === this.objectType && this.lock.name) {
         const currentPath = this.lock.name;
-        if (update.objectName === currentPath) {
+        if (update.objectName === currentPath && this.lock.hasNote) {
           this.lock.hasNote.notified = false;
           this.ref.markForCheck();
         }

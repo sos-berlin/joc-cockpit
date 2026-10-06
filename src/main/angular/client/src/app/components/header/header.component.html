@@ -131,7 +131,7 @@
           }
         </div>
       </ng-template>
-      @if (notesEvent.numOfUnreadNotes > 0) {
+      @if (isUserNotesEnabled && notesEvent.numOfUnreadNotes > 0) {
         <li class="nav-item">
             <a class="nav-link pointer text-warning" style="top: 3px">
               <span (click)="getNotesList()" [nzPopoverContent]="notesEventTemp" class="p-l-xs cursor"
