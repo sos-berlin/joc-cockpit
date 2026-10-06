@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, Input} from '@angular/core';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import { ChangeDetectorRef, Component, Input, inject} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from "../../services/data.service";
 import {mdToHtml} from '../../directives/rich-tooltip.directive';
+import {CHANGE_MANAGEMENT_URL} from './breaking-changes';
 
 @Component({
   standalone: false,
@@ -218,6 +219,23 @@ export class StepGuideComponent {
     this.translate.get('info.message.line2').subscribe(translatedValue => {
       this.line2 = mdToHtml(translatedValue);
     });
+  }
+
+  onSubmit(type: any): void {
+    this.modalService.close(type);
+  }
+}
+
+@Component({
+  standalone: false,
+  selector: 'app-breaking-changes',
+  templateUrl: './breaking-changes-dialog.component.html'
+})
+export class BreakingChangesComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  changeManagementUrl = CHANGE_MANAGEMENT_URL;
+
+  constructor(public modalService: NzModalRef) {
   }
 
   onSubmit(type: any): void {

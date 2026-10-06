@@ -2028,6 +2028,8 @@
     "tooltip.systemMonitorEvent": "Die Flagge signalisiert Warnungen und Fehler von JS7 Komponenten, z.B. Verbindungsverlust zur Datenbank.\n\nDie Flagge kennzeichnet Warnungen mit gelber Farbe und Fehler mit roter Farbe.\n\nNach Anklicken der Flagge werden die letzten 10 Warnungen und Fehler angezeigt.\n\nDie vollständige Liste der Warnungen und Fehler finden Sie in der Ansicht *ÜBERWACHUNG -> Systembenachrichtigungen*.",
     "message.line1": "Um den Start zu erleichtern, schlagen wir vor einige Voreinstellungen herunterzuladen und in der Konfigurationsansicht von ^JOC Cockpit^ zu importieren.\n\nDer Import des `Defaults.zip` Archivs erzeugt einen Ordner mit demselben Namen, der ^Job-Ressourcen|job-resource^ für globale [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) in Shell Jobs enthält.",
     "message.line2": "Die Archive `Examples.tar.gz` und `Examples.zip` enthalten Beispiele für ^Arbeitsabläufe|workflow^ und ^Job^s zum Betrieb mit ^Agent^en unter Unix und Windows.\n\nDie Beispiele können hilfreich sein, um eigene Arbeitsabläufe und Job-Abhängigkeiten zu konfigurieren. Die Beispiele entsprechen den Erläuterungen der [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
+    "label.breakingChanges": "Breaking Changes in Release {{version}}",
+    "message.breakingChanges": "This release includes breaking changes that can require action on your side. Find details from the Change Management System:",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
       "instructions": "https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo"

@@ -2028,6 +2028,8 @@
     "tooltip.systemMonitorEvent": "El indicador señala advertencias y errores de los productos JS7, por ejemplo, pérdida de conexión con la base de datos.\n\nEl indicador muestra advertencias en amarillo y errores en rojo.",
     "message.line1": "Para facilitar el inicio, sugerimos descargar algunos preajustes que pueden importarse en ^JOC Cockpit^ desde la vista *CONFIGURACIÓN*.",
     "message.line2": "Los archivos `Examples.tar.gz` y `Examples.zip` incluyen ejemplos de ^Workflow^s y ^Job^s para operación con ^Agent^es en Unix y Windows.",
+    "label.breakingChanges": "Breaking Changes in Release {{version}}",
+    "message.breakingChanges": "This release includes breaking changes that can require action on your side. Find details from the Change Management System:",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
       "instructions": "https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo"

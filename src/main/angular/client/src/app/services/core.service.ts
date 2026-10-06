@@ -3764,6 +3764,11 @@ private checkParentNode(lastPos, data, item, nodes): any {
     sessionStorage['$SOS$IMPORT'] = JSON.stringify(result.import);
     sessionStorage['welcomeDoNotRemindMe'] = result.welcomeDoNotRemindMe;
     sessionStorage['welcomeGotIt'] = result.welcomeGotIt;
+    if (result.breakingChangesGotIt !== undefined && result.breakingChangesGotIt !== null) {
+      sessionStorage['breakingChangesGotIt'] = result.breakingChangesGotIt;
+    } else {
+      sessionStorage.removeItem('breakingChangesGotIt');
+    }
     sessionStorage['hasLicense'] = result.clusterLicense;
     sessionStorage['licenseType'] = result.licenseType;
     sessionStorage['allowEmptyArguments'] = result.allowEmptyArguments;

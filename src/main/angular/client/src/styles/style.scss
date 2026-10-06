@@ -3166,6 +3166,25 @@ button.close {
   width: 620px !important;
 }
 
+.w-760 {
+  width: 760px !important;
+}
+
+.breaking-changes-intro {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.breaking-changes-list {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.breaking-changes-title {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .w-216 {
   min-width: 216px;
 }

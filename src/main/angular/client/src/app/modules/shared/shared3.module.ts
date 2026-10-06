@@ -9,6 +9,7 @@ import {NzPopoverModule} from "ng-zorro-antd/popover";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {
   AboutModalComponent,
+  BreakingChangesComponent,
   InfoMenuComponent,
   StepGuideComponent
 } from '../../components/info-menu/info-menu.component';
@@ -30,6 +31,7 @@ const EXPORTS = [InfoMenuComponent];
     ...EXPORTS,
     AboutModalComponent,
     StepGuideComponent,
+    BreakingChangesComponent,
     RichTooltipDirective,
     RichTooltipContentComponent,
     GlossaryHostDirective,

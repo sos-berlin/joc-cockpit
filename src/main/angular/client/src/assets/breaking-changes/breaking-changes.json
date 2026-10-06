@@ -1,0 +1,38 @@
+{
+  "_comment": [
+    "NOTE: The entries below are demo data only. Replace them with the actual breaking changes of each release.",
+    "Each entry is keyed by its JIRA issue key and holds:",
+    "  title: short description displayed in the pop-up window",
+    "  releases: first release per release line that includes the change, e.g. [\"2.7.9\", \"2.8.5\", \"2.9.1\"] for a change backported to 2.7 and 2.8",
+    "  permissions: the pop-up window is displayed to users who are assigned at least one of these permissions, e.g. sos:products:joc:administration:settings:manage",
+    "This _comment field is ignored by JOC Cockpit."
+  ],
+  "breakingChanges": [
+    {
+      "JOC-2290": {
+        "title": "Switch the default value of the \"remember me\" setting to false",
+        "releases": [
+          "2.7.9",
+          "2.8.5",
+          "2.9.1",
+          "2.0.0"
+        ],
+        "permissions": [
+          "sos:products:joc:administration:accounts:manage",
+          "sos:products:joc:settings:manage"
+        ]
+      }
+    },
+    {
+      "JOC-2255": {
+        "title": "Inventory folder permissions are merged across roles instead of being evaluated per folder",
+        "releases": [
+          "2.9.1"
+        ],
+        "permissions": [
+          "sos:products:joc:administration:settings:manage"
+        ]
+      }
+    }
+  ]
+}

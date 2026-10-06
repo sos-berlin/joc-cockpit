@@ -3,7 +3,8 @@ import {ActivatedRoute, Router, NavigationStart, NavigationEnd, NavigationError}
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
-import {Subscription} from 'rxjs';
+import {forkJoin, of, Subscription} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 import {isEmpty} from 'underscore';
 import {NzConfigService} from 'ng-zorro-antd/core/config';
 import {CoreService} from '../../services/core.service';
@@ -11,7 +12,15 @@ import {DataService} from '../../services/data.service';
 import {PopupService} from "../../services/popup.service";
 import {AuthService, OIDCAuthService} from '../../components/guard';
 import {HeaderComponent} from '../../components/header/header.component';
-import {StepGuideComponent} from '../../components/info-menu/info-menu.component';
+import {BreakingChangesComponent, StepGuideComponent} from '../../components/info-menu/info-menu.component';
+import {
+  BreakingChange,
+  BREAKING_CHANGES_URL,
+  compareReleases,
+  getRelease,
+  isBreakingChangeForUpgrade,
+  parseBreakingChanges
+} from '../../components/info-menu/breaking-changes';
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 
 declare const $: any;
@@ -1025,8 +1034,10 @@ export class LayoutComponent {
         return;
       }
       this.isPopupOpen = true;
+      // breaking changes are announced to existing users only: first-time users with welcome flags false get a new setup
       if ((sessionStorage['welcomeDoNotRemindMe'] && sessionStorage['welcomeDoNotRemindMe'] == 'true')
         || (sessionStorage['welcomeGotIt'] && sessionStorage['welcomeGotIt'] == 'true')) {
+        this.openBreakingChangesModal();
         return;
       }
       const date = localStorage.getItem('$SOS$REMINDMEAFTER');
@@ -1046,7 +1057,7 @@ export class LayoutComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result === 'REMINDMELATER') {
-          localStorage.setItem('$SOS$REMINDMEAFTER', (new Date().setDate(new Date().getDate() + 1)).toString());
+          localStorage.setItem('$SOS$REMINDMEAFTER', LayoutComponent.getRemindMeAfter());
         } else {
           localStorage.removeItem('$SOS$REMINDMEAFTER');
           if (this.permission.joc && this.permission.joc.administration.settings.manage) {
@@ -1057,8 +1068,152 @@ export class LayoutComponent {
     }
   }
 
-  private storeGlobalConfig(): void {
+  private static getRemindMeAfter(): string {
+    return (new Date().setDate(new Date().getDate() + 1)).toString();
+  }
+
+  private openBreakingChangesModal(): void {
+    const date = localStorage.getItem('$SOS$BREAKINGCHANGESREMINDMEAFTER');
+    if (date) {
+      if (parseInt(date, 10) > new Date().getTime()) {
+        return;
+      }
+    }
+    forkJoin([
+      this.coreService.get('version.json'),
+      this.coreService.get(BREAKING_CHANGES_URL + '?v=' + new Date().getTime())
+    ]).subscribe({
+      next: ([versionData, breakingChangesData]) => {
+        const release = getRelease(versionData?.version);
+        if (!release) {
+          return;
+        }
+        this.getBreakingChangesGotIt((acknowledgedRelease: string) => {
+          // permissions are loaded from authentication/joc_cockpit_permissions by getPermissions()
+          const permission = this.permission || JSON.parse(this.authService.permission || '{}');
+          const changes = parseBreakingChanges(breakingChangesData).filter(change => isBreakingChangeForUpgrade(change, acknowledgedRelease, release)
+            && change.permissions.some(path => LayoutComponent.hasPermission(permission, path)));
+          if (changes.length > 0) {
+            this.showBreakingChanges(release, changes);
+          }
+        });
+      }, error: () => {
+      }
+    });
+  }
+
+  private getBreakingChangesGotIt(cb: (acknowledgedRelease: string) => void): void {
+    if (sessionStorage.getItem('breakingChangesGotIt') !== null) {
+      cb(getRelease(sessionStorage.getItem('breakingChangesGotIt')));
+      return;
+    }
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+      next: (res: any) => {
+        let acknowledgedRelease = '';
+        if (res.configurations && res.configurations[0] && res.configurations[0].configurationItem) {
+          const configuration = JSON.parse(res.configurations[0].configurationItem);
+          acknowledgedRelease = getRelease(configuration?.user?.breaking_changes_got_it?.value);
+        }
+        cb(acknowledgedRelease);
+      }, error: () => {
+      }
+    });
+  }
+
+  private showBreakingChanges(release: string, changes: BreakingChange[]): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: BreakingChangesComponent,
+      nzClassName: 'w-760',
+      nzData: {
+        version: release,
+        changes
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result === 'REMINDMELATER') {
+        localStorage.setItem('$SOS$BREAKINGCHANGESREMINDMEAFTER', LayoutComponent.getRemindMeAfter());
+      } else {
+        localStorage.removeItem('$SOS$BREAKINGCHANGESREMINDMEAFTER');
+        if (result === 'GOTIT' && this.permission.joc && this.permission.joc.administration.settings.manage) {
+          this.storeBreakingChangesGotIt(release);
+        }
+      }
+    });
+  }
+
+  private static hasPermission(permission: any, path: string): boolean {
+    const parts = (path || '').split(':');
+    if (!permission || parts.length < 4 || parts[0] !== 'sos' || parts[1] !== 'products') {
+      return false;
+    }
+    let roots: any[] = [];
+    if (parts[2] === 'joc') {
+      roots = [permission.joc];
+    } else if (parts[2] === 'controller') {
+      roots = [permission.currentController, permission.controllerDefaults,
+        ...Object.values(permission.controllers || {})];
+    }
+    const normalize = (key: string) => key.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return roots.some(root => {
+      let obj = root;
+      for (const part of parts.slice(3)) {
+        if (!obj || typeof obj !== 'object') {
+          return false;
+        }
+        const key = Object.keys(obj).find(k => normalize(k) === normalize(part));
+        obj = key !== undefined ? obj[key] : undefined;
+      }
+      return obj === true;
+    });
+  }
+
+  private storeBreakingChangesGotIt(release: string): void {
     this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe((res) => {
+      let configuration: any = {};
+      if (res.configurations[0]) {
+        configuration = res.configurations[0];
+        configuration.configurationItem = JSON.parse(res.configurations[0].configurationItem);
+      } else {
+        configuration.configurationItem = JSON.parse(res.defaultGlobals);
+      }
+      if (!configuration.configurationItem.user) {
+        configuration.configurationItem.user = {};
+      }
+      if (!configuration.configurationItem.user.breaking_changes_got_it) {
+        configuration.configurationItem.user.breaking_changes_got_it = {type: 'STRING'};
+      }
+      const acknowledgedRelease = getRelease(configuration.configurationItem.user.breaking_changes_got_it.value);
+      if (acknowledgedRelease && compareReleases(acknowledgedRelease, release) >= 0) {
+        sessionStorage['breakingChangesGotIt'] = acknowledgedRelease;
+        return;
+      }
+      const value = release;
+      configuration.configurationItem.user.breaking_changes_got_it.value = value;
+      const request: any = {
+        id: configuration.id || 0,
+        configurationType: 'GLOBALS',
+        configurationItem: JSON.stringify(configuration.configurationItem)
+      };
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+        this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+          request.auditLog = {comment: translatedValue};
+        });
+      }
+      this.coreService.post('configuration/save', request).subscribe(() => {
+        sessionStorage['breakingChangesGotIt'] = value;
+      });
+    });
+  }
+
+  private storeGlobalConfig(): void {
+    forkJoin([
+      this.coreService.post('configurations', {configurationType: 'GLOBALS'}),
+      this.coreService.get('version.json').pipe(catchError(() => of(null)))
+    ]).subscribe(([res, versionData]) => {
       let configuration: any = {};
       if (res.configurations[0]) {
         configuration = res.configurations[0];
@@ -1075,6 +1230,15 @@ export class LayoutComponent {
       }
       configuration.configurationItem.user.welcome_got_it.value = true;
       configuration.configurationItem.user.welcome_do_not_remind_me.value = true;
+      const release = getRelease(versionData?.version);
+      let breakingChangesGotIt = '';
+      if (release && !getRelease(configuration.configurationItem.user.breaking_changes_got_it?.value)) {
+        if (!configuration.configurationItem.user.breaking_changes_got_it) {
+          configuration.configurationItem.user.breaking_changes_got_it = {type: 'STRING'};
+        }
+        configuration.configurationItem.user.breaking_changes_got_it.value = release;
+        breakingChangesGotIt = release;
+      }
       const request: any = {
         id: configuration.id || 0,
         configurationType: 'GLOBALS',
@@ -1088,6 +1252,9 @@ export class LayoutComponent {
       this.coreService.post('configuration/save', request).subscribe(() => {
         sessionStorage['welcomeDoNotRemindMe'] = true;
         sessionStorage['welcomeGotIt'] = true;
+        if (breakingChangesGotIt) {
+          sessionStorage['breakingChangesGotIt'] = breakingChangesGotIt;
+        }
       });
     });
   }

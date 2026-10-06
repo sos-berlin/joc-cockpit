@@ -2028,6 +2028,8 @@
     "tooltip.systemMonitorEvent": "システムモニターイベント",
     "message.line1": "簡単に始められるように、いくつかのプリセットをダウンロードして、^JOCコックピット|joc-cockpit^のジョブ定義画面からインポートすることをお勧めします。Defaults.zipをインポートすると、シェルジョブで利用できるグローバルなジョブ環境変数を作成するためのジョブリソースが含まれる同じ名前のフォルダが作成されます。",
     "message.line2": "Examples.tar.gzおよびExamples.zipアーカイブには、UnixおよびWindows上で^エージェント|agent^上で実行するためのワークフローおよびジョブの例が含まれています。これらの例は、独自のワークフローやジョブの依存関係を作成するのに役立ちます。これらの例は、%JS7 - Online Demo% の説明に記載されている内容に対応しています。",
+    "label.breakingChanges": "Breaking Changes in Release {{version}}",
+    "message.breakingChanges": "This release includes breaking changes that can require action on your side. Find details from the Change Management System:",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
       "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
