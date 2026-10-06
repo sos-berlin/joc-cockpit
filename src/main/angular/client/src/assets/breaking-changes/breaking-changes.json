@@ -14,8 +14,7 @@
         "releases": [
           "2.7.9",
           "2.8.5",
-          "2.9.1",
-          "2.0.0"
+          "2.9.1"
         ],
         "permissions": [
           "sos:products:joc:administration:accounts:manage",
@@ -30,7 +29,7 @@
           "2.9.1"
         ],
         "permissions": [
-          "sos:products:joc:administration:settings:manage"
+          "sos:products:joc:administration:accounts:manage"
         ]
       }
     }
