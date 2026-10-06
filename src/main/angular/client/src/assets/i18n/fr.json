@@ -2028,8 +2028,8 @@
     "tooltip.systemMonitorEvent": "Ce drapeau signale les avertissements et les erreurs des composants JS7, par exemple, la perte de connexion à la base de données.\n\nLe drapeau indique les avertissements par la couleur jaune et les erreurs par la couleur rouge.\n\nUn clic sur le drapeau affiche les 10 derniers avertissements et erreurs.\n\nLes utilisateurs trouvent la liste complète des avertissements et des erreurs dans la vue *MONITEUR -> Notifications Système*.",
     "message.line1": "Pour vous permettre de démarrer facilement, nous vous suggérons de télécharger quelques préréglages que vous pourrez importer dans JOC Cockpit à partir de la vue Configuration.\n\nAprès l'importation, l'archive `Defaults.zip` créera un dossier du même nom qui comprendra des Ressources de Tâche pour créer des [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) disponibles pour vos Tâches Shell.",
     "message.line2": "Les archives `Examples.tar.gz` et `Examples.zip` contiennent des exemples de ^Workflow^s et de ^Tâches|job^ pour des exécutions avec des ^Agent^s sous Unix et Windows. Ces exemples peuvent être utiles pour créer vos propres Workflows et dépendances de Tâches, pour plus d'informations voir [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
-    "label.breakingChanges": "Breaking Changes in Release {{version}}",
-    "message.breakingChanges": "This release includes breaking changes that can require action on your side. Find details from the Change Management System:",
+    "label.breakingChanges": "Changements incompatibles dans la version {{version}}",
+    "message.breakingChanges": "Cette version comporte des changements incompatibles qui peuvent nécessiter une intervention de votre part. Vous trouverez plus de détails dans le système de gestion des changements:",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables",
       "instructions": "https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo"
