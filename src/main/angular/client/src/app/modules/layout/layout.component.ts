@@ -17,7 +17,9 @@ import {
   BreakingChange,
   BREAKING_CHANGES_URL,
   compareReleases,
+  getBreakingChangesGotIt,
   getRelease,
+  hasBreakingChangePermission,
   isBreakingChangeForUpgrade,
   parseBreakingChanges
 } from '../../components/info-menu/breaking-changes';
@@ -1088,33 +1090,15 @@ export class LayoutComponent {
         if (!release) {
           return;
         }
-        this.getBreakingChangesGotIt((acknowledgedRelease: string) => {
+        getBreakingChangesGotIt(this.coreService, (acknowledgedRelease: string) => {
           // permissions are loaded from authentication/joc_cockpit_permissions by getPermissions()
           const permission = this.permission || JSON.parse(this.authService.permission || '{}');
           const changes = parseBreakingChanges(breakingChangesData).filter(change => isBreakingChangeForUpgrade(change, acknowledgedRelease, release)
-            && change.permissions.some(path => LayoutComponent.hasPermission(permission, path)));
+            && change.permissions.some(path => hasBreakingChangePermission(permission, path)));
           if (changes.length > 0) {
             this.showBreakingChanges(release, changes);
           }
         });
-      }, error: () => {
-      }
-    });
-  }
-
-  private getBreakingChangesGotIt(cb: (acknowledgedRelease: string) => void): void {
-    if (sessionStorage.getItem('breakingChangesGotIt') !== null) {
-      cb(getRelease(sessionStorage.getItem('breakingChangesGotIt')));
-      return;
-    }
-    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
-      next: (res: any) => {
-        let acknowledgedRelease = '';
-        if (res.configurations && res.configurations[0] && res.configurations[0].configurationItem) {
-          const configuration = JSON.parse(res.configurations[0].configurationItem);
-          acknowledgedRelease = getRelease(configuration?.user?.breaking_changes_got_it?.value);
-        }
-        cb(acknowledgedRelease);
       }, error: () => {
       }
     });
@@ -1142,32 +1126,6 @@ export class LayoutComponent {
           this.storeBreakingChangesGotIt(release);
         }
       }
-    });
-  }
-
-  private static hasPermission(permission: any, path: string): boolean {
-    const parts = (path || '').split(':');
-    if (!permission || parts.length < 4 || parts[0] !== 'sos' || parts[1] !== 'products') {
-      return false;
-    }
-    let roots: any[] = [];
-    if (parts[2] === 'joc') {
-      roots = [permission.joc];
-    } else if (parts[2] === 'controller') {
-      roots = [permission.currentController, permission.controllerDefaults,
-        ...Object.values(permission.controllers || {})];
-    }
-    const normalize = (key: string) => key.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return roots.some(root => {
-      let obj = root;
-      for (const part of parts.slice(3)) {
-        if (!obj || typeof obj !== 'object') {
-          return false;
-        }
-        const key = Object.keys(obj).find(k => normalize(k) === normalize(part));
-        obj = key !== undefined ? obj[key] : undefined;
-      }
-      return obj === true;
     });
   }
 

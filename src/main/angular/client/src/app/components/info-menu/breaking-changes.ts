@@ -49,6 +49,50 @@ export function isBreakingChangeForUpgrade(change: BreakingChange, acknowledgedR
   return isIncludedInRelease(change, currentRelease) && !isIncludedInRelease(change, acknowledgedRelease);
 }
 
+export function hasBreakingChangePermission(permission: any, path: string): boolean {
+  const parts = (path || '').split(':');
+  if (!permission || parts.length < 4 || parts[0] !== 'sos' || parts[1] !== 'products') {
+    return false;
+  }
+  let roots: any[] = [];
+  if (parts[2] === 'joc') {
+    roots = [permission.joc];
+  } else if (parts[2] === 'controller') {
+    roots = [permission.currentController, permission.controllerDefaults,
+      ...Object.values(permission.controllers || {})];
+  }
+  const normalize = (key: string) => key.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return roots.some(root => {
+    let obj = root;
+    for (const part of parts.slice(3)) {
+      if (!obj || typeof obj !== 'object') {
+        return false;
+      }
+      const key = Object.keys(obj).find(k => normalize(k) === normalize(part));
+      obj = key !== undefined ? obj[key] : undefined;
+    }
+    return obj === true;
+  });
+}
+
+export function getBreakingChangesGotIt(coreService: any, cb: (acknowledgedRelease: string) => void): void {
+  if (sessionStorage.getItem('breakingChangesGotIt') !== null) {
+    cb(getRelease(sessionStorage.getItem('breakingChangesGotIt')));
+    return;
+  }
+  coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+    next: (res: any) => {
+      let acknowledgedRelease = '';
+      if (res.configurations && res.configurations[0] && res.configurations[0].configurationItem) {
+        const configuration = JSON.parse(res.configurations[0].configurationItem);
+        acknowledgedRelease = getRelease(configuration?.user?.breaking_changes_got_it?.value);
+      }
+      cb(acknowledgedRelease);
+    }, error: () => {
+    }
+  });
+}
+
 export function parseBreakingChanges(data: any): BreakingChange[] {
   const changes: BreakingChange[] = [];
   if (data && Array.isArray(data.breakingChanges)) {

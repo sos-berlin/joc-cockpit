@@ -3,8 +3,18 @@ import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
 import {CoreService} from '../../services/core.service';
 import {DataService} from "../../services/data.service";
+import {forkJoin} from 'rxjs';
 import {mdToHtml} from '../../directives/rich-tooltip.directive';
-import {CHANGE_MANAGEMENT_URL} from './breaking-changes';
+import {AuthService} from '../guard/auth.service';
+import {
+  BREAKING_CHANGES_URL,
+  CHANGE_MANAGEMENT_URL,
+  getBreakingChangesGotIt,
+  getRelease,
+  hasBreakingChangePermission,
+  isBreakingChangeForUpgrade,
+  parseBreakingChanges
+} from './breaking-changes';
 
 @Component({
   standalone: false,
@@ -251,13 +261,51 @@ export class BreakingChangesComponent {
 export class InfoMenuComponent {
   @Input() isHeader: boolean = false;
   versionData: any = {};
-  constructor(private modal: NzModalService, private coreService: CoreService) {
+  isLoggedIn = false;
+  constructor(private modal: NzModalService, private coreService: CoreService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
+      this.isLoggedIn = !!sessionStorage['$SOS$accessTokenId'];
       this.coreService.get('version.json').subscribe((data) => {
         this.versionData = data;
       });
+  }
+
+  // Same selection as the automatic pop-up (LayoutComponent.openBreakingChangesModal), but read-only:
+  // the dialog shows only Close and nothing is stored on close.
+  showBreakingChanges(): void {
+    forkJoin([
+      this.coreService.get('version.json'),
+      this.coreService.get(BREAKING_CHANGES_URL + '?v=' + new Date().getTime())
+    ]).subscribe({
+      next: ([versionData, breakingChangesData]) => {
+        const release = getRelease(versionData?.version);
+        if (!release) {
+          return;
+        }
+        getBreakingChangesGotIt(this.coreService, (acknowledgedRelease: string) => {
+          const permission = JSON.parse(this.authService.permission || '{}');
+          const changes = parseBreakingChanges(breakingChangesData).filter(change => isBreakingChangeForUpgrade(change, acknowledgedRelease, release)
+            && change.permissions.some(path => hasBreakingChangePermission(permission, path)));
+          this.modal.create({
+            nzTitle: undefined,
+            nzContent: BreakingChangesComponent,
+            nzClassName: 'w-760',
+            nzData: {
+              version: release,
+              changes,
+              manual: true
+            },
+            nzFooter: null,
+            nzAutofocus: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+        });
+      }, error: () => {
+      }
+    });
   }
   about(): any {
     this.modal.create({

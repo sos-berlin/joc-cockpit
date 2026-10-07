@@ -40,6 +40,11 @@
       </li>
       <li nz-submenu nzTitle="{{'info.button.announcements' | translate}}">
         <ul>
+          @if (isLoggedIn) {
+            <li (click)="showBreakingChanges()" nz-menu-item>
+              <a>{{'info.label.breakingChanges' | translate: {version: versionData?.version?.split('-')[0]} }}</a>
+            </li>
+          }
           <li nz-menu-item>
             <a href="https://www.sos-berlin.com/news" target="_blank">{{'info.button.js7News' | translate}}</a>
           </li>

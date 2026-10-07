@@ -2751,9 +2751,9 @@ export class JobComponent {
   @Input() workflowPath: any = {};
   @Input() showMoreAdvanceOptions = false;
   @Output() jobTagsEvent = new EventEmitter<any>();
-  history = [];
+  // Snapshots of presentObj as JSON strings, newest first; presentObj is the current state.
+  history: {past: string[], future: string[]} = {past: [], future: []};
   showToken = /\w/;
-  indexOfNextAdd = 0;
   error: boolean;
   errorMsg: string;
   invalidName: string;
@@ -2852,8 +2852,7 @@ export class JobComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedNode']) {
-      this.history = [];
-      this.indexOfNextAdd = 0;
+      this.history = {past: [], future: []};
       this.isRuntimeVisible = false;
       this.reset();
       this.init();
@@ -3845,8 +3844,11 @@ export class JobComponent {
     }
     if (flag1 || flag2) {
       if (this.presentObj && !isEmpty(this.presentObj)) {
-        this.history.push(clone(JSON.stringify(this.presentObj)));
-        this.indexOfNextAdd = this.history.length - 1;
+        if (this.history.past.length === 20) {
+          this.history.past.pop();
+        }
+        this.history.past.unshift(JSON.stringify(this.presentObj));
+        this.history.future = [];
       }
       if (flag1) {
         this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
@@ -4402,10 +4404,9 @@ export class JobComponent {
    * Redoes the last change.
    */
   redo(): void {
-    const n = this.history.length;
-    if (this.indexOfNextAdd < n) {
-      const obj = this.history[this.indexOfNextAdd++];
-      this.restoreData(obj);
+    if (this.history.future.length > 0) {
+      this.history.past.unshift(JSON.stringify(this.presentObj));
+      this.restoreData(this.history.future.shift());
     }
   }
 
@@ -4415,9 +4416,9 @@ export class JobComponent {
    * Undoes the last change.
    */
   undo(): void {
-    if (this.indexOfNextAdd > 0) {
-      const obj = this.history[--this.indexOfNextAdd];
-      this.restoreData(obj);
+    if (this.history.past.length > 0) {
+      this.history.future.unshift(JSON.stringify(this.presentObj));
+      this.restoreData(this.history.past.shift());
     }
   }
 
@@ -4425,6 +4426,7 @@ export class JobComponent {
     obj = JSON.parse(obj);
     this.selectedNode.obj = JSON.parse(obj.obj);
     this.selectedNode.job = JSON.parse(obj.job);
+    this.presentObj = {obj: obj.obj, job: obj.job};
     this.ref.markForCheck();
   }
 
@@ -5341,12 +5343,14 @@ export class WorkflowComponent {
   forkListVariableObj: any = {};
   orderPreparation: any = {};
   workflow: any = {};
-  history = {past: [], present: {}, future: [], type: 'new'};
+  history = {past: [], present: '', future: [], type: 'new'};
   implicitSave = false;
   noSave = false;
   isLoading = true;
   isUpdate: boolean;
   isStore = false;
+  // A store requested while another inventory/store was in flight; flushed when that one returns.
+  _storeQueued = false;
   _pendingStoreFailure = false;
   error: boolean;
   cutCell: any = [];
@@ -6353,7 +6357,9 @@ export class WorkflowComponent {
       };
       next = JSON.parse(next);
       this.updateWorkflowJSONObj(next);
-      this.reloadWorkflow(next);
+      if (!this.reloadWorkflow(next)) {
+        this.storeRestoredState();
+      }
     }
   }
 
@@ -6377,7 +6383,23 @@ export class WorkflowComponent {
       };
       previous = JSON.parse(previous);
       this.updateWorkflowJSONObj(previous);
-      this.reloadWorkflow(previous);
+      if (!this.reloadWorkflow(previous)) {
+        this.storeRestoredState();
+      }
+    }
+  }
+
+  // Undo/redo that leaves the instructions unchanged doesn't rebuild the graph, so no auto-save
+  // follows: store the restored state here. history.type is still 'undo'/'redo', so storeData()
+  // persists it without recording a new history step.
+  private storeRestoredState(): void {
+    const data = this.coreService.clone(this.workflow.configuration);
+    this.modifyJSON(data, false, false);
+    if (this.isStore) {
+      this._storeQueued = true;
+    } else {
+      this.isStore = true;
+      this.storeData(data);
     }
   }
 
@@ -6393,6 +6415,12 @@ export class WorkflowComponent {
       documentationName: data.documentationName,
       jobResourceNames: data.jobResourceNames,
     };
+    // extendJsonObj() builds the stored JSON from these fields, not from extraConfiguration.
+    this.title = data.title || '';
+    this.timeZone = data.timeZone || '';
+    this.dayOffset = data.dayOffset || '';
+    this.documentationName = data.documentationName;
+    this.jobResourceNames = data.jobResourceNames ? this.coreService.clone(data.jobResourceNames) : data.jobResourceNames;
     delete data.title;
     delete data.timeZone;
     delete data.dayOffset;
@@ -7119,7 +7147,7 @@ export class WorkflowComponent {
         }
 
         this.updateXMLJSON(false);
-        this.history = {past: [], present: {}, future: [], type: 'new'};
+        this.history = {past: [], present: '', future: [], type: 'new'};
         this.storeData(result);
         this.ref.markForCheck();
       }
@@ -7470,7 +7498,8 @@ export class WorkflowComponent {
       }
     }
     this.error = false;
-    this.history = {past: [], present: {}, future: [], type: 'new'};
+    this.history = {past: [], present: '', future: [], type: 'new'};
+    this._storeQueued = false;
     this.isLoading = true;
     this.invalidMsg = '';
     this._pendingStoreFailure = false;
@@ -8408,7 +8437,8 @@ export class WorkflowComponent {
   }
 
 
-  private reloadWorkflow(obj): void {
+  // Returns true when the graph is rebuilt (its auto-save then stores the state).
+  private reloadWorkflow(obj): boolean {
     this.closeMenu();
     const data = this.coreService.clone(this.workflow.configuration);
     this.modifyJSON(data, false, false);
@@ -8428,8 +8458,10 @@ export class WorkflowComponent {
         }
       }
     }
+    let rebuilt = false;
     if (!isEqual(JSON.stringify(obj.instructions), JSON.stringify(data.instructions))) {
       this.updateXMLJSON(false);
+      rebuilt = true;
     }
     if (this.selectedNode && this.selectedNode.job && flag) {
       let isCheck = true;
@@ -8444,6 +8476,7 @@ export class WorkflowComponent {
         this.selectedNode = null;
       }
     }
+    return rebuilt;
   }
 
   private getWorkflow(flag = false): void {
@@ -16735,7 +16768,22 @@ export class WorkflowComponent {
       JSON.stringify(this.lastSavedOrderPreparation),
       JSON.stringify(this.orderPreparation || {})
     );
-    if (this.workflow.path && (instructionsChanged || orderPrepChanged) && !this.isStore) {
+    if (this.workflow.path && (instructionsChanged || orderPrepChanged)) {
+      if (this.isStore) {
+        this._storeQueued = true;
+      } else {
+        this.isStore = true;
+        this.storeData(data);
+      }
+    }
+  }
+
+  // Runs the store that was requested while the previous inventory/store was in flight.
+  private flushQueuedStore(): void {
+    if (this._storeQueued && !this.isStore) {
+      this._storeQueued = false;
+      const data = this.coreService.clone(this.workflow.configuration);
+      this.modifyJSON(data, false, false);
       this.isStore = true;
       this.storeData(data);
     }
@@ -16964,12 +17012,13 @@ export class WorkflowComponent {
       this.changeImpact();
     }
     if (!onlyStore) {
+      // past is newest-first: drop the oldest step
       if (this.history.past.length === 20) {
-        this.history.past.shift();
+        this.history.past.pop();
       }
       if (this.history.type === 'new') {
         this.history = {
-          past: [this.history.present, ...this.history.past],
+          past: this.history.present ? [this.history.present, ...this.history.past] : this.history.past,
           present: JSON.stringify(newObj),
           future: [],
           type: 'new'
@@ -17043,6 +17092,7 @@ export class WorkflowComponent {
           this.ref.markForCheck();
         }
         this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
+        this.flushQueuedStore();
       }, error: (err: any) => {
         if (request.objectType === 'WORKFLOW') {
           if (err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('Could not resolve type id \'ElseWhen\' as a subtype of') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')) {
@@ -17055,6 +17105,7 @@ export class WorkflowComponent {
         if (request.path === this.workflow.path) {
           this._pendingStoreFailure = true;
         }
+        this.flushQueuedStore();
       }
     });
   }
