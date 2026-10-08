@@ -5,7 +5,7 @@ The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approva
 The Approval Process involves the following roles:
 
 - A *Requestor* requests performing an intervention that requires approval.
-- An *Approver* confirms or denies the Approval Request.
+- An *Approver* confirms or rejects the Approval Request.
 
 The basic functionality of the Approval Process includes:
 

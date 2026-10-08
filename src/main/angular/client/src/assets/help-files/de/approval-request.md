@@ -5,7 +5,7 @@
 Der Autorisierungsprozess umfasst die folgenden Rollen:
 
 - Ein *Requestor* beantragt die Durchführung einer autorisierungspflichtigen Intervention.
-- Ein *Approver* bestätigt oder verweigert die Autorisierung.
+- Ein *Approver* bestätigt die Autorisierung oder weist sie zurück.
 
 Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 

@@ -5,7 +5,7 @@ Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+App
 Le processus d'autorisation implique les rôles suivants :
 
 - Un *Demandeur* demande à effectuer une intervention nécessitant une autorisation.
-- Un *Approbateur* confirme ou refuse la demande d'autorisation.
+- Un *Approbateur* confirme ou rejette la demande d'autorisation.
 
 La fonctionnalité de base du processus d'autorisation comprend :
 
@@ -24,7 +24,7 @@ La liste des demandes d'autorisation est proposée avec les propriétés suivant
 - **Demandeur** indique le compte d'utilisateur qui a introduit la demande d'autorisation.
 - **Status Demande** est l'un des suivants : *requested*, *approved*, *withdrawn*, *executed*.
 - **Approver** est le *prénom* et *nom* de l'*Approbateur* préféré.
-- **Status Autorisation** est l'un des statuts suivants : *en attente*, *approuvé*, *refusé*
+- **Status Autorisation** est l'un des statuts suivants : *en attente*, *approuvé*, *rejeté*
 - **Date Status Autorisation** est la date la plus récente à laquelle l'*Approbateur* a agi sur la demande d'autorisation, par exemple en approuvant ou en rejetant la demande.
 - **URL Demande** est le point de terminaison [REST Web Service API](/rest-api) que le *Demandeur* souhaite utiliser.
 - **Catégorie** indique la portée de la demande, par exemple si elle est destinée à un Contrôleur, au Plan Quotidien, etc.

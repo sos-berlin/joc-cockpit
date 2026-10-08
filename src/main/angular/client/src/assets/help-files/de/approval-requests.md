@@ -5,7 +5,7 @@
 Der Autorisierungsprozess umfasst die folgenden Rollen:
 
 - Ein *Requestor* beantragt die Durchführung einer autorisierungspflichtigen Intervention.
-- Ein *Approver* bestätigt oder verweigert die Autorisierung.
+- Ein *Approver* bestätigt die Autorisierung oder weist sie zurück.
 
 Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 
@@ -24,7 +24,7 @@ Die Liste der Autorisierungsanfragen wird mit den folgenden Eigenschaften angebo
 - **Anfrager** gibt das Benutzerkonto an, das die Autorisierungsanfrage gestellt hat.
 - **Status Anfrage** ist einer der folgenden: *eingereicht*, *genehmigt*, *zurückgezogen*, *erledigt*.
 - **Autorisierer** ist der *Vorname* und *Nachname* des bevorzugten *Approver*.
-- **Status Autorisierung** ist einer der Werte *anstehend*, *genehmigt*, *abgelehnt*.
+- **Status Autorisierung** ist einer der Werte *anstehend*, *genehmigt*, *zurückgewiesen*.
 - **Statusdatum Autorisierung** ist der letzte Zeitpunkt, zu dem der *Autorisierer* auf die Autorisierungsanfrage reagiert hat, z.B. indem er/sie die Anfrage genehmigt oder abgelehnt hat.
 - **Anfrage URL** ist der [REST Web Service API](/rest-api) Endpunkt, den der *Requestor* verwenden möchte.
 - **Kategorie** gibt den Umfang der Anfrage an, z.B. für einen Controller, für den Tagesplan usw.
@@ -42,4 +42,3 @@ Die Liste der Autorisierungsanfragen wird mit den folgenden Eigenschaften angebo
 ### Product Knowledge Base
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
-

@@ -5,7 +5,7 @@ Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+App
 Le processus d'autorisation implique les rôles suivants :
 
 - Un *Demandeur* demande à effectuer une intervention qui nécessite une autorisation.
-- Un *Approbateur* confirme ou refuse la demande d'autorisation.
+- Un *Approbateur* confirme ou rejette la demande d'autorisation.
 
 La fonctionnalité de base du processus d'autorisation comprend :
 
