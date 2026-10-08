@@ -558,6 +558,7 @@ export class OrderOverviewComponent {
   showPanelObj: any;
   pageView: any;
   tree = [];
+  listOfAgents: any = [];
   orders = [];
   history = [];
   auditLogs = [];
@@ -606,6 +607,8 @@ export class OrderOverviewComponent {
     {status: 'FAILED', text: 'failed'},
     {status: 'COMPLETED', text: 'completed'}
   ];
+
+  agentFilterStates = ['PENDING', 'SCHEDULED', 'INPROGRESS', 'RUNNING', 'WAITING', 'BLOCKED'];
 
   dateFilterBtn: any = [
     {date: 'ALL', text: 'all'},
@@ -720,6 +723,15 @@ export class OrderOverviewComponent {
     }
 
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    if (this.schedulerIds.selected) {
+      const agentObj = {
+        agentList: []
+      };
+      this.coreService.getAgents(agentObj, this.schedulerIds.selected, () => {
+        this.listOfAgents = agentObj.agentList;
+        this.cdr.markForCheck();
+      });
+    }
     this.sideView = this.coreService.getSideView();
     if (this.sideView.orderOverview && !this.sideView.orderOverview.show) {
       this.hidePanel();
@@ -937,6 +949,9 @@ export class OrderOverviewComponent {
       } else if (orderTags.length > 0 && this.orderFilters.tagType === 'orderTags') {
         obj.orderTags = orderTags;
       }
+    }
+    if (this.isAgentFilterVisible() && this.orderFilters.filter.agentNames && this.orderFilters.filter.agentNames.length > 0) {
+      obj.agentNames = this.orderFilters.filter.agentNames;
     }
     if (this.orderFilters.filter.date !== 'ALL') {
       obj.dateTo = this.orderFilters.filter.date;
@@ -1210,6 +1225,23 @@ export class OrderOverviewComponent {
     }
     this.loading = false;
     this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+  }
+
+  selectAgents(list): void {
+    this.orderFilters.filter.agentNames = list;
+    if (this.pageView === 'bulk') {
+      return;
+    }
+    this.loading = false;
+    this.getOrders({controllerId: this.schedulerIds.selected, states: this.getState()});
+  }
+
+  isAgentFilterVisible(): boolean {
+    return this.agentFilterStates.includes(this.orderFilters.filter.state);
+  }
+
+  openAgentSelectbox(): void {
+    $('#order-agent-select').click();
   }
 
   changeDate(date): void {

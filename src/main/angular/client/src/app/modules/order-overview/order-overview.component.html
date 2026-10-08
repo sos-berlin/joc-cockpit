@@ -17,6 +17,49 @@
               <app-breadcrumbs [showHelp]="preferences.showHelpPages" (helpClick)="helpPage()"></app-breadcrumbs>
             </div>
             <div [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}" class="inline m-b-xs">
+              @if (pageView !== 'bulk' && isAgentFilterVisible()) {
+                <div class="btn-group dropdown">
+                  <button (click)="openAgentSelectbox()"
+                          [ngClass]="{ 'btn-primary' : orderFilters.filter.agentNames?.length > 0}"
+                          class="btn btn-grey btn-sm m-l-12 z-index">
+                    {{'deploymentService.label.agents' | translate}}
+                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                  </button>
+                  <nz-select [(ngModel)]="orderFilters.filter.agentNames"
+                            [nzAllowClear]="false" [nzDropdownClassName]="'multi-select-dropdown-list'" class="multi-select-dropdown cursor"
+                            id="order-agent-select"
+                            (ngModelChange)="selectAgents($event)"
+                            name="agentNames"
+                            nzMode="multiple">
+                    @for (item of listOfAgents; track item; let i = $index) {
+                      @for (group of [item]; track group) {
+                        <nz-option-group [nzLabel]="groupTitle">
+                          <ng-template #groupTitle>
+                              <span class="_600">
+                                {{ 'agent.label.' + group?.title | translate }}
+                              </span>
+                            @if (i == 0) {
+                              <span (click)="selectAgents([])"
+                                    class="cursor text-primary-hover pos-rel pull-right font14 t-xs" nz-icon nzTheme="outline" nzType="close-circle"></span>
+                            }
+                          </ng-template>
+                          @if (item.title == 'agents') {
+                            @for (agent of group.children; track agent) {
+                              <nz-option [nzLabel]="agent" [nzValue]="agent"></nz-option>
+                            }
+                          }
+                          @if (item.title !== 'agents') {
+                            @for (agent of group?.children; track agent) {
+                              <nz-option [nzLabel]="agent.title" [nzValue]="agent.title">
+                              </nz-option>
+                            }
+                          }
+                        </nz-option-group>
+                      }
+                    }
+                  </nz-select>
+                </div>
+              }
               <div class="btn-group dropdown">
                 <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
                         nzTrigger="click" type="button">
