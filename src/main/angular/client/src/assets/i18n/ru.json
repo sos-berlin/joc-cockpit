@@ -2028,8 +2028,8 @@
     "tooltip.systemMonitorEvent": "Флаг сигнализирует о предупреждениях и ошибках компонентов JS7, например, о потере соединения с базой данных.\n\nФлаг обозначает предупреждения жёлтым цветом, а ошибки - красным.\n\nПосле нажатия на флаг отображаются последние 10 предупреждений и ошибок.\n\nПолный список предупреждений и ошибок можно найти в разделе МОНИТОРИНГ->Системные уведомления.",
     "message.line1": "Для упрощения начала работы рекомендуется загрузить несколько предустановок и импортировать их в разделе конфигурации JOC Cockpit.\n\nИмпорт архива `Defaults.zip` создаст одноимённую папку, содержащую ресурсы задач для глобальных [Job Environment Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Environment+Variables) в Shell-задачах.",
     "message.line2": "Архивы `Examples.tar.gz` и `Examples.zip` содержат примеры рабочих процессов и задач для агентов под Unix и Windows.\n\nЭти примеры помогут вам настроить собственные рабочие процессы и зависимости задач.\n\nОни соответствуют описаниям из [JS7 - Online Demo](https://kb.sos-berlin.com/display/JS7/JS7+-+Online+Demo).",
-    "label.breakingChanges": "Breaking Changes in Release {{version}}",
-    "message.breakingChanges": "This release includes breaking changes that can require action on your side. Find details from the Change Management System:",
+    "label.breakingChanges": "Изменения в версии {{version}}, влияющие на совместимость.",
+    "message.breakingChanges": "Эта версия содержит изменения, влияющие на совместимость, которые могут потребовать действий с вашей стороны. Подробности доступны в системе отслеживания изменений:",
     "link": {
       "jobEnvironmentVariables": "https://kb.sos-berlin.com/x/mQeGAw",
       "instructions": "https://kb.sos-berlin.com/x/JoXAAw"
