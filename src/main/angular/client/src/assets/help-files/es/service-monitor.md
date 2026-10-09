@@ -2,7 +2,7 @@
 
 El Servicio de Monitor se utiliza para reportar el estado de salud de los productos JS7 y para reportar problemas en la ejecución de Workflows. El Servicio de Monitor puebla las sub-vistas de *Monitor* en el JOC Cockpit:
 
-- verificando la disponibilidad de los productos JS7 y reportando en las sub-vistas [Monitor - Disponibilidad del Controlador](/monitor-availability-controller) y [Monitor - Disponibilidad del Agente](/monitor-availability-agent).
+- verificando la disponibilidad de los productos JS7 y reportando en las sub-vistas [Monitor - Disponibilidad de Controlador](/monitor-availability-controller) y [Monitor - Disponibilidad de Agentes](/monitor-availability-agent).
 - verificando los Controladores y Agentes conectados en busca de advertencias y errores generados durante la operación de los productos. Los resultados se agregan a la sub-vista [Monitor - Notificaciones del Sistema](/monitor-notifications-system).
 - verificando los resultados de la ejecución de Workflows y Jobs desde cualquier Controlador conectado y agregando notificaciones a la vista [Monitor - Notificaciones de Órdenes](/monitor-notifications-order).
 
@@ -16,8 +16,8 @@ El Servicio de Monitor se inicia automáticamente al arrancar el JOC Cockpit. Pu
 
 ### Ayuda Contextual
 
-- [Monitor - Disponibilidad del Agente](/monitor-availability-agent)
-- [Monitor - Disponibilidad del Controlador](/monitor-availability-controller)
+- [Monitor - Disponibilidad de Agentes](/monitor-availability-agent)
+- [Monitor - Disponibilidad de Controlador](/monitor-availability-controller)
 - [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)
 - [Monitor - Notificaciones del Sistema](/monitor-notifications-system)
 

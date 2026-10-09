@@ -26,7 +26,7 @@ El ícono de Búsqueda Rápida ofrece la posibilidad de buscar Calendarios basá
 Se muestra la siguiente información:
 
 - **Nombre** es el nombre único del Calendario.
-- **Tipo** es uno de *Calendario de día laborable* o *Calendario de día no laborable*.
+- **Tipo** es uno de *Calendario de días laborables* o *Calendario de días no laborables*.
 - **Válido Desde**, **Válido Hasta** indica opcionalmente el período de validez. Los Calendarios sin período de validez son válidos por un período ilimitado.
 
 ### Operaciones sobre Calendarios
@@ -37,10 +37,10 @@ Las siguientes operaciones están disponibles:
 
 ## Búsqueda
 
-La [Búsqueda de Calendarios](/resources-calendars-search) ofrece criterios para buscar Calendarios por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Calendarios utilizados por las Planificaciones para el Workflow.
+La [Recursos - Calendarios - Búsqueda](/resources-calendars-search) ofrece criterios para buscar Calendarios por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Calendarios utilizados por las Planificaciones para el Workflow.
 
 ## Referencias
 
-- [Búsqueda de Calendarios](/resources-calendars-search)
+- [Recursos - Calendarios - Búsqueda](/resources-calendars-search)
 - [Plan Diario](/daily-plan)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

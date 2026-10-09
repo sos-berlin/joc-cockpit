@@ -61,7 +61,7 @@ Las siguientes operaciones están disponibles:
 
 ## Búsqueda
 
-La [Búsqueda de Tableros de Avisos](/resources-notice-boards-search) ofrece criterios para buscar Tableros de Avisos por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Tableros de Avisos utilizados por el Workflow.
+La [Recursos - Tableros de Avisos - Búsqueda](/resources-notice-boards-search) ofrece criterios para buscar Tableros de Avisos por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico; se devolverán los Tableros de Avisos utilizados por el Workflow.
 
 ## Referencias
 
@@ -70,7 +70,7 @@ La [Búsqueda de Tableros de Avisos](/resources-notice-boards-search) ofrece cri
 - [Configuración - Inventario - Tableros de Avisos](/configuration-inventory-notice-boards)
 - [Plan Diario](/daily-plan)
 - [Plan Diario - Dependencias](/daily-plan-dependencies)
-- [Búsqueda de Tableros de Avisos](/resources-notice-boards-search)
+- [Recursos - Tableros de Avisos - Búsqueda](/resources-notice-boards-search)
 
 ### Base de Conocimiento del Producto
 

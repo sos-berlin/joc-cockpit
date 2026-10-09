@@ -33,9 +33,9 @@ Para cada Servicio de Identidad se muestran las siguientes propiedades:
 
 - **Nombre del Servicio de Identidad** puede elegirse libremente.
 - **Tipo de Servicio de Identidad** es uno de JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. Para LDAP, OIDC y KEYCLOAK se pueden usar los tipos de servicio adicionales LDAP-JOC, OIDC-JOC y KEYCLOAK-JOC que almacenan la asignación de roles en JOC Cockpit.
-- **Esquema de Autenticación** puede ser *single-factor* o *two-factor*.
-- **Segundo Factor** indica si un segundo factor está habilitado para la autenticación *two-factor*.
-- **Orden** indica la secuencia en la que el Servicio de Identidad es activado para la autenticación.
+- **Esquema de Autenticación** puede ser *factor único* o *doble factor*.
+- **Segundo Factor** indica si un segundo factor está habilitado para la autenticación *doble factor*.
+- **Ordenamiento** indica la secuencia en la que el Servicio de Identidad es activado para la autenticación.
 - **Deshabilitado** indica si el Servicio de Identidad está inactivo y no se utiliza para el inicio de sesión.
 - **Requerido** indica que el Servicio de Identidad será activado además de los Servicios de Identidad con un orden anterior.
 

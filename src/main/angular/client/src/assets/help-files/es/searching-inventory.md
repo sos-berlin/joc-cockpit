@@ -35,7 +35,7 @@ Al usar la casilla de verificación *Coincidencia Exacta* para **Nombre del Job*
 El metacarácter de búsqueda **\*** se utiliza para especificar que se buscan dependencias, por ejemplo con un Recurso de Lock sin importar el nombre que use:
 
 - la búsqueda con el metacarácter **\*** para **Recursos de Lock** devolverá Workflows que utilicen un Recurso de Lock
-- la búsqueda con el metacarácter **\*** para **Órdenes Disparadas por Archivo** devolverá Workflows referenciados por una Orden Disparada por Archivo
+- la búsqueda con el metacarácter **\*** para **Orígenes de Archivos Disparadores** devolverá Workflows referenciados por un Origen de Archivos Disparadores
 
 ## Referencias
 

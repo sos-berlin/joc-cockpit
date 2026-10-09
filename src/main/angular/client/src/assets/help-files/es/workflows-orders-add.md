@@ -23,7 +23,7 @@ Los usuarios que estén conformes con los valores predeterminados y deseen envia
 
 ### Dependencias de la Orden
 
-- **Clave del Espacio de Avisos**: Si el Workflow tiene dependencias basadas en Avisos, se puede especificar una fecha del Plan Diario a la cual se resolverán las dependencias. De forma predeterminada se usa el día actual.
+- **Clave del Espacio de Aviso**: Si el Workflow tiene dependencias basadas en Avisos, se puede especificar una fecha del Plan Diario a la cual se resolverán las dependencias. De forma predeterminada se usa el día actual.
   - Se aceptan fechas pasadas para las cuales hay un plan abierto.
   - Se aceptan fechas futuras.
 
@@ -31,21 +31,21 @@ Los usuarios que estén conformes con los valores predeterminados y deseen envia
 
 Si una Orden no debe comenzar desde el primer nodo del Workflow, se puede especificar una posición.
 
-- **Posición del Bloque**: Para Workflows que contienen instrucciones de bloque como Try/Catch, Lock, Fork/Join, Cycle, se puede seleccionar la instrucción correspondiente.
+- **Posición de Bloque**: Para Workflows que contienen instrucciones de bloque como Try/Catch, Lock, Fork/Join, se puede seleccionar la instrucción correspondiente.
 - **Posición de Inicio**: Si no se especifica una Posición de Inicio, la Orden comenzará desde el primer nodo.
   - Si no se especifica una Posición de Bloque, se puede seleccionar cualquier instrucción de nivel superior en el Workflow desde la cual comenzará la Orden.
   - Si se especifica una Posición de Bloque, la Posición de Inicio es un nodo del mismo nivel dentro del bloque.
-- **Posiciones de Fin**:
+- **Posiciones Finales**:
   - Si no se especifica una Posición de Bloque, se puede seleccionar cualquier instrucción de nivel superior en el Workflow antes de la cual terminará la Orden.
   - Si se especifica una Posición de Bloque, se puede especificar cualquier nodo del mismo nivel dentro del bloque antes del cual terminará la Orden.
-  - Se puede especificar más de una Posición de Fin.
+  - Se puede especificar más de una Posición Final.
 - **Prioridad**:
   - Si la Orden encuentra una instrucción de Recurso de Lock en el Workflow que limita el paralelismo, su *Prioridad* determina la posición en la cola de Órdenes *en espera*.
   - Las *Prioridades* se especifican mediante enteros negativos, cero y positivos o mediante los accesos directos ofrecidos. Una *Prioridad* más alta tiene precedencia. Los accesos directos ofrecen los siguientes valores:
     - **Baja**: -20000
-    - **Por debajo de lo Normal**: -10000
+    - **Inferior a lo Normal**: -10000
     - **Normal**: 0
-    - **Por encima de lo Normal**: 10000
+    - **Superior a lo Normal**: 10000
     - **Alta**: 20000
 
 ### Parametrización de la Orden
@@ -59,7 +59,7 @@ Si una Orden no debe comenzar desde el primer nodo del Workflow, se puede especi
 ### Órdenes Adicionales
 
 - **Agregar Orden**: Si se debe agregar más de una Orden al Workflow, el enlace agregará la parametrización para la Orden adicional.
-- **Agregar Órdenes desde Planificaciones**: Si el Workflow tiene asignada una o más Planificaciones, se agregará una Orden parametrizada desde una Planificación por cada Planificación.
+- **Agregar Órdenes a partir de Planificaciones**: Si el Workflow tiene asignada una o más Planificaciones, se agregará una Orden parametrizada desde una Planificación por cada Planificación.
 
 ## Referencias
 

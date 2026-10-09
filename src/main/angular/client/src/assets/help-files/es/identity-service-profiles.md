@@ -14,7 +14,7 @@ La sub-vista muestra la lista de *Perfiles* activos y la fecha del último inici
 
 - Al hacer clic en el *Perfil* se navega a la sub-vista [Servicio de Identidad - Roles](/identity-service-roles) para mostrar los roles utilizados por el *Perfil* indicado.
 - El menú de acción de un *Perfil* ofrece las siguientes operaciones:
-  - **Eliminar Preferencias del Perfil** restablecerá las [Preferencias del Perfil](/profile-preferences) a sus valores predeterminados. Otras configuraciones del *Perfil*, como *Gestión de Git* y *Gestión de Favoritos*, permanecerán vigentes. La operación puede utilizarse para forzar la aplicación del *Perfil* de la cuenta predeterminada.
+  - **Eliminar Preferencias del Perfil** restablecerá las [Perfil - Preferencias](/profile-preferences) a sus valores predeterminados. Otras configuraciones del *Perfil*, como *Gestión de Git* y *Gestión de Favoritos*, permanecerán vigentes. La operación puede utilizarse para forzar la aplicación del *Perfil* de la cuenta predeterminada.
   - **Eliminar Perfil** borra el *Perfil* de la cuenta de usuario. En el próximo inicio de sesión de la cuenta correspondiente se creará un nuevo *Perfil*.
 
 Los usuarios pueden seleccionar uno o más *Perfiles* para realizar las operaciones anteriores en forma masiva para los *Perfiles* seleccionados.

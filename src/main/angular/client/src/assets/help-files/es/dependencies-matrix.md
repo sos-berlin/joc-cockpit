@@ -1,4 +1,4 @@
-# Matriz de Dependencias
+# Matriz de Dependencia
 
 Los objetos del Inventario de JS7 están relacionados por dependencias. Por ejemplo, un Workflow referencia un Recurso de Job y un Recurso de Lock; una Planificación referencia un Calendario y uno o más Workflows.
 
@@ -9,13 +9,13 @@ Al desplegar objetos, se considera la consistencia; por ejemplo:
 
 Para más detalles, consulte [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies).
 
-La Matriz de Dependencias de los objetos del Inventario es la siguiente:
+La Matriz de Dependencia de los objetos del Inventario es la siguiente:
 
 | Área | Tipo de Objeto | Referencias Entrantes | | Referencias Salientes | | | | | |
 | ----- | ----- | ----- | ----- |
 | Controlador |
 | | Workflow | Workflow | Planificación | Workflow | Recurso de Job | Tablero de Avisos | Recurso de Lock | Plantilla de Job | Script Incluido |
-| | Orden Disparada por Archivo | | | Workflow |
+| | Origen de Archivos Disparadores | | | Workflow |
 | | Recurso de Job | Workflow |
 | | Tablero de Avisos | Workflow |
 | | Recurso de Lock | Workflow |

@@ -32,7 +32,7 @@ Para más detalles, consulte [Operación Inicial - Clúster de Subagentes](/init
 
 ### Ayuda de Contexto
 
-- [Panel de Control - Estado del Producto](/dashboard-product-status)
+- [Panel de Control - Estado Producto](/dashboard-product-status)
 - [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
 - [Operación Inicial - Registrar Controlador](/initial-operation-register-controller)
 - [Operación Inicial - Registrar Subagente](/initial-operation-register-agent-subagent)

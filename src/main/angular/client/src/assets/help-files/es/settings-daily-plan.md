@@ -36,18 +36,19 @@ Especifica el número de días después de los cuales el Plan Diario se cerrará
 
 ### Configuración: *projections\_month\_before*, Predeterminado: *2*
 
-Especifica el número de meses anteriores a la fecha actual para los cuales se calculan las [Proyecciones del Plan Diario](/daily-plan-projections) que indican la ejecución de Órdenes. Esto permite a los usuarios comparar fechas pasadas del Plan Diario con proyecciones basadas en cambios actuales a las Planificaciones.
+Especifica el número de meses anteriores a la fecha actual para los cuales se calculan las [Plan Diario - Proyecciones](/daily-plan-projections) que indican la ejecución de Órdenes. Esto permite a los usuarios comparar fechas pasadas del Plan Diario con proyecciones basadas en cambios actuales a las Planificaciones.
 
 ### Configuración: *projections\_month\_ahead*, Predeterminado: *6*
 
-Especifica el número de meses de anticipación para los cuales se calculan las [Proyecciones del Plan Diario](/daily-plan-projections) que indican la futura ejecución de Órdenes.
+Especifica el número de meses de anticipación para los cuales se calculan las [Plan Diario - Proyecciones](/daily-plan-projections) que indican la futura ejecución de Órdenes.
+
 
 ## Referencias
 
 ### Ayuda Contextual
 
 - [Plan Diario](/daily-plan)
-- [Proyecciones del Plan Diario](/daily-plan-projections)
+- [Plan Diario - Proyecciones](/daily-plan-projections)
 - [Servicio de Plan Diario](/service-daily-plan)
 - [Recursos - Tableros de Avisos](/resources-notice-boards)
 - [Configuración](/settings)

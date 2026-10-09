@@ -1,6 +1,6 @@
 # Recursos - Agentes
 
-La vista *Agentes* resume el estado de conexión de los Agentes registrados.
+La vista *Agente* resume el estado de conexión de los Agentes registrados.
 
 ## Arquitectura
 
@@ -14,7 +14,7 @@ La vista *Agentes* resume el estado de conexión de los Agentes registrados.
 ### Conexiones
 
 - Las conexiones del **Agente Autónomo** y del **Agente Director** son establecidas por el Controlador.
-- Las conexiones de **Subagentes** en un Clúster de Agentes son establecidas por los *Agentes Directores*.
+- Las conexiones de **Subagente** en un Clúster de Agentes son establecidas por los *Agentes Directores*.
 
 ## Estado de Conexión
 

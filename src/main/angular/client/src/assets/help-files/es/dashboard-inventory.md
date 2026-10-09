@@ -1,4 +1,4 @@
-# Dashboard - Inventario
+# Panel de Control - Inventario
 
 El panel *Inventario* proporciona información sobre la cantidad de objetos en uso.
 
@@ -9,7 +9,7 @@ El panel *Inventario* proporciona información sobre la cantidad de objetos en u
 El resumen del inventario contabiliza los objetos desplegados y liberados. No contabiliza los objetos en borrador que no han sido desplegados ni liberados.
 
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Configuración - Inventario - Propiedades de Job en Workflow](/configuration-inventory-workflow-job-properties)
+- [Configuración - Inventario - Workflow - Propiedades del Job](/configuration-inventory-workflow-job-properties)
 - [Configuración - Inventario - Recursos de Lock](/configuration-inventory-resource-locks)
 - [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules)
 

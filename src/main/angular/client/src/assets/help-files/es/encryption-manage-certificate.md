@@ -30,16 +30,16 @@ SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ==
 </pre>
 
 - **Ruta al archivo de Clave Privada** especifica la ubicación de la Clave Privada en los Agentes correspondientes.
-- **Carpeta del Recurso de Job** especifica la carpeta del inventario en la que se almacenará el Recurso de Job que contiene el Certificado. Se puede especificar una jerarquía de carpetas utilizando barras diagonales, como en /a/b/c. Las carpetas inexistentes serán creadas.
+- **Carpeta de Recursos del Job** especifica la carpeta del inventario en la que se almacenará el Recurso de Job que contiene el Certificado. Se puede especificar una jerarquía de carpetas utilizando barras diagonales, como en /a/b/c. Las carpetas inexistentes serán creadas.
 
 ## Operaciones sobre el Certificado
 
 Las siguientes operaciones están disponibles desde los enlaces:
 
-- **Uso del Certificado por Agentes** muestra el *Nombre del Agente* y la URL de los Agentes a los que se ha asignado el Certificado.
-- **Asignar Certificado a Agentes** ofrece la posibilidad de seleccionar Agentes Autónomos y Agentes en Clúster a los que se asignará el Certificado. Los usuarios deben asegurarse de que el Agente correspondiente tenga el archivo de Clave Privada en la ubicación especificada en la propiedad *Ruta al archivo de Clave Privada*. Los usuarios pueden seleccionar Agentes que conozcan la Clave Privada.
+- **Uso del Certificado por los Agentes** muestra el *Nombre del Agente* y la URL de los Agentes a los que se ha asignado el Certificado.
+- **Asignar Certificado a Agentes** ofrece la posibilidad de seleccionar Agentes Autónomos y Agentes del Clúster a los que se asignará el Certificado. Los usuarios deben asegurarse de que el Agente correspondiente tenga el archivo de Clave Privada en la ubicación especificada en la propiedad *Ruta al archivo de Clave Privada*. Los usuarios pueden seleccionar Agentes que conozcan la Clave Privada.
 - **Prueba de Cifrado** permite realizar una prueba de cifrado:
-  - Al hacer clic en el enlace se abre el campo de entrada *Texto plano* al que se puede añadir una cadena como *secreto*.
+  - Al hacer clic en el enlace se abre el campo de entrada *Texto Plano* al que se puede agregar una cadena como *secreto*.
   - A la derecha del campo de entrada se ofrece el icono de cifrado. Al hacer clic en el icono se muestra la etiqueta *Resultado del Cifrado* con el resultado correspondiente.
 
 ## Referencias

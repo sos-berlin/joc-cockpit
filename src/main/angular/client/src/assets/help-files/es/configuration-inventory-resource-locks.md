@@ -23,14 +23,14 @@ Lo siguiente aplica al uso de Recursos de Lock por *Instrucciones de Lock*:
 
 Los Recursos de Lock se gestionan desde los siguientes paneles:
 
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Recursos de Lock. Además, el panel ofrece operaciones sobre Recursos de Lock.
+- El [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Recursos de Lock. Además, el panel ofrece operaciones sobre Recursos de Lock.
 - El *Panel de Recursos de Lock* en el lado derecho de la ventana contiene los detalles de configuración del Recurso de Lock.
 
 ## Panel de Recursos de Lock
 
 Para un Recurso de Lock están disponibles los siguientes campos de entrada:
 
-- **Nombre** es el identificador único de un Recurso de Lock, ver [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Nombre** es el identificador único de un Recurso de Lock, véase [Reglas de Nomenclatura de Objetos](/object-naming-rules).
 - **Título** contiene una explicación opcional del propósito del Recurso de Lock.
 - **Capacidad** es un número que representa la aceptación máxima de *Pesos* de *Instrucciones de Lock* paralelas:
   - una *Capacidad* de 1 limita el Recurso de Lock a uso único independientemente de si las *Instrucciones de Lock* son *Exclusivas* o *Compartidas*.
@@ -40,7 +40,7 @@ Para un Recurso de Lock están disponibles los siguientes campos de entrada:
 
 ### Operaciones sobre Recursos de Lock
 
-Para las operaciones disponibles ver [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation).
+Para las operaciones disponibles véase [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
 ### Prioridades de Órdenes
 
@@ -52,9 +52,9 @@ Si varias Órdenes están esperando frente a un Recurso de Lock, la Orden con la
 
 ### Ayuda Contextual
 
-- [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation)
+- [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
 - [Reglas de Nomenclatura de Objetos](/object-naming-rules)
-- [Panel de Navegación - Inventario - Workflow](/configuration-inventory-navigation)
+- [Workflow - Inventario - Panel de Navegación](/configuration-inventory-navigation)
 
 ### Base de Conocimiento del Producto
 

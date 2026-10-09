@@ -32,13 +32,13 @@ Se muestra la siguiente información:
 - **Fecha de Despliegue** es la fecha en que se desplegó el Recurso de Lock.
 - **Estado** es uno de *Sincronizado* y *No Sincronizado* si el Recurso de Lock no ha sido desplegado al Controlador.
 - **Peso Adquirido** indica el *peso* acumulativo de las Órdenes paralelas que adquirieron el lock.
-- **Órdenes en Posesión** indica el número de Órdenes que adquirieron el lock.
+- **Órdenes Retenidas** indica el número de Órdenes que adquirieron el lock.
 - **Órdenes en Espera** indica el número de Órdenes que están esperando adquirir el lock.
 - **Capacidad** indica la *capacidad* disponible del lock. Los *Locks Exclusivos* tienen una *capacidad* de 1; los *Locks Compartidos* tienen una *capacidad* individual.
 
 ### Visualización de Órdenes
 
-Hacer clic en el ícono de flecha hacia abajo expandirá el Recurso de Lock y mostrará información detallada sobre las Órdenes en posesión que adquirieron el Recurso de Lock y las Órdenes que están esperando para adquirirlo.
+Hacer clic en el ícono de flecha hacia abajo expandirá el Recurso de Lock y mostrará información detallada sobre las Órdenes retenidas que adquirieron el Recurso de Lock y las Órdenes que están esperando para adquirirlo.
 
 ## Búsqueda
 
@@ -46,5 +46,5 @@ La *Búsqueda* ofrece criterios para buscar Recursos de Lock por dependencias, p
 
 ## Referencias
 
-- [Búsqueda de Recursos de Lock](/resources-resource-locks-search)
+- [Recursos - Recursos de Lock - Búsqueda](/resources-resource-locks-search)
 - [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks)

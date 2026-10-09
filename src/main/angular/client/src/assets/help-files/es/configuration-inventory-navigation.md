@@ -11,7 +11,7 @@ El panel izquierdo está organizado en pestañas que permiten la navegación por
 
 - La navegación por **Carpeta** mostrará los objetos de inventario de la carpeta seleccionada.
 - El filtrado por Etiquetas se ofrece desde las siguientes pestañas para seleccionar Workflows:
-  - **Etiquetas de Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows) a nivel de Workflow.
+  - **Etiquetas del Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows) a nivel de Workflow.
   - **Etiquetas de Job** se asignan desde la misma vista a nivel de Job.
 
 ### Carpetas
@@ -23,7 +23,7 @@ La jerarquía de carpetas reconoce los siguientes tipos de carpetas:
 - Las **Carpetas de Inventario** contienen los siguientes tipos de objetos:
   - Los objetos de **Controlador** se despliegan en un Controlador y en los Agentes:
     - Los [Workflows](/configuration-inventory-workflows) incluyen Jobs y otras Instrucciones de Workflow. Para más detalles véase [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows).
-    - Las [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources) se usan para la vigilancia de archivos con el fin de iniciar automáticamente Workflows cuando llega un archivo a un directorio. Para más detalles véase [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
+    - Los [Orígenes de Archivos Disparadores](/configuration-inventory-file-order-sources) se usan para el monitoreo de archivos con el fin de iniciar automáticamente Workflows cuando llega un archivo a un directorio. Para más detalles véase [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
     - Los [Recursos de Job](/configuration-inventory-job-resources) se usan para centralizar la configuración de variables que se reutilizan en varios Jobs. Para más detalles véase [JS7 - Job Resources](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Resources).
     - Los [Tableros de Avisos](/configuration-inventory-notice-boards) especifican dependencias entre Workflows. Para más detalles véase [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
     - Los [Recursos de Lock](/configuration-inventory-resource-locks) limitan la ejecución paralela de Jobs y otras instrucciones. Para más detalles véase [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks).
@@ -42,9 +42,9 @@ A la derecha de la carpeta de nivel superior en el *Panel de Navegación*, los u
 - Se deben ingresar al menos dos caracteres para que la Búsqueda Rápida encuentre objetos que comiencen con dichos caracteres.
 - La Búsqueda Rápida no distingue mayúsculas de minúsculas y aplica truncamiento por la derecha.
 - La Búsqueda Rápida devuelve objetos con nombres coincidentes por categoría, como Workflows y Planificaciones.
-- El metacarácter \\* puede usarse como comodín para cero o más caracteres:
-  - **\\*test** encontrará los objetos ***test**Inicial*, *mi**Test***
-  - **te\\*st** encontrará los objetos ***test**Inicial*, ***te**rminar**St**atus*
+- El metacarácter \* puede usarse como comodín para cero o más caracteres:
+  - **\*test** encontrará los objetos ***test**Inicial*, *mi**Test***
+  - **te\*st** encontrará los objetos ***test**Inicial*, ***te**rminar**St**atus*
 
 #### Papelera de Objetos
 
@@ -87,24 +87,24 @@ Las siguientes operaciones están disponibles para las *Carpetas de Inventario*:
 - Operaciones sobre Objetos de Controlador
   - *Workflows*
     - **Nuevo** crea un Workflow.
-    - **Renombrar** permite renombrar un workflow. Se considerarán las dependencias de objetos y los objetos de inventario que lo referencien, como *Planificaciones* y *Órdenes Disparadas por Archivo*, tendrán el nombre actualizado. El Workflow y los objetos que lo referencian se pondrán en estado *borrador*. Para más detalles véase [Renombrar Carpeta](/configuration-inventory-operations-rename-folder).
-    - **Administrar Etiquetas** permite agregar y eliminar Etiquetas a/de los Workflows en la carpeta, véase [Administrar Etiquetas](/configuration-inventory-operations-manage-tags).
+    - **Renombrar** permite renombrar un workflow. Se considerarán las dependencias de objetos y los objetos de inventario que lo referencien, como *Planificaciones* y *Orígenes de Archivos Disparadores*, tendrán el nombre actualizado. El Workflow y los objetos que lo referencian se pondrán en estado *borrador*. Para más detalles véase [Renombrar Carpeta](/configuration-inventory-operations-rename-folder).
+    - **Gestionar Etiquetas** permite agregar y eliminar Etiquetas a/de los Workflows en la carpeta, véase [Gestionar Etiquetas](/configuration-inventory-operations-manage-tags).
     - **Exportar** permite crear un archivo de exportación en formato .zip o .tar.gz que contiene la jerarquía de carpetas y la representación JSON de los Workflows. Para más detalles véase [Exportar Carpeta](/configuration-inventory-operations-export-folder).
     - **Repositorio Git** ofrece integración con un servidor Git. Los Workflows pueden confirmarse en repositorios Git y pueden descargarse y enviarse. Para más detalles véase [Git - Clonar Repositorio](/configuration-inventory-operations-git-clone).
     - **Cambio** ofrece operaciones de gestión de cambios para Workflows. Los usuarios pueden agregar un Workflow en construcción a un *Cambio* que permite el despliegue y exportación conjunta de objetos modificados. Para más detalles véase [Cambios](/changes).
     - **Desplegar** hará que los Workflows estén disponibles para el Controlador y los Agentes. Los Workflows se pondrán en estado *desplegado*. Para más detalles véase [Desplegar Carpeta](/configuration-inventory-operations-deploy-folder).
-    - **Revocar** revierte una operación de *Despliegue* anterior. Los Workflows se pondrán en estado *borrador*. Esto implica que las Órdenes de los Workflows serán eliminadas del [Plan Diario](/daily-plan). Se consideran las dependencias de objetos y los objetos que los referencian, como *Planificaciones* y *Órdenes Disparadas por Archivo*, también serán revocados/recuperados. Para más detalles véase [Revocar Carpeta](/configuration-inventory-operations-revoke-folder).
+    - **Revocar** revierte una operación de *Despliegue* anterior. Los Workflows se pondrán en estado *borrador*. Esto implica que las Órdenes de los Workflows serán eliminadas del [Plan Diario](/daily-plan). Se consideran las dependencias de objetos y los objetos que los referencian, como *Planificaciones* y *Orígenes de Archivos Disparadores*, también serán revocados/recuperados. Para más detalles véase [Revocar Carpeta](/configuration-inventory-operations-revoke-folder).
     - **Eliminar** moverá los Workflows a la Papelera. Los Workflows eliminados pueden restaurarse o eliminarse permanentemente desde la Papelera. Para más detalles véase [Eliminar Carpeta](/configuration-inventory-operations-remove-folder).
     - **Revertir Borrador** eliminará la versión borrador actual de los Workflows. Si existe una versión previamente *desplegada*, ésta se convertirá en la versión actual del Workflow correspondiente.
     - **Actualizar Jobs desde Plantillas** actualizará los Jobs de los Workflows ubicados en la *Carpeta de Inventario* seleccionada a partir de las *Plantillas de Job* ubicadas en cualquier carpeta.
-  - *Órdenes Disparadas por Archivo*, *Recursos de Job*, *Tableros de Avisos*, *Recursos de Lock* ofrecen operaciones similares a las de *Workflows*.
+  - *Orígenes de Archivos Disparadores*, *Recursos de Job*, *Tableros de Avisos*, *Recursos de Lock* ofrecen operaciones similares a las de *Workflows*.
 - Operaciones sobre Objetos de Automatización
   - **Liberar** hace que los objetos en estado *borrador* estén disponibles:
     - para uso con otros objetos, por ejemplo los *Scripts Incluidos* se considerarán para el próximo despliegue de Workflows, las *Plantillas de Job* pueden actualizarse en los Workflows que las referencian.
     - para uso con el [Plan Diario](/daily-plan), por ejemplo las *Planificaciones* serán consideradas para la creación de Órdenes.
     - para más detalles véase [Liberar Carpeta](/configuration-inventory-operations-release-folder).
   - **Recuperar** revierte una operación de *Liberación* anterior. Los objetos de inventario se pondrán en estado *borrador*. Esto implica que las *Planificaciones* y *Calendarios* en borrador no serán considerados por el [Plan Diario](/daily-plan). La operación considera las dependencias de objetos y también recuperará/revocará los objetos que los referencian. Para más detalles véase [Recuperar Carpeta](/configuration-inventory-operations-recall-folder).
-  - **Aplicar Plantilla a Jobs** actualizará los Jobs de los Workflows ubicados en cualquier carpeta que tengan referencias a las *Plantillas de Job* incluidas en la *Carpeta de Inventario* seleccionada o en cualquier subcarpeta.
+  - **Aplicar Plantilla al Job** actualizará los Jobs de los Workflows ubicados en cualquier carpeta que tengan referencias a las *Plantillas de Job* incluidas en la *Carpeta de Inventario* seleccionada o en cualquier subcarpeta.
   - Otras operaciones están disponibles de manera similar a las *Operaciones sobre Objetos de Controlador*.
 
 #### Operaciones en Carpetas de Usuario
@@ -117,7 +117,7 @@ Las *Carpetas de Usuario* son creadas por los usuarios y contienen un conjunto d
   - **Copiar** *copiará* la carpeta, cualquier subcarpeta y los objetos de inventario, incluyendo los objetos de inventario referenciados que puedan estar ubicados en otras carpetas. La operación es una *copia profunda* que trabaja sobre cualquier objeto referenciado.
   - **Copia Superficial** *copiará* la carpeta, cualquier subcarpeta y los objetos de inventario. No se consideran las referencias a objetos de inventario en otras carpetas.
   - **Renombrar** permite renombrar la carpeta y opcionalmente los objetos de inventario incluidos. Para más detalles véase [Renombrar Carpeta](/configuration-inventory-operations-rename-folder).
-  - **Administrar Etiquetas** permite agregar y eliminar Etiquetas a/de los Workflows en la jerarquía de carpetas dada, véase [Administrar Etiquetas](/configuration-inventory-operations-manage-tags).
+  - **Gestionar Etiquetas** permite agregar y eliminar Etiquetas a/de los Workflows en la jerarquía de carpetas dada, véase [Gestionar Etiquetas](/configuration-inventory-operations-manage-tags).
   - **Exportar** permite crear un archivo de exportación en formato .zip o .tar.gz que contiene la jerarquía de carpetas y la representación JSON de los objetos de inventario incluidos. Para más detalles véase [Exportar Carpeta](/configuration-inventory-operations-export-folder).
   - **Repositorio Git** ofrece integración con un servidor Git. Los objetos de inventario pueden confirmarse en repositorios Git y pueden descargarse y enviarse. Para más detalles véase [Git - Clonar Repositorio](/configuration-inventory-operations-git-clone).
   - **Cambio** ofrece operaciones de gestión de cambios para objetos de inventario. Los usuarios pueden agregar objetos como Workflows en construcción a un *Cambio* que permite el despliegue y exportación conjunta de objetos modificados. Para más detalles véase [Cambios](/changes).
@@ -127,7 +127,7 @@ Las *Carpetas de Usuario* son creadas por los usuarios y contienen un conjunto d
   - **Revalidar** verifica la validez de los objetos de inventario que pueden volverse inconsistentes, por ejemplo tras la importación de objetos.
   - **Sincronizar** pondrá en sincronía el estado de los objetos de planificación con el Controlador y el inventario:
     - *Sincronizar con el Controlador* *Desplegará* o *Revocará* los objetos de inventario hacia/desde el Controlador y los Agentes según su estado *desplegado* o *borrador* en el inventario. La operación puede usarse en caso de pérdida del Diario cuando la memoria del Controlador se borra y el Controlador se inicializa.
-    - *Sincronizar con el Inventario* pondrá los objetos de inventario en estado *desplegado* o *borrador* según la disponibilidad del objeto en el Controlador.
+    - *Sincronizar con Inventario* pondrá los objetos de inventario en estado *desplegado* o *borrador* según la disponibilidad del objeto en el Controlador.
 - Operaciones sobre Objetos de Automatización
   - **Liberar** hace que los objetos en estado *borrador* estén disponibles:
     - para uso con otros objetos, por ejemplo los *Scripts Incluidos* se considerarán para el próximo despliegue de Workflows, las *Plantillas de Job* pueden actualizarse en los Workflows que las referencian.
@@ -139,7 +139,7 @@ Las *Carpetas de Usuario* son creadas por los usuarios y contienen un conjunto d
   - **Revertir Borrador** eliminará la versión borrador actual de los objetos en la carpeta y cualquier subcarpeta. Si existe una versión previamente *desplegada* o *liberada*, ésta se convertirá en la versión actual del objeto correspondiente.
 - Operaciones de Plantillas de Job
   - **Actualizar Jobs desde Plantillas** actualizará los Jobs de los Workflows ubicados en cualquier carpeta que tengan referencias a las *Plantillas de Job* incluidas en la *Carpeta de Usuario* seleccionada o en cualquier subcarpeta.
-  - **Aplicar Plantilla a Jobs** actualizará los Jobs de los Workflows ubicados en la *Carpeta de Usuario* seleccionada a partir de las *Plantillas de Job* ubicadas en cualquier carpeta.
+  - **Aplicar Plantilla al Job** actualizará los Jobs de los Workflows ubicados en la *Carpeta de Usuario* seleccionada a partir de las *Plantillas de Job* ubicadas en cualquier carpeta.
 
 ### Operaciones a Nivel de Objeto
 
@@ -150,7 +150,7 @@ Las siguientes operaciones se ofrecen para objetos de inventario individuales:
   - **Copiar** *copiará* el objeto para pegarlo posteriormente.
   - **Renombrar** permite modificar el nombre del objeto. Se considerarán las dependencias de objetos y los objetos de inventario que lo referencien tendrán el nombre actualizado. El objeto renombrado y los objetos que lo referencian se pondrán en estado *borrador*. Para más detalles véase [Renombrar Objeto](/configuration-inventory-operations-rename-object).
   - **Cambio** ofrece operaciones de gestión de cambios para objetos de inventario. Los usuarios pueden agregar objetos como Workflows en construcción a un *Cambio* que permite el despliegue y exportación conjunta de objetos modificados. Para más detalles véase [Cambios](/changes).
-  - **Mostrar Dependencias** muestra la lista de objetos que lo referencian y los objetos referenciados. Por ejemplo, un Workflow puede tener referencias a Recursos de Job y puede ser referenciado por *Planificaciones* u *Órdenes Disparadas por Archivo*.
+  - **Mostrar Dependencias** muestra la lista de objetos que lo referencian y los objetos referenciados. Por ejemplo, un Workflow puede tener referencias a Recursos de Job y puede ser referenciado por *Planificaciones* u *Orígenes de Archivos Disparadores*.
   - **Nuevo Borrador** crea una versión borrador a partir de una versión previamente *desplegada* o *liberada* del objeto.
   - Operaciones JSON
     - **Mostrar JSON** muestra el formato de almacenamiento JSON del objeto de inventario.
@@ -161,7 +161,7 @@ Las siguientes operaciones se ofrecen para objetos de inventario individuales:
     - **Eliminar** moverá el objeto a la Papelera. Los objetos de inventario eliminados pueden restaurarse o eliminarse permanentemente desde la Papelera. Para más detalles véase [Eliminar Objeto](/configuration-inventory-operations-remove-object).
     - **Revertir Borrador** eliminará la versión borrador actual del objeto. Si existe una versión previamente *desplegada* o *liberada*, ésta se convertirá en la versión actual del objeto.
 - Objetos de Controlador
-  - **Administrar Etiquetas** está disponible para Workflows y permite agregar y eliminar Etiquetas al/del Workflow.
+  - **Gestionar Etiquetas** está disponible para Workflows y permite agregar y eliminar Etiquetas al/del Workflow.
   - **Desplegar** hará que el objeto esté disponible para el Controlador y los Agentes. El objeto se pondrá en estado *desplegado*. El despliegue considera las dependencias de objetos referenciados y referenciadores. Para más detalles véase [Desplegar Objeto](/configuration-inventory-operations-deploy-object).
   - **Revocar** revierte una operación de *Despliegue* anterior. El objeto se pondrá en estado *borrador*. Para su uso con Workflows esto implica que las Órdenes serán eliminadas del [Plan Diario](/daily-plan). Para más detalles véase [Revocar Objeto](/configuration-inventory-operations-revoke-object).
 - Objetos de Automatización
@@ -180,7 +180,7 @@ Las siguientes operaciones se ofrecen para objetos de inventario individuales:
 - [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 - Objetos de Controlador
   - [Workflows](/configuration-inventory-workflows)
-  - [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources)
+  - [Orígenes de Archivos Disparadores](/configuration-inventory-file-order-sources)
   - [Recursos de Job](/configuration-inventory-job-resources)
   - [Tableros de Avisos](/configuration-inventory-notice-boards)
     - [Recursos - Tableros de Avisos](/resources-notice-boards)
@@ -208,7 +208,7 @@ Las siguientes operaciones se ofrecen para objetos de inventario individuales:
   - [Renombrar Carpeta](/configuration-inventory-operations-rename-folder)
   - [Exportar Carpeta](/configuration-inventory-operations-export-folder)
   - [Git - Clonar Repositorio](/configuration-inventory-operations-git-clone)
-  - [Administrar Etiquetas](/configuration-inventory-operations-manage-tags)
+  - [Gestionar Etiquetas](/configuration-inventory-operations-manage-tags)
 
 ### Base de Conocimiento del Producto
 

@@ -2,7 +2,7 @@
 
 Los Servicios de Identidad controlan el acceso a JOC Cockpit mediante autenticación y autorización, consulte [Servicios de Identidad](/identity-services).
 
-Las cuentas de usuario administrativas pueden añadir cuentas de cualquier Servicio de Identidad a una lista de bloqueo:
+Las cuentas de usuario administrativas pueden agregar cuentas de cualquier Servicio de Identidad a una lista de bloqueo:
 
 - Las cuentas bloqueadas tienen denegado el acceso a JOC Cockpit; no están bloqueadas con el Proveedor del Servicio de Identidad como LDAP, OIDC, etc.
 - Las cuentas bloqueadas permanecen en la lista de bloqueo hasta que sean eliminadas de la lista.
@@ -13,8 +13,8 @@ La sub-vista *Lista de Bloqueo* ofrece agregar cuentas a la lista de bloqueo des
 
 Las cuentas de usuario pueden agregarse a la lista de bloqueo desde las siguientes sub-vistas:
 
-- [Registro de Auditoría - Inicios de Sesión Fallidos](/identity-service-faíled-logins): si se identifica que cuentas generan inicios de sesión fallidos con frecuencia, esto puede indicar un ataque. Dichas cuentas pueden ser añadidas a la lista de bloqueo.
-- [Servicio de Identidad - Sesiones Activas](/identity-service-active-sessions): si se identifica que las cuentas en sesiones activas son no deseadas, pueden ser añadidas a la lista de bloqueo.
+- [Registro de Auditoría - Intentos fallidos de Inicio de Sesión](/identity-service-faíled-logins): si se identifica que cuentas generan con frecuencia intentos fallidos de inicio de sesión, esto puede indicar un ataque. Dichas cuentas pueden ser agregadas a la lista de bloqueo.
+- [Servicio de Identidad - Sesiones Activas](/identity-service-active-sessions): si se identifica que las cuentas en sesiones activas son no deseadas, pueden ser agregadas a la lista de bloqueo.
 
 Ambas sub-vistas ofrecen la posibilidad de agregar cuentas individuales a la lista de bloqueo y de agregar cuentas seleccionadas mediante una operación masiva.
 
@@ -28,7 +28,7 @@ Se ofrece una operación masiva usando el botón *Eliminar de la Lista de Bloque
 
 ### Ayuda Contextual
 
-- [Registro de Auditoría - Inicios de Sesión Fallidos](/identity-service-faíled-logins)
+- [Registro de Auditoría - Intentos fallidos de Inicio de Sesión](/identity-service-faíled-logins)
 - [Servicio de Identidad - Sesiones Activas](/identity-service-active-sessions)
 - [Servicios de Identidad](/identity-services)
 

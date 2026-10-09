@@ -2,7 +2,7 @@
 
 Liberar objetos los activa, por ejemplo, para su uso con el [Plan Diario](/daily-plan). Esto aplica a objetos como Planificaciones y Calendarios disponibles en la carpeta del sistema *Automatización*.
 
-La vista *Configuración->Inventario* permite liberar un objeto individual y liberar objetos desde carpetas, ver [Configuración - Inventario - Operaciones - Liberar Carpeta](/configuration-inventory-operations-release-folder).
+La vista *Configuración->Inventario* permite liberar un objeto individual y liberar objetos desde carpetas, véase [Configuración - Inventario - Operaciones - Liberar Carpeta](/configuration-inventory-operations-release-folder).
 
 Al liberar un objeto individual desde el botón *Liberar* correspondiente, se mostrará una ventana emergente como la siguiente:
 
@@ -16,11 +16,11 @@ Liberar objetos como Planificaciones y Calendarios impacta el [Plan Diario](/dai
   - **Ahora** especifica actualizar el Plan Diario para las Órdenes planificadas a partir del momento actual.
   - **Fecha de Inicio** cuando se selecciona, agrega un campo de entrada para la fecha de destino a partir de la cual se actualizará el Plan Diario.
   - **No** especifica que el Plan Diario no será actualizado. Las Órdenes existentes seguirán usando versiones previamente desplegadas de los objetos.
-- **Incluir Órdenes tardías de hoy** cuando se marca, incluirá las Órdenes planificadas para un momento pasado del día actual pero que están retrasadas y no comenzaron.
+- **Incluir Órdenes atrasadas de hoy** cuando se marca, incluirá las Órdenes planificadas para un momento pasado del día actual pero que están retrasadas y no comenzaron.
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al liberar objetos se considera la consistencia, por ejemplo:
 
@@ -42,7 +42,7 @@ Los usuarios controlan el despliegue consistente desde las siguientes opciones:
 - [Configuración - Inventario - Operaciones - Liberar Carpeta](/configuration-inventory-operations-release-folder)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

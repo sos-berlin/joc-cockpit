@@ -17,10 +17,10 @@ La visualización está limitada a un máximo de 5000 entradas salvo que se espe
 Se muestra la siguiente información por fecha del Plan Diario:
 
 - **Fecha del Plan Diario** indica el día para el que están programadas las Órdenes.
-- **Total** indica la cantidad de Órdenes sujetas a todos los Envíos para la fecha indicada.
+- **Cantidad Total** indica la cantidad de Órdenes sujetas a todos los Envíos para la fecha indicada.
 - **Cantidad de Envíos** indica la cantidad de Órdenes enviadas exitosamente.
-  - Si la cantidad corresponde al *Total*, entonces todas las Órdenes fueron enviadas exitosamente.
-  - Si la cantidad es mayor que cero pero menor que el *Total*, entonces
+  - Si la cantidad corresponde a la *Cantidad Total*, entonces todas las Órdenes fueron enviadas exitosamente.
+  - Si la cantidad es mayor que cero pero menor que la *Cantidad Total*, entonces
     - la configuración para enviar Órdenes individualmente está vigente, consulte [Configuración - Plan Diario](/settings-daily-plan), y
     - un número de Órdenes no pudo ser enviado.
   - Si la cantidad es cero, esto indica
@@ -33,9 +33,9 @@ Puede haber cualquier número de Envíos para una fecha determinada del Plan Dia
 
 Al hacer clic en el icono de flecha hacia abajo desde la *Fecha del Plan Diario*, se mostrarán los detalles por Envío:
 
-- **Total del Envío** indica la cantidad de Órdenes sujetas al Envío indicado.
+- **Total de Envíos** indica la cantidad de Órdenes sujetas al Envío indicado.
 - **Cantidad de Envíos** indica la cantidad de Órdenes enviadas exitosamente en el ámbito del Envío indicado.
-  - Si la cantidad corresponde al *Total del Envío*, entonces todas las Órdenes fueron enviadas exitosamente.
+  - Si la cantidad corresponde al *Total de Envíos*, entonces todas las Órdenes fueron enviadas exitosamente.
   - Si la cantidad es cero o mayor que cero, se aplican las explicaciones anteriores sobre los Envíos por fecha del Plan Diario.
 
 ### Historial de Envíos por Orden
@@ -47,7 +47,7 @@ Al hacer clic en el icono de flecha hacia abajo desde la *Fecha de Envío*, se m
 - **Workflow** indica el Workflow por el que pasó la Orden.
   - Al hacer clic en el nombre del Workflow se navega a la vista [Workflows](/workflows).
   - Al hacer clic en el icono del lápiz se navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
-- **Programado Para** indica la fecha y hora para la que se espera que comience la Orden.
+- **Planificado Para** indica la fecha y hora para la que se espera que comience la Orden.
 - **Estado** es uno de *Enviado* o *No Enviado*.
   - *Enviado* indica que la Orden está disponible con un Agente.
   - *No Enviado* indica un Envío fallido.

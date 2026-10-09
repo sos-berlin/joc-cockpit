@@ -3,18 +3,18 @@
 Los [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) ofrecen información sobre la ejecución pasada de Workflows y Jobs:
 
 - Los Reportes se crean a partir de [Plantillas de Reportes](/report-templates) predefinidas que se parametrizan desde [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- Los usuarios ejecutan Reportes desde la vista [Reporte - Creación](/report-creation) o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecución](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
+- Los usuarios ejecutan Reportes desde la vista [Reporte - Creación](/report-creation) o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecuciones](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
 - Los Reportes se visualizan en la vista *Reportes*.
 
-Los Reportes y el [Reporte - Historial de Ejecución](/report-run-history) están sujetos a la depuración de la base de datos realizada por el [Servicio de Limpieza](/service-cleanup).
+Los Reportes y el [Reporte - Historial de Ejecuciones](/report-run-history) están sujetos a la depuración de la base de datos realizada por el [Servicio de Limpieza](/service-cleanup).
 
-Para ejecutar Reportes, véase [Reporte - Creación](/report-creation). Para verificar ejecuciones de Reportes, véase [Reporte - Historial de Ejecución](/report-run-history).
+Para ejecutar Reportes, véase [Reporte - Creación](/report-creation). Para verificar ejecuciones de Reportes, véase [Reporte - Historial de Ejecuciones](/report-run-history).
 
 ## Lista de Reportes
 
-Los Reportes mostrados se agrupan por [Plantillas de Reportes](/report-templates) y por ordenamiento *mayor*, *menor*.
+Los Reportes mostrados se agrupan por [Plantillas de Reportes](/report-templates) y por ordenamiento *más alto*, *más bajo*.
 
-- Expandir la *Plantilla de Reporte* permite seleccionar entre ordenamiento *mayor*, *menor*.
+- Expandir la *Plantilla de Reporte* permite seleccionar entre ordenamiento *más alto*, *más bajo*.
 - Expandir el ordenamiento muestra los Reportes disponibles.
 
 ## Operaciones sobre Reportes
@@ -46,7 +46,7 @@ Los usuarios disponen de las siguientes operaciones sobre Reportes:
 
 - [Configuración - Inventario - Reportes](/configuration-inventory-reports)
 - [Reporte - Creación](/report-creation)
-- [Reporte - Historial de Ejecución](/report-run-history)
+- [Reporte - Historial de Ejecuciones](/report-run-history)
 - [Plantillas de Reportes](/report-templates)
 
 ### Base de Conocimiento del Producto

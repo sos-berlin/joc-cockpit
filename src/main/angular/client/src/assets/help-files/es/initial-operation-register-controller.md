@@ -13,12 +13,12 @@ El uso de un Clúster de Controladores está sujeto a los acuerdos de la [JS7 - 
 Para un Controlador Autónomo, la Operación Inicial incluye
 
 - registrar un Controlador Autónomo,
-- registrar Agentes; consulte [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone) y [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster).
+- registrar Agentes; consulte [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone) y [Operación Inicial - Registrar Agente del Clúster](/initial-operation-register-agent-cluster).
 
 Para un Clúster de Controladores, la Operación Inicial incluye
 
 - registrar un Clúster de Controladores,
-- registrar Agentes Autónomos o Clústeres de Agentes.
+- registrar Agentes Autónomos o Agentes del Clúster.
 
 ## Registrar Controlador
 
@@ -34,7 +34,7 @@ Tras el registro exitoso, las instancias del Controlador se mostrarán en la vis
 
 Los usuarios proporcionan los siguientes datos:
 
-- **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
+- **Descripción** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado Producto](/dashboard-product-status).
 - **Conexión de JOC Cockpit al Controlador** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador, por ejemplo http://localhost:4444.
   - La URL comienza con el protocolo *http* si el Controlador usa HTTP simple. Se usa el protocolo *https* si el Controlador está configurado para HTTPS.
   - El nombre de host puede ser *localhost* si el Controlador está instalado en la misma máquina que JOC Cockpit. De lo contrario, se debe especificar el FQDN del host del Controlador.
@@ -53,11 +53,11 @@ Los prerequisitos antes de la instalación incluyen:
 Los usuarios proporcionan los siguientes datos:
 
 - **Controlador Primario** es la instancia del Controlador que inicialmente tendrá asignado el rol activo. El rol activo puede cambiarse posteriormente.
-  - **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
+  - **Descripción** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado Producto](/dashboard-product-status).
   - **Conexión de JOC Cockpit al Controlador Primario** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador Primario, por ejemplo http://primary-server:4444.
   - **Conexión del Controlador Secundario al Controlador Primario** en la mayoría de las situaciones es la misma que la *Conexión de JOC Cockpit al Controlador Primario*. Se aplica una URL diferente si se opera un Servidor Proxy entre el Controlador Primario y el Secundario. Esta URL es usada por el Controlador Secundario para conectarse al Controlador Primario.
-- **Controlador Secundario** es la instancia del Controlador que inicialmente tendrá asignado el rol En espera.
-  - **Título** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado del Producto](/dashboard-product-status).
+- **Controlador Secundario** es la instancia del Controlador que inicialmente tendrá asignado el rol en espera.
+  - **Descripción** es el título del Controlador que se mostrará en el recuadro del Controlador en el panel [Panel de Control - Estado Producto](/dashboard-product-status).
   - **Conexión de JOC Cockpit al Controlador Secundario** espera la URL compuesta por protocolo, host y puerto que usa JOC Cockpit para conectarse al Controlador Secundario, por ejemplo http://secondary-server:4444.
   - **Conexión del Controlador Primario al Controlador Secundario** en la mayoría de las situaciones es la misma que la *Conexión de JOC Cockpit al Controlador Secundario*. Se aplica una URL diferente si se opera un Servidor Proxy entre el Controlador Primario y el Secundario. Esta URL es usada por el Controlador Primario para conectarse al Controlador Secundario.
 
@@ -67,8 +67,8 @@ Cuando se envía la información de registro, JOC Cockpit establecerá una conex
 
 ### Ayuda de Contexto
 
-- [Panel de Control - Estado del Producto](/dashboard-product-status)
-- [Operación Inicial - Registrar Clúster de Agentes](/initial-operation-register-agent-cluster)
+- [Panel de Control - Estado Producto](/dashboard-product-status)
+- [Operación Inicial - Registrar Agente del Clúster](/initial-operation-register-agent-cluster)
 - [Operación Inicial - Registrar Agente Autónomo](/initial-operation-register-agent-standalone)
 
 ### Base de Conocimiento del Producto

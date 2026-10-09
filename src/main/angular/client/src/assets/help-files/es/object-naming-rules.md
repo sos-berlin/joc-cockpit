@@ -2,8 +2,8 @@
 
 Los nombres de objetos se especifican en varios lugares para:
 
-- Workflows, Jobs, Variables, Tableros de Avisos, Recursos de Lock, Órdenes Disparadas por Archivo, Recursos de Job, Carpetas,
-- Calendarios, Planificaciones, Inclusiones de Scripts, Plantillas de Job, Reportes.
+- Workflows, Jobs, Variables, Tableros de Avisos, Recursos de Lock, Orígenes de Archivos Disparadores, Recursos de Job, Carpetas,
+- Calendarios, Planificaciones, Scripts Incluidos, Plantillas de Job, Reportes.
 
 JS7 no impone convenciones de nomenclatura para los objetos: los usuarios son libres de elegir las convenciones de nomenclatura que prefieran, por ejemplo, para nombres de Job usando:
 
@@ -11,7 +11,7 @@ JS7 no impone convenciones de nomenclatura para los objetos: los usuarios son li
 - estilo kebab como en: *load-data-warehouse-daily*
 - estilo mixto como en: *DataWarehouse-Load-Daily*
 
-## Conjunto de Caracteres
+## Juego de Caracteres
 
 JS7 permite el uso de caracteres Unicode para los Nombres de Objetos.
 

@@ -30,7 +30,7 @@ Haciendo clic en el enlace correspondiente, los usuarios pueden cambiar su contr
 La configuración de los *Perfiles de Usuario* está disponible desde las siguientes secciones:
 
 - [Perfil - Preferencias](/profile-preferences)
-- [Perfil - Permisos del Perfil](/profile-permissions)
+- [Perfil - Permisos](/profile-permissions)
 - [Perfil - Gestión de Claves de Firma](/profile-signature-key-management)
 - [Perfil - Gestión de Claves SSL](/profile-ssl-key-management)
 - [Perfil - Gestión de Git](/profile-git-management)

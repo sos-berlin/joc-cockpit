@@ -1,4 +1,4 @@
-# Dashboard - Transferencia de Archivos
+# Panel de Control - Transferencia de Archivos
 
 El panel *Transferencia de Archivos* proporciona el resumen de las transferencias pasadas mediante la Transferencia Gestionada de Archivos YADE.
 

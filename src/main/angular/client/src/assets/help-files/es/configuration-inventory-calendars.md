@@ -11,7 +11,7 @@ El *Panel de Calendarios* ofrece la especificación de Calendarios basados en re
 
 Los Calendarios se gestionan desde los siguientes paneles:
 
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Calendarios. Además, el panel ofrece operaciones sobre los Calendarios.
+- El [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Calendarios. Además, el panel ofrece operaciones sobre los Calendarios.
 - El *Panel de Calendarios* en el lado derecho de la ventana contiene los detalles de configuración del Calendario.
 
 ## Panel de Calendarios
@@ -52,8 +52,8 @@ Un Calendario puede contener cualquier número de *Frecuencias* que serán combi
 
 Al agregar *Frecuencias*, se pueden seleccionar varios tipos:
 
-  - **Días de la Semana** especifican el día de la semana.
-  - **Días de la Semana Específicos** especifican días de la semana relativos, como el primer o último lunes de un mes.
+  - **Días de Semana** especifican el día de la semana.
+  - **Días de Semana Específicos** especifican días de la semana relativos, como el primer o último lunes de un mes.
   - **Días Específicos** especifican días del año.
   - **Días del Mes** especifican días relativos dentro de un mes, por ejemplo el primero o el último día del mes.
   - **Cada** especifica períodos recurrentes, por ejemplo cada 2do día, cada 1ra semana, cada 3er mes. Esto requiere especificar la fecha de *Válido Desde* a partir de la cual se contarán los días.
@@ -72,7 +72,7 @@ Suponga el ejemplo de un Calendario que debe devolver cada 2do día hábil:
 El conteo de cada 2do día hábil debe excluir los fines de semana y los Feriados Nacionales:
 
 - Cree un Calendario de Días Laborables usando:
-  - *Frecuencias Incluidas*: Agregue el *Tipo de Frecuencia* **Días de la Semana** y seleccione *Todos los Días*. El resultado contendrá todos los días del año.
+  - *Frecuencias Incluidas*: Agregue el *Tipo de Frecuencia* **Días de Semana** y seleccione *Cada Día*. El resultado contendrá todos los días del año.
   - *Frecuencias Excluidas*: Agregue el *Tipo de Frecuencia* **Cada** y seleccione *2* para el intervalo y *Días* para la unidad. Especifique la fecha *Válido Desde*. Esto reduce a la mitad los días resultantes.
   - *Frecuencias Excluidas*: Agregue el *Tipo de Frecuencia* **Feriados Nacionales** y seleccione su *País* y *Año*. Esto limita aún más los días resultantes.
 

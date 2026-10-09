@@ -2,7 +2,7 @@
 
 El despliegue de objetos incluye su transferencia a uno o más Controladores. Esto aplica a objetos como Workflows y Recursos de Job disponibles en la carpeta del sistema *Controlador*.
 
-La vista *Configuración->Inventario* permite desplegar un objeto individual, ver [Configuración - Inventario - Operaciones - Desplegar Objeto](/configuration-inventory-operations-deploy-object), y desplegar objetos desde carpetas.
+La vista *Configuración->Inventario* permite desplegar un objeto individual, véase [Configuración - Inventario - Operaciones - Desplegar Objeto](/configuration-inventory-operations-deploy-object), y desplegar objetos desde carpetas.
 
 Al desplegar objetos desde carpetas utilizando la operación *Desplegar* disponible en el menú de acción de tres puntos de la carpeta, se mostrará una ventana emergente como la siguiente:
 
@@ -22,7 +22,7 @@ El despliegue de objetos como Workflows, Planificaciones y Calendarios impacta e
   - **Ahora** especifica actualizar el Plan Diario para las Órdenes planificadas a partir del momento actual.
   - **Fecha de Inicio** cuando se selecciona, agrega un campo de entrada para la fecha de destino a partir de la cual se actualizará el Plan Diario.
   - **No** especifica que el Plan Diario no será actualizado. Las Órdenes existentes seguirán usando versiones previamente desplegadas de los objetos.
-- **Incluir Órdenes tardías de hoy** cuando se marca, incluirá las Órdenes planificadas para un momento pasado del día actual pero que están retrasadas y no comenzaron.
+- **Incluir Órdenes atrasadas de hoy** cuando se marca, incluirá las Órdenes planificadas para un momento pasado del día actual pero que están retrasadas y no comenzaron.
 
 ## Despliegue de Objetos y Cambios
 
@@ -40,11 +40,11 @@ Los objetos pueden filtrarse desde las siguientes opciones:
 
 ## Inclusión de Subcarpetas
 
-La opción **Incluir Subcarpetas** permite agregar objetos de subcarpetas de forma recursiva al despliegue."
+La opción **Procesar recursivamente** permite agregar objetos de subcarpetas de forma recursiva al despliegue.
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al desplegar objetos se considera la consistencia, por ejemplo:
 
@@ -66,7 +66,7 @@ Los usuarios controlan el despliegue consistente desde las siguientes opciones:
 - [Configuración - Inventario - Operaciones - Desplegar Objeto](/configuration-inventory-operations-deploy-object)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

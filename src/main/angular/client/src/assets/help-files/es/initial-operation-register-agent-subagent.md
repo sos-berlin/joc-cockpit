@@ -24,7 +24,7 @@ La página *Gestionar Controladores/Agentes* está disponible desde el icono de 
 
 Los usuarios proporcionan los siguientes datos:
 
-- **Subagent ID** es el identificador único de un Subagente que no puede modificarse durante la vida útil del Subagente. El *Subagent ID* no es visible en Jobs y Workflows.
+- **ID del Subagente** es el identificador único de un Subagente que no puede modificarse durante la vida útil del Subagente. El *ID del Subagente* no es visible en Jobs y Workflows.
   - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
 - **Título** es una descripción que puede agregarse para un Subagente.
 - **URL** espera la URL compuesta por protocolo, host y puerto que usan los Agentes Directores para conectarse al Subagente, por ejemplo http://localhost:4445.

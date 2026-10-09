@@ -1,8 +1,8 @@
 # Configuración - Inventario - Operaciones - Git - Clonar Repositorio
 
-Los objetos del Inventario pueden desplegarse utilizando Repositorios Git, ver [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration).
+Los objetos del Inventario pueden desplegarse utilizando Repositorios Git, véase [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration).
 
-Esto incluye operaciones Git para confirmar (commit), enviar (push) y obtener (pull) objetos.
+Esto incluye operaciones Git para confirmar (commit), enviar (push) y actualizar (pull) objetos.
 
 Los Repositorios Git se mapean a carpetas de inventario de nivel superior.
 
@@ -10,7 +10,7 @@ Los Repositorios Git se mapean a carpetas de inventario de nivel superior.
 - Los repositorios de JOC Cockpit se encuentran en el directorio del sistema de archivos *\<jetty-base\>/resources/joc/repositories*.
   - El subdirectorio *local* indica un repositorio utilizado para objetos locales a una instancia de JOC Cockpit, por ejemplo, Recursos de Job que contienen configuraciones específicas de un entorno.
   - El subdirectorio *rollout* indica un repositorio utilizado para objetos que se desplegarán en otros entornos, por ejemplo Workflows que deben utilizarse en todos los entornos sin cambios.
-  - Para el mapeo de tipos de objetos de inventario a tipos de repositorios Git, ver [Configuración - Git](/settings-git).
+  - Para el mapeo de tipos de objetos de inventario a tipos de repositorios Git, véase [Configuración - Git](/settings-git).
 - Los usuarios pueden acceder a los repositorios de JOC Cockpit desde el sistema de archivos y pueden usar un cliente Git para operaciones relacionadas, por ejemplo la gestión de ramas.
 
 La operación *Clonar* está disponible en el panel de *Navegación* y se ofrece para carpetas de nivel superior desde su menú de acción de tres puntos. La jerarquía del menú incluye *Repositorio Git->Local|Rollout->Git->Clonar*.
@@ -33,7 +33,7 @@ Los valores anteriores representan un ejemplo. Por favor especifique valores que
 
 ### Ayuda Contextual
 
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

@@ -1,6 +1,6 @@
 # Configuración - Inventario - Operaciones - Renombrar Carpeta
 
-Los objetos del Inventario pueden renombrarse o reubicarse. Esto aplica a objetos, carpetas o ambos. Para renombrar objetos ver [Configuración - Inventario - Operaciones - Renombrar Objeto](/configuration-inventory-operations-rename-object).
+Los objetos del Inventario pueden renombrarse o reubicarse. Esto aplica a objetos, carpetas o ambos. Para renombrar objetos véase [Configuración - Inventario - Operaciones - Renombrar Objeto](/configuration-inventory-operations-rename-object).
 
 Al renombrar carpetas, se aplican las [Reglas de Nomenclatura de Objetos](/object-naming-rules).
 
@@ -37,7 +37,7 @@ Los cambios en los nombres de los objetos establecen los objetos incluidos en es
 
 ## Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al renombrar objetos, se considera la consistencia y los objetos que los referencian son actualizados y establecidos en estado de borrador, por ejemplo:
 
@@ -57,7 +57,7 @@ Al renombrar objetos, se considera la consistencia y los objetos que los referen
 - [Configuración - Inventario - Operaciones - Renombrar Objeto](/configuration-inventory-operations-rename-object)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 - [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 
 ### Base de Conocimiento del Producto

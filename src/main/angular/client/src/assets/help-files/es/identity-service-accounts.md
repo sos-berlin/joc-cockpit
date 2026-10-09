@@ -28,7 +28,7 @@ Para cada cuenta se muestran las siguientes propiedades:
 - **Cuenta** indica la cuenta tal como se especificó durante el inicio de sesión.
 - **Roles** indica la lista de [Servicio de Identidad - Roles](/identity-service-roles) asignados a la cuenta.
 - **Forzar Cambio de Contraseña** indica si la cuenta de usuario debe cambiar su contraseña en el próximo inicio de sesión.
-- **Bloqueado** indica que la cuenta ha sido añadida a una [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist) y se le deniega el acceso.
+- **Bloqueado** indica que la cuenta ha sido agregada a una [Servicio de Identidad - Lista de Bloqueo](/identity-service-blocklist) y se le deniega el acceso.
 - **Deshabilitado** indica que la cuenta está inactiva y se le deniega el acceso.
 
 ## Operaciones sobre las Cuentas
@@ -39,11 +39,11 @@ Los usuarios pueden agregar una cuenta usando el botón correspondiente en la es
 
 Las siguientes operaciones están disponibles desde el menú de acción de 3 puntos de cada cuenta:
 
-- **Editar** permite especificar la [Configuración de Cuenta del Servicio de Identidad](/identity-service-account-configuration).
+- **Editar** permite especificar la [Servicio de Identidad - Configuración de Cuenta](/identity-service-account-configuration).
 - **Duplicar** copia la cuenta seleccionada a una nueva cuenta. Los usuarios deben especificar el nombre de la nueva cuenta.
 - **Restablecer Contraseña** elimina la contraseña de la cuenta y asigna la contraseña especificada con el parámetro *initial_password* en la página [Configuración - Servicio de Identidad](/settings-identity-service). La cuenta de usuario correspondiente debe iniciar sesión con la *initial_password* y debe cambiar su contraseña en el próximo inicio de sesión.
 - **Forzar Cambio de Contraseña** obliga a la cuenta a cambiar su contraseña en el próximo inicio de sesión.
-- **Agregar a Lista de Bloqueo** deniega el acceso a la cuenta durante el tiempo que la cuenta esté añadida a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist).
+- **Agregar a Lista de Bloqueo** deniega el acceso a la cuenta durante el tiempo que la cuenta esté agregada a la [Servicio de Identidad - Lista de Bloqueo](/identity-service-blocklist).
 - **Deshabilitar** desactiva la cuenta y deniega el acceso desde esta cuenta.
 - **Eliminar** borra la cuenta del Servicio de Identidad.
 - **Mostrar Permisos** muestra la lista de permisos resultantes de la combinación de los roles de la cuenta indicada.
@@ -68,9 +68,9 @@ Los usuarios pueden seleccionar una o más *Cuentas* para realizar las operacion
 ### Ayuda Contextual
 
 - [Servicio de Identidad - Configuración](/identity-service-configuration)
-- [Configuración de Cuenta del Servicio de Identidad](/identity-service-account-configuration)
+- [Servicio de Identidad - Configuración de Cuenta](/identity-service-account-configuration)
 - [Servicio de Identidad - Roles](/identity-service-roles)
-- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
+- [Servicio de Identidad - Lista de Bloqueo](/identity-service-blocklist)
 - [Servicios de Identidad](/identity-services)
 - [Configuración - Servicio de Identidad](/settings-identity-service)
 - [Configuración - JOC Cockpit](/settings-joc)

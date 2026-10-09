@@ -1,14 +1,14 @@
-# Dashboard - Órdenes
+# Panel de Control - Órdenes
 
 El panel *Órdenes* proporciona información sobre las Órdenes de las siguientes fuentes:
 
 - Órdenes agregadas por el [Plan Diario](/daily-plan)
 - Órdenes agregadas a demanda por usuarios desde la vista [Workflows](/workflows)
-- Órdenes agregadas desde [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources) que monitorean directorios en busca de archivos entrantes
+- Órdenes agregadas desde [Orígenes de Archivos Disparadores](/configuration-inventory-file-order-sources) que monitorean directorios en busca de archivos entrantes
 
 <img src="dashboard-orders.png" alt="Órdenes" width="330" height="140" />
 
-## Estados de las Órdenes
+## Estados de Órdenes
 
 El panel *Órdenes* proporciona información sobre el estado actual de las Órdenes. El panel se actualiza cuando cambia el estado de las Órdenes.
 
@@ -17,13 +17,13 @@ El panel *Órdenes* proporciona información sobre el estado actual de las Órde
 - Las Órdenes **En Progreso** están siendo procesadas por Instrucciones del Workflow pero no están ejecutando un Job.
 - Las Órdenes **Ejecutando** están en ejecución de un Job.
 - Las Órdenes **Suspendidas** han sido detenidas por intervención del usuario y pueden ser reanudadas.
-- Las Órdenes **Completadas** han finalizado un Workflow pero no han sido eliminadas, por ejemplo, si se utiliza una Orden Disparada por Archivo para monitoreo de archivos y el Workflow no mueve ni elimina los archivos entrantes. En esta situación la Orden permanecerá en su lugar mientras el archivo exista en el directorio de entrada.
+- Las Órdenes **Completadas** han finalizado un Workflow pero no han sido eliminadas, por ejemplo, si se utiliza un Origen de Archivos Disparadores para monitoreo de archivos y el Workflow no mueve ni elimina los archivos entrantes. En esta situación la Orden permanecerá en su lugar mientras el archivo exista en el directorio de entrada.
 - Las Órdenes **A Confirmar** han sido puestas en espera por la *Instrucción Prompt* en un Workflow y requieren confirmación del usuario para continuar la ejecución del Workflow.
-- Las Órdenes **Esperando** aguardan un recurso como un *Recurso de Lock*, un *Aviso*, un intervalo de  *Reintento* o *Ciclo*, o un proceso cuando el Agente en uso especifica un límite de procesos que ha sido superado.
+- Las Órdenes **Esperando** aguardan un recurso como un *Recurso de Lock*, un *Aviso*, un intervalo de *Retry* o *Cycle*, o un proceso cuando el Agente en uso especifica un límite de procesos que ha sido superado.
 - Las Órdenes **Bloqueadas** no pueden iniciarse, por ejemplo, si el Agente no es alcanzable desde que se agregó la Orden.
 - Las Órdenes **Fallidas** indican que un Job falló o que una *Instrucción Fail* impide que la Orden continúe.
 
-Al hacer clic en la cantidad indicada de Órdenes, se navega a la [Vista General de Órdenes](/orders-overview) que muestra las Órdenes en detalle.
+Al hacer clic en la cantidad indicada de Órdenes, se navega al [Resumen de Órdenes](/orders-overview) que muestra las Órdenes en detalle.
 
 ## Filtros
 
@@ -44,7 +44,7 @@ El botón desplegable en la esquina superior derecha del panel permite seleccion
 - **Próxima Hora**: incluye Órdenes *Planificadas* para la próxima hora.
 - **Próximas 12 Horas**: incluye Órdenes *Planificadas* para las próximas 12 horas.
 - **Próximas 24 Horas**: incluye Órdenes *Planificadas* para las próximas 24 horas.
-- **Día Siguiente**: incluye Órdenes *Planificadas* hasta el final del día siguiente.
+- **Próximo Día**: incluye Órdenes *Planificadas* hasta el final del día siguiente.
 - **Próximos 7 Días**: incluye Órdenes *Planificadas* hasta el final de los próximos 7 días.
 
 ## Referencias
@@ -52,8 +52,8 @@ El botón desplegable en la esquina superior derecha del panel permite seleccion
 ### Ayuda Contextual
 
 - [Plan Diario](/daily-plan)
-- [Órdenes Disparadas por Archivo](/configuration-inventory-file-order-sources)
-- [Vista General de Órdenes](/orders-overview)
+- [Orígenes de Archivos Disparadores](/configuration-inventory-file-order-sources)
+- [Resumen de Órdenes](/orders-overview)
 - [Perfil - Preferencias](/profile-preferences)
 - [Workflows](/workflows)
 

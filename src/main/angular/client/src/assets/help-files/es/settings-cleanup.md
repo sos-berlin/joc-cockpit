@@ -22,11 +22,11 @@ Especifica la hora de inicio del Servicio de Limpieza en la *Zona Horaria* corre
 
 ### Configuración: *period\_end*, Predeterminado: *04:00:00*
 
-Especifica el fin del período durante el cual se permite ejecutar el Servicio de Limpieza en la *Zona Horaria* correspondiente. El Servicio de Limpieza muy probablemente completará la depuración de la base de datos antes del tiempo indicado. Sin embargo, si detecta actividad del *Servicio de Historial*, el Servicio de Limpieza se detendrá y reiniciará más tarde. El Servicio de Limpieza no continuará ejecutándose más allá del *Fin de Período* indicado.
+Especifica el fin del período durante el cual se permite ejecutar el Servicio de Limpieza en la *Zona Horaria* correspondiente. El Servicio de Limpieza muy probablemente completará la depuración de la base de datos antes de la hora indicada. Sin embargo, si detecta actividad del *Servicio de Historial*, el Servicio de Limpieza se detendrá y reiniciará más tarde. El Servicio de Limpieza no continuará ejecutándose más allá del *Fin del Período* indicado.
 
 ### Configuración: *force\_cleanup*, Predeterminado: *false*
 
-Si se establece en *true*, especifica que el Servicio de Limpieza se ejecutará forzosamente en el *Inicio de Período* indicado. De forma predeterminada, el Servicio de Limpieza se detendrá si detecta actividad del Servicio de Historial. Esta configuración permite al Servicio de Limpieza pausar el Servicio de Historial durante una duración configurable.
+Si se establece en *true*, especifica que el Servicio de Limpieza se ejecutará forzosamente en el *Inicio del Período* indicado. De forma predeterminada, el Servicio de Limpieza se detendrá si detecta actividad del Servicio de Historial. Esta configuración permite al Servicio de Limpieza pausar el Servicio de Historial durante una duración configurable.
 
 Si se establece en *true*, se consideran las siguientes configuraciones:
 

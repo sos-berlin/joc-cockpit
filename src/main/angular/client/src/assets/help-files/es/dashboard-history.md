@@ -1,4 +1,4 @@
-# Dashboard - Historial
+# Panel de Control - Historial
 
 El panel *Historial* proporciona información sobre la ejecución pasada de Órdenes y Jobs.
 
@@ -8,10 +8,10 @@ El panel *Historial* proporciona información sobre la ejecución pasada de Órd
 
 El estado del historial es el estado final cuando una Orden o un Job se completa. El estado del historial no considera Órdenes ni Jobs que estén en progreso. No hay operaciones disponibles sobre las Órdenes o Jobs indicados: son historial.
 
-- **Órdenes Exitosas**: completadas con un resultado exitoso. Incluye Órdenes que pueden haber fallado durante su ciclo de vida pero que se recuperaron mediante manejo automático de errores o por intervención del usuario.
-- **Órdenes Fallidas**: encontraron un problema como un Job fallido o una *Instrucción de Fallo*.
-- **Jobs Exitosos**: completados con un resultado exitoso. Incluye Jobs en Workflows cuyas Órdenes relacionadas aún no están completadas.
-- **Jobs Fallidos**: encontraron un problema al ejecutar el Job.
+- **Órdenes exitosas**: completadas con un resultado exitoso. Incluye Órdenes que pueden haber fallado durante su ciclo de vida pero que se recuperaron mediante manejo automático de errores o por intervención del usuario.
+- **Órdenes fallidas**: encontraron un problema como un Job fallido o una *Instrucción de Fallo*.
+- **Jobs exitosos**: completados con un resultado exitoso. Incluye Jobs en Workflows cuyas Órdenes relacionadas aún no están completadas.
+- **Jobs fallidos**: encontraron un problema al ejecutar el Job.
 
 Al hacer clic en la cantidad indicada de Órdenes o Jobs, se navega a la vista [Historial de Órdenes](/history-orders) o [Historial de Tareas](/history-tasks) que muestra las Órdenes y Jobs en detalle.
 

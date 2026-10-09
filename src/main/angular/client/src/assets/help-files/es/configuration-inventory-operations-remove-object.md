@@ -4,7 +4,7 @@ Eliminar objetos incluye borrarlos de los Controladores y del inventario. Esto a
 
 Los objetos eliminados permanecen disponibles en la papelera del Inventario.
 
-La vista *Configuración->Inventario* permite eliminar un objeto individual y eliminar objetos desde carpetas, ver [Configuración - Inventario - Operaciones - Eliminar Carpeta](/configuration-inventory-operations-remove-folder).
+La vista *Configuración->Inventario* permite eliminar un objeto individual y eliminar objetos desde carpetas, véase [Configuración - Inventario - Operaciones - Eliminar Carpeta](/configuration-inventory-operations-remove-folder).
 
 Al eliminar un objeto individual utilizando la operación *Eliminar* disponible en el menú de acción de tres puntos del objeto en el panel de navegación, se mostrará una ventana emergente como la siguiente:
 
@@ -22,7 +22,7 @@ Las Órdenes existentes para Workflows relacionados serán canceladas en los Con
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al eliminar objetos se considera la consistencia, por ejemplo:
 
@@ -44,7 +44,7 @@ Los usuarios controlan la eliminación consistente de objetos desde las siguient
 - [Configuración - Inventario - Operaciones - Eliminar Carpeta](/configuration-inventory-operations-remove-folder)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

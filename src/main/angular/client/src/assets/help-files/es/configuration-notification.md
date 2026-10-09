@@ -19,8 +19,8 @@ La página está dividida en el *Panel de Navegación* a la izquierda y el *Pane
 El ciclo de vida típico al cambiar Notificaciones incluye:
 
 - ingresar los detalles de configuración,
-- hacer clic en el botón *Validate* para verificar que la configuración sea consistente,
-- hacer clic en el botón *Release* para activar la configuración.
+- hacer clic en el botón *Validar* para verificar que la configuración sea consistente,
+- hacer clic en el botón *Liberar* para activar la configuración.
 
 ## Panel de Navegación
 
@@ -28,10 +28,10 @@ La configuración se ofrece desde la navegación por elementos. Al hacer clic en
 
 El menú de acción de 3 puntos de un elemento ofrece las siguientes operaciones:
 
-- **Add Child Node** ofrece agregar nodos al elemento actual. Se indican los tipos de nodos disponibles.
-- **Show all Child Nodes of selected Node** abre una ventana emergente que muestra los nodos hijos posibles. Esto incluye recorrer los nodos hijos y buscar nodos hijos por nombre.
+- **Agregar nodo hijo** ofrece agregar nodos al elemento actual. Se indican los tipos de nodos disponibles.
+- **Mostrar todos los nodos hijo del nodo seleccionado** abre una ventana emergente que muestra los nodos hijos posibles. Esto incluye recorrer los nodos hijos y buscar nodos hijos por nombre.
 - **Copy/Paste** ofrece copiar un nodo incluyendo los nodos hijos. El pegado está disponible desde el menú de acción del nodo padre.
-- **Remove** eliminará el nodo y cualquier nodo hijo.
+- **Eliminar** eliminará el nodo y cualquier nodo hijo.
 
 ### Fragmentos
 
@@ -62,7 +62,7 @@ Los fragmentos se presentan en varias variantes para los siguientes tipos de Not
   - **Command**: Especifica el comando de shell para Linux/Windows que se usa para reenviar Notificaciones, por ejemplo, a una utilidad de Monitor de Sistema.
     - Por ejemplo, se puede usar el siguiente comando de shell:
       - *echo "$\{MESSAGE\}" >> /tmp/notification.log*
-      - El comando de shell *echo* añade el contenido de la Variable de Monitor *$\{MESSAGE\}* a un archivo en el directorio */tmp*.
+      - El comando de shell *echo* agrega el contenido de la Variable de Monitor *$\{MESSAGE\}* a un archivo en el directorio */tmp*.
 - **JMSFragment**
   - El tipo de fragmento se usa para integrar un producto de Cola de Mensajes Java que implementa la API JMS. Los valores de los atributos son específicos del producto JMS que se usa.
 
@@ -87,7 +87,7 @@ Activan las Notificaciones efectivas mediante referencias a los elementos *Fragm
 #### SystemNotification
 
 - **SystemNotification**: Selecciona uno o más de los *MonitorFragments* anteriores. Es posible seleccionar varios *Fragmentos* del mismo tipo de fragmento.
-  - Las Notificaciones se crean a partir de errores y advertencias del sistema que se identifican en los archivos de Log de los productos JS7, consulte [Servicio de Notificación de Log](/service-log-notification).
+  - Las Notificaciones se crean a partir de errores y advertencias del sistema que se identifican en los archivos de Log de los productos JS7, consulte [Servicio de Notificación de Logs](/service-log-notification).
   - El elemento se usa para poblar la subvista [Monitor - Notificaciones del Sistema](/monitor-notifications-system) de JOC Cockpit.
 
 #### Notification
@@ -105,21 +105,21 @@ Activan las Notificaciones efectivas mediante referencias a los elementos *Fragm
 
 La página de Notificación ofrece las siguientes operaciones desde los botones relacionados en la parte superior de la página:
 
-- **New**: comienza desde una configuración vacía.
-- **Remove**: elimina la configuración actual.
-- **Revert Draft**: crea un nuevo Borrador a partir de la versión liberada más recientemente. Los cambios actuales se perderán.
-- **Upload**: permite cargar un archivo XML que contiene la configuración.
-- **Download**: ofrece descargar la configuración a un archivo XML.
-- **Edit XML**: ofrece la edición directa de la configuración en formato XML.
-- **Validate**: valida la configuración contra un Esquema XSD. Esto garantiza que la configuración XML esté bien formada y sea formalmente correcta.
-- **Release**: publica la configuración en JOC Cockpit. Los cambios surten efecto inmediatamente.
+- **Nuevo**: comienza desde una configuración vacía.
+- **Eliminar**: elimina la configuración actual.
+- **Revertir Borrador**: crea un nuevo Borrador a partir de la versión liberada más recientemente. Los cambios actuales se perderán.
+- **Cargar**: permite cargar un archivo XML que contiene la configuración.
+- **Descargar**: ofrece descargar la configuración a un archivo XML.
+- **Editar XML**: ofrece la edición directa de la configuración en formato XML.
+- **Validar**: valida la configuración contra un Esquema XSD. Esto garantiza que la configuración XML esté bien formada y sea formalmente correcta.
+- **Liberar**: publica la configuración en JOC Cockpit. Los cambios surten efecto inmediatamente.
 
 ## Referencias
 
 ### Ayuda Contextual
 
-- [Servicio de Notificación de Log](/service-log-notification)
-- [Monitor - Disponibilidad de Agente](/monitor-availability-agent)
+- [Servicio de Notificación de Logs](/service-log-notification)
+- [Monitor - Disponibilidad de Agentes](/monitor-availability-agent)
 - [Monitor - Disponibilidad de Controlador](/monitor-availability-controller)
 - [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)
 - [Monitor - Notificaciones del Sistema](/monitor-notifications-system)

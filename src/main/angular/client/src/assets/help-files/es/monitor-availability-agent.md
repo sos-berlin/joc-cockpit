@@ -1,4 +1,4 @@
-# Monitor - Disponibilidad del Agente
+# Monitor - Disponibilidad de Agentes
 
 La vista muestra indicadores de disponibilidad de las instancias de Agente.
 

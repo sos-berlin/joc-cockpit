@@ -3,7 +3,7 @@
 Los [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) ofrecen información sobre la ejecución pasada de Workflows y Jobs:
 
 - Los Reportes se crean a partir de [Plantillas de Reportes](/report-templates) predefinidas que se parametrizan desde [Configuración - Inventario - Reportes](/configuration-inventory-reports).
-- Los usuarios ejecutan Reportes desde la vista *Creación de Reportes* o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecución](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
+- Los usuarios ejecutan Reportes desde la vista *Creación de Reportes* o mediante [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vista [Reporte - Historial de Ejecuciones](/report-run-history) proporciona evidencia sobre ejecuciones pasadas de Reportes.
 - Los Reportes se visualizan en la vista [Reportes](/reports).
 
 ## Visualización de Configuraciones de Reportes
@@ -44,7 +44,7 @@ Los usuarios pueden seleccionar varias Configuraciones de Reportes y aplicar la 
 
 - [Configuración - Inventario - Reportes](/configuration-inventory-reports)
 - [Reportes](/reports)
-- [Reporte - Historial de Ejecución](/report-run-history)
+- [Reporte - Historial de Ejecuciones](/report-run-history)
 - [Plantillas de Reportes](/report-templates)
 
 ### Base de Conocimiento del Producto

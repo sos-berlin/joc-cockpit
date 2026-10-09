@@ -1,6 +1,6 @@
-# Perfil - Permisos del Perfil
+# Perfil - Permisos
 
-La página *Perfil - Permisos del Perfil* reporta los permisos resultantes de los roles asignados a una cuenta de usuario.
+La página *Perfil - Permisos* reporta los permisos resultantes de los roles asignados a una cuenta de usuario.
 
 ## Roles
 

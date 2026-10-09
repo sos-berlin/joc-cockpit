@@ -2,11 +2,11 @@
 
 El *Panel de Planificaciones* permite especificar reglas para crear Órdenes desde el [Plan Diario](/daily-plan).
 
-El botón *Tiempo de Ejecución* permite especificar los horarios de inicio de las Órdenes desde una ventana emergente: primero se asigna un Calendario, luego se especifican los períodos y opcionalmente se aplican restricciones.
+El botón *Tiempo de Ejecución* permite especificar las horas de inicio de las Órdenes desde una ventana emergente: primero se asigna un Calendario, luego se especifican los períodos y opcionalmente se aplican restricciones.
 
 ## Zona Horaria
 
-Los tiempos de ejecución se especifican desde una **Zona Horaria** que se toma del [Perfil - Preferencias](/profile-preferences) del usuario. Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria ver [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+Los tiempos de ejecución se especifican desde una **Zona Horaria** que se toma del [Perfil - Preferencias](/profile-preferences) del usuario. Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria véase [Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 - Los horarios de inicio de las Órdenes se consideran en la zona horaria especificada.
 - Es posible usar una zona horaria diferente a la de [Configuración - Plan Diario](/settings-daily-plan) para los tiempos de ejecución de las Órdenes. Los usuarios deben tener en cuenta que:
@@ -15,7 +15,7 @@ Los tiempos de ejecución se especifican desde una **Zona Horaria** que se toma 
 - Como resultado, el Plan Diario puede contener Órdenes para una fecha determinada que se superponen con el día anterior o posterior. Por ejemplo:
   - asuma que la zona horaria del Plan Diario es UTC,
   - asuma que la zona horaria de la Planificación es Asia/Calcutta (UTC+05:30) y el horario de inicio es *23:00*,
-  - si se crea una Orden para el Plan Diario del martes, indicará un horario de inicio para el miércoles a las *04:30* UTC. El resultado es correcto pero puede resultar confuso para usuarios que no están familiarizados con las zonas horarias.
+  - si se crea una Orden para el Plan Diario del martes, indicará una hora de inicio para el miércoles a las *04:30* UTC. El resultado es correcto pero puede resultar confuso para usuarios que no están familiarizados con las zonas horarias.
 
 Para algunos usuarios puede resultar sorprendente que un día no tiene 24 horas, sino que puede abarcar hasta 50 horas. El período de un día siempre es de 24 horas, ya que depende de la rotación de la Tierra. Sin embargo, para cualquier zona horaria dada existe una cobertura de 50 horas para incluir todos los horarios posibles alrededor del planeta.
 
@@ -28,22 +28,22 @@ Primero se debe asignar un Calendario:
 
 ## Períodos
 
-A continuación, se deben especificar uno o más períodos para los horarios de inicio. El campo de entrada *Intervalo de Repetición* ofrece las siguientes opciones:
+A continuación, se deben especificar uno o más períodos para las horas de inicio. El campo de entrada *Intervalo de Repetición* ofrece las siguientes opciones:
 
 - **Inicio Único** es un único punto en el tiempo.
-  - **Horario de Inicio** se especifica usando la sintaxis *HH:MM:SS*.
+  - **Hora de Inicio** se especifica usando la sintaxis *HH:MM:SS*.
   - **En Día No Laborable** especifica qué debe ocurrir si un período coincide con un día indicado por un Calendario de Días No Laborables.
     - **suprimir ejecución** es el comportamiento predeterminado para no crear una Orden.
     - **ignorar día no laborable** anula el Calendario de Días No Laborables y crea una Orden.
     - **antes del día no laborable** agrega una Orden al siguiente día laborable anterior al día no laborable. Por ejemplo:
-      - Un Calendario de Días Laborables especifica lun-jue como días laborables.
+      - Un Calendario de Días Laborables especifica Lun-Jue como días laborables.
       - Un Calendario de Días No Laborables indica un lunes específico del año como día no laborable.
       - El siguiente día anterior al día no laborable será el domingo anterior. Si los fines de semana están excluidos y se agregan al Calendario de Días No Laborables, el día resultante será el viernes anterior.
     - **después del día no laborable** agrega una Orden al siguiente día laborable posterior al día no laborable. Por ejemplo:
-      - Un Calendario de Días Laborables especifica mar-vie como días laborables.
+      - Un Calendario de Días Laborables especifica Mar-Vie como días laborables.
       - Un Calendario de Días No Laborables indica un viernes específico del año como día no laborable.
       - El siguiente día posterior al día no laborable será el sábado siguiente. Si los fines de semana están excluidos y se agregan al Calendario de Días No Laborables, el día resultante será el lunes siguiente.
-- **Repetición** especifica un período repetido para Órdenes Cíclicas. Para la entrada se usa la siguiente sintaxis: *HH:MM:SS*.
+- **Repetir** especifica un período repetido para Órdenes Cíclicas. Para la entrada se usa la siguiente sintaxis: *HH:MM:SS*.
   - **Tiempo de Repetición** es el intervalo entre ciclos, por ejemplo *02:00* para ciclos de 2 horas.
   - **Inicio** es el horario de inicio del primer ciclo, por ejemplo *06:00* para las 6am.
   - **Fin** es el horario de finalización del último ciclo, por ejemplo *22:00* para las 10pm.
@@ -55,11 +55,11 @@ Las *Restricciones* se usan para limitar los días para los cuales se crearán �
 
 - Los Calendarios de Días Laborables y No Laborables asignados se fusionan para obtener los días resultantes para la ejecución de Workflows por Órdenes.
 - Las Restricciones se aplican adicionalmente y contienen reglas similares a las de [Configuración - Inventario - Calendarios](/configuration-inventory-calendars):
-  - **Días de la Semana** especifica el día de la semana.
-  - **Días de la Semana Específicos** especifica días de la semana relativos como el primer o último lunes del mes.
+  - **Días de Semana** especifica el día de la semana.
+  - **Días de Semana Específicos** especifica días de la semana relativos como el primer o último lunes del mes.
   - **Días Específicos** especifica días del año.
   - **Días del Mes** especifica días relativos en un mes, por ejemplo el primer o último día del mes.
-  - **Cada** especifica períodos recurrentes, por ejemplo cada 2 días, cada 1 semana, cada 3 meses. Esto requiere especificar la fecha *Válido Desde* a partir de la cual se contarán los días.
+  - **Cada** especifica períodos recurrentes, por ejemplo cada 2do día, cada 1ra semana, cada 3er mes. Esto requiere especificar la fecha *Válido Desde* a partir de la cual se contarán los días.
   - **Feriados Nacionales** especifica feriados públicos conocidos. Los días resultantes no son vinculantes y pueden diferir de la legislación local.
   - **Calendarios de Días No Laborables** excluye los días relacionados de los Calendarios de Días No Laborables para el Calendario actual.
 
@@ -68,7 +68,7 @@ Las *Restricciones* permiten limitar el número de Calendarios en uso. En lugar 
 El uso de Calendarios de Días No Laborables es diferente cuando se asignan al *Tiempo de Ejecución* y cuando se asignan a la *Restricción*:
 
 - Ejemplo:
-  - Asuma un Calendario de Días Laborables lun-vie.
+  - Asuma un Calendario de Días Laborables Lun-Vie.
   - Asuma una *Restricción* de Planificación para el *4to del mes*.
   - Los días resultantes se calculan a partir del Calendario de Días Laborables y el 4to día de la lista resultante de días.
 - Las Planificaciones también pueden contener referencias a Calendarios de Días No Laborables.
@@ -100,7 +100,7 @@ Los usuarios deben considerar las implicaciones de las Órdenes Cíclicas: crean
     - Para Workflows Cíclicos existe una única Orden que espera la intervención del usuario.
 - Registro
   - Para cada instancia de Orden de una Orden Cíclica se crea una entrada separada en el [Historial de Órdenes](/history-orders) y en el [Historial de Tareas](/history-tasks).
-  - Para un Workflow Cíclico existe una única entrada en el Historial de Órdenes a la que se añade la salida del Log de cada ciclo. Se agregan entradas individuales por ejecución de Job al Historial de Tareas.
+  - Para un Workflow Cíclico existe una única entrada en el Historial de Órdenes a la que se agrega la salida del Log de cada ciclo. Se agregan entradas individuales por ejecución de Job al Historial de Tareas.
 
 ## Referencias
 
@@ -122,4 +122,4 @@ Los usuarios deben considerar las implicaciones de las Órdenes Cíclicas: crean
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)
 - [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction)
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
-- [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+- [Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)

@@ -3,11 +3,11 @@
 La Búsqueda de Workflows se utiliza para buscar Workflows basándose en criterios como:
 
 - **Entrada del Usuario** que coincida con un nombre o título determinado, opcionalmente limitado por carpetas,
-- Disponibilidad del Workflow
+- Disponibilidad de Workflow
   - Los Workflows **Sincronizados** están desplegados en un Controlador.
   - Los Workflows **Suspendidos** están congelados, es decir, aceptan Órdenes pero no permitirán que las Órdenes inicien.
   - Los Workflows **Pendientes** esperan la confirmación de un Agente de que los Workflows han sido suspendidos.
-- Disponibilidad de Jobs
+- Disponibilidad del Job
   - Los Jobs **Omitidos** no serán considerados para ejecución cuando las Órdenes pasen por ellos.
   - Los Jobs **Detenidos** suspenderán las Órdenes que lleguen.
 
@@ -39,4 +39,4 @@ La Búsqueda Avanzada permite buscar por atributos de objetos:
 El metacarácter de búsqueda **\*** se utiliza para especificar que se buscan dependencias, por ejemplo con un Recurso de Lock sin importar el nombre que use:
 
 - El metacarácter **\*** para **Recursos de Lock** devolverá Workflows que utilicen un Recurso de Lock.
-- El metacarácter **\*** para **Órdenes Disparadas por Archivo** devolverá Workflows referenciados por una Orden Disparada por Archivo.
+- El metacarácter **\*** para **Orígenes de Archivos Disparadores** devolverá Workflows referenciados por un Origen de Archivos Disparadores.

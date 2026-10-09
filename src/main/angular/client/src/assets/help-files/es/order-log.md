@@ -1,10 +1,10 @@
-# Vista del Log de Orden
+# Vista de Log de Orden
 
-La *Vista del Log de Orden* ofrece un log en ejecución que se actualiza cada 2-3 segundos. Esto permite seguir la salida de Jobs e instrucciones de Workflow ejecutadas por la Orden casi en tiempo real.
+La *Vista de Log de Orden* ofrece un log en ejecución que se actualiza cada 2-3 segundos. Esto permite seguir la salida de Jobs e instrucciones de Workflow ejecutadas por la Orden casi en tiempo real.
 
 ## Filtro
 
-La *Vista del Log de Orden* ofrece filtrado por varios criterios disponibles en la parte superior de la ventana:
+La *Vista de Log de Orden* ofrece filtrado por varios criterios disponibles en la parte superior de la ventana:
 
 - **Principal** especifica que se mostrarán los detalles sobre los inicios de Órdenes, los inicios de Jobs y la parametrización en los inicios de Jobs. Dicha salida se indica con el calificador [MAIN].
 - Los eventos de **Éxito** se indican con el calificador [SUCCESS] y muestran detalles como la parametrización resultante cuando se completan los Jobs.
@@ -30,7 +30,7 @@ La salida del log indica marcas de tiempo de diferentes fuentes:
 - **Hora del Job**: La salida de los Jobs usa la zona horaria del servidor en el que se ejecutará el Job o la zona horaria especificada en la implementación del Job.
 - **Hora del Controlador**: Los eventos finales como *OrderFinished* son creados por el Controlador y reflejan el reloj en tiempo real del Controlador.
 
-La *Vista del Log de Orden* convierte las marcas de tiempo a la zona horaria del usuario, si el ajuste correspondiente en [Perfil - Preferencias](/profile-preferences) está activo. De lo contrario, se usarán las zonas horarias del Controlador y del Agente.
+La *Vista de Log de Orden* convierte las marcas de tiempo a la zona horaria del usuario, si el ajuste correspondiente en [Perfil - Preferencias](/profile-preferences) está activo. De lo contrario, se usarán las zonas horarias del Controlador y del Agente.
 
 Si los relojes en tiempo real del Controlador y del Agente no están sincronizados, esto puede resultar en una salida del log que sugiere viajes en el tiempo.
 

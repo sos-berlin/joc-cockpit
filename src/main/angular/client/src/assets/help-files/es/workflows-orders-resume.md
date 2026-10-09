@@ -34,13 +34,13 @@ La instrucción siguiente del Workflow es la misma o aquella a la cual el usuari
 
 #### Forzar el reinicio de Jobs
 
-La casilla de verificación **Forzar Reanudación** afecta a los Jobs configurados como *no reiniciables*, véase [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options). Estos Jobs no se ejecutarán nuevamente en caso de haber sido terminados por el Agente o por el sistema operativo. La opción no afecta a Órdenes *suspendidas* ni a Órdenes *fallidas* por errores del Job.
+La casilla de verificación **Forzar Reanudación** afecta a los Jobs configurados como *no reiniciables*, véase [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options). Estos Jobs no se ejecutarán nuevamente en caso de haber sido terminados por el Agente o por el sistema operativo. La opción no afecta a Órdenes *suspendidas* ni a Órdenes *fallidas* por errores del Job.
 
 La intención es evitar que Jobs no diseñados para ser reiniciados sean reanudados automáticamente tras una terminación forzada. En su lugar, los usuarios deben marcar la casilla correspondiente. Los casos de uso típicos incluyen, por ejemplo, Jobs que realizan transacciones financieras para los cuales el resultado debe verificarse antes de provocar un reinicio.
 
-#### Especificar la Hora de Fin del Ciclo
+#### Especificar la Hora de Fin de Ciclo
 
-El campo de entrada **Hora de Fin del Ciclo** está disponible para Órdenes que iniciaron al menos un ciclo en una *Instrucción Cycle*.
+El campo de entrada **Hora de Fin de Ciclo** está disponible para Órdenes que iniciaron al menos un ciclo en una *Instrucción Cycle*.
 
 Se puede especificar un período más corto o más largo que el configurado en la *Instrucción Cycle*.
 Los períodos se especifican en *segundos* o en *horas:minutos:segundos*. Especificar el valor *0* para el período hará que la Orden:
@@ -57,8 +57,8 @@ Los usuarios pueden arrastrar y soltar la Orden hacia la instrucción del Workfl
 - **Posiciones Permitidas**
   - Las Órdenes pueden reanudarse desde instrucciones posteriores del Workflow al mismo nivel de bloque que la posición actual.
   - Las Órdenes pueden reanudarse desde una posición en la rama *verdadera* o *falsa* de una *Instrucción If*.
-  - Las Órdenes pueden reanudarse desde una posición dentro de la instrucción ConsumeNotices, omitiendo así la verificación de existencia de los Avisos relacionados.
-- **Posiciones No Permitidas**
+  - Las Órdenes pueden reanudarse desde una posición dentro de la instrucción *ConsumeNotices*, omitiendo así la verificación de existencia de los Avisos relacionados.
+- **Posiciones Denegadas**
   - Las Órdenes no pueden moverse a una posición dentro de una rama de una *Instrucción Fork*. El motivo es que la *Orden Padre* permanece con la *Instrucción Fork* mientras se crean *Órdenes Hijas* por rama.
     - Las *Órdenes Hijas* no pueden moverse entre ramas de una *Instrucción Fork*. Se acepta reanudar una *Orden Hija* desde una posición dentro de su propia rama.
     - Las Órdenes pueden reanudarse directamente desde una *Instrucción Fork*.
@@ -70,10 +70,10 @@ Cuando no se modifica, la Orden se reanudará desde su posición actual en el Wo
 
 ## Operaciones Masivas sobre Órdenes
 
-La operación masiva está disponible desde la vista [Vista General de Órdenes](/orders-overview), que permite seleccionar varias Órdenes del mismo o de diferentes Workflows.
+La operación masiva está disponible desde la vista [Resumen de Órdenes](/orders-overview), que permite seleccionar varias Órdenes del mismo o de diferentes Workflows.
 
 - **Reanudar desde la misma Posición** permite la reanudación desde la instrucción actual del Workflow en la que la Orden está *suspendida* o *fallida*.
-- **Reanudar desde el Bloque Actual** permite la reanudación desde el inicio de la instrucción de bloque actual. Por ejemplo:
+- **Reanudar desde el Bloque actual** permite la reanudación desde el inicio de la instrucción de bloque actual. Por ejemplo:
   - si una Orden está en alguna instrucción dentro de una *Instrucción Lock*, se reanudará desde el inicio de la *Instrucción Lock*.
   - si una Orden está en alguna instrucción dentro de una rama de la *Instrucción Fork*, se reanudará desde el inicio de la rama.
 - **Reanudar desde Etiqueta** permite especificar el nombre de una *Etiqueta* que sea común a todos los Workflows para los cuales deben reanudarse Órdenes. La reanudación de las Órdenes se efectuará desde la posición del Workflow indicada por la *Etiqueta*. Si la *Etiqueta* no existe en un Workflow, la Orden se reanuda desde su posición actual.
@@ -82,9 +82,9 @@ La operación masiva está disponible desde la vista [Vista General de Órdenes]
 
 ### Ayuda Contextual
 
-- [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Vista General de Órdenes](/orders-overview)
+- [Resumen de Órdenes](/orders-overview)
 - [Workflows](/workflows)
 
 ### Base de Conocimiento del Producto

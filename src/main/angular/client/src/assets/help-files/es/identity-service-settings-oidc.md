@@ -28,7 +28,7 @@ Las siguientes configuraciones están disponibles:
     - Si no se ha identificado ningún atributo, se utilizará el atributo *email*.
   - Si esto no resulta en una cuenta de usuario identificable, los usuarios pueden especificar el nombre del atributo. Frecuentemente los Proveedores de Identidad OIDC admiten nombres de atributo como *username* o *email*.
 - **Claims OIDC** especifican *roles* o *grupos* de OIDC que se utilizan para el mapeo a roles de JS7. Los *Claims OIDC* predeterminados incluyen *roles*, *groups*.
-- **Scopes OIDC** especifican el ámbito para el cual los *Claims OIDC* serán devueltos por el Proveedor de Servicio de Identidad OIDC. Los *Scopes OIDC* predeterminados incluyen *roles*, *groups*, *profile*.
+- **Ámbitos OIDC** especifican el ámbito para el cual los *Claims OIDC* serán devueltos por el Proveedor de Servicio de Identidad OIDC. Los *Ámbitos OIDC* predeterminados incluyen *roles*, *groups*, *profile*.
 - **Mapeo de Grupos/Roles OIDC** incluye la asignación de roles a cuentas.
   - Se puede especificar una lista de claims que contienen los grupos configurados en el Proveedor de Servicio de Identidad OIDC. Los claims disponibles pueden obtenerse verificando el *JSON Web Token* durante el registro.
   - Durante la asignación, los grupos disponibles del Proveedor de Servicio de Identidad OIDC se asignan a los roles configurados con el Servicio de Identidad. Se puede asignar cualquier número de roles a cada grupo.

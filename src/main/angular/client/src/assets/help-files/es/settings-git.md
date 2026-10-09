@@ -18,7 +18,7 @@ Especifica si los [Recursos de Lock](/resources-resource-locks) se consideran lo
 
 ### Configuración: *git\_hold\_file\_order\_sources*, Predeterminado: *rollout*
 
-Especifica si las Órdenes Disparadas por Archivo se consideran locales a un entorno o están destinadas al despliegue con Git.
+Especifica si los Orígenes de Archivos Disparadores se consideran locales a un entorno o están destinados al despliegue con Git.
 
 ### Configuración: *git\_hold\_notice\_boards*, Predeterminado: *rollout*
 
@@ -30,11 +30,11 @@ Especifica si los Scripts Incluidos se consideran locales a un entorno o están 
 
 ### Configuración: *git\_hold\_job\_templates*, Predeterminado: *rollout*
 
-Especifica si las Plantillas de Jobs se consideran locales a un entorno o están destinadas al despliegue con Git.
+Especifica si las Plantillas de Job se consideran locales a un entorno o están destinadas al despliegue con Git.
 
 ### Configuración: *git\_hold\_job\_resources*, Predeterminado: *local*
 
-Especifica si los Recursos de Jobs se consideran locales a un entorno o están destinados al despliegue con Git.
+Especifica si los Recursos de Job se consideran locales a un entorno o están destinados al despliegue con Git.
 
 ### Configuración: *git\_hold\_calendars*, Predeterminado: *local*
 

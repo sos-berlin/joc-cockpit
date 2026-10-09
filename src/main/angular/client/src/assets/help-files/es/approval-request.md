@@ -11,11 +11,11 @@ La funcionalidad básica del Proceso de Aprobación incluye:
 
 - implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
 - llevar un seguimiento de las Solicitudes de Aprobación pendientes.
-- ofrecer alternativa a un grupo de *Aprobadores*.
+- ofrecer respaldo a través de varios *Aprobadores*.
 
 ## Solicitud de Aprobación
 
-Las Solicitudes de Aprobación se generan cuando un usuario intenta realizar una operación que está sujeta a aprobación. Los requisitos previos incluyen:
+Las Solicitudes de Aprobación se agregan cuando un usuario intenta realizar una operación que está sujeta a aprobación. Los requisitos previos incluyen:
 
 - El usuario tiene asignado el *Rol de Solicitante*. Para el nombre del rol véase [Configuración - JOC Cockpit](/settings-joc).
 - La operación actual está indicada con los permisos del *Rol de Solicitante*.

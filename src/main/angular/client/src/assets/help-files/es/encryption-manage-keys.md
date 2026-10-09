@@ -25,7 +25,7 @@ La página *Gestión de Claves de Cifrado* se utiliza para gestionar Certificado
 
 Los Certificados de Cifrado existentes se muestran en una lista:
 
-- **Menú de Acciones** ofrece actualizar y eliminar la entrada del Certificado.
+- **Menú de Acción** ofrece actualizar y eliminar la entrada del Certificado.
 - **Alias del Certificado** es el nombre único que los usuarios asignan a un Certificado.
 - **Icono de Visualización** permite hacer clic en el icono para mostrar el Certificado correspondiente.
 - **Ruta al archivo de Clave Privada** especifica la ubicación de la Clave Privada en los Agentes correspondientes.

@@ -32,7 +32,7 @@ La Búsqueda Avanzada permite buscar por atributos de objetos:
 El metacarácter de búsqueda **\*** se utiliza para especificar que se buscan dependencias, por ejemplo con un Tablero de Avisos sin importar el nombre que use:
 
 - El metacarácter **\*** para **Tableros de Avisos** devolverá Recursos de Lock para Workflows que utilicen un Tablero de Avisos.
-- El metacarácter **\*** para **Órdenes Disparadas por Archivo** devolverá Recursos de Lock para Workflows referenciados por una Orden Disparada por Archivo.
+- El metacarácter **\*** para **Orígenes de Archivos Disparadores** devolverá Recursos de Lock para Workflows referenciados por un Origen de Archivos Disparadores.
 
 ## Referencias
 

@@ -8,15 +8,15 @@ El JOC Cockpit puede operarse en [JS7 - Kiosk Mode](https://kb.sos-berlin.com/di
 
 La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 
-## Configuración del modo kiosco
+## Configuración de Kiosco
 
 ### Configuración: *kiosk\_role*, Predeterminado: *kiosk*
 
-Especifica el nombre del Rol que se asigna a una cuenta utilizada para operar en modo kiosco:
+Especifica el nombre del rol que se asigna a una cuenta utilizada para operar en modo kiosco:
 
-- El Rol debe ser creado por el usuario.
-- El Rol debe incluir permisos de solo lectura.
-- El Rol es el único asignado a la cuenta.
+- El rol debe ser creado por el usuario.
+- El rol debe incluir permisos de solo lectura.
+- El rol es el único asignado a la cuenta.
 
 ### Configuración: *view\_dashboard\_duration*, Predeterminado: *20*
 

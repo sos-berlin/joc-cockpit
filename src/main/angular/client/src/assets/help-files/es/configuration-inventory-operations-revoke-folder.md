@@ -2,7 +2,7 @@
 
 Revocar objetos incluye eliminarlos del Controlador y mantenerlos en estado de borrador en el inventario. Esto aplica a objetos como Workflows y Recursos de Job disponibles en la carpeta del sistema *Controlador*.
 
-La vista *Configuración->Inventario* permite revocar un objeto individual, ver [Configuración - Inventario - Operaciones - Revocar Objeto](/configuration-inventory-operations-revoke-object), y revocar objetos desde carpetas.
+La vista *Configuración->Inventario* permite revocar un objeto individual, véase [Configuración - Inventario - Operaciones - Revocar Objeto](/configuration-inventory-operations-revoke-object), y revocar objetos desde carpetas.
 
 Al revocar objetos desde una carpeta utilizando la operación *Revocar* disponible en el menú de acción de tres puntos de la carpeta en el panel de navegación, se mostrará una ventana emergente como la siguiente:
 
@@ -22,11 +22,11 @@ Las Órdenes existentes para Workflows relacionados serán recuperadas del Contr
 
 ## Inclusión de Subcarpetas
 
-La opción **Incluir Subcarpetas** permite revocar objetos de subcarpetas de forma recursiva.
+La opción **Procesar recursivamente** permite revocar objetos de subcarpetas de forma recursiva.
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al revocar objetos se considera la consistencia, por ejemplo:
 
@@ -48,7 +48,7 @@ Los usuarios controlan la revocación consistente de objetos desde las siguiente
 - [Configuración - Inventario - Operaciones - Revocar Objeto](/configuration-inventory-operations-revoke-object)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

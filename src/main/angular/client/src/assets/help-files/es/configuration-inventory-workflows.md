@@ -3,7 +3,7 @@
 El *Panel de Workflow* ofrece el diseño de Workflows a partir de una secuencia de instrucciones que dan forma al Workflow como un [grafo acíclico dirigido](https://en.wikipedia.org/wiki/Directed_acyclic_graph).
 
 - Los usuarios pueden arrastrar y soltar instrucciones desde la *Barra de Herramientas* para crear patrones de Workflow como una secuencia de Jobs, bifurcación y unión de Jobs, ejecución condicional, etc.
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) ofrece navegación por Etiquetas y carpetas. Además, el panel ofrece operaciones sobre Workflows.
+- El [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation) ofrece navegación por Etiquetas y carpetas. Además, el panel ofrece operaciones sobre Workflows.
 
 ## Panel de Barra de Herramientas
 
@@ -25,7 +25,7 @@ La *Barra de Herramientas* contiene las siguientes instrucciones:
 - **Break Instruction** se usa en una *Cycle Instruction* para terminar el ciclo y hacer que una Orden salga del ciclo. Para más detalles, consulte [JS7 - Break Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Break+Instruction).
 - **Lock Instruction** es una instrucción de bloque que se usa para especificar uno o más Jobs y otras instrucciones de exclusión mutua, para evitar que los Jobs se ejecuten en paralelo, ya sea en el mismo Workflow o en Workflows diferentes. Las *Lock Instructions* pueden anidarse. Para más detalles, consulte [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
 - **Sleep Instruction** se usa para retrasar el procesamiento posterior en un Workflow durante un tiempo especificado en segundos. Para más detalles, consulte [JS7 - Sleep Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Sleep+Instruction).
-- **Prompt Instruction** detiene la ejecución de una Orden en un Workflow hasta que se confirme el prompt. La Orden recibe el estado *prompting*. Los usuarios pueden confirmar o cancelar las Órdenes en estado *prompting*, consulte [Estados de Órdenes](/order-states). Para más detalles, consulte [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
+- **Prompt Instruction** detiene la ejecución de una Orden en un Workflow hasta que se confirme el prompt. La Orden recibe el estado *A Confirmar*. Los usuarios pueden confirmar o cancelar las Órdenes en estado *A Confirmar*, consulte [Estados de Órdenes](/order-states). Para más detalles, consulte [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
 - **AdmissionTimes Instruction** detiene la ejecución de una Orden en un Workflow hasta que se alcance el intervalo de tiempo especificado. La Orden recibe el estado *esperando*. Además, las Órdenes pueden ser terminadas si superan el intervalo de tiempo especificado. La instrucción puede configurarse para que una Orden omita todas las instrucciones incluidas en caso de que no se encuentre ningún intervalo de tiempo coincidente para la fecha del Plan Diario de la Orden. Para más detalles, consulte [JS7 - AdmissionTimes Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AdmissionTimes+Instruction).
 - **AddOrder Instruction** se usa en un Workflow para crear una Orden para un Workflow diferente. Por defecto, las Órdenes agregadas se ejecutan de forma asíncrona en un Workflow separado y en paralelo a la Orden actual; es decir, su resultado de ejecución no está sincronizado y no tiene impacto en la Orden actual. Si la ejecución de la Orden agregada debe sincronizarse, se pueden usar la *ExpectNotices Instruction* y la *ConsumeNotices Instruction*. Para más detalles, consulte [JS7 - AddOrder Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AddOrder+Instruction).
 - **PostNotices Instruction** se usa para crear uno o más Avisos para Tableros de Avisos. Los Avisos son esperados por la *ExpectNotices Instruction* y la *ConsumeNotices Instruction* correspondientes del mismo o de diferentes Workflows. Un Workflow puede incluir cualquier número de *PostNotices Instructions* para publicar Avisos en el mismo o en diferentes Tableros de Avisos. Publicar un Aviso no bloquea la ejecución posterior de una Orden en un Workflow. La Orden continúa inmediatamente después de publicar el Aviso. Para más detalles, consulte [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
@@ -36,16 +36,16 @@ La *Barra de Herramientas* contiene las siguientes instrucciones:
 - **CaseWhen Instruction** se usa para comprobar un predicado similar a la *If Instruction*. La instrucción puede aparecer cualquier número de veces en una *Case Instruction*.
 - **CaseElse Instruction** se usa cuando fallan todas las comprobaciones de las *CaseWhen Instructions*.
 - **StickySubagent Instruction** puede usarse para ejecutar un número de Jobs con el mismo Subagente de un Clúster de Agentes. La instrucción de bloque comprueba el primer Subagente disponible de un Clúster de Subagentes. Este Subagente se usará para los Jobs posteriores dentro de la instrucción de bloque. El uso de Clústeres de Agentes está sujeto a los términos de agrupamiento en clúster de la [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License). Para más detalles, consulte [JS7 - StickySubagent Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters).
-- **Options Instruction** es una instrucción de bloque que controla el manejo de errores para la *Lock Instruction* y la *ConsumeNotices Instruction*. Si la *Options Instruction* está presente y especifica la propiedad *Stop on Failure*, las Órdenes *fallidas* permanecerán con la instrucción que falló, por ejemplo un Job. Si la instrucción no está presente, las Órdenes que fallen dentro de una *Lock Instruction* o *ConsumeNotices Instruction* se moverán al inicio del bloque de instrucciones y permanecerán en estado *fallido*. Para más detalles, consulte [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
-- **Paste** ofrece arrastrar y soltar una instrucción previamente copiada o cortada al Workflow.
+- **Options Instruction** es una instrucción de bloque que controla el manejo de errores para la *Lock Instruction* y la *ConsumeNotices Instruction*. Si la *Options Instruction* está presente y especifica la propiedad *Detener ante Fallo*, las Órdenes *fallidas* permanecerán con la instrucción que falló, por ejemplo un Job. Si la instrucción no está presente, las Órdenes que fallen dentro de una *Lock Instruction* o *ConsumeNotices Instruction* se moverán al inicio del bloque de instrucciones y permanecerán en estado *fallido*. Para más detalles, consulte [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
+- **Pegar** ofrece arrastrar y soltar una instrucción previamente copiada o cortada al Workflow.
 
 ## Panel de Workflow
 
 El panel contiene la representación gráfica de un Workflow.
 
 - Los usuarios pueden arrastrar y soltar instrucciones desde el *Panel de Barra de Herramientas* al Workflow.
-  - Para arrastrar y soltar la primera instrucción en un Workflow, los usuarios mantienen presionada la tecla del ratón y sueltan la instrucción en el área de colocación indicada del Workflow.
-  - Para arrastrar y soltar instrucciones adicionales, los usuarios mantienen presionada la tecla del ratón, navegan hasta la línea de conexión deseada entre instrucciones y sueltan la tecla del ratón.
+  - Para arrastrar y soltar la primera instrucción en un Workflow, los usuarios mantienen presionada la tecla del mouse y sueltan la instrucción en el área de colocación indicada del Workflow.
+  - Para arrastrar y soltar instrucciones adicionales, los usuarios mantienen presionada la tecla del mouse, navegan hasta la línea de conexión deseada entre instrucciones y sueltan la tecla del mouse.
 - Para la *Fork Instruction* y la *If Instruction*, los usuarios pueden arrastrar y soltar una *Job Instruction* directamente sobre el nodo *Fork* para crear una nueva rama.
 - Para la *If Instruction*, los usuarios pueden arrastrar y soltar una *Job Instruction* directamente sobre el bloque *If*: la primera instrucción representa la rama *true* (verdadero), la segunda instrucción arrastrada y soltada crea la rama *false* (falso).
 
@@ -53,13 +53,13 @@ Los Workflows se almacenan automáticamente en el Inventario. Esto ocurre cada 3
 
 Para un Workflow están disponibles las siguientes entradas:
 
-- **Name** es el identificador único de un Workflow, consulte [Reglas de Nomenclatura de Objetos](/object-naming-rules).
-- **Title** contiene una explicación opcional del propósito del Workflow.
-- **Job Resources** son objetos del Inventario que contienen variables en pares clave/valor y que pueden ponerse a disposición a través de Variables de Workflow y Variables de Entorno. Los *Recursos de Job* pueden asignarse a nivel de Job y a nivel de Workflow, lo que los hace disponibles para todos los Jobs del Workflow. Para más detalles, consulte [Configuración - Inventario - Recursos de Job](/configuration-inventory-job-resources).
-- **Time Zone** que se toma del [Perfil - Preferencias](/profile-preferences) del usuario. Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria, consulte [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- **Nombre** es el identificador único de un Workflow, consulte [Reglas de Nomenclatura de Objetos](/object-naming-rules).
+- **Título** contiene una explicación opcional del propósito del Workflow.
+- **Recursos de Job** son objetos del Inventario que contienen variables en pares clave/valor y que pueden ponerse a disposición a través de Variables de Workflow y Variables de Entorno. Los *Recursos de Job* pueden asignarse a nivel de Job y a nivel de Workflow, lo que los hace disponibles para todos los Jobs del Workflow. Para más detalles, consulte [Configuración - Inventario - Recursos de Job](/configuration-inventory-job-resources).
+- **Zona Horaria** que se toma del [Perfil - Preferencias](/profile-preferences) del usuario. Para la entrada se aceptan identificadores de zona horaria como *UTC*, *Europe/London*, etc. Para una lista completa de identificadores de zona horaria, consulte [Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
   - La *Zona Horaria* se aplica a los períodos en las Ventanas de Admisión de Jobs y en las *Cycle Instructions*.
   - Es posible usar una *Zona Horaria* diferente a la de [Configuración - Plan Diario](/settings-daily-plan). Sin embargo, puede generar resultados confusos.
-- **Allow undeclared variables** permite el uso de Variables de Órdenes que no están declaradas en el Workflow. Esto incluye que las Órdenes pueden llevar variables que no son verificadas por tipo de dato ni por uso obligatorio. Los Jobs fallarán al referenciar variables no declaradas que no estén disponibles en una Orden.
+- **Permitir variables no declaradas** permite el uso de Variables de Órdenes que no están declaradas en el Workflow. Esto incluye que las Órdenes pueden llevar variables que no son verificadas por tipo de dato ni por uso obligatorio. Los Jobs fallarán al referenciar variables no declaradas que no estén disponibles en una Orden.
 
 ### Variables de Workflow
 
@@ -70,17 +70,17 @@ Las Variables de Workflow se declaran desde el Workflow y se usan para parametri
 
 Para las Variables de Workflow se ofrecen los siguientes tipos de datos:
 
-- **String** contiene cualquier carácter. Opcionalmente los valores pueden encerrarse con comillas simples.
+- **Texto** contiene cualquier carácter. Opcionalmente los valores pueden encerrarse con comillas simples.
   - Valores constantes: *hello world*
   - Funciones: *now( format='yyyy-MM-dd hh:mm:ss', timezone='Europe/London' )*, *env('HOSTNAME')*
-- **Number** contiene enteros y números de punto flotante como 3.14.
-- **Boolean** los valores son *true* o *false*.
+- **Número** contiene enteros y números de punto flotante como 3.14.
+- **Booleano** los valores son *true* o *false*.
 - **Final** los valores son evaluados por el Controlador cuando se agrega una Orden. Los demás tipos de datos son evaluados por el Agente cuando se inicia una Orden.
   - El uso principal son funciones como: *jobResourceVariable( 'myJobResource', 'myVariable' )*
   - Para más detalles, consulte [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
-- **List** es un tipo de datos de array que ofrece agregar cualquier número de variables, cada una con su tipo de dato individual y valor predeterminado.
+- **Lista** es un tipo de datos de array que ofrece agregar cualquier número de variables, cada una con su tipo de dato individual y valor predeterminado.
   - Las referencias a variables de array usan la sintaxis: *$colors(0).lightblue*, *$colors(0).blue*, *$colors(1).lightgreen*, *$colors(1).green*
-- **Map** es una lista de variables, cada una con su tipo de dato individual y valor predeterminado.
+- **Mapa** es una lista de variables, cada una con su tipo de dato individual y valor predeterminado.
   - Las referencias a variables de mapa usan la sintaxis: *$colors.blue*, *$colors.green*
 
 ### Búsqueda en Workflows
@@ -97,26 +97,26 @@ En la parte superior del *Panel de Workflow* hay disponible un icono de búsqued
 
 En la parte superior del *Panel de Workflow* los usuarios encontrarán los siguientes indicadores de estado:
 
-- **valid** / **not valid** indica mediante color azul / naranja si el Workflow es consistente y está listo para el despliegue. Los Workflows *inválidos* no pueden desplegarse; sin embargo, los cambios se almacenan en el Inventario. Por ejemplo, una asignación de Agente faltante en un Job hará que el Workflow sea *inválido*. Dentro del indicador de estado *not valid* está disponible el icono de información (i) que muestra la razón por la que el Workflow no es *válido*.
-- **deployed** / **not deployed** indica si la versión actual del Workflow ha sido *desplegada* o es un Borrador que *no fue desplegado*.
+- **válido** / **no válido** indica mediante color azul / naranja si el Workflow es consistente y está listo para el despliegue. Los Workflows *inválidos* no pueden desplegarse; sin embargo, los cambios se almacenan en el Inventario. Por ejemplo, una asignación de Agente faltante en un Job hará que el Workflow sea *inválido*. Dentro del indicador de estado *no válido* está disponible el icono de información (i) que muestra la razón por la que el Workflow no es *válido*.
+- **desplegado** / **no desplegado** indica si la versión actual del Workflow ha sido *desplegada* o es un Borrador que *no fue desplegado*.
 
-El botón *Deploy* ofrece el despliegue a un Controlador con una sola operación de clic. Aparte de eso, las operaciones de despliegue están disponibles a nivel de carpeta; consulte [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
+El botón *Desplegar* ofrece el despliegue a un Controlador con una sola operación de clic. Aparte de eso, las operaciones de despliegue están disponibles a nivel de carpeta; consulte [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation).
 
 #### Operaciones en Instrucciones
 
 Al pasar el cursor sobre una instrucción, se ofrece el menú de acción de 3 puntos para las siguientes operaciones:
 
-- **All Instructions** ofrecen las operaciones *Copy*, *Cut* y *Remove*. Las instrucciones de bloque como la *Fork Instruction* ofrecen adicionalmente la operación *Remove All*: mientras que *Remove* eliminará solo la instrucción, la operación *Remove All* eliminará la instrucción y cualquier instrucción incluida como Jobs.
-- **Job Instruction** ofrece la operación *Make Job Template* que crea una Plantilla de Job a partir del Job actual. La Plantilla de Job puede ser usada por otros Jobs en el mismo Workflow o en Workflows diferentes.
+- **All Instructions** ofrecen las operaciones *Copiar*, *Cortar* y *Eliminar*. Las instrucciones de bloque como la *Fork Instruction* ofrecen adicionalmente la operación *Eliminar Todos*: mientras que *Eliminar* eliminará solo la instrucción, la operación *Eliminar Todos* eliminará la instrucción y cualquier instrucción incluida como Jobs.
+- **Job Instruction** ofrece la operación *Crear Plantilla de Job* que crea una Plantilla de Job a partir del Job actual. La Plantilla de Job puede ser usada por otros Jobs en el mismo Workflow o en Workflows diferentes.
 
 #### Operaciones de Copiar, Cortar y Pegar
 
-Las operaciones **Copy** y **Cut** están disponibles desde el menú de acción de 3 puntos de una instrucción. Las operaciones de *copiar* y *cortar* en una instrucción de bloque actúan sobre cualquier instrucción incluida en el bloque. Para copiar o cortar más de una instrucción del mismo nivel, los usuarios mantienen presionada la tecla del ratón y marcan las instrucciones de forma similar al uso de un lazo.
+Las operaciones **Copiar** y **Cortar** están disponibles desde el menú de acción de 3 puntos de una instrucción. Las operaciones de *copiar* y *cortar* en una instrucción de bloque actúan sobre cualquier instrucción incluida en el bloque. Para copiar o cortar más de una instrucción del mismo nivel, los usuarios mantienen presionada la tecla del mouse y marcan las instrucciones de forma similar al uso de un lazo.
 
 - El atajo de teclado **Ctrl+C** copiará las instrucciones resaltadas.
 - El atajo de teclado **Ctrl+X** cortará las instrucciones resaltadas.
 
-Las operaciones **Paste** están disponibles desde el *Panel de Barra de Herramientas* que permite arrastrar y soltar las instrucciones copiadas o cortadas al Workflow.
+Las operaciones **Pegar** están disponibles desde el *Panel de Barra de Herramientas* que permite arrastrar y soltar las instrucciones copiadas o cortadas al Workflow.
 
 - El atajo de teclado **Ctrl+V** pegará las instrucciones copiadas o cortadas cuando el usuario haga clic en una línea de conexión entre instrucciones del Workflow.
 
@@ -125,16 +125,16 @@ Las operaciones **Paste** están disponibles desde el *Panel de Barra de Herrami
 Al hacer clic en el lienzo del *Panel de Workflow*, se hace visible un *Panel de Operaciones* que ofrece las siguientes operaciones:
 
 - Operaciones de Zoom
-  - **Zoom In** aumentará el tamaño de las Instrucciones de Workflow.
-  - **Zoom Out** reducirá el tamaño de las Instrucciones de Workflow.
+  - **Acercar** aumentará el tamaño de las Instrucciones de Workflow.
+  - **Alejar** reducirá el tamaño de las Instrucciones de Workflow.
   - **Zoom to Default** establecerá el tamaño predeterminado de las Instrucciones de Workflow.
   - **Fit to Panel** elegirá un tamaño para las Instrucciones de Workflow que permita que el Workflow se ajuste al tamaño del panel.
 - Operaciones de Deshacer y Rehacer
-  - **Undo** revertirá el último cambio. Se pueden revertir hasta 20 operaciones.
-  - **Redo** repetirá el último cambio que fue deshecho.
+  - **Deshacer** revertirá el último cambio. Se pueden revertir hasta 20 operaciones.
+  - **Rehacer** repetirá el último cambio que fue deshecho.
 - Operaciones de Descargar y Cargar
-  - **Download JSON** descargará el Workflow en formato de almacenamiento JSON a un archivo .json.
-  - **Upload JSON** ofrece cargar un archivo .json que reemplazará el Workflow.
+  - **Descargar JSON** descargará el Workflow en formato de almacenamiento JSON a un archivo .json.
+  - **Subir JSON** ofrece cargar un archivo .json que reemplazará el Workflow.
 - Operaciones de Exportación
   - **Export Image** ofrece la descarga de un archivo de imagen .png del Workflow.
 

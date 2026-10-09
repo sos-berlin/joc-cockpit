@@ -15,7 +15,7 @@ Las sesiones activas se muestran desde la cuenta en uso, desde el Servicio de Id
 
 Los usuarios encuentran las siguientes operaciones sobre las Sesiones Activas:
 
-- **Agregar a Lista de Bloqueo** agregará la cuenta correspondiente a la [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist), lo que deniega futuros inicios de sesión. La operación no terminará la sesión actual de la cuenta.
+- **Agregar a Lista de Bloqueo** agregará la cuenta correspondiente a la [Servicio de Identidad - Lista de Bloqueo](/identity-service-blocklist), lo que deniega futuros inicios de sesión. La operación no terminará la sesión actual de la cuenta.
 - **Cancelar Sesión** terminará forzosamente la sesión actual de la cuenta. Esto no impedirá que la cuenta realice una nueva operación de inicio de sesión.
 - **Cancelar todas las Sesiones de la Cuenta** de manera similar a *Cancelar Sesión*, terminará todas las sesiones de la cuenta indicada.
 
@@ -25,7 +25,7 @@ Al seleccionar una o más sesiones, la operación *Cancelar Sesión* está dispo
 
 ### Ayuda Contextual
 
-- [Lista de Bloqueo del Servicio de Identidad](/identity-service-blocklist)
+- [Servicio de Identidad - Lista de Bloqueo](/identity-service-blocklist)
 - [Servicios de Identidad](/identity-services)
 - [Configuración - Servicio de Identidad](/settings-identity-service)
 

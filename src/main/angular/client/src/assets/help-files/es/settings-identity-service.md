@@ -1,6 +1,6 @@
 # Configuración - Servicio de Identidad
 
-Las siguientes configuraciones se aplican a cualquier [Servicio de Identidad](/identity-services). Los cambios tienen efecto inmediato.
+Las siguientes configuraciones se aplican a todos los [Servicios de Identidad](/identity-services). Los cambios tienen efecto inmediato.
 
 La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 

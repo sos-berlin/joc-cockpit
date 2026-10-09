@@ -27,7 +27,7 @@ Los Servicios de Identidad se especifican desde la siguiente configuración:
     - renovar un token de acceso existente.
   - El **Secreto de Cliente de Keycloak** es propiedad del Cliente y debe ser conocido tanto por el servidor Keycloak como por JOC Cockpit.
 - **Realm de Keycloak** gestiona un conjunto de usuarios, credenciales, roles y grupos. Un usuario pertenece a un realm e inicia sesión en un realm. Los realms están aislados entre sí; gestionan y autentican exclusivamente las cuentas de usuario que controlan.
-- **Keycloak versión 16 o anterior** es un interruptor de compatibilidad para versiones anteriores de Keycloak.
+- **Keycloak Versión 16 o anterior** es un interruptor de compatibilidad para versiones anteriores de Keycloak.
 
 ## Referencias
 

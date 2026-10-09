@@ -2,7 +2,7 @@
 
 El [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) se utiliza para crear y enviar Órdenes del [Plan Diario](/daily-plan) a los Controladores. El servicio opera en segundo plano y actúa diariamente para planificar y enviar Órdenes con varios días de anticipación.
 
-El Servicio de Plan Diario ejecuta las [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) existentes y genera Órdenes para los tiempos de inicio indicados. Esto aplica tanto a las Planificaciones que especifican un único tiempo de inicio para una Orden como a las Planificaciones que especifican tiempos de inicio cíclicos. Se crea una Orden individual para cada tiempo de inicio dentro de un ciclo. En un paso posterior, estas Órdenes se envían a los Controladores correspondientes.
+El Servicio de Plan Diario ejecuta las [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) existentes y genera Órdenes para las horas de inicio indicadas. Esto aplica tanto a las Planificaciones que especifican una única hora de inicio para una Orden como a las Planificaciones que especifican horas de inicio cíclicas. Se crea una Orden individual para cada hora de inicio dentro de un ciclo. En un paso posterior, estas Órdenes se envían a los Controladores correspondientes.
 
 Una funcionalidad similar está disponible en la vista del Plan Diario para operación por parte de los usuarios. Sin embargo, el Servicio de Plan Diario realiza esta tarea de forma automática.
 

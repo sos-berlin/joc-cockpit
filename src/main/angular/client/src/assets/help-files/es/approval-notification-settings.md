@@ -11,20 +11,20 @@ La funcionalidad básica del Proceso de Aprobación incluye:
 
 - implementar el principio de los 4 ojos: un *Aprobador* debe confirmar la intervención de un *Solicitante* antes de que la intervención pueda ejecutarse en el ámbito de la cuenta, roles y permisos del *Solicitante*.
 - llevar un seguimiento de las Solicitudes de Aprobación pendientes.
-- ofrecer alternativa a un grupo de *Aprobadores*.
+- ofrecer respaldo a través de varios *Aprobadores*.
 
 ## Configuración de Notificaciones de Aprobación
 
 La Configuración de Notificaciones incluye propiedades para el envío de correos electrónicos a los *Aprobadores* en caso de recibir [Solicitudes de Aprobación](/approval-requests):
 
 - **Recurso de Job** contiene la configuración para la conexión al servidor de correo. Para más detalles véase [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
-- **Tipo de Contenido**, **Conjunto de Caracteres**, **Codificación** son comunes a cualquier sistema de envío de correo.
-- **Correo de Solicitud de Aprobación**
-  - **Cc**, **Bcc** indican opcionalmente los destinatarios de copias y copias carbón de la notificación.
+- **Tipo de Contenido**, **Juego de Caracteres**, **Codificación** son comunes a cualquier sistema de envío de correo.
+- **Correo Electrónico de Solicitud de Aprobación**
+  - **Cc**, **Cco** indican opcionalmente los destinatarios de copias y copias carbón de la notificación.
   - El **Asunto** y el **Cuerpo** del correo pueden incluir marcadores de posición que serán sustituidos al momento del envío. Los marcadores de posición se especifican con el formato $\{placeholder\}.
     - Los siguientes marcadores de posición están disponibles:
-      - $\{RequestStatusDate\}: Fecha del Estado de la Solicitud
-      - $\{ApprovalStatusDate\}: Fecha del Estado de Aprobación
+      - $\{RequestStatusDate\}: Fecha de Estado de la Solicitud
+      - $\{ApprovalStatusDate\}: Fecha de Estado de Aprobación
       - $\{Title\}: Título de la Solicitud
       - $\{Requestor\}: Cuenta del Solicitante
       - $\{RequestStatus\}: Estado de la Solicitud, uno de REQUESTED (solicitado), EXECUTED (ejecutado), WITHDRAWN (retirado)

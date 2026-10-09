@@ -7,11 +7,11 @@ Los Recursos de Job contienen variables en pares clave/valor que se utilizan par
 - Para Jobs JVM que se ejecutan en la Máquina Virtual Java del Agente, las variables se especifican mediante *Argumentos*. Cuando un Recurso de Job se asigna a un Job, los argumentos del Job coincidentes serán completados automáticamente.
 - Para Jobs de Shell, las variables se especifican mediante *Variables de Entorno*. Cuando un Recurso de Job se asigna a un Job, las Variables de Entorno se crearán automáticamente.
 
-Los Recursos de Job se asignan a un Workflow o a un Job desde la propiedad del objeto relacionado, véase [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options). Cuando se asignan a nivel de Workflow, las variables del Recurso de Job estarán disponibles para todos los Jobs del Workflow.
+Los Recursos de Job se asignan a un Workflow o a un Job desde la propiedad del objeto relacionado, véase [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options). Cuando se asignan a nivel de Workflow, las variables del Recurso de Job estarán disponibles para todos los Jobs del Workflow.
 
 Los Recursos de Job se gestionan desde los siguientes paneles:
 
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Recursos de Job. Además, el panel ofrece operaciones sobre los Recursos de Job.
+- El [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Recursos de Job. Además, el panel ofrece operaciones sobre los Recursos de Job.
 - El *Panel de Recursos de Job* en el lado derecho de la ventana contiene los detalles de configuración del Recurso de Job.
 
 ## Panel de Recursos de Job
@@ -43,7 +43,7 @@ Para las operaciones disponibles véase [Configuración - Inventario - Panel de 
 
 ### Ayuda Contextual
 
-- [Configuración - Inventario - Workflow - Opciones de Job](/configuration-inventory-workflow-job-options)
+- [Configuración - Inventario - Workflow - Opciones del Job](/configuration-inventory-workflow-job-options)
 - [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation)
 - [Reglas de Nomenclatura de Objetos](/object-naming-rules)
 

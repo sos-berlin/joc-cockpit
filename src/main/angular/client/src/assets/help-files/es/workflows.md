@@ -11,8 +11,8 @@ El panel izquierdo está organizado en pestañas que permiten la navegación por
 
 - La navegación por **Carpetas** ofrece el ícono chevron-down al pasar el cursor sobre el nombre de una carpeta. Esto mostrará Workflows de la carpeta actual y de cualquier subcarpeta. El uso del ícono chevron-up restablece la selección a la carpeta actual.
 - El filtrado por Etiquetas se ofrece desde las siguientes pestañas:
-  - Las **Etiquetas de Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
-  - Las **Etiquetas de Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
+  - Las **Etiquetas del Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+  - Las **Etiquetas de la Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
 
 Las Etiquetas se seleccionan con los íconos + y - y pueden buscarse usando el ícono de Búsqueda Rápida. La visualización de Etiquetas debe activarse desde la página [Configuración - JOC Cockpit](/settings-joc).
 
@@ -41,10 +41,10 @@ El resumen de Órdenes se indica para las Órdenes relacionadas con los Workflow
   - Los Workflows **No Sincronizados** no están desplegados en el Controlador y los Agentes, sino que solo están disponibles desde el inventario.
   - Los Workflows **Suspendidos** están congelados; aceptan Órdenes pero no permitirán que las Órdenes inicien hasta que los Workflows sean reanudados.
   - Los Workflows **Pendientes** esperan la confirmación de uno o más Agentes de que el Workflow está suspendido o reanudado.
-- **N.° de Órdenes** indica el número de Órdenes asignadas al Workflow.
+- **Nro. de Órdenes** indica el número de Órdenes asignadas al Workflow.
   - Hasta tres Órdenes se muestran directamente con el Workflow. Ofrecen un menú de acción para operaciones sobre Órdenes.
     - Los usuarios pueden hacer clic en el ID de Orden indicado para mostrar la salida de log de la Orden desde la [Vista de Log de Orden](/order-log). El log incluye la salida creada por cualquier Job ejecutado con el Workflow.
-  - Hacer clic en el *N.° de Órdenes* abre una ventana emergente que muestra todas las Órdenes relacionadas y ofrece operaciones sobre Órdenes individuales y operaciones masivas sobre Órdenes seleccionadas.
+  - Hacer clic en el *Nro. de Órdenes* abre una ventana emergente que muestra todas las Órdenes relacionadas y ofrece operaciones sobre Órdenes individuales y operaciones masivas sobre Órdenes seleccionadas.
 
 ### Visualización de Jobs e Instrucciones de Workflow
 
@@ -78,11 +78,11 @@ De forma predeterminada, la visualización de logs de Órdenes está limitada a 
 - **Etiqueta** indica la posición del Job en el Workflow.
 - **Estado** es el resultado de la ejecución del Job, indicado por *en progreso*, *exitoso* o *fallido*.
 - **Hora de Inicio**, **Hora de Fin** indican el inicio y fin de la ejecución del Job.
-- **Criticidad** se especifica en [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflow-job-options) e indica la relevancia de un Job:
+- **Criticidad** se especifica en [Configuración - Inventario - Workflows - Opciones del Job](/configuration-inventory-workflow-job-options) e indica la relevancia de un Job:
   - *Menor*
   - *Normal*
   - *Mayor*
-  - *Crítica*
+  - *Crítico*
 - **Código de Retorno** es el código de salida de un Job de Shell o el código de retorno de un Job de JVM. El panel [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties) ofrece la configuración de códigos de retorno para la ejecución exitosa y fallida de Jobs.
 
 Para acceder a la salida de log está disponible la siguiente acción:
@@ -95,7 +95,7 @@ De forma predeterminada, la visualización de logs de Tareas está limitada a 10
 
 El panel muestra la misma información que el [Registro de Auditoría](/audit-log) centrada en el Workflow actual.
 
-El número de entradas del Registro de Auditoría mostradas puede modificarse desde la configuración *Número máximo de entradas del Registro de Auditoría por objeto* en las [Preferencias del Perfil](/profile-preferences) del usuario.
+El número de entradas del Registro de Auditoría mostradas puede modificarse desde la configuración *Núm. máx entradas del Registro de Auditoría por objeto* en las [Perfil - Preferencias](/profile-preferences) del usuario.
 
 ## Operaciones
 
@@ -103,8 +103,8 @@ El número de entradas del Registro de Auditoría mostradas puede modificarse de
 
 En la parte superior de la ventana se ofrecen los siguientes botones para operaciones sobre Workflows:
 
-- **Suspender Todos** actúa como una *Parada de Emergencia* y suspenderá todos los Workflows independientemente de la selección de Workflows mostrada actualmente. Los Workflows suspendidos están congelados; aceptan Órdenes pero no iniciarán Órdenes a menos que el Workflow sea reanudado. Las Órdenes en ejecución completan el Job actual u otra instrucción antes de ser suspendidas.
-- **Reanudar Todos** reanuda todos los Workflows suspendidos independientemente de la selección de Workflows mostrada actualmente.
+- **Suspender Todo** actúa como una *Parada de Emergencia* y suspenderá todos los Workflows independientemente de la selección de Workflows mostrada actualmente. Los Workflows suspendidos están congelados; aceptan Órdenes pero no iniciarán Órdenes a menos que el Workflow sea reanudado. Las Órdenes en ejecución completan el Job actual u otra instrucción antes de ser suspendidas.
+- **Reanudar Todo** reanuda todos los Workflows suspendidos independientemente de la selección de Workflows mostrada actualmente.
 
 ### Operaciones sobre Jobs e Instrucciones de Workflow
 
@@ -143,7 +143,7 @@ El *Filtro Avanzado* ofrece criterios más detallados para el filtrado de Workfl
 
 ## Búsqueda
 
-La [Búsqueda de Workflows](/workflows-search) ofrece criterios para buscar Workflows por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico o que usen Tableros de Avisos específicos.
+La [Workflows - Búsqueda](/workflows-search) ofrece criterios para buscar Workflows por dependencias, por ejemplo buscando Workflows que incluyan un nombre de Job específico o que usen Tableros de Avisos específicos.
 
 ## Referencias
 
@@ -152,14 +152,14 @@ La [Búsqueda de Workflows](/workflows-search) ofrece criterios para buscar Work
 - [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
   - [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflow-job-properties)
-  - [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflow-job-options)
+  - [Configuración - Inventario - Workflows - Opciones del Job](/configuration-inventory-workflow-job-options)
 - [Plan Diario](/daily-plan)
 - [Vista de Log de Orden](/order-log)
 - [Estados de Órdenes](/order-states)
-- [Preferencias del Perfil](/profile-preferences)
+- [Perfil - Preferencias](/profile-preferences)
 - [Configuración - JOC Cockpit](/settings-joc)
 - [Workflows - Agregar Órdenes](/workflows-orders-add)
-- [Búsqueda de Workflows](/workflows-search)
+- [Workflows - Búsqueda](/workflows-search)
 
 ### Base de Conocimiento del Producto
 

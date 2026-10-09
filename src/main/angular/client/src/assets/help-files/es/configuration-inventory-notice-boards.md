@@ -21,7 +21,7 @@ Las siguientes variantes están disponibles para los Tableros de Avisos:
 
 Los Tableros de Avisos se gestionan desde los siguientes paneles:
 
-- El [Panel de Navegación - Configuración - Inventario](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Tableros de Avisos. Además, el panel ofrece operaciones sobre los Tableros de Avisos.
+- El [Configuración - Inventario - Panel de Navegación](/configuration-inventory-navigation) en el lado izquierdo de la ventana ofrece navegación por carpetas que contienen Tableros de Avisos. Además, el panel ofrece operaciones sobre los Tableros de Avisos.
 - El *Panel de Tableros de Avisos* en el lado derecho de la ventana contiene los detalles de configuración del Tablero de Avisos.
 
 ## Panel de Tableros de Avisos
@@ -34,17 +34,17 @@ Para un Tablero de Avisos están disponibles los siguientes campos de entrada:
 
 ### Tableros de Avisos Globales
 
-- **ID de Aviso para Orden Publicadora** contiene un valor constante o una expresión derivada de la Orden publicadora:
+- **ID de Aviso para Orden Emisora** contiene un valor constante o una expresión derivada de la Orden Emisora:
   - Se puede usar un valor vacío y se puede usar una cadena de texto que especifique un valor constante.
   - Se puede usar una Expresión Regular:
     - *Coincidencia con Fecha del Plan Diario* extrae la fecha del Plan Diario del ID de la Orden usando la expresión: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')*
     - *Coincidencia con Fecha del Plan Diario y Nombre de Orden* extrae la fecha del Plan Diario y el nombre de la Orden del ID de la Orden usando la expresión: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')*
     - *Coincidencia con Nombre de Orden* extrae el nombre de la Orden usando la expresión: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')*
-- **ID de Aviso para Orden Esperante** debe contener la misma expresión que el *ID de Aviso para Orden Publicadora*.
+- **ID de Aviso para Orden Receptora** debe contener la misma expresión que el *ID de Aviso para Orden Emisora*.
 
 ### Tableros de Avisos Planificables
 
-- **ID de Aviso para Orden Publicadora** contiene un valor constante o una expresión derivada de la Orden publicadora:
+- **ID de Aviso para Orden Emisora** contiene un valor constante o una expresión derivada de la Orden Emisora:
   - Se puede usar un valor vacío y se puede usar una cadena de texto que especifique un valor constante.
   - Se puede usar una Expresión Regular:
     - *Coincidencia con Nombre de Orden* extrae el nombre de la Orden usando la expresión: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]\*)(?::[^|]*)?([|].*)?$', '$1$2')*
@@ -67,7 +67,7 @@ Las Instrucciones de Workflow para Tableros de Avisos ofrecen las siguientes opc
     - Ejemplos:
       - **'NB1' && 'NB2'**: espera que estén presentes Avisos de ambos Tableros de Avisos *NB1* y *NB2* para evaluar a *verdadero*.
       - **( 'NB1' && 'NB2' ) || 'NB3'**: espera que estén presentes Avisos de *NB1* y *NB2*. Alternativamente, si hay un Aviso de *NB3* presente, la expresión evalúa a *verdadero*.
-  - **Cuando no está anunciado** especifica el comportamiento en caso de que un Aviso no haya sido anunciado. Esto aplica a los días para los que no hay ninguna Orden disponible de un Workflow publicador.
+  - **Cuando no se anuncia** especifica el comportamiento en caso de que un Aviso no haya sido anunciado. Esto aplica a los días para los que no hay ninguna Orden disponible de un Workflow publicador.
     - **Esperar** es el valor predeterminado y hace que las Órdenes esperen la presencia de Avisos independientemente de si han sido anunciados o no.
     - **Omitir** hace que las Órdenes omitan la instrucción si el Aviso no está anunciado.
     - **Procesar** está disponible para la *Instrucción ConsumeNotices* y hace que una Orden entre en el bloque de instrucciones en caso de que el Aviso no esté anunciado.

@@ -10,8 +10,8 @@ Para el historial de Órdenes, consulte [Historial de Órdenes](/history-orders)
 
 El panel izquierdo permite filtrar por Etiquetas de Workflows y Órdenes que dispararon la ejecución del Job.
 
-- Las **Etiquetas de Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
-- Las **Etiquetas de Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
+- Las **Etiquetas del Workflow** se asignan desde la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
+- Las **Etiquetas de la Orden** se asignan desde la vista [Configuración - Inventario - Planificaciones](/configuration-inventory-schedules).
 
 Las Etiquetas se seleccionan con los iconos + y - y pueden buscarse usando el icono de búsqueda. La visualización de Etiquetas debe activarse desde la página [Configuración - JOC Cockpit](/settings-joc).
 
@@ -41,15 +41,15 @@ Por defecto, la visualización de los logs de tarea está limitada a 10 MB de ta
 
 Los usuarios encuentran un menú de acción por Tarea que ofrece las siguientes operaciones:
 
-- **Agregar Job a la Lista de Ignorados** ocultará permanentemente el Job en la visualización. Esto puede ser útil para Jobs que se ejecutan repetidamente y llenan el *Historial de Tareas*.
-- **Agregar Workflow a la Lista de Ignorados** ocultará permanentemente los Jobs del Workflow en la visualización. Esto puede ser útil para Workflows cíclicos que llenan el *Historial de Tareas*.
+- **Agregar un Job a Lista de Exclusión** ocultará permanentemente el Job en la visualización. Esto puede ser útil para Jobs que se ejecutan repetidamente y llenan el *Historial de Tareas*.
+- **Agregar Workflow a Lista de Exclusión** ocultará permanentemente los Jobs del Workflow en la visualización. Esto puede ser útil para Workflows cíclicos que llenan el *Historial de Tareas*.
 
-La *Lista de Ignorados* se gestiona desde el botón correspondiente en la esquina superior derecha de la ventana:
+La *Lista de Exclusión* se gestiona desde el botón correspondiente en la esquina superior derecha de la ventana:
 
-- **Editar Lista de Ignorados** mostrará los Jobs y Workflows en la *Lista de Ignorados* y ofrecerá la posibilidad de eliminar entradas individualmente de la *Lista de Ignorados*.
-- **Habilitar Lista de Ignorados** activará el filtrado para ocultar los Jobs que han sido añadidos individualmente a la *Lista de Ignorados* o que están incluidos en un Workflow que fue añadido. Una *Lista de Ignorados* activa se indica desde el botón correspondiente.
-- **Deshabilitar Lista de Ignorados** desactivará el filtrado de Jobs y Workflows. La operación está disponible para una *Lista de Ignorados* activa.
-- **Restablecer Lista de Ignorados** eliminará Jobs y Workflows de la *Lista de Ignorados*, lo que resulta en la visualización de todos los jobs.
+- **Editar Lista de Exclusión** mostrará los Jobs y Workflows en la *Lista de Exclusión* y ofrecerá la posibilidad de eliminar entradas individualmente de la *Lista de Exclusión*.
+- **Habilitar Lista de Exclusión** activará el filtrado para ocultar los Jobs que han sido agregados individualmente a la *Lista de Exclusión* o que están incluidos en un Workflow que fue agregado. Una *Lista de Exclusión* activa se indica desde el botón correspondiente.
+- **Deshabilitar Lista de Exclusión** desactivará el filtrado de Jobs y Workflows. La operación está disponible para una *Lista de Exclusión* activa.
+- **Restablecer Lista de Exclusión** eliminará Jobs y Workflows de la *Lista de Exclusión*, lo que resulta en la visualización de todos los jobs.
 
 ## Filtros
 

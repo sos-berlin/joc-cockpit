@@ -2,7 +2,7 @@
 
 Los usuarios reciben una ventana emergente de bienvenida al conectarse al JOC Cockpit por primera vez.
 
-La ventana emergente de bienvenida proporciona enlaces para descargar valores predeterminados para Recursos de Jobs y ejemplos de Workflows y objetos relacionados.
+La ventana emergente de bienvenida proporciona enlaces para descargar valores predeterminados para Recursos de Job y ejemplos de Workflows y objetos relacionados.
 
 La página de *Configuración* es accesible desde el ícono ![ícono de rueda](assets/images/wheel.png) en la barra de menú.
 

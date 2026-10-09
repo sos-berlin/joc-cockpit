@@ -40,15 +40,15 @@ La página *Gestionar Controladores/Agentes* está disponible desde el icono de 
 
 Los usuarios proporcionan los siguientes datos:
 
-- **Agent ID** es el identificador único del Clúster de Agentes que no puede modificarse durante la vida útil del Clúster. El *Agent ID* no es visible en Jobs y Workflows.
+- **ID del Agente** es el identificador único del Clúster de Agentes que no puede modificarse durante la vida útil del Clúster. El *ID del Agente* no es visible en Jobs y Workflows.
   - Sugerencia: Use un nombre único como *agent-cluster-001*.
 - **Nombre del Clúster de Agentes** es el nombre único de un Clúster de Agentes. Al asignar un Agente a un Job, se utiliza el *Nombre del Clúster de Agentes*.
   - Sugerencia: Si usa entornos separados para producción y no producción, debería usar el mismo *Nombre del Clúster de Agentes* para ambos. Por eso, ingrese un nombre descriptivo, por ejemplo, para un departamento de negocio como *ventas*, *finanzas*, etc.
-  - Sugerencia: Cambiar el *Nombre del Clúster de Agentes* posteriormente permite continuar usando el *Nombre del Clúster de Agentes* anterior como *Nombre Alternativo*.
+  - Sugerencia: Cambiar el *Nombre del Clúster de Agentes* posteriormente permite continuar usando el *Nombre del Clúster de Agentes* anterior como *Nombre de Alias*.
 - **Título** es una descripción que puede agregarse para un Clúster de Agentes.
-- **Nombres Alternativos** son nombres alternativos para el mismo Clúster de Agentes. Al asignar un Agente a un Job, también se ofrecerán los *Nombres Alternativos del Clúster*. Los *Nombres Alternativos del Clúster* pueden usarse, por ejemplo, si un entorno de pruebas incluye menos Clústeres de Agentes que el entorno de producción: para mantener las asignaciones de Agentes sin cambios entre entornos, los Clústeres de Agentes faltantes se mapean desde los *Nombres Alternativos del Clúster* del mismo Clúster de Agentes.
+- **Nombres de Alias** son nombres alternativos para el mismo Clúster de Agentes. Al asignar un Agente a un Job, también se ofrecerán los *Nombres de Alias del Clúster*. Los *Nombres de Alias del Clúster* pueden usarse, por ejemplo, si un entorno de pruebas incluye menos Clústeres de Agentes que el entorno de producción: para mantener las asignaciones de Agentes sin cambios entre entornos, los Clústeres de Agentes faltantes se mapean desde los *Nombres de Alias del Clúster* del mismo Clúster de Agentes.
 - **Agente Director Primario**
-  - **Subagent ID** es el identificador único del Agente Director Primario que no puede modificarse durante la vida útil del Agente Director. El *Subagent ID* no es visible en Jobs y Workflows.
+  - **ID del Subagente** es el identificador único del Agente Director Primario que no puede modificarse durante la vida útil del Agente Director. El *ID del Subagente* no es visible en Jobs y Workflows.
     - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
   - **Título** es una descripción que puede agregarse para un Agente Director.
   - **URL** espera la URL compuesta por protocolo, host y puerto que usa el Controlador para conectarse al Agente Director Primario, por ejemplo http://localhost:4445.
@@ -57,7 +57,7 @@ Los usuarios proporcionan los siguientes datos:
     - El *puerto* del Agente Director se determina durante la instalación.
   - **Como Clúster de Subagentes propio** crea opcionalmente Clústeres de Subagentes para cada Agente Director Primario y Secundario; consulte [Operación Inicial - Registrar Clúster de Subagentes](/initial-operation-register-agent-subagent-cluster).
 - **Agente Director Secundario**
-  - **Subagent ID** es el identificador único del Agente Director Secundario que no puede modificarse durante la vida útil del Agente Director. El *Subagent ID* no es visible en Jobs y Workflows.
+  - **ID del Subagente** es el identificador único del Agente Director Secundario que no puede modificarse durante la vida útil del Agente Director. El *ID del Subagente* no es visible en Jobs y Workflows.
     - Sugerencia: Use un nombre único como el FQDN del host y el puerto del Subagente.
   - **Título** es una descripción que puede agregarse para un Agente Director.
   - **URL** espera la URL compuesta por protocolo, host y puerto que usa el Controlador para conectarse al Agente Director Secundario, de manera similar al *Agente Director Primario*.

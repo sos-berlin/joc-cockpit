@@ -19,7 +19,7 @@ Los usuarios pueden agregar *Agentes Favoritos* desde su *Perfil* usando el bot�
 
 ### Lista de Agentes Favoritos
 
-La lista de *Agentes Favoritos* puede limitarse con el botón *Compartidos conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
+La lista de *Agentes Favoritos* puede limitarse con el botón *Compartido conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
 
 Los usuarios pueden limitar aún más la lista especificando una cadena en el campo de entrada *Buscar* que se buscará en el nombre del Agente. La búsqueda implica truncamiento izquierdo y derecho.
 
@@ -47,7 +47,7 @@ Los usuarios pueden agregar *Facetas Favoritas* desde su *Perfil* usando el bot�
 
 ### Lista de Facetas Favoritas
 
-La lista de *Facetas Favoritas* puede limitarse con el botón *Compartidas conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
+La lista de *Facetas Favoritas* puede limitarse con el botón *Compartido conmigo*. Esto restringe la lista a los favoritos compartidos por otros usuarios.
 
 Los usuarios pueden limitar aún más la lista especificando una cadena en el campo de entrada *Buscar* que se buscará en el nombre de la *Faceta*. La búsqueda implica truncamiento izquierdo y derecho.
 

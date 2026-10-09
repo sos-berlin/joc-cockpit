@@ -8,7 +8,7 @@ La interfaz gráfica ofrece una serie de pestañas para especificar los detalles
 
 A un Job se le puede agregar cualquier número de Etiquetas. Se muestran en la vista [Workflows](/workflows) y se incluyen opcionalmente en las Notificaciones. Para más detalles, consulte [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
 
-- **Tags** permite agregar o eliminar Etiquetas. Pueden seleccionarse de la lista de Etiquetas existentes. Escribir el nombre de una Etiqueta la creará.
+- **Etiquetas** permite agregar o eliminar Etiquetas. Pueden seleccionarse de la lista de Etiquetas existentes. Escribir el nombre de una Etiqueta la creará.
 
 ## Grupos de Etiquetas
 
@@ -21,8 +21,8 @@ Los Grupos de Etiquetas pueden usarse para organizar Etiquetas que deben compart
 ### Ayuda Contextual
 
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-  - [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflows-job-options)
-  - [Configuración - Inventario - Workflows - Propiedades de Job](/configuration-inventory-workflows-job-properties)
+  - [Configuración - Inventario - Workflows - Opciones del Job](/configuration-inventory-workflows-job-options)
+  - [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflows-job-properties)
   - [Configuración - Inventario - Workflows - Propiedades de Nodo de Job](/configuration-inventory-workflows-job-node-properties)
   - [Configuración - Inventario - Workflows - Notificaciones de Job](/configuration-inventory-workflows-job-notifications)
 

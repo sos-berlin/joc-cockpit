@@ -9,21 +9,21 @@ Los Servicios de Identidad se especifican desde la siguiente configuración:
 
 ## Configuración
 
-Para LDAP se ofrecen las pestañas *Opciones Básicas* y *Opciones Avanzadas*.
+Para LDAP se ofrecen las pestañas *Menos Opciones* y *Más Opciones*.
 
-- *Opciones Básicas* puede aplicarse si se utiliza Microsoft Active Directory® o similares.
-- *Opciones Avanzadas* ofrece configuración detallada para cualquier servidor LDAP.
+- *Menos Opciones* puede aplicarse si se utiliza Microsoft Active Directory® o similares.
+- *Más Opciones* ofrece configuración detallada para cualquier servidor LDAP.
 
 Para más detalles consulte:
 - [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
   - [JS7 - LDAP Identity Service Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service+Configuration)
   - [JS7 - LDAP over TLS using STARTTLS and LDAP over SSL using LDAPS](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+over+TLS+using+STARTTLS+and+LDAP+over+SSL+using+LDAPS)
 
-### Configuración: Opciones Básicas
+### Configuración: Menos Opciones
 
 - **Host del Servidor LDAP** espera el nombre de host o la dirección IP del servidor LDAP. Si se usan protocolos TLS/SSL, se debe utilizar el Nombre de Dominio Completo (FQDN) del host para el que se emite el certificado SSL del servidor LDAP.
-- **Protocolo del Servidor LDAP** puede ser Texto plano, TLS o SSL. El Texto plano no se recomienda ya que la cuenta de usuario y la contraseña se enviarán por la red sin cifrado. Los protocolos TLS y SSL se consideran seguros ya que cifran el contenido/conexión al servidor LDAP.
-- **Puerto del Servidor LDAP** es el puerto en el que escucha el servidor LDAP. Para conexiones de Texto plano y TLS se utiliza frecuentemente el puerto 389; para conexiones SSL el puerto 636 es una opción frecuente.
+- **Protocolo del Servidor LDAP** puede ser Texto Plano, TLS o SSL. El Texto Plano no se recomienda ya que la cuenta de usuario y la contraseña se enviarán por la red sin cifrado. Los protocolos TLS y SSL se consideran seguros ya que cifran el contenido/conexión al servidor LDAP.
+- **Puerto del Servidor LDAP** es el puerto en el que escucha el servidor LDAP. Para conexiones de Texto Plano y TLS se utiliza frecuentemente el puerto 389; para conexiones SSL el puerto 636 es una opción frecuente.
 - **El Servidor LDAP es Active Directory** simplifica la configuración si el servidor LDAP está implementado por Active Directory. Se asumen automáticamente varios atributos para la búsqueda de usuarios y grupos si se utiliza Active Directory.
 - **El Servidor LDAP ofrece el atributo samAccountName** especifica si el atributo *samAccountName* actúa como identificador único de una cuenta de usuario. Este atributo frecuentemente está disponible en servidores LDAP de Active Directory.
 - **El Servidor LDAP ofrece el atributo memberOf** simplifica la búsqueda de Grupos de Seguridad de los que la cuenta de usuario es miembro. Este atributo frecuentemente está disponible en servidores LDAP de tipo Active Directory; sin embargo, otros productos LDAP también pueden implementar el atributo.
@@ -31,15 +31,15 @@ Para más detalles consulte:
 - **Base de Búsqueda del Servidor LDAP** se utiliza para buscar cuentas de usuario en la jerarquía de entradas del servidor LDAP, por ejemplo *OU=Operations, O=IT, O=Users, DC=example, DC=com*.
 - **Filtro de Búsqueda de Usuarios LDAP** especifica una consulta LDAP que se utiliza para identificar la cuenta de usuario en la jerarquía de entradas LDAP.
 
-### Configuración: Opciones Avanzadas
+### Configuración: Más Opciones
 
 #### Configuración General
 
-- **URL del Servidor LDAP** especifica el protocolo, por ejemplo *ldap://* para conexiones de Texto plano y TLS, *ldaps://* para conexiones SSL. Al protocolo se añade el nombre de host (FQDN) y el puerto del servidor LDAP.
+- **URL del Servidor LDAP** especifica el protocolo, por ejemplo *ldap://* para conexiones de Texto Plano y TLS, *ldaps://* para conexiones SSL. Al protocolo se agrega el nombre de host (FQDN) y el puerto del servidor LDAP.
 - **Tiempo de Espera de Lectura del Servidor LDAP** especifica la duración en segundos durante la cual JOC Cockpit esperará las respuestas del servidor LDAP cuando la conexión está establecida.
 - **Tiempo de Espera de Conexión del Servidor LDAP** especifica la duración en segundos durante la cual JOC Cockpit esperará las respuestas del servidor LDAP al establecer la conexión.
 - **LDAP Start TLS** este interruptor hace que TLS sea el protocolo para la conexión al servidor LDAP.
-- **Verificación del Nombre de Host LDAP** este interruptor debe estar activo para verificar si los nombres de host en la URL del servidor LDAP y en el certificado del servidor LDAP coinciden.
+- **Verificación de Nombre de Host LDAP** este interruptor debe estar activo para verificar si los nombres de host en la URL del servidor LDAP y en el certificado del servidor LDAP coinciden.
 - **Ruta del Almacén de Confianza LDAP** especifica la ubicación de un almacén de confianza en caso de que el servidor LDAP esté configurado para protocolos TLS/SSL. El almacén de confianza indicado debe incluir un certificado X.509 especificado para el Uso Extendido de Clave de Autenticación de Servidor.
   - Para conexiones a proveedores de identidad LDAP conocidos como Azure®, los usuarios deben especificar la ruta al archivo del almacén de confianza *cacerts* de Java que se incluye con el JDK de Java utilizado con JOC Cockpit.
   - El almacén de confianza puede incluir un Certificado firmado por una CA privada o un Certificado firmado por una CA pública. Normalmente se utiliza el Certificado de CA Raíz, ya que de lo contrario la cadena completa de certificados implicada en la firma del Certificado de Autenticación de Servidor debe estar disponible en el almacén de confianza.
@@ -53,7 +53,7 @@ Para más detalles consulte:
 - **Plantilla DN de Usuario LDAP** es un marcador de posición para el Nombre Distinguido (DN) que identifica una cuenta de usuario. El valor *{0}* puede utilizarse para servidores LDAP de Active Directory y será reemplazado por la cuenta de usuario especificada durante el inicio de sesión.
 - **Plantilla DN de Usuario del Sistema LDAP** se aplica si se utiliza una *Cuenta de Usuario del Sistema* para vincularse al servidor LDAP y verificar si la cuenta de usuario que realiza el inicio de sesión existe con la cuenta y contraseña indicadas. Se desaconseja el uso de una *Cuenta de Usuario del Sistema* ya que expone la contraseña de la cuenta. La configuración es similar a la *Plantilla DN de Usuario LDAP* y especifica el marcador de posición para el Nombre Distinguido de la *Cuenta de Usuario del Sistema*.
 - **Cuenta de Usuario del Sistema LDAP** especifica la cuenta de usuario de manera similar al inicio de sesión desde el *samAccountName* u otro atributo, por ejemplo usando *cuenta@dominio*.
-- **Contraseña de Usuario del Sistema LDAP** especifica la contraseña de la *Cuenta de Usuario del Sistema*.
+- **Contraseña del Usuario del Sistema LDAP** especifica la contraseña de la *Cuenta de Usuario del Sistema*.
 
 #### Configuración de Autorización
 

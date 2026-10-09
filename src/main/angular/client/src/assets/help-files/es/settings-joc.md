@@ -10,10 +10,10 @@ La página de *Configuración* es accesible desde el ícono ![ícono de rueda](a
 
 Especifica que se debe agregar un motivo al [Registro de Auditoría](/audit-log) para cualquier cambio aplicado a objetos, como agregar una Orden, cancelar una Orden, etc.
 
-Esto aplica a operaciones desde la interfaz gráfica y a operaciones desde la [REST Web Service API](/rest-api).
+Esto aplica a operaciones desde la interfaz gráfica y a operaciones desde la [API REST de Servicios Web](/rest-api).
 Especificar el valor *true* para esta configuración obliga a cualquier solicitud de API que modifique objetos a proporcionar argumentos para el Registro de Auditoría.
 
-Tenga en cuenta que las [Preferencias del Perfil](/profile-preferences) incluyen una configuración relacionada para Habilitar Motivos para el Registro de Auditoría que tiene el mismo efecto. Sin embargo, su uso es voluntario y está restringido a la cuenta del perfil. La configuración force\_comments\_for\_audit\_log impone este comportamiento para cualquier cuenta de usuario independientemente de la configuración del perfil de cada cuenta.
+Tenga en cuenta que las [Perfil - Preferencias](/profile-preferences) incluyen una configuración relacionada para Habilitar Motivos para el Registro de Auditoría que tiene el mismo efecto. Sin embargo, su uso es voluntario y está restringido a la cuenta del perfil. La configuración force\_comments\_for\_audit\_log impone este comportamiento para cualquier cuenta de usuario independientemente de la configuración del perfil de cada cuenta.
 
 ### Configuración: *comments\_for\_audit\_log*
 
@@ -23,7 +23,7 @@ La lista se rellena con algunos motivos bien conocidos para modificaciones de ob
 
 ### Configuración: *default\_profile\_account*, Predeterminado: *root*
 
-Cuando se agregan cuentas de usuario al JOC Cockpit mediante los [Servicios de Identidad](/identity-services), se crearán [Preferencias del Perfil](/profile-preferences) con configuraciones individuales para cada cuenta de usuario.
+Cuando se agregan cuentas de usuario al JOC Cockpit mediante los [Servicios de Identidad](/identity-services), se crearán [Perfil - Preferencias](/profile-preferences) con configuraciones individuales para cada cuenta de usuario.
 
 - Esta configuración especifica la cuenta que se usa como plantilla para el perfil cuando se crean cuentas de usuario.
 - De forma predeterminada, se usa la cuenta *root*, lo que significa que el perfil de una nueva cuenta se rellena con configuraciones como idioma, tema, etc. de la cuenta de perfil predeterminada.
@@ -55,7 +55,7 @@ Cuando los objetos del inventario se eliminan, se agregan a la papelera del inve
 
 ### Configuración: *import\_suffix*, *import\_prefix*, Predeterminado: *imported*
 
-Las operaciones de exportación e importación del inventario de JS7 permiten importar objetos desde un archivo de archivo.
+Las operaciones de exportación e importación del inventario de JS7 permiten importar objetos desde un archivo de almacenamiento.
 
 - Cuando se importan objetos, sus nombres podrían entrar en conflicto con nombres de objetos existentes.
 - Esta configuración permite al usuario especificar los valores de prefijo y sufijo que se usarán al importar objetos.
@@ -67,7 +67,7 @@ Las operaciones de exportación e importación del inventario de JS7 permiten im
 Estas configuraciones pueden usarse para deshabilitar vistas individuales disponibles en la interfaz gráfica del JOC Cockpit mediante elementos del menú principal como Plan Diario, Monitor, Workflows, etc.
 
 - Esta configuración funciona independientemente de los roles y permisos predeterminados.
-- Como resultado, una cuenta de usuario puede tener permisos para ver datos desde la vista del Monitor, aunque la vista no se ofrezca desde la interfaz gráfica. Al mismo tiempo, los datos de la vista del Monitor estarán disponibles para esta cuenta al usar la [REST Web Service API](/rest-api).
+- Como resultado, una cuenta de usuario puede tener permisos para ver datos desde la vista del Monitor, aunque la vista no se ofrezca desde la interfaz gráfica. Al mismo tiempo, los datos de la vista del Monitor estarán disponibles para esta cuenta al usar la [API REST de Servicios Web](/rest-api).
 
 ### Configuración: *display\_folders\_in\_views*, Predeterminado: *true*
 
@@ -86,7 +86,7 @@ Esto aplica a dos conexiones establecidas desde el JOC Cockpit a los Controlador
 
 La contraseña se especifica como texto plano en la página de Configuración y como valor hasheado en el archivo private.conf del Controlador.
 
-El enlace **Mostrar Valor Hasheado** está disponible en la página de Configuración y permite mostrar el valor hasheado de la contraseña.
+El enlace **Mostrar Valor Hash** está disponible en la página de Configuración y permite mostrar el valor hasheado de la contraseña.
 
 Si se modifica una contraseña en la página de Configuración, también debe modificarse en el archivo private.conf del Controlador para que las contraseñas coincidan.
 
@@ -178,7 +178,7 @@ Especifica el número de Etiquetas mostradas con cada Workflow. Un valor 0 supri
 
 ### Configuración: *approval\_requestor\_role*
 
-Especifica el nombre del Rol del Solicitante que se asigna a las cuentas sujetas al Proceso de Aprobación.
+Especifica el nombre del rol Solicitante que se asigna a las cuentas sujetas al Proceso de Aprobación.
 
 ## Configuración de Reportes
 
@@ -192,8 +192,8 @@ Especifica las opciones de Java utilizadas al crear Reportes. El valor predeterm
 
 - [Registro de Auditoría](/audit-log)
 - [Servicios de Identidad](/identity-services)
-- [Preferencias del Perfil](/profile-preferences)
-- [REST Web Service API](/rest-api)
+- [Perfil - Preferencias](/profile-preferences)
+- [API REST de Servicios Web](/rest-api)
 - [Configuración](/settings)
 
 ### Base de Conocimiento del Producto

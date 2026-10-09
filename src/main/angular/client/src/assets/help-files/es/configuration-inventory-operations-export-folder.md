@@ -19,7 +19,7 @@ Al exportar objetos desde carpetas utilizando la operación *Exportar* disponibl
   - **Desplegado** incluye objetos como Workflows y Recursos de Job en estado desplegado.
   - **Liberado** incluye objetos como Planificaciones y Calendarios en estado liberado.
   - **Usar Ruta Relativa** especifica si el archivo de exportación incluirá la jerarquía de carpetas desde una ruta absoluta o desde una ruta relativa indicada por la última carpeta en la jerarquía para la cual se realiza la exportación.
-- **Incluir Subcarpetas** permite agregar objetos de subcarpetas de forma recursiva al archivo de exportación.
+- **Procesar recursivamente** permite agregar objetos de subcarpetas de forma recursiva al archivo de exportación.
 
 ## Tipos de Exportación
 
@@ -45,7 +45,7 @@ El *Tipo de Exportación* permite seleccionar un Cambio de la lista de [Cambios]
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al exportar objetos se considera la consistencia, por ejemplo:
 
@@ -64,7 +64,7 @@ Los usuarios controlan la exportación consistente desde las siguientes opciones
 
 - [Cambios](/changes)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

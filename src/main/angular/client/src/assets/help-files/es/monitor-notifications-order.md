@@ -16,7 +16,7 @@ Las Notificaciones se muestran con los siguientes elementos de información:
 - **Workflow** especifica el nombre de un Workflow.
   - Hacer clic en el nombre del Workflow navega a la vista [Workflows](/workflows).
   - Hacer clic en el icono de lápiz a la izquierda del nombre del Workflow navega a la vista [Configuración - Inventario - Workflows](/configuration-inventory-workflows).
-- **Order ID** especifica el identificador único de una Orden.
+- **ID de Orden** especifica el identificador único de una Orden.
 - **Job** se indica si la advertencia o el error fue causado por un Job.
 - **Tipo** es uno de los siguientes:
   - **SUCCESS** que indica la ejecución exitosa de una Orden, siempre que las Notificaciones estén configuradas para reportar este estado.

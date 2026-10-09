@@ -10,10 +10,10 @@ La solicitud identifica el endpoint utilizado y ofrece la visualización del cue
 
 ## Categorías
 
-- **CONTROLLER** indica operaciones del Controlador, como la adición de Órdenes a demanda.
+- **CONTROLLER** indica operaciones del Controlador, como agregar Órdenes a demanda.
 - **DAILYPLAN** indica cambios en el Plan Diario.
 - **IDENTITY** indica cambios en los Servicios de Identidad.
-- **INVENTORY** indica cambios en el inventario, como el almacenamiento de Workflows.
+- **INVENTORY** indica cambios en el inventario, como almacenar Workflows.
 
 # Registro de Auditoría Detallado
 

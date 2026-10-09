@@ -1,6 +1,6 @@
-# Dashboard - Estado del Controlador
+# Panel de Control - Estado Controlador
 
-El panel *Estado del Controlador* proporciona información sobre los Controladores registrados.
+El panel *Estado Controlador* proporciona información sobre los Controladores registrados.
 
 ## Instancias del Controlador
 
@@ -20,12 +20,12 @@ Las siguientes operaciones están disponibles:
 Las instancias del Controlador ofrecen las siguientes operaciones desde el menú de acción de los tres puntos de cada instancia:
 
 - **Terminar**, **Terminar y Reiniciar**: apagan la instancia. Para la instancia activa en un clúster, el menú se expande con:
-  - **con conmutación**: para transferir el rol activo a la instancia en espera.
-  - **sin conmutación**: para mantener el rol activo en la instancia apagada. Los usuarios deben tener en cuenta que no se producirá conmutación por error y que ninguna instancia quedará activa.
+  - **con conmutación manual**: para transferir el rol activo a la instancia en espera.
+  - **sin conmutación manual**: para mantener el rol activo en la instancia apagada. Los usuarios deben tener en cuenta que no se producirá conmutación por error y que ninguna instancia quedará activa.
 - **Cancelar**, **Cancelar y Reiniciar**: terminan forzosamente la instancia. Si se aplica a la instancia activa en un clúster, se forzará la conmutación por error:
   - **con conmutación por error**: transferirá el rol activo a la instancia en espera.
 - **Descargar Log**: ofrece el archivo controller.log del Controlador para descarga en formato comprimido .gz.
 
 ## Referencias
 
-- [Dashboard - Estado del Producto](/dashboard-product-status)
+- [Panel de Control - Estado Producto](/dashboard-product-status)

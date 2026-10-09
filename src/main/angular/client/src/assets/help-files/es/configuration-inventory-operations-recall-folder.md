@@ -2,7 +2,7 @@
 
 La recuperación de objetos los desactiva, por ejemplo, para su uso con el [Plan Diario](/daily-plan). Esto aplica a objetos como Planificaciones y Calendarios disponibles en la carpeta del sistema *Automatización*.
 
-La vista *Configuración->Inventario* permite recuperar un objeto individual, ver [Configuración - Inventario - Operaciones - Recuperar Objeto](/configuration-inventory-operations-recall-object), y recuperar objetos desde carpetas.
+La vista *Configuración->Inventario* permite recuperar un objeto individual, véase [Configuración - Inventario - Operaciones - Recuperar Objeto](/configuration-inventory-operations-recall-object), y recuperar objetos desde carpetas.
 
 Al recuperar objetos desde una carpeta utilizando la operación *Recuperar* disponible en el menú de acción de tres puntos de la carpeta en el panel de navegación, se mostrará una ventana emergente como la siguiente:
 
@@ -16,7 +16,7 @@ Las Órdenes existentes para Workflows referenciados por Planificaciones relacio
 
 ## Inclusión de Dependencias
 
-Los objetos del Inventario están relacionados por dependencias, ver [Matriz de Dependencias](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
+Los objetos del Inventario están relacionados por dependencias, véase [Matriz de Dependencia](/dependencies-matrix). Por ejemplo, un Workflow que referencia un Recurso de Job y un Recurso de Lock; una Planificación que referencia un Calendario y uno o más Workflows.
 
 Al recuperar objetos se considera la consistencia, por ejemplo:
 
@@ -38,7 +38,7 @@ Los usuarios controlan el despliegue consistente desde las siguientes opciones:
 - [Configuración - Inventario - Operaciones - Recuperar Objeto](/configuration-inventory-operations-recall-object)
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
 - [Plan Diario](/daily-plan)
-- [Matriz de Dependencias](/dependencies-matrix)
+- [Matriz de Dependencia](/dependencies-matrix)
 
 ### Base de Conocimiento del Producto
 

@@ -1,6 +1,6 @@
-# Estado del Producto
+# Estado Producto
 
-El panel Estado del Producto proporciona información sobre los siguientes productos de JS7:
+El panel Estado Producto proporciona información sobre los siguientes productos de JS7:
 
 - **JOC Cockpit**: se utiliza para monitorear y controlar el entorno de planificación y para gestionar el inventario de Jobs.
 - **Controlador**: orquesta los Agentes y gestiona el despliegue de Órdenes, Workflows y Jobs.
@@ -36,7 +36,7 @@ El Controlador se conecta a las instancias de Agentes. En un Clúster de Control
   - **Mosaico en Color Rojo**: indica un estado *desconocido*.
 - Estado de Conexión del Clúster
   - **Línea en Color Verde**: indica un clúster saludable que está sincronizado activamente entre las instancias del Controlador.
-  - **Línea en Color Amarillo**: indica conexión con la instancia emparejada del Controlador sin acoplamiento exitoso.. Por ejemplo en caso que el emparejamiento de un clúster falle
+  - **Línea en Color Amarillo**: indica conexión con la instancia emparejada del Controlador sin acoplamiento exitoso.
   - **Línea en Color Rojo**: indica una conexión fallida entre instancias del Controlador.
 
 ## Operaciones
@@ -45,7 +45,7 @@ El Controlador se conecta a las instancias de Agentes. En un Clúster de Control
 
 Operaciones disponibles para todas las instancias visibles y saludables del JOC Cockpit:
 
-- **Conmutación**: en un clúster transfiere el rol activo a la instancia en espera, lo que puede tardar entre 20 y 60 segundos  aproximadamente. La operación se ofrece para las instancias en espera.
+- **Conmutación**: en un clúster transfiere el rol activo a la instancia en espera, lo que puede tardar entre 20 y 60 segundos aproximadamente. La operación se ofrece para las instancias en espera.
 - **Actualizar URL**: permite modificar la URL de visualización. El JOC Cockpit puede ser accesible desde múltiples URLs y la primera utilizada es la que se muestra. Si esto no es lo que los usuarios desean, pueden especificar la URL que debe mostrarse. La operación no modifica la URL del JOC Cockpit, solo su visualización.
 
 Operaciones del JOC Cockpit disponibles para la instancia a la que el navegador está conectado:
@@ -68,8 +68,8 @@ Operaciones del JOC Cockpit disponibles para la instancia a la que el navegador 
 Las instancias del Controlador ofrecen las siguientes operaciones desde el menú de acción de los tres puntos en el recuadro de cada instancia:
 
 - **Terminar**, **Terminar y Reiniciar**: apagan la instancia. Para la instancia activa en un clúster, el menú se expande con:
-  - **con conmutación**: para transferir el rol activo a la instancia en espera.
-  - **sin conmutación**: para mantener el rol activo en la instancia activa. Los usuarios deben tener en cuenta que no se producirá conmutación por error y que ninguna instancia quedará activa.
+  - **con conmutación manual**: para transferir el rol activo a la instancia en espera.
+  - **sin conmutación manual**: para mantener el rol activo en la instancia activa. Los usuarios deben tener en cuenta que no se producirá conmutación por error y que ninguna instancia quedará activa.
 - **Cancelar**, **Cancelar y Reiniciar**: terminan forzosamente la instancia. Si se aplica a la instancia activa en un clúster, se forzará la conmutación por error:
   - **con conmutación por error**: transferirá el rol activo a la instancia en espera.
 - **Descargar Log**: ofrece el archivo controller.log del Controlador para descarga en formato comprimido .gz.
@@ -77,4 +77,4 @@ Las instancias del Controlador ofrecen las siguientes operaciones desde el menú
 El recuadro *Estado del Clúster* ofrece las siguientes operaciones desde su menú de acción de tres puntos:
 
 - **Conmutación**: transfiere el rol activo a la instancia en espera. La operación está disponible si el clúster está acoplado.
-- **Confirmar pérdida de instancia del Controlador**: aplica cuando ninguna instancia del JOC Cockpit estaba disponible al momento en que una instancia del Controlador en un clúster se cayó. El JOC Cockpit es requerido como testigo en el clúster. En esta situación los usuarios deben verificar cuál instancia del Controlador estaba en espera en el momento de la caída y confirmar que la instancia en espera 
+- **Confirmar pérdida de Instancia del Controlador**: aplica cuando ninguna instancia del JOC Cockpit estaba disponible al momento en que una instancia del Controlador en un clúster se cayó. El JOC Cockpit es requerido como testigo en el clúster. En esta situación los usuarios deben verificar cuál instancia del Controlador estaba en espera en el momento de la caída y confirmar que la instancia en espera 

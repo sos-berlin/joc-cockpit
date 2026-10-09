@@ -20,21 +20,21 @@ Las Notificaciones permiten el uso de diferentes canales:
 
 Las Notificaciones específicas por Job reemplazan las Notificaciones Globales a partir de las siguientes configuraciones:
 
-- **Mail on** especifica uno o más eventos en los que se debe enviar un correo electrónico:
+- **Correo cuando** especifica uno o más eventos en los que se debe enviar un correo electrónico:
   - *ERROR* activa la Notificación en caso de fallo del Job.
   - *WARNING* activa la Notificación en caso de Jobs exitosos que indiquen un código de retorno de advertencia.
   - *SUCCESS* activa la Notificación en caso de Jobs exitosos, con o sin advertencias.
-- **Mail To** especifica la lista de destinatarios del correo electrónico. Se puede especificar más de un destinatario usando coma o punto y coma. Si no se especifica ningún destinatario, no se enviará ninguna Notificación por correo electrónico, reemplazando la configuración de Notificación Global.
-- **Mail Cc** especifica la lista de destinatarios de correo electrónico que recibirán copias. Se puede especificar más de un destinatario usando coma o punto y coma.
-- **Mail Bcc** especifica la lista de destinatarios de correo electrónico que recibirán copias ocultas. Se puede especificar más de un destinatario usando coma o punto y coma.
+- **Correo Para** especifica la lista de destinatarios del correo electrónico. Se puede especificar más de un destinatario usando coma o punto y coma. Si no se especifica ningún destinatario, no se enviará ninguna Notificación por correo electrónico, reemplazando la configuración de Notificación Global.
+- **Correo Cc** especifica la lista de destinatarios de correo electrónico que recibirán copias. Se puede especificar más de un destinatario usando coma o punto y coma.
+- **Correo Bcc** especifica la lista de destinatarios de correo electrónico que recibirán copias ocultas. Se puede especificar más de un destinatario usando coma o punto y coma.
 
 ## Referencias
 
 ### Ayuda Contextual
 
 - [Configuración - Inventario - Workflows](/configuration-inventory-workflows)
-  - [Configuración - Inventario - Workflows - Opciones de Job](/configuration-inventory-workflows-job-options)
-  - [Configuración - Inventario - Workflows - Propiedades de Job](/configuration-inventory-workflows-job-properties)
+  - [Configuración - Inventario - Workflows - Opciones del Job](/configuration-inventory-workflows-job-options)
+  - [Configuración - Inventario - Workflows - Propiedades del Job](/configuration-inventory-workflows-job-properties)
   - [Configuración - Inventario - Workflows - Propiedades de Nodo de Job](/configuration-inventory-workflows-job-node-properties)
   - [Configuración - Inventario - Workflows - Etiquetas de Job](/configuration-inventory-workflows-job-tags)
 - [Monitor - Notificaciones de Órdenes](/monitor-notifications-order)

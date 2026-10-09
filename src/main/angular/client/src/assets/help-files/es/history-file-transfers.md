@@ -29,9 +29,9 @@ La información mostrada se agrupa en los siguientes bloques:
 
 - **Origen** indica el origen de la transferencia.
 - **Destino** indica el destino de la transferencia.
-- **Jump** indica el uso de un host intermediario entre el origen y el destino. Se utiliza un host *Jump* cuando la transferencia de archivos no puede realizarse directamente entre el origen y el destino, sino que requiere un host en la DMZ para operaciones de entrada y salida.
+- **Salto** indica el uso de un host intermediario entre el origen y el destino. Se utiliza un host *Salto* cuando la transferencia de archivos no puede realizarse directamente entre el origen y el destino, sino que requiere un host en la DMZ para operaciones de entrada y salida.
 
-Los detalles se muestran para los hosts de *Origen*, *Destino* y *Jump*:
+Los detalles se muestran para los hosts de *Origen*, *Destino* y *Salto*:
 
 - **Host** indica el nombre de host o la dirección IP del servidor.
 - **Cuenta** indica la cuenta de usuario utilizada para acceder al servidor.
@@ -40,7 +40,7 @@ Los detalles se muestran para los hosts de *Origen*, *Destino* y *Jump*:
 
 Para *Origen* y *Destino* se muestran los siguientes detalles:
 
-- **Nombre del Archivo** indica el nombre del archivo.
+- **Nombre de Archivo** indica el nombre del archivo.
 - **Ruta del Archivo** muestra la ruta del directorio del archivo, incluido su nombre.
 - **Estado**
   - **TRANSFERRED** indica que el archivo fue transferido exitosamente cuando se usa con las operaciones *COPY* o *MOVE*.

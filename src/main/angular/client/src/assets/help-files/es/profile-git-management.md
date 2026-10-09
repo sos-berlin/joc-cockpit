@@ -10,8 +10,8 @@ Para más detalles, consulte [JS7 - Profiles - Git Management](https://kb.sos-be
 
 Las conexiones Git se muestran en una lista con las siguientes entradas:
 
-- **Servidor Git** indica el nombre de host del servidor que aloja el repositorio Git.
-- **Cuenta Git** es parte de las credenciales de Git.
+- **Servidor de Git** indica el nombre de host del servidor que aloja el repositorio Git.
+- **Cuenta de Git** es parte de las credenciales de Git.
 - **Nombre de Cuenta** es parte de las credenciales de Git.
 - **Dirección de Correo Electrónico** es la dirección de correo electrónico de la cuenta de usuario.
 

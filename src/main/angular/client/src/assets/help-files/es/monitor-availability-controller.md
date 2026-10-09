@@ -1,4 +1,4 @@
-# Monitor - Disponibilidad del Controlador
+# Monitor - Disponibilidad de Controlador
 
 La vista muestra indicadores de disponibilidad de un Controlador.
 
