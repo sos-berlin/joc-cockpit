@@ -17102,7 +17102,7 @@ export class WorkflowComponent {
           }
         }
         this.isStore = false
-        if (request.path === this.workflow.path) {
+        if (request.path === this.workflow.path && err?.error?.error?.code !== 'JOC-419') {
           this._pendingStoreFailure = true;
         }
         this.flushQueuedStore();

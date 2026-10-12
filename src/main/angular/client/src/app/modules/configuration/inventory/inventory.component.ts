@@ -16714,11 +16714,12 @@ export class InventoryComponent {
     if (this.tree.length > 0) {
       function traverseTree(data) {
         if (data.children && data.children.length > 0) {
-          const obj: any = {name: data.name, path: data.path};
+          // Always keep the expanded state: with folder permissions a folder that is not permitted
+          // (e.g. the root) has no Controller/Automation nodes, and losing its state collapsed the tree.
+          const obj: any = {name: data.name, path: data.path, expanded: data.expanded};
           if (data.children[0].controller) {
             obj.child1 = data.children[0];
             obj.child2 = data.children[1];
-            obj.expanded = data.expanded;
           }
           arr.push(obj);
           for (let i = 0; i < data.children.length; i++) {

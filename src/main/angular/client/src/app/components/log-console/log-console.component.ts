@@ -18,6 +18,11 @@ interface ParsedLine {
   rawLower: string;            // pre-lowercased for fast search comparisons
   timestampNormalized: string; // pre-normalized timestamp for fast date comparisons
   globalIdx: number; // index in allLines, set by processLogEntries
+  /** Display caches, filled lazily by lineTimestamp()/highlightLine() and freed with the line on trim. */
+  tsDisplay?: string;
+  tsVersion?: number;
+  html?: SafeHtml;
+  htmlKey?: string;
 }
 
 /** Contextual block shown in filter mode: match line + N surrounding lines. */
@@ -274,15 +279,20 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private pollTimer?: ReturnType<typeof setTimeout>;
   private _activePollSub?: Subscription;
   private readonly POLL_INTERVAL_MS = 3000;
+  /** Delay for the next scheduled poll: 0 while catching up or after a long poll, POLL_INTERVAL_MS when idle. */
+  private _nextPollDelay = 3000;
+  /** A /log/running response faster than this is not treated as a completed long poll (avoids a tight loop). */
+  private readonly LONG_POLL_MIN_MS = 1000;
+  /** Consecutive failed polls; follow-tail retries with backoff and gives up after MAX_POLL_RETRIES. */
+  private _pollErrorCount = 0;
+  private readonly MAX_POLL_RETRIES = 5;
+  private readonly MAX_POLL_BACKOFF_MS = 30000;
+  private _visibilityHandler?: () => void;
   private _isProcessingTrim = false;
   private _userLeftBottom = false;
   private _scrollToBottomTimer: ReturnType<typeof setTimeout> | undefined;
-  /** Per-text SafeHtml cache; cleared whenever the committed search term changes. */
-  // Cache key = `${committedTerm}\x00${text}` so changing the search term naturally
-  // invalidates all prior entries without a manual clear, and the same text+term pair
-  // always returns the same SafeHtml reference — preventing unnecessary innerHTML rewrites.
-  private readonly highlightCache = new Map<string, SafeHtml>();
-  private readonly HIGHLIGHT_CACHE_MAX = 3000;
+  /** Incremented when the displayed timezone changes; lines re-format their cached timestamp lazily. */
+  private _tsVersion = 0;
   /** Compiled search RegExp; reused across cache-miss calls while the search term is unchanged. */
   private _cachedHighlightRegExp: RegExp | null = null;
   private _cachedHighlightTerm = '';
@@ -401,6 +411,15 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     };
     document.addEventListener('selectionchange', this._selectionChangeHandler);
 
+    // Browsers throttle timers in hidden tabs (down to about once per minute), so follow-tail
+    // falls behind there; poll at once when the tab becomes visible again.
+    this._visibilityHandler = () => {
+      if (!document.hidden && this.followTail && !this._userLeftBottom && !this.isLoadingNext && !this.isLoadingPrev) {
+        this.scheduleNextPoll(0);
+      }
+    };
+    document.addEventListener('visibilitychange', this._visibilityHandler);
+
     // Debounced search commitment — only recomputes search highlights/navigation 300ms after typing stops.
     this.debounceSub = this._searchDebounce.pipe(debounceTime(300)).subscribe(term => {
       this.commitSearch(term);
@@ -483,6 +502,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this._selectionChangeHandler) {
       document.removeEventListener('selectionchange', this._selectionChangeHandler);
+    }
+    if (this._visibilityHandler) {
+      document.removeEventListener('visibilitychange', this._visibilityHandler);
     }
     if (this._storageHandler) {
       window.removeEventListener('storage', this._storageHandler);
@@ -844,9 +866,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this._compiledSearchRegExp   = (this.regexMode && term) ? new RegExp(term, 'i')  : null;
     // Global variant reused by _countOccurrences — avoids constructing a new RegExp per matched line.
     this._compiledSearchRegExpGI = (this.regexMode && term) ? new RegExp(term, 'gi') : null;
-    // Force highlight RegExp to be rebuilt in highlightText().
-    // NOTE: highlightCache is now keyed by term+text, so no manual clear is needed —
-    // the new term naturally produces new cache entries while old ones age out.
+    // Force highlight RegExp to be rebuilt in highlightLine(); each line's cached HTML is
+    // keyed by term + mode, so it is rebuilt lazily for the new term.
     this._cachedHighlightTerm = '';
     // Use _safeMarkForCheck: the data update above is safe, but the resulting DOM
     // render (innerHTML rewrites) must not destroy an active text selection.
@@ -1260,11 +1281,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
 
   // ── Highlight ──────────────────────────────────────────────────────────────
 
-  highlightText(text: string): SafeHtml {
-    const cacheKey = this._committedSearchTerm + '\x00' + text;
-    const cached = this.highlightCache.get(cacheKey);
-    if (cached !== undefined) return cached;
+  /** Highlighted HTML of a line, cached on the line itself: the same SafeHtml reference is returned
+   *  until the search term/mode or the line text changes, so Angular does not rewrite innerHTML. */
+  highlightLine(line: ParsedLine): SafeHtml {
+    const key = (this._committedRegexMode ? 'r' : 'p') + '\x00' + this._committedSearchTerm;
+    if (line.html === undefined || line.htmlKey !== key) {
+      line.html = this.highlightText(line.text);
+      line.htmlKey = key;
+    }
+    return line.html;
+  }
 
+  private highlightText(text: string): SafeHtml {
     const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const term = this._committedSearchTerm;
     let result: SafeHtml;
@@ -1285,11 +1313,6 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         escaped.replace(this._cachedHighlightRegExp, '<mark class="log-search-match">$&</mark>')
       );
     }
-    // Evict oldest entry when cache exceeds limit to bound memory usage.
-    if (this.highlightCache.size >= this.HIGHLIGHT_CACHE_MAX) {
-      this.highlightCache.delete(this.highlightCache.keys().next().value!);
-    }
-    this.highlightCache.set(cacheKey, result);
     return result;
   }
 
@@ -1684,6 +1707,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       // Currently showing original tz → switch to profile (or preference-driven if profile is set)
       this._tzOverride = this.profileTz ? 'profile' : null;
     }
+    this._tsVersion++; // re-format cached line timestamps in the new timezone
+
     // Recompute date filter comparisons in case user has an active filter.
     this._dateFilterDebounce.next();
     this.cdr.markForCheck();
@@ -1719,6 +1744,16 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   toggleContextMode(): void {
     this.contextMode = !this.contextMode;
     this.cdr.markForCheck();
+  }
+
+  /** Formatted timestamp of a line, cached on the line until the displayed timezone changes —
+   *  avoids a moment parse/format per line on every change detection. */
+  lineTimestamp(line: ParsedLine): string {
+    if (line.tsDisplay === undefined || line.tsVersion !== this._tsVersion) {
+      line.tsDisplay = this.formatTimestamp(line.timestamp);
+      line.tsVersion = this._tsVersion;
+    }
+    return line.tsDisplay;
   }
 
   formatTimestamp(raw: string): string {
@@ -1782,11 +1817,15 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.dateToReached       = !!res.dateToReached;
         this.numOfLinesReached   = !!res.numOfLinesReached;
         this.firstLogLineReached = false;
-        this.timeZone = res.timeZone || '';
+        if ((res.timeZone || '') !== this.timeZone) {
+          this.timeZone = res.timeZone || '';
+          this._tsVersion++; // lines parsed before the timezone was known are re-formatted
+        }
         if (!this.request?.dateTo && !this.request?.numOfLines) {
           this.forceEnabled = true;
         }
         this.isLoading = false;
+        this._setPollDelayAfterResponse(entries.length);
         this.scheduleNextPoll();
         this._safeMarkForCheck();
       },
@@ -1813,6 +1852,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.lastLogLineReached  = !!res.lastLogLineReached;
         this.dateToReached       = !!res.dateToReached;
         this.numOfLinesReached   = !!res.numOfLinesReached;
+        this._setPollDelayAfterResponse(entries.length);
         if (entries.length > 0) {
           this.lastKey = entries[entries.length - 1].key || this.lastKey;
           this.processLogEntries(entries, () => {
@@ -1830,6 +1870,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       error: () => {
         this._activePollSub = undefined;
         this.isLoadingNext = false;
+        this._schedulePollAfterError();
         this._safeMarkForCheck();
       }
     });
@@ -1886,6 +1927,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const limit = this.numOfNextLogLines;
     if (limit) body.limit = limit;
     if (this.forceEnabled && (this.dateToReached || this.numOfLinesReached)) body.force = true;
+    const requestStart = Date.now();
     this._activePollSub = this.coreService.post(this.getRunningApiUrl(), body).subscribe({
       next: (res: any) => {
         this._activePollSub = undefined;
@@ -1895,6 +1937,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         this.isLogComplete     = res.isComplete === true;
         this.dateToReached     = !!res.dateToReached;
         this.numOfLinesReached = !!res.numOfLinesReached;
+        this._setPollDelayAfterResponse(entries.length, Date.now() - requestStart);
         if (entries.length > 0) {
           this.lastKey = entries[entries.length - 1].key || this.lastKey;
           this.processLogEntries(entries, () => {
@@ -1912,6 +1955,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       error: () => {
         this._activePollSub = undefined;
         this.isLoadingNext = false;
+        this._schedulePollAfterError();
         this._safeMarkForCheck();
       }
     });
@@ -1947,6 +1991,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.isLoadingPrev = false;
     this.activeLineIdx = null;
     this._userLeftBottom = false;
+    this._pollErrorCount = 0;
+    this._nextPollDelay = this.POLL_INTERVAL_MS;
     this.levelJumpIndices.clear();
     this.levelLastDir.clear();
     this.levelLineMap.clear();
@@ -1971,8 +2017,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private scheduleNextPoll(): void {
+  /** Schedules the next follow-tail poll after `delayMs` (default: the delay chosen by the last response). */
+  private scheduleNextPoll(delayMs: number = this._nextPollDelay): void {
     this.clearPollTimer();
+    // While a trim re-index is running, _finalizeAfterTrim() schedules the poll once the
+    // buffer is consistent again — polling earlier could append lines mid re-index.
+    if (this._isProcessingTrim) return;
     const limitReached   = this.dateToReached || this.numOfLinesReached;
     const canPollNext    = this.followTail && !this._userLeftBottom && !this.lastLogLineReached && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
     const canPollRunning = this.followTail && !this._userLeftBottom && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
@@ -1981,7 +2031,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         // Do not poll while the user has an active text selection — the response
         // would trigger markForCheck() which destroys innerHTML text nodes.
         if (this._userSelecting) {
-          this.scheduleNextPoll(); // reschedule and try again after another interval
+          this.scheduleNextPoll(this.POLL_INTERVAL_MS); // reschedule and try again after another interval (never 0: no busy loop)
           return;
         }
         if (this.destroyed) return;
@@ -1991,8 +2041,29 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
         } else if (this.lastLogLineReached && !this.isLogComplete && (!lr || this.forceEnabled) && this.logToken && this.lastKey) {
           this.fetchRunning();
         }
-      }, this.POLL_INTERVAL_MS);
+      }, delayMs);
     }
+  }
+
+  /** Next-poll delay after a successful response: no wait while lines are still coming in. */
+  private _setPollDelayAfterResponse(numOfLines: number, longPollMs?: number): void {
+    this._pollErrorCount = 0;
+    if (numOfLines > 0) {
+      this._nextPollDelay = 0;
+    } else if (longPollMs !== undefined && longPollMs >= this.LONG_POLL_MIN_MS) {
+      // An empty /log/running answer after the API waited for new lines: ask again at once.
+      this._nextPollDelay = 0;
+    } else {
+      this._nextPollDelay = this.POLL_INTERVAL_MS;
+    }
+  }
+
+  /** A failed poll (e.g. a gateway timeout on the long poll) retries with backoff instead of stopping follow-tail. */
+  private _schedulePollAfterError(): void {
+    this._pollErrorCount++;
+    if (this._pollErrorCount > this.MAX_POLL_RETRIES) return;
+    this._nextPollDelay = Math.min(this.POLL_INTERVAL_MS * Math.pow(2, this._pollErrorCount - 1), this.MAX_POLL_BACKOFF_MS);
+    this.scheduleNextPoll();
   }
 
   private clearPollTimer(): void {
@@ -2011,7 +2082,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private processLogEntries(entries: {key: string, line: string}[], onComplete?: () => void): void {
-    const CHUNK_SIZE = 500;
+    // One chunk per default /next response (1000 lines): each chunk costs a full filter pass and a
+    // render, so fewer, larger chunks are cheaper; parsing 1000 lines takes only a few milliseconds.
+    const CHUNK_SIZE = 1000;
     let offset = 0;
 
     const processChunk = () => {
@@ -2027,7 +2100,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           const prev = this.allLines[this.allLines.length - 1];
           prev.text += '\n' + parsed.text;
           prev.raw  += '\n' + parsed.raw;
-          prev.rawLower = prev.raw.toLowerCase();
+          // Append only the lowercased new part; re-lowercasing the whole entry is O(n²) for long stack traces.
+          prev.rawLower += '\n' + parsed.rawLower;
+          prev.html = undefined; // text changed: rebuild the cached highlight HTML
           prev.key = entry.key;
         } else {
           parsed.key = entry.key;
@@ -2177,7 +2252,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
           const prev = newLines[newLines.length - 1];
           prev.text += '\n' + parsed.text;
           prev.raw  += '\n' + parsed.raw;
-          prev.rawLower = prev.raw.toLowerCase();
+          // Append only the lowercased new part; re-lowercasing the whole entry is O(n²) for long stack traces.
+          prev.rawLower += '\n' + parsed.rawLower;
+          prev.html = undefined; // text changed: rebuild the cached highlight HTML
           prev.key = entry.key;
         } else {
           parsed.key = entry.key;
@@ -2241,8 +2318,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
       this.allLines[i].text = '';
       this.allLines[i].raw = '';
       this.allLines[i].rawLower = '';
+      this.allLines[i].html = undefined;
+      this.allLines[i].tsDisplay = undefined;
     }
-    this.highlightCache.clear();
   }
 
   private _subtractLevelStats(from: number, to: number): void {
