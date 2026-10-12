@@ -1000,7 +1000,7 @@
                 </div>
               </nz-tab>
             }
-            @if (securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates.view) {
+            @if (securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.deploy) {
               <nz-tab [nzTitle]="tabTitle3">
                 <ng-template #tabTitle3>
                   @if (preferences.showHelpPages) {
@@ -1057,21 +1057,21 @@
                                 </span>
                               }
                               <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
-                                @if (permission.joc.administration.certificates.manage) {
+                                @if (permission.joc.inventory.deploy) {
                                   <button (click)="pasteKey()"
                                           [appRichTooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i class="fa fa-paste"></i>
                                   </button>
                                 }
-                                @if (permission.joc.administration.certificates.manage) {
+                                @if (permission.joc.inventory.deploy) {
                                   <button (click)="importKey()"
                                           [appRichTooltip]="'profile.keyManagement.tooltip.import' | translate"
                                           class="btn btn-sm btn-grey m-l-12">
                                     <i nz-icon nzTheme="outline" nzType="upload"></i>
                                   </button>
                                 }
-                                @if (securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage) {
+                                @if (securityLevel ==='MEDIUM' && permission.joc.inventory.deploy) {
                                   <button
                                     (click)="showGenerateKeyModal()"
                                     [appRichTooltip]="'profile.keyManagement.tooltip.generate' | translate"
@@ -1079,7 +1079,7 @@
                                     <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                                   </button>
                                 }
-                                @if (permission.joc.administration.certificates.manage) {
+                                @if (permission.joc.inventory.deploy) {
                                   <button (click)="deleteCertificate('key')" [disabled]="!keys.keyID"
                                           [appRichTooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
                                           class="btn btn-sm btn-grey m-l-12">

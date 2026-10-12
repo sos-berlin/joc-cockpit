@@ -92,6 +92,7 @@ export class SingleDocumentationComponent {
   preferences: any = {};
   permission: any = {};
   documents: any = [];
+  tree: any[] = [];
   isPathDisplay = false;
   path?: string | null;
 
@@ -111,6 +112,24 @@ export class SingleDocumentationComponent {
       controllerId: this.controllerId,
       documentations: [this.path]
     });
+    this.loadFolderTree();
+  }
+
+  // JOC-2255: this page has no tree of its own, so load the Documentations tree for the folder checks.
+  private loadFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.controllerId,
+      types: ['DOCUMENTATION']
+    }).subscribe({
+      next: (res: any) => {
+        this.tree = this.coreService.prepareTree(res, true);
+        this.ref.markForCheck();
+      }
+    });
+  }
+
+  canManage(path: string): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, this.coreService.getFolderPath(path), 'manage');
   }
 
   /* ---------------------------- Action ----------------------------------*/

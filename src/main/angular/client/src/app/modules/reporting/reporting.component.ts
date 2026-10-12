@@ -239,6 +239,12 @@ export class ReportingComponent {
     this.runIds = data;
   }
 
+  // JOC-2255: bulk delete is allowed if any checked report may be deleted; the API checks each one.
+  canDeleteChecked(): boolean {
+    const reports: any[] = this.runIds instanceof Map ? Array.from(this.runIds.values()) : [];
+    return reports.length === 0 || reports.some(report => this.coreService.hasReportFolderPermission(report?.path, 'manage'));
+  }
+
   expandAll(): void {
     this.sharingDataService.announceFilter({expandAll: true});
   }

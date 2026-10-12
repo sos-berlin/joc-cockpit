@@ -91,6 +91,34 @@ export class GenerateReportComponent {
   ngOnInit(): void {
     this.applyFilters();
     this.getData();
+    this.loadFolderTree();
+  }
+
+  // JOC-2255: the Reports tab may not have been opened yet, so load its tree for the folder checks.
+  private loadFolderTree(): void {
+    const schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
+    if (this.coreService.hasReportFolderTree() || !schedulerIds.selected) {
+      return;
+    }
+    this.coreService.post('tree', {
+      controllerId: schedulerIds.selected,
+      types: ['REPORT']
+    }).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
+      next: (res: any) => {
+        this.coreService.setReportFolderTree(this.coreService.prepareTree(res, true));
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  // JOC-2255: deleting a generated report needs "manage" for the folder of its report.
+  canDelete(report: any): boolean {
+    return this.coreService.hasReportFolderPermission(report?.path, 'manage');
+  }
+
+  // A group can hold reports from several folders: allowed if any of them may be deleted.
+  canDeleteAny(reports: any[]): boolean {
+    return !reports?.length || reports.some(report => this.canDelete(report));
   }
 
   private applyFilters(): void {

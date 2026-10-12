@@ -312,6 +312,7 @@ export class SingleBoardComponent {
   preferences: any = {};
   permission: any = {};
   boards: any = [];
+  tree: any[] = [];
   name: string;
   isPathDisplay = false;
   subscription: Subscription;
@@ -335,6 +336,24 @@ export class SingleBoardComponent {
       controllerId: this.controllerId,
       noticeBoardPaths: [this.name]
     });
+    this.loadFolderTree();
+  }
+
+  // JOC-2255: this page has no tree of its own, so load the NoticeBoards tree for the folder checks.
+  private loadFolderTree(): void {
+    this.coreService.post('tree', {
+      controllerId: this.controllerId,
+      types: ['NOTICEBOARD']
+    }).subscribe({
+      next: (res: any) => {
+        this.tree = this.coreService.prepareTree(res, true);
+        this.ref.markForCheck();
+      }
+    });
+  }
+
+  canBoard(board: any, permission: string): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, this.coreService.getFolderPath(board?.path), permission);
   }
 
   ngOnDestroy(): void {

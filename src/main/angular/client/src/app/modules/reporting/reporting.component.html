@@ -138,7 +138,7 @@
           }
           @if (index == 2 && runIds.size > 0) {
             <div class="inline">
-              <button (click)="deleteReports()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}
+              <button (click)="deleteReports()" [disabled]="!canDeleteChecked()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}
               </button>
             </div>
           }

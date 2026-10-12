@@ -1049,39 +1049,40 @@ export class UserComponent {
     this.subscription2.unsubscribe();
   }
 
-  tabChange($event): void {
+  // The visible tabs in template order; the conditions must match the @if blocks in user.component.html.
+  // Signing keys need "inventory:deploy", SSL keys need "administration:certificates:view".
+  private getVisibleTabs(): string[] {
+    const tabs = ['preferences'];
     if (this.permission.joc) {
-      if ($event.index === 2) {
-        if (this.permission.joc.administration.certificates.view) {
-          if (this.securityLevel !== 'LOW') {
-            this.getKeys();
-          } else {
-            this.getCA();
-          }
-        } else if (this.permission.joc.administration.certificates.view) {
-          this.getGit();
-        } else {
-          this.getFavorite();
-        }
-      } else if ($event.index === 3) {
-        if (this.securityLevel !== 'LOW') {
-          if (this.permission.joc.administration.certificates.view) {
-            this.getCA();
-          } else if (this.permission.joc.inventory.view) {
-            this.getGit();
-          }
-        } else {
-          this.getFavorite();
-        }
-      } else if ($event.index === 4) {
-        if (this.permission.joc.administration.certificates.view) {
-          this.getGit();
-        } else {
-          this.getFavorite();
-        }
-      } else if ($event.index === 5) {
-        this.getFavorite();
+      tabs.push('permissions');
+      if (this.securityLevel !== 'LOW' && this.permission.joc.inventory.deploy) {
+        tabs.push('signingKeys');
       }
+      if (this.permission.joc.administration.certificates.view) {
+        tabs.push('sslKeys');
+      }
+      if (this.securityLevel !== 'LOW' && this.permission.joc.inventory.view) {
+        tabs.push('git');
+      }
+    }
+    tabs.push('favorites');
+    return tabs;
+  }
+
+  tabChange($event): void {
+    switch (this.getVisibleTabs()[$event.index]) {
+      case 'signingKeys':
+        this.getKeys();
+        break;
+      case 'sslKeys':
+        this.getCA();
+        break;
+      case 'git':
+        this.getGit();
+        break;
+      case 'favorites':
+        this.getFavorite();
+        break;
     }
   }
 

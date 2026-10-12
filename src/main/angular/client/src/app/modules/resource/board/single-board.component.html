@@ -54,7 +54,7 @@
                           </button>
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu>
-                              <li (click)="post(board)" nz-menu-item>
+                              <li (click)="post(board)" [nzDisabled]="!canBoard(board, 'post')" nz-menu-item>
                                 <a>{{ 'resource.board.button.post' | translate }}</a>
                               </li>
                             </ul>
@@ -174,14 +174,14 @@
                                         <ul nz-menu>
                                           @if (permission.currentController.noticeBoards.delete) {
                                             <li (click)="delete(board, notice)"
-                                                [nzDisabled]="notice.state._text === 'EXPECTED'"
+                                                [nzDisabled]="!canBoard(board, 'delete') || notice.state._text === 'EXPECTED'"
                                                 nz-menu-item>
                                               <a>{{ 'resource.board.button.delete' | translate }}</a>
                                             </li>
                                           }
                                           @if (permission.currentController.noticeBoards.post) {
                                             <li (click)="post(board, notice)"
-                                                [nzDisabled]="notice.state._text !== 'EXPECTED'"
+                                                [nzDisabled]="!canBoard(board, 'post') || notice.state._text !== 'EXPECTED'"
                                                 nz-menu-item>
                                               <a>{{ 'resource.board.button.post' | translate }}</a>
                                             </li>

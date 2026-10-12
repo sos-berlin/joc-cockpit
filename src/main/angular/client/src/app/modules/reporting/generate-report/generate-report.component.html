@@ -122,7 +122,7 @@
                         <a>{{ 'reporting.button.showReport' | translate }}</a>
                       </li>
                       @if (permission.joc && permission.joc.reports.manage) {
-                        <li nz-menu-item (click)="deleteReport(item, true)">
+                        <li nz-menu-item (click)="deleteReport(item, true)" [nzDisabled]="!canDeleteAny(item.value)">
                           <a>{{ 'common.button.delete' | translate }}</a>
                         </li>
                       }
@@ -225,7 +225,7 @@
                               <a>{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
-                              <li nz-menu-item (click)="deleteReport(item, true, 'highest')">
+                              <li nz-menu-item (click)="deleteReport(item, true, 'highest')" [nzDisabled]="!canDeleteAny(item.highestGroup)">
                                 <a>{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
@@ -263,7 +263,7 @@
                                 <a>{{ 'reporting.button.showReport' | translate }}</a>
                               </li>
                               @if (permission.joc && permission.joc.reports.manage) {
-                                <li nz-menu-item (click)="deleteReport(highestItem)">
+                                <li nz-menu-item (click)="deleteReport(highestItem)" [nzDisabled]="!canDelete(highestItem)">
                                   <a>{{ 'common.button.delete' | translate }}</a>
                                 </li>
                               }
@@ -323,7 +323,7 @@
                               <a>{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
-                              <li nz-menu-item (click)="deleteReport(item, true, 'lowest')">
+                              <li nz-menu-item (click)="deleteReport(item, true, 'lowest')" [nzDisabled]="!canDeleteAny(item.lowestGroup)">
                                 <a>{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
@@ -362,7 +362,7 @@
                                 <a>{{ 'reporting.button.showReport' | translate }}</a>
                               </li>
                               @if (permission.joc && permission.joc.reports.manage) {
-                                <li nz-menu-item (click)="deleteReport(lowestItem, true)">
+                                <li nz-menu-item (click)="deleteReport(lowestItem, true)" [nzDisabled]="!canDelete(lowestItem)">
                                   <a>{{ 'common.button.delete' | translate }}</a>
                                 </li>
                               }
@@ -420,7 +420,7 @@
                               <a>{{ 'reporting.button.showReport' | translate }}</a>
                             </li>
                             @if (permission.joc && permission.joc.reports.manage) {
-                              <li nz-menu-item (click)="deleteReport(child)">
+                              <li nz-menu-item (click)="deleteReport(child)" [nzDisabled]="!canDelete(child)">
                                 <a>{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }

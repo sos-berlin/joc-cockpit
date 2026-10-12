@@ -50,8 +50,8 @@
                         <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                           <ul nz-menu>
                             @if (permission.joc && permission.joc.documentations.manage) {
-                              <li nz-menu-item>
-                                <a (click)="editDocument(document)">{{ 'resource.documentation.button.editDocument' | translate }}</a>
+                              <li (click)="editDocument(document)" [nzDisabled]="!canManage(document.path)" nz-menu-item>
+                                <a>{{ 'resource.documentation.button.editDocument' | translate }}</a>
                               </li>
                             }
                             <li nz-menu-item>
@@ -64,8 +64,8 @@
                               </li>
                             }
                             @if (permission.joc && permission.joc.documentations.manage) {
-                              <li class="bg-hover-color" nz-menu-item>
-                                <a (click)="deleteDocumentation(document)">{{ 'common.button.delete' | translate }}</a>
+                              <li (click)="deleteDocumentation(document)" [nzDisabled]="!canManage(document.path)" class="bg-hover-color" nz-menu-item>
+                                <a>{{ 'common.button.delete' | translate }}</a>
                               </li>
                             }
                             <li nz-menu-item>

@@ -135,6 +135,7 @@ export class ManageReportComponent {
         next: res => {
           this.isLoading = true;
           this.tree = this.coreService.prepareTree(res, true);
+          this.coreService.setReportFolderTree(this.tree);
           if (this.tree.length) {
             this.loadReports();
           }

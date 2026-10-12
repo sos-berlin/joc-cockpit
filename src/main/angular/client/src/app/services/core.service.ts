@@ -1120,6 +1120,25 @@ export class CoreService {
     return this.workflowFolderTree.length === 0 || this.workflowFolderPermissionsSent.has(permission);
   }
 
+  // JOC-2255, Reports view: the tree loaded by the Reports tab, shared with the generated reports tab
+  // and the bulk Delete button of ReportingComponent.
+  private reportFolderTree: any[] = [];
+
+  setReportFolderTree(tree: any[]): void {
+    this.reportFolderTree = tree || [];
+  }
+
+  hasReportFolderTree(): boolean {
+    return this.reportFolderTree.length > 0;
+  }
+
+  hasReportFolderPermission(reportPath: string, permission: string): boolean {
+    if (!reportPath || this.reportFolderTree.length === 0) {
+      return true;
+    }
+    return this.hasFolderPermissionByPath(this.reportFolderTree, this.getFolderPath(reportPath), permission);
+  }
+
   prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
       const output: any = [];
