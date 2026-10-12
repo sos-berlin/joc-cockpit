@@ -56,7 +56,7 @@
               @if (permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
                 <button
                   (click)="release()"
-                  [disabled]="!script.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  [disabled]="!coreService.hasInventoryFolderPermission(data?.path, 'deploy') || !script.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
                   <i class="fa fa-rocket p-r-xs"></i>
                   <span>{{ 'inventory.button.release' | translate }}</span>
                 </button>

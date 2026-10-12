@@ -36,7 +36,7 @@
                             <i class="text fa fa-ellipsis-h"></i></a>
                           <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                             <ul nz-menu>
-                              <li (click)="run(item)" nz-menu-item>
+                              <li (click)="run(item)" [nzDisabled]="!canManage(item)" nz-menu-item>
                                 <a>{{ 'reporting.button.runReport' | translate }}</a>
                               </li>
                             </ul>
@@ -154,7 +154,7 @@
                   @for (item of ajaxTable.data; track item) {
                     <tr>
                       @if (permission.joc && permission.joc.reports.manage) {
-                        <td [nzShowCheckbox]="true" [nzChecked]="object.setOfCheckedId.has(item.path)"
+                        <td [nzShowCheckbox]="true" [nzChecked]="object.setOfCheckedId.has(item.path)" [nzDisabled]="!canManage(item)"
                             (nzCheckedChange)="onItemChecked(item, $event)"
                         ></td>
                       }
@@ -167,7 +167,7 @@
                             </button>
                             <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                               <ul nz-menu>
-                                <li nz-menu-item (click)="run(item)">
+                                <li nz-menu-item (click)="run(item)" [nzDisabled]="!canManage(item)">
                                   <a>{{ 'reporting.button.runReport' | translate }}</a>
                                 </li>
                               </ul>

@@ -46,14 +46,14 @@
       </div>
       @if (mapOfCheckedId.size === 0 && permission.joc && permission.joc.inventory.manage && !isTrash) {
         <button (click)="paste()"
-                [disabled]="!copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12"
+                [disabled]="!canFolder('manage') || !copyObj || (objectType !== copyObj.type)" class="btn btn-sm btn-grey m-l-12"
                 type="button">
           <i class="fa fa-paste p-r-xs"></i>
           <span>{{ 'inventory.button.paste' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size === 0 && permission.joc && permission.joc.inventory.manage && !isTrash) {
-        <button (click)="add()" class="btn btn-sm btn-grey m-l-12"
+        <button (click)="add()" [disabled]="!canFolder('manage')" class="btn btn-sm btn-grey m-l-12"
                 type="button">
           <i class="fa fa-plus p-r-xs"></i>
           @if (objectType === 'WORKFLOW') {
@@ -91,7 +91,7 @@
       @if (mapOfCheckedId.size > 0 && !isTrash && permission.joc.inventory.deploy && securityLevel !== 'HIGH' &&
       (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) &&
       (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH')) {
-        <button (click)="deployAll()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="deployAll()" [disabled]="!canFolder('deploy')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-rocket p-r-xs"></i>
           <span >{{ 'inventory.button.deploy' | translate }}</span>
         </button>
@@ -99,45 +99,45 @@
       @if (mapOfCheckedId.size > 0 && !isTrash && permission.joc.inventory.deploy &&
       (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) &&
       (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
-        <button (click)="deployAll()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="deployAll()" [disabled]="!canFolder('deploy')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-rocket p-r-xs"></i>
           <span >{{ 'inventory.button.release' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash && (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
         && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
-        <button (click)="revokeAll(true)" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="revokeAll(true)" [disabled]="!canFolder('deploy')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
           <span  >{{ 'inventory.button.revoke' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
         || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT') && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
-        <button (click)="revokeAll(false)" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="revokeAll(false)" [disabled]="!canFolder('deploy')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-undo p-r-xs"></i>
           <span>{{ 'inventory.button.recall' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash) {
-        <button (click)="removeAll()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="removeAll()" [disabled]="!canFolder('manage')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-trash p-r-xs"></i>
           <span>{{ 'inventory.button.remove' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && !isTrash) {
-        <button (click)="deleteAll()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="deleteAll()" [disabled]="!canFolder('manage')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-times p-r-xs"></i>
           <span>{{ 'inventory.button.deleteDraft' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && isTrash) {
-        <button (click)="restoreAllObject()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="restoreAllObject()" [disabled]="!canFolder('manage')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-refresh p-r-xs"></i>
           <span>{{ 'inventory.button.restore' | translate }}</span>
         </button>
       }
       @if (mapOfCheckedId.size > 0 && isTrash) {
-        <button (click)="deleteAllObject()" class="btn btn-sm btn-grey m-l-12">
+        <button (click)="deleteAllObject()" [disabled]="!canFolder('manage')" class="btn btn-sm btn-grey m-l-12">
           <i class="fa fa-trash p-r-xs"></i>
           <span>{{ 'inventory.button.delete' | translate }}</span>
         </button>
@@ -280,28 +280,28 @@
                 @if (!isTrash && permission.joc) {
                   <ul nz-menu>
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="cutObject(data)" nz-menu-item>
+                      <li (click)="cutObject(data)" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                         <a>{{ 'inventory.button.cut' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="copyObject(data)" nz-menu-item>
+                      <li (click)="copyObject(data)" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                         <a>{{ 'inventory.button.copy' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="renameObject(data);" nz-menu-item>
+                      <li (click)="renameObject(data);" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                         <a>{{ 'inventory.button.rename' | translate }}</a></li>
                     }
                     @if (permission.joc.inventory.manage && objectType === 'WORKFLOW') {
-                      <li (click)="addTags(data);"
+                      <li (click)="addTags(data);" [nzDisabled]="!canFolder('manage')"
                           nz-menu-item>
                         <a>{{ 'inventory.button.manageTags' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
                       <li (click)="$event.preventDefault();$event.stopPropagation()" [nzTitle]="'inventory.button.change' | translate"
-                          nz-submenu>
+                          [nzDisabled]="!canFolder('manage')" nz-submenu>
                         <ul>
                           @if (permission.joc.inventory.manage) {
                             <li (click)="addToChange(data);" nz-menu-item>
@@ -327,28 +327,28 @@
                         }
                     @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
                       <li (click)="deployObject(data)"
-                          [nzDisabled]="!data.hasDeployments && !data.valid"
+                          [nzDisabled]="!canFolder('deploy') || (!data.hasDeployments && !data.valid)"
                           nz-menu-item>
                         <a>{{ 'inventory.button.deploy' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR')  && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT') {
                       <li (click)="revoke(data)"
-                          [nzDisabled]="!data.hasDeployments"
+                          [nzDisabled]="!canFolder('deploy') || !data.hasDeployments"
                           nz-menu-item>
                         <a>{{ 'inventory.button.revoke' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
                       <li (click)="releaseObject(data)"
-                          [nzDisabled]="!data.valid"
+                          [nzDisabled]="!canFolder('deploy') || !data.valid"
                           nz-menu-item>
                         <a>{{ 'inventory.button.release' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE' || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')) {
                       <li (click)="recallObject(data)"
-                          [nzDisabled]="!data.released"
+                          [nzDisabled]="!canFolder('deploy') || !data.released"
                           nz-menu-item>
                         <a>{{ 'inventory.button.recall' | translate }}</a>
                       </li>
@@ -357,22 +357,22 @@
                       <li nz-menu-divider>
                         }
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="removeObject(data)" nz-menu-item>
+                      <li (click)="removeObject(data)" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                         <a>{{ 'inventory.button.remove' | translate }}</a>
                       </li>
                     }
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="deleteDraft(data)" [nzDisabled]="data.deployed || data.released"
+                      <li (click)="deleteDraft(data)" [nzDisabled]="!canFolder('manage') || data.deployed || data.released"
                           nz-menu-item>
                         <a>{{ 'inventory.button.deleteDraft' | translate }}</a>
                       </li>
                     }
                     <li nz-menu-divider></li>
-                    <li (click)="newDraft(data)" nz-menu-item>
+                    <li (click)="newDraft(data)" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                       <a>{{ 'inventory.button.newDraft' | translate }}</a>
                     </li>
                     @if (objectType === 'WORKFLOW') {
-                      <li (click)="updateFromJobTemplates(data)"
+                      <li (click)="updateFromJobTemplates(data)" [nzDisabled]="!canFolder('manage')"
                           nz-menu-item>
                         <a>{{ 'inventory.button.updateFromJobTemplates' | translate }}</a>
                       </li>
@@ -382,7 +382,7 @@
                       <a>{{ 'inventory.button.showJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="showJson(data, true)"
+                      <li (click)="showJson(data, true)" [nzDisabled]="!canFolder('manage')"
                           nz-menu-item>
                         <a>{{ 'inventory.button.editJSON' | translate }}</a>
                       </li>
@@ -392,7 +392,7 @@
                       <a>{{ 'inventory.button.downloadJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="importJSON(data)" nz-menu-item>
+                      <li (click)="importJSON(data)" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                         <a>{{ 'inventory.button.uploadJSON' | translate }}</a>
                       </li>
                     }
@@ -409,11 +409,11 @@
                       <a>{{ 'inventory.button.showJSON' | translate }}</a>
                     </li>
                     @if (permission.joc.inventory.manage) {
-                      <li (click)="deletePermanently(data);" class="bg-hover-color"
+                      <li (click)="deletePermanently(data);" [nzDisabled]="!canFolder('manage')" class="bg-hover-color"
                           nz-menu-item>
                         <a>{{ 'inventory.button.delete' | translate }}</a></li>
                     }
-                    <li (click)="restoreObject(data);" nz-menu-item>
+                    <li (click)="restoreObject(data);" [nzDisabled]="!canFolder('manage')" nz-menu-item>
                       <a>{{ 'inventory.button.restore' | translate }}</a></li>
                   </ul>
                 }

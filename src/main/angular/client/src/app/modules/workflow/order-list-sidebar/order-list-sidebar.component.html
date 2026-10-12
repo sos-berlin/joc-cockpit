@@ -10,7 +10,7 @@
 @if (setOfCheckedId.size > 0) {
   <div class="pos-abt" style="top:12px;right:8px;left:35px">
     @if (permission.currentController.orders.modify) {
-      <button (click)="modifyAllStartTime()"
+      <button (click)="modifyAllStartTime()" [disabled]="!canChecked('modify')"
               [ngClass]="{'disable-link': !object.isModify }"
               class="btn btn-grey btn-sm m-l-12"><i
         class="fa fa-calendar"></i>&nbsp;
@@ -18,55 +18,55 @@
       </button>
     }
     @if (permission.currentController.orders.modify) {
-      <button (click)="modifyAllOrder()"
+      <button (click)="modifyAllOrder()" [disabled]="!canChecked('modify')"
               [ngClass]="{'disable-link': !object.isModify }"
               class="btn btn-grey btn-sm m-l-12"><i class="fa fa-edit p-r-xs"></i>
         <span class="hidden-sm-down">{{ 'dailyPlan.button.setParameters' | translate }}</span></button>
     }
     @if (permission.currentController.orders.modify) {
-      <button (click)="modifyPriority()" class="btn btn-grey btn-sm m-l-12"><i
+      <button (click)="modifyPriority()" [disabled]="!canChecked('modify')" class="btn btn-grey btn-sm m-l-12"><i
         class="fa fa-signal"></i>&nbsp;
         <span class="hidden-sm-down">{{ 'inventory.button.modifyPriority' | translate }}</span>
       </button>
     }
     @if (!object.isCancel && permission.currentController.orders.cancel) {
-      <button (click)="cancelAllOrder()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
+      <button (click)="cancelAllOrder()" [disabled]="!canChecked('cancel')" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
         <span class="hidden-sm-down">{{ 'order.button.cancel' | translate }}</span></button>
     }
     @if (object.isCancelWithKill && permission.currentController.orders.cancel) {
-      <button (click)="cancelAllOrder(true)"
+      <button (click)="cancelAllOrder(true)" [disabled]="!canChecked('cancel')"
               class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
         <span class="hidden-sm-down">{{ 'order.button.cancelAndKillTask' | translate }}</span>
       </button>
     }
     @if (object.isTerminate && permission.currentController.orders) {
-      <button (click)="terminateAllOrder()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
+      <button (click)="terminateAllOrder()" [disabled]="!canChecked('modify')" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
         <span class="hidden-sm-down">{{ 'order.button.leaveWorkflow' | translate }}</span></button>
     }
     @if (object.isSuspend && permission.currentController.orders.suspendResume) {
-      <button (click)="suspendAllOrder()"
+      <button (click)="suspendAllOrder()" [disabled]="!canChecked('suspendResume')"
               class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
         <span class="hidden-sm-down">{{ 'order.button.suspend' | translate }}</span></button>
     }
     @if (object.isSuspendWithKill && permission.currentController.orders.suspendResume) {
-      <button (click)="suspendAllOrder(true)"
+      <button (click)="suspendAllOrder(true)" [disabled]="!canChecked('suspendResume')"
               class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
         <span class="hidden-sm-down">{{ 'order.button.suspendAndKillTask' | translate }}</span>
       </button>
     }
     @if (object.isResume && (permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed)) {
-      <button (click)="resumeAllOrder()"
+      <button (click)="resumeAllOrder()" [disabled]="!canResumeChecked()"
               class="btn btn-grey btn-sm m-l-12"><i
         class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down">{{ 'order.button.resume' | translate }}</span>
       </button>
     }
     @if (permission.currentController.orders.modify && object.isContinue) {
-      <button (click)="continueAllOrder()" class="btn btn-grey btn-sm m-l-12"><i
+      <button (click)="continueAllOrder()" [disabled]="!canChecked('modify')" class="btn btn-grey btn-sm m-l-12"><i
         class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down">{{ 'order.button.continue' | translate }}</span>
       </button>
     }
     @if (permission.currentController.orders.confirm && object.isPrompt) {
-      <button (click)="confirmAllOrder()" class="btn btn-grey btn-sm m-l-12"><i
+      <button (click)="confirmAllOrder()" [disabled]="!canChecked('confirm')" class="btn btn-grey btn-sm m-l-12"><i
         class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down">{{ 'order.button.confirm' | translate }}</span>
       </button>
     }
@@ -193,7 +193,7 @@
             ></td>
             <td>
               <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [isDisabled]="checked || indeterminate"
-                                [order]="order" [permission]="permission"
+                                [order]="order" [permission]="permission" [checkFolder]="true"
                                 [preferences]="preferences"
                                 [viewContainerRef]="viewContainerRef"
                                 [schedulerId]="schedulerId"></app-order-action>

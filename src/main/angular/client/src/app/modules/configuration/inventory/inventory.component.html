@@ -410,12 +410,12 @@
                     <nz-dropdown-menu #workflowMenu="nzDropdownMenu">
                       <ul nz-menu>
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="renameObject(node);" nz-menu-item>
+                          <li (click)="renameObject(node);" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                             <a>{{ 'inventory.button.rename' | translate }}</a>
                           </li>
                         }
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="addTags(node);" nz-menu-item>
+                          <li (click)="addTags(node);" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                             <a>{{ 'inventory.button.manageTags' | translate }}</a>
                           </li>
                         }
@@ -423,12 +423,12 @@
                           <li nz-menu-divider></li>
                         }
                         @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
-                          <li (click)="deployObject(node, false);" [nzDisabled]="!node.hasDeployments && ((node.type && !node.valid))" nz-menu-item>
+                          <li (click)="deployObject(node, false);" [nzDisabled]="!canFolderPath(node.path, 'deploy') || (!node.hasDeployments && ((node.type && !node.valid)))" nz-menu-item>
                             <a>{{ 'inventory.button.deploy' | translate }}</a>
                           </li>
                         }
                         @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
-                          <li (click)="revoke(node);" [nzDisabled]="(node.type && !node.hasDeployments)" nz-menu-item>
+                          <li (click)="revoke(node);" [nzDisabled]="!canFolderPath(node.path, 'deploy') || (node.type && !node.hasDeployments)" nz-menu-item>
                             <a>{{ 'inventory.button.revoke' | translate }}</a>
                           </li>
                         }
@@ -436,20 +436,20 @@
                           <li nz-menu-divider></li>
                         }
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="removeObject(node);" nz-menu-item>
+                          <li (click)="removeObject(node);" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                             <a>{{ 'inventory.button.remove' | translate }}</a>
                           </li>
                         }
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="deleteDraft(node);" [nzDisabled]="node.deployed" nz-menu-item>
+                          <li (click)="deleteDraft(node);" [nzDisabled]="!canFolderPath(node.path, 'manage') || node.deployed" nz-menu-item>
                             <a>{{ 'inventory.button.deleteDraft' | translate }}</a>
                           </li>
                         }
                         <li nz-menu-divider></li>
-                        <li (click)="newDraft(node)" nz-menu-item>
+                        <li (click)="newDraft(node)" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                           <a>{{ 'inventory.button.newDraft' | translate }}</a>
                         </li>
-                        <li (click)="updateFromJobTemplates(node)" nz-menu-item>
+                        <li (click)="updateFromJobTemplates(node)" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                           <a>{{ 'inventory.button.updateFromJobTemplates' | translate }}</a>
                         </li>
                         <li nz-menu-divider></li>
@@ -457,7 +457,7 @@
                           <a>{{ 'inventory.button.showJSON' | translate }}</a>
                         </li>
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="editJson(node, true)" nz-menu-item>
+                          <li (click)="editJson(node, true)" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                             <a>{{ 'inventory.button.editJSON' | translate }}</a>
                           </li>
                         }
@@ -466,7 +466,7 @@
                           <a>{{ 'inventory.button.downloadJSON' | translate }}</a>
                         </li>
                         @if (permission.joc.inventory.manage) {
-                          <li (click)="importJSON(node)" nz-menu-item>
+                          <li (click)="importJSON(node)" [nzDisabled]="!canFolderPath(node.path, 'manage')" nz-menu-item>
                             <a>{{ 'inventory.button.uploadJSON' | translate }}</a>
                           </li>
                         }
@@ -679,12 +679,12 @@
   @if (!isTrash && node.origin && permission.joc) {
     <ul nz-menu>
       @if (node.origin.object && permission.joc.inventory.manage) {
-        <li (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);" nz-menu-item>
+        <li (click)="addObject(node, node.origin.object === 'CALENDAR' ? 'WORKINGDAYSCALENDAR' : node.origin.object);" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.new' | translate }}</a>
         </li>
       }
       @if (!node.origin.object && !node.origin.type && permission.joc.inventory.manage) {
-        <li [nzTitle]="'inventory.button.new' | translate" nz-submenu>
+        <li [nzTitle]="'inventory.button.new' | translate" [nzDisabled]="!canFolder(node, 'manage')" nz-submenu>
           <ul>
             @if (!node.origin.controller && !node.origin.dailyPlan) {
               <li (click)="createFolder(node);" nz-menu-item>
@@ -753,34 +753,34 @@
         <li nz-menu-divider></li>
       }
       @if (!node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.joc.inventory.manage) {
-        <li (click)="cut(node)" nz-menu-item>
+        <li (click)="cut(node)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.cut' | translate }}</a>
         </li>
       }
       @if (!node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.joc.inventory.manage) {
-        <li (click)="copy(node)" nz-menu-item>
+        <li (click)="copy(node)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.copy' | translate }}</a>
         </li>
       }
       @if (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && permission.joc.inventory.manage) {
-        <li (click)="shallowCopy(node)" nz-menu-item>
+        <li (click)="shallowCopy(node)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.shallowCopy' | translate }}</a>
         </li>
       }
       @if (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && permission.joc.inventory.manage) {
-        <li (click)="paste(node)" [nzDisabled]="!copyObj || (node.origin.object && copyObj.type !== node.origin.object)" nz-menu-item>
+        <li (click)="paste(node)" [nzDisabled]="!canFolder(node, 'manage') || !copyObj || (node.origin.object && copyObj.type !== node.origin.object)" nz-menu-item>
           <a>{{ 'inventory.button.paste' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage) {
-        <li (click)="renameObject(node);" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" nz-menu-item>
+        <li (click)="renameObject(node);" [nzDisabled]="!canFolder(node, 'manage') || (node.origin.object && node.origin.children?.length === 0)" nz-menu-item>
           <a>{{ 'inventory.button.rename' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage && (node.origin.type === 'WORKFLOW' || node.origin.object === 'WORKFLOW' ||
         node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan))) {
         @if (preferences.enableTagging) {
-          <li (click)="addTags(node);" nz-menu-item>
+          <li (click)="addTags(node);" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
             <a>{{ 'inventory.button.manageTags' | translate }}</a>
           </li>
         }
@@ -792,7 +792,7 @@
       }
       @if ((!node.origin.type && !node.origin.controller && !node.origin.dailyPlan)) {
         <li (click)="$event.preventDefault();$event.stopPropagation()" [hidden]="node.origin.path === '/' && node.origin.object"
-            [nzTitle]="'inventory.button.repository' | translate" nz-submenu>
+            [nzTitle]="'inventory.button.repository' | translate" [nzDisabled]="!canFolder(node, 'manage')" nz-submenu>
           <ul>
             <li (click)="$event.preventDefault();$event.stopPropagation()" [nzTitle]="'inventory.button.local' | translate" nz-submenu>
               <ul>
@@ -894,7 +894,7 @@
         </li>
       }
       @if (permission.joc.inventory.manage) {
-        <li (click)="$event.preventDefault();$event.stopPropagation()" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" [nzTitle]="'inventory.button.change' | translate" nz-submenu>
+        <li (click)="$event.preventDefault();$event.stopPropagation()" [nzDisabled]="!canFolder(node, 'manage') || (node.origin.object && node.origin.children?.length === 0)" [nzTitle]="'inventory.button.change' | translate" nz-submenu>
           <ul>
             @if (permission.joc.inventory.manage) {
               <li (click)="addToChange(node);" nz-menu-item>
@@ -918,12 +918,12 @@
         <li nz-menu-divider></li>
       }
       @if (securityLevel !== 'HIGH' && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) &&  (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')) {
-        <li (click)="reDeployObject(node);" nz-menu-item>
+        <li (click)="reDeployObject(node);" [nzDisabled]="!canFolder(node, 'deploy')" nz-menu-item>
           <a>{{ 'inventory.button.redeploy' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')) {
-        <li (click)="updateDependencies();" nz-menu-item>
+        <li (click)="updateDependencies();" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.updateDependencies' | translate }}</a>
         </li>
       }
@@ -936,17 +936,17 @@
         <li nz-menu-divider></li>
       }
       @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE') || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'JOBTEMPLATE' && node.origin.type !== 'INCLUDESCRIPT' && node.origin.type !== 'REPORT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))) {
-        <li (click)="deployObject(node, false);" [nzDisabled]="!node.origin.hasDeployments && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.valid))" nz-menu-item>
+        <li (click)="deployObject(node, false);" [nzDisabled]="!canFolder(node, 'deploy') || (!node.origin.hasDeployments && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.valid)))" nz-menu-item>
           <a>{{ 'inventory.button.deploy' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE') || (node.origin.type && !node.origin.type.match('CALENDAR') && node.origin.type !== 'SCHEDULE' && node.origin.type !== 'JOBTEMPLATE' && node.origin.type !== 'INCLUDESCRIPT' && node.origin.type !== 'REPORT') || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))) {
-        <li (click)="revoke(node);" [nzDisabled]="((node.origin.object && node.origin.children?.length === 0)) || (node.origin.type && !node.origin.hasDeployments)" nz-menu-item>
+        <li (click)="revoke(node);" [nzDisabled]="!canFolder(node, 'deploy') || ((node.origin.object && node.origin.children?.length === 0)) || (node.origin.type && !node.origin.hasDeployments)" nz-menu-item>
           <a>{{ 'inventory.button.revoke' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object)) {
-        <li (click)="revalidateObject(node);" nz-menu-item>
+        <li (click)="revalidateObject(node);" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.revalidate' | translate }}</a>
         </li>
       }
@@ -954,12 +954,12 @@
         <li [nzTitle]="'inventory.button.synchronize' | translate" nz-submenu>
           <ul>
             @if (permission.joc.inventory.manage) {
-              <li (click)="synchronize(node,'controller');" nz-menu-item>
+              <li (click)="synchronize(node,'controller');" [nzDisabled]="!canFolder(node, 'deploy')" nz-menu-item>
                 <a>{{ 'inventory.button.syncToController' | translate }}</a>
               </li>
             }
             @if (permission.joc.inventory.manage) {
-              <li (click)="synchronize(node,'inventory');" nz-menu-item>
+              <li (click)="synchronize(node,'inventory');" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
                 <a>{{ 'inventory.button.syncToInventory' | translate }}</a>
               </li>
             }
@@ -970,12 +970,12 @@
         <li nz-menu-divider></li>
       }
       @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT' || node.origin.object === 'REPORT' || node.origin.object == 'JOBTEMPLATE')) || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'JOBTEMPLATE' || node.origin.type === 'INCLUDESCRIPT' || node.origin.type === 'REPORT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))) {
-        <li (click)="releaseObject(node);" [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.valid)))" nz-menu-item>
+        <li (click)="releaseObject(node);" [nzDisabled]="!canFolder(node, 'deploy') || (!node.origin.hasReleases && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.valid)))" nz-menu-item>
           <a>{{ 'inventory.button.release' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && (node.origin.object.match('CALENDAR') || node.origin.object === 'SCHEDULE' || node.origin.object === 'INCLUDESCRIPT' || node.origin.object === 'REPORT' || node.origin.object == 'JOBTEMPLATE')) || (node.origin.type && (node.origin.type.match('CALENDAR') || node.origin.type === 'SCHEDULE' || node.origin.type === 'JOBTEMPLATE' || node.origin.type === 'INCLUDESCRIPT' || node.origin.type === 'REPORT')) || (!node.origin.object && !node.origin.type && !node.origin.controller))) {
-        <li (click)="recallObject(node);" [nzDisabled]="(!node.origin.hasReleases && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.released)))" nz-menu-item>
+        <li (click)="recallObject(node);" [nzDisabled]="!canFolder(node, 'deploy') || (!node.origin.hasReleases && ((node.origin.object && node.origin.children?.length === 0) || (node.origin.type && !node.origin.released)))" nz-menu-item>
           <a>{{ 'inventory.button.recall' | translate }}</a>
         </li>
       }
@@ -983,12 +983,12 @@
         <li nz-menu-divider></li>
       }
       @if (permission.joc.inventory.manage) {
-        <li (click)="removeObject(node);" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')" nz-menu-item>
+        <li (click)="removeObject(node);" [nzDisabled]="!canFolder(node, 'manage') || (node.origin.object && node.origin.children?.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')" nz-menu-item>
           <a>{{ 'inventory.button.remove' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage) {
-        <li (click)="deleteDraft(node);" [nzDisabled]="node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children?.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')" nz-menu-item>
+        <li (click)="deleteDraft(node);" [nzDisabled]="!canFolder(node, 'manage') || node.origin.deployed || node.origin.released || (node.origin.object && node.origin.children?.length === 0) || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')" nz-menu-item>
           <a>{{ 'inventory.button.deleteDraft' | translate }}</a>
         </li>
       }
@@ -996,17 +996,17 @@
         <li nz-menu-divider></li>
       }
       @if (node.origin.type) {
-        <li (click)="newDraft(node.origin)" nz-menu-item>
+        <li (click)="newDraft(node.origin)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.newDraft' | translate }}</a>
         </li>
       }
       @if (node.origin.type === 'WORKFLOW' || node.origin.controller || node.origin.object === 'WORKFLOW' || (!node.origin.object && !node.origin.type && !node.origin.controller && !node.origin.dailyPlan)) {
-        <li (click)="updateFromJobTemplates(node.origin)" nz-menu-item>
+        <li (click)="updateFromJobTemplates(node.origin)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.updateFromJobTemplates' | translate }}</a>
         </li>
       }
       @if (permission.joc.inventory.manage && ((!node.origin.object && !node.origin.type && !node.origin.controller) || (node.origin.dailyPlan && node.origin.children?.length == 4 && node.origin.children[3]?.children?.length > 0) || (node.origin.type === 'JOBTEMPLATE' && node.origin.released) || (node.origin.object === 'JOBTEMPLATE' && node.origin.children?.length > 0))) {
-        <li (click)="updateJobs(node.origin)" nz-menu-item>
+        <li (click)="updateJobs(node.origin)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.updateJobs' | translate }}</a>
         </li>
       }
@@ -1019,7 +1019,7 @@
         </li>
       }
       @if (node.origin.type && permission.joc.inventory.manage) {
-        <li (click)="editJson(node.origin, true)" nz-menu-item>
+        <li (click)="editJson(node.origin, true)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.editJSON' | translate }}</a>
         </li>
       }
@@ -1032,7 +1032,7 @@
         </li>
       }
       @if (node.origin.type && permission.joc.inventory.manage) {
-        <li (click)="importJSON(node.origin)" nz-menu-item>
+        <li (click)="importJSON(node.origin)" [nzDisabled]="!canFolder(node, 'manage')" nz-menu-item>
           <a>{{ 'inventory.button.uploadJSON' | translate }}</a>
         </li>
       }
@@ -1056,10 +1056,10 @@
         </li>
       }
       @if (permission.joc.inventory.manage) {
-        <li (click)="deletePermanently(node);" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" class="bg-hover-color" nz-menu-item>
+        <li (click)="deletePermanently(node);" [nzDisabled]="!canFolder(node, 'manage') || (node.origin.object && node.origin.children?.length === 0)" class="bg-hover-color" nz-menu-item>
           <a>{{ 'inventory.button.delete' | translate }}</a></li>
       }
-      <li (click)="restoreObject(node);" [nzDisabled]="node.origin.object || node.origin.controller || node.origin.dailyPlan" nz-menu-item>
+      <li (click)="restoreObject(node);" [nzDisabled]="!canFolder(node, 'manage') || node.origin.object || node.origin.controller || node.origin.dailyPlan" nz-menu-item>
         <a>{{ 'inventory.button.restore' | translate }}</a>
       </li>
     </ul>

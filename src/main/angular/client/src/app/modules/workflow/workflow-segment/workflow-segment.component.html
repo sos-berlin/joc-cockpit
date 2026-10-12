@@ -38,16 +38,16 @@
                             <ul nz-menu>
                               @if (item.instructionRef?.TYPE !== 'Segment') {
                                 @if (item.instructionRef?.label && permission?.controllerDefaults?.orders?.managePositions && (!item.instructionRef?.state || (item.instructionRef?.state?._text !== 'SKIPPED' && item.instructionRef?.state?._text !== 'STOPPED_AND_SKIPPED'))) {
-                                  <li (click)="skip(item)" nz-menu-item><a><span>{{ 'workflow.button.skip' | translate }}</span></a></li>
+                                  <li (click)="skip(item)" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workFlowJson?.path, 'managePositions')" nz-menu-item><a><span>{{ 'workflow.button.skip' | translate }}</span></a></li>
                                 }
                                 @if (item.instructionRef?.label && permission?.controllerDefaults?.orders?.managePositions && (item.instructionRef?.state?._text === 'SKIPPED' || item.instructionRef?.state?._text === 'STOPPED_AND_SKIPPED')) {
-                                  <li (click)="unskip(item)" nz-menu-item><a><span>{{ 'workflow.button.unskip' | translate }}</span></a></li>
+                                  <li (click)="unskip(item)" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workFlowJson?.path, 'managePositions')" nz-menu-item><a><span>{{ 'workflow.button.unskip' | translate }}</span></a></li>
                                 }
                                 @if (permission?.controllerDefaults?.orders?.managePositions && (!item.instructionRef?.state || (item.instructionRef?.state?._text !== 'STOPPED' && item.instructionRef?.state?._text !== 'STOPPED_AND_SKIPPED'))) {
-                                  <li (click)="stop(item)" nz-menu-item><a><span>{{ 'workflow.button.stop' | translate }}</span></a></li>
+                                  <li (click)="stop(item)" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workFlowJson?.path, 'managePositions')" nz-menu-item><a><span>{{ 'workflow.button.stop' | translate }}</span></a></li>
                                 }
                                 @if (permission?.controllerDefaults?.orders?.managePositions && (item.instructionRef?.state?._text === 'STOPPED' || item.instructionRef?.state?._text === 'STOPPED_AND_SKIPPED')) {
-                                  <li (click)="unstop(item)" nz-menu-item><a><span>{{ 'workflow.button.unstop' | translate }}</span></a></li>
+                                  <li (click)="unstop(item)" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workFlowJson?.path, 'managePositions')" nz-menu-item><a><span>{{ 'workflow.button.unstop' | translate }}</span></a></li>
                                 }
                               }
                               @if (item.kind === 'job') {
@@ -83,7 +83,7 @@
                         <span class="m-l-md" style="position:relative;z-index:1">
                           @for (order of (item.ordersAtPos | orderBy:'scheduledFor':true | slice:0:3); track order.orderId) {
                             <span class="d-inline-flex align-items-center m-r-xs">
-                              <app-order-action [order]="order" [permission]="permission" [preferences]="preferences"
+                              <app-order-action [order]="order" [permission]="permission" [preferences]="preferences" [checkFolder]="true"
                                                 [viewContainerRef]="viewContainerRef" [schedulerId]="schedulerId"
                                                 (isChanged)="changedHandler($event)"></app-order-action>
                               <ng-template #contentTemplate>

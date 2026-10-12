@@ -26,12 +26,23 @@ export class OrderActionComponent {
   @Input() viewContainerRef: any;
   @Input() schedulerId: any;
   @Input() isDisabled = false;
+  // JOC-2255: set by the Workflows view to grey out actions the order's workflow folder doesn't permit.
+  @Input() checkFolder = false;
 
   @Output() isChanged: EventEmitter<boolean> = new EventEmitter();
   @Output() isDropdownOpen: EventEmitter<boolean> = new EventEmitter();
 
   constructor(public coreService: CoreService, private modal: NzModalService,
               public message: NzMessageService, private cdr: ChangeDetectorRef) {
+  }
+
+  can(permission: string): boolean {
+    return !this.checkFolder || this.coreService.hasWorkflowFolderPermission(this.order?.workflowId?.path, permission);
+  }
+
+  // Resume: "suspendResume", or "resumeFailed" for a FAILED order.
+  canResume(): boolean {
+    return this.can('suspendResume') || (this.order?.state?._text === 'FAILED' && this.can('resumeFailed'));
   }
 
   change(value: boolean): void {

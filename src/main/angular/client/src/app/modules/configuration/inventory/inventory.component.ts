@@ -14043,6 +14043,7 @@ export class InventoryComponent {
           res.folders.push({name: '', path: '/'});
         }
         const tree = this.coreService.prepareTree(res, false);
+        this.coreService.setInventoryFolderTree(tree);
         if (path) {
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
           this.updateFolders(path, false, recursive, (response: any) => {
@@ -14411,6 +14412,21 @@ export class InventoryComponent {
     }
   }
 
+  // JOC-2255: permission of the folder a tree node belongs to; objects and virtual nodes
+  // (object-type groups, Controller, Automation) use their nearest folder node.
+  canFolder(node: any, permission: string): boolean {
+    let n = node;
+    while (n && n.origin && (n.origin.type || n.origin.object || n.origin.controller || n.origin.dailyPlan)) {
+      n = n.parentNode;
+    }
+    return n?.origin ? this.coreService.hasFolderPermission(n.origin, permission) : true;
+  }
+
+  // JOC-2255: for tag-view rows, whose path is the folder path.
+  canFolderPath(folderPath: string, permission: string): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, folderPath, permission);
+  }
+
   openMenu(node: any, evt: any): void {
     if (this.menu) {
       this.node = node;
@@ -14563,6 +14579,8 @@ export class InventoryComponent {
           object: InventoryObject.WORKFLOW,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Workflows$')
         },
         {
@@ -14571,6 +14589,8 @@ export class InventoryComponent {
           object: InventoryObject.FILEORDERSOURCE,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'File_Order_Sources$')
         },
         {
@@ -14579,6 +14599,8 @@ export class InventoryComponent {
           object: InventoryObject.JOBRESOURCE,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Job_Resources$')
         },
         {
@@ -14587,6 +14609,8 @@ export class InventoryComponent {
           object: InventoryObject.NOTICEBOARD,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Boards$')
         },
         {
@@ -14595,6 +14619,8 @@ export class InventoryComponent {
           object: InventoryObject.LOCK,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Locks$')
         }
       ];
@@ -14605,6 +14631,8 @@ export class InventoryComponent {
           object: InventoryObject.INCLUDESCRIPT,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'IncludeScripts$')
         },
         {
@@ -14613,6 +14641,8 @@ export class InventoryComponent {
           object: InventoryObject.SCHEDULE,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Schedules$')
         },
         {
@@ -14621,6 +14651,8 @@ export class InventoryComponent {
           object: 'CALENDAR',
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Calendars$')
         },
         {
@@ -14629,6 +14661,8 @@ export class InventoryComponent {
           object: InventoryObject.JOBTEMPLATE,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'JobTemplates$')
         },
         {
@@ -14637,10 +14671,18 @@ export class InventoryComponent {
           object: InventoryObject.REPORT,
           children: [],
           path: data.path,
+          permitted: data.permitted,
+          permissions: data.permissions,
           key: (KEY + 'Reports$')
         }
       ];
     }
+    // JOC-2255: object-type nodes reused from an earlier load (e.g. restored by mergeTree()
+    // after navigating back) must carry the folder's current permissions as well.
+    [...(controllerObj.controllerArr || []), ...(dailyPlanObj.dailyPlanArr || [])].forEach((objectNode: any) => {
+      objectNode.permitted = data.permitted;
+      objectNode.permissions = data.permissions;
+    });
     const obj: any = {
       path: data.path
     };
@@ -16939,6 +16981,7 @@ export class InventoryComponent {
         if (isTrash) {
           this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
         } else {
+          this.coreService.setInventoryFolderTree(tree);
           this.tree = this.recursiveTreeUpdate(tree, this.tree, false);
         }
       }

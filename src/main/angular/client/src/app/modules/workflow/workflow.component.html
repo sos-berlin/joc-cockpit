@@ -101,10 +101,10 @@
               </nz-dropdown-menu>
             </div>
             @if (showMoreAdvanceOptions) {
-              <button (click)="suspendAll(true)" class="btn btn-grey btn-sm m-l-12"><i
+              <button (click)="suspendAll(true)" [disabled]="!coreService.hasAnyWorkflowFolderPermission('suspendResume')" class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-stop p-r-xs"></i>
                 <span class="hidden-sm-down">{{ 'workflow.button.suspendAll' | translate }}</span></button>
-              <button (click)="resumeAll(true)" class="btn btn-grey btn-sm m-l-12"><i
+              <button (click)="resumeAll(true)" [disabled]="!coreService.hasAnyWorkflowFolderPermission('suspendResume') && !coreService.hasAnyWorkflowFolderPermission('resumeFailed')" class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
 >{{ 'workflow.button.resumeAll' | translate }}</span>
               </button>
@@ -195,21 +195,22 @@
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
           <div [ngClass]="{'show-block':object.mapOfCheckedId.size > 0}" class="hide">
-            <button (click)="addBulkOrder()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus p-r-xs"></i>
-              <span class="hidden-sm-down">{{ 'workflow.button.addOrder' | translate }}</span>
-            </button>
-            <button (click)="suspendAll()" [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i
+            @if (permission.currentController && permission.currentController.orders.create) {
+              <button (click)="addBulkOrder()" [disabled]="!canCheckedWorkflows('create')" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-plus p-r-xs"></i>
+                <span class="hidden-sm-down">{{ 'workflow.button.addOrder' | translate }}</span>
+              </button>
+            }
+            <button (click)="suspendAll()" [disabled]="!object.isSuspend || !canCheckedWorkflows('suspendResume')" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down">{{ 'order.button.suspend' | translate }}</span></button>
-            <button (click)="resumeAll()" [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down"
->{{ 'order.button.resume' | translate }}</span>
+            <button (click)="resumeAll()" [disabled]="!object.isResume || !canCheckedWorkflows('suspendResume', 'resumeFailed')" class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down">{{ 'order.button.resume' | translate }}</span>
             </button>
           </div>
           @if (broadNames.size > 0) {
             <div class="show-block">
-              <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
+              <button (click)="postAllNotices()" [disabled]="!canBroadPaths('post')" class="btn btn-grey btn-sm m-l-12"><i
                 class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
               </button>
             </div>
@@ -700,8 +701,8 @@
                                   <span>{{ 'workflow.label.order' | translate }}</span>
                                 }
                               </span>
-                              <a (click)="actionChild.addOrder(workflow);"
-                                 [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create, 'disable-link': (!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC')}"
+                              <a (click)="coreService.hasWorkflowFolderPermission(workflow.path, 'create') && actionChild.addOrder(workflow);"
+                                 [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.create, 'disable-link': (!coreService.hasWorkflowFolderPermission(workflow.path, 'create') || !workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC')}"
                                  [appRichTooltip]="'workflow.button.addOrder' | translate"
                                  [attr.aria-label]="'workflow.button.addOrder' | translate"
                                  class="hide card-fab-inline">
@@ -971,7 +972,8 @@
                                [ngClass]="workflow.show ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
                             @if (permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC') {
                               <i
-                                (click)="addOrder(workflow)"
+                                (click)="coreService.hasWorkflowFolderPermission(workflow.path, 'create') && addOrder(workflow)"
+                                [ngClass]="{'disable-link': !coreService.hasWorkflowFolderPermission(workflow.path, 'create')}"
                                 [appRichTooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
                             }
                             <i (click)="navToDetailView('list', workflow)"

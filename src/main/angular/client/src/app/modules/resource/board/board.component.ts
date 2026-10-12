@@ -1011,6 +1011,24 @@ export class BoardComponent {
     this.updateDeleteFlag();
   }
 
+  // JOC-2255: posting needs "post" and deleting needs "delete" for the board's folder.
+  canBoard(board: any, permission: string): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, board.path1 || this.coreService.getFolderPath(board.path), permission);
+  }
+
+  // For the bulk buttons: greyed out only if no selected board, or board of a selected notice
+  // (key "<noticeId>__<boardPath>"), grants the permission (the API checks each again).
+  canChecked(permission: string): boolean {
+    const boardPaths = new Set<string>(this.object.setOfCheckedId as Set<string>);
+    (this.object.mapOfCheckedId as Set<string>).forEach(key => {
+      const i = key.indexOf('__/');
+      if (i > -1) {
+        boardPaths.add(key.substring(i + 2));
+      }
+    });
+    return boardPaths.size === 0 || Array.from(boardPaths).some(path => this.canBoard({path}, permission));
+  }
+
   onItemChecked(board: any, notice: any, checked: boolean): void {
     if (notice) {
       // Sub-table individual notice checkbox

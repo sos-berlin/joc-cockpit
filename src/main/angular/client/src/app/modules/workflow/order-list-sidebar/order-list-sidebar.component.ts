@@ -279,6 +279,28 @@ export class OrderListSidebarComponent implements OnChanges {
     });
   }
 
+  // JOC-2255: a bulk action is greyed out only if no selected order's workflow folder grants the
+  // permission; a mixed selection is no clear decision, and the API checks each order again.
+  private checkedOrders(): any[] {
+    return (this.data || []).filter((order: any) => this.setOfCheckedId.has(order.orderId));
+  }
+
+  canChecked(permission: string): boolean {
+    const orders = this.checkedOrders();
+    return orders.length === 0 || orders.some((order: any) =>
+      this.coreService.hasWorkflowFolderPermission(order.workflowId?.path, permission));
+  }
+
+  // Resume: "suspendResume", or "resumeFailed" for FAILED orders.
+  canResumeChecked(): boolean {
+    const orders = this.checkedOrders();
+    return orders.length === 0 || orders.some((order: any) => {
+      const path = order.workflowId?.path;
+      return this.coreService.hasWorkflowFolderPermission(path, 'suspendResume')
+        || (order.state?._text === 'FAILED' && this.coreService.hasWorkflowFolderPermission(path, 'resumeFailed'));
+    });
+  }
+
   modifyPriority(): void {
     this.modal.create({
       nzTitle: undefined,

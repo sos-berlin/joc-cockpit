@@ -64,6 +64,12 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.searchInResult();
   }
 
+  // JOC-2255: all rows belong to the folder of dataObj, which carries that folder's
+  // permitted/permissions (copied in InventoryComponent.updateObjects()).
+  canFolder(permission: string): boolean {
+    return this.coreService.hasFolderPermission(this.dataObj, permission);
+  }
+
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();

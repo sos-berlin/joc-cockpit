@@ -19,20 +19,20 @@
       <li nz-menu-divider></li>
       @if (permission.currentController.orders.create) {
         <li (click)="addOrder(workflow);"
-            [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+            [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflow.path, 'create') || !workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
             nz-menu-item>
           <a>{{'workflow.button.addOrder' | translate}} ..</a>
         </li>
       }
       @if (!workflow.suspended) {
         <li (click)="suspend(workflow);"
-            [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+            [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflow.path, 'suspendResume') || !workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
             nz-menu-item>
           <a>{{'order.button.suspend' | translate}}</a>
         </li>
       }
       @if (workflow.suspended) {
-        <li (click)="resume(workflow);" [nzDisabled]="!workflow.isCurrentVersion" nz-menu-item>
+        <li (click)="resume(workflow);" [nzDisabled]="(!coreService.hasWorkflowFolderPermission(workflow.path, 'suspendResume') && !coreService.hasWorkflowFolderPermission(workflow.path, 'resumeFailed')) || !workflow.isCurrentVersion" nz-menu-item>
           <a>{{'order.button.resume' | translate}}</a>
         </li>
       }
@@ -42,7 +42,7 @@
         </li>
       }
       @if (!workflow.isCurrentVersion) {
-        <li (click)="transitionOrders(workflow);" [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'"
+        <li (click)="transitionOrders(workflow);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflow.path, 'managePositions') || workflow.state._text === 'NOT_IN_SYNC'"
             nz-menu-item>
           <a>{{'workflow.button.transitionOrders' | translate}}</a>
         </li>
