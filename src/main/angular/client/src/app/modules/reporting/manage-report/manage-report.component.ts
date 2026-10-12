@@ -278,9 +278,14 @@ export class ManageReportComponent {
 
   /** Actions */
 
+  // JOC-2255: running a report needs "manage" for the report's folder.
+  canManage(item: any): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, item.path1 || this.coreService.getFolderPath(item.path), 'manage');
+  }
+
   checkAll(value: boolean): void {
     if (value && this.reports.length > 0) {
-      const documents = this.getCurrentData(this.data, this.filters);
+      const documents = this.getCurrentData(this.data, this.filters).filter(item => this.canManage(item));
       documents.forEach(item => {
         this.object.setOfCheckedId.add(item.path);
       });
@@ -305,7 +310,7 @@ export class ManageReportComponent {
     } else {
       this.object.setOfCheckedId.delete(document.path);
     }
-    const documents = this.getCurrentData(this.data, this.filters);
+    const documents = this.getCurrentData(this.data, this.filters).filter(item => this.canManage(item));
     this.object.checked = this.object.setOfCheckedId.size === documents.length;
     this.refreshCheckedStatus();
   }

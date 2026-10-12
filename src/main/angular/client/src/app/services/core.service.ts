@@ -1020,6 +1020,7 @@ export class CoreService {
           path,
           key: path,
           permitted: data.folders[i].permitted,
+          permissions: data.folders[i].permissions,
           repoControlled: data.folders[i].repoControlled,
           isLeaf: isLeaf ? !data.folders[i].folders || data.folders[i].folders.length === 0 : false,
           children: [],
@@ -1037,6 +1038,88 @@ export class CoreService {
     }
   }
 
+  // JOC-2255: per-folder permission from the ./tree response ("view" is implied by the folder being listed).
+  // A folder that isn't permitted allows nothing; a permitted folder without "permissions" (older JOC)
+  // is unrestricted, so only the existing global checks apply.
+  hasFolderPermission(folder: any, permission: string): boolean {
+    if (!folder || folder.permitted === false) {
+      return false;
+    }
+    if (!Array.isArray(folder.permissions)) {
+      return true;
+    }
+    return folder.permissions.includes(permission);
+  }
+
+  findFolderByPath(tree: any[], path: string): any {
+    for (const node of tree || []) {
+      if (node.path === path) {
+        return node;
+      }
+      if (node.children?.length && path && path.startsWith(node.path === '/' ? '/' : node.path + '/')) {
+        const found = this.findFolderByPath(node.children, path);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
+
+  // For rows outside the tree (object lists, tag view): a folder missing from the view's tree
+  // (e.g. tree not loaded yet) falls back to the global checks instead of greying everything out.
+  hasFolderPermissionByPath(tree: any[], folderPath: string, permission: string): boolean {
+    const folder = this.findFolderByPath(tree, folderPath || '/');
+    return folder ? this.hasFolderPermission(folder, permission) : true;
+  }
+
+  getFolderPath(objectPath: string): string {
+    const i = (objectPath || '').lastIndexOf('/');
+    return i > 0 ? objectPath.substring(0, i) : '/';
+  }
+
+  // JOC-2255, Inventory: the tree loaded by InventoryComponent, for the object editors, which only
+  // know the folder path of the object they show.
+  private inventoryFolderTree: any[] = [];
+
+  setInventoryFolderTree(tree: any[]): void {
+    this.inventoryFolderTree = tree || [];
+  }
+
+  hasInventoryFolderPermission(folderPath: string, permission: string): boolean {
+    return this.hasFolderPermissionByPath(this.inventoryFolderTree, folderPath, permission);
+  }
+
+  // JOC-2255, Workflows view: its folder tree is loaded once by WorkflowComponent; the many child
+  // components (workflow/order/instruction menus) look up the folder of a workflow path here.
+  private workflowFolderTree: any[] = [];
+  private workflowFolderPermissionsSent = new Set<string>();
+
+  setWorkflowFolderTree(tree: any[]): void {
+    this.workflowFolderTree = tree || [];
+    this.workflowFolderPermissionsSent.clear();
+    const collect = (nodes: any[]) => (nodes || []).forEach(node => {
+      (node.permissions || []).forEach((p: string) => this.workflowFolderPermissionsSent.add(p));
+      collect(node.children);
+    });
+    collect(this.workflowFolderTree);
+  }
+
+  // A folder's "permissions" lists exactly the granted permissions; a missing value is not granted.
+  // Without a loaded tree there is no information, so nothing is greyed out.
+  hasWorkflowFolderPermission(workflowPath: string, permission: string): boolean {
+    if (!workflowPath || this.workflowFolderTree.length === 0) {
+      return true;
+    }
+    return this.hasFolderPermissionByPath(this.workflowFolderTree, this.getFolderPath(workflowPath), permission);
+  }
+
+  // For actions on all workflows (e.g. "Suspend All"): allowed if any folder grants the permission;
+  // the API checks each workflow again.
+  hasAnyWorkflowFolderPermission(permission: string): boolean {
+    return this.workflowFolderTree.length === 0 || this.workflowFolderPermissionsSent.has(permission);
+  }
+
   prepareTree(actualData: any, isLeaf: boolean): any {
     if (actualData.folders && actualData.folders.length > 0) {
       const output: any = [];
@@ -1048,6 +1131,7 @@ export class CoreService {
             title: actualData.folders[i].name || actualData.folders[i].path,
             key: actualData.folders[i].path,
             permitted: actualData.folders[i].permitted,
+            permissions: actualData.folders[i].permissions,
             repoControlled: actualData.folders[i].repoControlled,
             isLeaf: isLeaf ? !actualData.folders[i].folders || actualData.folders[i].folders.length === 0 : false,
             children: [],

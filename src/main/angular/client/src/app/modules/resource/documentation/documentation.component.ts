@@ -534,6 +534,17 @@ export class DocumentationComponent {
     this.refreshCheckedStatus();
   }
 
+  // JOC-2255: edit and delete need "manage" for the document's folder.
+  canManage(path: string): boolean {
+    return this.coreService.hasFolderPermissionByPath(this.tree, this.coreService.getFolderPath(path), 'manage');
+  }
+
+  // Bulk: greyed out only if no selected document's folder grants "manage" (the API checks each again).
+  canManageChecked(): boolean {
+    const paths = Array.from(this.object.mapOfCheckedId as Set<string>);
+    return paths.length === 0 || paths.some(path => this.canManage(path));
+  }
+
   onItemChecked(document: any, checked: boolean): void {
     if (!checked && this.object.mapOfCheckedId.size > (this.documentFilters.entryPerPage || this.preferences.entryPerPage)) {
       const orders = this.getCurrentData(this.data, this.documentFilters);

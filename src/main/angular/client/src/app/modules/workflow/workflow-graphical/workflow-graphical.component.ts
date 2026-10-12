@@ -819,6 +819,19 @@ export class WorkflowGraphicalComponent {
     this.restCall(true, 'Suspend', this.order, 'suspend', true, true);
   }
 
+  // JOC-2255: grey out order/instruction actions the workflow's folder doesn't permit.
+  canOrder(permission: string): boolean {
+    return this.coreService.hasWorkflowFolderPermission(this.order?.workflowId?.path || this.workFlowJson?.path, permission);
+  }
+
+  canResumeOrder(): boolean {
+    return this.canOrder('suspendResume') || (this.order?.state?._text === 'FAILED' && this.canOrder('resumeFailed'));
+  }
+
+  canWorkflow(permission: string): boolean {
+    return this.coreService.hasWorkflowFolderPermission(this.workFlowJson?.path, permission);
+  }
+
   cancelOrder(): void {
     this.restCall(false, 'Cancel', this.order, 'cancel');
   }

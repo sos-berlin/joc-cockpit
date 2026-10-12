@@ -21,7 +21,7 @@
               </button>
             }
             @if (object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage) {
-              <button (click)="deleteDocumentations(null)" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}
+              <button (click)="deleteDocumentations(null)" [disabled]="!canManageChecked()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}
               </button>
             }
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline">
@@ -188,7 +188,7 @@
                               <nz-dropdown-menu #option="nzDropdownMenu">
                                 <ul nz-menu>
                                   @if (permission.joc && permission.joc.documentations.manage) {
-                                    <li (click)="editDocument(document)" nz-menu-item>
+                                    <li (click)="editDocument(document)" [nzDisabled]="!canManage(document.path)" nz-menu-item>
                                       <a>{{ 'resource.documentation.button.editDocument' | translate }}</a>
                                     </li>
                                   }
@@ -201,7 +201,7 @@
                                     </li>
                                   }
                                   @if (permission.joc && permission.joc.documentations.manage) {
-                                    <li (click)="deleteDocumentations(document)" class="bg-hover-color"
+                                    <li (click)="deleteDocumentations(document)" [nzDisabled]="!canManage(document.path)" class="bg-hover-color"
                                         nz-menu-item>
                                       <a>{{ 'common.button.delete' | translate }}</a>
                                     </li>
@@ -237,7 +237,8 @@
                               </a>
                             }
                             @if (permission.joc && permission.joc.documentations.manage) {
-                              <a (click)="deleteDocumentations(document)"
+                              <a (click)="canManage(document.path) && deleteDocumentations(document)"
+                                 [ngClass]="{'disable-link': !canManage(document.path)}"
                                  class="pull-right text-hover-color ">
                                 <i class="fa fa-trash text-black-lt p-r-xs"></i>
                                 <span class="text-black-lt">{{ 'common.button.delete' | translate }}</span>
@@ -354,7 +355,7 @@
                               <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
                                   @if (permission.joc && permission.joc.documentations.manage) {
-                                    <li (click)="editDocument(document)" nz-menu-item>
+                                    <li (click)="editDocument(document)" [nzDisabled]="!canManage(document.path)" nz-menu-item>
                                       <a>{{ 'resource.documentation.button.editDocument' | translate }}</a>
                                     </li>
                                   }
@@ -367,7 +368,7 @@
                                     </li>
                                   }
                                   @if (permission.joc && permission.joc.documentations.manage) {
-                                    <li (click)="deleteDocumentations(document)" class="bg-hover-color"
+                                    <li (click)="deleteDocumentations(document)" [nzDisabled]="!canManage(document.path)" class="bg-hover-color"
                                         nz-menu-item>
                                       <a>{{ 'common.button.delete' | translate }}</a>
                                     </li>

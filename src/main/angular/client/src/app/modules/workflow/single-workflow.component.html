@@ -92,7 +92,8 @@
                       }
                       @if (permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC') {
                         <i
-                          (click)="addOrder(workflow)"
+                          (click)="coreService.hasWorkflowFolderPermission(workflow.path, 'create') && addOrder(workflow)"
+                          [ngClass]="{'disable-link': !coreService.hasWorkflowFolderPermission(workflow.path, 'create')}"
                           [appRichTooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
                       }
                       <i (click)="navToDetailView('list', workflow)" [appRichTooltip]="'workflow.button.showTabularView' | translate"

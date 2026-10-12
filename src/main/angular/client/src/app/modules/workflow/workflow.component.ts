@@ -544,6 +544,7 @@ export class SingleWorkflowComponent {
       this.path = params.get('path');
       this.versionId = params.get('versionId');
       this.controllerId = params.get('controllerId');
+      this.loadFolderTree();
       this.getWorkflowList({
         controllerId: this.controllerId,
         workflowId: {path: this.path, versionId: this.versionId ? this.versionId : undefined}
@@ -554,6 +555,25 @@ export class SingleWorkflowComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+  }
+
+  // JOC-2255: this page can be opened directly (link), so it loads the Workflows view folder tree
+  // itself; the workflow/order/instruction menus read the folder permissions from it.
+  private loadFolderTree(): void {
+    if (!this.controllerId) {
+      return;
+    }
+    this.coreService.post('tree', {
+      controllerId: this.controllerId,
+      folders: [{folder: '/', recursive: true}],
+      types: ['WORKFLOW']
+    }).subscribe({
+      next: (res: any) => {
+        this.coreService.setWorkflowFolderTree(this.coreService.prepareTree(res, true));
+        this.cdr.markForCheck();
+      }, error: () => {
+      }
+    });
   }
 
   loadOrders(date): void {
@@ -1226,6 +1246,20 @@ export class WorkflowComponent {
     }
   }
 
+  // JOC-2255: a bulk action is greyed out only if no selected workflow's folder grants the permission;
+  // a mixed selection is no clear decision, and the API checks each workflow again.
+  canCheckedWorkflows(...permissions: string[]): boolean {
+    const paths = Array.from((this.object.mapOfCheckedId as Map<string, any>).keys());
+    return paths.length === 0 || paths.some(path =>
+      permissions.some(permission => this.coreService.hasWorkflowFolderPermission(path, permission)));
+  }
+
+  // "Post all": broadNames is keyed by the paths of the workflows whose notice boards are selected.
+  canBroadPaths(permission: string): boolean {
+    const paths: string[] = Array.from((this.broadNames as Map<string, any>).keys());
+    return paths.length === 0 || paths.some(path => this.coreService.hasWorkflowFolderPermission(path, permission));
+  }
+
   private initTree(reload = false): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('tree', {
@@ -1238,6 +1272,7 @@ export class WorkflowComponent {
       }).subscribe({
         next: res => {
           this.tree = this.coreService.prepareTree(res, true);
+          this.coreService.setWorkflowFolderTree(this.tree);
           if (this.selectedFiltered && this.selectedFiltered.paths && this.selectedFiltered.paths.length > 0) {
             this.workflowFilters.expandedKeys = this.selectedFiltered.paths;
             this.expandTreeNode(this.selectedFiltered.paths);

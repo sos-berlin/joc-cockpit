@@ -1,6 +1,6 @@
 @if (broadNames.length > 0 && !multiSelect) {
   <div class="pos-abt post-btn" style="right: 16px;top:12px">
-    <button (click)="postAllNotices()" class="btn btn-grey btn-sm m-l-12"><i
+    <button (click)="postAllNotices()" [disabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'post')" class="btn btn-grey btn-sm m-l-12"><i
       class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}
     </button>
   </div>
@@ -133,7 +133,7 @@
     }
   </ng-template>
   <div class="d-inline-block m-r">
-    <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"
+    <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order" [checkFolder]="true"
                       [permission]="permission" [preferences]="preferences" [viewContainerRef]="viewContainerRef"
                       [schedulerId]="schedulerId"></app-order-action>
     <span (mouseover)="getObstacles(order)" [appRichTooltip]="contentTemplate" style="position: relative;top:2px">
@@ -189,28 +189,28 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="skip(instruction);" nz-menu-item>
+                      <li (click)="skip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unskip(instruction);" nz-menu-item>
+                      <li (click)="unskip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="stop(instruction);" nz-menu-item>
+                      <li (click)="stop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unstop(instruction);" nz-menu-item>
+                      <li (click)="unstop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
@@ -229,28 +229,28 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="skip(instruction);" nz-menu-item>
+                      <li (click)="skip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unskip(instruction);" nz-menu-item>
+                      <li (click)="unskip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="stop(instruction);" nz-menu-item>
+                      <li (click)="stop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unstop(instruction);" nz-menu-item>
+                      <li (click)="unstop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
@@ -359,28 +359,28 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="skip(instruction);" nz-menu-item>
+                      <li (click)="skip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unskip(instruction);" nz-menu-item>
+                      <li (click)="unskip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="stop(instruction);" nz-menu-item>
+                      <li (click)="stop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unstop(instruction);" nz-menu-item>
+                      <li (click)="unstop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
@@ -417,28 +417,28 @@
                 <nz-dropdown-menu #menu="nzDropdownMenu" role="menu">
                   <ul nz-menu>
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'SKIPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="skip(instruction);" nz-menu-item>
+                      <li (click)="skip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.skip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (instruction.label && permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'SKIPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unskip(instruction);" nz-menu-item>
+                      <li (click)="unskip(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unskip' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && instruction['TYPE'] !== 'Segment' && (!instruction.state || (instruction.state._text !== 'STOPPED' && instruction.state._text !== 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="stop(instruction);" nz-menu-item>
+                      <li (click)="stop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.stop' | translate }}</span>
                         </a>
                       </li>
                     }
                     @if (permission.controllerDefaults && permission.controllerDefaults.orders.managePositions && (instruction.state && (instruction.state._text === 'STOPPED' || instruction.state._text === 'STOPPED_AND_SKIPPED'))) {
-                      <li (click)="unstop(instruction);" nz-menu-item>
+                      <li (click)="unstop(instruction);" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'managePositions')" nz-menu-item>
                         <a>
                           <span>{{ 'workflow.button.unstop' | translate }}</span>
                         </a>
@@ -801,7 +801,7 @@
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu>
     @if (permission && permission.currentController && permission.currentController.noticeBoards.post) {
-      <li (click)="post()" nz-menu-item>
+      <li (click)="post()" [nzDisabled]="!coreService.hasWorkflowFolderPermission(workflowObj?.path, 'post')" nz-menu-item>
         <a>{{ 'resource.board.button.post' | translate }}</a>
       </li>
     }
