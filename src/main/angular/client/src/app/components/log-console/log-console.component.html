@@ -202,9 +202,11 @@
           <i nz-icon nzType="download" nzTheme="outline"></i>
         </button>
         <button class="btn btn-xs" [class.btn-primary]="followTail" [class.btn-default]="!followTail"
+                [class.log-follow-paused]="followTailPaused"
                 (click)="toggleFollowTail()" [attr.aria-pressed]="followTail"
                 [appRichTooltip]="'logConsole.tooltip.followTail' | translate">
-          <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+          <!-- Pause icon while follow-tail is on but paused (scrolled up / selecting); resumes at the bottom -->
+          <i nz-icon [nzType]="followTailPaused ? 'pause' : 'arrow-down'" nzTheme="outline"></i>
         </button>
       </div>
 
@@ -376,7 +378,7 @@
           <i nz-icon nzType="vertical-align-top" nzTheme="outline"></i>
         </button>
         <button class="log-nav-btn"
-                (click)="scrollToBottom()"
+                (click)="scrollToBottom(true)"
                 [appRichTooltip]="'logConsole.tooltip.jumpToEnd' | translate">
           <i nz-icon nzType="vertical-align-bottom" nzTheme="outline"></i>
         </button>
@@ -475,9 +477,13 @@
       }
     }
 
-    @if (isLoadingNext) {
+    <!-- While follow-tail is on, keep the indicator's space reserved so showing/hiding the
+         spinner on every request does not shift the layout at the bottom of the log. -->
+    @if (isLoadingNext || followTail) {
       <div class="log-console-more">
-        <nz-spin nzSimple nzSize="small"></nz-spin>
+        @if (isLoadingNext) {
+          <nz-spin nzSimple nzSize="small"></nz-spin>
+        }
       </div>
     }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {CoreService} from '../../services/core.service';
 import {LogSearchService} from '../../services/log-search.service';
@@ -157,7 +157,7 @@ export interface LogConsoleRequest {
   styleUrls: ['./log-console.component.scss', './log-console.toolbar.scss'],
 
 })
-export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
+export class LogConsoleComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() request: LogConsoleRequest = { type: 'controller' };
 
   allLines: ParsedLine[] = [];
@@ -283,13 +283,25 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _nextPollDelay = 3000;
   /** A /log/running response faster than this is not treated as a completed long poll (avoids a tight loop). */
   private readonly LONG_POLL_MIN_MS = 1000;
-  /** Consecutive failed polls; follow-tail retries with backoff and gives up after MAX_POLL_RETRIES. */
+  /** Consecutive failed polls; drives the retry backoff while follow-tail is on. */
   private _pollErrorCount = 0;
-  private readonly MAX_POLL_RETRIES = 5;
   private readonly MAX_POLL_BACKOFF_MS = 30000;
   private _visibilityHandler?: () => void;
   private _isProcessingTrim = false;
   private _userLeftBottom = false;
+  /** Time until which scroll events count as caused by the user (wheel, touch, keys, scrollbar, jump/top buttons). */
+  private _userScrollIntentUntil = 0;
+  /** Time until which the user is scrolling UP (wheel up, ArrowUp/PageUp/Home, touch): no scroll-to-bottom, no resume. */
+  private _scrollUpIntentUntil = 0;
+  private readonly USER_SCROLL_INTENT_MS = 600;
+  /** Distance from the end that counts as "really at the bottom" for pausing/resuming follow-tail. */
+  private readonly FOLLOW_BOTTOM_PX = 20;
+  /** True while a pointer (mouse/touch) is pressed in the log body, e.g. while dragging the scrollbar or selecting. */
+  private _pointerDownInBody = false;
+  /** scrollTop seen by the previous scroll event; follow-tail pauses only when it decreases. */
+  private _lastScrollTop = 0;
+  private _userInputHandlers: Array<{target: EventTarget; type: string; fn: (e: Event) => void}> = [];
+  private readonly _ngZone = inject(NgZone);
   private _scrollToBottomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Incremented when the displayed timezone changes; lines re-format their cached timestamp lazily. */
   private _tsVersion = 0;
@@ -473,6 +485,108 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    // Follow-tail pauses only on scrolling the user caused. Scroll events from programmatic
+    // scrolling, scroll anchoring or layout changes are not preceded by any of these inputs.
+    const body = this.logBodyRef?.nativeElement;
+    if (!body) return;
+    const SCROLL_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+    // Registered outside Angular: these fire constantly while scrolling and only set fields,
+    // so they must not trigger change detection over all log rows.
+    const add = (target: EventTarget, type: string, fn: (e: Event) => void) => {
+      this._ngZone.runOutsideAngular(() => target.addEventListener(type, fn, {passive: true}));
+      this._userInputHandlers.push({target, type, fn});
+    };
+    // Upward input pauses follow-tail at once, before any scroll event: waiting for the view to
+    // be 150 px away from the bottom let new lines (scroll-to-bottom) or a running trim pull the
+    // user straight back to the end.
+    add(body, 'wheel', (e: Event) => {
+      this._noteUserScrollIntent();
+      const deltaY = (e as WheelEvent).deltaY;
+      if (deltaY < 0) this._pauseOnScrollUp();
+      else if (deltaY > 0) this._resumeIfAtEnd(); // already at the end: no scroll event would resume
+    });
+    let touchY: number | null = null;
+    add(body, 'touchstart', (e: Event) => { touchY = (e as TouchEvent).touches[0]?.clientY ?? null; });
+    add(body, 'touchmove', (e: Event) => {
+      this._noteUserScrollIntent();
+      const y = (e as TouchEvent).touches[0]?.clientY;
+      if (touchY !== null && y !== undefined && y > touchY + 5) this._pauseOnScrollUp(); // finger down = content up
+      if (y !== undefined) touchY = y;
+    });
+    add(body, 'pointerdown', () => { this._pointerDownInBody = true; this._noteUserScrollIntent(); });
+    const onPointerUp = () => {
+      if (this._pointerDownInBody) {
+        this._pointerDownInBody = false;
+        this._noteUserScrollIntent();
+        if (this.followTail && !this._userLeftBottom && !this.isLoadingNext && !this.isLoadingPrev) {
+          // back inside Angular so the poll's response updates the view
+          this._ngZone.run(() => this.scheduleNextPoll(0)); // a poll deferred while the pointer was down runs now
+        }
+      }
+    };
+    add(window, 'pointerup', onPointerUp);
+    add(window, 'pointercancel', onPointerUp);
+    add(window, 'keydown', (e: Event) => {
+      const key = (e as KeyboardEvent).key;
+      if (!SCROLL_KEYS.includes(key)) return;
+      // Keys typed into the toolbar inputs do not scroll the log.
+      const target = e.target as HTMLElement | null;
+      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+      this._noteUserScrollIntent();
+      if (key === 'ArrowUp' || key === 'PageUp' || key === 'Home') this._pauseOnScrollUp();
+      else if (key === 'ArrowDown' || key === 'PageDown' || key === 'End') this._resumeIfAtEnd();
+    });
+  }
+
+  /** Resumes a paused follow-tail when the user scrolls down while the view is already at the end. */
+  private _resumeIfAtEnd(): void {
+    const el = this.logBodyRef?.nativeElement;
+    if (!el || !this.followTail || !this._userLeftBottom || this._isScrollingUp) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - this.FOLLOW_BOTTOM_PX) {
+      this._ngZone.run(() => {
+        this._userLeftBottom = false;
+        this.activeLineIdx = null;
+        this.scheduleNextPoll(0);
+        this.cdr.markForCheck();
+      });
+    }
+  }
+
+  /** Pauses follow-tail because the user scrolls up; called from input handlers (outside Angular). */
+  private _pauseOnScrollUp(): void {
+    this._scrollUpIntentUntil = Date.now() + this.USER_SCROLL_INTENT_MS;
+    if (!this.followTail || this._userLeftBottom) return;
+    this._ngZone.run(() => {
+      this._userLeftBottom = true;
+      this.clearPollTimer();
+      this.activeLineIdx = null;
+      clearTimeout(this._scrollToBottomTimer);
+      this._scrollToBottomTimer = undefined;
+      this.cdr.markForCheck();
+    });
+  }
+
+  private get _isScrollingUp(): boolean {
+    return Date.now() <= this._scrollUpIntentUntil;
+  }
+
+  /** Marks the next scroll events as caused by the user; `extraMs` covers smooth scrolling. */
+  private _noteUserScrollIntent(extraMs = 0): void {
+    this._userScrollIntentUntil = Date.now() + this.USER_SCROLL_INTENT_MS + extraMs;
+  }
+
+  private get _isUserScroll(): boolean {
+    return this._pointerDownInBody || Date.now() <= this._userScrollIntentUntil;
+  }
+
+  /** True while follow-tail is on but not following: the user scrolled up, is selecting text, or the
+   *  "number of lines" / "date to" limit was reached without "force" (polling stops then). */
+  get followTailPaused(): boolean {
+    return this.followTail && (this._userLeftBottom || (this._userSelecting && this._pointerDownInBody)
+      || ((this.dateToReached || this.numOfLinesReached) && !this.forceEnabled));
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['request'] && !changes['request'].firstChange && this.request?.dateFrom) {
       this.reload();
@@ -506,6 +620,8 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     if (this._visibilityHandler) {
       document.removeEventListener('visibilitychange', this._visibilityHandler);
     }
+    this._userInputHandlers.forEach(h => h.target.removeEventListener(h.type, h.fn));
+    this._userInputHandlers = [];
     if (this._storageHandler) {
       window.removeEventListener('storage', this._storageHandler);
     }
@@ -1496,6 +1612,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   private _doJump(level: string, dir: 'next' | 'prev'): void {
     const el = this.logBodyRef?.nativeElement;
     if (!el) return;
+    this._noteUserScrollIntent(1000); // smooth scrollIntoView: a jump up pauses follow-tail like scrolling up
 
     // Use the pre-built index (no querySelectorAll full scan) — O(log n) binary search.
     const lineIdxs = this.levelLineMap.get(level);
@@ -1580,6 +1697,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
    *  A single line that contains the term twice counts as two separate stops. */
   jumpToSearchMatch(dir: 'next' | 'prev'): void {
     this._lastSearchDir = dir;
+    this._noteUserScrollIntent(1000); // smooth scrollIntoView: a jump up pauses follow-tail like scrolling up
     const el = this.logBodyRef?.nativeElement;
     const positions = this._searchMatchPositions;
     if (!el || positions.length === 0) return;
@@ -1649,6 +1767,7 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
   scrollToTop(): void {
     const el = this.logBodyRef?.nativeElement;
     if (el) {
+      this._noteUserScrollIntent(); // the top button is a user scroll
       el.scrollTop = 0;
       if (this.filteredLines.length > 0) {
         this.activeLineIdx = this.filteredLines[0].globalIdx;
@@ -1656,12 +1775,18 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  scrollToBottom(): void {
+  /** `byUser`: the "end of page" button — always scrolls; automatic follow-tail scrolls are skipped
+   *  while the user is scrolling up or has paused follow-tail, so they never pull the user back down. */
+  scrollToBottom(byUser = false): void {
     const el = this.logBodyRef?.nativeElement;
     if (el) {
+      if (byUser) {
+        this._scrollUpIntentUntil = 0;
+      }
       clearTimeout(this._scrollToBottomTimer);
       this._scrollToBottomTimer = setTimeout(() => {
         this._scrollToBottomTimer = undefined;
+        if (!byUser && (this._userLeftBottom || this._isScrollingUp)) return;
         el.scrollTop = el.scrollHeight;
         // Explicit sync — if scrollTop was already at its maximum the browser clamps
         // silently with no scroll event, leaving _atBottom stale at false.
@@ -1677,8 +1802,9 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     this.followTail = !this.followTail;
     if (this.followTail) {
       this._userLeftBottom = false;
-      this.scrollToBottom();
-      this.scheduleNextPoll();
+      this._pollErrorCount = 0;
+      this.scrollToBottom(true); // switching follow-tail on is a user action: always go to the end
+      this.scheduleNextPoll(0); // start following at once
     } else {
       this.clearPollTimer();
     }
@@ -2028,9 +2154,10 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const canPollRunning = this.followTail && !this._userLeftBottom && this.lastLogLineReached  && !this.isLogComplete && (!limitReached || this.forceEnabled) && !!this.logToken && !!this.lastKey;
     if (canPollNext || canPollRunning) {
       this.pollTimer = setTimeout(() => {
-        // Do not poll while the user has an active text selection — the response
-        // would trigger markForCheck() which destroys innerHTML text nodes.
-        if (this._userSelecting) {
+        // Do not poll while the user is selecting text (pointer still down). A selection that is
+        // left behind (e.g. after double-clicking an Order ID) no longer blocks follow-tail:
+        // existing rows keep their cached HTML, so new lines do not rewrite the selected text.
+        if (this._userSelecting && this._pointerDownInBody) {
           this.scheduleNextPoll(this.POLL_INTERVAL_MS); // reschedule and try again after another interval (never 0: no busy loop)
           return;
         }
@@ -2058,11 +2185,12 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  /** A failed poll (e.g. a gateway timeout on the long poll) retries with backoff instead of stopping follow-tail. */
+  /** A failed poll (e.g. a gateway timeout on the long poll) retries with backoff (3 s doubling, at most
+   *  30 s) for as long as follow-tail is on, instead of stopping follow-tail. */
   private _schedulePollAfterError(): void {
+    if (!this.followTail) return;
     this._pollErrorCount++;
-    if (this._pollErrorCount > this.MAX_POLL_RETRIES) return;
-    this._nextPollDelay = Math.min(this.POLL_INTERVAL_MS * Math.pow(2, this._pollErrorCount - 1), this.MAX_POLL_BACKOFF_MS);
+    this._nextPollDelay = Math.min(this.POLL_INTERVAL_MS * Math.pow(2, Math.min(this._pollErrorCount, 5) - 1), this.MAX_POLL_BACKOFF_MS);
     this.scheduleNextPoll();
   }
 
@@ -2379,30 +2507,39 @@ export class LogConsoleComponent implements OnInit, OnChanges, OnDestroy {
     const el = event.target as HTMLElement;
     const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 150;
     const atTop    = el.scrollTop <= 150;
-    const wasAtBottom = this._atBottom;
     // Always update scroll state so pause/resume is never missed.
     this._atBottom = atBottom;
-    // Block fetch operations only (not scroll-state updates) during trim re-index.
+    const scrolledUp = el.scrollTop < this._lastScrollTop;
+    this._lastScrollTop = el.scrollTop;
+    const isUserScroll = this._isUserScroll;
+    // "Really at the bottom" for follow-tail pause/resume (the 150 px above is for loading more lines).
+    const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - this.FOLLOW_BOTTOM_PX;
+    // Pause only when the USER scrolled up away from the end (wheel, keys and touch already paused
+    // in their input handlers; this covers dragging the scrollbar). Programmatic scrolling, Chrome
+    // scroll anchoring and layout changes also fire scroll events but are not preceded by user
+    // input, and appended lines never decrease scrollTop.
+    const userScrolledUp = this.followTail && !this._userLeftBottom && scrolledUp && !atEnd
+      && (this._isProcessingTrim ? this._pointerDownInBody : isUserScroll);
+    if (userScrolledUp) {
+      // Also during a trim re-index: _finalizeAfterTrim() then keeps the pause instead of
+      // scrolling the user back to the end.
+      this._userLeftBottom = true;
+      this.clearPollTimer();
+      this.activeLineIdx = null;
+      clearTimeout(this._scrollToBottomTimer);
+      this._scrollToBottomTimer = undefined;
+    }
+    // Block fetch operations (not scroll-state updates) during trim re-index.
     if (this._isProcessingTrim) return;
     if (this.followTail) {
-      // Treat a departure from the bottom as user-intentional only when the trim+reindex
-      // is not in progress. Chrome scroll anchoring fires synchronously during the Angular
-      // CD that removes trimmed DOM elements; _isProcessingTrim=true at that moment blocks
-      // it from being mistaken for a user scroll. Adding content at the bottom never fires
-      // a scroll event (scrollTop is unchanged), so no guard on isLoadingNext is needed.
-      if (!atBottom && wasAtBottom && !this._isProcessingTrim) {
-        this._userLeftBottom = true;
-        this.clearPollTimer();
-        this.activeLineIdx = null;
-        clearTimeout(this._scrollToBottomTimer);
-        this._scrollToBottomTimer = undefined;
-      }
-      if (atBottom && !wasAtBottom && !this._isProcessingTrim) {
+      // Resume once the view is really back at the end (by the user or the "end" button), but not
+      // in the middle of an upward gesture that has not yet moved the view away from the end.
+      if (this._userLeftBottom && atEnd && !this._isScrollingUp) {
         this._userLeftBottom = false;
         this.activeLineIdx = null;
-        this.scheduleNextPoll();
+        this.scheduleNextPoll(0);
       }
-      if (atTop && !atBottom && !this.isLoadingPrev && !this.firstLogLineReached && this.allLines.length > 0) {
+      if (atTop && !atBottom && isUserScroll && !this.isLoadingPrev && !this.firstLogLineReached && this.allLines.length > 0) {
         this.cancelActivePollFetch();
         this.fetchPrev();
       }

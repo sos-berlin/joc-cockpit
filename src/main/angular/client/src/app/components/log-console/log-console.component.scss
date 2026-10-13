@@ -55,6 +55,8 @@
   &-more {
     text-align: center;
     padding: 8px 0;
+    min-height: 36px; // same height with and without the spinner
+    box-sizing: border-box;
   }
 
   &-end {
@@ -66,6 +68,11 @@
     border-top: 1px dashed var(--border-color);
     margin: 4px 10px 0;
   }
+}
+
+// Follow-tail on but paused (user scrolled up or is selecting): dimmed until it resumes at the bottom.
+.log-follow-paused {
+  opacity: 0.65;
 }
 
 // ─── Badge pills in toolbar ────────────────────────────────────────────────
