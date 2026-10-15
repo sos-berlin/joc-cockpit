@@ -787,9 +787,9 @@
 }
 @if (isFirst) {
   <div>
-    <nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
+    <nz-drawer (nzOnClose)="closeSideBar()" [nzVisible]="sideBar.isVisible" nzPlacement="right">
       <ng-container *nzDrawerContent>
-        <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+        <div (click)="closeSideBar()" class="close-btn"></div>
         <div class="p-l-sm p-r-sm">
           <app-order-list-sidebar [orders]="sideBar.orders" [permission]="permission" [preferences]="preferences"
                                   [schedulerId]="schedulerId"></app-order-list-sidebar>

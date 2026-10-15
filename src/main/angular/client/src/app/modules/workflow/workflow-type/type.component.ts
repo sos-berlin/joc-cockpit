@@ -61,7 +61,6 @@ export class TypeComponent {
   broadNamesGraphical = new Map();
   isFirst = false;
   broadPath: any =[];
-  isVisible: any;
   isChecked: boolean;
   subscription1: any = Subscription;
 
@@ -69,9 +68,14 @@ export class TypeComponent {
               public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService, private dataService: DataService,
               private cdr: ChangeDetectorRef
   ) {
+    // One order drawer at a time: when another workflow opens its drawer, close ours. The shared
+    // state is only used for this, never to decide whether this drawer may open (a stale shared
+    // "open" state blocked the "Show other" indicator until the page was reloaded).
     this.subscription1 = dataService.sidebarOrders$.subscribe(res => {
-      this.isVisible = res;
-      this.cdr.markForCheck();
+      if (res?.openedBy && res.openedBy !== this && this.sideBar?.isVisible) {
+        this.sideBar.isVisible = false;
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -99,8 +103,6 @@ export class TypeComponent {
       }
     }
     if (changes['orders'] || changes['orderReload']) {
-      this.sideBar = this.isVisible;
-
       this.updateOrder();
     }
     this.cdr.markForCheck();
@@ -207,25 +209,32 @@ export class TypeComponent {
     recursive(node);
   }
 
+  /** Opens the order drawer for an instruction/branch; always opens, closes the drawer of other workflows. */
   showOrders(data): void {
-
-    const self = this;
     this.sideBar = {
-      orders: [],
-      isVisible: false,
-      data
+      orders: this.collectOrders(data),
+      isVisible: true,
+      data // kept to refresh the list while the drawer is open
     };
-    if (data.orders) {
-      this.sideBar.orders = data.orders || [];
-    } else {
-      this.sideBar.orders = data || [];
-    }
+    this.isFirst = true;
+    this.dataService.sidebarOrdersSource.next({openedBy: this});
+    this.cdr.markForCheck();
+  }
+
+  closeSideBar(): void {
+    this.sideBar.isVisible = false;
+    this.cdr.markForCheck();
+  }
+
+  /** Orders of an instruction/branch and of all its nested blocks. */
+  private collectOrders(data): any[] {
+    let orders: any[] = data?.orders ? [...data.orders] : [];
 
     function recursive(json) {
       if (json.instructions) {
         for (let x = 0; x < json.instructions.length; x++) {
           if (json.instructions[x].orders) {
-            self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].orders);
+            orders = orders.concat(json.instructions[x].orders);
           }
           if (json.instructions[x].TYPE === 'Fork') {
             if (json.instructions[x].branches) {
@@ -233,7 +242,7 @@ export class TypeComponent {
                 if (json.instructions[x].branches[i].instructions) {
                   recursive(json.instructions[x].branches[i]);
                   if (json.instructions[x].branches[i].orders) {
-                    self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].branches[i].orders);
+                    orders = orders.concat(json.instructions[x].branches[i].orders);
                   }
                 }
               }
@@ -247,20 +256,20 @@ export class TypeComponent {
             if (json.instructions[x].catch.instructions && json.instructions[x].catch.instructions.length > 0) {
               recursive(json.instructions[x].catch);
               if (json.instructions[x].catch.orders) {
-                self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].catch.orders);
+                orders = orders.concat(json.instructions[x].catch.orders);
               }
             }
           }
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
             recursive(json.instructions[x].then);
             if (json.instructions[x].then.orders) {
-              self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].then.orders);
+              orders = orders.concat(json.instructions[x].then.orders);
             }
           }
           if (json.instructions[x].else && json.instructions[x].else.instructions) {
             recursive(json.instructions[x].else);
             if (json.instructions[x].else.orders) {
-              self.sideBar.orders = self.sideBar.orders.concat(json.instructions[x].else.orders);
+              orders = orders.concat(json.instructions[x].else.orders);
             }
           }
         }
@@ -270,7 +279,7 @@ export class TypeComponent {
             if (json.branches[i].instructions) {
               recursive(json.branches[i]);
               if (json.branches[i].orders) {
-                self.sideBar.orders = self.sideBar.orders.concat(json.branches[i].orders);
+                orders = orders.concat(json.branches[i].orders);
               }
             }
           }
@@ -278,12 +287,10 @@ export class TypeComponent {
       }
     }
 
-    recursive(data);
-    this.isFirst = true;
-    if (!this.isVisible.isVisible) {
-      this.dataService.sidebarOrdersSource.next(this.sideBar);
-      this.sideBar.isVisible = true;
+    if (data) {
+      recursive(data);
     }
+    return orders;
   }
 
   expandNode(node): void {
@@ -367,18 +374,11 @@ export class TypeComponent {
       }
       recursive(this.configuration);
     }
-    this.sideBar.orders = this.extractOrdersFromMap(mapObj);
-    if (this.sideBar.isVisible) {
-      this.showOrders(this.sideBar?.orders);
+    // Refresh an open drawer in place from the same instruction (its orders were just updated by
+    // checkOrders()); creating a new sideBar here left the drawer state inconsistent.
+    if (this.sideBar?.isVisible && this.sideBar.data) {
+      this.sideBar.orders = this.collectOrders(this.sideBar.data);
     }
-  }
-
-  private extractOrdersFromMap(mapObj: Map<any, any>): any[] {
-    const orders = [];
-    mapObj.forEach((value) => {
-      orders.push(...value);
-    });
-    return orders;
   }
 
 
