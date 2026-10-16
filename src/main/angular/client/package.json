@@ -1,6 +1,6 @@
 {
   "name": "joc-cockpit",
-  "version": "2.9.1",
+  "version": "2.9.2",
   "scripts": {
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
     "ng": "ng",
@@ -112,6 +112,7 @@
     "retry": "0.13.1",
     "replace-in-file": {
       "minimatch": "^5.1.8"
-    }
+    },
+    "vitest": "4.1.11"
   }
 }
