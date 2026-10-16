@@ -113,5 +113,6 @@
     "replace-in-file": {
       "minimatch": "^5.1.8"
     }
-  }
+  },
+  "vitest": "4.1.11"
 }
