@@ -74,7 +74,8 @@
                             </target>
                         </configuration>
                     </execution>
-                    <execution>
+					<!-- the following execution has been deactivated, because the old package-lock.json is now needed for the subsequent build steps -->
+                    <!--execution>
                         <id>remove previous package-lock.json</id>
                         <goals>
                             <goal>exec</goal>
@@ -91,7 +92,7 @@
                                 <echo message="remove previous package-lock.json" />
                             </target>
                         </configuration>
-                    </execution>
+                    </execution-->
                     <execution>
                         <id>npm install</id>
                         <goals>
@@ -101,7 +102,7 @@
                         <configuration>
                             <executable>npm</executable>
                             <arguments>
-                                <argument>install</argument>
+                                <argument>ci</argument>
                             </arguments>
                             <workingDirectory>${basedir}/target/angular/client</workingDirectory>
                             <target>
