@@ -9992,6 +9992,7 @@ export class JsonEditorModalComponent {
   data: any;
   errorMsg = '';
   options: any = new JsonEditorOptions();
+  private readonly translate = inject(TranslateService);
 
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
 
@@ -10011,6 +10012,13 @@ export class JsonEditorModalComponent {
       }
       this.ref.markForCheck();
     };
+    this.options.onModeChange = () => {
+      this.addMenuActions();
+    };
+  }
+
+  ngAfterViewInit(): void {
+    this.addMenuActions();
   }
 
   ngOnInit(): void {
@@ -10026,11 +10034,85 @@ export class JsonEditorModalComponent {
       this.options.languages[this.preferences.locale] = data;
       this.options.language = this.preferences.locale;
       this.editor.setOptions(this.options);
+      this.addMenuActions();
     });
     this.options.modes = ['code', 'tree'];
     this.data = this.coreService.clone(this.object);
     delete this.data.TYPE;
     delete this.data.versionId;
+  }
+
+  /**
+   * Adds Format JSON and Search/Replace actions to the editor menu bar (code mode only).
+   */
+  private addMenuActions(): void {
+    const jsonEditor = this.editor?.getEditor();
+    if (!jsonEditor || jsonEditor.getMode() !== 'code' || !jsonEditor.container) {
+      return;
+    }
+    const menu = jsonEditor.container.querySelector('.jsoneditor-menu');
+    if (!menu || menu.querySelector('.jsoneditor-extra-actions')) {
+      return;
+    }
+    const actions = document.createElement('div');
+    actions.className = 'jsoneditor-extra-actions';
+    actions.appendChild(this.createMenuButton('fa-align-left', 'inventory.label.formatJson', '', () => this.formatJson()));
+    actions.appendChild(this.createMenuButton('fa-search', 'inventory.label.searchJson', ' (Ctrl+F)', () => this.openSearch(false)));
+    if (this.edit) {
+      actions.appendChild(this.createMenuButton('fa-exchange', 'inventory.label.replaceJson', ' (Ctrl+H)', () => this.openSearch(true)));
+    }
+    menu.appendChild(actions);
+  }
+
+  private createMenuButton(icon: string, labelKey: string, shortcut: string, action: () => void): HTMLButtonElement {
+    const label = this.translate.instant(labelKey);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.title = label + shortcut;
+    const iconEl = document.createElement('i');
+    iconEl.className = 'fa ' + icon;
+    button.appendChild(iconEl);
+    button.appendChild(document.createTextNode(' ' + label));
+    button.addEventListener('click', action);
+    return button;
+  }
+
+  formatJson(): void {
+    const jsonEditor = this.editor?.getEditor();
+    if (!jsonEditor || typeof jsonEditor.format !== 'function') {
+      return;
+    }
+    try {
+      jsonEditor.format();
+    } catch (err: any) {
+      this.isError = true;
+      this.errorMsg = err?.message || '';
+      this.ref.markForCheck();
+    }
+  }
+
+  openSearch(isReplace: boolean): void {
+    const aceEditor = this.editor?.getEditor()?.aceEditor;
+    if (!aceEditor) {
+      return;
+    }
+    // If the search box is already open with a search term, apply the action instead of only reopening the box
+    const searchBox = aceEditor.searchBox;
+    if (searchBox?.active && searchBox.searchInput?.value) {
+      if (isReplace && this.edit && searchBox.replaceOption?.checked) {
+        if (searchBox.replaceInput?.value) {
+          searchBox.replaceAndFindNext();
+        } else {
+          searchBox.replaceInput?.focus();
+        }
+        return;
+      } else if (!isReplace) {
+        searchBox.findNext();
+        return;
+      }
+    }
+    aceEditor.focus();
+    aceEditor.execCommand(isReplace && this.edit ? 'replace' : 'find');
   }
 
   copyToClipboard(): void {

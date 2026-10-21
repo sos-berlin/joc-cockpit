@@ -9385,6 +9385,180 @@ div.jsoneditor-menu > div.jsoneditor-modes > button.jsoneditor-separator {
   color: var(--text-color);
 }
 
+.jsoneditor-menu > .jsoneditor-extra-actions {
+  display: inline-block;
+  float: left;
+  margin-left: 6px;
+
+  > button {
+    height: 26px;
+    margin: 2px;
+    padding: 0 8px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    background: transparent none;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-family: arial, sans-serif;
+    font-size: 13px;
+    float: left;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+      border: 1px solid var(--border-color);
+    }
+
+    .fa {
+      margin-right: 2px;
+    }
+  }
+}
+
+/* Ace search/replace box inside the JSON editor - follows the active theme */
+.jsoneditor .ace_search {
+  background-color: var(--bg-box);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-top: 0 none;
+  border-radius: 0 0 0 6px;
+  padding: 8px 32px 4px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  font-family: arial, sans-serif;
+  font-size: 12px;
+
+  .ace_search_form,
+  .ace_replace_form {
+    display: flex;
+    align-items: stretch;
+    margin: 0 0 6px 0;
+    line-height: 26px;
+  }
+
+  .ace_search_form.ace_nomatch {
+    outline: none;
+
+    .ace_search_field {
+      border-color: #e05252 !important;
+    }
+  }
+
+  .ace_search_field {
+    flex: 1;
+    min-width: 200px;
+    min-height: 26px;
+    padding: 0 8px;
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px 0 0 4px;
+    font-size: 12px;
+
+    &::placeholder {
+      color: var(--text-color);
+      opacity: 0.5;
+    }
+
+    &:focus {
+      border-color: var(--primary) !important;
+    }
+  }
+
+  .ace_searchbtn {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-left: 0 none;
+    padding: 0 8px;
+    line-height: 24px;
+    font-size: 12px;
+    opacity: 0.85;
+
+    &:last-child {
+      border-right: 1px solid var(--border-color);
+      border-radius: 0 4px 4px 0;
+    }
+
+    &:hover {
+      opacity: 1;
+      background-color: var(--background-color);
+      color: var(--primary);
+    }
+  }
+
+  .ace_searchbtn.prev:after,
+  .ace_searchbtn.next:after {
+    border-color: var(--text-color);
+  }
+
+  .ace_searchbtn_close {
+    top: 8px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    background: none;
+    border-radius: 50%;
+    color: var(--text-color);
+    opacity: 0.7;
+    text-align: center;
+    font: 16px/18px Arial;
+
+    &:before {
+      content: '\00d7';
+    }
+
+    &:hover {
+      opacity: 1;
+      background-color: var(--background-color);
+      color: var(--primary);
+    }
+  }
+
+  .ace_search_options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+  }
+
+  .ace_search_counter {
+    margin-right: auto;
+    padding: 0 4px;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-family: arial, sans-serif;
+  }
+
+  .ace_button {
+    margin-left: 4px;
+    padding: 1px 5px;
+    color: var(--text-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+      background-color: var(--background-color);
+    }
+
+    &.checked {
+      opacity: 1;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+  }
+}
+
+/* Search matches in the JSON editor - filled highlight instead of a box outline */
+.jsoneditor .ace-jsoneditor .ace_marker-layer .ace_selected-word {
+  background-color: color-mix(in srgb, var(--primary) 35%, transparent);
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  border-radius: 2px;
+}
+
 .jsoneditor-search div.jsoneditor-results {
   color: var(--text-color);
 }
