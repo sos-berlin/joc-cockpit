@@ -70,4 +70,362 @@
   }
 }
 
+// ============================================================================
+// JOC-2320: Dependencies as a list of dependency groups; a chain opens in place
+// ============================================================================
 
+$dep-normal: #1171a6;
+$dep-action: #FF8000;
+$dep-expecting: #b3b300;
+$dep-none: #8a8aa8;
+$dep-failed: #ff3333;
+$dep-line: rgba(128, 128, 160, 0.28);
+$dep-tint: rgba(128, 128, 160, 0.10);
+
+#rightPanel2.dep-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 266px);
+  padding: 0;
+}
+
+.dep-legend-none {
+  color: $dep-none;
+}
+
+.dep-list {
+  flex: 1;
+  overflow: auto;
+}
+
+// ---- state colours (segments, dots, rail nodes)
+.dep-state-normal {
+  background-color: $dep-normal;
+}
+
+.dep-state-action {
+  background-color: $dep-action;
+}
+
+.dep-state-expecting {
+  background-color: $dep-expecting;
+}
+
+.dep-state-failed {
+  background-color: $dep-failed;
+}
+
+.dep-state-none {
+  background-color: transparent;
+  border: 1px dashed $dep-none;
+  box-sizing: border-box;
+}
+
+.dep-text-action {
+  color: $dep-action;
+}
+
+.dep-text-expecting {
+  color: $dep-expecting;
+}
+
+.dep-text-failed {
+  color: $dep-failed;
+}
+
+.dep-text-none {
+  opacity: 0.7;
+}
+
+.dep-warn {
+  color: $dep-action;
+}
+
+// ---- group rows
+.dep-group-row {
+  display: grid;
+  grid-template-columns: 16px 170px minmax(160px, 1.3fr) minmax(160px, 1.3fr) 110px minmax(160px, 1.4fr) minmax(220px, 1.8fr) 90px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid $dep-line;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $dep-tint;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $dep-normal;
+    outline-offset: -2px;
+  }
+
+  &.dep-head {
+    cursor: default;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.75;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  // long names wrap to a second line instead of being cut
+  .dep-col-group,
+  .dep-col-span {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .dep-col-group {
+    font-weight: 600;
+  }
+
+  .dep-col-status {
+    font-size: 12px;
+  }
+}
+
+.dep-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dep-strip {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  overflow: hidden;
+
+  .dep-seg {
+    flex: 1 1 0;
+    min-width: 3px;
+    height: 12px;
+    border-radius: 2px;
+  }
+
+  .dep-seg-blocked {
+    outline: 2px solid $dep-action;
+    outline-offset: 1px;
+  }
+}
+
+.dep-group.dep-open > .dep-group-row {
+  background-color: $dep-tint;
+}
+
+// ---- opened chain
+.dep-chain {
+  padding: 6px 14px 14px 44px;
+  background-color: $dep-tint;
+  border-bottom: 1px solid $dep-line;
+}
+
+.dep-step {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-height: 38px;
+  border-radius: 4px;
+
+  &.dep-step-indent {
+    margin-left: 26px;
+  }
+
+  &.dep-step-blocked {
+    background-color: rgba(255, 128, 0, 0.10);
+  }
+}
+
+.dep-stage {
+  flex: 0 0 26px;
+  padding-top: 10px;
+  text-align: right;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.dep-rail {
+  position: relative;
+  flex: 0 0 14px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: $dep-line;
+  }
+
+  .dep-node {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-box);
+  }
+
+  .dep-node.dep-state-none {
+    border: 2px dashed $dep-none;
+    background-color: var(--bg-box);
+  }
+
+  &.dep-rail-dotted::before {
+    background-color: transparent;
+    border-left: 2px dotted $dep-none;
+  }
+}
+
+.dep-step-body,
+.dep-fold-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(160px, 1.1fr) 130px minmax(160px, 1fr) minmax(240px, 2fr) 40px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid $dep-line;
+  font-size: 12px;
+}
+
+.dep-fold-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dep-name {
+  justify-self: start;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+
+  &.dep-match {
+    background-color: rgba(179, 179, 0, 0.35);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+}
+
+.dep-badge {
+  min-width: 24px;
+  height: 22px;
+  padding: 0 7px;
+  border: none;
+  border-radius: 11px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dep-branch-header {
+  margin: 4px 0 0 50px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.dep-note {
+  margin: 6px 0 6px 50px;
+  padding: 8px 12px;
+  border-left: 3px solid $dep-action;
+  background-color: rgba(255, 128, 0, 0.08);
+  font-size: 13px;
+}
+
+.dep-footer {
+  padding: 10px 14px;
+  border-top: 1px solid $dep-line;
+}
+
+// ---- health of a Critical Path (JOC-2320 review: visible at a glance)
+.dep-health-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid $dep-line;
+  font-size: 13px;
+}
+
+.dep-health {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.dep-health-intervention {
+    background-color: $dep-action;
+    color: #000000;
+  }
+
+  &.dep-health-waiting {
+    background-color: $dep-expecting;
+    color: #000000;
+  }
+
+  &.dep-health-ok {
+    background-color: $dep-normal;
+    color: #ffffff;
+  }
+
+  &.dep-health-inactive {
+    border: 1px dashed $dep-none;
+    font-weight: 400;
+  }
+}
+
+// ---- column headers inside an opened Critical Path
+.dep-step.dep-step-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 30px;
+  background-color: var(--bg-box);
+  font-size: 12px;
+  font-weight: 600;
+
+  .dep-stage {
+    padding-top: 8px;
+    overflow: visible;
+    white-space: nowrap;
+  }
+
+  .dep-rail-head {
+    flex: 0 0 14px;
+  }
+
+  .dep-step-body {
+    opacity: 0.75;
+  }
+}
+
+// ---- folded row for Critical Paths without orders
+.dep-group-row.dep-inactive-row {
+  .dep-inactive-text {
+    grid-column: 3 / -1;
+    font-size: 13px;
+  }
+}

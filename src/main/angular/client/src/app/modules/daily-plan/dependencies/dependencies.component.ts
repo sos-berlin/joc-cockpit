@@ -20,31 +20,114 @@ import {Data} from "@angular/router";
 import {PostModalComponent} from '../../resource/board/board.component';
 import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
-import {takeUntil} from "rxjs/operators";
+import {debounceTime, takeUntil} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
 import {InventoryObject} from "../../../models/enums";
+import {
+  BoardState,
+  buildDependencyGraph,
+  computeLevels,
+  DepEdge,
+  DepGraph,
+  DepGroup,
+  DepNode,
+  DepState,
+  traverse
+} from './dependency-graph.model';
 
-declare const mxEditor: any;
-declare const mxUtils: any;
-declare const mxEvent: any;
-declare const mxClient: any;
-declare const mxTooltipHandler: any;
-declare const mxGraphHandler: any;
-declare const mxGraph: any;
-declare const mxConstants: any;
-declare const mxGeometry: any;
-declare const mxPoint: any;
-declare const mxCell: any;
 declare const $: any;
-declare const mxImage: any;
-declare const mxCellOverlay: any;
+
+/** One row of an opened chain. */
+export interface DependencyStep {
+  kind: 'step';
+  node: DepNode;
+  /** stage in the chain (1 = start); shown only on the first workflow of a stage */
+  stage: number;
+  showStage: boolean;
+  /** 1 when the workflow is one of several receivers of the same notice */
+  indent: number;
+  posts: string[];
+  /** from = null: no workflow posts this notice in this Plan */
+  waits: { board: string; from: string | null; kind: string; boardState: BoardState; fromState: DepState; unmatched: boolean }[];
+  blocked: boolean;
+}
+
+export interface DependencyStepHeader {
+  kind: 'header';
+  count: number;
+  boards: string[];
+}
+
+export interface DependencyStepNote {
+  kind: 'note';
+  blockType: BlockType;
+  /** workflow without order (noOrder) */
+  blocker: string | null;
+  /** notice that nobody posts (noPoster) */
+  board: string | null;
+  blocked: string;
+  downstream: number;
+}
+
+export interface DependencyStepFold {
+  kind: 'fold';
+  key: string;
+  count: number;
+  from: number;
+  to: number;
+  first: string;
+  last: string;
+  state: DepState;
+}
+
+export type DependencyChainRow = DependencyStep | DependencyStepHeader | DependencyStepNote | DependencyStepFold;
+
+/**
+ * Why a Critical Path cannot complete:
+ * - noOrder: a workflow waits for a notice whose posting workflow has no order in this Plan (or a failed order)
+ * - noPoster: a workflow waits for a notice that no workflow posts in this Plan
+ */
+export type BlockType = 'noOrder' | 'noPoster';
+
+/** Health of a Critical Path, most urgent first. */
+export type PathHealth = 'intervention' | 'waiting' | 'ok' | 'inactive';
+
+export interface PathStatus {
+  health: PathHealth;
+  key: string;
+  params: any;
+  blockType: BlockType | null;
+}
+
+const HEALTH_RANK: Record<PathHealth, number> = {intervention: 0, waiting: 1, ok: 2, inactive: 3};
+
+/** Presentation data of a Critical Path, built from the current response only when needed. */
+interface GroupView {
+  order: DepNode[];
+  rows: DependencyChainRow[];
+  blockedStage: number;
+  /** stage of the workflow without order (issue: name the missing workflow with its own step) */
+  blockerStage: number;
+  blockType: BlockType | null;
+  blocker: string | null;
+  blockerBoard: string | null;
+  blockedName: string | null;
+  stripParts?: { state: string; count: number }[];
+}
+
+/** linear runs longer than this are folded; the first and last FOLD_KEEP steps stay visible */
+const FOLD_MIN_LENGTH = 8;
+const FOLD_KEEP = 2;
+/** above this many workflows the progress strip shows one proportional part per state */
+const STRIP_SEGMENT_LIMIT = 60;
+/** order of the parts in a compact progress strip */
+const STRIP_STATES = ['failed', 'action', 'expecting', 'normal', 'none'];
 
 @Component({
   standalone: false,
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
   styleUrl: './dependencies.component.scss',
-  
 })
 export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;
@@ -76,20 +159,38 @@ export class DependenciesComponent {
   mapOfCheckedId = new Set();
   pageSize: number = 10;
   sideBar: any = {orders: []};
-  cachedRows = []
   private lastLoadedMonthYear: string = '';
 
-  @ViewChild('graphContainer') graphContainer!: ElementRef;
-
-  private graph!: any;
-  private editor!: any;
   private depPendingHTTPRequests$ = new Subject<void>();
-  private subscription: Subscription;
   private subscription1: Subscription;
+  private searchSubscription: Subscription;
+  private searchInput$ = new Subject<string>();
+  private refreshTimer: any;
   workflowData: any;
   totalWorkflows: number = 0;
   totalNotices: number = 0;
-  configXml = './assets/mxgraph/config/diagram.xml';
+
+  // ---- JOC-2320: Critical Paths (workflows connected through notices)
+  model: DepGraph | null = null;
+  /** groups after the Notices Announced/Present buttons and the search */
+  visibleGroups: DepGroup[] = [];
+  pagedGroups: DepGroup[] = [];
+  private expandedGroups = new Set<string>();
+  private openedFolds = new Set<string>();
+  private groupViews = new Map<string, GroupView>();
+  private statusCache = new Map<string, PathStatus>();
+  private searchText = '';
+  /** number of visible Critical Paths per health status, for the summary above the list */
+  healthCounts: Record<string, number> = {intervention: 0, waiting: 0, ok: 0, inactive: 0};
+  /** visible Critical Paths that need or may need attention (health other than "No Orders") */
+  activeGroups: DepGroup[] = [];
+  /** visible Critical Paths without orders; folded into one row at the end of the list */
+  inactiveGroups: DepGroup[] = [];
+  showInactive = false;
+  /** visible Critical Paths that cannot complete (dependency without matching order or poster) */
+  blockedPathCount = 0;
+  /** timing of the last load, for measuring the performance impact (see console and footer tooltip) */
+  lastPerf: { requestMs: number; buildMs: number; workflows: number; dependencies: number; paths: number } | null = null;
 
   constructor(
     public coreService: CoreService,
@@ -100,7 +201,6 @@ export class DependenciesComponent {
     private modal: NzModalService,
     private translate: TranslateService,
   ) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -114,15 +214,16 @@ export class DependenciesComponent {
     this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
     this.pageSize = this.plansFilters.filter.entryPerPage || 10;
+    if (!this.plansFilters.filter.currentPage) {
+      this.plansFilters.filter.currentPage = 1;
+    }
+    this.searchSubscription = this.searchInput$.pipe(debounceTime(300)).subscribe(() => this.applyFilters());
     this.initConf();
     const dailyPlanFilters = this.coreService.getDailyPlanTab();
     if (dailyPlanFilters.tabIndex === 2) {
       this.loadAdditionaSnapshotlData();
     } else {
       this.loadAdditionalData();
-    }
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || this.preferences.theme === 'sandstone' || this.preferences.theme === 'violet' || !this.preferences.theme)) {
-      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
   }
 
@@ -131,29 +232,17 @@ export class DependenciesComponent {
       setTimeout(() => {
         this.initConf();
         this.loadAdditionaSnapshotlData();
-        this.fit();
       }, 300);
     }
   }
 
-  ngAfterViewInit() {
-    this.initGraph();
-  }
-
   ngOnDestroy(): void {
     this.plansFilters.selectedDate = this.selectedDate;
-    this.subscription.unsubscribe();
     this.subscription1.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+    clearTimeout(this.refreshTimer);
     this.depPendingHTTPRequests$.next();
     this.depPendingHTTPRequests$.complete();
-    try {
-      if (this.editor) {
-        this.editor.destroy();
-        this.editor = undefined;
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   private initConf(): void {
@@ -176,26 +265,21 @@ export class DependenciesComponent {
             const matchingPlan = this.noticeSpaceKey.find(p =>
               this.coreService.getStringDate(p.startDate) === formattedDate
             );
-
+            this.plansFilters.filter.currentPage = 1;
+            this.expandedGroups.clear();
+            this.openedFolds.clear();
             if (matchingPlan) {
               this.planSchemaId = matchingPlan.planSchemaId;
               this.isClosed = matchingPlan.isClosed;
               this.isOpen = matchingPlan.isOpen;
-              this.plansFilters.filter.currentPage = 1;
-              if (this.graph) {
-                this.graph.getModel().clear();
-              }
               this.loadAdditionaSnapshotlData();
             } else {
-              this.workflowData = []
-              this.loadGraphData()
               this.planSchemaId = null;
               this.isClosed = false;
               this.isOpen = false;
-              this.graph?.getModel().clear();
-              this.totalWorkflows = 0;
-              this.totalNotices = 0;
+              this.setWorkflowData(null);
             }
+            this.cd.markForCheck();
           },
           renderEnd: (e) => {
             const visibleDate = e?.startDate || new Date();
@@ -523,781 +607,476 @@ export class DependenciesComponent {
     });
   }
 
-  zoomIn(): void {
-    this.graph.zoomIn();
-    this.graph.fit();
-    this.graph.center(true, true, 0.5, 0.1);
+  // ===================================================================== loading
+
+  loadAdditionalData() {
+    this.loadData('workflows/boards', {controllerId: this.schedulerId});
   }
 
-  zoomOut(): void {
-    this.graph.zoomOut();
-    this.graph.fit();
-    this.graph.center(true, true, 0.5, 0.1);
-  }
-
-
-  actual(): void {
-    if (this.graph) {
-      this.graph.zoomActual();
-      this.workflowService.center(this.graph);
-    }
-  }
-
-  fit(): void {
-    if (this.graph) {
-      this.graph.fit();
-      this.graph.center(true, true, 0.5, 0.1);
-    }
-  }
-
-  private initGraph(): void {
-    if (!mxClient.isBrowserSupported()) {
-      mxUtils.error('Browser not supported!', 200, false);
-      return;
-    }
-    this.graph = new mxGraph(this.graphContainer.nativeElement);
-    mxGraph.prototype.expectImage = new mxImage('./assets/mxgraph/images/white-await.png', 20, 20);
-    mxGraph.prototype.consumeImage = new mxImage('./assets/mxgraph/images/white-consume.png', 20, 20);
-    this.graph.setPanning(true);
-    this.graph.setCellsResizable(false);
-    this.graph.setConnectable(true);
-    this.graph.setHtmlLabels(true);
-    this.graph.setCellsMovable(false);
-    this.graph.setCellsLocked(false);
-    this.graph.setCellsEditable(false);
-    mxGraphHandler.prototype.guidesEnabled = true;
-    mxGraph.prototype.cellsResizable = false;
-    mxGraph.prototype.multigraph = true;
-    mxGraph.prototype.allowDanglingEdges = false;
-    mxGraph.prototype.foldingEnabled = false;
-    const style = this.graph.getStylesheet().getDefaultEdgeStyle();
-    style[mxConstants.STYLE_EDGE] = mxConstants.EDGESTYLE_ORTHOGONAL;
-    style[mxConstants.STYLE_ROUNDED] = true;
-    style[mxConstants.STYLE_STROKEWIDTH] = 2;
-    style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_CLASSIC;
-    this.graph.getStylesheet().putDefaultEdgeStyle(style);
-    this.graph.keepEdgesInBackground = false;
-    this.graph.keepEdgesOnTop = true;
-    this.graph.setTooltips(true);
-    this.graph.convertValueToString = function (cell) {
-      return cell.value;
-    };
-    this.graph.addListener(mxEvent.CLICK, (sender, evt) => {
-      const cell = evt.getProperty('cell');
-
-      if (cell?.style?.includes('shape=ellipse') && cell.value && !cell.children?.length) {
-        return;
-      }
-
-      if (cell && cell.vertex && cell.tooltip && cell.originalStyle?.strokeColor !== "#000000") {
-        this.navToWorkflow(cell.tooltip, 'WORKFLOW');
-        this.graph.tooltipHandler.hide();
-        evt.consume();
-
-      } else if (cell && cell.vertex && cell.tooltip && cell.originalStyle?.strokeColor === "#000000") {
-        this.showBoard(cell.tooltip);
-        this.graph.tooltipHandler.hide();
-        evt.consume();
-      }
+  loadAdditionaSnapshotlData() {
+    const day = this.coreService.getStringDate(this.selectedDate);
+    this.loadData('workflows/boards/snapshot', {
+      controllerId: this.schedulerId,
+      planSchemaIds: ["Global", "DailyPlan"],
+      noticeSpaceKeys: [day]
     });
-
-    this.graph.getTooltipForCell = function (cell) {
-      if (this.model.isEdge(cell)) {
-        return cell.tooltip || '';
-      }
-      if (cell.tooltip) {
-        return cell.tooltip;
-      }
-      return cell.value ? cell.value.toString() : '';
-    };
-    if (this.graph.tooltipHandler) {
-      this.graph.tooltipHandler.getTooltipForCell = function (cell) {
-        if (this.graph.model.isEdge(cell)) {
-          return cell.tooltip || '';
-        }
-        return mxTooltipHandler.prototype.getTooltipForCell.apply(this, arguments);
-      }.bind(this);
-    }
   }
 
-  private addOrderOverlay(vertex: any, orders: string[]): void {
-
-    if (!orders || orders.length === 0) {
-      return;
-    }
-
-    const orderCount = orders.length;
-
-    let overlayTooltip;
-    this.translate.get('dailyPlan.tooltip.viewOrders').subscribe(translatedValue => {
-      overlayTooltip = translatedValue;
-    });
-
-    const countLabel = new mxCell(
-      `${orderCount}`,
-      new mxGeometry(0, 0, 20, 20),
-      'shape=ellipse;fillColor=#ffffff;strokeColor=#ffffff;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;cursor=pointer;'
-    );
-    countLabel.vertex = true;
-    countLabel.geometry.relative = true;
-    countLabel.geometry.offset = new mxPoint(16, 15);
-    countLabel.tooltip = overlayTooltip;
-    countLabel.originalStyle = {strokeColor: '#ffffff', strokeWidth: '1'};
-
-    this.graph.addCell(countLabel, vertex);
-
-    this.graph.addListener(mxEvent.CLICK, (sender, evt) => {
-      const cell = evt.getProperty('cell');
-      if (cell === countLabel) {
-        this.buildOrdersHtml(orders);
-        evt.consume();
+  /**
+   * Always asks the API: dependencies are resolved live from the Controller and change
+   * whenever orders are added or cancelled, so responses are never reused.
+   */
+  private loadData(url: string, body: any): void {
+    this.isLoaded = false;
+    const started = performance.now();
+    this.coreService.post(url, body).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe({
+      next: (res) => {
+        const received = performance.now();
+        this.isLoaded = true;
+        this.setWorkflowData(res);
+        const built = performance.now();
+        this.lastPerf = {
+          requestMs: Math.round(received - started),
+          buildMs: Math.round(built - received),
+          workflows: this.model?.nodes.size || 0,
+          dependencies: this.model?.edges.length || 0,
+          paths: this.model?.groups.length || 0
+        };
+        console.debug(`[Dependencies] ${url}: request ${this.lastPerf.requestMs} ms, build ${this.lastPerf.buildMs} ms, ` +
+          `${this.lastPerf.workflows} workflows, ${this.lastPerf.dependencies} dependencies, ${this.lastPerf.paths} critical paths`);
+        this.cd.markForCheck();
+      },
+      error: () => {
+        this.isLoaded = true;
+        this.cd.markForCheck();
       }
     });
   }
 
-  private addExpectingOverlay(vertex: any): void {
-    let overlayTooltip;
-    this.translate.get('dailyPlan.label.expectingWorkflow').subscribe(translatedValue => {
-      overlayTooltip = translatedValue;
-    });
-    const overlay = new mxCellOverlay(
-      mxGraph.prototype.expectImage,
-      overlayTooltip,
-      mxConstants.ALIGN_RIGHT,
-      mxConstants.ALIGN_TOP,
-      new mxPoint(-20, 27)
-    );
-    overlay.cursor = 'pointer';
-    this.graph.addCellOverlay(vertex, overlay);
-  }
-
-  private addConsumingOverlay(vertex: any): void {
-    let overlayTooltip;
-    this.translate.get('dailyPlan.label.consumingWorkflow').subscribe(translatedValue => {
-      overlayTooltip = translatedValue;
-    });
-    const overlay = new mxCellOverlay(
-      mxGraph.prototype.consumeImage,
-      overlayTooltip,
-      mxConstants.ALIGN_RIGHT,
-      mxConstants.ALIGN_TOP,
-      new mxPoint(-20, 26)
-    );
-    overlay.cursor = 'pointer';
-    this.graph.addCellOverlay(vertex, overlay);
-  }
-
-  private getFontColor(fillColor: string): string {
-    const color = fillColor.toUpperCase();
-    if (color === '#FF8000' || color === '#b3b300') {
-      return '#000000';
-    }
-    return '#ffffff';
-  }
-
-  private blinkNode(vertex: any, blinkColor: string = '#FF0000', interval: number = 500): void {
-    if (!vertex) {
-      return;
-    }
-    const originalColor = mxUtils.getValue(vertex.style, mxConstants.STYLE_FILLCOLOR, '#1171a6');
-    let isBlinkOn = false;
-    const blinkInterval = setInterval(() => {
-      const newColor = isBlinkOn ? originalColor : blinkColor;
-      this.graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, newColor, [vertex]);
-      this.graph.refresh();
-      isBlinkOn = !isBlinkOn;
-    }, interval);
-    vertex.blinkInterval = blinkInterval;
-  }
-
-  private isWorkflowCritical(row: any): boolean {
-    const criticalStates = ['FAILED', 'SUSPENDED', 'BROKEN'];
-    const ordersToCheck = [...(row.orders || [])];
-    for (const orderId of ordersToCheck) {
-      const orderDetails = this.getOrderDetails(orderId);
-      if (orderDetails && criticalStates.includes(orderDetails.state?._text)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private getNoticeBoardByWorkflow(workflow: any): any {
-    if (!this.workflowData || !this.workflowData.noticeBoards) {
-      return null;
-    }
-
-    const boards = Array.isArray(this.workflowData.noticeBoards)
-      ? this.workflowData.noticeBoards
-      : Object.values(this.workflowData.noticeBoards);
-    return boards.find(board => {
-
-      const boardName = board.name;
-      return (
-        (workflow.postNotices && workflow.postNotices.includes(boardName)) ||
-        (workflow.expectNotices && workflow.expectNotices.includes(boardName)) ||
-        (workflow.consumeNotices && workflow.consumeNotices.includes(boardName))
-      );
-    });
-  }
-
-
-  private buildOrdersHtml(orders: any[]): any {
-    let orderDetails = [];
-    this.sideBar.orders = [];
-    if (orders) {
-      orders.forEach(orderId => {
-        orderDetails = this.getOrderDetails(orderId);
-
-        if (orderDetails) {
-          this.sideBar.orders.push(orderDetails);
+  /** Builds the model from the current response; paging, search and opening a path reuse it. */
+  private setWorkflowData(res: any): void {
+    this.workflowData = res || {};
+    this.noticeBoards = res?.noticeBoards ? res.noticeBoards : [];
+    this.model = res ? buildDependencyGraph(res) : null;
+    this.totalWorkflows = this.model ? this.model.nodes.size : 0;
+    this.totalNotices = this.model ? this.model.boardCount : 0;
+    this.groupViews.clear();
+    this.statusCache.clear();
+    this.orderIndex = null;
+    if (this.model) {
+      // keep paths open across live updates when they still exist
+      this.expandedGroups.forEach(id => {
+        if (!this.model.groupOf.has(id)) {
+          this.expandedGroups.delete(id);
         }
       });
+    } else {
+      this.expandedGroups.clear();
     }
-    if (orderDetails) {
-      this.sideBar.isVisible = true;
+    this.applyFilters();
+  }
+
+  /** Notices Announced/Present and the search work on Critical Paths; the model is not rebuilt. */
+  private applyFilters(): void {
+    const search = (this.searchValue || '').trim().toLowerCase();
+    if (search !== this.searchText) {
+      // search matches are highlighted and never folded, so opened paths are laid out again
+      this.searchText = search;
+      this.groupViews.clear();
     }
+    const filterBy: string[] = Array.isArray(this.plansFilters?.filter?.filterBy) ? this.plansFilters.filter.filterBy : [];
+    const future = filterBy.includes('future');
+    const present = filterBy.includes('present');
+    const groups = this.model ? this.model.groups : [];
+    this.visibleGroups = groups.filter(g => {
+      if ((future || present) && !g.edges.some(e => {
+        const board = this.model.boards.get(e.board);
+        return (future && board?.numOfAnnouncements > 0) || (present && board?.numOfPostedNotices > 0);
+      })) {
+        return false;
+      }
+      return !this.searchText || g.searchText.includes(this.searchText);
+    });
+    // most urgent first: intervention, waiting, ok, without orders
+    this.visibleGroups.sort((a, b) =>
+      (HEALTH_RANK[this.groupStatus(a).health] - HEALTH_RANK[this.groupStatus(b).health]) ||
+      (b.nodes.length - a.nodes.length) || a.id.localeCompare(b.id));
+    this.healthCounts = {intervention: 0, waiting: 0, ok: 0, inactive: 0};
+    this.blockedPathCount = 0;
+    this.visibleGroups.forEach(g => {
+      const st = this.groupStatus(g);
+      this.healthCounts[st.health]++;
+      if (st.blockType) {
+        this.blockedPathCount++;
+      }
+    });
+    this.activeGroups = this.visibleGroups.filter(g => this.groupStatus(g).health !== 'inactive');
+    this.inactiveGroups = this.visibleGroups.filter(g => this.groupStatus(g).health === 'inactive');
+    this.updatePage();
+    this.cd.markForCheck();
+  }
+
+  /**
+   * Paths without orders are folded into one row; they are listed when the row is opened,
+   * when a search is active, or when no other path is left to show.
+   */
+  get inactiveShown(): boolean {
+    return this.showInactive || !!this.searchText || this.activeGroups.length === 0;
+  }
+
+  private get pagingList(): DepGroup[] {
+    return this.inactiveShown ? [...this.activeGroups, ...this.inactiveGroups] : this.activeGroups;
+  }
+
+  get pagingTotal(): number {
+    return this.pagingList.length;
+  }
+
+  toggleInactive(): void {
+    this.showInactive = !this.showInactive;
+    this.updatePage();
+  }
+
+  private updatePage(): void {
+    const list = this.pagingList;
+    const pages = Math.max(1, Math.ceil(list.length / this.pageSize));
+    if (this.plansFilters.filter.currentPage > pages) {
+      this.plansFilters.filter.currentPage = 1;
+    }
+    const start = (this.plansFilters.filter.currentPage - 1) * this.pageSize;
+    this.pagedGroups = list.slice(start, start + this.pageSize);
+  }
+
+  onPageIndexChange(newPage: number): void {
+    this.plansFilters.filter.currentPage = newPage;
+    this.updatePage();
+  }
+
+  pageSizeChange(newSize: number): void {
+    this.pageSize = newSize;
+    this.plansFilters.filter.entryPerPage = newSize;
+    this.updatePage();
+  }
+
+  // ===================================================================== groups and chains
+
+  isExpanded(g: DepGroup): boolean {
+    return this.expandedGroups.has(g.id);
+  }
+
+  toggleGroup(g: DepGroup): void {
+    if (this.expandedGroups.has(g.id)) {
+      this.expandedGroups.delete(g.id);
+    } else {
+      this.expandedGroups.add(g.id);
+    }
+  }
+
+  openFold(groupId: string, fold: DependencyStepFold): void {
+    this.openedFolds.add(groupId + '|' + fold.key);
+    this.groupViews.delete(groupId);
+  }
+
+  /** A Critical Path is named after the workflow(s) everything leads to. */
+  groupTitle(g: DepGroup): string {
+    return this.shortList(g.ends.length ? g.ends : g.nodes);
+  }
+
+  groupStart(g: DepGroup): string {
+    return this.shortList(g.starts.length ? g.starts : g.nodes);
+  }
+
+  /** Uses the same name rule as everywhere else in the view (display folders setting). */
+  private shortList(paths: string[]): string {
+    const name = (p: string) => this.getFormattedPath(p);
+    return paths.length <= 2 ? paths.map(name).join(', ') : `${name(paths[0])} +${paths.length - 1}`;
+  }
+
+  /** Translation key with a singular variant ("...One") for a count of 1 (issue: plurals). */
+  plural(key: string, count: number): string {
+    return count === 1 ? key + 'One' : key;
+  }
+
+  /** Key of the note above a blocked step: no workflows after it, one, or several. */
+  noteKey(r: DependencyStepNote): string {
+    const base = 'dailyPlan.dependencies.message.' + r.blockType;
+    return r.downstream === 0 ? base + 'None' : this.plural(base, r.downstream);
+  }
+
+  /** Progress strip: one segment per workflow up to STRIP_SEGMENT_LIMIT, then one part per state. */
+  isCompactStrip(g: DepGroup): boolean {
+    return g.nodes.length > STRIP_SEGMENT_LIMIT;
+  }
+
+  stripParts(g: DepGroup): { state: string; count: number }[] {
+    const v = this.getGroupView(g);
+    if (!v.stripParts) {
+      const counts: Record<string, number> = {};
+      v.order.forEach(n => {
+        const st = n.failed ? 'failed' : n.state;
+        counts[st] = (counts[st] || 0) + 1;
+      });
+      v.stripParts = STRIP_STATES.filter(st => counts[st] > 0).map(st => ({state: st, count: counts[st]}));
+    }
+    return v.stripParts;
+  }
+
+  healthKey(g: DepGroup): string {
+    return 'dailyPlan.dependencies.health.' + this.groupStatus(g).health;
+  }
+
+  /** Workflows of the group in chain order, for the progress strip. */
+  groupOrder(g: DepGroup): DepNode[] {
+    return this.getGroupView(g).order;
+  }
+
+  /** typed loosely for the template, which switches on row.kind */
+  chainRows(g: DepGroup): any[] {
+    return this.getGroupView(g).rows;
+  }
+
+  isBlockedStep(g: DepGroup, node: DepNode): boolean {
+    const v = this.getGroupView(g);
+    return v.blockedName === node.path;
+  }
+
+  /** Health and status text of a Critical Path (cached until the next response). */
+  groupStatus(g: DepGroup): PathStatus {
+    let st = this.statusCache.get(g.id);
+    if (!st) {
+      st = this.computeGroupStatus(g, this.getGroupView(g));
+      this.statusCache.set(g.id, st);
+    }
+    return st;
+  }
+
+  private computeGroupStatus(g: DepGroup, v: GroupView): PathStatus {
+    const status = (health: PathHealth, key: string, params: any = {}): PathStatus =>
+      ({health, key: 'dailyPlan.dependencies.status.' + key, params, blockType: v.blockType});
+    if (g.failed) {
+      const failed = v.order.find(n => n.failed);
+      return status('intervention', 'failed', {name: this.getFormattedPath(failed?.path)});
+    }
+    if (v.blockType === 'noOrder') {
+      return status('intervention', 'noOrder', {
+        name: this.getFormattedPath(v.blocker), blockerStage: v.blockerStage, stage: v.blockedStage
+      });
+    }
+    if (v.blockType === 'noPoster') {
+      return status('intervention', 'noPoster', {name: this.getFormattedPath(v.blockedName), board: this.getFormattedPath(v.blockerBoard)});
+    }
+    if (g.state === 'action') {
+      const count = v.order.filter(n => n.state === 'action').length;
+      return status('intervention', count === 1 ? 'actionRequiredOne' : 'actionRequired', {count});
+    }
+    if (g.state === 'none') {
+      return status('inactive', 'noOrders');
+    }
+    const expecting = v.order.filter(n => n.state === 'expecting').length;
+    if (expecting === 0 && g.edges.length > 0 && g.postedEdges === g.edges.length) {
+      return status('ok', 'allPosted');
+    }
+    if (expecting > 0) {
+      return status('waiting', expecting === 1 ? 'expectingOne' : 'expecting', {count: expecting});
+    }
+    return status('waiting', 'pending');
+  }
+
+  isSearchMatch(node: DepNode): boolean {
+    return !!this.searchText && node.searchText.includes(this.searchText);
+  }
+
+  showOrders(node: DepNode): void {
+    this.buildOrdersHtml(node.orderIds);
+  }
+
+  stateLabelKey(node: DepNode): string {
+    return 'dailyPlan.dependencies.state.' + (node.failed ? 'failed' : node.state);
+  }
+
+  boardStateKey(state: BoardState): string {
+    return 'dailyPlan.dependencies.boardState.' + state;
+  }
+
+  private getGroupView(g: DepGroup): GroupView {
+    let v = this.groupViews.get(g.id);
+    if (!v) {
+      v = this.buildGroupView(g);
+      this.groupViews.set(g.id, v);
+    }
+    return v;
+  }
+
+  /**
+   * Orders the workflows of a group by stage (longest path from the start) and builds the
+   * rows of the step list: receivers of the same notice are indented under their poster,
+   * the first workflow that waits for a workflow without order is marked, and long
+   * uniform runs are folded.
+   */
+  private buildGroupView(g: DepGroup): GroupView {
+    const levels = computeLevels(g.nodes, g.edges);
+    const order = g.nodes.map(p => this.model.nodes.get(p))
+      .sort((a, b) => (levels.get(a.path) - levels.get(b.path)) || a.path.localeCompare(b.path));
+    const inGroup = new Set(g.nodes);
+    const incoming = (p: string) => (this.model.incoming.get(p) || []).filter(e => inGroup.has(e.from));
+    const successors = (p: string) => new Set((this.model.outgoing.get(p) || []).filter(e => inGroup.has(e.to)).map(e => e.to));
+
+    // first waiting workflow whose notice will not come: the posting workflow has no order in
+    // this Plan (or a failed order), or no workflow posts the notice at all
+    let blockType: BlockType | null = null;
+    let blocker: string | null = null;
+    let blockerBoard: string | null = null;
+    let blockedName: string | null = null;
+    let blockedStage = 0;
+    let blockerStage = 0;
+    for (const n of order) {
+      if (n.state !== 'expecting') {
+        continue;
+      }
+      const bad = incoming(n.path).find(e => {
+        const from = this.model.nodes.get(e.from);
+        return from.state === 'none' || from.failed;
+      });
+      if (bad) {
+        blockType = 'noOrder';
+        blocker = bad.from;
+        blockerBoard = bad.board;
+      } else if (n.unmatchedNotices.length > 0) {
+        blockType = 'noPoster';
+        blockerBoard = n.unmatchedNotices[0];
+      }
+      if (blockType) {
+        blockedName = n.path;
+        blockedStage = levels.get(n.path) + 1;
+        blockerStage = blocker ? levels.get(blocker) + 1 : 0;
+        break;
+      }
+    }
+
+    const steps: DependencyChainRow[] = [];
+    const headerDone = new Set<string>();
+    let lastStage = -1;
+    for (const n of order) {
+      const stage = levels.get(n.path) + 1;
+      const ins = incoming(n.path);
+      const parent = ins[0]?.from;
+      let indent = 0;
+      if (parent && successors(parent).size > 1) {
+        indent = 1;
+        if (!headerDone.has(parent)) {
+          headerDone.add(parent);
+          const boards = Array.from(new Set((this.model.outgoing.get(parent) || []).filter(e => inGroup.has(e.to)).map(e => e.board)));
+          steps.push({kind: 'header', count: successors(parent).size, boards});
+        }
+      }
+      if (n.path === blockedName && blockType) {
+        steps.push({
+          kind: 'note',
+          blockType,
+          blocker,
+          board: blockerBoard,
+          blocked: n.path,
+          downstream: traverse(this.model, n.path, 0, -1).nodes.size - 1
+        });
+      }
+      steps.push({
+        kind: 'step',
+        node: n,
+        stage,
+        showStage: stage !== lastStage,
+        indent,
+        posts: n.postNotices.filter(b => (this.model.outgoing.get(n.path) || []).some(e => e.board === b && inGroup.has(e.to))),
+        waits: [
+          ...ins.map(e => ({
+            board: e.board,
+            from: e.from,
+            kind: e.kind,
+            boardState: e.boardState,
+            fromState: this.model.nodes.get(e.from).state,
+            unmatched: false
+          })),
+          ...n.unmatchedNotices.map(b => ({
+            board: b,
+            from: null,
+            kind: n.consumeNotices.includes(b) && !n.expectNotices.includes(b) ? 'consume' : 'expect',
+            boardState: 'none' as BoardState,
+            fromState: 'none' as DepState,
+            unmatched: true
+          }))
+        ],
+        blocked: n.path === blockedName
+      });
+      lastStage = stage;
+    }
+    return {order, rows: this.foldRuns(g.id, steps), blockedStage, blockerStage, blockType, blocker, blockerBoard, blockedName};
+  }
+
+  /** Folds runs of uniform, unremarkable steps; search matches are never folded. */
+  private foldRuns(groupId: string, rows: DependencyChainRow[]): DependencyChainRow[] {
+    const plain = (r: DependencyChainRow) => r.kind === 'step' && r.indent === 0 && !r.blocked && r.waits.length <= 1 &&
+      !r.waits.some(w => w.unmatched) && !r.node.failed && !this.isSearchMatch(r.node);
+    const out: DependencyChainRow[] = [];
+    let i = 0;
+    while (i < rows.length) {
+      const r = rows[i];
+      if (!plain(r)) {
+        out.push(r);
+        i++;
+        continue;
+      }
+      const state = (r as DependencyStep).node.state;
+      let j = i;
+      while (j < rows.length && plain(rows[j]) && (rows[j] as DependencyStep).node.state === state) {
+        j++;
+      }
+      const run = rows.slice(i, j) as DependencyStep[];
+      const key = run[0].node.path;
+      if (run.length >= FOLD_MIN_LENGTH && !this.openedFolds.has(groupId + '|' + key)) {
+        const hidden = run.slice(FOLD_KEEP, run.length - FOLD_KEEP);
+        out.push(...run.slice(0, FOLD_KEEP));
+        out.push({
+          kind: 'fold', key, count: hidden.length,
+          from: hidden[0].stage, to: hidden[hidden.length - 1].stage,
+          first: hidden[0].node.path, last: hidden[hidden.length - 1].node.path, state
+        });
+        out.push(...run.slice(run.length - FOLD_KEEP));
+      } else {
+        out.push(...run);
+      }
+      i = j;
+    }
+    return out;
+  }
+
+  // ===================================================================== orders side panel
+
+  private orderIndex: Map<string, any> | null = null;
+
+  buildOrdersHtml(orders: any[]): void {
+    this.sideBar.orders = [];
+    (orders || []).forEach(orderId => {
+      const orderDetails = this.getOrderDetails(orderId);
+      if (orderDetails) {
+        this.sideBar.orders.push(orderDetails);
+      }
+    });
+    this.sideBar.isVisible = this.sideBar.orders.length > 0;
   }
 
   private getOrderDetails(orderId: string): any {
     if (!this.workflowData || !this.workflowData.orders) {
       return null;
     }
-    const orders = Array.isArray(this.workflowData.orders)
-      ? this.workflowData.orders
-      : Object.values(this.workflowData.orders);
-    for (const obj of orders) {
-      if (obj.orderId === orderId) {
-        return obj;
-      }
+    if (!this.orderIndex) {
+      const orders = Array.isArray(this.workflowData.orders)
+        ? this.workflowData.orders
+        : Object.values(this.workflowData.orders);
+      this.orderIndex = new Map(orders.map((o: any) => [o.orderId, o]));
     }
-    return null;
+    return this.orderIndex.get(orderId) || null;
   }
 
-  private createNode(
-    parent: any,
-    label: string,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    style: string
-  ) {
-    let displayLabel = label;
-    if (label.length > 36) {
-      displayLabel = label.substring(0, 36) + '...';
-    }
-    let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
-    vertex.tooltip = label;
-    if (style.indexOf('#d0e0e3') !== -1) {
-      vertex.originalStyle = {strokeColor: '#d0e0e3', strokeWidth: '1'};
-    } else if (style.indexOf('#ffe6cc') !== -1) {
-      vertex.originalStyle = {strokeColor: '#ffe6cc', strokeWidth: '1'};
-    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#b3b300') !== -1) {
-      vertex.originalStyle = {strokeColor: style.indexOf('#b3b300') !== -1 ? '#b3b300' : '#c8e6c9', strokeWidth: '1'};
-    } else {
-      vertex.originalStyle = {strokeColor: '#000000', strokeWidth: '1'};
-    }
-    return vertex;
-  }
-
-  clearSearch(): void {
-    this.searchValue = '';
-    this.reloadGraph();
-  }
-
-  getIntersection(arr1: string[], arr2: string[]): string[] {
-    return arr1.filter(x => arr2.includes(x));
-  }
-
-  setNoticeStatus(status: string): void {
-    if (!Array.isArray(this.plansFilters.filter.filterBy)) {
-      this.plansFilters.filter.filterBy = [];
-    }
-    const index = this.plansFilters.filter.filterBy.indexOf(status);
-    if (index === -1) {
-      this.plansFilters.filter.filterBy.push(status);
-    } else {
-      this.plansFilters.filter.filterBy.splice(index, 1);
-    }
-    this.reloadGraph();
-  }
-
-
-  buildRowsFromData(data: any): any[] {
-    const rows: any[] = [];
-    const postingWorkflows = data?.postingWorkflows || [];
-    const expectingWorkflows = data?.expectingWorkflows || [];
-    const consumingWorkflows = data?.consumingWorkflows || [];
-    postingWorkflows.forEach((p: any) => {
-      const boardInfo = this.getNoticeBoardByWorkflow(p);
-      let postingColor = '#1171a6';
-      if (p.futureDueOrderIds && p.futureDueOrderIds.length > 0) {
-        postingColor = '#FF8000';
-      }
-
-      let leftEdgeColor = 'gray';
-      if (boardInfo) {
-        if (boardInfo.numOfExpectedNotices > 0) {
-          leftEdgeColor = '#b3b300';
-        } else if (boardInfo.numOfPostedNotices > 0) {
-          leftEdgeColor = '#1171a6';
-        } else if (boardInfo.numOfAnnouncements > 0) {
-          leftEdgeColor = '#FF8000';
-        }
-      }
-
-      let rightDefaultColor = '#1171a6';
-      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) {
-        rightDefaultColor = '#FF8000';
-      } else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) {
-        rightDefaultColor = '#b3b300';
-      }
-
-
-      const key = this.getFormattedPath(p.path);
-      const row: any = {
-        posting: key,
-        postingColor: postingColor,
-        leftEdgeColor: leftEdgeColor,
-        expecting: [] as { path: string; notice: string; rightNodeColor: string }[],
-        consuming: [] as { path: string; notice: string; rightNodeColor: string }[],
-        orders: p.expectingOrderIds || [],
-        expanded: false
-      };
-      if (p.expectingOrderIds || p.presentDueOrderIds || p.futureDueOrderIds) {
-        row.orders = [];
-        if (p.expectingOrderIds) {
-          row.orders.push(...p.expectingOrderIds);
-        }
-        if (p.presentDueOrderIds) {
-          row.orders.push(...p.presentDueOrderIds);
-        }
-        if (p.futureDueOrderIds) {
-          row.orders.push(...p.futureDueOrderIds);
-        }
-      }
-
-      if (p.expectNotices && p.expectNotices.length > 0) {
-        p.expectNotices.forEach((notice: string) => {
-          row.expecting.push({
-            path: key,
-            notice: this.getFormattedPath(notice),
-            rightNodeColor: rightDefaultColor
-          });
-        });
-      }
-      expectingWorkflows.forEach((e: any) => {
-        if (this.getFormattedPath(e.path) === key && e.expectNotices && e.expectNotices.length > 0) {
-          let rightNodeColor = '#1171a6';
-          if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
-            rightNodeColor = '#FF8000';
-          } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-            rightNodeColor = '#b3b300';
-          }
-          e.expectNotices.forEach((notice: string) => {
-            if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(notice))) {
-              const combinedOrders = [
-                ...(e.expectingOrderIds || []),
-                ...(e.presentDueOrderIds || []),
-                ...(e.futureDueOrderIds || [])
-              ];
-              row.expecting.push({
-                path: this.getFormattedPath(e.path),
-                notice: this.getFormattedPath(notice),
-                rightNodeColor: rightNodeColor,
-                orders: combinedOrders
-              });
-            }
-          });
-        } else if ((!p.expectNotices || p.expectNotices.length === 0) && p.postNotices && e.expectNotices) {
-          const common = this.getIntersection(p.postNotices, e.expectNotices);
-          if (common.length > 0) {
-            let rightNodeColor = '#1171a6';
-            if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
-              rightNodeColor = '#FF8000';
-            } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-              rightNodeColor = '#b3b300';
-            }
-
-            const combinedOrders = [
-              ...(e.expectingOrderIds || []),
-              ...(e.presentDueOrderIds || []),
-              ...(e.futureDueOrderIds || [])
-            ];
-
-            common.forEach(notice => {
-              const formattedNotice = this.getFormattedPath(notice);
-              if (!row.expecting.some((ex: any) => ex.notice === formattedNotice && ex.path === this.getFormattedPath(e.path))) {
-                row.expecting.push({
-                  path: this.getFormattedPath(e.path),
-                  notice: formattedNotice,
-                  rightNodeColor: rightNodeColor,
-                  orders: combinedOrders
-                });
-              }
-            });
-          }
-        }
-
-      });
-     consumingWorkflows.forEach((c: any) => {
-       if (c.consumeNotices && p.postNotices) {
-         const common = this.getIntersection(p.postNotices, c.consumeNotices);
-         if (common.length > 0) {
-           let rightNodeColor = '#1171a6';
-           if (c.presentDueOrderIds && c.presentDueOrderIds.length > 0) {
-             rightNodeColor = '#FF8000';
-           } else if (c.expectingOrderIds && c.expectingOrderIds.length > 0) {
-             rightNodeColor = '#b3b300';
-           }
-
-           const combinedOrders = [
-             ...(c.expectingOrderIds || []),
-             ...(c.presentDueOrderIds || []),
-             ...(c.futureDueOrderIds || [])
-           ];
-
-           common.forEach(notice => {
-             const formattedNotice = this.getFormattedPath(notice);
-             if (!row.consuming.some((con: any) => con.notice === formattedNotice && con.path === this.getFormattedPath(c.path))) {
-               row.consuming.push({
-                 path: this.getFormattedPath(c.path),
-                 notice: formattedNotice,
-                 rightNodeColor: rightNodeColor,
-                 orders: combinedOrders
-               });
-             }
-           });
-         }
-       }
-
-     });
-
-      const filterBy = this.plansFilters.filter.filterBy;
-      if (filterBy && Array.isArray(filterBy) && filterBy.length > 0) {
-        let includeRow = false;
-
-        for (const boardName of p.postNotices || []) {
-          const board = this.workflowData.noticeBoards?.[boardName];
-          if (!board) {
-            continue;
-          }
-
-          if (filterBy.includes('future') && board.numOfAnnouncements > 0) {
-            includeRow = true;
-            break;
-          }
-
-          if (filterBy.includes('present') && board.numOfPostedNotices > 0) {
-            includeRow = true;
-            break;
-          }
-        }
-
-        if (!includeRow) {
-          return;
-        }
-      }
-
-
-
-      rows.push(row);
-    });
-    return rows;
-  }
-
-  private filterRows(rows: any[], searchText: string): any[] {
-    if (!searchText || searchText.trim() === '') {
-      return rows;
-    }
-    const lowerSearch = searchText.toLowerCase();
-    return rows.filter(row => {
-      const postingMatch = row.posting && row.posting.toLowerCase().includes(lowerSearch);
-      const expectingMatch = row.expecting && row.expecting.some((item: any) =>
-        item.notice && item.notice.toLowerCase().includes(lowerSearch)
-      );
-      const consumingMatch = row.consuming && row.consuming.some((item: any) =>
-        item.notice && item.notice.toLowerCase().includes(lowerSearch)
-      );
-      return postingMatch || expectingMatch || consumingMatch;
-    });
-  }
-
-  highlightNodes(searchText: string): void {
-    if (!this.graph) {
-      return;
-    }
-    const model = this.graph.getModel();
-    model.beginUpdate();
-    try {
-      Object.values(model.cells).forEach((cell: any) => {
-        if (cell && model.isVertex(cell)) {
-          const fullText = cell.tooltip ? cell.tooltip.toLowerCase() : '';
-          const displayText = cell.value ? cell.value.toString().toLowerCase() : '';
-          if (searchText && (fullText.includes(searchText.toLowerCase()) || displayText.includes(searchText.toLowerCase()))) {
-            this.graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, 'yellow', [cell]);
-            this.graph.setCellStyles(mxConstants.STYLE_STROKEWIDTH, '3', [cell]);
-          } else {
-            if (cell.originalStyle) {
-              this.graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, cell.originalStyle.strokeColor, [cell]);
-              this.graph.setCellStyles(mxConstants.STYLE_STROKEWIDTH, cell.originalStyle.strokeWidth, [cell]);
-            }
-          }
-        }
-      });
-    } finally {
-      model.endUpdate();
-    }
-  }
-
-  private loadGraphData(): void {
-    const parent = this.graph.getDefaultParent();
-    this.graph.getModel().beginUpdate();
-    try {
-      const allRows = this.buildRowsFromData(this.workflowData);
-      this.cachedRows = allRows;
-      const filteredRows = this.filterRows(allRows, this.searchValue);
-      this.computeDistinctCountsFromWorkflowData();
-      const startIndex = (this.plansFilters.filter.currentPage - 1) * this.pageSize;
-      const paginatedRows = filteredRows.slice(startIndex, startIndex + this.pageSize);
-      const xPosting = 100;
-      const xRight = 800;
-      let currentY = 100;
-      const rowSpacing = 20;
-      const minRowHeight = 120;
-      const nodeWidth = 300;
-      const nodeHeight = 50;
-      const nodeGap = 10;
-      const groupGap = 40;
-      const postingStyleBase = 'strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;';
-      paginatedRows.forEach((row) => {
-        const E = row.expecting.length;
-        const C = row.consuming.length;
-        const expectingBlockHeight = E > 0 ? E * nodeHeight + (E - 1) * nodeGap : 0;
-        const consumingBlockHeight = C > 0 ? C * nodeHeight + (C - 1) * nodeGap : 0;
-        let totalBlockHeight = (E > 0 && C > 0)
-          ? expectingBlockHeight + groupGap + consumingBlockHeight
-          : (expectingBlockHeight || consumingBlockHeight);
-        const rowHeightCalculated = Math.max(minRowHeight, totalBlockHeight);
-        const rowCenterY = currentY + rowHeightCalculated / 2;
-        let postingFillColor = '#1171a6';
-        if (row.postingColor === '#FF8000') {
-          postingFillColor = '#FF8000';
-        }
-        const fontColorPosting = this.getFontColor(postingFillColor);
-        const dynamicStylePosting = `fillColor=${postingFillColor};${postingStyleBase}fontColor=${fontColorPosting};`;
-        let pCell = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, dynamicStylePosting);
-
-        if (row.orders && row.orders.length > 0) {
-          this.addOrderOverlay(pCell, row.orders);
-        }
-
-
-        let expectingNodes: any[] = [];
-        let consumingNodes: any[] = [];
-        if (totalBlockHeight > 0) {
-          let topY = rowCenterY - totalBlockHeight / 2;
-          if (E > 0) {
-            for (let j = 0; j < E; j++) {
-              const expectVal = row.expecting[j].path;
-              const nodeY = topY + j * (nodeHeight + nodeGap);
-              const fillColorExpecting = row.expecting[j].rightNodeColor;
-              const fontColorExpecting = this.getFontColor(fillColorExpecting);
-
-              const dynamicStyleExpecting = `fillColor=${fillColorExpecting};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorExpecting};`;
-              const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleExpecting);
-              this.addExpectingOverlay(node);
-              this.addOrderOverlay(node, row.expecting[j].orders);
-              expectingNodes.push({cell: node, notice: row.expecting[j].notice, rightNodeColor: fillColorExpecting});
-            }
-            if (C > 0) {
-              topY += expectingBlockHeight + groupGap;
-            }
-          }
-          if (C > 0) {
-            for (let j = 0; j < C; j++) {
-              const consumeVal = row.consuming[j].path;
-              const nodeY = topY + j * (nodeHeight + nodeGap);
-              const fillColorConsuming = row.consuming[j].rightNodeColor;
-              const fontColorConsuming = this.getFontColor(fillColorConsuming);
-              const dynamicStyleConsuming = `fillColor=${fillColorConsuming};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorConsuming};`;
-              const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleConsuming);
-              this.addConsumingOverlay(node);
-              this.addOrderOverlay(node, row.consuming[j].orders);
-              consumingNodes.push({cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming});
-            }
-          }
-        }
-
-        expectingNodes.forEach((entry) => {
-          const arrowColor = this.getArrowColorForNotice(entry.notice);
-          const dynamicEdgeStyle = `strokeColor=${arrowColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
-          let edge = this.graph.insertEdge(parent, null, '', pCell, entry.cell, dynamicEdgeStyle);
-          this.addBlockLabelToEdge(edge, entry.notice);
-        });
-
-        consumingNodes.forEach((entry) => {
-          const arrowColor = this.getArrowColorForNotice(entry.notice);
-          const dynamicEdgeStyle = `strokeColor=${arrowColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
-          let edge = this.graph.insertEdge(parent, null, '', pCell, entry.cell, dynamicEdgeStyle);
-          this.addBlockLabelToEdge(edge, entry.notice);
-        });
-
-        currentY += rowHeightCalculated + rowSpacing;
-      });
-    } finally {
-      this.graph.getModel().endUpdate();
-      setTimeout(() => {
-        this.graph.center(true, true);
-        this.highlightNodes(this.searchValue);
-      }, 100);
-    }
-  }
-
-  private getArrowColorForNotice(notice: string): string {
-    const boardsArray = Object.values(this.workflowData?.noticeBoards || {}) as any[];
-    const board = boardsArray.find((b: any) => b.name === notice);
-
-    if (!board) {
-      return 'gray';
-    }
-
-    const hasAnnouncements = board.numOfAnnouncements > 0;
-    const hasPosted = board.numOfPostedNotices > 0;
-    const hasExpected = board.numOfExpectedNotices > 0;
-
-    if (hasExpected) {
-      return '#b3b300';
-    }
-
-    if (hasAnnouncements && hasPosted && hasExpected) {
-      return '#b3b300';
-    }
-
-    if (hasAnnouncements && hasPosted) {
-      return '#1171a6';
-    }
-
-    if (hasAnnouncements) {
-      return '#a3c6ea';
-    }
-
-    if (hasPosted) {
-      return '#1171a6';
-    }
-
-    return 'gray';
-  }
-
-
-
-  private addBlockLabelToEdge(edge: any, text: string): void {
-    this.graph.getModel().beginUpdate();
-    try {
-      let displayText = text;
-      if (text.length > 18) {
-        displayText = text.substring(0, 18) + '...';
-      }
-      let labelCell = new mxCell(
-        displayText,
-        new mxGeometry(1, 0.5, 150, 25),
-        'shape=rectangle;fillColor=#ffffff;strokeColor=#000000;rounded=1;fontColor=#000000;align=center;verticalAlign=middle;'
-      );
-      labelCell.vertex = true;
-      labelCell.geometry.relative = true;
-      labelCell.geometry.offset = new mxPoint(-170, -12);
-      labelCell.setConnectable(false);
-      labelCell.tooltip = text;
-      labelCell.originalStyle = {strokeColor: '#000000', strokeWidth: '1'};
-      this.graph.addCell(labelCell, edge);
-    } finally {
-      this.graph.getModel().endUpdate();
-    }
-  }
-
-  loadAdditionalData() {
-    this.isLoaded = false;
-    this.coreService.post('workflows/boards', {
-      controllerId: this.schedulerId,
-    }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
-      this.isLoaded = true;
-      this.workflowData = res;
-      if (res.noticeBoards) {
-        this.noticeBoards = res.noticeBoards;
-      }
-      this.loadGraphData();
-      this.cd.markForCheck();
-    });
-  }
-
-  loadAdditionaSnapshotlData() {
-    this.isLoaded = false;
-    this.coreService.post('workflows/boards/snapshot', {
-      controllerId: this.schedulerId,
-      planSchemaIds: ["Global", "DailyPlan"],
-      noticeSpaceKeys: [this.coreService.getStringDate(this.selectedDate)]
-    }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
-      this.isLoaded = true;
-      this.workflowData = res;
-
-      if (res.noticeBoards) {
-        this.noticeBoards = res.noticeBoards;
-      }
-      this.loadGraphData();
-      this.cd.markForCheck();
-    });
-  }
-
-  reloadGraph(): void {
-    this.graph.getModel().clear();
-    this.loadGraphData();
-  }
-
-  onPageIndexChange(newPage: number): void {
-    this.plansFilters.filter.currentPage = newPage;
-    this.reloadGraph();
-  }
-
-  pageSizeChange(newSize: number): void {
-    this.pageSize = newSize;
-    this.plansFilters.filter.entryPerPage = newSize;
-    const totalRows = this.workflowData ? this.buildRowsFromData(this.workflowData).length : 0;
-    if (this.plansFilters.filter.currentPage > Math.ceil(totalRows / newSize)) {
-      this.plansFilters.filter.currentPage = 1;
-    }
-    this.reloadGraph();
-  }
-
-  private refreshGraph(event: any) {
-    this.graph.refresh();
-  }
-
-  private computeDistinctCountsFromWorkflowData(): void {
-    const postingCount = this.workflowData?.postingWorkflows?.length || 0;
-    const expectingCount = this.workflowData?.expectingWorkflows?.length || 0;
-    const consumingCount = this.workflowData?.consumingWorkflows?.length || 0;
-    this.totalWorkflows = postingCount + expectingCount + consumingCount;
-
-    const noticeSet = new Set<string>();
-    this.workflowData?.postingWorkflows?.forEach((workflow: any) => {
-      if (workflow.postNotices) {
-        workflow.postNotices.forEach((notice: string) => noticeSet.add(notice));
-      }
-    });
-    this.workflowData?.expectingWorkflows?.forEach((workflow: any) => {
-      if (workflow.expectNotices) {
-        workflow.expectNotices.forEach((notice: string) => noticeSet.add(notice));
-      }
-    });
-    this.workflowData?.consumingWorkflows?.forEach((workflow: any) => {
-      if (workflow.consumeNotices) {
-        workflow.consumeNotices.forEach((notice: string) => noticeSet.add(notice));
-      }
-    });
-    this.totalNotices = noticeSet.size;
-  }
-
+  // ===================================================================== plans and events
 
   closePlan(): void {
     this.coreService.post('plans/close', {
@@ -1330,46 +1109,44 @@ export class DependenciesComponent {
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
-  let shouldLoadPlans = false;
-  let shouldLoadSnapshot = false;
+    let shouldLoadPlans = false;
+    let shouldLoadSnapshot = false;
 
-  if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-    for (let j = 0; j < args.eventSnapshots.length; j++) {
-      const event = args.eventSnapshots[j];
-      if (event.eventType.match(/PlanUpdated/) && event.objectType === 'PLAN') {
-        shouldLoadPlans = true;
-      } else if (
-        (event.eventType.match(/WorkflowPlanChanged/) && event.objectType === 'PLAN') ||
-        (event.eventType.match(/NoticeBoardStateChanged/) && event.objectType === 'NOTICEBOARD')
-      ) {
-        shouldLoadSnapshot = true;
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        const event = args.eventSnapshots[j];
+        if (event.eventType.match(/PlanUpdated/) && event.objectType === 'PLAN') {
+          shouldLoadPlans = true;
+        } else if (
+          (event.eventType.match(/WorkflowPlanChanged/) && event.objectType === 'PLAN') ||
+          (event.eventType.match(/NoticeBoardStateChanged/) && event.objectType === 'NOTICEBOARD')
+        ) {
+          shouldLoadSnapshot = true;
+        }
       }
-    }
 
-    if (shouldLoadPlans) {
-      this.loadPlans();
-    }
+      if (shouldLoadPlans) {
+        this.loadPlans();
+      }
 
-    if (shouldLoadSnapshot) {
-      const formattedDate = this.coreService.getStringDate(this.selectedDate);
-      const matchingPlan = this.noticeSpaceKey.find(p =>
-        this.coreService.getStringDate(p.startDate) === formattedDate
-      );
-
-      if (matchingPlan) {
-        this.loadAdditionaSnapshotlData();
-      } else {
-        this.planSchemaId = null;
-        this.isClosed = false;
-        this.isOpen = false;
-        this.workflowData = [];
-        this.graph?.getModel().clear();
-        this.totalWorkflows = 0;
-        this.totalNotices = 0;
-        this.loadGraphData();
+      if (shouldLoadSnapshot) {
+        // events often arrive in bursts: reload once, shortly after the last one
+        clearTimeout(this.refreshTimer);
+        this.refreshTimer = setTimeout(() => {
+          const formattedDate = this.coreService.getStringDate(this.selectedDate);
+          const matchingPlan = this.noticeSpaceKey.find(p =>
+            this.coreService.getStringDate(p.startDate) === formattedDate
+          );
+          if (matchingPlan) {
+            this.loadAdditionaSnapshotlData();
+          } else {
+            this.planSchemaId = null;
+            this.isClosed = false;
+            this.isOpen = false;
+            this.setWorkflowData(null);
+          }
+        }, 1000);
       }
     }
   }
-}
-
 }

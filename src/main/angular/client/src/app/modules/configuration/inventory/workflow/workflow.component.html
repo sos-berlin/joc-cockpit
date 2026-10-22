@@ -1954,7 +1954,7 @@
                               }
                               @default {
                                 <div class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                                  <input #value="ngModel" (input)="onInput(variable.value.default)" (blur)="updateOtherProperties('variable')"
+                                  <input (jsonValueTrigger)="openEditor(variable.value)" #value="ngModel" (input)="onInput(variable.value.default)" (blur)="updateOtherProperties('variable')"
                                          (keydown)="onKeyPress($event)" [(ngModel)]="variable.value.default" [disabled]="variable.value.type === 'List' || variable.value.type === 'Map'" [facetValidation]="variable.value.facet"
                                          autocomplete="off" class="form-control" name="value{{i}}"
                                          placeholder="{{'common.placeholder.value' | translate}}" type="text">
@@ -2079,7 +2079,7 @@
                                       }
                                       @default {
                                         <div class="col-md-4 col-lg-4 m-b-sm p-r-0">
-                                          <input (blur)="updateOtherProperties('variable')"
+                                          <input (jsonValueTrigger)="openEditor(param.value)" (blur)="updateOtherProperties('variable')"
                                                  (keydown)="onKeyPress($event);" (input)="onInput(param.value.default)" [(ngModel)]="param.value.default"
                                                  autocomplete="off" class="form-control" name="value{{i}}{{j}}"
                                                  placeholder="{{'common.placeholder.value' | translate}}" type="text">

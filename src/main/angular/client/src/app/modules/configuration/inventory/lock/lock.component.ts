@@ -166,7 +166,7 @@ export class LockComponent implements OnChanges, OnDestroy {
       }
       this.data.syncState = res.syncState;
       this.lock = res;
-      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+      this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.lock.path1 = this.data.path;
       this.lock.name = this.data.name;
       this.lock.actual = JSON.stringify(res.configuration);
@@ -388,13 +388,13 @@ export class LockComponent implements OnChanges, OnDestroy {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
-    sessionStorage['inventoryShowMoreOptions'] = 'true';
+    sessionStorage['popupShowMoreOptions'] = 'true';
     this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
-    sessionStorage['inventoryShowMoreOptions'] = 'false';
+    sessionStorage['popupShowMoreOptions'] = 'false';
     this.moreOptionsChange.emit(false);
   }
 

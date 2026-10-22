@@ -1689,7 +1689,7 @@ export class ScheduleComponent {
         this.data.valid = res.valid;
       }
       this.schedule = this.coreService.clone(res);
-      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+      this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       if (!this.schedule.configuration.orderParameterisations) {
         this.schedule.configuration.orderParameterisations = [];
       }
@@ -2013,13 +2013,13 @@ export class ScheduleComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
-    sessionStorage['inventoryShowMoreOptions'] = 'true';
+    sessionStorage['popupShowMoreOptions'] = 'true';
     this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
-    sessionStorage['inventoryShowMoreOptions'] = 'false';
+    sessionStorage['popupShowMoreOptions'] = 'false';
     this.moreOptionsChange.emit(false);
   }
 

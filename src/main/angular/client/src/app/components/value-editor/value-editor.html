@@ -1,8 +1,20 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span>{{ 'workflow.label.valueEditor' | translate }}</span>
+    @if (isJson) {
+      <span>{{ 'workflow.label.jsonEditor' | translate }}</span>
+    } @else {
+      <span>{{ 'workflow.label.valueEditor' | translate }}</span>
+    }
   </h4>
-  <a class="max-btn" appMaximum [textarea]="myInputField">
+  <a (click)="toggleJsonEditor()" class="max-btn cursor" style="right: 84px"
+     [appRichTooltip]="(isJson ? 'workflow.tooltip.switchToValueEditor' : 'workflow.tooltip.switchToJsonEditor') | translate">
+    @if (isJson) {
+      <i class="fa fa-font"></i>
+    } @else {
+      <i class="fa fa-code"></i>
+    }
+  </a>
+  <a class="max-btn" appMaximum [textarea]="isJson ? null : textareaRef">
     <i class="fa fa-window-maximize"></i>
   </a>
   <button type="button" class="close" aria-label="Close"
@@ -13,28 +25,39 @@
 <form (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
     <div class="row">
-      <div class="col-md-12 mono-font" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-        <textarea [facetValidation]="object.facet" #value="ngModel" nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
-                  placeholder="{{'common.placeholder.value' | translate}}"
-        ></textarea>
-        @if (object.message) {
-          <i class="pos-abt cursor fa fa-info-circle" [appRichTooltip]="object.message" style="right: 22px;top:9px;"></i>
-        }
-        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
-          <div class="text-danger help-block">
-            @if (value.errors['required']) {
-              <div>{{ 'common.message.requiredError' | translate }}</div>
-            }
-            @if (value.errors['invalidFacet']) {
-              <div>{{ 'common.message.invalid' | translate }}</div>
-            }
+      @if (isJson) {
+        <div [ngClass]="{'error-input': isJsonError}" class="col-md-12">
+          <json-editor #editor [data]="jsonData" [options]="options"></json-editor>
+        </div>
+        @if (isJsonError) {
+          <div class="col-md-12">
+            <div class="help-block text-danger">{{ 'workflow.message.invalidJson' | translate }}</div>
           </div>
         }
-      </div>
+      } @else {
+        <div class="col-md-12 mono-font" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
+          <textarea [facetValidation]="object.facet" #value="ngModel" nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
+                    placeholder="{{'common.placeholder.value' | translate}}"
+          ></textarea>
+          @if (object.message) {
+            <i class="pos-abt cursor fa fa-info-circle" [appRichTooltip]="object.message" style="right: 22px;top:9px;"></i>
+          }
+          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+            <div class="text-danger help-block">
+              @if (value.errors['required']) {
+                <div>{{ 'common.message.requiredError' | translate }}</div>
+              }
+              @if (value.errors['invalidFacet']) {
+                <div>{{ 'common.message.invalid' | translate }}</div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm" type="submit">
+    <button class="btn btn-primary btn-sm" type="submit" [disabled]="isJson && isJsonError">
       {{ 'common.button.submit' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"

@@ -404,7 +404,7 @@ export class ScriptComponent {
         this.data.valid = res.valid;
       }
       this.script = this.coreService.clone(res);
-      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+      this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       if (this.script.configuration.script) {
         if (this.cm && this.cm.codeEditor) {
           this.cm.codeEditor.setValue(this.script.configuration.script);
@@ -455,13 +455,13 @@ export class ScriptComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
-    sessionStorage['inventoryShowMoreOptions'] = 'true';
+    sessionStorage['popupShowMoreOptions'] = 'true';
     this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
-    sessionStorage['inventoryShowMoreOptions'] = 'false';
+    sessionStorage['popupShowMoreOptions'] = 'false';
     this.moreOptionsChange.emit(false);
   }
 

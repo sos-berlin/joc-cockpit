@@ -5533,7 +5533,7 @@ export class WorkflowComponent {
       this.selectedNode = null;
     }
     if (changes['data']) {
-      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+      this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       if (changes['data'].currentValue?.copied) {
         this.isCopiedWorkflow = true;
         this.copiedWorkflowJobTags.copiedWorkflowPath = changes['data'].currentValue?.copied.path + '/' + changes['data'].currentValue?.copied.name
@@ -5569,13 +5569,13 @@ export class WorkflowComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
-    sessionStorage['inventoryShowMoreOptions'] = 'true';
+    sessionStorage['popupShowMoreOptions'] = 'true';
     this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
-    sessionStorage['inventoryShowMoreOptions'] = 'false';
+    sessionStorage['popupShowMoreOptions'] = 'false';
     this.moreOptionsChange.emit(false);
   }
 

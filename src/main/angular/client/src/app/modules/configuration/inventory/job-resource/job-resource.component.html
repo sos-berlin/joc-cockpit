@@ -199,7 +199,7 @@
                               }
                             </div>
                             <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                              <input (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ARGU')" [(ngModel)]="argu.value" autocomplete="off"
+                              <input (jsonValueTrigger)="openEditor(argu)" (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ARGU')" [(ngModel)]="argu.value" autocomplete="off"
                                      class="form-control" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                      type="text"/>
                               <i (click)="openEditor(argu)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
@@ -289,7 +289,7 @@
                               }
                             </div>
                             <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                              <input (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ENV')" [(ngModel)]="env.value" autocomplete="off"
+                              <input (jsonValueTrigger)="openEditor(env)" (blur)="saveJSON()" (keydown)="onKeyPress($event, 'ENV')" [(ngModel)]="env.value" autocomplete="off"
                                      class="form-control" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                      type="text"/>
                               <i (click)="openEditor(env)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
