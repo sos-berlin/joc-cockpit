@@ -457,6 +457,17 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <div class="inline m-b-xs">
+            @if (!showMoreAdvanceOptions) {
+              <a class="text-primary cursor" (click)="showMoreOptions()">
+                <span>{{ 'common.label.showMoreOptions' | translate }}</span>
+              </a>
+            } @else {
+              <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+                <span>{{ 'common.label.showFewerOptions' | translate }}</span>
+              </a>
+            }
+          </div>
           @if (dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0 && showMoreAdvanceOptions) {
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
               <div class="btn-group m-l-12 hidden-btn-group">

@@ -1169,13 +1169,15 @@ export class DailyPlanComponent {
       this.dailyPlanFilters.filter.status = status;
     }
   }
-
+  
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 
   changeLate(): void {
@@ -2708,7 +2710,7 @@ export class DailyPlanComponent {
 
   private initConf(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();

@@ -267,7 +267,7 @@
                       @case ('String') {
                         <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                              class="col-sm-5 m-b-sm p-r-0">
-                          <input #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
+                          <input (jsonValueTrigger)="openEditor(param)" #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
                                  [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required && !allowEmptyArguments" autocomplete="off"
                                  class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
                                  type="text">
@@ -290,7 +290,7 @@
                       @default {
                         <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                              class="col-sm-5 m-b-sm p-r-0">
-                          <input #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required && !allowEmptyArguments"
+                          <input (jsonValueTrigger)="openEditor(param)" #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required && !allowEmptyArguments"
                                  autocomplete="off" class="form-control" name="newValue{{i}}"
                                  type="text">
                           @if (value.invalid && value.errors && (value.dirty || value.touched)) {
@@ -352,7 +352,7 @@
                         <input [(ngModel)]="param.name" autocomplete="off" class="form-control" name="name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" type="text">
                       </div>
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}" class="col-sm-5 m-b-sm p-r-0">
-                        <input #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off" class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" type="text">
+                        <input (jsonValueTrigger)="openEditor(param, true)" #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off" class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" type="text">
                       </div>
                       <div class="col-sm-1">
                         <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>

@@ -50,7 +50,8 @@ import {
   NegativeRelativeTimeRegexValidator,
   TimeValidatorRelativeStartReqexDirective,
   TagValidator,
-  MultiUnitRelativeDateValidatorDirective
+  MultiUnitRelativeDateValidatorDirective,
+  JsonValueTriggerDirective
 } from '../../directives/core.directive';
 import {ToggleComponent} from '../../components/toggle/toggle.component';
 import {CommentModalComponent} from '../../components/comment-modal/comment.component';
@@ -95,6 +96,7 @@ import {LogConsoleComponent, LogConsoleModalComponent} from '../../components/lo
 import {NzSpaceCompactComponent, NzSpaceComponent} from "ng-zorro-antd/space";
 import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
 import {NzResizableDirective} from "ng-zorro-antd/resizable";
+import {JsonEditorComponent} from 'ang-jsoneditor';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, OverlayModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzMentionModule, NzTagModule, NzSelectModule,
@@ -106,7 +108,7 @@ const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModa
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,
-  FacetValidator, AutofocusDirective, MultiUnitRelativeDateValidatorDirective];
+  FacetValidator, AutofocusDirective, MultiUnitRelativeDateValidatorDirective, JsonValueTriggerDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
   SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent,
@@ -122,6 +124,7 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponen
         NzColorPickerComponent,
         NzResizableDirective,
         NzSpaceCompactComponent,
+        JsonEditorComponent,
     ],
   declarations: [
     ...COMPONENTS,

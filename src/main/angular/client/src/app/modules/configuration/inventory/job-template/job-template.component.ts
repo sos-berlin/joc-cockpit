@@ -524,7 +524,7 @@ export class JobTemplateComponent {
       this.lastModified = res.configurationDate;
       this.history = {past: [], present: null, future: []};
       this.returnCodes = {on: 'success'};
-      this.showMoreAdvanceOptions = sessionStorage['inventoryShowMoreOptions'] !== null ? sessionStorage['inventoryShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
+      this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
       this.getDocumentations();
 
       this.reset();
@@ -1675,13 +1675,13 @@ export class JobTemplateComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
-    sessionStorage['inventoryShowMoreOptions'] = 'true';
+    sessionStorage['popupShowMoreOptions'] = 'true';
     this.moreOptionsChange.emit(true);
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
-    sessionStorage['inventoryShowMoreOptions'] = 'false';
+    sessionStorage['popupShowMoreOptions'] = 'false';
     this.moreOptionsChange.emit(false);
   }
 

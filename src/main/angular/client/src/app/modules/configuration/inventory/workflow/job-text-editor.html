@@ -562,7 +562,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-6 m-b-sm">
                                   <label class="w-full">
-                                    <input (keydown)="onKeyPress($event, 'default')"
+                                    <input (jsonValueTrigger)="openEditor(argument)" (keydown)="onKeyPress($event, 'default')"
                                            [(ngModel)]="argument.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                                            [required]="argument.name && argument.name.length > 0" autocomplete="off" class="form-control"
                                            name="value{{i}}"
@@ -684,7 +684,7 @@
                                               [nzPrefix]="['$']"
                                               [nzSuggestions]="mentionValueList" [nzValueWith]="valueWith">
                                     <label class="w-full">
-                                      <input [(ngModel)]="env.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0"
+                                      <input (jsonValueTrigger)="openEditor(env)" [(ngModel)]="env.value" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [required]="env.name && env.name.length > 0"
                                              autocomplete="off" class="form-control"
                                              name="value{{i}}" nz-input
                                              (ngModelChange)="checkValue(env)"
@@ -814,7 +814,7 @@
                                 </div>
                                 <div class="col-md-5 col-lg-5 m-b-sm" [ngClass]="{'has-error' : ((eVal.dirty || eVal.touched) && eVal.invalid)}">
                                   <label class="w-full">
-                                    <input #eVal="ngModel" (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="(argu.name && argu.name.length > 0 && !(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)) || argu.isRequired"
+                                    <input (jsonValueTrigger)="openEditor(argu)" #eVal="ngModel" (keydown)="onKeyPress($event, 'argument')" [(ngModel)]="argu.value" [required]="(argu.name && argu.name.length > 0 && !(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name)) || argu.isRequired"
                                            class="form-control" name="value{{i}}"
                                            placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                            type="text"/>
@@ -942,7 +942,7 @@
                                 </div>
                                 <div class="col-md-5 col-lg-5 m-b-sm">
                                   <label class="w-full">
-                                    <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
+                                    <input (jsonValueTrigger)="openEditor(argument)" (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')"
                                            [(ngModel)]="argument.value" [required]="argument.name && argument.name.length > 0" autocomplete="off"
                                            class="form-control"
                                            name="value{{i}}"
@@ -1445,7 +1445,7 @@
                           </div>
                         } @else {
                           <label class="w-full">
-                            <input #regularInput
+                            <input (jsonValueTrigger)="openEditor(argument)" #regularInput
                                    (keydown)="onKeyPress($event, 'node')"
                                    [(ngModel)]="argument.value"
                                    [required]="argument.name && argument.name.length > 0"

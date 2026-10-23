@@ -28,6 +28,7 @@ import {
   Validators, AbstractControl,
 } from '@angular/forms';
 import {properties} from "ng-zorro-antd/core/util";
+import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 import {TranslateService} from "@ngx-translate/core";
 import {firstValueFrom} from 'rxjs';
 import {ToastrService} from "ngx-toastr";
@@ -2390,7 +2391,8 @@ export class JobWizardComponent {
   parameters: any;
   private searchTerm = new Subject<string>();
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef, private cdr: ChangeDetectorRef) {
+  constructor(private coreService: CoreService, private activeModal: NzModalRef, private cdr: ChangeDetectorRef,
+              private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -2645,6 +2647,31 @@ export class JobWizardComponent {
     if (param.newValue && param.newValue !== param.defaultValue) {
       this.wizard.setOfCheckedValue.add(param.name);
     }
+  }
+
+  openEditor(param: any, isNew = false): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ValueEditorComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        data: param.newValue,
+        object: param
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        param.newValue = result;
+        if (!isNew) {
+          this.checkCheckbox(param);
+        }
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   showDoc(docName): void {

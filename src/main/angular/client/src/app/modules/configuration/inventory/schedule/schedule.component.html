@@ -106,7 +106,7 @@
                     @default {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                        <input (jsonValueTrigger)="openEditor(argument, 'value')" #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
                                autocomplete="off" (blur)="saveJSON()"
                                class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                placeholder="{{'common.placeholder.value' | translate}}"
@@ -239,7 +239,7 @@
                     @default {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                        <input (jsonValueTrigger)="openEditor(argument, 'value')" #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
                                autocomplete="off" (blur)="saveJSON()"
                                class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                placeholder="{{'common.placeholder.value' | translate}}"
@@ -770,7 +770,7 @@
                                       @default {
                                         <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                              class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                                          <input #value="ngModel" (blur)="saveJSON(false, false, value, variable)"
+                                          <input (jsonValueTrigger)="openEditor(variable, 'value')" #value="ngModel" (blur)="saveJSON(false, false, value, variable)"
                                                  (keydown)="onKeyPress($event, variableSet)"
                                                  [(ngModel)]="variable.value" [facetValidation]="variable.facet" [readOnly]="isTrash || !permission.joc.inventory.manage"
                                                  [required]="variable.isRequired || variable.facet" autocomplete="off"

@@ -67,7 +67,7 @@
                     @default {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
-                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired || argument.value" autocomplete="off" class="form-control"
+                        <input (jsonValueTrigger)="openEditor(argument)" #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired || argument.value" autocomplete="off" class="form-control"
                                name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                                type="text">
                         <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
@@ -201,7 +201,7 @@
                     @default {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
-                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
+                        <input (jsonValueTrigger)="openEditor(argument)" #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
                                name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                                type="text">
                         <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
@@ -752,7 +752,7 @@
                                 @default {
                                   <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                       class="col-md-6 col-lg-6 m-b-sm">
-                                    <input #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
+                                    <input (jsonValueTrigger)="openEditor(argument)" #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
                                           [(ngModel)]="argument.value" [facetValidation]="argument.facet" [required]="argument.isRequired || argument.facet"
                                           autocomplete="off"
                                           class="form-control" name="value{{i}}{{orderIndex}}"

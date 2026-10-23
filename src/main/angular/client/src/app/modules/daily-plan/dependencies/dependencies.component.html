@@ -18,12 +18,22 @@
             </button>
           </div>
 
-          <i [appRichTooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
-          {{'dailyPlan.label.normal' | translate}}
-          <i  [appRichTooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
-          {{'dailyPlan.label.critical' | translate}}
-          <i  [appRichTooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
-          {{'dailyPlan.label.expecting' | translate}}
+          <span [appRichTooltip]="'dailyPlan.tooltip.normal'|translate" style="margin-left: 109px">
+            <i class="fa fa-stop bg-postingWorkflow"></i>
+            {{'dailyPlan.label.normal' | translate}}
+          </span>
+          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.tooltip.critical'|translate">
+            <i class="fa fa-stop bg-expectingWorkflow"></i>
+            {{'dailyPlan.label.critical' | translate}}
+          </span>
+          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.tooltip.expecting'|translate">
+            <i class="fa fa-stop bg-consumingWorkflow"></i>
+            {{'dailyPlan.label.expecting' | translate}}
+          </span>
+          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.dependencies.tooltip.noOrder'|translate">
+            <i class="fa fa-square-o dep-legend-none"></i>
+            {{'dailyPlan.dependencies.state.none' | translate}}
+          </span>
         </div>
       </div>
 
@@ -31,7 +41,7 @@
         <label>
           <input
             [(ngModel)]="searchValue"
-            (ngModelChange)="reloadGraph()"
+            (ngModelChange)="onSearchChange()"
             placeholder="{{ 'common.placeholder.search' | translate }}"
             type="search">
         </label>
@@ -73,51 +83,192 @@
 
       </div>
     </div>
-    <div id="rightPanel2" class="box" style="height: calc(100vh - 266px)">
-        <div  style="overflow: auto; width: 100%; height: calc(100vh - 310px)">
-          <div class="inline toolbar-icons">
-            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-              <li class="nav-item">
-                <a (click)="zoomIn()" [appRichTooltip]="'workflow.button.zoomIn' | translate" class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a (click)="zoomOut()" [appRichTooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
-                </a>
-              </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a (click)="actual()" [appRichTooltip]="'workflow.button.actual' | translate" class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a (click)="fit()" [appRichTooltip]="'workflow.button.fit' | translate" class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
-                </a>
-              </li>
-            </ul>
+    <div id="rightPanel2" class="box dep-panel">
+      <div class="dep-list">
+        @if (visibleGroups.length > 0) {
+          <div class="dep-health-summary">
+            @for (h of ['intervention', 'waiting', 'ok', 'inactive']; track h) {
+              @if (healthCounts[h] > 0) {
+                <span class="dep-health" [ngClass]="'dep-health-' + h">
+                  <b>{{ healthCounts[h] }}</b> {{ 'dailyPlan.dependencies.health.' + h | translate }}
+                </span>
+              }
+            }
+            @if (blockedPathCount > 0) {
+              <span class="dep-warn m-l-sm">
+                <i class="fa fa-exclamation-triangle m-r-xs"></i>{{ plural('dailyPlan.dependencies.message.cannotComplete', blockedPathCount) | translate: {count: blockedPathCount} }}
+              </span>
+            }
           </div>
-          <div #graphContainer class="graph-container mt-1 "></div>
-          @if (cachedRows?.length === 0) {
-            <div class="m-t-md">
-              <app-empty-data></app-empty-data>
+        }
+        @if (pagedGroups.length > 0) {
+          <div class="dep-group-row dep-head">
+            <span></span>
+            <span>{{ 'dailyPlan.dependencies.label.health' | translate }}</span>
+            <span>{{ 'dailyPlan.dependencies.label.criticalPath' | translate }}</span>
+            <span>{{ 'dailyPlan.dependencies.label.startsWith' | translate }}</span>
+            <span>{{ 'dailyPlan.dependencies.label.size' | translate }}</span>
+            <span>{{ 'dailyPlan.dependencies.label.progress' | translate }}</span>
+            <span>{{ 'dailyPlan.dependencies.label.status' | translate }}</span>
+            <span class="text-right">{{ 'dailyPlan.dependencies.label.resolved' | translate }}</span>
+          </div>
+        }
+        @for (g of pagedGroups; track g.id) {
+          <div class="dep-group" [class.dep-open]="isExpanded(g)">
+            <div class="dep-group-row" role="button" tabindex="0" [attr.aria-expanded]="isExpanded(g)"
+                 (click)="toggleGroup(g)" (keydown.enter)="toggleGroup(g)">
+              <i class="fa" [ngClass]="isExpanded(g) ? 'fa-caret-down' : 'fa-caret-right'"></i>
+              <span class="dep-health" [ngClass]="'dep-health-' + groupStatus(g).health">{{ healthKey(g) | translate }}</span>
+              <span class="dep-col-group" [appRichTooltip]="g.ends.join(', ')">{{ groupTitle(g) }}</span>
+              <span class="dep-col-span" [appRichTooltip]="g.starts.join(', ')">{{ groupStart(g) }}</span>
+              <span class="text-muted">{{ plural('dailyPlan.dependencies.label.workflowCount', g.nodes.length) | translate: {count: g.nodes.length} }}</span>
+              <span class="dep-strip">
+                @if (isCompactStrip(g)) {
+                  @for (part of stripParts(g); track part.state) {
+                    <i class="dep-seg" [ngClass]="'dep-state-' + part.state" [style.flex-grow]="part.count"
+                       [appRichTooltip]="part.count + ' · ' + ('dailyPlan.dependencies.state.' + part.state | translate)"></i>
+                  }
+                } @else {
+                  @for (n of groupOrder(g); track n.path) {
+                    <i class="dep-seg" [ngClass]="'dep-state-' + (n.failed ? 'failed' : n.state)"
+                       [class.dep-seg-blocked]="isBlockedStep(g, n)" [appRichTooltip]="getFormattedPath(n.path)"></i>
+                  }
+                }
+              </span>
+              <span class="dep-col-status" [class.dep-warn]="groupStatus(g).health === 'intervention'">{{ groupStatus(g).key | translate: groupStatus(g).params }}</span>
+              <span class="text-right text-muted"
+                    [appRichTooltip]="'dailyPlan.dependencies.tooltip.resolved' | translate: {posted: g.postedEdges, total: g.edges.length, workflows: g.nodes.length}">
+                {{ g.postedEdges }} / {{ g.edges.length }}
+              </span>
             </div>
-          }
-        </div>
-      <div style="margin-top: 14px">
-      <span class="m-l-2 m-t-2"
->{{ 'dailyPlan.label.totalWorkflowNoticeEntry' | translate: {total: totalWorkflows, noticeCount: totalNotices} }}</span>
-        @if (workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows) {
+
+            @if (isExpanded(g)) {
+              <div class="dep-chain">
+                <div class="dep-step dep-step-head">
+                  <span class="dep-stage">{{ 'dailyPlan.dependencies.label.step' | translate }}</span>
+                  <span class="dep-rail-head"></span>
+                  <span class="dep-step-body">
+                    <span>{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
+                    <span>{{ 'dailyPlan.dependencies.label.state' | translate }}</span>
+                    <span>{{ 'dailyPlan.dependencies.label.postsNotice' | translate }}</span>
+                    <span>{{ 'dailyPlan.dependencies.label.waitsForNotice' | translate }}</span>
+                    <span class="text-right">{{ 'dailyPlan.dependencies.label.orders' | translate }}</span>
+                  </span>
+                </div>
+                @for (r of chainRows(g); track $index) {
+                  @switch (r.kind) {
+                    @case ('header') {
+                      <div class="dep-branch-header">
+                        {{ 'dailyPlan.dependencies.label.receivers' | translate: {count: r.count, boards: r.boards.join(', ')} }}
+                      </div>
+                    }
+                    @case ('note') {
+                      <div class="dep-note">
+                        {{ noteKey(r) | translate: {
+                          blocker: getFormattedPath(r.blocker), board: getFormattedPath(r.board),
+                          blocked: getFormattedPath(r.blocked), count: r.downstream } }}
+                      </div>
+                    }
+                    @case ('fold') {
+                      <div class="dep-step dep-fold">
+                        <span class="dep-stage"></span>
+                        <span class="dep-rail dep-rail-dotted"></span>
+                        <span class="dep-fold-body">
+                          <button (click)="openFold(g.id, r)" class="btn btn-grey btn-xs">
+                            <i class="fa fa-caret-right m-r-xs"></i>{{ 'dailyPlan.dependencies.button.moreSteps' | translate: {count: r.count} }}
+                          </button>
+                          <span class="text-muted m-l-sm">
+                            {{ 'dailyPlan.dependencies.label.foldedSteps' | translate: {
+                              from: r.from, to: r.to, first: getFormattedPath(r.first), last: getFormattedPath(r.last),
+                              state: ('dailyPlan.dependencies.state.' + r.state | translate) } }}
+                          </span>
+                        </span>
+                      </div>
+                    }
+                    @case ('step') {
+                      <div class="dep-step" [class.dep-step-indent]="r.indent" [class.dep-step-blocked]="r.blocked">
+                        <span class="dep-stage">{{ r.showStage ? r.stage : '' }}</span>
+                        <span class="dep-rail"><i class="dep-node" [ngClass]="'dep-state-' + (r.node.failed ? 'failed' : r.node.state)"></i></span>
+                        <span class="dep-step-body">
+                          <a class="dep-name" [class.dep-match]="isSearchMatch(r.node)" [appRichTooltip]="r.node.path"
+                             (click)="navToWorkflow(r.node.path, 'WORKFLOW')">{{ getFormattedPath(r.node.path) }}</a>
+                          <span class="dep-state-text" [ngClass]="'dep-text-' + (r.node.failed ? 'failed' : r.node.state)">{{ stateLabelKey(r.node) | translate }}</span>
+                          <span class="dep-posts">
+                            @if (r.posts.length > 0) {
+                              {{ 'dailyPlan.dependencies.label.posts' | translate }}
+                              @for (b of r.posts; track b; let last = $last) {
+                                <a (click)="showBoard(b)">{{ getFormattedPath(b) }}</a>@if (!last) {<span>, </span>}
+                              }
+                            } @else {
+                              <span class="text-muted">—</span>
+                            }
+                          </span>
+                          <span class="dep-waits" [class.dep-warn]="r.blocked">
+                            @if (r.waits.length === 0) {
+                              <span class="text-muted">{{ 'dailyPlan.dependencies.label.startOfChain' | translate }}</span>
+                            }
+                            @for (w of r.waits; track $index; let last = $last) {
+                              @if (w.unmatched) {
+                                <span class="dep-warn">
+                                  {{ 'dailyPlan.dependencies.label.waitsForBoard' | translate }}
+                                  <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
+                                  · {{ 'dailyPlan.dependencies.label.noPoster' | translate }}
+                                </span>
+                              } @else {
+                                <span>
+                                  {{ (w.kind === 'consume' ? 'dailyPlan.dependencies.label.consumesFrom' : 'dailyPlan.dependencies.label.waitsFor') | translate: {name: getFormattedPath(w.from)} }}
+                                  · <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
+                                  <span class="text-muted p-l-xs">{{ boardStateKey(w.boardState) | translate }}</span>
+                                </span>
+                              }
+                              @if (!last) {<br>}
+                            }
+                          </span>
+                          <span class="dep-orders">
+                            @if (r.node.orderIds.length > 0) {
+                              <button class="dep-badge" (click)="showOrders(r.node)" [appRichTooltip]="'dailyPlan.tooltip.viewOrders' | translate">
+                                {{ r.node.orderIds.length }}
+                              </button>
+                            }
+                          </span>
+                        </span>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+            }
+          </div>
+        }
+        @if (inactiveGroups.length > 0 && activeGroups.length > 0 && !searchValue) {
+          <div class="dep-group-row dep-inactive-row" role="button" tabindex="0" [attr.aria-expanded]="showInactive"
+               (click)="toggleInactive()" (keydown.enter)="toggleInactive()">
+            <i class="fa" [ngClass]="showInactive ? 'fa-caret-down' : 'fa-caret-right'"></i>
+            <span class="dep-health dep-health-inactive">{{ 'dailyPlan.dependencies.health.inactive' | translate }}</span>
+            <span class="dep-inactive-text">
+              {{ (showInactive ? plural('dailyPlan.dependencies.label.hideInactive', inactiveGroups.length)
+                : plural('dailyPlan.dependencies.label.showInactive', inactiveGroups.length)) | translate: {count: inactiveGroups.length} }}
+            </span>
+          </div>
+        }
+        @if (isLoaded && pagedGroups.length === 0) {
+          <div class="m-t-md">
+            <app-empty-data></app-empty-data>
+          </div>
+        }
+      </div>
+      <div class="dep-footer">
+        <span class="m-l-2 m-t-2"
+              [appRichTooltip]="lastPerf ? ('dailyPlan.dependencies.tooltip.loadTime' | translate: lastPerf) : ''">
+          {{ 'dailyPlan.label.totalWorkflowNoticeEntry' | translate: {total: totalWorkflows, noticeCount: totalNotices} }}
+          · {{ plural('dailyPlan.dependencies.label.pathCount', visibleGroups.length) | translate: {count: visibleGroups.length} }}
+        </span>
+        @if (pagingTotal > 0) {
           <nz-pagination class="pull-right m-r-sm"
-                         [nzPageSize]="pageSize || preferences.entryPerPage || 25"
+                         [nzPageSize]="pageSize || preferences.entryPerPage || 10"
                          [nzShowSizeChanger]="true"
                          [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-                         [nzTotal]="cachedRows.length"
+                         [nzTotal]="pagingTotal"
                          [(nzPageIndex)]="plansFilters.filter.currentPage"
                          (nzPageIndexChange)="onPageIndexChange($event)"
                          (nzPageSizeChange)="pageSizeChange($event)"

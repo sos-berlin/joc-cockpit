@@ -1474,3 +1474,19 @@ export class MultiUnitRelativeDateValidatorDirective implements Validator {
     return {validateRelativeDateRegex: true};
   }
 }
+
+@Directive({
+  standalone: false,
+  selector: '[jsonValueTrigger]'
+})
+export class JsonValueTriggerDirective {
+  @Output() jsonValueTrigger = new EventEmitter<void>();
+
+  @HostListener('input', ['$event.target.value'])
+  onInput(value: any): void {
+    const trimmed = typeof value === 'string' ? value.trim() : '';
+    if (trimmed === '{' || trimmed === '{}') {
+      setTimeout(() => this.jsonValueTrigger.emit(), 0);
+    }
+  }
+}

@@ -1181,7 +1181,7 @@ export class WorkflowComponent {
 
   private init(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
-    this.showMoreAdvanceOptions = this.preferences?.showMoreOptions || false;
+    this.showMoreAdvanceOptions = sessionStorage['popupShowMoreOptions'] !== null ? sessionStorage['popupShowMoreOptions'] === 'true' : (this.preferences?.showMoreOptions || false);
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
@@ -1672,10 +1672,12 @@ export class WorkflowComponent {
 
   showMoreOptions(): void {
     this.showMoreAdvanceOptions = true;
+    sessionStorage['popupShowMoreOptions'] = 'true';
   }
 
   hideMoreAdvanceOptions(): void {
     this.showMoreAdvanceOptions = false;
+    sessionStorage['popupShowMoreOptions'] = 'false';
   }
 
   suspendAll(all = false) {

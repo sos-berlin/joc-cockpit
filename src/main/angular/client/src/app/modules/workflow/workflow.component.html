@@ -15,6 +15,17 @@
           <div class="pull-left">
             <app-breadcrumbs [showHelp]="preferences.showHelpPages" [videoHelp]="preferences.showVideoHelpPages" (helpClick)="helpPage('workflows')" (videoClick)="videoPage('workflow-view')"></app-breadcrumbs>
           </div>
+          <div class="inline m-b-xs">
+            @if (!showMoreAdvanceOptions) {
+              <a class="text-primary cursor" (click)="showMoreOptions()">
+                <span>{{ 'common.label.showMoreOptions' | translate }}</span>
+              </a>
+            } @else {
+              <a class="text-primary cursor" (click)="hideMoreAdvanceOptions()">
+                <span>{{ 'common.label.showFewerOptions' | translate }}</span>
+              </a>
+            }
+          </div>
           @if (showMoreAdvanceOptions) {
             <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
               <div class="btn-group dropdown">
