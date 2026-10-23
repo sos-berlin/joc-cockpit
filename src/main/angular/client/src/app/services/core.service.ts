@@ -1325,6 +1325,9 @@ export class CoreService {
       .scheduler_stderr {
         margin-left: 194px;
       }
+      .log_continuation {
+        margin-left: 289px;
+      }
     `;
       doc.head.appendChild(styleEl);
     }
@@ -1341,7 +1344,16 @@ export class CoreService {
     let lastClass = '';
     let continueClass = [];
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
+    // JS7 log entry header: "<timestamp> [<LEVEL>]" at the beginning of the line
+    const logHeaderRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.,]\d+([+-]\d+(:\d+)?)?\s+\[(main|success|error|info|fatal|warn|debug\d?|trace|stdout|stderr|detail)\s*\]/i;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
+      // Lines without a JS7 header are output of the current entry (e.g. STDOUT of a job).
+      // JS7 levels like [main] or [stdout] inside such output (e.g. log4j thread name "[main]")
+      // must not change the level of the entry.
+      const isContinuation = !logHeaderRegex.test(match.replace(/^\r?\n/, ''));
+      if (isContinuation) {
+        prefix = prefix.replace(/\[(main|success|stdout|stderr)\]/ig, '');
+      }
       let div;// Now create a div element and append it to a non-appended span.
       if (windowInstance) {
         div = windowInstance.document.createElement('div');
@@ -1516,6 +1528,9 @@ export class CoreService {
         lastClass = '';
       }
       div.className += ' scheduler scheduler_' + level;
+      if (isContinuation) {
+        div.className += ' log_continuation';
+      }
       if (arr.length - 1 == index && !res.endsWith("\n")) {
         div.className += ' continue';
       }
