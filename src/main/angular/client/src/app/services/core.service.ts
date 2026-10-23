@@ -1301,32 +1301,8 @@ export class CoreService {
       const styleEl = doc.createElement('style');
       styleEl.id = styleId;
       styleEl.innerHTML = `
-      .scheduler_stdout {
+      .log-line-cont {
         margin-left: 194px;
-      }
-      .scheduler_success {
-        margin-left: 194px;
-      }
-      .scheduler_error {
-        margin-left: 194px;
-      }
-      .scheduler_main {
-        margin-left: 194px;
-      }
-      .scheduler_detail {
-        margin-left: 194px;
-      }
-      .scheduler_debug {
-        margin-left: 194px;
-      }
-      .log_info {
-        margin-left: 194px;
-      }
-      .scheduler_stderr {
-        margin-left: 194px;
-      }
-      .log_continuation {
-        margin-left: 289px;
       }
     `;
       doc.head.appendChild(styleEl);
@@ -1343,17 +1319,22 @@ export class CoreService {
     let lastLevel = '';
     let lastClass = '';
     let continueClass = [];
-    const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
-    // JS7 log entry header: "<timestamp> [<LEVEL>]" at the beginning of the line
-    const logHeaderRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.,]\d+([+-]\d+(:\d+)?)?\s+\[(main|success|error|info|fatal|warn|debug\d?|trace|stdout|stderr|detail)\s*\]/i;
-    ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
-      // Lines without a JS7 header are output of the current entry (e.g. STDOUT of a job).
-      // JS7 levels like [main] or [stdout] inside such output (e.g. log4j thread name "[main]")
-      // must not change the level of the entry.
-      const isContinuation = !logHeaderRegex.test(match.replace(/^\r?\n/, ''));
-      if (isContinuation) {
-        prefix = prefix.replace(/\[(main|success|stdout|stderr)\]/ig, '');
+    // JS7 line: "<timestamp> [LEVEL] text" - starts a new block
+    const js7LineRegex = /^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}[^\s]*)\s+\[(main|success|error|info|fatal|warn|debug\d?|trace|stdout|stderr|detail)\]\s*([\s\S]*)$/i;
+    // Level at the start of a block's continuation line: "[DEBUG] ..." (JITL logger) or "<timestamp> DEBUG [thread] ..." (log4j)
+    const bracketLevelRegex = /^\s*\[(trace|debug\d?|info|warn|error|fatal)\]/i;
+    const log4jLevelRegex = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[,.]\d+)?(?:Z|[+-]\d{2}:?\d{2})?\s+(trace|debug|info|warn|error|fatal)\b/i;
+    // A chunk of a running log continues the block of the previously rendered chunk
+    const container = doc.getElementById(domId || 'logs');
+    if (container) {
+      const renderedLines = container.getElementsByClassName('log-line');
+      const prevLine = renderedLines[renderedLines.length - 1];
+      if (prevLine) {
+        lastLevel = prevLine.getAttribute('data-level') || '';
       }
+    }
+    const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
+    ('\n' + res).replace(/\r?\n([^\r\n]+)/g, (match) => {
       let div;// Now create a div element and append it to a non-appended span.
       if (windowInstance) {
         div = windowInstance.document.createElement('div');
@@ -1377,29 +1358,20 @@ export class CoreService {
         }
       }
 
-      if (level) {
-        lastLevel = level;
+      const rawLine = match.replace(/^\r?\n/, '');
+      const lineMatch = rawLine.match(js7LineRegex);
+      const isContinuation = !lineMatch;
+      if (lineMatch) {
+        lastLevel = lineMatch[2].toLowerCase();
       } else {
-        if (prefix.search(/\[stdout\]/i) > -1) {
-          lastLevel = 'stdout';
-        } else if (prefix.search(/\[stderr\]/i) > -1) {
-          lastLevel = 'stderr';
-        } else if (prefix.search(/\[debug\]/i) > -1) {
-          lastLevel = 'debug';
-        } else if (prefix.search(/\[trace\]/i) > -1) {
-          lastLevel = 'trace';
-        } else if (prefix.search(/\[info\]/i) > -1) {
-          lastLevel = 'info';
-        } else if (prefix.search(/\[main\]/i) > -1) {
-          lastLevel = 'main';
-        } else if (prefix.search(/\[success\]/i) > -1) {
-          lastLevel = 'success';
-        } else if (lastLevel) {
-          level = lastLevel;
+        const contentLevel = rawLine.match(bracketLevelRegex) || rawLine.match(log4jLevelRegex);
+        if (contentLevel) {
+          lastLevel = contentLevel[1].toLowerCase();
         }
       }
+      lastLevel = lastLevel.replace(/^debug\d$/, 'debug');
+      const level = lastLevel || 'info';
 
-      level = (level) ? level.trim().toLowerCase() : 'info';
       if (level !== 'info') {
         div.className += ' log_' + level;
       }
@@ -1420,6 +1392,7 @@ export class CoreService {
           div.className += ' hide-block';
         }
       } else if (level === 'stderr') {
+        obj.isStdErrLevel = true;
         div.className += ' stderr';
         if (!object.checkBoxs.stderr) {
           div.className += ' hide-block';
@@ -1447,35 +1420,12 @@ export class CoreService {
         if (!object.checkBoxs.trace) {
           div.className += ' hide-block';
         }
-      } else if (prefix.search(/\[stdout\]/i) > -1) {
-        obj.isStdoutLevel = true;
-        div.className += ' stdout';
-        if (!object.checkBoxs.stdout) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[stderr\]/i) > -1) {
-        obj.isStdErrLevel = true;
-        div.className += ' stderr log_stderr';
-        if (!object.checkBoxs.stderr) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[debug\]/i) > -1) {
-        div.className += ' debug log_debug';
+      } else if (level === 'debug') {
+        div.className += ' debug';
         if (!object.checkBoxs.debug) {
           div.className += ' hide-block';
         }
-      } else if (prefix.search(/\[trace\]/i) > -1) {
-        obj.isTraceLevel = true;
-        div.className += ' trace log_trace';
-        if (!object.checkBoxs.trace) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[main\]/i) > -1) {
-        div.className += ' main log_main';
-        if (!object.checkBoxs.main) {
-          div.className += ' hide-block';
-        }
-      } else if (prefix.search(/\[info\]/i) > -1) {
+      } else if (lastLevel === 'info') {
         obj.isInfoLevel = true;
         div.className += ' info log_info';
         if (!object.checkBoxs.info) {
@@ -1488,11 +1438,6 @@ export class CoreService {
         }
       }
 
-      if (level.match('^debug') && !object.checkBoxs.debug) {
-        div.className += ' hide-block';
-      }
-      const rawLine = match.replace(/^\r?\n/, '');
-      const lineMatch = rawLine.match(/^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}[^\s]*)\s+\[([^\]]+)\]\s*([\s\S]*)$/);
       const innerLevelColors: {[key: string]: string} = {
         'main': '#696969', 'info': '#666666', 'success': 'green',
         'stdout': 'transparent', 'debug': '#006400', 'stderr': 'red',
@@ -1500,8 +1445,12 @@ export class CoreService {
         'fatal': 'red', 'detail': '#0000ff'
       };
       const esc = (s: string) => s ? s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-      const levelKey = lineMatch ? lineMatch[2].trim().toLowerCase() : lastLevel.trim().toLowerCase().replace(/[\[\]]/g, '') || 'main';
+      const levelKey = lastLevel || 'main';
       div.className += ` log-line log-line-${levelKey}`;
+      if (isContinuation) {
+        div.className += ' log-line-cont';
+      }
+      div.setAttribute('data-level', lastLevel);
       div.setAttribute('style', `border-left-color:${innerLevelColors[levelKey] || '#696969'}`);
       if (lineMatch) {
         const rawTs = originalTs || lineMatch[1];
@@ -1528,9 +1477,6 @@ export class CoreService {
         lastClass = '';
       }
       div.className += ' scheduler scheduler_' + level;
-      if (isContinuation) {
-        div.className += ' log_continuation';
-      }
       if (arr.length - 1 == index && !res.endsWith("\n")) {
         div.className += ' continue';
       }
