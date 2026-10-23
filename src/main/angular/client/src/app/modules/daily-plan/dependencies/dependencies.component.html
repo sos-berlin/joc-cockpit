@@ -195,9 +195,9 @@
                           <span class="dep-state-text" [ngClass]="'dep-text-' + (r.node.failed ? 'failed' : r.node.state)">{{ stateLabelKey(r.node) | translate }}</span>
                           <span class="dep-posts">
                             @if (r.posts.length > 0) {
-                              {{ 'dailyPlan.dependencies.label.posts' | translate }}
+                              <span class="text-muted">{{ 'dailyPlan.dependencies.label.posts' | translate }} </span>
                               @for (b of r.posts; track b; let last = $last) {
-                                <a (click)="showBoard(b)">{{ getFormattedPath(b) }}</a>@if (!last) {<span>, </span>}
+                                <a (click)="showBoard(b)">{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
                               }
                             } @else {
                               <span class="text-muted">—</span>
@@ -216,8 +216,10 @@
                                 </span>
                               } @else {
                                 <span>
-                                  {{ (w.kind === 'consume' ? 'dailyPlan.dependencies.label.consumesFrom' : 'dailyPlan.dependencies.label.waitsFor') | translate: {name: getFormattedPath(w.from)} }}
-                                  · <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
+                                  <span [class.text-muted]="!r.blocked">{{ (w.kind === 'consume' ? 'dailyPlan.dependencies.label.consumesFrom' : 'dailyPlan.dependencies.label.waitsFor') | translate }} </span>
+                                  {{ getFormattedPath(w.from) }}
+                                  <span [class.text-muted]="!r.blocked"> · </span>
+                                  <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
                                   <span class="text-muted p-l-xs">{{ boardStateKey(w.boardState) | translate }}</span>
                                 </span>
                               }
