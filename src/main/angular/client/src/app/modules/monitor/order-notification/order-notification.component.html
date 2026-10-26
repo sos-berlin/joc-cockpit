@@ -202,9 +202,16 @@
                   <i (click)="navToWorkflowTab(notify.workflow);$event.stopPropagation()"
                      class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                 }
-                <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
-                      [innerHtml]="notify.workflow | highlight : filters.filter.searchText"
-                      class="text-hover-primary"></span>
+                @if (!isPathDisplay) {
+                  <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
+                        [innerHtml]="getLastPartOfWorkflow(notify.workflow) | highlight : filters.filter.searchText"
+                        class="text-hover-primary"></span>
+                }
+                @if (isPathDisplay) {
+                  <span (click)="coreService.showWorkflow(notify.workflow);$event.stopPropagation()"
+                        [innerHtml]="notify.workflow | highlight : filters.filter.searchText"
+                        class="text-hover-primary"></span>
+                }
               </span>
               </td>
               <td>
