@@ -1234,7 +1234,7 @@
     "dependencies.label.step": "Étape",
     "dependencies.label.workflow": "Workflow",
     "dependencies.label.state": "Statut",
-    "dependencies.label.postsNotice": "Envoie l'Annonce",
+    "dependencies.label.postsNotice": "Tableau de Condition",
     "dependencies.label.waitsForNotice": "Attends",
     "dependencies.label.orders": "Ordres",
     "dependencies.label.workflowCount": "{{count}} Workflows",

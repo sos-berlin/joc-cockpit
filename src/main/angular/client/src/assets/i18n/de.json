@@ -1234,7 +1234,7 @@
     "dependencies.label.step": "Schritt",
     "dependencies.label.workflow": "Arbeitsablauf",
     "dependencies.label.state": "Status",
-    "dependencies.label.postsNotice": "Sendet Notiz",
+    "dependencies.label.postsNotice": "Notizbrett",
     "dependencies.label.waitsForNotice": "Wartet auf",
     "dependencies.label.orders": "Aufträge",
     "dependencies.label.workflowCount": "{{count}} Arbeitsabläufe",
