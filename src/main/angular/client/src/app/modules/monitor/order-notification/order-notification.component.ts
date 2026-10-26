@@ -32,6 +32,8 @@ export class OrderNotificationComponent {
     indeterminate: false
   };
   reloadState = 'no';
+  /** Global setting "Display folders in views": full workflow path when true, workflow name only when false. */
+  isPathDisplay = true;
 
   searchableProperties = ['controllerId', 'type', 'job', 'exitCode', 'message', 'orderId', 'workflow', 'created'];
 
@@ -63,6 +65,7 @@ export class OrderNotificationComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     if (this.filters.mapOfCheckedId) {
       if (this.filters.mapOfCheckedId instanceof Set) {
         this.filters.mapOfCheckedId.clear();
@@ -207,6 +210,14 @@ export class OrderNotificationComponent {
         ++this.totalNotification;
       }
     });
+  }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1];
+    }
+    return '';
   }
 
   navToWorkflowTab(workflow): void {

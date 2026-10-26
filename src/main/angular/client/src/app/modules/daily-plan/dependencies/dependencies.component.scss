@@ -144,7 +144,7 @@ $dep-tint: rgba(128, 128, 160, 0.10);
 // ---- group rows
 .dep-group-row {
   display: grid;
-  grid-template-columns: 16px 170px minmax(160px, 1.3fr) minmax(160px, 1.3fr) 110px minmax(160px, 1.4fr) minmax(220px, 1.8fr) 90px;
+  grid-template-columns: 16px 170px minmax(150px, 1.2fr) minmax(140px, 1.1fr) 100px minmax(140px, 1.2fr) minmax(300px, 2.4fr) 90px;
   gap: 14px;
   align-items: center;
   padding: 10px 14px;

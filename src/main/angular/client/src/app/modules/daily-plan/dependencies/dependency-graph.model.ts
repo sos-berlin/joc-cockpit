@@ -10,7 +10,19 @@
  * response and never kept across requests.
  *
  *   postingWorkflows / expectingWorkflows / consumingWorkflows / noticeBoards / orders
+ *
+ * Optionally the planned orders of the Plan (existing `daily_plan/orders` API): the snapshot
+ * lists only orders that wait at or are due to post a notice, so without them a workflow whose
+ * order has not reached a notice instruction yet would look as if it had no order.
  */
+
+/** An order known to exist for a workflow in this Plan (from the daily plan). */
+export interface PlanOrder {
+  orderId: string;
+  workflowPath: string;
+  /** e.g. PLANNED, SUBMITTED, FINISHED, FAILED */
+  state?: string;
+}
 
 export type DepState = 'action' | 'expecting' | 'normal' | 'none';
 export type BoardState = 'expected' | 'posted' | 'announced' | 'none';
@@ -26,6 +38,10 @@ export interface DepNode {
   expectingOrderIds: string[];
   presentDueOrderIds: string[];
   futureDueOrderIds: string[];
+  /** orders of this workflow in the Plan that are not (yet) at a notice instruction */
+  planOrderIds: string[];
+  /** number of orders waiting at a notice instruction, as counted by the API */
+  numOfExpectingOrders: number;
   orderIds: string[];
   state: DepState;
   /** at least one order is FAILED, SUSPENDED or BROKEN */
@@ -74,6 +90,8 @@ export interface DepGraph {
   /** workflows that post or receive but have no counterpart in this Plan (and are not waiting) */
   isolatedCount: number;
   boardCount: number;
+  /** board by name (as referenced by workflows) or path */
+  boardOf: (name: string) => any;
 }
 
 export interface TraverseResult {
@@ -116,33 +134,74 @@ export function stateRank(state: DepState): number {
   return STATE_RANK[state];
 }
 
-function boardStateOf(board: any): BoardState {
+/**
+ * Numbers of expected, posted and announced notices of a board. Uses the counters of the
+ * response and, where they are missing, the states of the board's notices.
+ */
+export function boardCounts(board: any): { expected: number; posted: number; announced: number } {
+  const counts = {expected: 0, posted: 0, announced: 0};
   if (!board) {
-    return 'none';
+    return counts;
   }
-  if (board.numOfExpectedNotices > 0) {
+  const hasCounters = board.numOfExpectedNotices != null || board.numOfPostedNotices != null || board.numOfAnnouncements != null;
+  if (hasCounters) {
+    counts.expected = board.numOfExpectedNotices || 0;
+    counts.posted = board.numOfPostedNotices || 0;
+    counts.announced = board.numOfAnnouncements || 0;
+    return counts;
+  }
+  toArray(board.notices).forEach((n: any) => {
+    const st = String(n?.state?._text || n?.state || '').toUpperCase();
+    if (st === 'EXPECTED') {
+      counts.expected++;
+    } else if (st === 'POSTED') {
+      counts.posted++;
+    } else if (st === 'ANNOUNCED') {
+      counts.announced++;
+    }
+  });
+  return counts;
+}
+
+export function boardStateOf(board: any): BoardState {
+  const c = boardCounts(board);
+  if (c.expected > 0) {
     return 'expected';
   }
-  if (board.numOfPostedNotices > 0) {
+  if (c.posted > 0) {
     return 'posted';
   }
-  if (board.numOfAnnouncements > 0) {
+  if (c.announced > 0) {
     return 'announced';
   }
   return 'none';
 }
 
+/** All Notice Boards a Critical Path refers to: posted, expected or consumed by its workflows. */
+export function groupBoards(graph: DepGraph, g: DepGroup): string[] {
+  const set = new Set<string>();
+  g.nodes.forEach(p => {
+    const n = graph.nodes.get(p);
+    n.postNotices.forEach(b => set.add(b));
+    n.expectNotices.forEach(b => set.add(b));
+    n.consumeNotices.forEach(b => set.add(b));
+  });
+  return Array.from(set);
+}
+
 /** Same colour rules as the previous view, merged over all roles of a workflow. */
 function computeState(n: DepNode): DepState {
-  if (n.orderIds.length === 0) {
-    return 'none';
-  }
   const isPoster = n.postNotices.length > 0;
   const isReceiver = n.expectNotices.length > 0 || n.consumeNotices.length > 0;
+  // the count is available even if no order IDs are delivered
+  const expecting = n.expectingOrderIds.length > 0 || n.numOfExpectingOrders > 0;
+  if (n.orderIds.length === 0 && !expecting) {
+    return 'none';
+  }
   if ((isPoster && n.futureDueOrderIds.length > 0) || (isReceiver && n.presentDueOrderIds.length > 0)) {
     return 'action';
   }
-  if (isReceiver && n.expectingOrderIds.length > 0) {
+  if (isReceiver && expecting) {
     return 'expecting';
   }
   return 'normal';
@@ -216,29 +275,53 @@ export function computeLevels(nodeIds: string[], links: { from: string; to: stri
 }
 
 /** Builds the whole model once per snapshot. Cost is linear in workflows + edges. */
-export function buildDependencyGraph(data: any): DepGraph {
+export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): DepGraph {
   const nodes = new Map<string, DepNode>();
   const boards = new Map<string, any>();
 
+  // Boards are referenced by name in the workflows but may be keyed by name or by path:
+  // index each board under its key, its name, its path and the last part of its path.
+  const indexBoard = (key: string | null, b: any) => {
+    const keys = [key, b?.name, b?.path, nameOf(b?.path), nameOf(key || '')];
+    keys.filter(Boolean).forEach(k => {
+      if (!boards.has(k)) {
+        boards.set(k, b);
+      }
+    });
+  };
   const rawBoards = data?.noticeBoards;
   if (rawBoards) {
     if (Array.isArray(rawBoards)) {
-      rawBoards.forEach(b => b?.name && boards.set(b.name, b));
+      rawBoards.forEach(b => indexBoard(null, b));
     } else {
-      Object.keys(rawBoards).forEach(key => {
-        const b = rawBoards[key];
-        boards.set(b?.name || key, b);
-        if (b?.name && b.name !== key) {
-          boards.set(key, b);
-        }
-      });
+      Object.keys(rawBoards).forEach(key => indexBoard(key, rawBoards[key]));
     }
   }
+  const boardOf = (name: string) => boards.get(name) ?? boards.get(nameOf(name));
 
   const orderStates = new Map<string, string>();
+  const ordersByWorkflow = new Map<string, string[]>();
+  const addPlanOrder = (path: string, orderId: string) => {
+    if (!path || !orderId) {
+      return;
+    }
+    if (!ordersByWorkflow.has(path)) {
+      ordersByWorkflow.set(path, []);
+    }
+    ordersByWorkflow.get(path).push(orderId);
+  };
   toArray(data?.orders).forEach((o: any) => {
     if (o?.orderId) {
       orderStates.set(o.orderId, o.state?._text);
+      addPlanOrder(o.workflowId?.path || o.workflowPath, o.orderId);
+    }
+  });
+  (planOrders || []).forEach(o => {
+    if (o?.orderId) {
+      if (o.state && !orderStates.has(o.orderId)) {
+        orderStates.set(o.orderId, o.state);
+      }
+      addPlanOrder(o.workflowPath, o.orderId);
     }
   });
 
@@ -254,7 +337,7 @@ export function buildDependencyGraph(data: any): DepGraph {
         folder: folderOf(w.path),
         postNotices: [], expectNotices: [], consumeNotices: [],
         expectingOrderIds: [], presentDueOrderIds: [], futureDueOrderIds: [],
-        orderIds: [], state: 'none', failed: false, searchText: '', unmatchedNotices: []
+        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, searchText: '', unmatchedNotices: []
       };
       nodes.set(w.path, n);
     }
@@ -264,6 +347,7 @@ export function buildDependencyGraph(data: any): DepGraph {
     n.expectingOrderIds.push(...(w.expectingOrderIds || []));
     n.presentDueOrderIds.push(...(w.presentDueOrderIds || []));
     n.futureDueOrderIds.push(...(w.futureDueOrderIds || []));
+    n.numOfExpectingOrders = Math.max(n.numOfExpectingOrders, w.numOfExpectingOrders || 0);
   };
   toArray(data?.postingWorkflows).forEach(merge);
   toArray(data?.expectingWorkflows).forEach(merge);
@@ -278,7 +362,9 @@ export function buildDependencyGraph(data: any): DepGraph {
     n.expectingOrderIds = uniq(n.expectingOrderIds);
     n.presentDueOrderIds = uniq(n.presentDueOrderIds);
     n.futureDueOrderIds = uniq(n.futureDueOrderIds);
-    n.orderIds = uniq([...n.expectingOrderIds, ...n.presentDueOrderIds, ...n.futureDueOrderIds]);
+    const atNotice = new Set([...n.expectingOrderIds, ...n.presentDueOrderIds, ...n.futureDueOrderIds]);
+    n.planOrderIds = uniq(ordersByWorkflow.get(n.path) || []).filter(id => !atNotice.has(id));
+    n.orderIds = uniq([...atNotice, ...n.planOrderIds]);
     n.state = computeState(n);
     n.failed = n.orderIds.some(id => CRITICAL_ORDER_STATES.includes(orderStates.get(id)));
     n.searchText = [n.path, ...n.postNotices, ...n.expectNotices, ...n.consumeNotices].join(' ').toLowerCase();
@@ -310,7 +396,7 @@ export function buildDependencyGraph(data: any): DepGraph {
     if (!from) {
       return;
     }
-    const board = boards.get(boardName);
+    const board = boardOf(boardName);
     const bState = boardStateOf(board);
     for (const posterPath of from) {
       if (posterPath === receiver.path) {
@@ -434,7 +520,8 @@ export function buildDependencyGraph(data: any): DepGraph {
 
   return {
     nodes, edges, outgoing, incoming, boards, groups, groupOf, isolatedCount,
-    boardCount: referencedBoards.size
+    boardCount: referencedBoards.size,
+    boardOf
   };
 }
 
