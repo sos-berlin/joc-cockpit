@@ -344,8 +344,20 @@
                           <div class="m-a-0">
                             <span class="_500">{{ 'auditLog.label.requestBody' | translate }}</span>
                             :
-                            <span [innerHtml]="auditLog.parameters"></span>
+                            @if (auditLog.requestJson) {
+                              <button (click)="toggleJsonView(auditLog, false);$event.stopPropagation()" [attr.aria-label]="'inventory.label.showJson' | translate"
+                                      [appRichTooltip]="'inventory.label.showJson' | translate"
+                                      [ngClass]="{'active': auditLog.showRequestJson}" class="btn-json-view" type="button"><span class="json-braces">{{ '{ }' }}</span>JSON</button>
+                            }
+                            @if (!auditLog.showRequestJson) {
+                              <span [innerHtml]="auditLog.parameters"></span>
+                            }
                           </div>
+                          @if (auditLog.showRequestJson) {
+                            <div class="audit-log-json-view json-editor-readonly m-t-xs" (click)="$event.stopPropagation()">
+                              <json-editor [data]="auditLog.requestJson" [options]="jsonViewOptions"></json-editor>
+                            </div>
+                          }
                         </td>
                       </tr>
                       @if (!auditLog.isLoaded) {
@@ -363,8 +375,18 @@
                             <div class="m-a-0">
                               <span class="_500">{{ 'auditLog.label.details' | translate }}</span>
                               :
-                              <span>{{auditLog.details | json}}</span>
+                              <button (click)="toggleJsonView(auditLog, true);$event.stopPropagation()" [attr.aria-label]="'inventory.label.showJson' | translate"
+                                      [appRichTooltip]="'inventory.label.showJson' | translate"
+                                      [ngClass]="{'active': auditLog.showDetailsJson}" class="btn-json-view" type="button"><span class="json-braces">{{ '{ }' }}</span>JSON</button>
+                              @if (!auditLog.showDetailsJson) {
+                                <span>{{auditLog.details | json}}</span>
+                              }
                             </div>
+                            @if (auditLog.showDetailsJson) {
+                              <div class="audit-log-json-view json-editor-readonly m-t-xs" (click)="$event.stopPropagation()">
+                                <json-editor [data]="auditLog.details" [options]="jsonViewOptions"></json-editor>
+                              </div>
+                            }
                           </td>
                         </tr>
                       }

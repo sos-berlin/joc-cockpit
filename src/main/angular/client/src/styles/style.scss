@@ -9310,6 +9310,64 @@ div.jsoneditor-menu {
   min-height: calc(100vh - 276px);
 }
 
+/* JSON icon button to show/hide the JSON Editor (view mode), e.g. Audit Log details */
+.btn-json-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+  margin: 0 4px;
+  padding: 0 6px;
+  vertical-align: middle;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+
+  .json-braces {
+    font-family: monospace;
+    font-weight: bold;
+    letter-spacing: -1px;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 26%, transparent);
+  }
+
+  &.active {
+    color: #fff;
+    background: var(--primary);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+}
+
+/* JSON Editor shown inline (view mode) in the Audit Log details */
+.audit-log-json-view {
+  height: 400px;
+
+  json-editor {
+    height: 100%;
+  }
+
+  .ace_editor.ace-jsoneditor {
+    min-height: auto;
+  }
+
+  div.jsoneditor-tree {
+    min-height: auto;
+  }
+}
+
 .ace-jsoneditor .ace_marker-layer .ace_active-line {
   background: var(--row-selected) !important;
 }

@@ -3,12 +3,14 @@ import {AuditLogComponent, FilterModalComponent, SearchComponent} from './audit-
 import {SharedModule} from '../shared/shared.module';
 import {AuditLogRoutingModule} from './audit-log-routing.module';
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {JsonEditorComponent} from 'ang-jsoneditor';
 
 @NgModule({
     imports: [
         SharedModule,
         AuditLogRoutingModule,
-        NzTooltipDirective
+        NzTooltipDirective,
+        JsonEditorComponent
     ],
   declarations: [AuditLogComponent, FilterModalComponent, SearchComponent]
 })
