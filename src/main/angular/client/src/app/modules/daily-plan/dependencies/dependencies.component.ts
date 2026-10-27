@@ -71,7 +71,11 @@ export interface DependencyStepNote {
   blocker: string | null;
   /** notice that nobody posts (noPoster) */
   board: string | null;
-  blocked: string;
+  /** every workflow blocked by the same cause, in chain order */
+  blocked: string[];
+  /** blocked workflows whose own order is also FAILED, SUSPENDED or BROKEN */
+  critical: { path: string; state: string }[];
+  /** workflows after the blocked ones that keep waiting too */
   downstream: number;
 }
 
@@ -119,7 +123,10 @@ interface GroupView {
   blockLater: boolean;
   blocker: string | null;
   blockerBoard: string | null;
+  /** first blocked workflow */
   blockedName: string | null;
+  /** all workflows blocked by the same cause */
+  blockedNames: Set<string>;
   stripParts?: { state: string; count: number }[];
 }
 
@@ -633,28 +640,45 @@ export class DependenciesComponent {
   }
 
   /**
-   * Orders of the day from the existing daily plan API, for the workflows of the snapshot only.
-   * The snapshot lists just the orders that wait at or are due to post a notice; this tells
-   * which workflows have an order in the Plan at all. The request schema allows no `limit`,
-   * so the response is kept small with `workflowPaths`. A failure does not block the view:
-   * it then falls back to the orders of the snapshot.
+   * The Controller's orders of the selected Plan, for the workflows of the snapshot only.
+   * The snapshot lists just the orders that wait at or are due to post a notice; the Controller
+   * knows every order, including ad hoc orders that are not part of the Daily Plan, with its live
+   * state (e.g. SUSPENDED). The request cannot filter by Plan, so this is done here.
+   * A failure does not block the view: it then falls back to the orders of the snapshot.
    */
-  private loadPlanOrders(day: string, workflowPaths: string[]): Observable<any[] | null> {
+  private loadControllerOrders(day: string, workflowPaths: string[]): Observable<any[] | null> {
     if (workflowPaths.length === 0) {
       return of([]);
     }
-    return this.coreService.post('daily_plan/orders', {
-      controllerIds: [this.schedulerId],
-      dailyPlanDateFrom: day,
-      dailyPlanDateTo: day,
-      workflowPaths
+    return this.coreService.post('orders', {
+      controllerId: this.schedulerId,
+      workflowIds: workflowPaths.map(path => ({path})),
+      compact: true,
+      withoutWorkflowTags: true,
+      limit: -1
     }).pipe(
-      map((res: any) => res?.plannedOrderItems || []),
+      map((res: any) => (res?.orders || []).filter((o: any) => this.isOrderOfPlan(o, day))),
       catchError(() => {
-        console.warn('[Dependencies] daily_plan/orders failed; workflows are shown with the orders of the snapshot only.');
+        console.warn('[Dependencies] orders failed; workflows are shown with the orders of the snapshot only.');
         return of(null);
       })
     );
+  }
+
+  /**
+   * An order belongs to the selected Plan if its plan key is the selected day, or if it belongs to
+   * the Global plan schema. Without plan information the date in the order ID decides
+   * (order IDs start with "#YYYY-MM-DD#"). Cancelled orders will not post any notice.
+   */
+  private isOrderOfPlan(o: any, day: string): boolean {
+    if (!o?.orderId || o.state?._text === 'CANCELLED') {
+      return false;
+    }
+    if (o.planId) {
+      return o.planId.noticeSpaceKey === day || o.planId.planSchemaId === 'Global';
+    }
+    const m = /^#(\d{4}-\d{2}-\d{2})#/.exec(o.orderId);
+    return !!m && m[1] === day;
   }
 
   /** Paths of all workflows in a snapshot response. */
@@ -674,16 +698,16 @@ export class DependenciesComponent {
     this.isLoaded = false;
     const started = performance.now();
     const snapshot$: Observable<any> = this.coreService.post(url, body);
-    // the planned orders are requested for the workflows of the snapshot, so after it
+    // the Controller's orders are requested for the workflows of the snapshot, so after it
     const request: Observable<[any, any[] | null]> = planDay
       ? snapshot$.pipe(switchMap(res =>
-        this.loadPlanOrders(planDay, this.snapshotWorkflowPaths(res)).pipe(map(items => [res, items] as [any, any[] | null]))))
+        this.loadControllerOrders(planDay, this.snapshotWorkflowPaths(res)).pipe(map(items => [res, items] as [any, any[] | null]))))
       : snapshot$.pipe(map(res => [res, null] as [any, any[] | null]));
     request.pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe({
-      next: ([res, planItems]) => {
+      next: ([res, controllerOrders]) => {
         const received = performance.now();
         this.isLoaded = true;
-        this.setWorkflowData(res, planItems);
+        this.setWorkflowData(res, controllerOrders);
         const built = performance.now();
         this.lastPerf = {
           requestMs: Math.round(received - started),
@@ -704,14 +728,14 @@ export class DependenciesComponent {
   }
 
   /** Builds the model from the current response; paging, search and opening a path reuse it. */
-  private setWorkflowData(res: any, planItems: any[] | null = null): void {
+  private setWorkflowData(res: any, controllerOrders: any[] | null = null): void {
     this.workflowData = res || {};
     this.noticeBoards = res?.noticeBoards ? res.noticeBoards : [];
-    this.planItemIndex = new Map((planItems || []).filter(i => i?.orderId).map(i => [i.orderId, i]));
-    const planOrders: PlanOrder[] = (planItems || []).map(i => ({
-      orderId: i.orderId,
-      workflowPath: i.workflowPath || i.workflowId?.path,
-      state: i.state?._text || i.state
+    this.controllerOrderIndex = new Map((controllerOrders || []).map(o => [o.orderId, o]));
+    const planOrders: PlanOrder[] = (controllerOrders || []).map(o => ({
+      orderId: o.orderId,
+      workflowPath: o.workflowId?.path,
+      state: o.state?._text
     }));
     this.model = res ? buildDependencyGraph(res, planOrders) : null;
     this.totalWorkflows = this.model ? this.model.nodes.size : 0;
@@ -883,7 +907,15 @@ export class DependenciesComponent {
   /** Key of the note above a blocked step: no workflows after it, one, or several. */
   noteKey(r: DependencyStepNote): string {
     const base = 'dailyPlan.dependencies.message.' + r.blockType + (r.later ? 'Later' : '');
+    if (r.blocked.length > 1) {
+      return base + 'Many';
+    }
     return r.downstream === 0 ? base + 'None' : this.plural(base, r.downstream);
+  }
+
+  /** Names of the blocked workflows for the note, e.g. "w_seg_3, w_seg_4". */
+  noteBlocked(r: DependencyStepNote): string {
+    return r.blocked.map(p => this.getFormattedPath(p)).join(', ');
   }
 
   /** Progress strip: one segment per workflow up to STRIP_SEGMENT_LIMIT, then one part per state. */
@@ -920,7 +952,7 @@ export class DependenciesComponent {
 
   isBlockedStep(g: DepGroup, node: DepNode): boolean {
     const v = this.getGroupView(g);
-    return v.blockedName === node.path;
+    return v.blockedNames.has(node.path);
   }
 
   /** Health and status text of a Critical Path (cached until the next response). */
@@ -938,16 +970,20 @@ export class DependenciesComponent {
       ({health, key: 'dailyPlan.dependencies.status.' + key, params, blockType: v.blockType});
     if (g.failed) {
       const failed = v.order.find(n => n.failed);
-      return status('intervention', 'failed', {name: this.getFormattedPath(failed?.path)});
+      return status('intervention', this.criticalKey(failed), {name: this.getFormattedPath(failed?.path)});
     }
     const later = v.blockLater ? 'Later' : '';
+    const many = v.blockedNames.size > 1 ? 'Many' : '';
     if (v.blockType === 'noOrder') {
-      return status('intervention', 'noOrder' + later, {
+      return status('intervention', 'noOrder' + later + many, {
+        blockedCount: v.blockedNames.size,
         name: this.getFormattedPath(v.blocker), blockerStage: v.blockerStage, stage: v.blockedStage
       });
     }
     if (v.blockType === 'noPoster') {
-      return status('intervention', 'noPoster' + later, {name: this.getFormattedPath(v.blockedName), board: this.getFormattedPath(v.blockerBoard)});
+      return status('intervention', 'noPoster' + later + many, {
+        name: this.getFormattedPath(v.blockedName), board: this.getFormattedPath(v.blockerBoard), blockedCount: v.blockedNames.size
+      });
     }
     if (g.state === 'action') {
       const count = v.order.filter(n => n.state === 'action').length;
@@ -975,7 +1011,12 @@ export class DependenciesComponent {
   }
 
   stateLabelKey(node: DepNode): string {
-    return 'dailyPlan.dependencies.state.' + (node.failed ? 'failed' : node.state);
+    return 'dailyPlan.dependencies.state.' + (node.failed ? this.criticalKey(node) : node.state);
+  }
+
+  /** 'failed', 'suspended' or 'broken' for a workflow with a critical order (same colour for all). */
+  private criticalKey(node: DepNode | undefined): string {
+    return (node?.criticalState || 'FAILED').toLowerCase();
   }
 
   boardStateKey(state: BoardState): string {
@@ -1035,14 +1076,27 @@ export class DependenciesComponent {
         blockerBoard = unposted;
       }
       if (blockType) {
-        blockLater = n.state !== 'expecting';
-      }
-      if (blockType) {
         blockedName = n.path;
         blockedStage = levels.get(n.path) + 1;
         blockerStage = blocker ? levels.get(blocker) + 1 : 0;
         break;
       }
+    }
+
+    // every workflow with orders that is blocked by the same cause: it depends on the same posting
+    // workflow without order, or on the same notice that nobody posts
+    const blockedNodes = !blockType ? [] : order.filter(n => n.state !== 'none' && (blockType === 'noOrder'
+      ? incoming(n.path).some(e => e.from === blocker && e.boardState !== 'posted')
+      : n.unmatchedNotices.includes(blockerBoard)));
+    const blockedNames = new Set(blockedNodes.map(n => n.path));
+    // "waits" as soon as one of them already waits, otherwise "will wait"
+    blockLater = blockedNodes.length > 0 && !blockedNodes.some(n => n.state === 'expecting');
+    let downstream = 0;
+    if (blockedNodes.length > 0) {
+      const after = new Set<string>();
+      blockedNodes.forEach(n => traverse(this.model, n.path, 0, -1).nodes.forEach(p => after.add(p)));
+      blockedNames.forEach(p => after.delete(p));
+      downstream = after.size;
     }
 
     const steps: DependencyChainRow[] = [];
@@ -1068,8 +1122,9 @@ export class DependenciesComponent {
           later: blockLater,
           blocker,
           board: blockerBoard,
-          blocked: n.path,
-          downstream: traverse(this.model, n.path, 0, -1).nodes.size - 1
+          blocked: blockedNodes.map(b => b.path),
+          critical: blockedNodes.filter(b => b.failed).map(b => ({path: b.path, state: b.criticalState || 'FAILED'})),
+          downstream
         });
       }
       steps.push({
@@ -1097,11 +1152,11 @@ export class DependenciesComponent {
             unmatched: true
           }))
         ],
-        blocked: n.path === blockedName
+        blocked: blockedNames.has(n.path)
       });
       lastStage = stage;
     }
-    return {order, rows: this.foldRuns(g.id, steps), blockedStage, blockerStage, blockType, blockLater, blocker, blockerBoard, blockedName};
+    return {order, rows: this.foldRuns(g.id, steps), blockedStage, blockerStage, blockType, blockLater, blocker, blockerBoard, blockedName, blockedNames};
   }
 
   /** Folds runs of uniform, unremarkable steps; search matches are never folded. */
@@ -1144,8 +1199,8 @@ export class DependenciesComponent {
   // ===================================================================== orders side panel
 
   private orderIndex: Map<string, any> | null = null;
-  /** planned orders of the day by order ID, for orders that are not part of the snapshot */
-  private planItemIndex = new Map<string, any>();
+  /** the Controller's orders of the Plan by order ID, for orders that are not part of the snapshot */
+  private controllerOrderIndex = new Map<string, any>();
 
   buildOrdersHtml(orders: any[]): void {
     this.sideBar.orders = [];
@@ -1160,7 +1215,7 @@ export class DependenciesComponent {
 
   private getOrderDetails(orderId: string): any {
     if (!this.workflowData || !this.workflowData.orders) {
-      return this.planItemIndex.get(orderId) || null;
+      return this.controllerOrderIndex.get(orderId) || null;
     }
     if (!this.orderIndex) {
       const orders = Array.isArray(this.workflowData.orders)
@@ -1168,7 +1223,7 @@ export class DependenciesComponent {
         : Object.values(this.workflowData.orders);
       this.orderIndex = new Map(orders.map((o: any) => [o.orderId, o]));
     }
-    return this.orderIndex.get(orderId) || this.planItemIndex.get(orderId) || null;
+    return this.orderIndex.get(orderId) || this.controllerOrderIndex.get(orderId) || null;
   }
 
   // ===================================================================== plans and events
