@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, QueryList, ViewChildren} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -14,6 +14,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component';
+import {JsonEditorComponent, JsonEditorOptions} from 'ang-jsoneditor';
 
 @Component({
   standalone: false,
@@ -250,6 +251,12 @@ export class AuditLogComponent {
     {date: '-7d',  text: 'filters.button.lastWeak'}
   ];
 
+  // JSON Editor in view mode (read only) for Request Body and Details
+  jsonViewOptions: any = new JsonEditorOptions();
+  private isJsonViewLanguageLoaded = false;
+  @ViewChildren(JsonEditorComponent) jsonViews!: QueryList<JsonEditorComponent>;
+  private jsonViewsSubscription?: Subscription;
+
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
@@ -359,7 +366,15 @@ export class AuditLogComponent {
     return this.dateFilterOptions.find(o => o.date === this.adtLog?.filter?.date)?.text || '';
   }
 
+  ngAfterViewInit(): void {
+    // Add the Search action to every JSON Editor (view mode) as soon as it is shown
+    this.jsonViewsSubscription = this.jsonViews.changes.subscribe(() => {
+      setTimeout(() => this.addJsonViewSearchActions());
+    });
+  }
+
   ngOnDestroy(): void {
+    this.jsonViewsSubscription?.unsubscribe();
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
     this.pendingHTTPRequests$.next();
@@ -734,6 +749,9 @@ export class AuditLogComponent {
 
   showDetail(auditLog: any): void {
     auditLog.show = true;
+    if (auditLog.requestJson === undefined) {
+      auditLog.requestJson = AuditLogComponent.parseJson(auditLog.parameters);
+    }
     if (!auditLog.isLoaded) {
       this.coreService.post('audit_log/details', {
         auditLogId: auditLog.id
@@ -745,6 +763,179 @@ export class AuditLogComponent {
         }, error: () => { auditLog.isLoaded = true; this.cdr.markForCheck(); }
       });
     }
+  }
+
+  /**
+   * Toggles between the plain text and the JSON Editor (view mode) for the Request Body or the Details.
+   */
+  toggleJsonView(auditLog: any, isDetails: boolean): void {
+    const key = isDetails ? 'showDetailsJson' : 'showRequestJson';
+    if (auditLog[key]) {
+      auditLog[key] = false;
+      return;
+    }
+    this.loadJsonViewLanguage(() => {
+      auditLog[key] = true;
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Adds a Search button to the menu bar of each JSON Editor in code mode (tree mode has its own search box).
+   */
+  private addJsonViewSearchActions(): void {
+    this.jsonViews?.forEach((jsonView) => {
+      const jsonEditor: any = jsonView.getEditor();
+      if (!jsonEditor || jsonEditor.getMode() !== 'code' || !jsonEditor.container) {
+        return;
+      }
+      const menu = jsonEditor.container.querySelector('.jsoneditor-menu');
+      if (!menu || menu.querySelector('.jsoneditor-extra-actions')) {
+        return;
+      }
+      const label = this.translate.instant('inventory.label.searchJson');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.title = label + ' (Ctrl+F)';
+      const icon = document.createElement('i');
+      icon.className = 'fa fa-search';
+      button.appendChild(icon);
+      button.appendChild(document.createTextNode(' ' + label));
+      button.addEventListener('click', () => {
+        const aceEditor = jsonEditor.aceEditor;
+        if (!aceEditor) {
+          return;
+        }
+        const searchBox = aceEditor.searchBox;
+        if (searchBox?.active && searchBox.searchInput?.value) {
+          searchBox.findNext();
+          return;
+        }
+        aceEditor.focus();
+        aceEditor.execCommand('find');
+      });
+      const actions = document.createElement('div');
+      actions.className = 'jsoneditor-extra-actions';
+      actions.appendChild(button);
+      menu.appendChild(actions);
+    });
+  }
+
+  private loadJsonViewLanguage(cb: () => void): void {
+    if (this.isJsonViewLanguageLoaded) {
+      cb();
+      return;
+    }
+    this.jsonViewOptions.mode = 'code';
+    this.jsonViewOptions.modes = ['code', 'tree'];
+    this.jsonViewOptions.onEditable = () => false;
+    this.jsonViewOptions.onModeChange = () => {
+      this.addJsonViewSearchActions();
+    };
+    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe({
+      next: (data) => {
+        this.jsonViewOptions.languages = {};
+        this.jsonViewOptions.languages[this.preferences.locale] = data;
+        this.jsonViewOptions.language = this.preferences.locale;
+        this.isJsonViewLanguageLoaded = true;
+        cb();
+      }, error: () => {
+        this.isJsonViewLanguageLoaded = true;
+        cb();
+      }
+    });
+  }
+
+  /**
+   * Returns the parsed JSON or null if the value is not a JSON object/array.
+   * A truncated value (e.g. a long Request Body that ends with "...") is completed to be shown as far as available.
+   * Values which are JSON strings themselves (e.g. configurationItem) are parsed as well.
+   */
+  private static parseJson(value: any): any {
+    if (typeof value !== 'string') {
+      return null;
+    }
+    const str = value.trim();
+    if (!(str.startsWith('{') || str.startsWith('['))) {
+      return null;
+    }
+    try {
+      return AuditLogComponent.parseNestedJson(JSON.parse(str));
+    } catch (e) {
+      const completed = AuditLogComponent.completeTruncatedJson(str);
+      if (completed) {
+        try {
+          return AuditLogComponent.parseNestedJson(JSON.parse(completed));
+        } catch (err) {
+          return null;
+        }
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Closes an open string and all open brackets of a truncated JSON text. The cut is marked with "..." in the last string.
+   * Returns null if the text is not truncated.
+   */
+  private static completeTruncatedJson(str: string): string | null {
+    let text = str.endsWith('...') ? str.slice(0, -3) : str;
+    const stack: string[] = [];
+    let inString = false, isEscaped = false, lastStringStart = -1;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (inString) {
+        if (isEscaped) {
+          isEscaped = false;
+        } else if (ch === '\\') {
+          isEscaped = true;
+        } else if (ch === '"') {
+          inString = false;
+        }
+      } else if (ch === '"') {
+        inString = true;
+        lastStringStart = i;
+      } else if (ch === '{' || ch === '[') {
+        stack.push(ch === '{' ? '}' : ']');
+      } else if (ch === '}' || ch === ']') {
+        stack.pop();
+      }
+    }
+    if (!inString && stack.length === 0) {
+      return null;
+    }
+    if (inString) {
+      if (isEscaped) {
+        text = text.slice(0, -1);
+      }
+      text += '..."';
+    }
+    text = text.trimEnd();
+    if (text.endsWith(',')) {
+      text = text.slice(0, -1);
+    } else if (text.endsWith(':')) {
+      text += 'null';
+    } else if (text.endsWith('"') && stack[stack.length - 1] === '}') {
+      // The last string is a key without value
+      const before = text.slice(0, lastStringStart).trimEnd();
+      if (before.endsWith('{') || before.endsWith(',')) {
+        text += ':null';
+      }
+    }
+    return text + stack.reverse().join('');
+  }
+
+  private static parseNestedJson(value: any): any {
+    if (typeof value === 'string') {
+      return AuditLogComponent.parseJson(value) ?? value;
+    } else if (Array.isArray(value)) {
+      return value.map(item => AuditLogComponent.parseNestedJson(item));
+    } else if (value && typeof value === 'object') {
+      for (const key of Object.keys(value)) {
+        value[key] = AuditLogComponent.parseNestedJson(value[key]);
+      }
+    }
+    return value;
   }
 
   sort(propertyName: string): void {
