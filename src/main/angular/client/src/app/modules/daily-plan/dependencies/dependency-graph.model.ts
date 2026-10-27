@@ -11,16 +11,17 @@
  *
  *   postingWorkflows / expectingWorkflows / consumingWorkflows / noticeBoards / orders
  *
- * Optionally the planned orders of the Plan (existing `daily_plan/orders` API): the snapshot
- * lists only orders that wait at or are due to post a notice, so without them a workflow whose
- * order has not reached a notice instruction yet would look as if it had no order.
+ * Optionally the Controller's orders of the Plan (existing `orders` API): the snapshot lists only
+ * orders that wait at or are due to post a notice, so without them a workflow whose order has not
+ * reached a notice instruction yet would look as if it had no order. The Controller knows all
+ * orders, including ad hoc orders that are not part of the Daily Plan.
  */
 
-/** An order known to exist for a workflow in this Plan (from the daily plan). */
+/** An order the Controller knows for a workflow in this Plan (from the `orders` API). */
 export interface PlanOrder {
   orderId: string;
   workflowPath: string;
-  /** e.g. PLANNED, SUBMITTED, FINISHED, FAILED */
+  /** live order state, e.g. SCHEDULED, RUNNING, WAITING, SUSPENDED, FAILED */
   state?: string;
 }
 
@@ -46,6 +47,8 @@ export interface DepNode {
   state: DepState;
   /** at least one order is FAILED, SUSPENDED or BROKEN */
   failed: boolean;
+  /** the most severe of these states, e.g. 'SUSPENDED'; null if none */
+  criticalState: string | null;
   /** lower-case text used by the search */
   searchText: string;
   /** expected or consumed notices that no workflow posts in this Plan */
@@ -318,7 +321,8 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
   });
   (planOrders || []).forEach(o => {
     if (o?.orderId) {
-      if (o.state && !orderStates.has(o.orderId)) {
+      // the Controller's live state wins
+      if (o.state) {
         orderStates.set(o.orderId, o.state);
       }
       addPlanOrder(o.workflowPath, o.orderId);
@@ -337,7 +341,7 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
         folder: folderOf(w.path),
         postNotices: [], expectNotices: [], consumeNotices: [],
         expectingOrderIds: [], presentDueOrderIds: [], futureDueOrderIds: [],
-        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, searchText: '', unmatchedNotices: []
+        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, criticalState: null, searchText: '', unmatchedNotices: []
       };
       nodes.set(w.path, n);
     }
@@ -366,7 +370,9 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
     n.planOrderIds = uniq(ordersByWorkflow.get(n.path) || []).filter(id => !atNotice.has(id));
     n.orderIds = uniq([...atNotice, ...n.planOrderIds]);
     n.state = computeState(n);
-    n.failed = n.orderIds.some(id => CRITICAL_ORDER_STATES.includes(orderStates.get(id)));
+    const critical = n.orderIds.map(id => orderStates.get(id)).filter(st => CRITICAL_ORDER_STATES.includes(st));
+    n.failed = critical.length > 0;
+    n.criticalState = CRITICAL_ORDER_STATES.find(st => critical.includes(st)) || null;
     n.searchText = [n.path, ...n.postNotices, ...n.expectNotices, ...n.consumeNotices].join(' ').toLowerCase();
     n.postNotices.forEach(b => {
       referencedBoards.add(b);

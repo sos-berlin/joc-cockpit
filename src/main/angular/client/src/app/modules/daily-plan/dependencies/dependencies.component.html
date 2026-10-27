@@ -166,7 +166,11 @@
                       <div class="dep-note">
                         {{ noteKey(r) | translate: {
                           blocker: getFormattedPath(r.blocker), board: getFormattedPath(r.board),
-                          blocked: getFormattedPath(r.blocked), count: r.downstream } }}
+                          blocked: noteBlocked(r), count: r.downstream } }}
+                        @for (c of r.critical; track c.path) {
+                          {{ 'dailyPlan.dependencies.message.blockedCritical' | translate: {
+                            blocked: getFormattedPath(c.path), state: (c.state | translate) } }}
+                        }
                       </div>
                     }
                     @case ('fold') {

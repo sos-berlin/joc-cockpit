@@ -109,7 +109,7 @@
         </label>
         <div [ngClass]="{'has-error' : ((gitPswd.dirty || gitPswd.touched) && gitPswd.invalid)}" class="col-sm-6">
           <input #gitPswd="ngModel" [(ngModel)]="gitObject.password" autocomplete="off" class="form-control"
-                 name="gitPswd" required type="{{isShow ? 'text' : 'password'}}"/>
+                 name="gitPswd" required type="{{isShow ? 'text' : 'password'}}" style="padding-right: 30px"/>
           <i (click)="isShow = !isShow" [ngClass]="!isShow ? 'fa-eye' : 'fa-eye-slash'" class="fa pos-abt cursor"
              style="top:8px;right: 24px"></i>
           @if (gitPswd.invalid && (gitPswd.dirty || gitPswd.touched)) {
@@ -142,7 +142,9 @@
         <div [ngClass]="{'has-error' : ((accessToken.dirty || accessToken.touched) && accessToken.invalid)}"
              class="col-sm-6">
           <input #accessToken="ngModel" [(ngModel)]="gitObject.personalAccessToken" autocomplete="off" class="form-control"
-                 name="personalAccessToken" required type="text"/>
+                 name="personalAccessToken" required type="{{isShow ? 'text' : 'password'}}" style="padding-right: 30px"/>
+          <i (click)="isShow = !isShow" [ngClass]="!isShow ? 'fa-eye' : 'fa-eye-slash'" class="fa pos-abt cursor"
+             style="top:8px;right: 24px"></i>
           @if (accessToken.invalid && (accessToken.dirty || accessToken.touched)) {
             <div class="text-danger help-block">
               @if (accessToken.errors.required) {
