@@ -23,11 +23,30 @@ export interface PlanOrder {
   workflowPath: string;
   /** live order state, e.g. SCHEDULED, RUNNING, WAITING, SUSPENDED, FAILED */
   state?: string;
+  /** scheduled start (utc milliseconds), used to find a workflow's first order */
+  scheduledFor?: number;
 }
 
 export type DepState = 'action' | 'expecting' | 'normal' | 'none';
 export type BoardState = 'expected' | 'posted' | 'announced' | 'none';
 export type EdgeKind = 'expect' | 'consume';
+
+/** A parsed notice condition of an ExpectNotices/ConsumeNotices instruction, e.g. ('a' || 'b') && 'c'. */
+export type NoticeExpr = { t: 'board'; name: string } | { t: 'and' | 'or'; items: NoticeExpr[] };
+
+/** One ExpectNotices/ConsumeNotices instruction of a workflow (from expectNoticesExpressions/consumeNoticesExpressions). */
+export interface DepCondition {
+  /** position of the instruction in the workflow, e.g. "0", "2/fork+branch_1:3" */
+  position: string;
+  kind: EdgeKind;
+  /** original expression as delivered by the API */
+  text: string;
+  /** null if the expression could not be parsed */
+  expr: NoticeExpr | null;
+}
+
+/** Three-valued result: the notice exists (yes), can still come (maybe) or cannot come in this Plan (no). */
+export type Tri = 'yes' | 'maybe' | 'no';
 
 export interface DepNode {
   path: string;
@@ -49,10 +68,19 @@ export interface DepNode {
   failed: boolean;
   /** the most severe of these states, e.g. 'SUSPENDED'; null if none */
   criticalState: string | null;
+  /**
+   * State of the workflow's first order (earliest scheduled), e.g. 'SCHEDULED', 'WAITING', 'SUSPENDED';
+   * null if the workflow has no order in this Plan.
+   */
+  firstOrderState: string | null;
   /** lower-case text used by the search */
   searchText: string;
   /** expected or consumed notices that no workflow posts in this Plan */
   unmatchedNotices: string[];
+  /** the notice conditions of the workflow's instructions; empty if the API does not deliver them */
+  conditions: DepCondition[];
+  /** positions at which an order of this workflow currently waits for notices */
+  waitingPositions: string[];
 }
 
 export interface DepEdge {
@@ -95,6 +123,8 @@ export interface DepGraph {
   boardCount: number;
   /** board by name (as referenced by workflows) or path */
   boardOf: (name: string) => any;
+  /** posting workflows per notice board name */
+  posters: Map<string, string[]>;
 }
 
 export interface TraverseResult {
@@ -115,6 +145,184 @@ function toArray(value: any): any[] {
 
 function uniq(values: string[]): string[] {
   return Array.from(new Set(values));
+}
+
+/**
+ * Parses a notice condition such as ('a' || 'b') && 'c'. Board names are in single quotes; && binds
+ * tighter than ||, brackets group, spaces are optional. Returns null if the text cannot be parsed,
+ * so that the caller can fall back to the flat lists of notice boards.
+ */
+export function parseNoticeExpression(text: string): NoticeExpr | null {
+  const tokens: string[] = [];
+  const src = text || '';
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (/\s/.test(c)) {
+      i++;
+    } else if (c === '\'') {
+      const end = src.indexOf('\'', i + 1);
+      if (end < 0) {
+        return null;
+      }
+      tokens.push('\'' + src.substring(i + 1, end));
+      i = end + 1;
+    } else if (src.startsWith('&&', i) || src.startsWith('||', i)) {
+      tokens.push(src.substring(i, i + 2));
+      i += 2;
+    } else if (c === '(' || c === ')') {
+      tokens.push(c);
+      i++;
+    } else {
+      return null;
+    }
+  }
+  let pos = 0;
+  const combine = (t: 'and' | 'or', items: NoticeExpr[]): NoticeExpr => {
+    const flat: NoticeExpr[] = [];
+    items.forEach(x => x.t === t ? flat.push(...(x as { items: NoticeExpr[] }).items) : flat.push(x));
+    return flat.length === 1 ? flat[0] : {t, items: flat};
+  };
+  const primary = (): NoticeExpr | null => {
+    const tok = tokens[pos];
+    if (tok === undefined) {
+      return null;
+    }
+    if (tok === '(') {
+      pos++;
+      const inner = orExpr();
+      if (!inner || tokens[pos] !== ')') {
+        return null;
+      }
+      pos++;
+      return inner;
+    }
+    if (tok.startsWith('\'')) {
+      pos++;
+      return {t: 'board', name: tok.substring(1)};
+    }
+    return null;
+  };
+  const andExpr = (): NoticeExpr | null => {
+    const items = [primary()];
+    while (tokens[pos] === '&&') {
+      pos++;
+      items.push(primary());
+    }
+    return items.some(x => !x) ? null : combine('and', items);
+  };
+  function orExpr(): NoticeExpr | null {
+    const items = [andExpr()];
+    while (tokens[pos] === '||') {
+      pos++;
+      items.push(andExpr());
+    }
+    return items.some(x => !x) ? null : combine('or', items);
+  }
+  const result = orExpr();
+  return result && pos === tokens.length ? result : null;
+}
+
+/** Evaluates a condition with three values; value(board) tells whether a single notice exists, can come or cannot come. */
+export function evaluateExpr(expr: NoticeExpr, value: (board: string) => Tri): Tri {
+  if (expr.t === 'board') {
+    return value(expr.name);
+  }
+  const values = expr.items.map(x => evaluateExpr(x, value));
+  if (expr.t === 'and') {
+    return values.includes('no') ? 'no' : values.every(v => v === 'yes') ? 'yes' : 'maybe';
+  }
+  return values.includes('yes') ? 'yes' : values.every(v => v === 'no') ? 'no' : 'maybe';
+}
+
+/** The notices that make a condition impossible: for && the failing parts, for || all alternatives. */
+export function failingBoards(expr: NoticeExpr, value: (board: string) => Tri): string[] {
+  if (evaluateExpr(expr, value) !== 'no') {
+    return [];
+  }
+  if (expr.t === 'board') {
+    return [expr.name];
+  }
+  return uniq([].concat(...expr.items.map(x => failingBoards(x, value))));
+}
+
+/** All notice boards named in a condition. */
+export function exprBoards(expr: NoticeExpr): string[] {
+  return expr.t === 'board' ? [expr.name] : uniq([].concat(...expr.items.map(exprBoards)));
+}
+
+/** True if the condition contains alternatives (||). */
+export function exprHasOr(expr: NoticeExpr): boolean {
+  return expr.t === 'or' || (expr.t === 'and' && expr.items.some(exprHasOr));
+}
+
+/**
+ * Instructions inside an If (then/else) or a Catch branch are not necessarily executed, so a condition
+ * there that cannot be met does not by itself stop the workflow.
+ */
+export function isConditionalPosition(position: string): boolean {
+  return /(^|\/)(then|else|catch)([+:]|$)/.test(position || '');
+}
+
+/**
+ * State of a single notice: posted (yes); announced, or a posting workflow has an order that is not
+ * failed (maybe); otherwise it cannot come in this Plan (no).
+ */
+export function boardValue(graph: DepGraph, board: string): Tri {
+  const st = boardStateOf(graph.boardOf(board));
+  if (st === 'posted') {
+    return 'yes';
+  }
+  if (st === 'announced') {
+    return 'maybe';
+  }
+  const posters = graph.posters.get(board) || [];
+  return posters.some(p => {
+    const n = graph.nodes.get(p);
+    return !!n && n.state !== 'none' && !n.failed;
+  }) ? 'maybe' : 'no';
+}
+
+/**
+ * State of a notice for the conditions of one workflow. A notice that the workflow posts itself is
+ * reachable: its own order posts it before it expects or consumes it, so it is no dependency on
+ * another workflow (as with the flat lists, where such self-references are ignored).
+ */
+export function boardValueFor(graph: DepGraph, board: string, selfPath: string): Tri {
+  const v = boardValue(graph, board);
+  return v === 'no' && (graph.posters.get(board) || []).includes(selfPath) ? 'maybe' : v;
+}
+
+/**
+ * Evaluates the notice conditions of a workflow. Returns null if the API delivered no conditions or one
+ * cannot be parsed (the caller then uses the flat lists). Otherwise the conditions that cannot be met
+ * and the notices responsible for it.
+ */
+export function checkConditions(graph: DepGraph, n: DepNode): { failing: DepCondition[]; boards: string[] } | null {
+  if (!n.conditions.length || n.conditions.some(c => !c.expr)) {
+    return null;
+  }
+  const value = (b: string) => boardValueFor(graph, b, n.path);
+  const failing = n.conditions.filter(c =>
+    (!isConditionalPosition(c.position) || n.waitingPositions.includes(c.position)) && evaluateExpr(c.expr, value) === 'no');
+  return {failing, boards: uniq([].concat(...failing.map(c => failingBoards(c.expr, value))))};
+}
+
+/**
+ * State of a workflow's first order: the earliest scheduled order with a known state (orders without
+ * a scheduled time come last). Without any known state, the workflow's notice state decides
+ * (an order at a notice instruction waits, otherwise it is scheduled); null without orders.
+ */
+function firstOrderState(n: DepNode, states: Map<string, string>, scheduled: Map<string, number>): string | null {
+  if (n.state === 'none') {
+    return null;
+  }
+  const known = n.orderIds.filter(id => !!states.get(id));
+  known.sort((a, b) => ((scheduled.get(a) ?? Infinity) - (scheduled.get(b) ?? Infinity)) || a.localeCompare(b));
+  if (known.length) {
+    return states.get(known[0]);
+  }
+  return n.state === 'expecting' || n.state === 'action' ? 'WAITING' : 'SCHEDULED';
 }
 
 export function folderOf(path: string): string {
@@ -313,9 +521,13 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
     }
     ordersByWorkflow.get(path).push(orderId);
   };
+  const orderScheduled = new Map<string, number>();
   toArray(data?.orders).forEach((o: any) => {
     if (o?.orderId) {
       orderStates.set(o.orderId, o.state?._text);
+      if (typeof o.scheduledFor === 'number') {
+        orderScheduled.set(o.orderId, o.scheduledFor);
+      }
       addPlanOrder(o.workflowId?.path || o.workflowPath, o.orderId);
     }
   });
@@ -324,6 +536,9 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
       // the Controller's live state wins
       if (o.state) {
         orderStates.set(o.orderId, o.state);
+      }
+      if (typeof o.scheduledFor === 'number') {
+        orderScheduled.set(o.orderId, o.scheduledFor);
       }
       addPlanOrder(o.workflowPath, o.orderId);
     }
@@ -341,7 +556,8 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
         folder: folderOf(w.path),
         postNotices: [], expectNotices: [], consumeNotices: [],
         expectingOrderIds: [], presentDueOrderIds: [], futureDueOrderIds: [],
-        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, criticalState: null, searchText: '', unmatchedNotices: []
+        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, criticalState: null, searchText: '', unmatchedNotices: [],
+        conditions: [], waitingPositions: [], firstOrderState: null
       };
       nodes.set(w.path, n);
     }
@@ -352,10 +568,28 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
     n.presentDueOrderIds.push(...(w.presentDueOrderIds || []));
     n.futureDueOrderIds.push(...(w.futureDueOrderIds || []));
     n.numOfExpectingOrders = Math.max(n.numOfExpectingOrders, w.numOfExpectingOrders || 0);
+    // the same workflow can appear in several lists with the same conditions: keep each instruction once
+    const addConditions = (map: any, kind: EdgeKind) => {
+      Object.keys(map || {}).forEach(position => {
+        if (!n.conditions.some(c => c.kind === kind && c.position === position)) {
+          const text = String(map[position]);
+          n.conditions.push({position, kind, text, expr: parseNoticeExpression(text)});
+        }
+      });
+    };
+    addConditions(w.expectNoticesExpressions, 'expect');
+    addConditions(w.consumeNoticesExpressions, 'consume');
   };
   toArray(data?.postingWorkflows).forEach(merge);
   toArray(data?.expectingWorkflows).forEach(merge);
   toArray(data?.consumingWorkflows).forEach(merge);
+  // where orders currently wait for notices (snapshot orders, only with includeOrders)
+  toArray(data?.orders).forEach((o: any) => {
+    const n = nodes.get(o?.workflowId?.path);
+    if (n && o.state?._reason === 'EXPECTING_NOTICES' && o.positionString && !n.waitingPositions.includes(o.positionString)) {
+      n.waitingPositions.push(o.positionString);
+    }
+  });
 
   const posters = new Map<string, string[]>();
   const referencedBoards = new Set<string>();
@@ -373,6 +607,7 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
     const critical = n.orderIds.map(id => orderStates.get(id)).filter(st => CRITICAL_ORDER_STATES.includes(st));
     n.failed = critical.length > 0;
     n.criticalState = CRITICAL_ORDER_STATES.find(st => critical.includes(st)) || null;
+    n.firstOrderState = firstOrderState(n, orderStates, orderScheduled);
     n.searchText = [n.path, ...n.postNotices, ...n.expectNotices, ...n.consumeNotices].join(' ').toLowerCase();
     n.postNotices.forEach(b => {
       referencedBoards.add(b);
@@ -527,7 +762,8 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
   return {
     nodes, edges, outgoing, incoming, boards, groups, groupOf, isolatedCount,
     boardCount: referencedBoards.size,
-    boardOf
+    boardOf,
+    posters
   };
 }
 

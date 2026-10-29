@@ -74,11 +74,13 @@
 // JOC-2320: Dependencies as a list of dependency groups; a chain opens in place
 // ============================================================================
 
-$dep-normal: #1171a6;
-$dep-action: #FF8000;
-$dep-expecting: #b3b300;
+// order-state colours of JOC (style.scss), so the view follows the theme:
+// normal = blue, suspended/action = orange, waiting = yellow-green, failed = red
+$dep-normal: var(--blue);
+$dep-action: var(--orange);
+$dep-expecting: var(--yellow-green);
 $dep-none: #8a8aa8;
-$dep-failed: #ff3333;
+$dep-failed: var(--red);
 $dep-line: rgba(128, 128, 160, 0.28);
 $dep-tint: rgba(128, 128, 160, 0.10);
 
@@ -427,5 +429,341 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   .dep-inactive-text {
     grid-column: 3 / -1;
     font-size: 13px;
+  }
+}
+
+// ---- JOC-2320 review: suspended orders need attention but are no error -> orange, not red
+.dep-state-suspended {
+  background-color: $dep-action;
+}
+
+.dep-text-suspended {
+  color: $dep-action;
+}
+
+// ---- object-type icons in front of workflow and Notice Board names
+.dep-obj-icon {
+  margin-right: 4px;
+  color: inherit;
+  vertical-align: baseline;
+}
+
+// icon and workflow name share ONE grid cell of the step row (the row grid has exactly 5 columns)
+.dep-name-cell {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  min-width: 0;
+  max-width: 100%;
+
+  .dep-name {
+    min-width: 0;
+  }
+}
+
+// ---- notice conditions with alternatives (&& / ||): posted notices normal, possible ones muted,
+//      impossible ones in the orange of "Action required" (no new colours)
+.dep-cond {
+  font-size: 12px;
+}
+
+.dep-cond-board {
+  white-space: nowrap;
+}
+
+.dep-cond-maybe {
+  opacity: 0.7;
+}
+
+.dep-cond-no {
+  color: $dep-action;
+}
+
+
+// ---- JOC-2320 meeting changes: categories, chips and object names
+
+// Status labels and chips: orange dashed for missing orders, otherwise JOC's colour of the order state
+
+.dep-cat {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  padding: 2px 10px;
+  border: 1px solid rgba(128, 128, 128, 0.45);
+  border-radius: 12px;
+  background-color: transparent;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  // the colour of the order state, as a dot (set per state by .dep-os-*)
+  &::before {
+    content: '';
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--dep-c, transparent);
+  }
+}
+
+// missing orders: neutral dashed border, the dashed dot in orange
+.dep-cat-missing {
+  border: 1.5px dashed $dep-none;
+
+  // other workflows of the path have orders that wait for the missing one: action needed
+  &.dep-cat-missing-active {
+    border-color: var(--orange);
+  }
+
+  &::before {
+    box-sizing: border-box;
+    border: 1.5px dashed var(--orange);
+    background-color: transparent;
+  }
+}
+
+.dep-os-failed {
+  --dep-c: var(--red);
+}
+
+.dep-os-broken {
+  --dep-c: var(--red);
+}
+
+.dep-os-suspended {
+  --dep-c: var(--orange);
+}
+
+.dep-os-blocked {
+  --dep-c: var(--mangenta);
+}
+
+.dep-os-prompting {
+  --dep-c: var(--light-green);
+}
+
+.dep-os-waiting {
+  --dep-c: var(--yellow-green);
+}
+
+.dep-os-calling {
+  --dep-c: var(--pink);
+}
+
+.dep-os-running {
+  --dep-c: var(--green);
+}
+
+.dep-os-inprogress {
+  --dep-c: var(--light-blue);
+}
+
+.dep-os-pending {
+  --dep-c: var(--light-yellow);
+}
+
+.dep-os-scheduled {
+  --dep-c: var(--gold);
+}
+
+.dep-os-planned {
+  --dep-c: var(--dimgrey);
+}
+
+.dep-os-finished {
+  --dep-c: var(--blue);
+}
+
+.dep-os-cancelled {
+  --dep-c: var(--dimgrey);
+}
+
+.dep-os-unknown {
+  --dep-c: var(--dimgrey);
+}
+
+
+// chips are buttons: selected chips get a ring, the others step back while a filter is active
+.dep-chip {
+  cursor: pointer;
+  min-height: 26px;
+  font-family: inherit;
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+.dep-chip-on {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  background-color: rgba(128, 128, 128, 0.18);
+  background-color: color-mix(in srgb, var(--dep-c, #{$dep-none}) 22%, transparent);
+}
+
+.dep-chip-off {
+  opacity: 0.45;
+}
+
+.dep-chip-count {
+  margin-left: 6px;
+}
+
+// progress strip, dots and the Reason text: the same order-state colours
+.dep-state-missing {
+  background-color: transparent;
+  border: 1px dashed $dep-none;
+  box-sizing: border-box;
+}
+
+.dep-rail .dep-node.dep-state-missing {
+  border: 2px dashed $dep-none;
+  background-color: var(--bg-box);
+}
+
+// the Reason text "Missing Order" in normal text colour
+.dep-text-missing {
+  color: inherit;
+}
+
+.dep-state-failed {
+  background-color: var(--red);
+}
+
+.dep-text-failed {
+  color: var(--red);
+}
+
+.dep-state-broken {
+  background-color: var(--red);
+}
+
+.dep-text-broken {
+  color: var(--red);
+}
+
+.dep-state-suspended {
+  background-color: var(--orange);
+}
+
+.dep-text-suspended {
+  color: var(--orange);
+}
+
+.dep-state-blocked {
+  background-color: var(--mangenta);
+}
+
+.dep-text-blocked {
+  color: var(--mangenta);
+}
+
+.dep-state-prompting {
+  background-color: var(--light-green);
+}
+
+.dep-text-prompting {
+  color: var(--light-green);
+}
+
+.dep-state-waiting {
+  background-color: var(--yellow-green);
+}
+
+.dep-text-waiting {
+  color: var(--yellow-green);
+}
+
+.dep-state-calling {
+  background-color: var(--pink);
+}
+
+.dep-text-calling {
+  color: var(--pink);
+}
+
+.dep-state-running {
+  background-color: var(--green);
+}
+
+.dep-text-running {
+  color: var(--green);
+}
+
+.dep-state-inprogress {
+  background-color: var(--light-blue);
+}
+
+.dep-text-inprogress {
+  color: var(--light-blue);
+}
+
+.dep-state-pending {
+  background-color: var(--light-yellow);
+}
+
+.dep-text-pending {
+  color: var(--light-yellow);
+}
+
+.dep-state-scheduled {
+  background-color: var(--gold);
+}
+
+.dep-text-scheduled {
+  color: var(--gold);
+}
+
+.dep-state-planned {
+  background-color: var(--dimgrey);
+}
+
+.dep-text-planned {
+  color: var(--dimgrey);
+}
+
+.dep-state-finished {
+  background-color: var(--blue);
+}
+
+.dep-text-finished {
+  color: var(--blue);
+}
+
+.dep-state-cancelled {
+  background-color: var(--dimgrey);
+}
+
+.dep-text-cancelled {
+  color: var(--dimgrey);
+}
+
+.dep-state-unknown {
+  background-color: var(--dimgrey);
+}
+
+.dep-text-unknown {
+  color: var(--dimgrey);
+}
+
+
+// object names (workflows, notice boards): icon plus semi-bold italic, clickable
+.dep-obj {
+  font-weight: 600;
+  font-style: italic;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  .dep-obj-icon {
+    margin-right: 4px;
   }
 }
