@@ -18,22 +18,6 @@
             </button>
           </div>
 
-          <span [appRichTooltip]="'dailyPlan.tooltip.normal'|translate" style="margin-left: 109px">
-            <i class="fa fa-stop bg-postingWorkflow"></i>
-            {{'dailyPlan.label.normal' | translate}}
-          </span>
-          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.tooltip.critical'|translate">
-            <i class="fa fa-stop bg-expectingWorkflow"></i>
-            {{'dailyPlan.label.critical' | translate}}
-          </span>
-          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.tooltip.expecting'|translate">
-            <i class="fa fa-stop bg-consumingWorkflow"></i>
-            {{'dailyPlan.label.expecting' | translate}}
-          </span>
-          <span class=" p-l-sm" [appRichTooltip]="'dailyPlan.dependencies.tooltip.noOrder'|translate">
-            <i class="fa fa-square-o dep-legend-none"></i>
-            {{'dailyPlan.dependencies.state.none' | translate}}
-          </span>
         </div>
       </div>
 
@@ -87,12 +71,17 @@
       <div class="dep-list">
         @if (visibleGroups.length > 0) {
           <div class="dep-health-summary">
-            @for (h of ['intervention', 'waiting', 'ok', 'inactive']; track h) {
-              @if (healthCounts[h] > 0) {
-                <span class="dep-health" [ngClass]="'dep-health-' + h">
-                  <b>{{ healthCounts[h] }}</b> {{ 'dailyPlan.dependencies.health.' + h | translate }}
-                </span>
-              }
+            @for (c of chips; track c.cat.key) {
+              <button type="button" class="dep-cat dep-chip" [ngClass]="categoryClass(c.cat)"
+                      [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
+                      [class.dep-chip-off]="selectedCategories.size > 0 && !selectedCategories.has(c.cat.key)"
+                      [attr.aria-pressed]="selectedCategories.has(c.cat.key)" [appRichTooltip]="categoryTooltip(c.cat)"
+                      (click)="toggleCategory(c.cat.key)">
+                <span>{{ categoryLabelKey(c.cat, c.count) | translate }}</span><b class="dep-chip-count">{{ c.count }}</b>
+              </button>
+            }
+            @if (selectedCategories.size > 0) {
+              <button type="button" class="btn btn-grey btn-xs" (click)="clearCategories()">{{ 'dailyPlan.dependencies.button.clearFilter' | translate }}</button>
             }
             @if (blockedPathCount > 0) {
               <span class="dep-warn m-l-sm">
@@ -118,24 +107,25 @@
             <div class="dep-group-row" role="button" tabindex="0" [attr.aria-expanded]="isExpanded(g)"
                  (click)="toggleGroup(g)" (keydown.enter)="toggleGroup(g)">
               <i class="fa" [ngClass]="isExpanded(g) ? 'fa-caret-down' : 'fa-caret-right'"></i>
-              <span class="dep-health" [ngClass]="'dep-health-' + groupStatus(g).health">{{ healthKey(g) | translate }}</span>
-              <span class="dep-col-group" [appRichTooltip]="g.ends.join(', ')">{{ groupTitle(g) }}</span>
-              <span class="dep-col-span" [appRichTooltip]="g.starts.join(', ')">{{ groupStart(g) }}</span>
+              <span><span class="dep-cat" [ngClass]="categoryClass(groupCategory(g))" [class.dep-cat-missing-active]="missingWithOrders(g)"
+                          [appRichTooltip]="categoryTooltip(groupCategory(g))">{{ categoryLabelKey(groupCategory(g), categoryCount(g)) | translate }}</span></span>
+              <span class="dep-col-group" [appRichTooltip]="g.ends.join(', ')"><ng-container *ngTemplateOutlet="richText; context: {$implicit: pathParts(g.ends.length ? g.ends : g.nodes)}"></ng-container></span>
+              <span class="dep-col-span" [appRichTooltip]="g.starts.join(', ')"><ng-container *ngTemplateOutlet="richText; context: {$implicit: pathParts(g.starts.length ? g.starts : g.nodes)}"></ng-container></span>
               <span class="text-muted">{{ plural('dailyPlan.dependencies.label.workflowCount', g.nodes.length) | translate: {count: g.nodes.length} }}</span>
               <span class="dep-strip">
                 @if (isCompactStrip(g)) {
                   @for (part of stripParts(g); track part.state) {
                     <i class="dep-seg" [ngClass]="'dep-state-' + part.state" [style.flex-grow]="part.count"
-                       [appRichTooltip]="part.count + ' · ' + ('dailyPlan.dependencies.state.' + part.state | translate)"></i>
+                       [appRichTooltip]="part.count + ' · ' + (stripStateKey(part.state) | translate)"></i>
                   }
                 } @else {
                   @for (n of groupOrder(g); track n.path) {
-                    <i class="dep-seg" [ngClass]="'dep-state-' + (n.failed ? 'failed' : n.state)"
+                    <i class="dep-seg" [ngClass]="'dep-state-' + stateClass(n)"
                        [class.dep-seg-blocked]="isBlockedStep(g, n)" [appRichTooltip]="getFormattedPath(n.path)"></i>
                   }
                 }
               </span>
-              <span class="dep-col-status" [class.dep-warn]="groupStatus(g).health === 'intervention'">{{ groupStatus(g).key | translate: groupStatus(g).params }}</span>
+              <span class="dep-col-status" [class.dep-warn]="groupStatus(g).health === 'intervention'"><ng-container *ngTemplateOutlet="richText; context: {$implicit: statusParts(g)}"></ng-container></span>
               <span class="text-right text-muted"
                     [appRichTooltip]="'dailyPlan.dependencies.tooltip.resolved' | translate: {posted: g.postedEdges, total: g.edges.length, workflows: g.nodes.length}">
                 {{ g.postedEdges }} / {{ g.edges.length }}
@@ -159,17 +149,14 @@
                   @switch (r.kind) {
                     @case ('header') {
                       <div class="dep-branch-header">
-                        {{ 'dailyPlan.dependencies.label.receivers' | translate: {count: r.count, boards: r.boards.join(', ')} }}
+                        <ng-container *ngTemplateOutlet="richText; context: {$implicit: headerParts(r)}"></ng-container>
                       </div>
                     }
                     @case ('note') {
                       <div class="dep-note">
-                        {{ noteKey(r) | translate: {
-                          blocker: getFormattedPath(r.blocker), board: getFormattedPath(r.board),
-                          blocked: noteBlocked(r), count: r.downstream } }}
+                        <ng-container *ngTemplateOutlet="richText; context: {$implicit: noteParts(r)}"></ng-container>
                         @for (c of r.critical; track c.path) {
-                          {{ 'dailyPlan.dependencies.message.blockedCritical' | translate: {
-                            blocked: getFormattedPath(c.path), state: (c.state | translate) } }}
+                          <span> </span><ng-container *ngTemplateOutlet="richText; context: {$implicit: criticalParts(c)}"></ng-container>
                         }
                       </div>
                     }
@@ -192,16 +179,15 @@
                     @case ('step') {
                       <div class="dep-step" [class.dep-step-indent]="r.indent" [class.dep-step-blocked]="r.blocked">
                         <span class="dep-stage">{{ r.showStage ? r.stage : '' }}</span>
-                        <span class="dep-rail"><i class="dep-node" [ngClass]="'dep-state-' + (r.node.failed ? 'failed' : r.node.state)"></i></span>
+                        <span class="dep-rail"><i class="dep-node" [ngClass]="'dep-state-' + stateClass(r.node)"></i></span>
                         <span class="dep-step-body">
-                          <a class="dep-name" [class.dep-match]="isSearchMatch(r.node)" [appRichTooltip]="r.node.path"
-                             (click)="navToWorkflow(r.node.path, 'WORKFLOW')">{{ getFormattedPath(r.node.path) }}</a>
-                          <span class="dep-state-text" [ngClass]="'dep-text-' + (r.node.failed ? 'failed' : r.node.state)">{{ stateLabelKey(r.node) | translate }}</span>
+                          <span class="dep-name-cell"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i><a class="dep-name dep-obj" [class.dep-match]="isSearchMatch(r.node)" [appRichTooltip]="r.node.path"
+                             (click)="navToWorkflow(r.node.path, 'WORKFLOW')">{{ getFormattedPath(r.node.path) }}</a></span>
+                          <span class="dep-state-text" [ngClass]="'dep-text-' + stateClass(r.node)">{{ stateLabelKey(r.node) | translate }}</span>
                           <span class="dep-posts">
                             @if (r.posts.length > 0) {
-                              <span class="text-muted">{{ 'dailyPlan.dependencies.label.posts' | translate }} </span>
                               @for (b of r.posts; track b; let last = $last) {
-                                <a (click)="showBoard(b)">{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
+                                <a class="dep-obj" (click)="showBoard(b)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
                               }
                             } @else {
                               <span class="text-muted">—</span>
@@ -213,21 +199,39 @@
                             }
                             @for (w of r.waits; track $index; let last = $last) {
                               @if (w.unmatched) {
-                                <span class="dep-warn">
+                                <span [class.dep-warn]="!w.optional" [class.text-muted]="w.optional">
                                   {{ 'dailyPlan.dependencies.label.waitsForBoard' | translate }}
-                                  <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
+                                  <a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
                                   · {{ 'dailyPlan.dependencies.label.noPoster' | translate }}
                                 </span>
                               } @else {
                                 <span>
-                                  <span [class.text-muted]="!r.blocked">{{ (w.kind === 'consume' ? 'dailyPlan.dependencies.label.consumesFrom' : 'dailyPlan.dependencies.label.waitsFor') | translate }} </span>
-                                  {{ getFormattedPath(w.from) }}
-                                  <span [class.text-muted]="!r.blocked"> · </span>
-                                  <a (click)="showBoard(w.board)">{{ getFormattedPath(w.board) }}</a>
-                                  <span class="text-muted p-l-xs">{{ boardStateKey(w.boardState) | translate }}</span>
+                                  <span [class.text-muted]="!r.blocked">{{ receiveKey(w) | translate }} </span>
+                                  <a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
+                                  <span [class.text-muted]="!r.blocked"> {{ 'dailyPlan.dependencies.label.from' | translate }} </span>
+                                  <a class="dep-obj" (click)="navToWorkflow(w.from, 'WORKFLOW')"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i>{{ getFormattedPath(w.from) }}</a>
                                 </span>
                               }
                               @if (!last) {<br>}
+                            }
+                            @for (c of r.conditions; track $index) {
+                              <br>
+                              <span class="dep-cond">
+                                <span class="text-muted">{{ 'dailyPlan.dependencies.label.condition' | translate }} </span>
+                                @for (t of c; track $index) {
+                                  @switch (t.t) {
+                                    @case ('board') {
+                                      <span class="dep-cond-board dep-obj" [ngClass]="'dep-cond-' + t.value"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(t.name) }}</span>
+                                    }
+                                    @case ('op') {
+                                      <span class="text-muted"> {{ 'dailyPlan.dependencies.label.' + t.op | translate }} </span>
+                                    }
+                                    @case ('paren') {
+                                      <span class="text-muted">{{ t.v }}</span>
+                                    }
+                                  }
+                                }
+                              </span>
                             }
                           </span>
                           <span class="dep-orders">
@@ -250,7 +254,7 @@
           <div class="dep-group-row dep-inactive-row" role="button" tabindex="0" [attr.aria-expanded]="showInactive"
                (click)="toggleInactive()" (keydown.enter)="toggleInactive()">
             <i class="fa" [ngClass]="showInactive ? 'fa-caret-down' : 'fa-caret-right'"></i>
-            <span class="dep-health dep-health-inactive">{{ 'dailyPlan.dependencies.health.inactive' | translate }}</span>
+            <span><span class="dep-cat dep-cat-missing" [appRichTooltip]="'dailyPlan.dependencies.category.tooltip.noOrders' | translate">{{ plural('dailyPlan.dependencies.category.missing', inactiveGroups.length) | translate }}</span></span>
             <span class="dep-inactive-text">
               {{ (showInactive ? plural('dailyPlan.dependencies.label.hideInactive', inactiveGroups.length)
                 : plural('dailyPlan.dependencies.label.showInactive', inactiveGroups.length)) | translate: {count: inactiveGroups.length} }}
@@ -302,3 +306,19 @@
     <div class="cssload-inner cssload-three"></div>
   </div>
 }
+
+<ng-template #richText let-parts>
+  @for (p of parts; track $index) {
+    @switch (p.t) {
+      @case ('wf') {
+        <a class="dep-obj" [appRichTooltip]="p.path" (click)="$event.stopPropagation(); navToWorkflow(p.path, 'WORKFLOW')"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i>{{ p.v }}</a>
+      }
+      @case ('board') {
+        <a class="dep-obj" (click)="$event.stopPropagation(); showBoard(p.name)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ p.v }}</a>
+      }
+      @default {
+        <span>{{ p.v }}</span>
+      }
+    }
+  }
+</ng-template>
