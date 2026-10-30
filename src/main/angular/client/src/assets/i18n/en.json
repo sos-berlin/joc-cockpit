@@ -1256,7 +1256,7 @@
     "dependencies.label.collapsedHint": "{{count}} Critical Paths collapsed – expand with the arrow next to the chip",
     "dependencies.label.collapsedHintOne": "1 Critical Path collapsed – expand with the arrow next to the chip",
     "dependencies.label.moreBoards": "+{{count}} more",
-    "dependencies.label.lessBoards": "show less",
+    "dependencies.label.lessBoards": "Show fewer",
     "dependencies.category.missing": "Missing",
     "dependencies.category.missingOne": "Missing",
     "dependencies.category.change": "Order State Changes Required",
@@ -1305,7 +1305,7 @@
     "dependencies.status.failed": "failed Order at {{name}}",
     "dependencies.status.suspended": "suspended Order at {{name}}",
     "dependencies.status.blocked": "blocked Order at {{name}}",
-    "dependencies.status.missingLater": "{{name}} (step {{stage}}) has no Order in this Plan · the Critical Path cannot complete",
+    "dependencies.status.missingLater": "{{name}} (step {{stage}}) has no Order in this Plan · Critical Path cannot complete",
     "dependencies.status.broken": "broken Order at {{name}}",
     "dependencies.status.noOrder": "{{name}} (step {{blockerStage}}) has no Orders in this Plan · step {{stage}} waits",
     "dependencies.status.noPoster": "{{name}} waits for {{board}}, for which no Workflow posts Notices in this Plan",
@@ -3673,7 +3673,7 @@
     "label.workflowLayoutMode": "Layout",
     "label.indented": "indented",
     "label.classic": "classic",
-    "label.dependencyNoticeLimit": "Dependency Notice Limit",
+    "label.dependencyNoticeLimit": "Max. number of Notices in DAILY PLAN view",
     "button.resetPreferences": "Reset Profile Preferences",
     "button.groupLimit": "Group Limit",
     "button.changePassword": "Change Password",
@@ -3759,7 +3759,7 @@
       "tooltip.magnetAutoStates": "^Order^s are magnetized automatically for the given Order states.",
       "tooltip.magnetAutoIncludeChildren": "If a Parent ^Order^ is magnetized, then the same applies to Child Orders.",
       "tooltip.workflowLayoutMode": "JOC Cockpit offers the following layouts:\n- **Indentend Layout** displays left-oriented instructions with indentation for nesting levels.\n- *Classic Layout** displays centered instructions without indentation.\n\nUsers can combine both layouts with vertical and horizontal orientation.\n\nFor example, deeply nested ^Fork Instruction^s are best displayed from **Indented Layout** with horizontal orientation.",
-      "tooltip.dependencyNoticeLimit": "Dependency Notice Limit"
+      "tooltip.dependencyNoticeLimit": "The DAILY PLAN->Dependencies view offers monitoring critical paths of ^Worfklow^s synchronized by ^Notice Board^s. The view displays ^Notice^s that are posted and received.\n\nUsers can limit the number of Notices displayed. If the limit is reached the *show more* option can be used to display all Notices."
     },
     "permission": {
       "label.order": "Order",
