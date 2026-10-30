@@ -760,6 +760,7 @@ export class LayoutComponent {
     preferences.maxHistoryPerTask = 10;
     preferences.maxAuditLogPerObject = 10;
     preferences.maxFavoriteEntries = 10;
+    preferences.dependencyNoticeLimit = 10;
     preferences.tabSize = 4;
     preferences.maxEntryPerPage = '1000';
     preferences.entryPerPage = '25';
@@ -880,6 +881,9 @@ export class LayoutComponent {
       }
       if (!data.maxFavoriteEntries) {
         data.maxFavoriteEntries = 10;
+      }
+      if (!data.dependencyNoticeLimit) {
+        data.dependencyNoticeLimit = 10;
       }
       if (!data.tabSize) {
         data.tabSize = 4;
