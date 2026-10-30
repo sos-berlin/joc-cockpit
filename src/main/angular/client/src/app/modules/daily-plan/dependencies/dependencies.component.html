@@ -71,14 +71,25 @@
       <div class="dep-list">
         @if (visibleGroups.length > 0) {
           <div class="dep-health-summary">
-            @for (c of chips; track c.cat.key) {
-              <button type="button" class="dep-cat dep-chip" [ngClass]="categoryClass(c.cat)"
-                      [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
-                      [class.dep-chip-off]="selectedCategories.size > 0 && !selectedCategories.has(c.cat.key)"
-                      [attr.aria-pressed]="selectedCategories.has(c.cat.key)" [appRichTooltip]="categoryTooltip(c.cat)"
-                      (click)="toggleCategory(c.cat.key)">
-                <span>{{ categoryLabelKey(c.cat, c.count) | translate }}</span><b class="dep-chip-count">{{ c.count }}</b>
-              </button>
+            @for (grp of chipGroups; track grp.sev) {
+              <span class="dep-chip-group">
+                <span class="dep-chip-group-label">{{ 'dailyPlan.dependencies.severity.' + grp.sev | translate }}</span>
+                @for (c of grp.chips; track c.cat.key) {
+                  <span class="dep-cat dep-chip-wrap" [ngClass]="c.cat.kind === 'missing' ? 'dep-cat-missing' : 'dep-os-' + c.cat.state"
+                        [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
+                        [class.dep-chip-off]="selectedCategories.size > 0 && !selectedCategories.has(c.cat.key)">
+                    <button type="button" class="dep-chip" [attr.aria-pressed]="selectedCategories.has(c.cat.key)"
+                            [appRichTooltip]="categoryTooltip(c.cat)" (click)="toggleCategory(c.cat.key)">
+                      <span>{{ categoryLabelKey(c.cat, c.count) | translate }}</span><b class="dep-chip-count">{{ c.count }}</b>
+                    </button>
+                    <button type="button" class="dep-chip-toggle" [attr.aria-expanded]="!isCollapsed(c.cat.key)"
+                            [appRichTooltip]="(isCollapsed(c.cat.key) ? 'dailyPlan.dependencies.label.expand' : 'dailyPlan.dependencies.label.collapse') | translate"
+                            (click)="toggleCollapse(c.cat.key, $event)">
+                      <span nz-icon [nzType]="isCollapsed(c.cat.key) ? 'right' : 'down'" nzTheme="outline"></span>
+                    </button>
+                  </span>
+                }
+              </span>
             }
             @if (selectedCategories.size > 0) {
               <button type="button" class="btn btn-grey btn-xs" (click)="clearCategories()">{{ 'dailyPlan.dependencies.button.clearFilter' | translate }}</button>
@@ -96,7 +107,6 @@
             <span>{{ 'dailyPlan.dependencies.label.health' | translate }}</span>
             <span>{{ 'dailyPlan.dependencies.label.criticalPath' | translate }}</span>
             <span>{{ 'dailyPlan.dependencies.label.startsWith' | translate }}</span>
-            <span>{{ 'dailyPlan.dependencies.label.size' | translate }}</span>
             <span>{{ 'dailyPlan.dependencies.label.progress' | translate }}</span>
             <span>{{ 'dailyPlan.dependencies.label.status' | translate }}</span>
             <span class="text-right">{{ 'dailyPlan.dependencies.label.resolved' | translate }}</span>
@@ -107,11 +117,10 @@
             <div class="dep-group-row" role="button" tabindex="0" [attr.aria-expanded]="isExpanded(g)"
                  (click)="toggleGroup(g)" (keydown.enter)="toggleGroup(g)">
               <i class="fa" [ngClass]="isExpanded(g) ? 'fa-caret-down' : 'fa-caret-right'"></i>
-              <span><span class="dep-cat" [ngClass]="categoryClass(groupCategory(g))" [class.dep-cat-missing-active]="missingWithOrders(g)"
-                          [appRichTooltip]="categoryTooltip(groupCategory(g))">{{ categoryLabelKey(groupCategory(g), categoryCount(g)) | translate }}</span></span>
+              <span><span class="dep-cat" [ngClass]="'dep-sev-' + groupSeverity(g)" [class.dep-sev-missing]="groupCategory(g).kind === 'missing'"
+                          [appRichTooltip]="categoryTooltip(groupCategory(g))">{{ 'dailyPlan.dependencies.severity.' + groupSeverity(g) | translate }}</span></span>
               <span class="dep-col-group" [appRichTooltip]="g.ends.join(', ')"><ng-container *ngTemplateOutlet="richText; context: {$implicit: pathParts(g.ends.length ? g.ends : g.nodes)}"></ng-container></span>
               <span class="dep-col-span" [appRichTooltip]="g.starts.join(', ')"><ng-container *ngTemplateOutlet="richText; context: {$implicit: pathParts(g.starts.length ? g.starts : g.nodes)}"></ng-container></span>
-              <span class="text-muted">{{ plural('dailyPlan.dependencies.label.workflowCount', g.nodes.length) | translate: {count: g.nodes.length} }}</span>
               <span class="dep-strip">
                 @if (isCompactStrip(g)) {
                   @for (part of stripParts(g); track part.state) {
@@ -134,6 +143,9 @@
 
             @if (isExpanded(g)) {
               <div class="dep-chain">
+                @if (g.cycle) {
+                  <div class="dep-cycle-hint"><ng-container *ngTemplateOutlet="richText; context: {$implicit: cycleParts(g)}"></ng-container></div>
+                }
                 <div class="dep-step dep-step-head">
                   <span class="dep-stage">{{ 'dailyPlan.dependencies.label.step' | translate }}</span>
                   <span class="dep-rail-head"></span>
@@ -181,13 +193,18 @@
                         <span class="dep-stage">{{ r.showStage ? r.stage : '' }}</span>
                         <span class="dep-rail"><i class="dep-node" [ngClass]="'dep-state-' + stateClass(r.node)"></i></span>
                         <span class="dep-step-body">
-                          <span class="dep-name-cell"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i><a class="dep-name dep-obj" [class.dep-match]="isSearchMatch(r.node)" [appRichTooltip]="r.node.path"
+                          <span class="dep-name-cell"><span nz-icon nzType="apartment" nzTheme="outline" class="dep-obj-icon"></span><a class="dep-name dep-obj" [class.dep-match]="isSearchMatch(r.node)" [appRichTooltip]="r.node.path"
                              (click)="navToWorkflow(r.node.path, 'WORKFLOW')">{{ getFormattedPath(r.node.path) }}</a></span>
                           <span class="dep-state-text" [ngClass]="'dep-text-' + stateClass(r.node)">{{ stateLabelKey(r.node) | translate }}</span>
                           <span class="dep-posts">
                             @if (r.posts.length > 0) {
-                              @for (b of r.posts; track b; let last = $last) {
+                              @for (b of visiblePosts(r); track b; let last = $last) {
                                 <a class="dep-obj" (click)="showBoard(b)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
+                              }
+                              @if (hiddenPosts(r).length > 0) {
+                                <a class="dep-more" [appRichTooltip]="hiddenPosts(r).join(', ')" (click)="togglePosts(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.moreBoards' | translate: {count: hiddenPosts(r).length} }}</a>
+                              } @else if (isPostsExpanded(r.node.path)) {
+                                <a class="dep-more" (click)="togglePosts(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.lessBoards' | translate }}</a>
                               }
                             } @else {
                               <span class="text-muted">—</span>
@@ -209,7 +226,7 @@
                                   <span [class.text-muted]="!r.blocked">{{ receiveKey(w) | translate }} </span>
                                   <a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
                                   <span [class.text-muted]="!r.blocked"> {{ 'dailyPlan.dependencies.label.from' | translate }} </span>
-                                  <a class="dep-obj" (click)="navToWorkflow(w.from, 'WORKFLOW')"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i>{{ getFormattedPath(w.from) }}</a>
+                                  <a class="dep-obj" (click)="navToWorkflow(w.from, 'WORKFLOW')"><span nz-icon nzType="apartment" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.from) }}</a>
                                 </span>
                               }
                               @if (!last) {<br>}
@@ -250,15 +267,9 @@
             }
           </div>
         }
-        @if (inactiveGroups.length > 0 && activeGroups.length > 0 && !searchValue) {
-          <div class="dep-group-row dep-inactive-row" role="button" tabindex="0" [attr.aria-expanded]="showInactive"
-               (click)="toggleInactive()" (keydown.enter)="toggleInactive()">
-            <i class="fa" [ngClass]="showInactive ? 'fa-caret-down' : 'fa-caret-right'"></i>
-            <span><span class="dep-cat dep-cat-missing" [appRichTooltip]="'dailyPlan.dependencies.category.tooltip.noOrders' | translate">{{ plural('dailyPlan.dependencies.category.missing', inactiveGroups.length) | translate }}</span></span>
-            <span class="dep-inactive-text">
-              {{ (showInactive ? plural('dailyPlan.dependencies.label.hideInactive', inactiveGroups.length)
-                : plural('dailyPlan.dependencies.label.showInactive', inactiveGroups.length)) | translate: {count: inactiveGroups.length} }}
-            </span>
+        @if (collapsedCount > 0 && !searchValue) {
+          <div class="dep-collapsed-hint" role="button" tabindex="0" (click)="expandAll()" (keydown.enter)="expandAll()">
+            {{ plural('dailyPlan.dependencies.label.collapsedHint', collapsedCount) | translate: {count: collapsedCount} }}
           </div>
         }
         @if (isLoaded && pagedGroups.length === 0) {
@@ -311,7 +322,7 @@
   @for (p of parts; track $index) {
     @switch (p.t) {
       @case ('wf') {
-        <a class="dep-obj" [appRichTooltip]="p.path" (click)="$event.stopPropagation(); navToWorkflow(p.path, 'WORKFLOW')"><i class="dep-obj-icon" [ngClass]="workflowIcon"></i>{{ p.v }}</a>
+        <a class="dep-obj" [appRichTooltip]="p.path" (click)="$event.stopPropagation(); navToWorkflow(p.path, 'WORKFLOW')"><span nz-icon nzType="apartment" nzTheme="outline" class="dep-obj-icon"></span>{{ p.v }}</a>
       }
       @case ('board') {
         <a class="dep-obj" (click)="$event.stopPropagation(); showBoard(p.name)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ p.v }}</a>

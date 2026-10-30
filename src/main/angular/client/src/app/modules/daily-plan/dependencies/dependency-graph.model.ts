@@ -100,6 +100,8 @@ export interface DepGroup {
   edges: DepEdge[];
   starts: string[];
   ends: string[];
+  /** workflows that wait for each other in a circle, e.g. [A, B, C, A]; null without circle */
+  cycle: string[] | null;
   state: DepState;
   failed: boolean;
   postedEdges: number;
@@ -439,6 +441,49 @@ function commonFolder(folders: string[]): string {
  * Longest-path levels (Kahn). Nodes on a cycle get levels after all others,
  * so the layout never loops.
  */
+/**
+ * A circle of workflows that wait for each other (each posts a notice that the next one receives),
+ * as a closed list [A, B, C, A]; null if there is none. Self-references are ignored.
+ */
+export function findCycle(nodeIds: string[], links: { from: string; to: string }[]): string[] | null {
+  const out = new Map<string, string[]>();
+  nodeIds.forEach(id => out.set(id, []));
+  links.forEach(l => {
+    if (out.has(l.from) && out.has(l.to) && l.from !== l.to && !out.get(l.from).includes(l.to)) {
+      out.get(l.from).push(l.to);
+    }
+  });
+  const state = new Map<string, number>(); // 1 = on the current path, 2 = done
+  const stack: string[] = [];
+  const visit = (id: string): string[] | null => {
+    state.set(id, 1);
+    stack.push(id);
+    for (const next of out.get(id)) {
+      if (state.get(next) === 1) {
+        return [...stack.slice(stack.indexOf(next)), next];
+      }
+      if (!state.has(next)) {
+        const found = visit(next);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    stack.pop();
+    state.set(id, 2);
+    return null;
+  };
+  for (const id of nodeIds) {
+    if (!state.has(id)) {
+      const found = visit(id);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return null;
+}
+
 export function computeLevels(nodeIds: string[], links: { from: string; to: string }[]): Map<string, number> {
   const indeg = new Map<string, number>();
   const out = new Map<string, string[]>();
@@ -473,11 +518,12 @@ export function computeLevels(nodeIds: string[], links: { from: string; to: stri
       }
     }
   }
-  if (level.size < nodeIds.length) {
-    let max = 0;
-    level.forEach(v => max = Math.max(max, v));
+  if (queue.length < nodeIds.length) {
+    // workflows in a circle wait for each other: number them in list order after the resolved ones
+    let max = -1;
+    queue.forEach(id => max = Math.max(max, level.get(id)));
     nodeIds.forEach(id => {
-      if (!level.has(id) || indeg.get(id) > 0) {
+      if (indeg.get(id) > 0) {
         level.set(id, ++max);
       }
     });
@@ -736,12 +782,17 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
     const levels = computeLevels(paths, gEdges);
     let depth = 0;
     levels.forEach(v => depth = Math.max(depth, v));
+    // in a circle every workflow has a predecessor and a successor: use the first and last in step order
+    const byLevel = [...paths].sort((a, b) => (levels.get(a) - levels.get(b)) || a.localeCompare(b));
+    const starts = paths.filter(p => !hasIn.has(p));
+    const ends = paths.filter(p => !hasOut.has(p));
     const group: DepGroup = {
       id: paths[0],
       nodes: paths,
       edges: gEdges,
-      starts: paths.filter(p => !hasIn.has(p)),
-      ends: paths.filter(p => !hasOut.has(p)),
+      starts: starts.length ? starts : byLevel.slice(0, 1),
+      ends: ends.length ? ends : byLevel.slice(-1),
+      cycle: findCycle(paths, gEdges),
       state,
       failed,
       postedEdges: gEdges.filter(e => e.boardState === 'posted').length,

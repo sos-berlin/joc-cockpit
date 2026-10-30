@@ -146,7 +146,7 @@ $dep-tint: rgba(128, 128, 160, 0.10);
 // ---- group rows
 .dep-group-row {
   display: grid;
-  grid-template-columns: 16px 170px minmax(150px, 1.2fr) minmax(140px, 1.1fr) 100px minmax(140px, 1.2fr) minmax(300px, 2.4fr) 90px;
+  grid-template-columns: 16px 170px minmax(150px, 1.2fr) minmax(140px, 1.1fr) minmax(140px, 1.2fr) minmax(300px, 2.4fr) 90px;
   gap: 14px;
   align-items: center;
   padding: 10px 14px;
@@ -237,8 +237,9 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   min-height: 38px;
   border-radius: 4px;
 
-  &.dep-step-indent {
-    margin-left: 26px;
+  // branch rows: only the workflow name is indented, all other columns stay aligned with the header
+  &.dep-step-indent .dep-name-cell {
+    padding-left: 18px;
   }
 
   &.dep-step-blocked {
@@ -765,5 +766,117 @@ $dep-tint: rgba(128, 128, 160, 0.10);
 
   .dep-obj-icon {
     margin-right: 4px;
+  }
+}
+
+// ---- chips: label button (filter) and chevron button (expand/collapse the category in the list)
+.dep-chip-wrap {
+  gap: 0;
+  padding: 0 0 0 10px;
+
+  > button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    min-height: 26px;
+  }
+
+  .dep-chip {
+    padding: 2px 6px;
+  }
+
+  .dep-chip-toggle {
+    padding: 2px 9px 2px 6px;
+    border-left: 1px solid rgba(128, 128, 128, 0.35);
+    font-size: 10px;
+  }
+
+  > button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+    border-radius: 10px;
+  }
+}
+
+// hint for Critical Paths hidden by collapsed chips (click expands all)
+.dep-collapsed-hint {
+  padding: 10px 14px 10px 44px;
+  border-bottom: 1px solid $dep-line;
+  opacity: 0.75;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// "+N more" in Posts Notice
+.dep-more {
+  margin-left: 6px;
+  opacity: 0.75;
+  white-space: nowrap;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+// workflows that wait for each other in a circle
+.dep-cycle-hint {
+  margin: 4px 0 8px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--orange);
+  background-color: $dep-tint;
+  border-radius: 3px;
+  line-height: 1.7;
+}
+
+// Status column: three severity levels (Normal yellow, Attention greenish, Problem orange)
+.dep-sev-normal {
+  --dep-c: var(--gold);
+}
+
+.dep-sev-attention {
+  --dep-c: var(--yellow-green);
+}
+
+.dep-sev-problem {
+  --dep-c: var(--orange);
+  border-color: var(--orange);
+}
+
+// chips grouped by severity: "Problem: Failed 1 · Missing 3 | Normal: Scheduled 1"
+.dep-chip-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+
+  & + .dep-chip-group {
+    margin-left: 6px;
+    padding-left: 12px;
+    border-left: 1px solid $dep-line;
+  }
+}
+
+.dep-chip-group-label {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+// chips: severity colour for the dot only (the orange border stays on the Status labels of the rows)
+.dep-chip-wrap.dep-sev-problem {
+  border-color: rgba(128, 128, 128, 0.45);
+}
+
+// Problem caused by a missing order: dashed border and dashed dot (dashed = missing, as in chips, strip and steps)
+.dep-sev-missing {
+  border-style: dashed;
+
+  &::before {
+    box-sizing: border-box;
+    border: 1.5px dashed var(--orange);
+    background-color: transparent;
   }
 }
