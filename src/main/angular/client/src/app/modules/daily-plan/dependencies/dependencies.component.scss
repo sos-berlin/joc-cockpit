@@ -295,7 +295,7 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   flex: 1;
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(160px, 1.1fr) 130px minmax(160px, 1fr) minmax(240px, 2fr) 40px;
+  grid-template-columns: minmax(160px, 1.1fr) 130px minmax(200px, 1.4fr) minmax(240px, 1.8fr) 40px;
   gap: 12px;
   align-items: center;
   padding: 6px 8px 6px 0;
@@ -578,6 +578,11 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   --dep-c: var(--blue);
 }
 
+// completed orders (finished and cancelled, and workflows whose orders completed today)
+.dep-os-completed {
+  --dep-c: var(--blue);
+}
+
 .dep-os-cancelled {
   --dep-c: var(--dimgrey);
 }
@@ -831,7 +836,7 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   line-height: 1.7;
 }
 
-// Status column: three severity levels (Normal yellow, Attention greenish, Problem orange)
+// Status column: severity levels (Routine yellow, Attention greenish, Intervention orange, Success blue)
 .dep-sev-normal {
   --dep-c: var(--gold);
 }
@@ -845,7 +850,13 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   border-color: var(--orange);
 }
 
-// chips grouped by severity: "Problem: Failed 1 · Missing 3 | Normal: Scheduled 1"
+// Success: the Critical Path is fulfilled (all orders completed today), blue
+.dep-sev-success {
+  --dep-c: var(--blue);
+  border-color: var(--blue);
+}
+
+// chips grouped by severity, without group captions: "Failed 1 · Missing 3 | Scheduled 1 | Completed 2"
 .dep-chip-group {
   display: inline-flex;
   flex-wrap: wrap;
@@ -859,11 +870,6 @@ $dep-tint: rgba(128, 128, 160, 0.10);
   }
 }
 
-.dep-chip-group-label {
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0.75;
-}
 
 // chips: severity colour for the dot only (the orange border stays on the Status labels of the rows)
 .dep-chip-wrap.dep-sev-problem {
@@ -878,5 +884,74 @@ $dep-tint: rgba(128, 128, 160, 0.10);
     box-sizing: border-box;
     border: 1.5px dashed var(--orange);
     background-color: transparent;
+  }
+}
+
+// workflows whose orders completed today: blue dot, strip segment and Reason text
+.dep-state-completed {
+  background-color: var(--blue);
+}
+
+.dep-text-completed {
+  color: var(--blue);
+}
+
+// ---- step columns must not overflow into each other
+// Grid cells default to min-width: auto, so a long notice name (no spaces, white-space: nowrap) made its
+// cell wider than the column and the text ran into "Receives Notice". Cells now stay inside their column.
+.dep-step-body > * {
+  min-width: 0;
+}
+
+// Posts Notice: one name per line, cut with an ellipsis; the full name is in the tooltip
+.dep-posts {
+  overflow: hidden;
+
+  .dep-obj {
+    display: inline-block;
+    max-width: calc(100% - 8px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+}
+
+// Receives Notice: sentences ("expects <notice> · no Workflow posts ...") wrap, long names break anywhere
+.dep-waits {
+  overflow-wrap: anywhere;
+
+  .dep-obj,
+  .dep-cond-board {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+// ---- group rows: cells stay inside their column
+// The Explanation is rich text with workflow names that do not wrap (.dep-obj nowrap), so a long name ran
+// into "Fulfilled"; the Critical Path / Starts with names were clipped mid-character without an ellipsis.
+.dep-group-row {
+  > * {
+    min-width: 0;
+  }
+
+  // names: one line each, cut with an ellipsis (the full list is in the cell tooltip)
+  .dep-col-group .dep-obj,
+  .dep-col-span .dep-obj {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+  }
+
+  // Explanation: sentences wrap, long workflow names break anywhere
+  .dep-col-status {
+    overflow-wrap: anywhere;
+
+    .dep-obj {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
   }
 }

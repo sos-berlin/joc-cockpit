@@ -11,7 +11,7 @@
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
 import {NzTreeNodeOptions} from 'ng-zorro-antd/tree';
-import {Observable, of, Subject, Subscription} from 'rxjs';
+import {forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
 import {DataService} from '../../../services/data.service';
 import {NzDrawerComponent} from "ng-zorro-antd/drawer";
 import {WorkflowService} from "../../../services/workflow.service";
@@ -61,14 +61,18 @@ export interface DependencyStep {
    * optional = true: the notice is one of several alternatives (||) and is not needed for the condition.
    */
   waits: { board: string; from: string | null; kind: string; boardState: BoardState; fromState: DepState; unmatched: boolean; optional: boolean }[];
-  /** conditions with alternatives (||), as tokens for display, e.g. A or (B and C) */
-  conditions: ConditionToken[][];
+  /**
+   * conditions with alternatives (||), as tokens for display, e.g. A or (B and C); built when the
+   * step is rendered (see stepConditions), null until then
+   */
+  conditions: ConditionToken[][] | null;
   blocked: boolean;
 }
 
 /** One part of a displayed notice condition. */
 export type ConditionToken =
-  { t: 'board'; name: string; value: Tri } | { t: 'op'; op: 'and' | 'or' } | { t: 'paren'; v: '(' | ')' };
+  { t: 'board'; name: string; value: Tri } | { t: 'op'; op: 'and' | 'or' } | { t: 'paren'; v: '(' | ')' }
+  | { t: 'more'; count: number };
 
 /** Why a workflow cannot complete, and all posting workflows and notices responsible for it. */
 interface BlockCause {
@@ -125,7 +129,7 @@ export type DependencyChainRow = DependencyStep | DependencyStepHeader | Depende
 export type BlockType = 'noOrder' | 'noPoster';
 
 /** Health of a Critical Path, most urgent first. */
-export type PathHealth = 'intervention' | 'waiting' | 'ok' | 'inactive';
+export type PathHealth = 'intervention' | 'waiting' | 'ok' | 'success' | 'inactive';
 
 export interface PathStatus {
   health: PathHealth;
@@ -134,12 +138,30 @@ export interface PathStatus {
   blockType: BlockType | null;
 }
 
-const HEALTH_RANK: Record<PathHealth, number> = {intervention: 0, waiting: 1, ok: 2, inactive: 3};
+/**
+ * Severity of a Critical Path (Status column, chip groups, list order). The keys stay technical;
+ * the texts are Intervention, Attention, Routine and Success.
+ */
+export type Severity = 'problem' | 'attention' | 'normal' | 'success';
+const SEVERITIES: Severity[] = ['problem', 'attention', 'normal', 'success'];
 
 /** Presentation data of a Critical Path, built from the current response only when needed. */
 interface GroupView {
   order: DepNode[];
-  rows: DependencyChainRow[];
+  /**
+   * rows of the step list; built when the Critical Path is opened (null until then). The analysis
+   * (order, levels, blocked and missing workflows) is needed for every path, the rows only for opened ones.
+   */
+  rows: DependencyChainRow[] | null;
+  /** workflows blocked by the same cause, in step order */
+  blockedNodes: DepNode[];
+  /** rows up to the current step limit (cached, so change detection gets the same array) */
+  shownRows?: DependencyChainRow[];
+  shownLimit?: number;
+  /** number of step rows */
+  stepCount?: number;
+  /** number of step rows in shownRows */
+  shownSteps?: number;
   blockedStage: number;
   /** stage of the workflow without order (issue: name the missing workflow with its own step) */
   blockerStage: number;
@@ -162,6 +184,12 @@ interface GroupView {
   neededMissing: Set<string>;
 }
 
+/**
+ * Steps rendered at once when a Critical Path is opened; more are added on request. Rendering every
+ * step of a very large Critical Path (thousands of rows with icons and tooltips, ~100,000 DOM
+ * elements) blocks the browser for seconds, while building the step list itself takes milliseconds.
+ */
+const STEP_PAGE = 50;
 /** linear runs longer than this are folded; the first and last FOLD_KEEP steps stay visible */
 const FOLD_MIN_LENGTH = 8;
 const FOLD_KEEP = 2;
@@ -172,10 +200,10 @@ const STRIP_SEGMENT_LIMIT = 60;
 const STRIP_STATES = ['failed', 'broken', 'suspended', 'blocked', 'missing', 'prompting', 'waiting',
   'running', 'inprogress', 'pending', 'scheduled', 'completed', 'unknown'];
 
-/** Severity "Problem": the order needs a state change (shown as "Order State Change Required"). */
+/** Severity "Intervention": the order needs a state change (shown as "Order State Change Required"). */
 const CHANGE_STATES = ['FAILED', 'BROKEN', 'SUSPENDED', 'BLOCKED'];
 
-/** Severity "Attention": no intervention needed yet. All other states are "Normal". */
+/** Severity "Attention": no intervention needed yet. All other states are "Routine". */
 const ATTENTION_STATES = ['WAITING', 'PROMPTING'];
 
 /** Order states as in the Workflows view: finished and cancelled orders are "Completed". */
@@ -197,7 +225,7 @@ function normalizeOrderState(st: string | null): string {
 /** Order of the summary chips: state changes, missing orders, then the other order states. */
 const CATEGORY_RANK = ['change:FAILED', 'change:BROKEN', 'change:SUSPENDED', 'change:BLOCKED', 'missing',
   'state:PROMPTING', 'state:WAITING', 'state:RUNNING', 'state:INPROGRESS', 'state:PENDING', 'state:SCHEDULED',
-  'state:COMPLETED', 'state:UNKNOWN'];
+  'state:COMPLETED', 'state:UNKNOWN', 'success'];
 
 /**
  * Category of a Critical Path, from the first order (earliest scheduled) of the first workflow in step 1:
@@ -205,8 +233,8 @@ const CATEGORY_RANK = ['change:FAILED', 'change:BROKEN', 'change:SUSPENDED', 'ch
  */
 export interface PathCategory {
   key: string;
-  kind: 'missing' | 'change' | 'state';
-  /** order state in lower case, e.g. 'suspended'; null for missing */
+  kind: 'missing' | 'change' | 'state' | 'success';
+  /** order state in lower case, e.g. 'suspended'; null for missing, 'completed' for success */
   state: string | null;
 }
 
@@ -277,7 +305,7 @@ export class DependenciesComponent {
   private statusCache = new Map<string, PathStatus>();
   private searchText = '';
   /** number of visible Critical Paths per health status, for the summary above the list */
-  healthCounts: Record<string, number> = {intervention: 0, waiting: 0, ok: 0, inactive: 0};
+  healthCounts: Record<string, number> = {intervention: 0, waiting: 0, ok: 0, success: 0, inactive: 0};
   /** visible Critical Paths that need or may need attention (health other than "No Orders") */
   activeGroups: DepGroup[] = [];
   /** visible Critical Paths without orders; folded into one row at the end of the list */
@@ -285,15 +313,25 @@ export class DependenciesComponent {
   showInactive = false;
   /** summary chips of the Critical Paths found (search and notice filter applied) */
   chips: CategoryChip[] = [];
-  /** chips grouped by severity (Problem, Attention, Normal) */
-  chipGroups: { sev: 'problem' | 'attention' | 'normal'; chips: CategoryChip[] }[] = [];
+  /** chips grouped by severity (Intervention, Attention, Routine, Success) */
+  chipGroups: { sev: Severity; chips: CategoryChip[] }[] = [];
   /** selected chips (category keys); a Critical Path is shown if it matches any of them */
   selectedCategories = new Set<string>();
   /**
-   * collapsed chips (category keys): their Critical Paths are hidden in the list. "Missing" starts
-   * collapsed, but Critical Paths whose orders wait for the missing one always stay visible.
+   * collapsed chips (category keys): all their Critical Paths are hidden in the list (no exceptions).
    */
-  collapsedCategories = new Set<string>(['missing']);
+  collapsedCategories = new Set<string>();
+  /**
+   * Until the user toggles the "Missing" chip it is collapsed automatically while all its Critical Paths
+   * have no order at all (not planned for the day), and opened as soon as one of them needs intervention.
+   */
+  private missingAutoCollapse = true;
+  /** number of steps rendered per opened Critical Path (STEP_PAGE steps at first) */
+  private stepLimits = new Map<string, number>();
+  /** steps whose "Receives Notice" list is shown in full */
+  private expandedWaits = new Set<string>();
+  /** Plan day of the last response: a new day starts with the default collapse state again */
+  private lastPlanDay: string | null = null;
   /** Critical Paths hidden by collapsed chips */
   collapsedCount = 0;
   /** steps whose "Posts Notice" list is shown in full */
@@ -764,6 +802,57 @@ export class DependenciesComponent {
   }
 
   /**
+   * Workflows whose orders of the selected Plan completed successfully, from the order history.
+   * A completed order leaves the workflow, so without the history a fulfilled Critical Path would
+   * look as if its orders were missing. Only top-level orders of the Plan day count (order IDs start
+   * with "#YYYY-MM-DD#"; child orders of forks contain "|"). The filter is repeated here, so the
+   * result is right even if the API ignores parts of it.
+   * Returns null if the history cannot be read: the model then uses posted notices instead.
+   */
+  private loadOrderHistory(day: string, workflowPaths: string[]): Observable<Set<string> | null> {
+    if (workflowPaths.length === 0) {
+      return of(new Set<string>());
+    }
+    const paths = new Set(workflowPaths);
+    // orders of a Plan day run on that day; one day earlier covers time zone differences.
+    // The API requires a full ISO 8601 timestamp (a date alone fails with JOC-420); without an offset it is
+    // read in timeZone.
+    const from = new Date(day + 'T00:00:00');
+    from.setDate(from.getDate() - 1);
+    const pad = (x: number) => String(x).padStart(2, '0');
+    const body: any = {
+      controllerId: this.schedulerId,
+      dateFrom: `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}T00:00:00`,
+      historyStates: ['SUCCESSFUL'],
+      orders: Array.from(paths).map(workflowPath => ({workflowPath})),
+      limit: -1
+    };
+    if (this.preferences?.zone) {
+      body.timeZone = this.preferences.zone;
+    }
+    return this.coreService.post('orders/history', body).pipe(
+      map((res: any) => {
+        const done = new Set<string>();
+        (res?.history || []).forEach((h: any) => {
+          // OrderHistoryItem: workflow (path), orderId, state._text SUCCESSFUL | INCOMPLETE | FAILED;
+          // child orders of forks are nested in children and not counted
+          const path = h?.workflow;
+          const id = String(h?.orderId || '');
+          const state = h?.state?._text;
+          if (path && paths.has(path) && state === 'SUCCESSFUL' && !id.includes('|') && id.startsWith('#' + day + '#')) {
+            done.add(path);
+          }
+        });
+        return done;
+      }),
+      catchError(() => {
+        console.warn('[Dependencies] orders/history failed; completed workflows are recognised by posted notices only.');
+        return of(null);
+      })
+    );
+  }
+
+  /**
    * An order belongs to the selected Plan if its plan key is the selected day, or if it belongs to
    * the Global plan schema. Without plan information the date in the order ID decides
    * (order IDs start with "#YYYY-MM-DD#"). Cancelled orders will not post any notice.
@@ -860,16 +949,27 @@ export class DependenciesComponent {
     const started = performance.now();
     const snapshot$: Observable<any> = this.coreService.post(url, body);
     // the Controller's orders are requested for the workflows of the snapshot, so after it
-    const request: Observable<[any, any[] | null]> = planDay
-      ? snapshot$.pipe(switchMap(res =>
-        this.loadControllerOrders(planDay, this.snapshotWorkflowPaths(res)).pipe(map(items => [res, items] as [any, any[] | null]))))
-      : snapshot$.pipe(map(res => [res, null] as [any, any[] | null]));
+    // and the order history, to recognise workflows whose orders completed (fulfilled Critical Paths)
+    type Loaded = [any, any[] | null, Set<string> | null];
+    const request: Observable<Loaded> = planDay
+      ? snapshot$.pipe(switchMap(res => {
+        const paths = this.snapshotWorkflowPaths(res);
+        return forkJoin([this.loadControllerOrders(planDay, paths), this.loadOrderHistory(planDay, paths)])
+          .pipe(map(([items, done]) => [res, items, done] as Loaded));
+      }))
+      : snapshot$.pipe(map(res => [res, null, null] as Loaded));
     request.pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe({
-      next: ([res, controllerOrders]) => {
+      next: ([res, controllerOrders, completedPaths]) => {
         const received = performance.now();
         this.isLoaded = true;
+        if (planDay && planDay !== this.lastPlanDay) {
+          // another day: start with the default collapse state again
+          this.lastPlanDay = planDay;
+          this.collapsedCategories.clear();
+          this.missingAutoCollapse = true;
+        }
         this.pendingControllerOrders = new Map((controllerOrders || []).map((o: any) => [o.orderId, o]));
-        this.setWorkflowData(planDay ? this.snapshotOfPlan(res, planDay) : res, controllerOrders);
+        this.setWorkflowData(planDay ? this.snapshotOfPlan(res, planDay) : res, controllerOrders, completedPaths);
         this.pendingControllerOrders = null;
         const built = performance.now();
         this.lastPerf = {
@@ -891,7 +991,7 @@ export class DependenciesComponent {
   }
 
   /** Builds the model from the current response; paging, search and opening a path reuse it. */
-  private setWorkflowData(res: any, controllerOrders: any[] | null = null): void {
+  private setWorkflowData(res: any, controllerOrders: any[] | null = null, completedPaths: Set<string> | null = null): void {
     this.workflowData = res || {};
     this.noticeBoards = res?.noticeBoards ? res.noticeBoards : [];
     this.controllerOrderIndex = new Map((controllerOrders || []).map(o => [o.orderId, o]));
@@ -900,7 +1000,7 @@ export class DependenciesComponent {
       workflowPath: o.workflowId?.path,
       state: o.state?._text
     }));
-    this.model = res ? buildDependencyGraph(res, planOrders) : null;
+    this.model = res ? buildDependencyGraph(res, planOrders, completedPaths) : null;
     this.totalWorkflows = this.model ? this.model.nodes.size : 0;
     this.totalNotices = this.model ? this.model.boardCount : 0;
     this.groupViews.clear();
@@ -969,10 +1069,9 @@ export class DependenciesComponent {
       }
       return !this.searchText || g.searchText.includes(this.searchText);
     });
-    // most urgent first: intervention, waiting, ok, without orders
-    this.visibleGroups.sort((a, b) =>
-      (HEALTH_RANK[this.groupStatus(a).health] - HEALTH_RANK[this.groupStatus(b).health]) ||
-      (b.nodes.length - a.nodes.length) || a.id.localeCompare(b.id));
+    // fixed order: Intervention, Attention, Routine, Success; within a severity by category (chip
+    // order), Critical Paths with orders before those without, then by name - stable across refreshes
+    this.visibleGroups.sort((a, b) => this.compareGroups(a, b));
     // chips: one per category found, counting Critical Paths; they stay visible while filtering
     const counts = new Map<string, CategoryChip>();
     this.visibleGroups.forEach(g => {
@@ -983,13 +1082,14 @@ export class DependenciesComponent {
     });
     const rank = (key: string) => (CATEGORY_RANK.indexOf(key) + 1) || CATEGORY_RANK.length + 1;
     this.chips = [...counts.values()].sort((a, b) => rank(a.cat.key) - rank(b.cat.key));
-    this.chipGroups = (['problem', 'attention', 'normal'] as const)
+    this.chipGroups = SEVERITIES
       .map(sev => ({sev, chips: this.chips.filter(c => this.categorySeverity(c.cat) === sev)}))
       .filter(grp => grp.chips.length > 0);
+    this.applyMissingAutoCollapse();
     const shown = this.selectedCategories.size
       ? this.visibleGroups.filter(g => this.selectedCategories.has(this.groupCategory(g).key))
       : this.visibleGroups;
-    this.healthCounts = {intervention: 0, waiting: 0, ok: 0, inactive: 0};
+    this.healthCounts = {intervention: 0, waiting: 0, ok: 0, success: 0, inactive: 0};
     this.blockedPathCount = 0;
     shown.forEach(g => {
       const st = this.groupStatus(g);
@@ -998,28 +1098,52 @@ export class DependenciesComponent {
         this.blockedPathCount++;
       }
     });
-    const active = shown.filter(g => this.groupStatus(g).health !== 'inactive');
-    this.inactiveGroups = shown.filter(g => this.groupStatus(g).health === 'inactive');
-    this.activeGroups = this.searchText ? active : active.filter(g => !this.isHiddenByCollapse(g));
-    this.collapsedCount = (active.length - this.activeGroups.length) + (this.inactiveShown ? 0 : this.inactiveGroups.length);
+    // one list in severity order; a search shows every match, also of collapsed chips
+    this.inactiveGroups = [];
+    this.activeGroups = this.searchText ? shown : shown.filter(g => !this.isHiddenByCollapse(g));
+    this.collapsedCount = shown.length - this.activeGroups.length;
     this.updatePage();
     this.cd.markForCheck();
   }
 
-  /**
-   * Paths without orders are folded into one row; they are listed when the row is opened,
-   * when a search is active, or when no other path is left to show.
-   */
-  /** Critical Paths without any order are shown unless the "Missing" chip is collapsed. */
-  get inactiveShown(): boolean {
-    return !this.collapsedCategories.has('missing') || !!this.searchText || this.selectedCategories.has('missing')
-      || this.activeGroups.length === 0;
+  /** Severity, chip order, with orders before without, name: the fixed order of the list. */
+  private compareGroups(a: DepGroup, b: DepGroup): number {
+    const sev = (g: DepGroup) => SEVERITIES.indexOf(this.groupSeverity(g));
+    const rank = (g: DepGroup) => {
+      const i = CATEGORY_RANK.indexOf(this.groupCategory(g).key);
+      return i < 0 ? CATEGORY_RANK.length : i;
+    };
+    const withoutOrders = (g: DepGroup) => this.groupStatus(g).health === 'inactive' ? 1 : 0;
+    const name = (g: DepGroup) => (g.ends[0] || g.id).toLowerCase();
+    return (sev(a) - sev(b)) || (rank(a) - rank(b)) || (withoutOrders(a) - withoutOrders(b)) ||
+      name(a).localeCompare(name(b)) || a.id.localeCompare(b.id);
   }
 
-  /** A collapsed chip hides its Critical Paths; Missing paths whose orders are stuck stay visible. */
+  /**
+   * Default for the "Missing" chip until the user toggles it: collapsed while all its Critical Paths
+   * have no order at all (nothing planned for them on this day), open as soon as one of them has
+   * orders or completed workflows, i.e. needs intervention.
+   */
+  private applyMissingAutoCollapse(): void {
+    if (!this.missingAutoCollapse) {
+      return;
+    }
+    const missing = this.visibleGroups.filter(g => this.groupCategory(g).kind === 'missing');
+    if (missing.length > 0 && missing.every(g => this.groupStatus(g).health === 'inactive')) {
+      this.collapsedCategories.add('missing');
+    } else {
+      this.collapsedCategories.delete('missing');
+    }
+  }
+
+  /** Critical Paths are always listed together, in severity order (kept for the template). */
+  get inactiveShown(): boolean {
+    return true;
+  }
+
+  /** A collapsed chip hides all of its Critical Paths - for every chip the same, without exceptions. */
   private isHiddenByCollapse(g: DepGroup): boolean {
-    const cat = this.groupCategory(g);
-    return this.collapsedCategories.has(cat.key) && !(cat.kind === 'missing' && this.missingWithOrders(g));
+    return this.collapsedCategories.has(this.groupCategory(g).key);
   }
 
   isCollapsed(key: string): boolean {
@@ -1028,6 +1152,10 @@ export class DependenciesComponent {
 
   toggleCollapse(key: string, event?: Event): void {
     event?.stopPropagation();
+    if (key === 'missing') {
+      // from now on the user decides
+      this.missingAutoCollapse = false;
+    }
     if (this.collapsedCategories.has(key)) {
       this.collapsedCategories.delete(key);
     } else {
@@ -1037,6 +1165,7 @@ export class DependenciesComponent {
   }
 
   expandAll(): void {
+    this.missingAutoCollapse = false;
     this.collapsedCategories.clear();
     this.applyFilters();
   }
@@ -1047,12 +1176,77 @@ export class DependenciesComponent {
     return v > 0 ? v : 10;
   }
 
+  /**
+   * Shown and hidden part of a list of a step, cached on the row: change detection calls these for every
+   * row, and a new array each time would make Angular compare and re-render the lists again and again.
+   */
+  private listParts<T>(r: any, field: 'posts' | 'waits', expanded: boolean): { shown: T[]; hidden: T[] } {
+    const cacheKey = '_' + field;
+    const key = (expanded ? 'x' : 'c') + this.noticeLimit + ':' + r[field].length;
+    let c = r[cacheKey];
+    if (!c || c.key !== key) {
+      const list: T[] = r[field];
+      c = expanded ? {key, shown: list, hidden: []} : {key, shown: list.slice(0, this.noticeLimit), hidden: list.slice(this.noticeLimit)};
+      r[cacheKey] = c;
+    }
+    return c;
+  }
+
   visiblePosts(r: { node: DepNode; posts: string[] }): string[] {
-    return this.expandedPosts.has(r.node.path) ? r.posts : r.posts.slice(0, this.noticeLimit);
+    return this.listParts<string>(r, 'posts', this.expandedPosts.has(r.node.path)).shown;
   }
 
   hiddenPosts(r: { node: DepNode; posts: string[] }): string[] {
-    return this.expandedPosts.has(r.node.path) ? [] : r.posts.slice(this.noticeLimit);
+    return this.listParts<string>(r, 'posts', this.expandedPosts.has(r.node.path)).hidden;
+  }
+
+  /**
+   * Conditions with alternatives of a rendered step, built on first use. Like the other notice lists
+   * they show up to the notice limit of boards ("+N more" opens them together with "Receives Notice").
+   */
+  stepConditions(r: DependencyStep): ConditionToken[][] {
+    if (!r.conditions) {
+      r.conditions = r.node.conditions.filter(c => c.expr && exprHasOr(c.expr)).map(c => this.conditionTokens(c.expr, r.node.path));
+    }
+    const expanded = this.expandedWaits.has(r.node.path);
+    const key = (expanded ? 'x' : 'c') + this.noticeLimit;
+    const cache = r as any;
+    if (cache._condKey !== key) {
+      cache._condKey = key;
+      cache._cond = expanded ? r.conditions : r.conditions.map(tokens => {
+        let boards = 0;
+        const cut = tokens.findIndex(t => t.t === 'board' && ++boards > this.noticeLimit);
+        if (cut < 0) {
+          return tokens;
+        }
+        const rest = tokens.slice(cut).filter(t => t.t === 'board').length;
+        return [...tokens.slice(0, cut), {t: 'more', count: rest} as ConditionToken];
+      });
+    }
+    return cache._cond;
+  }
+
+  /** "Receives Notice" lines of a step: limited like "Posts Notice" (a workflow can receive dozens). */
+  visibleWaits(r: DependencyStep): any[] {
+    return this.listParts<any>(r, 'waits', this.expandedWaits.has(r.node.path)).shown;
+  }
+
+  hiddenWaitCount(r: DependencyStep): number {
+    return this.listParts<any>(r, 'waits', this.expandedWaits.has(r.node.path)).hidden.length;
+  }
+
+
+  isWaitsExpanded(path: string): boolean {
+    return this.expandedWaits.has(path);
+  }
+
+  toggleWaits(path: string, event?: Event): void {
+    event?.stopPropagation();
+    if (this.expandedWaits.has(path)) {
+      this.expandedWaits.delete(path);
+    } else {
+      this.expandedWaits.add(path);
+    }
   }
 
   togglePosts(path: string, event?: Event): void {
@@ -1074,17 +1268,20 @@ export class DependenciesComponent {
   }
 
   private get pagingList(): DepGroup[] {
-    return this.inactiveShown ? [...this.activeGroups, ...this.inactiveGroups] : this.activeGroups;
+    return this.activeGroups;
   }
 
   get pagingTotal(): number {
     return this.pagingList.length;
   }
 
-  /** Order state of a workflow for the severity check; null = the workflow has no order (Missing). */
+  /**
+   * Order state of a workflow for the severity check: COMPLETED if its orders completed today and left
+   * the workflow; null = the workflow has no order and did not run (Missing).
+   */
   private nodeOrderState(n: DepNode): string | null {
     if (n.state === 'none') {
-      return null;
+      return n.completed ? 'COMPLETED' : null;
     }
     if (n.failed && n.criticalState) {
       return n.criticalState;
@@ -1094,22 +1291,34 @@ export class DependenciesComponent {
 
   /**
    * Category of a Critical Path by severity over all workflows in step order (the earliest scheduled
-   * order of each workflow): the first Problem (failed, broken, suspended, blocked, missing order)
+   * order of each workflow): the first Intervention (failed, broken, suspended, blocked, missing order)
    * stops the check and decides; otherwise the first Attention state (waiting, prompting) decides;
-   * otherwise the state of the first workflow's order (Normal).
+   * otherwise the state of the first workflow that still has an order (Routine). If no workflow has an
+   * order left and the workflows that matter completed today, the Critical Path is fulfilled (Success).
    */
   groupCategory(g: DepGroup): PathCategory {
     let cat = this.categoryCache.get(g.id);
     if (!cat) {
       let attention: string = null;
       let normal: string = null;
+      let completed = false;
       const view = this.getGroupView(g);
-      for (const n of view.order) {
+      const noOrderAtAll = g.state === 'none' && !view.order.some(n => n.completed);
+      // Same priority as the Explanation, so chip, status and text always name the same order:
+      // 1. the first workflow with a failed, suspended or broken order (any of its orders),
+      // 2. the first blocked order, 3. a missing workflow, 4. Attention, 5. Routine, 6. Success.
+      // Before, step order decided: a missing step 1 hid a suspended order of step 2 (no "Suspended" chip
+      // although the Explanation said "suspended Order at ...").
+      const critical = view.order.find(n => n.failed && n.criticalState);
+      if (critical) {
+        cat = {key: 'change:' + critical.criticalState, kind: 'change', state: critical.criticalState.toLowerCase()};
+      }
+      let missing = false;
+      for (const n of cat ? [] : view.order) {
         const st = this.nodeOrderState(n);
         if (!st) {
-          if (g.state === 'none' || view.neededMissing.has(n.path)) {
-            cat = {key: 'missing', kind: 'missing', state: null};
-            break;
+          if (noOrderAtAll || view.neededMissing.has(n.path)) {
+            missing = true;
           }
           continue;
         }
@@ -1117,11 +1326,20 @@ export class DependenciesComponent {
           cat = {key: 'change:' + st, kind: 'change', state: st.toLowerCase()};
           break;
         }
-        if (ATTENTION_STATES.includes(st)) {
+        if (st === 'COMPLETED') {
+          // done: the next workflows decide while they still have orders
+          completed = true;
+        } else if (ATTENTION_STATES.includes(st)) {
           attention = attention || st;
         } else {
           normal = normal || st;
         }
+      }
+      if (!cat && missing) {
+        cat = {key: 'missing', kind: 'missing', state: null};
+      }
+      if (!cat && !attention && !normal && completed) {
+        cat = {key: 'success', kind: 'success', state: 'completed'};
       }
       if (!cat) {
         const st = attention || normal || 'UNKNOWN';
@@ -1140,27 +1358,33 @@ export class DependenciesComponent {
     if (cat.kind === 'missing') {
       return this.plural('dailyPlan.dependencies.category.missing', count);
     }
+    if (cat.kind === 'success') {
+      return 'dailyPlan.dependencies.category.success';
+    }
     return 'dailyPlan.dependencies.orderState.' + cat.state;
   }
 
   /** Full explanation of a category, e.g. "Order State Change Required: … is suspended …". */
   categoryTooltip(cat: PathCategory): string {
-    if (cat.kind === 'missing') {
-      return this.translate.instant('dailyPlan.dependencies.category.tooltip.missing');
+    if (cat.kind === 'missing' || cat.kind === 'success') {
+      return this.translate.instant('dailyPlan.dependencies.category.tooltip.' + cat.kind);
     }
     const state = this.translate.instant('dailyPlan.dependencies.orderState.' + cat.state);
     return this.translate.instant('dailyPlan.dependencies.category.tooltip.' + cat.kind, {state});
   }
 
   /**
-   * Severity of a Critical Path for the Status column (Andreas' three levels): Problem (failed,
-   * broken, suspended, blocked, missing order), Attention (waiting, prompting) or Normal.
+   * Severity of a Critical Path for the Status column: Intervention (failed, broken, suspended, blocked,
+   * missing order), Attention (waiting, prompting), Routine (orders on their way) or Success (fulfilled).
    */
-  groupSeverity(g: DepGroup): 'problem' | 'attention' | 'normal' {
+  groupSeverity(g: DepGroup): Severity {
     return this.categorySeverity(this.groupCategory(g));
   }
 
-  categorySeverity(cat: PathCategory): 'problem' | 'attention' | 'normal' {
+  categorySeverity(cat: PathCategory): Severity {
+    if (cat.kind === 'success') {
+      return 'success';
+    }
     if (cat.kind !== 'state') {
       return 'problem';
     }
@@ -1199,6 +1423,10 @@ export class DependenciesComponent {
       this.selectedCategories.delete(key);
     } else {
       this.selectedCategories.add(key);
+      // a selected chip shows its Critical Paths: filter and collapse never contradict each other
+      if (this.collapsedCategories.delete(key) && key === 'missing') {
+        this.missingAutoCollapse = false;
+      }
     }
     this.plansFilters.filter.currentPage = 1;
     this.applyFilters();
@@ -1226,11 +1454,15 @@ export class DependenciesComponent {
       if (params?.[k] === null || params?.[k] === undefined) {
         return;
       }
-      const list: string[] = Array.isArray(params[k]) ? params[k] : [params[k]];
+      const all: string[] = Array.isArray(params[k]) ? params[k] : [params[k]];
+      // long lists of names (e.g. thousands of blocked workflows) show the notice limit and "+N more";
+      // a circle (separator " → ") is always shown in full
+      const list = separator === ', ' && all.length > this.noticeLimit ? all.slice(0, this.noticeLimit) : all;
       marked[k] = list.map(v => {
         values.push({t: objects[k], v});
         return '\u0001' + (values.length - 1) + '\u0001';
-      }).join(separator);
+      }).join(separator) + (list.length < all.length
+        ? ' ' + this.translate.instant('dailyPlan.dependencies.label.moreBoards', {count: all.length - list.length}) : '');
     });
     parts = [];
     String(this.translate.instant(key, marked)).split(/\u0001(\d+)\u0001/).forEach((seg, i) => {
@@ -1253,7 +1485,21 @@ export class DependenciesComponent {
     return this.rich(st.key, st.params, {name: 'wf', board: 'board'});
   }
 
+  /** Parts cached on the row: the rich() cache key would serialise thousands of names on every check. */
+  private rowParts(r: any, build: () => RichPart[]): RichPart[] {
+    const key = (this.translate?.currentLang || '') + '|' + this.noticeLimit + '|' + this.isPathDisplay;
+    if (r._partsKey !== key) {
+      r._partsKey = key;
+      r._parts = build();
+    }
+    return r._parts;
+  }
+
   noteParts(r: DependencyStepNote): RichPart[] {
+    return this.rowParts(r, () => this.buildNoteParts(r));
+  }
+
+  private buildNoteParts(r: DependencyStepNote): RichPart[] {
     if (r.blockerState) {
       return this.rich(r.later ? 'dailyPlan.dependencies.message.posterCriticalLater' : 'dailyPlan.dependencies.message.posterCritical',
         {blocker: r.blocker, state: this.translate.instant(r.blockerState), blocked: r.blocked}, {blocker: 'wf', blocked: 'wf'});
@@ -1262,12 +1508,22 @@ export class DependenciesComponent {
       {blocker: 'wf', board: 'board', blocked: 'wf'});
   }
 
+  /** Workflows with a critical order named in a note: up to the notice limit. */
+  shownCritical(r: DependencyStepNote): { path: string; state: string }[] {
+    const cache = r as any;
+    if (cache._critLimit !== this.noticeLimit) {
+      cache._critLimit = this.noticeLimit;
+      cache._crit = r.critical.slice(0, this.noticeLimit);
+    }
+    return cache._crit;
+  }
+
   criticalParts(c: { path: string; state: string }): RichPart[] {
     return this.rich('dailyPlan.dependencies.message.blockedCritical', {blocked: c.path, state: this.translate.instant(c.state)}, {blocked: 'wf'});
   }
 
   headerParts(r: { count: number; boards: string[] }): RichPart[] {
-    return this.rich('dailyPlan.dependencies.label.receivers', {count: r.count, boards: r.boards}, {boards: 'board'});
+    return this.rowParts(r, () => this.rich('dailyPlan.dependencies.label.receivers', {count: r.count, boards: r.boards}, {boards: 'board'}));
   }
 
   /** Workflow names for the Critical Path / Starts with columns: up to two names, else the first and "+N". */
@@ -1314,6 +1570,7 @@ export class DependenciesComponent {
   toggleGroup(g: DepGroup): void {
     if (this.expandedGroups.has(g.id)) {
       this.expandedGroups.delete(g.id);
+      this.stepLimits.delete(g.id);
     } else {
       this.expandedGroups.add(g.id);
     }
@@ -1387,7 +1644,67 @@ export class DependenciesComponent {
 
   /** typed loosely for the template, which switches on row.kind */
   chainRows(g: DepGroup): any[] {
-    return this.getGroupView(g).rows;
+    return this.groupRows(g);
+  }
+
+  /**
+   * The rows rendered for an opened Critical Path: the first STEP_PAGE steps (with their branch headers
+   * and notes), more on request. With a search the list reaches at least to the first matching step.
+   */
+  shownRows(g: DepGroup): any[] {
+    const v = this.getGroupView(g);
+    const rows = this.groupRows(g);
+    let limit = this.stepLimits.get(g.id) || STEP_PAGE;
+    if (this.searchText) {
+      const firstMatch = v.order.findIndex(n => n.searchText.includes(this.searchText));
+      limit = Math.max(limit, firstMatch + 1);
+    }
+    if (!v.shownRows || v.shownLimit !== limit) {
+      let steps = 0;
+      let end = rows.length;
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].kind === 'step' || rows[i].kind === 'fold') {
+          if (steps === limit) {
+            end = i;
+            break;
+          }
+          steps++;
+        }
+      }
+      v.shownRows = end === rows.length ? rows : rows.slice(0, end);
+      v.shownLimit = limit;
+      v.shownSteps = Math.min(steps, limit);
+    }
+    return v.shownRows;
+  }
+
+  /** Steps of an opened Critical Path that are not rendered yet. */
+  hiddenStepCount(g: DepGroup): number {
+    const v = this.getGroupView(g);
+    if (v.stepCount === undefined) {
+      v.stepCount = this.groupRows(g).filter(r => r.kind === 'step' || r.kind === 'fold').length;
+    }
+    this.shownRows(g);
+    return v.stepCount - v.shownSteps;
+  }
+
+  /** Renders the next STEP_PAGE steps, or all (all = true). */
+  showMoreSteps(g: DepGroup, all = false, event?: Event): void {
+    event?.stopPropagation();
+    const v = this.getGroupView(g);
+    const current = this.stepLimits.get(g.id) || STEP_PAGE;
+    this.stepLimits.set(g.id, all ? Number.MAX_SAFE_INTEGER : current + STEP_PAGE);
+    v.shownRows = undefined;
+  }
+
+  /** Workflows in the rendered rows (a folded run counts with all its workflows). */
+  shownWorkflowCount(g: DepGroup): number {
+    return this.shownRows(g).reduce((sum, r) => sum + (r.kind === 'step' ? 1 : r.kind === 'fold' ? r.count : 0), 0);
+  }
+
+  /** Number of steps the "more" button adds. */
+  nextStepCount(g: DepGroup): number {
+    return Math.min(STEP_PAGE, this.hiddenStepCount(g));
   }
 
   isBlockedStep(g: DepGroup, node: DepNode): boolean {
@@ -1433,13 +1750,18 @@ export class DependenciesComponent {
       const count = v.order.filter(n => n.state === 'action').length;
       return status('intervention', count === 1 ? 'actionRequiredOne' : 'actionRequired', {count});
     }
-    if (g.state === 'none') {
+    const completed = v.order.filter(n => n.completed).length;
+    if (g.state === 'none' && completed === 0) {
       return status('inactive', 'noOrders');
     }
     // a workflow without order later in the path: its notices are never posted or consumed
     const missing = v.order.find(n => v.neededMissing.has(n.path));
     if (missing) {
       return status('intervention', 'missingLater', {name: missing.path, stage: v.levels.get(missing.path) + 1});
+    }
+    // all orders completed today: the Critical Path is fulfilled
+    if (this.groupCategory(g).kind === 'success') {
+      return status('success', completed === 1 ? 'completedOne' : 'completed', {count: completed, total: v.order.length});
     }
     const expecting = v.order.filter(n => n.state === 'expecting').length;
     if (expecting === 0 && g.edges.length > 0 && g.postedEdges === g.edges.length) {
@@ -1536,7 +1858,6 @@ export class DependenciesComponent {
       .sort((a, b) => (levels.get(a.path) - levels.get(b.path)) || a.path.localeCompare(b.path));
     const inGroup = new Set(g.nodes);
     const incoming = (p: string) => (this.model.incoming.get(p) || []).filter(e => inGroup.has(e.from));
-    const successors = (p: string) => new Set((this.model.outgoing.get(p) || []).filter(e => inGroup.has(e.to)).map(e => e.to));
 
     // first waiting workflow whose notice will not come: the posting workflow has no order in
     // this Plan (or a failed order), or no workflow posts the notice at all
@@ -1553,8 +1874,18 @@ export class DependenciesComponent {
     const causes = new Map<string, BlockCause | null>();
     order.forEach(n => causes.set(n.path, n.state === 'none' ? null : this.blockCause(n, inGroup, incoming)));
     const neededMissing = new Set<string>();
-    causes.forEach(c => c?.type === 'noOrder' && c.posters.forEach(p => this.model.nodes.get(p)?.state === 'none' && neededMissing.add(p)));
-    order.filter(n => n.state === 'none' && incoming(n.path).some(e => this.model.nodes.get(e.from).state !== 'none'))
+    // a workflow without order is needed (Missing) if a workflow with orders requires its notice, or if
+    // it receives a notice from a workflow that has orders or completed today; completed ones never are
+    const ran = (p: string) => {
+      const x = this.model.nodes.get(p);
+      return !!x && (x.state !== 'none' || x.completed);
+    };
+    const missingNode = (p: string) => {
+      const x = this.model.nodes.get(p);
+      return !!x && x.state === 'none' && !x.completed;
+    };
+    causes.forEach(c => c?.type === 'noOrder' && c.posters.forEach(p => missingNode(p) && neededMissing.add(p)));
+    order.filter(n => missingNode(n.path) && incoming(n.path).some(e => ran(e.from)))
       .forEach(n => neededMissing.add(n.path));
     for (const n of order) {
       const cause = causes.get(n.path);
@@ -1578,12 +1909,47 @@ export class DependenciesComponent {
     const blockedNames = new Set(blockedNodes.map(n => n.path));
     // "waits" as soon as one of them already waits, otherwise "will wait"
     blockLater = blockedNodes.length > 0 && !blockedNodes.some(n => n.state === 'expecting');
+    return {order, rows: null, blockedNodes, blockedStage, blockerStage, blockType, blockLater, blocker, blockerBoard, blockedName,
+      blockedNames, levels, neededMissing};
+  }
+
+  /** Rows of the step list of an opened Critical Path (built once per response). */
+  private groupRows(g: DepGroup): DependencyChainRow[] {
+    const v = this.getGroupView(g);
+    if (v.rows) {
+      return v.rows;
+    }
+    const {order, levels, blockType, blockLater, blocker, blockerBoard, blockedName, blockedNodes, blockedNames} = v;
+    const inGroup = new Set(g.nodes);
+    const incoming = (p: string) => (this.model.incoming.get(p) || []).filter(e => inGroup.has(e.from));
+    // per posting workflow once: its receivers and the boards they receive (a trigger can have thousands
+    // of receivers; computing this per receiver was quadratic)
+    const succCache = new Map<string, { receivers: Set<string>; boards: string[] }>();
+    const succ = (p: string) => {
+      let x = succCache.get(p);
+      if (!x) {
+        const out = (this.model.outgoing.get(p) || []).filter(e => inGroup.has(e.to));
+        x = {receivers: new Set(out.map(e => e.to)), boards: Array.from(new Set(out.map(e => e.board)))};
+        succCache.set(p, x);
+      }
+      return x;
+    };
+    // workflows after the blocked ones, in one walk from all of them
     let downstream = 0;
     if (blockedNodes.length > 0) {
-      const after = new Set<string>();
-      blockedNodes.forEach(n => traverse(this.model, n.path, 0, -1).nodes.forEach(p => after.add(p)));
-      blockedNames.forEach(p => after.delete(p));
-      downstream = after.size;
+      const seen = new Set<string>(blockedNames);
+      let frontier = blockedNodes.map(n => n.path);
+      while (frontier.length) {
+        const next: string[] = [];
+        frontier.forEach(p => (this.model.outgoing.get(p) || []).forEach(e => {
+          if (!seen.has(e.to)) {
+            seen.add(e.to);
+            next.push(e.to);
+          }
+        }));
+        downstream += next.length;
+        frontier = next;
+      }
     }
 
     const steps: DependencyChainRow[] = [];
@@ -1594,12 +1960,11 @@ export class DependenciesComponent {
       const ins = incoming(n.path);
       const parent = ins[0]?.from;
       let indent = 0;
-      if (parent && successors(parent).size > 1 && !g.cycle) {
+      if (parent && succ(parent).receivers.size > 1 && !g.cycle) {
         indent = 1;
         if (!headerDone.has(parent)) {
           headerDone.add(parent);
-          const boards = Array.from(new Set((this.model.outgoing.get(parent) || []).filter(e => inGroup.has(e.to)).map(e => e.board)));
-          steps.push({kind: 'header', count: successors(parent).size, boards});
+          steps.push({kind: 'header', count: succ(parent).receivers.size, boards: succ(parent).boards});
         }
       }
       if (n.path === blockedName && blockType) {
@@ -1625,7 +1990,10 @@ export class DependenciesComponent {
         stage,
         showStage: stage !== lastStage,
         indent,
-        posts: n.postNotices.filter(b => (this.model.outgoing.get(n.path) || []).some(e => e.board === b && inGroup.has(e.to))),
+        posts: (() => {
+          const boards = new Set(succ(n.path).boards);
+          return n.postNotices.filter(b => boards.has(b));
+        })(),
         waits: [
           ...ins.map(e => ({
             board: e.board,
@@ -1646,13 +2014,13 @@ export class DependenciesComponent {
             optional: optional(b)
           }))
         ],
-        conditions: check ? n.conditions.filter(c => c.expr && exprHasOr(c.expr)).map(c => this.conditionTokens(c.expr, n.path)) : [],
+        conditions: check ? null : [],
         blocked: blockedNames.has(n.path)
       });
       lastStage = stage;
     }
-    return {order, rows: this.foldRuns(g.id, steps), blockedStage, blockerStage, blockType, blockLater, blocker, blockerBoard, blockedName, blockedNames,
-      levels, neededMissing};
+    v.rows = this.foldRuns(g.id, steps);
+    return v.rows;
   }
 
   /**
@@ -1678,7 +2046,8 @@ export class DependenciesComponent {
     }
     const bad = incoming(n.path).filter(e => {
       const from = this.model.nodes.get(e.from);
-      return e.boardState !== 'posted' && (from.state === 'none' || from.failed);
+      // a posting workflow that completed today delivered its notice (it may have been consumed already)
+      return e.boardState !== 'posted' && !from.completed && (from.state === 'none' || from.failed);
     });
     if (bad.length) {
       return {type: 'noOrder', blocker: bad[0].from, board: bad[0].board,
