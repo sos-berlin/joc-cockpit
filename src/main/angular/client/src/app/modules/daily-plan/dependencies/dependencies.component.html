@@ -72,8 +72,7 @@
         @if (visibleGroups.length > 0) {
           <div class="dep-health-summary">
             @for (grp of chipGroups; track grp.sev) {
-              <span class="dep-chip-group">
-                <span class="dep-chip-group-label">{{ 'dailyPlan.dependencies.severity.' + grp.sev | translate }}</span>
+              <span class="dep-chip-group" [attr.aria-label]="'dailyPlan.dependencies.severity.' + grp.sev | translate">
                 @for (c of grp.chips; track c.cat.key) {
                   <span class="dep-cat dep-chip-wrap" [ngClass]="c.cat.kind === 'missing' ? 'dep-cat-missing' : 'dep-os-' + c.cat.state"
                         [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
@@ -157,7 +156,7 @@
                     <span class="text-right">{{ 'dailyPlan.dependencies.label.orders' | translate }}</span>
                   </span>
                 </div>
-                @for (r of chainRows(g); track $index) {
+                @for (r of shownRows(g); track $index) {
                   @switch (r.kind) {
                     @case ('header') {
                       <div class="dep-branch-header">
@@ -167,7 +166,7 @@
                     @case ('note') {
                       <div class="dep-note">
                         <ng-container *ngTemplateOutlet="richText; context: {$implicit: noteParts(r)}"></ng-container>
-                        @for (c of r.critical; track c.path) {
+                        @for (c of shownCritical(r); track c.path) {
                           <span> </span><ng-container *ngTemplateOutlet="richText; context: {$implicit: criticalParts(c)}"></ng-container>
                         }
                       </div>
@@ -199,7 +198,7 @@
                           <span class="dep-posts">
                             @if (r.posts.length > 0) {
                               @for (b of visiblePosts(r); track b; let last = $last) {
-                                <a class="dep-obj" (click)="showBoard(b)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
+                                <a class="dep-obj" [appRichTooltip]="b" (click)="showBoard(b)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(b) }}</a>@if (!last) {<span class="text-muted">, </span>}
                               }
                               @if (hiddenPosts(r).length > 0) {
                                 <a class="dep-more" [appRichTooltip]="hiddenPosts(r).join(', ')" (click)="togglePosts(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.moreBoards' | translate: {count: hiddenPosts(r).length} }}</a>
@@ -214,7 +213,7 @@
                             @if (r.waits.length === 0) {
                               <span class="text-muted">{{ 'dailyPlan.dependencies.label.startOfChain' | translate }}</span>
                             }
-                            @for (w of r.waits; track $index; let last = $last) {
+                            @for (w of visibleWaits(r); track $index; let last = $last) {
                               @if (w.unmatched) {
                                 <span [class.dep-warn]="!w.optional" [class.text-muted]="w.optional">
                                   {{ 'dailyPlan.dependencies.label.waitsForBoard' | translate }}
@@ -231,7 +230,7 @@
                               }
                               @if (!last) {<br>}
                             }
-                            @for (c of r.conditions; track $index) {
+                            @for (c of stepConditions(r); track $index) {
                               <br>
                               <span class="dep-cond">
                                 <span class="text-muted">{{ 'dailyPlan.dependencies.label.condition' | translate }} </span>
@@ -246,9 +245,17 @@
                                     @case ('paren') {
                                       <span class="text-muted">{{ t.v }}</span>
                                     }
+                                    @case ('more') {
+                                      <a class="dep-more" (click)="toggleWaits(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.moreBoards' | translate: {count: t.count} }}</a>
+                                    }
                                   }
                                 }
                               </span>
+                            }
+                            @if (hiddenWaitCount(r) > 0) {
+                              <br><a class="dep-more" (click)="toggleWaits(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.moreBoards' | translate: {count: hiddenWaitCount(r)} }}</a>
+                            } @else if (isWaitsExpanded(r.node.path)) {
+                              <br><a class="dep-more" (click)="toggleWaits(r.node.path, $event)">{{ 'dailyPlan.dependencies.label.lessBoards' | translate }}</a>
                             }
                           </span>
                           <span class="dep-orders">
@@ -262,6 +269,23 @@
                       </div>
                     }
                   }
+                }
+                @if (hiddenStepCount(g) > 0) {
+                  <div class="dep-step dep-more-steps">
+                    <span class="dep-stage"></span>
+                    <span class="dep-rail dep-rail-dotted"></span>
+                    <span class="dep-fold-body">
+                      <button type="button" class="btn btn-grey btn-xs" (click)="showMoreSteps(g, false, $event)">
+                        <i class="fa fa-caret-down m-r-xs"></i>{{ 'dailyPlan.dependencies.button.showMoreSteps' | translate: {count: nextStepCount(g)} }}
+                      </button>
+                      @if (hiddenStepCount(g) > nextStepCount(g)) {
+                        <button type="button" class="btn btn-grey btn-xs m-l-xs" (click)="showMoreSteps(g, true, $event)">
+                          {{ 'dailyPlan.dependencies.button.showAllSteps' | translate: {count: hiddenStepCount(g)} }}
+                        </button>
+                      }
+                      <span class="text-muted m-l-sm">{{ 'dailyPlan.dependencies.label.stepsShown' | translate: {shown: shownWorkflowCount(g), total: g.nodes.length} }}</span>
+                    </span>
+                  </div>
                 }
               </div>
             }

@@ -66,6 +66,12 @@ export interface DepNode {
   state: DepState;
   /** at least one order is FAILED, SUSPENDED or BROKEN */
   failed: boolean;
+  /**
+   * The workflow has no order left in this Plan because its order(s) completed successfully today
+   * (order history, or - if the history is not available - a posted notice only this workflow posts).
+   * Such a workflow is done, not missing.
+   */
+  completed: boolean;
   /** the most severe of these states, e.g. 'SUSPENDED'; null if none */
   criticalState: string | null;
   /**
@@ -267,8 +273,8 @@ export function isConditionalPosition(position: string): boolean {
 }
 
 /**
- * State of a single notice: posted (yes); announced, or a posting workflow has an order that is not
- * failed (maybe); otherwise it cannot come in this Plan (no).
+ * State of a single notice: posted, or a posting workflow completed today (yes); announced, or a posting
+ * workflow has an order that is not failed (maybe); otherwise it cannot come in this Plan (no).
  */
 export function boardValue(graph: DepGraph, board: string): Tri {
   const st = boardStateOf(graph.boardOf(board));
@@ -279,6 +285,10 @@ export function boardValue(graph: DepGraph, board: string): Tri {
     return 'maybe';
   }
   const posters = graph.posters.get(board) || [];
+  // a posting workflow that completed today delivered the notice (it may have been consumed meanwhile)
+  if (posters.some(p => graph.nodes.get(p)?.completed)) {
+    return 'yes';
+  }
   return posters.some(p => {
     const n = graph.nodes.get(p);
     return !!n && n.state !== 'none' && !n.failed;
@@ -446,13 +456,16 @@ function commonFolder(folders: string[]): string {
  * as a closed list [A, B, C, A]; null if there is none. Self-references are ignored.
  */
 export function findCycle(nodeIds: string[], links: { from: string; to: string }[]): string[] | null {
-  const out = new Map<string, string[]>();
-  nodeIds.forEach(id => out.set(id, []));
+  // successor sets: a trigger can have thousands of receivers, an array lookup per link was quadratic
+  const outSet = new Map<string, Set<string>>();
+  nodeIds.forEach(id => outSet.set(id, new Set()));
   links.forEach(l => {
-    if (out.has(l.from) && out.has(l.to) && l.from !== l.to && !out.get(l.from).includes(l.to)) {
-      out.get(l.from).push(l.to);
+    if (outSet.has(l.from) && outSet.has(l.to) && l.from !== l.to) {
+      outSet.get(l.from).add(l.to);
     }
   });
+  const out = new Map<string, string[]>();
+  outSet.forEach((set, id) => out.set(id, Array.from(set)));
   const state = new Map<string, number>(); // 1 = on the current path, 2 = done
   const stack: string[] = [];
   const visit = (id: string): string[] | null => {
@@ -532,7 +545,12 @@ export function computeLevels(nodeIds: string[], links: { from: string; to: stri
 }
 
 /** Builds the whole model once per snapshot. Cost is linear in workflows + edges. */
-export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): DepGraph {
+/**
+ * completedPaths: workflows whose orders of this Plan completed successfully (order history). null if
+ * the history is not available: then a workflow without order counts as completed if a notice that only
+ * it posts is posted for this Plan.
+ */
+export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = [], completedPaths: Set<string> | null = null): DepGraph {
   const nodes = new Map<string, DepNode>();
   const boards = new Map<string, any>();
 
@@ -602,7 +620,7 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
         folder: folderOf(w.path),
         postNotices: [], expectNotices: [], consumeNotices: [],
         expectingOrderIds: [], presentDueOrderIds: [], futureDueOrderIds: [],
-        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, criticalState: null, searchText: '', unmatchedNotices: [],
+        planOrderIds: [], numOfExpectingOrders: 0, orderIds: [], state: 'none', failed: false, completed: false, criticalState: null, searchText: '', unmatchedNotices: [],
         conditions: [], waitingPositions: [], firstOrderState: null
       };
       nodes.set(w.path, n);
@@ -668,6 +686,14 @@ export function buildDependencyGraph(data: any, planOrders: PlanOrder[] = []): D
 
   nodes.forEach(n => {
     n.unmatchedNotices = uniq([...n.expectNotices, ...n.consumeNotices]).filter(b => !posters.has(b));
+    if (n.state === 'none') {
+      n.completed = completedPaths
+        ? completedPaths.has(n.path)
+        : n.postNotices.some(b => (posters.get(b) || []).length === 1 && boardStateOf(boardOf(b)) === 'posted');
+      if (n.completed) {
+        n.firstOrderState = 'FINISHED';
+      }
+    }
   });
 
   const edges: DepEdge[] = [];
