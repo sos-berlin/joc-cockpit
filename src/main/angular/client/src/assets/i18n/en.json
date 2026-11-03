@@ -1296,7 +1296,7 @@
     "dependencies.button.showMoreSteps": "Show {{count}} more steps",
     "dependencies.button.postNotices": "Post Notice ({{count}})",
     "dependencies.button.clearSelection": "Clear selection",
-    "dependencies.tooltip.selectToPost": "Select the ^Notice Board^ to post a ^Notice^ for the selected day.",
+    "dependencies.tooltip.selectToPost": "Select ^Notice Board^ to post a ^Notice^ for the given day.",
     "dependencies.button.showAllSteps": "Show {{count}} remaining steps",
     "dependencies.label.stepsShown": "{{shown}} of {{total}} Workflows on display",
     "dependencies.health.intervention": "Intervention required",
