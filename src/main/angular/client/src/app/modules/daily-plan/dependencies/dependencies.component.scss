@@ -360,12 +360,38 @@ $dep-tint: rgba(128, 128, 160, 0.10);
 // ---- health of a Critical Path (JOC-2320 review: visible at a glance)
 .dep-health-summary {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 16px;
   padding: 10px 14px;
   border-bottom: 1px solid $dep-line;
   font-size: 13px;
+}
+
+// left: filter chips, "Clear filter" and the warning; right: "Post Notice" with the selection
+.dep-summary-left {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dep-summary-right {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  padding-left: 16px;
+  border-left: 1px solid $dep-line;
+  white-space: nowrap;
+}
+
+.dep-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .dep-health {
@@ -953,5 +979,28 @@ $dep-tint: rgba(128, 128, 160, 0.10);
       white-space: normal;
       overflow-wrap: anywhere;
     }
+  }
+}
+
+// ---- "Post Notice": checkbox before a board without posted notice
+// nz-checkbox renders an empty label span with 8px padding; the checkbox gets its own even spacing instead
+.dep-post-check {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 5px 0 3px;
+  vertical-align: middle;
+  line-height: 1;
+
+  ::ng-deep .ant-checkbox {
+    top: 0;
+  }
+
+  ::ng-deep .ant-checkbox + span {
+    display: none;
+  }
+
+  ::ng-deep .ant-checkbox-inner {
+    width: 13px;
+    height: 13px;
   }
 }

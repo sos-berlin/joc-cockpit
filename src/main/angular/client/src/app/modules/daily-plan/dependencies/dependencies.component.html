@@ -71,32 +71,43 @@
       <div class="dep-list">
         @if (visibleGroups.length > 0) {
           <div class="dep-health-summary">
-            @for (grp of chipGroups; track grp.sev) {
-              <span class="dep-chip-group" [attr.aria-label]="'dailyPlan.dependencies.severity.' + grp.sev | translate">
-                @for (c of grp.chips; track c.cat.key) {
-                  <span class="dep-cat dep-chip-wrap" [ngClass]="c.cat.kind === 'missing' ? 'dep-cat-missing' : 'dep-os-' + c.cat.state"
-                        [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
-                        [class.dep-chip-off]="selectedCategories.size > 0 && !selectedCategories.has(c.cat.key)">
-                    <button type="button" class="dep-chip" [attr.aria-pressed]="selectedCategories.has(c.cat.key)"
-                            [appRichTooltip]="categoryTooltip(c.cat)" (click)="toggleCategory(c.cat.key)">
-                      <span>{{ categoryLabelKey(c.cat, c.count) | translate }}</span><b class="dep-chip-count">{{ c.count }}</b>
-                    </button>
-                    <button type="button" class="dep-chip-toggle" [attr.aria-expanded]="!isCollapsed(c.cat.key)"
-                            [appRichTooltip]="(isCollapsed(c.cat.key) ? 'dailyPlan.dependencies.label.expand' : 'dailyPlan.dependencies.label.collapse') | translate"
-                            (click)="toggleCollapse(c.cat.key, $event)">
-                      <span nz-icon [nzType]="isCollapsed(c.cat.key) ? 'right' : 'down'" nzTheme="outline"></span>
-                    </button>
-                  </span>
-                }
-              </span>
-            }
-            @if (selectedCategories.size > 0) {
-              <button type="button" class="btn btn-grey btn-xs" (click)="clearCategories()">{{ 'dailyPlan.dependencies.button.clearFilter' | translate }}</button>
-            }
-            @if (blockedPathCount > 0) {
-              <span class="dep-warn m-l-sm">
-                <i class="fa fa-exclamation-triangle m-r-xs"></i>{{ plural('dailyPlan.dependencies.message.cannotComplete', blockedPathCount) | translate: {count: blockedPathCount} }}
-              </span>
+            <div class="dep-summary-left">
+              @for (grp of chipGroups; track grp.sev) {
+                <span class="dep-chip-group" [attr.aria-label]="'dailyPlan.dependencies.severity.' + grp.sev | translate">
+                  @for (c of grp.chips; track c.cat.key) {
+                    <span class="dep-cat dep-chip-wrap" [ngClass]="c.cat.kind === 'missing' ? 'dep-cat-missing' : 'dep-os-' + c.cat.state"
+                          [class.dep-chip-on]="selectedCategories.has(c.cat.key)"
+                          [class.dep-chip-off]="selectedCategories.size > 0 && !selectedCategories.has(c.cat.key)">
+                      <button type="button" class="dep-chip" [attr.aria-pressed]="selectedCategories.has(c.cat.key)"
+                              [appRichTooltip]="categoryTooltip(c.cat)" (click)="toggleCategory(c.cat.key)">
+                        <span>{{ categoryLabelKey(c.cat, c.count) | translate }}</span><b class="dep-chip-count">{{ c.count }}</b>
+                      </button>
+                      <button type="button" class="dep-chip-toggle" [attr.aria-expanded]="!isCollapsed(c.cat.key)"
+                              [appRichTooltip]="(isCollapsed(c.cat.key) ? 'dailyPlan.dependencies.label.expand' : 'dailyPlan.dependencies.label.collapse') | translate"
+                              (click)="toggleCollapse(c.cat.key, $event)">
+                        <span nz-icon [nzType]="isCollapsed(c.cat.key) ? 'right' : 'down'" nzTheme="outline"></span>
+                      </button>
+                    </span>
+                  }
+                </span>
+              }
+              @if (selectedCategories.size > 0) {
+                <button type="button" class="btn btn-grey btn-xs" (click)="clearCategories()">{{ 'dailyPlan.dependencies.button.clearFilter' | translate }}</button>
+              }
+              @if (blockedPathCount > 0) {
+                <span class="dep-warn m-l-sm">
+                  <i class="fa fa-exclamation-triangle m-r-xs"></i>{{ plural('dailyPlan.dependencies.message.cannotComplete', blockedPathCount) | translate: {count: blockedPathCount} }}
+                </span>
+              }
+            </div>
+            @if (selectedBoards.size > 0) {
+              <div class="dep-summary-right">
+                <a class="dep-more" (click)="clearBoardSelection()">{{ 'dailyPlan.dependencies.button.clearSelection' | translate }}</a>
+                <button type="button" class="btn btn-grey btn-sm dep-post-btn" (click)="postSelectedNotices()" [disabled]="!canPostNotices()">
+                  <i class="fa fa-sticky-note-o"></i>
+                  <span>{{ 'dailyPlan.dependencies.button.postNotices' | translate: {count: selectedBoards.size} }}</span>
+                </button>
+              </div>
             }
           </div>
         }
@@ -217,13 +228,13 @@
                               @if (w.unmatched) {
                                 <span [class.dep-warn]="!w.optional" [class.text-muted]="w.optional">
                                   {{ 'dailyPlan.dependencies.label.waitsForBoard' | translate }}
-                                  <a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
+                                  @if (w.canPost) {<label nz-checkbox class="dep-post-check" [nzChecked]="isBoardSelected(w.board)" (nzCheckedChange)="toggleBoardSelection(w.board, $event)" (click)="$event.stopPropagation()" [appRichTooltip]="'dailyPlan.dependencies.tooltip.selectToPost' | translate"></label>}<a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
                                   · {{ 'dailyPlan.dependencies.label.noPoster' | translate }}
                                 </span>
                               } @else {
                                 <span>
                                   <span [class.text-muted]="!r.blocked">{{ receiveKey(w) | translate }} </span>
-                                  <a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
+                                  @if (w.canPost) {<label nz-checkbox class="dep-post-check" [nzChecked]="isBoardSelected(w.board)" (nzCheckedChange)="toggleBoardSelection(w.board, $event)" (click)="$event.stopPropagation()" [appRichTooltip]="'dailyPlan.dependencies.tooltip.selectToPost' | translate"></label>}<a class="dep-obj" (click)="showBoard(w.board)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.board) }}</a>
                                   <span [class.text-muted]="!r.blocked"> {{ 'dailyPlan.dependencies.label.from' | translate }} </span>
                                   <a class="dep-obj" (click)="navToWorkflow(w.from, 'WORKFLOW')"><span nz-icon nzType="apartment" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(w.from) }}</a>
                                 </span>
@@ -237,7 +248,7 @@
                                 @for (t of c; track $index) {
                                   @switch (t.t) {
                                     @case ('board') {
-                                      <span class="dep-cond-board dep-obj" [ngClass]="'dep-cond-' + t.value"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(t.name) }}</span>
+                                      <a class="dep-cond-board dep-obj" [ngClass]="'dep-cond-' + t.value" (click)="$event.stopPropagation(); showBoard(t.name)"><span nz-icon nzType="pushpin" nzTheme="outline" class="dep-obj-icon"></span>{{ getFormattedPath(t.name) }}</a>
                                     }
                                     @case ('op') {
                                       <span class="text-muted"> {{ 'dailyPlan.dependencies.label.' + t.op | translate }} </span>

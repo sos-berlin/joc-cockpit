@@ -60,7 +60,9 @@ export interface DependencyStep {
    * from = null: no workflow posts this notice in this Plan.
    * optional = true: the notice is one of several alternatives (||) and is not needed for the condition.
    */
-  waits: { board: string; from: string | null; kind: string; boardState: BoardState; fromState: DepState; unmatched: boolean; optional: boolean }[];
+  waits: { board: string; from: string | null; kind: string; boardState: BoardState; fromState: DepState; unmatched: boolean; optional: boolean;
+    /** first line of a board without posted notice in this Critical Path: offers the "Post Notice" checkbox */
+    canPost?: boolean }[];
   /**
    * conditions with alternatives (||), as tokens for display, e.g. A or (B and C); built when the
    * step is rendered (see stepConditions), null until then
@@ -330,6 +332,13 @@ export class DependenciesComponent {
   private stepLimits = new Map<string, number>();
   /** steps whose "Receives Notice" list is shown in full */
   private expandedWaits = new Set<string>();
+  /**
+   * Notice boards selected for "Post Notice" (board names). The checkbox is offered once per board in an
+   * opened Critical Path and only while no notice is posted for the selected day.
+   */
+  selectedBoards = new Set<string>();
+  /** workflow whose orders the side panel shows, to refresh it with every new response */
+  private sideBarPath: string | null = null;
   /** Plan day of the last response: a new day starts with the default collapse state again */
   private lastPlanDay: string | null = null;
   /** Critical Paths hidden by collapsed chips */
@@ -1018,7 +1027,100 @@ export class DependenciesComponent {
     } else {
       this.expandedGroups.clear();
     }
+    // a board posted meanwhile is no longer offered for posting
+    this.selectedBoards.forEach(b => {
+      if (!this.model || boardStateOf(this.model.boardOf(b)) === 'posted') {
+        this.selectedBoards.delete(b);
+      }
+    });
+    this.refreshSideBar();
     this.applyFilters();
+  }
+
+  // ===================================================================== post notices
+
+  isBoardSelected(board: string): boolean {
+    return this.selectedBoards.has(board);
+  }
+
+  toggleBoardSelection(board: string, checked: boolean): void {
+    if (checked) {
+      this.selectedBoards.add(board);
+    } else {
+      this.selectedBoards.delete(board);
+    }
+    this.cd.markForCheck();
+  }
+
+  clearBoardSelection(): void {
+    this.selectedBoards.clear();
+    this.cd.markForCheck();
+  }
+
+  /** Workflows of the view that receive (expect or consume) the board. */
+  private receiversOf(board: string): string[] {
+    const paths: string[] = [];
+    this.model?.nodes.forEach(n => {
+      if (n.expectNotices.includes(board) || n.consumeNotices.includes(board)) {
+        paths.push(n.path);
+      }
+    });
+    return paths;
+  }
+
+  /** Workflows that receive one of the selected boards: the permission is checked per workflow folder. */
+  private receiversOfSelected(): string[] {
+    return Array.from(new Set(Array.from(this.selectedBoards).flatMap(b => this.receiversOf(b))));
+  }
+
+  /**
+   * Same rules as "Post all" in the Workflows view: the Controller permission to post notices, and the
+   * permission "post" for the folder of a workflow concerned.
+   */
+  canPostNotices(): boolean {
+    if (!this.permission?.currentController?.noticeBoards?.post) {
+      return false;
+    }
+    const paths = this.receiversOfSelected();
+    return paths.length === 0 || paths.some(p => this.coreService.hasWorkflowFolderPermission(p, 'post'));
+  }
+
+  /**
+   * "Post Notice" opens the same dialog as "Post all" in the Workflows view (PostModalComponent with the
+   * selected boards, flag: true), so posting works the same everywhere: notice ID / plan key, end of life
+   * and the audit log comment are entered there. As in the Workflows view, each entry is one notice board
+   * (by name) with one workflow that receives it; noticeSpaceKey passes the selected day (used only if the
+   * dialog supports it; the Workflows view passes no day).
+   */
+  postSelectedNotices(): void {
+    if (this.selectedBoards.size === 0 || !this.canPostNotices()) {
+      return;
+    }
+    const workflowPaths = Array.from(this.selectedBoards).flatMap(board =>
+      this.receiversOf(board).map(path => ({noticePath: board, workflowPaths: [path]})));
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        workflowPaths,
+        controllerId: this.schedulerId,
+        preferences: this.preferences,
+        flag: true,
+        noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.selectedBoards.clear();
+        // the NoticeBoardStateChanged events reload the view as well; this makes the change visible at once
+        this.loadAdditionaSnapshotlData();
+      }
+      this.cd.markForCheck();
+    });
   }
 
   // ===================================================================== search and notice buttons
@@ -1778,7 +1880,21 @@ export class DependenciesComponent {
   }
 
   showOrders(node: DepNode): void {
+    this.sideBarPath = node.path;
     this.buildOrdersHtml(node.orderIds);
+  }
+
+  /**
+   * The side panel showed a copy of the orders from the moment it was opened; changes (a finished order,
+   * an order suspended from the panel) were never reflected. With every new response it now shows the
+   * current orders of the same workflow; it stays open, also when no order is left.
+   */
+  private refreshSideBar(): void {
+    if (!this.sideBar.isVisible || !this.sideBarPath) {
+      return;
+    }
+    const node = this.model?.nodes.get(this.sideBarPath);
+    this.sideBar.orders = (node?.orderIds || []).map(id => this.getOrderDetails(id)).filter(Boolean);
   }
 
   /** Reason text from the same order state as the dot: "Blocked Order", "Waiting", "Missing Order" … */
@@ -2019,6 +2135,15 @@ export class DependenciesComponent {
       });
       lastStage = stage;
     }
+    // "Post Notice": one checkbox per board in this Critical Path, at its first line in step order, and
+    // only while no notice is posted for the day (a board appears in many lines)
+    const offered = new Set<string>();
+    steps.forEach((r: any) => r.kind === 'step' && r.waits.forEach((w: any) => {
+      w.canPost = w.boardState !== 'posted' && !offered.has(w.board);
+      if (w.canPost) {
+        offered.add(w.board);
+      }
+    }));
     v.rows = this.foldRuns(g.id, steps);
     return v.rows;
   }
@@ -2127,6 +2252,9 @@ export class DependenciesComponent {
       }
     });
     this.sideBar.isVisible = this.sideBar.orders.length > 0;
+    if (!this.sideBar.isVisible) {
+      this.sideBarPath = null;
+    }
   }
 
   private getOrderDetails(orderId: string): any {
@@ -2174,6 +2302,20 @@ export class DependenciesComponent {
     return this.isPathDisplay ? path?.split('/').pop() : path;
   }
 
+  /**
+   * An order of a workflow in this view changed its state (added, started, finished, suspended, resumed,
+   * failed, cancelled). The Controller reports this as WorkflowStateChanged with the workflow, the same
+   * event the Workflows view uses. Before, the view only reloaded on plan and notice board events, so a
+   * running order stayed "Running" after it had completed until another day was selected.
+   */
+  private isOrderEventOfView(event: any): boolean {
+    if (event?.eventType !== 'WorkflowStateChanged') {
+      return false;
+    }
+    const path = event.workflow?.path || event.path;
+    return !!path && !!this.model?.nodes.has(path);
+  }
+
   refresh(args: { eventSnapshots: any[] }): void {
     let shouldLoadPlans = false;
     let shouldLoadSnapshot = false;
@@ -2185,7 +2327,8 @@ export class DependenciesComponent {
           shouldLoadPlans = true;
         } else if (
           (event.eventType.match(/WorkflowPlanChanged/) && event.objectType === 'PLAN') ||
-          (event.eventType.match(/NoticeBoardStateChanged/) && event.objectType === 'NOTICEBOARD')
+          (event.eventType.match(/NoticeBoardStateChanged/) && event.objectType === 'NOTICEBOARD') ||
+          this.isOrderEventOfView(event)
         ) {
           shouldLoadSnapshot = true;
         }
