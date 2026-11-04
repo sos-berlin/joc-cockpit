@@ -37,7 +37,51 @@
       </div>
     }
 
-    @if (!showNoticeId) {
+    @if (planNotices) {
+      <!-- Daily Plan -> Dependencies: what is posted per Notice Board -->
+      <div class="form-group row">
+        <div class="col-sm-4 form-control-label">{{ 'resource.board.label.noticesToPost' | translate }}</div>
+        <div class="col-sm-8">
+          @for (e of planEntries; track e.noticeBoardPath) {
+            <div class="m-b-xs">
+              <i class="fa fa-thumb-tack text-muted p-r-xs"></i><span class="font-italic">{{ e.name }}</span>
+              @if (e.boardType === 'GLOBAL' && !(e.noticeIds && e.noticeIds.length)) {
+                <span class="text-muted"> &rarr; {{ 'resource.board.label.noticeKey' | translate }}</span>
+              } @else {
+                <span class="text-muted"> &rarr; {{ planEntryIds(e) }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      @if (hasPlannable) {
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'resource.board.tooltip.planKey' | translate">{{ 'resource.board.label.planKey' | translate }}</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <nz-date-picker [(ngModel)]="postObj.planKey" [nzFormat]="dateFormat"
+                            [nzPlaceHolder]="'resource.board.placeholder.enterPlanKey' | translate"
+                            name="planKey" required></nz-date-picker>
+          </div>
+        </div>
+      }
+      @for (e of globalEntriesWithoutId; track e.noticeBoardPath) {
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label">
+            <span [appRichTooltip]="'resource.board.tooltip.noticeKey' | translate">{{ 'resource.board.label.noticeKey' | translate }}: {{ e.name }}</span>
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="e.noticeKey" [name]="'noticeKey_' + $index" autocomplete="off" class="form-control"
+                   placeholder="{{'resource.board.placeholder.enterNoticeKey' | translate}}" type="text" required />
+          </div>
+        </div>
+      }
+    }
+
+    @if (!showNoticeId && (!planNotices || hasGlobal)) {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
           <span [appRichTooltip]="'resource.board.tooltip.endOfLife' | translate">{{ 'resource.board.label.endOfLife' | translate }}</span>
@@ -50,7 +94,7 @@
         </div>
       </div>
     }
-    @if (postObj.at == 'later' && !showNoticeId) {
+    @if (postObj.at == 'later' && !showNoticeId && (!planNotices || hasGlobal)) {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
           <span [appRichTooltip]="'resource.board.tooltip.time' | translate">{{ 'common.label.time' | translate }}</span>
@@ -88,7 +132,7 @@
         </div>
       </div>
     }
-    @if (postObj.at == 'date') {
+    @if (postObj.at == 'date' && (!planNotices || hasGlobal)) {
       <div class="form-group row">
         <label class="col-sm-4 form-control-label">
           <span [appRichTooltip]="'resource.board.tooltip.enterDateAndTime' | translate">{{ 'workflow.label.enterDateAndTime' | translate }}</span>
@@ -102,7 +146,7 @@
         </div>
       </div>
     }
-    @if (!showNoticeId) {
+    @if (!showNoticeId && (!planNotices || hasGlobal)) {
       <div class="form-group row">
         <div class="col-sm-4 form-control-label">{{ 'common.label.timeZone' | translate }}</div>
         <div class="col-sm-6">

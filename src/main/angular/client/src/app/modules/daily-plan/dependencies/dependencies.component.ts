@@ -916,7 +916,13 @@ export class DependenciesComponent {
       if (b?.planId?.planSchemaId === 'Global' && Array.isArray(b.notices)) {
         // counters cover all days: drop them so that the notices of this day are counted
         const {numOfNotices, numOfAnnouncements, numOfPostedNotices, numOfExpectedNotices, numOfExpectingOrders, ...rest} = b;
-        const notices = b.notices.filter((n: any) => String(n?.id) === day)
+        // the notice ID comes from the board's expression: the date ("2026-11-03"), date and order name
+        // ("2026-11-03root") or a fixed key. Keep the notices of this day and those with a fixed key;
+        // drop those of other days.
+        const notices = b.notices.filter((n: any) => {
+          const id = String(n?.id ?? '');
+          return id.startsWith(day) || !/^\d{4}-\d{2}-\d{2}/.test(id);
+        })
           .map((n: any) => ({...n, expectingOrderIds: (n.expectingOrderIds || []).filter(keepId)}));
         noticeBoards[key] = {...rest, notices};
       } else {
@@ -1086,30 +1092,73 @@ export class DependenciesComponent {
   }
 
   /**
-   * "Post Notice" opens the same dialog as "Post all" in the Workflows view (PostModalComponent with the
-   * selected boards, flag: true), so posting works the same everywhere: notice ID / plan key, end of life
-   * and the audit log comment are entered there. As in the Workflows view, each entry is one notice board
-   * (by name) with one workflow that receives it; noticeSpaceKey passes the selected day (used only if the
-   * dialog supports it; the Workflows view passes no day).
+   * "Post Notice" posts notices of the selected boards for the selected Plan day (notices/post with notice
+   * IDs, dialog mode planNotices). notices/post/expected, as used in the Workflows view, only posts for
+   * orders that already wait and has no Plan Key: nothing was posted for a workflow without waiting order.
+   * Notice IDs per board:
+   * - IDs the board expects on this day (waiting orders) are posted exactly, e.g. "2026-11-03root",
+   * - otherwise PLANNABLE: DailyPlan/<day>/-, GLOBAL: a notice key entered in the dialog, preset from the
+   *   board's expression (date only -> the day, fixed key -> the key).
    */
   postSelectedNotices(): void {
     if (this.selectedBoards.size === 0 || !this.canPostNotices()) {
       return;
     }
-    const workflowPaths = Array.from(this.selectedBoards).flatMap(board =>
-      this.receiversOf(board).map(path => ({noticePath: board, workflowPaths: [path]})));
+    const day = this.coreService.getStringDate(this.selectedDate);
+    const entries = Array.from(this.selectedBoards).map(name => this.postEntry(name, day));
+    const unknown = entries.filter(e => e.boardType === 'GLOBAL' && e.noticeIds.length === 0);
+    if (unknown.length === 0) {
+      this.openPostDialog(entries, day);
+      return;
+    }
+    // the notice key expression is not part of the snapshot: read it for the global boards concerned
+    this.getNoticeBoards({noticeBoardPaths: unknown.map(e => e.noticeBoardPath), controllerId: this.schedulerId}, (boards) => {
+      (boards || []).forEach((b: any) => {
+        const e = unknown.find(x => x.noticeBoardPath === b.path || x.name === b.name);
+        if (e) {
+          e.noticeKey = this.presetNoticeKey(b.postOrderToNoticeId, day);
+        }
+      });
+      this.openPostDialog(entries, day);
+    });
+  }
+
+  /** Entry for the dialog: board path and type, and the notice IDs expected on this day. */
+  private postEntry(name: string, day: string): any {
+    const b = this.model?.boardOf(name) || {};
+    const boardType = b.boardType === 'GLOBAL' || b.planId?.planSchemaId === 'Global' ? 'GLOBAL' : 'PLANNABLE';
+    const expected = (b.notices || [])
+      .filter((n: any) => String(n?.state?._text || n?.state || '').toUpperCase() !== 'POSTED')
+      .map((n: any) => String(n.id))
+      .filter((id: string) => !!id);
+    const noticeIds = boardType === 'GLOBAL'
+      ? expected
+      : expected.map(id => id.startsWith('DailyPlan/') ? id : 'DailyPlan/' + day + '/' + (id || '-'));
+    return {name, noticeBoardPath: b.path || name, boardType, noticeIds: Array.from(new Set(noticeIds)), noticeKey: ''};
+  }
+
+  /**
+   * Notice key of a global board without expected notice, from its expression (as in the dialog for one
+   * board): the date of the order ID -> the selected day; a fixed key -> that key; otherwise empty
+   * (e.g. date and order name: the user enters the key).
+   */
+  private presetNoticeKey(expr: any, day: string): string {
+    if (typeof expr !== 'string') {
+      return '';
+    }
+    if (expr === "replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')") {
+      return day;
+    }
+    return /[$()]/.test(expr) ? '' : expr.replace(/^'(.*)'$/, '$1');
+  }
+
+  private openPostDialog(entries: any[], day: string): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzData: {
-        workflowPaths,
-        controllerId: this.schedulerId,
-        preferences: this.preferences,
-        flag: true,
-        noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
-      },
+      nzData: {planNotices: true, planKey: day, notices: entries, controllerId: this.schedulerId, preferences: this.preferences},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

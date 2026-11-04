@@ -20,7 +20,7 @@ declare const $: any;
   standalone: false,
   selector: 'app-post-notice-modal',
   templateUrl: './post-notice-dialog.html',
-  
+
 })
 export class PostModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -43,6 +43,13 @@ export class PostModalComponent {
   singular = false;
   showNoticeId = false;
   globalSingle = false;
+  /**
+   * Daily Plan -> Dependencies: post notices of several boards for one Plan day (notices/post with notice IDs).
+   * Each entry: {name, noticeBoardPath, boardType, noticeIds (known IDs, e.g. expected by waiting orders),
+   * noticeKey (preset for a GLOBAL board without known ID)}.
+   */
+  planNotices = false;
+  planEntries: any[] = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private cdr: ChangeDetectorRef) {
   }
@@ -58,6 +65,7 @@ export class PostModalComponent {
     this.workflowPaths = this.modalData.workflowPaths;
     this.singular = this.modalData.singular;
     this.globalSingle = this.modalData.globalSingle;
+    this.planNotices = !!this.modalData.planNotices;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.coreService.getTimeZoneList((timezones) => {
       this.zones = timezones;
@@ -67,6 +75,11 @@ export class PostModalComponent {
     this.postObj.at = 'later';
     if (this.showNoticeId) {
       this.postObj.planKey = new Date();
+    }
+    if (this.planNotices) {
+      // the Plan day selected in the view, not today
+      this.postObj.planKey = this.modalData.planKey ? new Date(this.modalData.planKey + 'T00:00:00') : new Date();
+      this.planEntries = (this.modalData.notices || []).map((e: any) => ({...e, noticeKey: e.noticeKey || ''}));
     }
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -199,6 +212,42 @@ export class PostModalComponent {
 
   }
 
+  /** A plannable board is selected: the Plan Key field is shown. */
+  get hasPlannable(): boolean {
+    return this.planEntries.some(e => e.boardType !== 'GLOBAL');
+  }
+
+  /** A global board is selected: end of life and time zone apply. */
+  get hasGlobal(): boolean {
+    return this.planEntries.some(e => e.boardType === 'GLOBAL');
+  }
+
+  /** Global boards without a known notice ID: the user enters the notice key (required). */
+  get globalEntriesWithoutId(): any[] {
+    return this.planEntries.filter(e => e.boardType === 'GLOBAL' && !(e.noticeIds && e.noticeIds.length));
+  }
+
+  /** Text of what is posted per board, shown in the dialog. */
+  planEntryIds(entry: any): string {
+    return this.noticeIdsOf(entry).join(', ') || '-';
+  }
+
+  /**
+   * Notice IDs posted for an entry of the planNotices mode:
+   * - PLANNABLE: the IDs expected by waiting orders, else DailyPlan/<Plan Key>/<notice key or ->,
+   * - GLOBAL: the IDs expected by waiting orders, else the notice key entered by the user.
+   */
+  private noticeIdsOf(entry: any): string[] {
+    if (entry.noticeIds && entry.noticeIds.length) {
+      return entry.noticeIds;
+    }
+    if (entry.boardType === 'GLOBAL') {
+      return entry.noticeKey ? [entry.noticeKey] : [];
+    }
+    const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
+    return ['DailyPlan/' + planKey + '/' + (this.postObj.noticeKey ? this.postObj.noticeKey : '-')];
+  }
+
   onBlur(repeat: NgModel, propertyName: string) {
     this.postObj[propertyName] = this.coreService.padTime(this.postObj[propertyName]);
     repeat.control.setErrors({incorrect: false});
@@ -230,7 +279,11 @@ export class PostModalComponent {
       auditLog: {}
     };
 
-    if (this.flag || this.singleNotice) {
+    if (this.planNotices) {
+      obj.notices = this.planEntries
+        .map(e => ({noticeBoardPath: e.noticeBoardPath, noticeIds: this.noticeIdsOf(e)}))
+        .filter(n => n.noticeIds.length > 0);
+    } else if (this.flag || this.singleNotice) {
       obj.expectedNotices = expectedNotices;
     } else if (this.board && !this.singular) {
       if (!obj.notices) {
@@ -272,20 +325,21 @@ export class PostModalComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    if (this.postObj.at === 'date' && !this.showNoticeId) {
+    const withEndOfLife = !this.showNoticeId && (!this.planNotices || this.hasGlobal);
+    if (this.postObj.at === 'date' && withEndOfLife) {
       if (this.postObj.fromDate) {
         this.coreService.getDateAndTime(this.postObj);
         const endOfLifeDate = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
         obj.endOfLife = endOfLifeDate;
       }
-    } else if (this.postObj.at === 'later' && !this.showNoticeId) {
+    } else if (this.postObj.at === 'later' && withEndOfLife) {
       const atTime = this.postObj.atTime;
       const convertedTime = this.coreService.convertToSeconds(atTime);
       obj.endOfLife = convertedTime !== 'Invalid time format' ? convertedTime : atTime;
     }
 
     // Set endpoint based on singular flag
-    const endpoint = this.singular ? 'notice/post' : (this.flag || this.singleNotice ? 'notices/post/expected' : 'notices/post');
+    const endpoint = this.singular ? 'notice/post' : (this.planNotices ? 'notices/post' : (this.flag || this.singleNotice ? 'notices/post/expected' : 'notices/post'));
 
     this.coreService.post(endpoint, obj).subscribe({
       next: (res) => {
@@ -303,7 +357,7 @@ export class PostModalComponent {
   standalone: false,
   selector: 'app-single-board',
   templateUrl: './single-board.component.html',
-  
+
 })
 export class SingleBoardComponent {
   isUserNotesEnabled = CoreService.isUserNotesEnabled();
@@ -511,7 +565,7 @@ export class SingleBoardComponent {
   standalone: false,
   selector: 'app-board',
   templateUrl: 'board.component.html',
-  
+
 })
 export class BoardComponent {
   isUserNotesEnabled = CoreService.isUserNotesEnabled();

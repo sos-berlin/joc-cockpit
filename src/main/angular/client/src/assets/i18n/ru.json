@@ -4104,6 +4104,7 @@
       "label.expirationDate": "Время истечения",
       "label.postOrderToExpirationDate": "Срок действия события",
       "label.noticeKey": "Ключ события",
+      "label.noticesToPost": "Notices to post",
       "label.planKey": "Ключ области действия событий",
       "button.post": "Отправить событие",
       "button.postAll": "Отправить выбранные события",

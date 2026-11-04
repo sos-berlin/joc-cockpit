@@ -4103,6 +4103,7 @@
       "label.expirationDate": "Expiration Date",
       "label.postOrderToExpirationDate": "Notice Lifetime",
       "label.noticeKey": "Notice Key",
+      "label.noticesToPost": "Notices to post",
       "label.planKey": "Notice Space Key",
       "button.post": "Post Notice",
       "button.postAll": "Post selected Notices",
