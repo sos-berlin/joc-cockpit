@@ -4104,6 +4104,7 @@
       "label.expirationDate": "Fecha de expiración",
       "label.postOrderToExpirationDate": "Vida útil del Aviso",
       "label.noticeKey": "Clave de Aviso",
+      "label.noticesToPost": "Notices to post",
       "label.planKey": "Clave del espacio de Aviso",
       "button.post": "Publicar Aviso",
       "button.postAll": "Publicar Avisos seleccionados",

@@ -402,7 +402,7 @@
                                   @default {
                                     <input #value="ngModel" (blur)="saveJSON()" (keydown)="onKeyPress($event, 'arguments')"
                                            [(ngModel)]="parameter.value.default" [facetValidation]="parameter.value.facet" autocomplete="off"
-                                           class="form-control"
+                                           class="form-control" (jsonValueTrigger)="openEditor(parameter.value, 'default')"
                                            name="value{{i}}"
                                            placeholder="{{'common.placeholder.value' | translate}}" type="text">
                                     @if (parameter.value.type === 'String') {
@@ -551,7 +551,7 @@
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                                   <input [(ngModel)]="env.value" autocomplete="off"
                                          class="form-control" name="value{{i}}" (blur)="saveJSON()" (ngModelChange)="checkValue(env)"
-                                         nz-input placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                                         nz-input placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" (jsonValueTrigger)="openEditor(env, 'value')"/>
                                   <i (click)="openEditor(env,  'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
                                      nzType="form"></i>
                                   <div class="pos-abt r-t-n-6 job-template-encrypt">
@@ -647,7 +647,7 @@
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                                   <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')" [(ngModel)]="argument.value" autocomplete="off"
-                                         class="form-control" name="value{{i}}"
+                                         class="form-control" name="value{{i}}" (jsonValueTrigger)="openEditor(argument, 'value')"
                                          placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                          type="text">
                                   <i (click)="openEditor(argument, 'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"

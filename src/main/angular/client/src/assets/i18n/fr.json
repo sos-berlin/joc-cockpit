@@ -4104,6 +4104,7 @@
       "label.expirationDate": "Date d'expiration",
       "label.postOrderToExpirationDate": "Durée de vie de l'Annonce",
       "label.noticeKey": "ID Annonce",
+      "label.noticesToPost": "Notices to post",
       "label.planKey": "Clé d'Espace Annonces",
       "button.post": "Poster une Annonce",
       "button.postAll": "Poster les Annonces sélectionnées",

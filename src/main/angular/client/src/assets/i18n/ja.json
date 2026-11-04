@@ -4104,6 +4104,7 @@
       "label.expirationDate": "有効期限",
       "label.postOrderToExpirationDate": "通知ID有効期限",
       "label.noticeKey": "実行計画ID",
+      "label.noticesToPost": "Notices to post",
       "label.planKey": "通知予定日",
       "button.post": "PostNotice",
       "button.postAll": "全てPostNotice",
