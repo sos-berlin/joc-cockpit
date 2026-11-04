@@ -4104,7 +4104,7 @@
       "label.expirationDate": "Ablaufdatum",
       "label.postOrderToExpirationDate": "Lebensdauer der Notiz",
       "label.noticeKey": "Kennung der Notiz",
-      "label.noticesToPost": "Notices to post",
+      "label.noticesToPost": "zu sendende Notizen",
       "label.planKey": "Kennung des Notizraums",
       "button.post": "Notiz senden",
       "button.postAll": "Ausgewählte Notizen senden",
