@@ -290,8 +290,8 @@
     "tooltip.$js7FreeMemorySize": "Java documentation %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the amount of free memory in bytes.",
     "tooltip.$js7TotalMemorySize": "Java documentation %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the total amount of memory in bytes.",
     "cluster": {
-      "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime. For Agent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster. The Name can be changed during the Agent Cluster's lifetime, the Agent ID cannot. For Agent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that can be changed during the Director Agent's lifetime. For Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
       "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
