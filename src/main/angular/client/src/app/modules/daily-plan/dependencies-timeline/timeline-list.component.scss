@@ -1,0 +1,181 @@
+// JOC-2343 Daily Plan -> Timeline. Colours follow the Dependencies view (theme variables, light and dark).
+$tl-line: rgba(128, 128, 160, 0.28);
+$tl-tint: rgba(128, 128, 160, 0.10);
+$tl-none: #8a8aa8;
+
+.tl-list {
+  font-size: 13px;
+}
+
+.tl-row {
+  display: grid;
+  grid-template-columns: 16px 120px minmax(0, 2fr) 64px 84px 64px 80px 76px 76px 76px;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 14px;
+  border-bottom: 1px solid $tl-line;
+  cursor: pointer;
+
+  > * {
+    min-width: 0;
+  }
+
+  &:hover {
+    background: $tl-tint;
+  }
+
+  &.tl-head {
+    cursor: default;
+    font-weight: 600;
+    background: $tl-tint;
+  }
+}
+
+.tl-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.tl-icon {
+  margin-right: 4px;
+}
+
+.tl-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid currentColor;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tl-status-onTime { color: var(--green); }
+.tl-status-completed { color: var(--blue); }
+.tl-status-delayed,
+.tl-status-cannotComplete { color: var(--orange); }
+.tl-status-open { color: $tl-none; border-style: dashed; }
+.tl-status-noOrders { color: $tl-none; border-style: dashed; }
+
+.tl-warn { color: var(--orange); }
+.tl-ok { color: var(--green); }
+.tl-saving { color: var(--yellow-green); }
+.tl-test { color: var(--orange); }
+
+.tl-detail {
+  padding: 8px 14px 14px 30px;
+  background: $tl-tint;
+  border-bottom: 1px solid $tl-line;
+}
+
+.tl-toolbar,
+.tl-target {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 8px;
+}
+
+.tl-toolbar {
+  justify-content: space-between;
+}
+
+.tl-link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.tl-time {
+  width: 80px;
+}
+
+.tl-note {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+// ---- Gantt
+.tl-gantt-wrap {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.tl-gantt {
+  // drawn for ~1400 px: shown at that width (text at its normal size), smaller only on narrow screens
+  width: 100%;
+  max-width: 1400px;
+  min-width: 900px;
+  height: auto;
+  display: block;
+
+  .tl-grid { stroke: $tl-line; stroke-width: 0.5; stroke-dasharray: 2 3; }
+  .tl-grid-major { stroke-dasharray: none; stroke-width: 0.8; }
+  .tl-axis { font-size: 11px; fill: currentColor; opacity: 0.75; }
+  .tl-wf { font-size: 12px; fill: currentColor; cursor: pointer; font-style: italic; }
+  .tl-now-line { stroke: var(--red); stroke-width: 1.5; }
+  .tl-target-line { stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 5 3; }
+  .tl-wait { fill: none; stroke: var(--yellow-green); stroke-dasharray: 3 3; }
+  .tl-bar { cursor: pointer; fill-opacity: 0.85; stroke-width: 1; }
+  .tl-dashed { stroke-dasharray: 4 3; fill-opacity: 0.45; }
+}
+
+// bar fill and dot colour per order state (same colours as the Dependencies view)
+@mixin tl-state($name, $color) {
+  .tl-st-#{$name} { fill: $color; stroke: $color; }
+  .tl-bg-#{$name} { background-color: $color; }
+}
+
+@include tl-state(failed, var(--red));
+@include tl-state(broken, var(--red));
+@include tl-state(suspended, var(--orange));
+@include tl-state(blocked, var(--mangenta));
+@include tl-state(waiting, var(--yellow-green));
+@include tl-state(prompting, var(--light-green));
+@include tl-state(running, var(--green));
+@include tl-state(inprogress, var(--light-blue));
+@include tl-state(pending, var(--light-yellow));
+@include tl-state(scheduled, var(--gold));
+@include tl-state(planned, var(--dimgrey));
+@include tl-state(completed, var(--blue));
+@include tl-state(finished, var(--blue));
+@include tl-state(intervention, var(--orange));
+
+.tl-gantt .tl-st-none,
+.tl-gantt .tl-st-missing { fill: none; stroke: $tl-none; stroke-dasharray: 4 3; }
+.tl-bg-none,
+.tl-bg-missing { background: transparent; border: 1px dashed $tl-none; }
+
+// ---- workflow table under the Gantt
+.tl-wf-table {
+  border: 1px solid $tl-line;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.tl-wf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 120px 80px 64px 64px 84px 70px 90px;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid $tl-line;
+
+  &:last-child { border-bottom: none; }
+  > * { min-width: 0; }
+  &.tl-head { font-weight: 600; background: $tl-tint; }
+  &.tl-chain { box-shadow: inset 3px 0 0 var(--blue); }
+
+  a { cursor: pointer; }
+}
+
+.tl-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}

@@ -641,7 +641,7 @@
                 </nz-dropdown-menu>
               </div>
             }
-            @if (dailyPlanFilters.tabIndex !== 2) {
+            @if (dailyPlanFilters.tabIndex !== 2 && dailyPlanFilters.tabIndex !== 3) {
               <button (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
                       [appRichTooltip]="'common.tooltip.exportInXLS' | translate"
                       class="btn btn-grey btn-sm m-l-12">
@@ -1432,7 +1432,8 @@
       <nz-tab [nzTitle]="dependenciesTabTitle">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 ">
-            <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded"  [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
+            <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded"  [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"
+                              [focusPath]="dependenciesFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
           </div>
         </div>
       </nz-tab>
@@ -1444,6 +1445,27 @@
               class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i>
           }
           <span>{{ 'dailyPlan.tab.dependencies' | translate }}</span>
+        </div>
+      </ng-template>
+      <!-- JOC-2343: Timeline of the same Critical Paths; lazy, so it loads only when the tab is opened -->
+      <nz-tab [nzTitle]="timelineTabTitle">
+        <ng-template nz-tab>
+          <div class="row m-t-n-xxs">
+            <div class="col-md-12 ">
+              <app-dependencies mode="timeline" [permission]="permission" [schedulerId]="schedulerIds.selected"
+                                [preferences]="preferences" [focusPath]="timelineFocusPath" (switchView)="onSwitchView($event)"></app-dependencies>
+            </div>
+          </div>
+        </ng-template>
+      </nz-tab>
+      <ng-template #timelineTabTitle>
+        <div class="flex-center">
+          @if (preferences?.showHelpPages) {
+            <!-- <i (click)="helpPage(4)"
+              [appRichTooltip]="'common.tooltip.help' | translate"
+              class="help-info-dashboard tab-help-icon cur-point fa fa-info-circle text-20"></i> -->
+          }
+          <span>{{ 'dailyPlan.tab.timeline' | translate }}</span>
         </div>
       </ng-template>
     </nz-tabs>

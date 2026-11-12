@@ -2683,6 +2683,29 @@ export class DailyPlanComponent {
     this.cdr.markForCheck();
   }
 
+  /** JOC-2343: Critical Path to open when switching between Dependencies (tab 2) and Timeline (tab 3) */
+  dependenciesFocusPath: string | null = null;
+  timelineFocusPath: string | null = null;
+
+  /** Switch to the other view for the same Critical Path. */
+  onSwitchView(e: { view: 'dependencies' | 'timeline'; path: string }): void {
+    if (e.view === 'timeline') {
+      this.timelineFocusPath = e.path;
+      this.dailyPlanFilters.tabIndex = 3;
+    } else {
+      this.dependenciesFocusPath = e.path;
+      this.isParentLoaded = true;
+      this.dailyPlanFilters.tabIndex = 2;
+    }
+    this.cdr.markForCheck();
+    // reset, so that switching to the same Critical Path again is recognised as a change
+    setTimeout(() => {
+      this.timelineFocusPath = null;
+      this.dependenciesFocusPath = null;
+      this.cdr.markForCheck();
+    }, 1000);
+  }
+
   tabChange($event): void {
     if (this.isTabSwitching) return;
 
@@ -3849,6 +3872,9 @@ export class DailyPlanComponent {
         break;
     case 3:
         helpKey = 'daily-plan-calendar';
+        break;
+      case 4:
+        helpKey = 'daily-plan-timeline';
         break;
       default:
         helpKey = 'daily-plan';

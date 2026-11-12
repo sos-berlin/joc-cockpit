@@ -1004,3 +1004,11 @@ $dep-tint: rgba(128, 128, 160, 0.10);
     height: 13px;
   }
 }
+
+// ---- JOC-2343: switch to the Timeline view for an opened Critical Path
+.dep-view-switch {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 14px 0;
+  font-size: 12px;
+}
