@@ -19,6 +19,7 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {WorkflowModule} from "../workflow/workflow.module";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import { TimelineListComponent } from './dependencies-timeline/timeline-list.component';
 
 @NgModule({
     imports: [
@@ -32,7 +33,7 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
         NzTooltipDirective
     ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
-    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],
+    SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent, TimelineListComponent],
   providers: [GroupByPipe]
 })
 export class DailyPlanModule {

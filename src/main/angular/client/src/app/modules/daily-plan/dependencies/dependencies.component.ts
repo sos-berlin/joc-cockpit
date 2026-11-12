@@ -6,7 +6,8 @@
   ElementRef,
   Output,
   EventEmitter,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
@@ -23,6 +24,8 @@ import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.co
 import {catchError, debounceTime, map, switchMap, takeUntil} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
 import {InventoryObject} from "../../../models/enums";
+import {computePathTiming, PathTiming, planForTarget, TargetPlan, testAverageMs, WorkflowFacts} from '../dependencies-timeline/critical-path-timing';
+import {TimelineRow} from '../dependencies-timeline/timeline-list.component';
 import {
   BoardState,
   boardValueFor,
@@ -261,6 +264,17 @@ export class DependenciesComponent {
   @Input() preferences: any;
   @Input() permission: any;
   @Input() isToggle: any;
+  /**
+   * JOC-2343: 'timeline' shows the same Critical Paths (same data, calendar, filters and paging) with
+   * their times instead of their notices (Daily Plan -> Timeline).
+   */
+  @Input() mode: 'dependencies' | 'timeline' = 'dependencies';
+  /** open the Critical Path of this workflow once the data is loaded (switch from the other view) */
+  @Input() focusPath: string | null = null;
+  /** switch to the other view for a Critical Path; the host selects the tab and passes focusPath */
+  @Output() switchView = new EventEmitter<{ view: 'dependencies' | 'timeline'; path: string }>();
+  /** host element: the calendar is looked up inside this component (Dependencies and Timeline tab can exist together) */
+  private hostEl: ElementRef = inject(ElementRef);
   @Output() checkedNotices = new EventEmitter<any>();
 
   selectedDate: Date;
@@ -328,6 +342,22 @@ export class DependenciesComponent {
    * have no order at all (not planned for the day), and opened as soon as one of them needs intervention.
    */
   private missingAutoCollapse = true;
+  // ---- Timeline (JOC-2343)
+  /** rows of the Timeline list for the current page */
+  timelineRows: TimelineRow[] = [];
+  /** time used for the estimates of the current response */
+  timelineNow = Date.now();
+  /** target completion time per Critical Path (group id -> ms) */
+  private timelineTargets = new Map<string, number>();
+  /** start / end of the first order of the Plan day per workflow, from the order history */
+  private historyTimes = new Map<string, { start: number | null; end: number | null; planned: number | null }>();
+  /**
+   * Average time consumption per workflow (ms) from the server; null until the API exists: then test
+   * data is used and marked as such.
+   */
+  private timelineDurations: Map<string, number> | null = null;
+  private timelineCache = new Map<string, { timing: PathTiming; plan: TargetPlan | null }>();
+  private pendingFocus: string | null = null;
   /** number of steps rendered per opened Critical Path (STEP_PAGE steps at first) */
   private stepLimits = new Map<string, number>();
   /** steps whose "Receives Notice" list is shown in full */
@@ -380,7 +410,7 @@ export class DependenciesComponent {
     this.searchSubscription = this.searchInput$.pipe(debounceTime(300)).subscribe(() => this.applyFilters());
     this.initConf();
     const dailyPlanFilters = this.coreService.getDailyPlanTab();
-    if (dailyPlanFilters.tabIndex === 2) {
+    if (dailyPlanFilters.tabIndex === 2 || this.mode === 'timeline') {
       this.loadAdditionaSnapshotlData();
     } else {
       this.loadAdditionalData();
@@ -388,6 +418,12 @@ export class DependenciesComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['focusPath'] && changes['focusPath'].currentValue) {
+      this.pendingFocus = changes['focusPath'].currentValue;
+      if (this.model) {
+        this.applyFocus();
+      }
+    }
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
         this.initConf();
@@ -405,6 +441,15 @@ export class DependenciesComponent {
     this.depPendingHTTPRequests$.complete();
   }
 
+  /**
+   * The calendar element of this component. Both the Dependencies and the Timeline tab contain an element
+   * with id "full-calendar2" (styles depend on it); a global $('#full-calendar2') would find the calendar of
+   * the other tab, so the lookup is limited to this component's own element.
+   */
+  private calendarDom(): any {
+    return $(this.hostEl.nativeElement).find('#full-calendar2').first();
+  }
+
   private initConf(): void {
     if (this.plansFilters.selectedDate) {
       this.selectedDate = this.plansFilters.selectedDate;
@@ -413,7 +458,7 @@ export class DependenciesComponent {
       this.selectedDate = new Date(d);
     }
     setTimeout(() => {
-      const dom = $('#full-calendar2');
+      const dom = this.calendarDom();
       if (!dom.data('calendar')) {
         dom['calendar']({
           view: 'month',
@@ -503,7 +548,7 @@ export class DependenciesComponent {
       this.isClosed = false;
       this.isOpen = false;
     }
-    const calendar = $('#full-calendar2').data('calendar');
+    const calendar = this.calendarDom().data('calendar');
     if (calendar) {
       calendar.setDataSource(planDates);
     }
@@ -832,7 +877,7 @@ export class DependenciesComponent {
     const body: any = {
       controllerId: this.schedulerId,
       dateFrom: `${from.getFullYear()}-${pad(from.getMonth() + 1)}-${pad(from.getDate())}T00:00:00`,
-      historyStates: ['SUCCESSFUL'],
+      historyStates: ['SUCCESSFUL', 'INCOMPLETE'],
       orders: Array.from(paths).map(workflowPath => ({workflowPath})),
       limit: -1
     };
@@ -842,16 +887,28 @@ export class DependenciesComponent {
     return this.coreService.post('orders/history', body).pipe(
       map((res: any) => {
         const done = new Set<string>();
+        const times = new Map<string, { start: number | null; end: number | null; planned: number }>();
         (res?.history || []).forEach((h: any) => {
           // OrderHistoryItem: workflow (path), orderId, state._text SUCCESSFUL | INCOMPLETE | FAILED;
           // child orders of forks are nested in children and not counted
           const path = h?.workflow;
           const id = String(h?.orderId || '');
           const state = h?.state?._text;
-          if (path && paths.has(path) && state === 'SUCCESSFUL' && !id.includes('|') && id.startsWith('#' + day + '#')) {
+          if (!path || !paths.has(path) || id.includes('|') || !id.startsWith('#' + day + '#')) {
+            return;
+          }
+          if (state === 'SUCCESSFUL') {
             done.add(path);
           }
+          // Timeline: start / end of the first order of the day (the first set of orders counts)
+          const toMs = (v: any) => (v ? new Date(v).getTime() : null);
+          const planned = toMs(h.plannedTime) ?? toMs(h.startTime) ?? 0;
+          const prev = times.get(path);
+          if (!prev || planned < prev.planned) {
+            times.set(path, {start: toMs(h.startTime), end: state === 'SUCCESSFUL' ? toMs(h.endTime) : null, planned});
+          }
         });
+        this.historyTimes = new Map(Array.from(times.entries()).map(([k, v]) => [k, {start: v.start, end: v.end, planned: v.planned || null}]));
         return done;
       }),
       catchError(() => {
@@ -1040,7 +1097,12 @@ export class DependenciesComponent {
       }
     });
     this.refreshSideBar();
+    this.timelineNow = Date.now();
+    this.timelineCache.clear();
     this.applyFilters();
+    if (this.pendingFocus) {
+      this.applyFocus();
+    }
   }
 
   // ===================================================================== post notices
@@ -1699,6 +1761,183 @@ export class DependenciesComponent {
     }
     const start = (this.plansFilters.filter.currentPage - 1) * this.pageSize;
     this.pagedGroups = list.slice(start, start + this.pageSize);
+    this.timelineRows = this.mode === 'timeline' ? this.pagedGroups.map(g => this.timelineRow(g)) : [];
+  }
+
+  // ===================================================================== Timeline (JOC-2343)
+
+  /** Facts per workflow of the path: first order of the day, history times, average time consumption. */
+  private workflowFacts(g: DepGroup): Map<string, WorkflowFacts> {
+    const v = this.getGroupView(g);
+    const facts = new Map<string, WorkflowFacts>();
+    const noOrderAtAll = g.state === 'none' && !v.order.some(n => n.completed);
+    v.order.forEach(n => {
+      const orders = (n.orderIds || []).map(id => this.getOrderDetails(id)).filter(Boolean)
+        .sort((a: any, b: any) => (a.scheduledFor ?? Infinity) - (b.scheduledFor ?? Infinity));
+      const first: any = orders[0] || null;
+      const hist = this.historyTimes.get(n.path);
+      const server = this.timelineDurations?.get(n.path);
+      facts.set(n.path, {
+        avgMs: server ?? testAverageMs(n.path),
+        // a path without any order: every workflow is listed (as missing), as in the Dependencies view
+        testData: server === undefined,
+        state: first ? String(first.state?._text || first.state || '') : null,
+        orderId: first?.orderId ?? null,
+        completed: n.completed,
+        scheduledFor: typeof first?.scheduledFor === 'number' ? first.scheduledFor : (hist?.planned ?? null),
+        startedAt: hist?.start ?? null,
+        endedAt: hist?.end ?? null,
+        neededMissing: v.neededMissing.has(n.path) || noOrderAtAll
+      });
+    });
+    return facts;
+  }
+
+  /** Timing of a Critical Path (and the plan for its target), cached per response. */
+  private timelineOf(g: DepGroup): { timing: PathTiming; plan: TargetPlan | null } {
+    let c = this.timelineCache.get(g.id);
+    if (!c) {
+      const v = this.getGroupView(g);
+      const facts = this.workflowFacts(g);
+      const timing = computePathTiming(v.order, v.levels, g.edges, facts, this.timelineNow);
+      const target = this.timelineTargets.get(g.id);
+      const plan = target !== undefined ? planForTarget(v.order, v.levels, g.edges, facts, timing, target, this.timelineNow) : null;
+      c = {timing, plan};
+      this.timelineCache.set(g.id, c);
+    }
+    return c;
+  }
+
+  private timelineRow(g: DepGroup): TimelineRow {
+    const v = this.getGroupView(g);
+    const {timing, plan} = this.timelineOf(g);
+    const names = new Map<string, string>();
+    const stateClass = new Map<string, string>();
+    const reasonKey = new Map<string, string>();
+    const orderCount = new Map<string, number>();
+    v.order.forEach(n => {
+      names.set(n.path, this.getFormattedPath(n.path));
+      stateClass.set(n.path, this.stateClass(n));
+      reasonKey.set(n.path, this.stateLabelKey(n));
+      orderCount.set(n.path, (n.orderIds || []).length);
+    });
+    const ends = g.ends.length ? g.ends : g.nodes;
+    return {
+      id: g.id,
+      title: this.getFormattedPath(ends[0]),
+      more: ends.length - 1,
+      startsWith: (g.starts.length ? g.starts : g.nodes).map(p => this.getFormattedPath(p)).join(', '),
+      severity: this.groupSeverity(g),
+      timing, plan,
+      target: this.timelineTargets.get(g.id) ?? null,
+      names, stateClass, reasonKey, orderCount
+    };
+  }
+
+  /**
+   * Target completion "hh:mm" on the selected Plan day; a time before the path's start means the next
+   * day (e.g. a path starting 22:00 with target 06:00).
+   */
+  setTimelineTarget(e: { id: string; time: string }): void {
+    const g = this.model?.groups.find(x => x.id === e.id);
+    if (!g) {
+      return;
+    }
+    const [h, m] = e.time.split(':').map(Number);
+    const day = new Date(this.selectedDate);
+    day.setHours(h, m, 0, 0);
+    let target = day.getTime();
+    const start = this.timelineOf(g).timing.start;
+    if (start !== null && target < start) {
+      target += 24 * 3600000;
+    }
+    this.timelineTargets.set(g.id, target);
+    this.timelineCache.delete(g.id);
+    this.updatePage();
+    this.cd.markForCheck();
+  }
+
+  clearTimelineTarget(id: string): void {
+    this.timelineTargets.delete(id);
+    this.timelineCache.delete(id);
+    this.updatePage();
+    this.cd.markForCheck();
+  }
+
+  /** formats a time in the user's time zone */
+  formatTimelineTime = (ms: number): string => this.coreService.getDateByFormat(new Date(ms), this.preferences?.zone, 'HH:mm');
+
+  /** orders side panel for a workflow of the Timeline list */
+  showTimelineOrders(path: string): void {
+    const n = this.model?.nodes.get(path);
+    if (n && (n.orderIds || []).length > 0) {
+      this.showOrders(n);
+    }
+  }
+
+  /** opened Critical Paths, shared with the Timeline list */
+  get expandedIds(): Set<string> {
+    return this.expandedGroups;
+  }
+
+  toggleTimelineRow(id: string): void {
+    const g = this.model?.groups.find(x => x.id === id);
+    if (g) {
+      this.toggleGroup(g);
+    }
+  }
+
+  /** Workflow path that identifies a Critical Path when switching views. */
+  private pathKey(g: DepGroup): string {
+    return (g.ends.length ? g.ends : g.nodes)[0];
+  }
+
+  /** Switch to the other view for this Critical Path. */
+  emitSwitchView(groupId: string, view: 'dependencies' | 'timeline'): void {
+    const g = this.model?.groups.find(x => x.id === groupId);
+    if (g) {
+      this.switchView.emit({view, path: this.pathKey(g)});
+    }
+  }
+
+  /**
+   * Opens the Critical Path of a workflow: makes it visible (search and filters cleared, collapsed chip
+   * opened, page selected) and expands it. Used when switching from the other view; later also from the
+   * Workflows view.
+   */
+  openCriticalPath(workflowPath: string): boolean {
+    const g = this.model?.groupOf.get(workflowPath);
+    if (!g) {
+      return false;
+    }
+    if (this.searchValue) {
+      this.clearSearch();
+    }
+    this.selectedCategories.clear();
+    const key = this.groupCategory(g).key;
+    if (this.collapsedCategories.delete(key) && key === 'missing') {
+      // the user asked for this path: keep the "Missing" chip open
+      this.missingAutoCollapse = false;
+    }
+    this.applyFilters();
+    const index = this.pagingList.findIndex(x => x.id === g.id);
+    if (index >= 0) {
+      this.plansFilters.filter.currentPage = Math.floor(index / this.pageSize) + 1;
+      this.updatePage();
+    }
+    if (!this.isExpanded(g)) {
+      this.toggleGroup(g);
+    }
+    this.cd.markForCheck();
+    return true;
+  }
+
+  private applyFocus(): void {
+    const path = this.pendingFocus;
+    this.pendingFocus = null;
+    if (path) {
+      this.openCriticalPath(path);
+    }
   }
 
   onPageIndexChange(newPage: number): void {

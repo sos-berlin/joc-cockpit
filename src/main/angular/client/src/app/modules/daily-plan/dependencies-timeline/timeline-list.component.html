@@ -1,0 +1,167 @@
+<div class="tl-list">
+  @if (rows.length > 0) {
+    <div class="tl-row tl-head">
+      <span></span>
+      <span>{{ 'dailyPlan.timeline.label.status' | translate }}</span>
+      <span>{{ 'dailyPlan.dependencies.label.criticalPath' | translate }}</span>
+      <span>{{ 'dailyPlan.timeline.label.start' | translate }}</span>
+      <span>{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
+      <span>{{ 'dailyPlan.timeline.label.target' | translate }}</span>
+      <span>{{ 'dailyPlan.timeline.label.delay' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.net' | translate">{{ 'dailyPlan.timeline.label.net' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.gross' | translate">{{ 'dailyPlan.timeline.label.gross' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.saving' | translate">{{ 'dailyPlan.timeline.label.saving' | translate }}</span>
+    </div>
+  }
+  @for (r of rows; track r.id) {
+    <div class="tl-group" [class.tl-open]="expanded.has(r.id)">
+      <div class="tl-row" role="button" tabindex="0" [attr.aria-expanded]="expanded.has(r.id)"
+           (click)="toggle(r.id)" (keydown.enter)="toggle(r.id)">
+        <i class="fa" [ngClass]="expanded.has(r.id) ? 'fa-caret-down' : 'fa-caret-right'"></i>
+        <span class="tl-badge" [ngClass]="'tl-status-' + timeStatus(r)">{{ 'dailyPlan.timeline.status.' + timeStatus(r) | translate }}</span>
+        <span class="tl-name" [appRichTooltip]="r.title">
+          <span nz-icon nzType="apartment" nzTheme="outline" class="tl-icon"></span>{{ r.title }}
+          @if (r.more > 0) {
+            <span class="text-muted"> +{{ r.more }}</span>
+          }
+        </span>
+        <span>{{ time(r.timing.start) }}</span>
+        <span [class.tl-warn]="timeStatus(r) === 'delayed' || timeStatus(r) === 'cannotComplete'">
+          {{ time(r.timing.estEnd) }}
+          @if (r.timing.interventionNeeded && r.timing.estEnd !== null) {
+            <i class="fa fa-exclamation-triangle tl-warn" [appRichTooltip]="'dailyPlan.timeline.tooltip.interventionAssumed' | translate"></i>
+          }
+          @if (r.timing.noData) {
+            <i class="fa fa-question-circle text-muted" [appRichTooltip]="'dailyPlan.timeline.tooltip.noData' | translate"></i>
+          }
+        </span>
+        <span>{{ time(r.target) }}</span>
+        <span [class.tl-warn]="(delay(r) || 0) > 0" [class.tl-ok]="delay(r) !== null && delay(r) <= 0">{{ delayText(r) }}</span>
+        <span>{{ r.timing.chain.length > 0 ? duration(r.timing.netMs) : '—' }}</span>
+        <span>{{ r.timing.estEnd !== null ? duration(r.timing.grossMs) : '—' }}</span>
+        <span [class.tl-saving]="r.timing.savingMs > 0">{{ r.timing.estEnd !== null ? duration(r.timing.savingMs) : '—' }}</span>
+      </div>
+
+      @if (expanded.has(r.id)) {
+        <div class="tl-detail">
+          <div class="tl-toolbar">
+            <span class="text-muted">{{ 'dailyPlan.dependencies.label.startsWith' | translate }}: {{ r.startsWith }}</span>
+            <a class="tl-link" (click)="openDependencies.emit(r.id)">
+              <i class="fa fa-exchange m-r-xs"></i>{{ 'dailyPlan.timeline.button.showDependencies' | translate }}
+            </a>
+          </div>
+
+          @if (r.timing.rows.length > 0 && gantt(r); as g) {
+            <div class="tl-gantt-wrap">
+              <svg [attr.viewBox]="'0 0 ' + g.width + ' ' + g.height" class="tl-gantt" role="img"
+                   [attr.aria-label]="('dailyPlan.timeline.label.ganttOf' | translate) + ' ' + r.title">
+                @for (tk of g.ticks; track tk.x) {
+                  <line [attr.x1]="tk.x" [attr.x2]="tk.x" y1="22" [attr.y2]="g.height - 20" class="tl-grid" [class.tl-grid-major]="tk.major"/>
+                  @if (tk.label) {
+                    <text [attr.x]="tk.x" [attr.y]="g.height - 6" text-anchor="middle" class="tl-axis">{{ tk.label }}</text>
+                  }
+                }
+                @for (b of g.bars; track b.path) {
+                  <text x="4" [attr.y]="b.y + 15" class="tl-wf" (click)="workflowClick.emit(b.path)">{{ b.short }}<title>{{ b.name }}</title></text>
+                  @if (b.waitW > 0) {
+                    <rect [attr.x]="b.waitX" [attr.y]="b.y + 4" [attr.width]="b.waitW" height="16" rx="3" class="tl-wait">
+                      <title>{{ 'dailyPlan.timeline.label.wait' | translate }}</title>
+                    </rect>
+                  }
+                  @if (b.w > 0) {
+                    <rect [attr.x]="b.x" [attr.y]="b.y + 3" [attr.width]="b.w" height="18" rx="4"
+                          [ngClass]="'tl-bar tl-st-' + (r.stateClass.get(b.path) || b.cls)" [class.tl-dashed]="b.dashed"
+                          (click)="ordersClick.emit(b.path)">
+                      <title>{{ b.name }} · {{ r.reasonKey.get(b.path) | translate }}</title>
+                    </rect>
+                  } @else {
+                    <text [attr.x]="b.x" [attr.y]="b.y + 15" class="tl-axis tl-warn">{{ 'dailyPlan.timeline.status.' + (b.label === 'missing' ? 'missing' : 'open') | translate }}</text>
+                  }
+                }
+                @if (g.targetX !== null) {
+                  <line [attr.x1]="g.targetX" [attr.x2]="g.targetX" y1="16" [attr.y2]="g.height - 20" class="tl-target-line"/>
+                  <text [attr.x]="g.targetX" y="12" text-anchor="middle" class="tl-axis">{{ 'dailyPlan.timeline.label.target' | translate }}</text>
+                }
+                @if (g.nowX !== null) {
+                  <line [attr.x1]="g.nowX" [attr.x2]="g.nowX" y1="16" [attr.y2]="g.height - 20" class="tl-now-line"/>
+                  <text [attr.x]="g.nowX" y="12" text-anchor="middle" class="tl-axis">{{ 'dailyPlan.timeline.label.now' | translate }}</text>
+                }
+              </svg>
+            </div>
+          }
+
+          <div class="tl-wf-table">
+            <div class="tl-wf-row tl-head">
+              <span>{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
+              <span>{{ 'dailyPlan.dependencies.label.state' | translate }}</span>
+              <span [appRichTooltip]="r.timing.testData ? ('dailyPlan.timeline.tooltip.testData' | translate) : ''">
+                {{ 'dailyPlan.timeline.label.average' | translate }}@if (r.timing.testData) {<sup class="tl-test">*</sup>}
+              </span>
+              <span>{{ 'dailyPlan.timeline.label.planned' | translate }}</span>
+              <span>{{ 'dailyPlan.timeline.label.start' | translate }}</span>
+              <span>{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
+              <span>{{ 'dailyPlan.timeline.label.wait' | translate }}</span>
+              @if (r.plan) {
+                <span>{{ 'dailyPlan.timeline.label.latestStart' | translate }}</span>
+              }
+            </div>
+            @for (w of r.timing.rows; track w.path) {
+              <div class="tl-wf-row" [class.tl-chain]="r.timing.chain.includes(w.path)">
+                <span class="tl-name"><i class="tl-dot" [ngClass]="'tl-bg-' + (r.stateClass.get(w.path) || w.status)"></i>
+                  <a (click)="workflowClick.emit(w.path)" [appRichTooltip]="w.path">{{ r.names.get(w.path) }}</a></span>
+                <span>
+                  @if ((r.orderCount.get(w.path) || 0) > 0) {
+                    <a (click)="ordersClick.emit(w.path)">{{ r.reasonKey.get(w.path) | translate }}</a>
+                  } @else {
+                    {{ r.reasonKey.get(w.path) | translate }}
+                  }
+                </span>
+                <span>{{ w.avgMs === null ? ('dailyPlan.timeline.label.noData' | translate) : duration(w.avgMs) }}</span>
+                <span>{{ time(w.plannedStart) }}</span>
+                <span>{{ time(w.estStart) }}</span>
+                <span>{{ time(w.estEnd) }}</span>
+                <span [class.tl-saving]="w.waitMs > 0">{{ w.waitMs > 0 ? duration(w.waitMs) : '—' }}</span>
+                @if (r.plan) {
+                  @if (planEntry(r, w.path); as e) {
+                    <span [class.tl-warn]="e.tooLate" [class.tl-ok]="e.move">
+                      {{ time(e.latestStart) }}
+                      @if (e.move) { <i class="fa fa-arrow-right" [appRichTooltip]="'dailyPlan.timeline.tooltip.willMove' | translate"></i> }
+                      @if (e.tooLate) { <i class="fa fa-exclamation-triangle" [appRichTooltip]="'dailyPlan.timeline.tooltip.tooLate' | translate"></i> }
+                    </span>
+                  } @else {
+                    <span>—</span>
+                  }
+                }
+              </div>
+            }
+          </div>
+
+          <div class="tl-target">
+            <span>{{ 'dailyPlan.timeline.label.targetEnd' | translate }}</span>
+            <input class="form-control input-sm tl-time" type="text" placeholder="hh:mm"
+                   [ngModel]="targetInput.get(r.id) || (r.target !== null ? time(r.target) : '')"
+                   (ngModelChange)="targetInput.set(r.id, $event)" (keydown.enter)="submitTarget(r)"/>
+            <button type="button" class="btn btn-grey btn-xs" (click)="submitTarget(r)">{{ 'dailyPlan.timeline.button.calculate' | translate }}</button>
+            @if (r.target !== null) {
+              <a class="tl-link" (click)="clearTarget.emit(r.id)">{{ 'dailyPlan.timeline.button.clearTarget' | translate }}</a>
+            }
+            @if (r.plan) {
+              @if (r.plan.reachable) {
+                <span class="tl-ok">{{ 'dailyPlan.timeline.message.reachable' | translate }}</span>
+              } @else {
+                <span class="tl-warn">{{ 'dailyPlan.timeline.message.notReachable' | translate: {time: time(r.plan.earliestEnd)} }}</span>
+              }
+              <button type="button" class="btn btn-primary btn-xs" [disabled]="!canModify || !r.plan.reachable" (click)="applyPlan.emit(r.id)"
+                      [appRichTooltip]="canModify ? '' : ('dailyPlan.timeline.tooltip.applyPending' | translate)">
+                {{ 'dailyPlan.timeline.button.apply' | translate }}
+              </button>
+            }
+          </div>
+          @if (r.timing.testData) {
+            <div class="tl-note"><sup class="tl-test">*</sup> {{ 'dailyPlan.timeline.tooltip.testData' | translate }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
