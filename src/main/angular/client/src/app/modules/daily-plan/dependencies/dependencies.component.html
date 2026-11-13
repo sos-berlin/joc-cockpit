@@ -162,12 +162,34 @@
             </div>
 
             @if (isExpanded(g)) {
-              <div class="dep-chain">
-                <div class="dep-view-switch">
+              <div class="dep-path-bar" [class.dep-path-bar-graph]="viewModeOf(g) === 'graph'">
+                <div class="dep-view-opts" role="group">
+                  <button type="button" class="dep-view-opt" (click)="setPathViewMode(g, 'table')" [appRichTooltip]="'dailyPlan.dependencies.tooltip.viewTable' | translate"
+                          [class.dep-view-opt-active]="viewModeOf(g) === 'table'" [attr.aria-pressed]="viewModeOf(g) === 'table'">
+                    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>{{ 'dailyPlan.dependencies.button.viewTable' | translate }}
+                  </button>
+                  <span class="dep-view-sep" aria-hidden="true"></span>
+                  <button type="button" class="dep-view-opt" (click)="setPathViewMode(g, 'graph')" [appRichTooltip]="'dailyPlan.dependencies.tooltip.viewGraph' | translate"
+                          [class.dep-view-opt-active]="viewModeOf(g) === 'graph'" [attr.aria-pressed]="viewModeOf(g) === 'graph'">
+                    <i nz-icon nzType="apartment" nzTheme="outline"></i>{{ 'dailyPlan.dependencies.button.viewGraph' | translate }}
+                  </button>
+                </div>
+                <div class="dep-path-bar-end">
                   <a class="dep-more" (click)="emitSwitchView(g.id, 'timeline')">
                     <i class="fa fa-clock-o m-r-xs"></i>{{ 'dailyPlan.timeline.button.showTimeline' | translate }}
                   </a>
                 </div>
+              </div>
+            }
+            @if (isExpanded(g) && viewModeOf(g) === 'graph') {
+              <div class="dep-chain dep-chain-graph">
+                <app-critical-path-graph [data]="graphData(g)" [selectedBoards]="selectedBoards" [selectionSize]="selectedBoards.size"
+                                         (workflowClick)="navToWorkflow($event, 'WORKFLOW')" (boardClick)="showBoard($event)"
+                                         (ordersClick)="showOrdersOf($event)" (boardSelect)="onGraphBoardSelect($event)"></app-critical-path-graph>
+              </div>
+            }
+            @if (isExpanded(g) && viewModeOf(g) !== 'graph') {
+              <div class="dep-chain">
                 @if (g.cycle) {
                   <div class="dep-cycle-hint"><ng-container *ngTemplateOutlet="richText; context: {$implicit: cycleParts(g)}"></ng-container></div>
                 }
