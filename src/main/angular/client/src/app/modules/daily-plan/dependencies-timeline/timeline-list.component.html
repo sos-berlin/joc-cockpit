@@ -2,15 +2,15 @@
   @if (rows.length > 0) {
     <div class="tl-row tl-head">
       <span></span>
-      <span>{{ 'dailyPlan.timeline.label.status' | translate }}</span>
-      <span>{{ 'dailyPlan.dependencies.label.criticalPath' | translate }}</span>
-      <span>{{ 'dailyPlan.timeline.label.start' | translate }}</span>
-      <span>{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
-      <span>{{ 'dailyPlan.timeline.label.target' | translate }}</span>
-      <span>{{ 'dailyPlan.timeline.label.delay' | translate }}</span>
-      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.net' | translate">{{ 'dailyPlan.timeline.label.net' | translate }}</span>
-      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.gross' | translate">{{ 'dailyPlan.timeline.label.gross' | translate }}</span>
-      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.saving' | translate">{{ 'dailyPlan.timeline.label.saving' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.status' | translate">{{ 'dailyPlan.timeline.label.status' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.criticalPath' | translate">{{ 'dailyPlan.dependencies.label.criticalPath' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.start' | translate">{{ 'dailyPlan.timeline.label.start' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.estimatedEnd' | translate">{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.target' | translate">{{ 'dailyPlan.timeline.label.target' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.delay' | translate">{{ 'dailyPlan.timeline.label.delay' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.net' | translate">{{ 'dailyPlan.timeline.label.net' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.gross' | translate">{{ 'dailyPlan.timeline.label.gross' | translate }}</span>
+      <span [appRichTooltip]="'dailyPlan.timeline.tooltip.outer.saving' | translate">{{ 'dailyPlan.timeline.label.saving' | translate }}</span>
     </div>
   }
   @for (r of rows; track r.id) {
@@ -84,25 +84,31 @@
                 }
                 @if (g.nowX !== null) {
                   <line [attr.x1]="g.nowX" [attr.x2]="g.nowX" y1="16" [attr.y2]="g.height - 20" class="tl-now-line"/>
-                  <text [attr.x]="g.nowX" y="12" text-anchor="middle" class="tl-axis">{{ 'dailyPlan.timeline.label.now' | translate }}</text>
+                  <text [attr.x]="g.nowX" y="12" text-anchor="middle" class="tl-axis tl-now-label">{{ 'dailyPlan.timeline.label.now' | translate }} {{ time(now) }}</text>
                 }
               </svg>
             </div>
           }
 
+          <a class="tl-link tl-wf-toggle" role="button" tabindex="0" [attr.aria-expanded]="isWorkflowsOpen(r.id)"
+             (click)="toggleWorkflows(r.id)" (keydown.enter)="toggleWorkflows(r.id)">
+            <i class="fa" [ngClass]="isWorkflowsOpen(r.id) ? 'fa-caret-down' : 'fa-caret-right'"></i>
+            {{ 'dailyPlan.timeline.label.workflows' | translate: {count: r.timing.rows.length} }}
+          </a>
+          @if (isWorkflowsOpen(r.id)) {
           <div class="tl-wf-table">
             <div class="tl-wf-row tl-head">
-              <span>{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
-              <span>{{ 'dailyPlan.dependencies.label.state' | translate }}</span>
-              <span [appRichTooltip]="r.timing.testData ? ('dailyPlan.timeline.tooltip.testData' | translate) : ''">
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflow' | translate">{{ 'dailyPlan.dependencies.label.workflow' | translate }}</span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.reason' | translate">{{ 'dailyPlan.dependencies.label.state' | translate }}</span>
+              <span [appRichTooltip]="(r.timing.testData ? 'dailyPlan.timeline.tooltip.inner.averageTest' : 'dailyPlan.timeline.tooltip.inner.average') | translate">
                 {{ 'dailyPlan.timeline.label.average' | translate }}@if (r.timing.testData) {<sup class="tl-test">*</sup>}
               </span>
-              <span>{{ 'dailyPlan.timeline.label.planned' | translate }}</span>
-              <span>{{ 'dailyPlan.timeline.label.start' | translate }}</span>
-              <span>{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
-              <span>{{ 'dailyPlan.timeline.label.wait' | translate }}</span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.planned' | translate">{{ 'dailyPlan.timeline.label.planned' | translate }}</span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflowStart' | translate">{{ 'dailyPlan.timeline.label.start' | translate }}</span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.workflowEnd' | translate">{{ 'dailyPlan.timeline.label.estimatedEnd' | translate }}</span>
+              <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.wait' | translate">{{ 'dailyPlan.timeline.label.wait' | translate }}</span>
               @if (r.plan) {
-                <span>{{ 'dailyPlan.timeline.label.latestStart' | translate }}</span>
+                <span [appRichTooltip]="'dailyPlan.timeline.tooltip.inner.latestStart' | translate">{{ 'dailyPlan.timeline.label.latestStart' | translate }}</span>
               }
             </div>
             @for (w of r.timing.rows; track w.path) {
@@ -135,7 +141,9 @@
               </div>
             }
           </div>
+          }
 
+          @if (canPlanTarget(r)) {
           <div class="tl-target">
             <span>{{ 'dailyPlan.timeline.label.targetEnd' | translate }}</span>
             <input class="form-control input-sm tl-time" type="text" placeholder="hh:mm"
@@ -157,6 +165,7 @@
               </button>
             }
           </div>
+          }
           @if (r.timing.testData) {
             <div class="tl-note"><sup class="tl-test">*</sup> {{ 'dailyPlan.timeline.tooltip.testData' | translate }}</div>
           }
