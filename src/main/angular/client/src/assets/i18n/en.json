@@ -1394,7 +1394,7 @@
     "timeline.status.cannotComplete": "Cannot complete",
     "timeline.status.open": "Open",
     "timeline.status.missing": "Missing Order",
-    "timeline.status.noOrders": "No orders",
+    "timeline.status.noOrders": "Missing Orders",
     "timeline.tooltip.net": "Net execution time of the ^Workflow^s in the Critical Path, without waiting for ^Notice^s",
     "timeline.tooltip.gross": "Gross time from start of the Critical Path until its estimated completion, including waiting for ^Notice^s",
     "timeline.tooltip.saving": "Gross minus net: time that can be saved by avoiding waiting times",

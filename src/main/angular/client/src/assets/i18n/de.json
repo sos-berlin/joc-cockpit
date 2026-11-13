@@ -1395,7 +1395,7 @@
     "timeline.status.cannotComplete": "Nicht beendet",
     "timeline.status.open": "Offen",
     "timeline.status.missing": "Fehlender Auftrag",
-    "timeline.status.noOrders": "Keine Aufträge",
+    "timeline.status.noOrders": "Fehlende Aufträge",
     "timeline.tooltip.net": "Netto Ausführungsdauer des ^Arbeitsablaufs|workflow^ im Kritischen Pfad ohne Wartezeit für ^Notizen|notice^",
     "timeline.tooltip.gross": "Brutto Dauer ab Start des Kritischen Pfads bis zum geschätzten Ende inkl. Wartezeit für ^Notizen|notice^",
     "timeline.tooltip.saving": "Brutto minus Netto: Dauer, die durch vermiedene Wartenzeiten eingespart werden kann",
