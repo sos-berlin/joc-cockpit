@@ -27,7 +27,11 @@ $tl-none: #8a8aa8;
   &.tl-head {
     cursor: default;
     font-weight: 600;
-    background: $tl-tint;
+    // stays at the top while the list scrolls; solid background so rows do not show through
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: linear-gradient($tl-tint, $tl-tint), var(--bg-box);
   }
 }
 
@@ -115,7 +119,9 @@ $tl-none: #8a8aa8;
   .tl-grid-major { stroke-dasharray: none; stroke-width: 0.8; }
   .tl-axis { font-size: 11px; fill: currentColor; opacity: 0.75; }
   .tl-wf { font-size: 12px; fill: currentColor; cursor: pointer; font-style: italic; }
-  .tl-now-line { stroke: var(--red); stroke-width: 1.5; }
+  // neutral: it only marks the current time (moves every minute)
+  .tl-now-line { stroke: currentColor; stroke-opacity: 0.6; stroke-width: 1.5; }
+  .tl-now-label { opacity: 0.9; font-weight: 600; }
   .tl-target-line { stroke: var(--blue); stroke-width: 1.5; stroke-dasharray: 5 3; }
   .tl-wait { fill: none; stroke: var(--yellow-green); stroke-dasharray: 3 3; }
   .tl-bar { cursor: pointer; fill-opacity: 0.85; stroke-width: 1; }
@@ -178,4 +184,15 @@ $tl-none: #8a8aa8;
   border-radius: 50%;
   margin-right: 6px;
   vertical-align: middle;
+}
+
+// workflow table toggle in an opened Critical Path
+.tl-wf-toggle {
+  display: inline-block;
+  margin: 4px 0 6px;
+  text-decoration: none;
+
+  .fa {
+    width: 12px;
+  }
 }

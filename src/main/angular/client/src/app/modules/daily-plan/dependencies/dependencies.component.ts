@@ -347,16 +347,13 @@ export class DependenciesComponent {
    * collapsed chips (category keys): all their Critical Paths are hidden in the list (no exceptions).
    */
   collapsedCategories = new Set<string>();
-  /**
-   * Until the user toggles the "Missing" chip it is collapsed automatically while all its Critical Paths
-   * have no order at all (not planned for the day), and opened as soon as one of them needs intervention.
-   */
-  private missingAutoCollapse = true;
   // ---- Timeline (JOC-2343)
   /** rows of the Timeline list for the current page */
   timelineRows: TimelineRow[] = [];
   /** time used for the estimates of the current response */
   timelineNow = Date.now();
+  /** moves "now" forward every minute (Timeline): the now line and the estimates follow the time */
+  private timelineClock: any = null;
   /** target completion time per Critical Path (group id -> ms) */
   private timelineTargets = new Map<string, number>();
   /** start / end of the first order of the Plan day per workflow, from the order history */
@@ -423,6 +420,9 @@ export class DependenciesComponent {
     this.searchSubscription = this.searchInput$.pipe(debounceTime(300)).subscribe(() => this.applyFilters());
     this.initConf();
     const dailyPlanFilters = this.coreService.getDailyPlanTab();
+    if (this.mode === 'timeline') {
+      this.timelineClock = setInterval(() => this.tickTimeline(), 60000);
+    }
     if (dailyPlanFilters.tabIndex === 2 || this.mode === 'timeline') {
       this.loadAdditionaSnapshotlData();
     } else {
@@ -446,6 +446,9 @@ export class DependenciesComponent {
   }
 
   ngOnDestroy(): void {
+    if (this.timelineClock) {
+      clearInterval(this.timelineClock);
+    }
     this.plansFilters.selectedDate = this.selectedDate;
     this.subscription1.unsubscribe();
     this.searchSubscription?.unsubscribe();
@@ -1048,10 +1051,9 @@ export class DependenciesComponent {
         const received = performance.now();
         this.isLoaded = true;
         if (planDay && planDay !== this.lastPlanDay) {
-          // another day: start with the default collapse state again
+          // another day: nothing collapsed, all Critical Paths are listed
           this.lastPlanDay = planDay;
           this.collapsedCategories.clear();
-          this.missingAutoCollapse = true;
         }
         this.pendingControllerOrders = new Map((controllerOrders || []).map((o: any) => [o.orderId, o]));
         this.setWorkflowData(planDay ? this.snapshotOfPlan(res, planDay) : res, controllerOrders, completedPaths);
@@ -1311,7 +1313,6 @@ export class DependenciesComponent {
     this.chipGroups = SEVERITIES
       .map(sev => ({sev, chips: this.chips.filter(c => this.categorySeverity(c.cat) === sev)}))
       .filter(grp => grp.chips.length > 0);
-    this.applyMissingAutoCollapse();
     const shown = this.selectedCategories.size
       ? this.visibleGroups.filter(g => this.selectedCategories.has(this.groupCategory(g).key))
       : this.visibleGroups;
@@ -1345,23 +1346,6 @@ export class DependenciesComponent {
       name(a).localeCompare(name(b)) || a.id.localeCompare(b.id);
   }
 
-  /**
-   * Default for the "Missing" chip until the user toggles it: collapsed while all its Critical Paths
-   * have no order at all (nothing planned for them on this day), open as soon as one of them has
-   * orders or completed workflows, i.e. needs intervention.
-   */
-  private applyMissingAutoCollapse(): void {
-    if (!this.missingAutoCollapse) {
-      return;
-    }
-    const missing = this.visibleGroups.filter(g => this.groupCategory(g).kind === 'missing');
-    if (missing.length > 0 && missing.every(g => this.groupStatus(g).health === 'inactive')) {
-      this.collapsedCategories.add('missing');
-    } else {
-      this.collapsedCategories.delete('missing');
-    }
-  }
-
   /** Critical Paths are always listed together, in severity order (kept for the template). */
   get inactiveShown(): boolean {
     return true;
@@ -1378,10 +1362,6 @@ export class DependenciesComponent {
 
   toggleCollapse(key: string, event?: Event): void {
     event?.stopPropagation();
-    if (key === 'missing') {
-      // from now on the user decides
-      this.missingAutoCollapse = false;
-    }
     if (this.collapsedCategories.has(key)) {
       this.collapsedCategories.delete(key);
     } else {
@@ -1391,7 +1371,6 @@ export class DependenciesComponent {
   }
 
   expandAll(): void {
-    this.missingAutoCollapse = false;
     this.collapsedCategories.clear();
     this.applyFilters();
   }
@@ -1650,9 +1629,7 @@ export class DependenciesComponent {
     } else {
       this.selectedCategories.add(key);
       // a selected chip shows its Critical Paths: filter and collapse never contradict each other
-      if (this.collapsedCategories.delete(key) && key === 'missing') {
-        this.missingAutoCollapse = false;
-      }
+      this.collapsedCategories.delete(key);
     }
     this.plansFilters.filter.currentPage = 1;
     this.applyFilters();
@@ -1778,6 +1755,17 @@ export class DependenciesComponent {
   }
 
   // ===================================================================== Timeline (JOC-2343)
+
+  /**
+   * Every minute: "now" moves on. Running orders cannot end before now and waiting ones cannot start before
+   * now, so the estimates of the shown page are recalculated (no new request: the data is the same).
+   */
+  private tickTimeline(): void {
+    this.timelineNow = Date.now();
+    this.timelineCache.clear();
+    this.updatePage();
+    this.cd.markForCheck();
+  }
 
   /** Facts per workflow of the path: first order of the day, history times, average time consumption. */
   private workflowFacts(g: DepGroup): Map<string, WorkflowFacts> {
@@ -1928,10 +1916,8 @@ export class DependenciesComponent {
     }
     this.selectedCategories.clear();
     const key = this.groupCategory(g).key;
-    if (this.collapsedCategories.delete(key) && key === 'missing') {
-      // the user asked for this path: keep the "Missing" chip open
-      this.missingAutoCollapse = false;
-    }
+    // the user asked for this path: open its chip if it was collapsed by hand
+    this.collapsedCategories.delete(key);
     this.applyFilters();
     const index = this.pagingList.findIndex(x => x.id === g.id);
     if (index >= 0) {

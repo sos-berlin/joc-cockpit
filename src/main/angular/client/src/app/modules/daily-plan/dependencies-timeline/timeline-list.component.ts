@@ -72,6 +72,8 @@ export class TimelineListComponent implements OnChanges {
   @Output() ordersClick = new EventEmitter<string>();
 
   targetInput = new Map<string, string>();
+  /** opened Critical Paths whose workflow table is shown (collapsed by default) */
+  private workflowsOpen = new Set<string>();
   private gantts = new Map<string, Gantt>();
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -128,6 +130,24 @@ export class TimelineListComponent implements OnChanges {
     }
     const d = this.delay(r);
     return d !== null && d > 0 ? 'delayed' : 'onTime';
+  }
+
+  isWorkflowsOpen(id: string): boolean {
+    return this.workflowsOpen.has(id);
+  }
+
+  toggleWorkflows(id: string): void {
+    if (this.workflowsOpen.has(id)) {
+      this.workflowsOpen.delete(id);
+    } else {
+      this.workflowsOpen.add(id);
+    }
+  }
+
+  /** The target panel is offered unless the path is completed or has no orders (nothing to plan). */
+  canPlanTarget(r: TimelineRow): boolean {
+    const s = this.timeStatus(r);
+    return s !== 'completed' && s !== 'noOrders';
   }
 
   planEntry(r: TimelineRow, path: string) {

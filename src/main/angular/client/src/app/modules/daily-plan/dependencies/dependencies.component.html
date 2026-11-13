@@ -340,11 +340,6 @@
           </div>
         }
         }
-        @if (collapsedCount > 0 && !searchValue) {
-          <div class="dep-collapsed-hint" role="button" tabindex="0" (click)="expandAll()" (keydown.enter)="expandAll()">
-            {{ plural('dailyPlan.dependencies.label.collapsedHint', collapsedCount) | translate: {count: collapsedCount} }}
-          </div>
-        }
         @if (isLoaded && pagedGroups.length === 0) {
           <div class="m-t-md">
             <app-empty-data></app-empty-data>
