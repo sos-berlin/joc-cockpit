@@ -44,8 +44,15 @@ import {
   boardCounts,
   boardStateOf,
   groupBoards,
-  PlanOrder
+  PlanOrder,
+  boardValue
 } from './dependency-graph.model';
+import {
+  CriticalPathGraphBoard,
+  CriticalPathGraphData,
+  CriticalPathGraphLink,
+  CriticalPathGraphWorkflow
+} from './critical-path-graph/critical-path-graph.component';
 
 declare const $: any;
 
@@ -187,7 +194,10 @@ interface GroupView {
    * requires (taking && / || into account), or they receive a notice from a workflow with orders
    */
   neededMissing: Set<string>;
+  graph?: CriticalPathGraphData;
 }
+
+const VIEW_MODE_KEY = 'dailyPlanDependenciesView';
 
 /**
  * Steps rendered at once when a Critical Path is opened; more are added on request. Rendering every
@@ -381,6 +391,8 @@ export class DependenciesComponent {
   blockedPathCount = 0;
   /** timing of the last load, for measuring the performance impact (see console and footer tooltip) */
   lastPerf: { requestMs: number; buildMs: number; workflows: number; dependencies: number; paths: number } | null = null;
+  viewMode: 'table' | 'graph' = 'table';
+  private pathViewModes = new Map<string, 'table' | 'graph'>();
 
   constructor(
     public coreService: CoreService,
@@ -400,6 +412,7 @@ export class DependenciesComponent {
 
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
+    this.viewMode = this.readViewMode();
     const d = new Date().setHours(0, 0, 0, 0);
     this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
@@ -2523,6 +2536,122 @@ export class DependenciesComponent {
       i = j;
     }
     return out;
+  }
+
+  private readViewMode(): 'table' | 'graph' {
+    try {
+      return localStorage.getItem(VIEW_MODE_KEY) === 'graph' ? 'graph' : 'table';
+    } catch (e) {
+      return 'table';
+    }
+  }
+
+  viewModeOf(g: DepGroup): 'table' | 'graph' {
+    return this.pathViewModes.get(g.id) || this.viewMode;
+  }
+
+  setPathViewMode(g: DepGroup, mode: 'table' | 'graph'): void {
+    if (this.viewModeOf(g) === mode) {
+      return;
+    }
+    this.expandedGroups.forEach(id => {
+      if (!this.pathViewModes.has(id)) {
+        this.pathViewModes.set(id, this.viewMode);
+      }
+    });
+    this.pathViewModes.set(g.id, mode);
+    this.viewMode = mode;
+    try {
+      localStorage.setItem(VIEW_MODE_KEY, mode);
+    } catch (e) {
+    }
+    this.cd.markForCheck();
+  }
+
+  graphData(g: DepGroup): CriticalPathGraphData {
+    const v = this.getGroupView(g);
+    if (v.graph) {
+      return v.graph;
+    }
+    const inGroup = new Set(g.nodes);
+    const workflows: CriticalPathGraphWorkflow[] = v.order.map(n => ({
+      path: n.path,
+      label: this.getFormattedPath(n.path),
+      stage: (v.levels.get(n.path) ?? 0) + 1,
+      stateClass: this.stateClass(n),
+      stateKey: this.stateLabelKey(n),
+      orders: n.orderIds.length,
+      blocked: v.blockedNames.has(n.path),
+      missing: v.neededMissing.has(n.path),
+      match: this.isSearchMatch(n)
+    }));
+    const optionalOf = new Map<string, (b: string) => boolean>();
+    v.order.forEach(n => {
+      const check = checkConditions(this.model, n);
+      const needed = new Set(check ? check.boards : []);
+      const hasOr = n.conditions.some(c => c.expr && exprHasOr(c.expr));
+      optionalOf.set(n.path, (b: string) => !!check && !needed.has(b) && hasOr);
+    });
+    const boards = new Map<string, CriticalPathGraphBoard>();
+    const addBoard = (name: string, noPoster: boolean) => {
+      if (!boards.has(name)) {
+        const state = boardStateOf(this.model.boardOf(name));
+        boards.set(name, {
+          name,
+          label: this.getFormattedPath(name),
+          state,
+          value: boardValue(this.model, name),
+          noPoster,
+          canPost: state !== 'posted'
+        });
+      }
+    };
+    const links: CriticalPathGraphLink[] = [];
+    const seen = new Set<string>();
+    const addLink = (l: CriticalPathGraphLink) => {
+      const key = l.kind + '\u0000' + l.workflow + '\u0000' + l.board;
+      if (!seen.has(key)) {
+        seen.add(key);
+        links.push(l);
+      }
+    };
+    g.edges.forEach(e => {
+      if (!inGroup.has(e.from) || !inGroup.has(e.to)) {
+        return;
+      }
+      addBoard(e.board, false);
+      addLink({kind: 'post', workflow: e.from, board: e.board, optional: false});
+      addLink({kind: e.kind, workflow: e.to, board: e.board, optional: optionalOf.get(e.to)?.(e.board) || false});
+    });
+    v.order.forEach(n => n.unmatchedNotices.forEach(b => {
+      addBoard(b, true);
+      const kind = n.consumeNotices.includes(b) && !n.expectNotices.includes(b) ? 'consume' : 'expect';
+      addLink({kind, workflow: n.path, board: b, optional: optionalOf.get(n.path)?.(b) || false});
+    }));
+    const messages: RichPart[][] = [];
+    if (g.cycle) {
+      messages.push(this.cycleParts(g));
+    }
+    this.groupRows(g).forEach(r => {
+      if (r.kind === 'note') {
+        const parts: RichPart[] = [...this.noteParts(r)];
+        this.shownCritical(r).forEach(c => parts.push({t: 'text', v: ' '}, ...this.criticalParts(c)));
+        messages.push(parts);
+      }
+    });
+    v.graph = {workflows, boards: Array.from(boards.values()), links, messages};
+    return v.graph;
+  }
+
+  onGraphBoardSelect(e: { board: string; checked: boolean }): void {
+    this.toggleBoardSelection(e.board, e.checked);
+  }
+
+  showOrdersOf(path: string): void {
+    const node = this.model?.nodes.get(path);
+    if (node) {
+      this.showOrders(node);
+    }
   }
 
   // ===================================================================== orders side panel

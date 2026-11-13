@@ -14,6 +14,7 @@ import {DailyPlanRegexValidator} from '../../directives/core.directive';
 import {ExportComponent, ProjectionComponent, ShowProjectionModalComponent} from "./projection/projection.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
 import {DependenciesComponent} from "./dependencies/dependencies.component";
+import {CriticalPathGraphComponent} from "./dependencies/critical-path-graph/critical-path-graph.component";
 import {NzDrawerComponent} from "ng-zorro-antd/drawer";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
@@ -32,7 +33,7 @@ import { TimelineListComponent } from './dependencies-timeline/timeline-list.com
         WorkflowModule,
         NzTooltipDirective
     ],
-  declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
+  declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, CriticalPathGraphComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent, TimelineListComponent],
   providers: [GroupByPipe]
 })

@@ -1,0 +1,182 @@
+<div class="cpg">
+  @if (data?.messages?.length) {
+    <div class="cpg-messages">
+      @for (msg of data.messages; track $index) {
+        <div class="cpg-message">
+          @for (p of msg; track $index) {
+            @switch (p.t) {
+              @case ('wf') {
+                <a class="cpg-obj" [appRichTooltip]="$any(p).path" (click)="workflowClick.emit($any(p).path)"><span nz-icon nzType="apartment" nzTheme="outline" class="cpg-icon"></span>{{ p.v }}</a>
+              }
+              @case ('board') {
+                <a class="cpg-obj" (click)="boardClick.emit($any(p).name)"><span nz-icon nzType="pushpin" nzTheme="outline" class="cpg-icon"></span>{{ p.v }}</a>
+              }
+              @default {
+                <span>{{ p.v }}</span>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (nodes.length > 0) {
+    <div class="cpg-toolbar">
+      <div class="cpg-tools">
+        <button type="button" class="cpg-tool" (click)="zoomIn()" [appRichTooltip]="'workflow.button.zoomIn' | translate">
+          <i nz-icon nzTheme="outline" nzType="zoom-in"></i>
+        </button>
+        <button type="button" class="cpg-tool" (click)="zoomOut()" [appRichTooltip]="'workflow.button.zoomOut' | translate">
+          <i nz-icon nzTheme="outline" nzType="zoom-out"></i>
+        </button>
+        <button type="button" class="cpg-tool" (click)="actual()" [appRichTooltip]="'workflow.button.actual' | translate">
+          <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i>
+        </button>
+        <button type="button" class="cpg-tool" (click)="fit()" [appRichTooltip]="'workflow.button.fitToScreen' | translate">
+          <i nz-icon nzTheme="outline" nzType="column-width"></i>
+        </button>
+        <span class="cpg-hint">{{ 'dailyPlan.dependencies.graph.hint' | translate }}</span>
+        @if (isPartial) {
+          <span class="cpg-shown">{{ 'dailyPlan.dependencies.label.stepsShown' | translate: {shown: shownWorkflows, total: totalWorkflows} }}</span>
+        }
+        @if (canCollapse) {
+          <button type="button" class="btn btn-grey btn-xs m-l-sm" (click)="collapse()">
+            <i nz-icon nzType="shrink" nzTheme="outline"></i> {{ 'dailyPlan.dependencies.graph.collapse' | translate }}
+          </button>
+        }
+      </div>
+      <div class="cpg-legend">
+        @for (cls of edgeClasses; track cls) {
+          <span class="cpg-legend-item">
+            <svg width="26" height="10" aria-hidden="true">
+              <line x1="1" y1="5" x2="25" y2="5" class="cpg-edge" [ngClass]="'cpg-edge-' + cls"></line>
+            </svg>
+            {{ 'dailyPlan.dependencies.graph.legend.' + cls | translate }}
+          </span>
+        }
+        @if (hasFold) {
+          <span class="cpg-legend-item">
+            <svg width="26" height="10" aria-hidden="true">
+              <line x1="1" y1="5" x2="25" y2="5" class="cpg-edge cpg-edge-fold"></line>
+            </svg>
+            {{ 'dailyPlan.dependencies.graph.legend.fold' | translate }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <div #viewport class="cpg-viewport" [class.cpg-dragging]="dragging" [class.cpg-hovering]="!!hoverId" [style.height.px]="viewportHeight"
+         (mousedown)="onMouseDown($event)" (wheel)="onWheel($event)">
+      <svg class="cpg-svg" width="100%" height="100%">
+        <defs>
+          @for (cls of markerClasses; track cls) {
+            <marker [attr.id]="uid + '-' + cls" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+                    orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="cpg-arrow" [ngClass]="'cpg-arrow-' + cls"></path>
+            </marker>
+          }
+        </defs>
+        <g [attr.transform]="transform">
+          @for (e of visibleEdges; track e.id) {
+            <g class="cpg-edge-group" [class.cpg-edge-hot]="isHotEdge(e)">
+              <path [attr.d]="e.d" class="cpg-edge-hit"><title>{{ e.title }}</title></path>
+              <path [attr.d]="e.d" class="cpg-edge" [ngClass]="'cpg-edge-' + e.cls" [attr.marker-end]="e.arrow ? markerUrl(e.cls) : null"></path>
+            </g>
+          }
+          @for (n of visibleNodes; track n.id) {
+            @if (simple && (n.type === 'wf' || n.type === 'board')) {
+            <g class="cpg-simple" [ngClass]="simpleClass(n)" [class.cpg-near]="isNear(n.id)"
+               [attr.transform]="'translate(' + n.x + ',' + n.y + ')'" (mouseenter)="hover(n.id)" (mouseleave)="hover(null)">
+              <title>{{ n.type === 'wf' ? n.wf.label : n.board.label }}</title>
+              <rect class="cpg-simple-box" [attr.width]="n.w" [attr.height]="n.h" [attr.rx]="n.type === 'wf' ? 6 : 14"></rect>
+              @if (n.type === 'wf') {
+                <rect class="cpg-simple-bar" width="5" [attr.height]="n.h" rx="2"></rect>
+              }
+            </g>
+            } @else {
+            <foreignObject [attr.x]="n.x" [attr.y]="n.y" [attr.width]="n.w" [attr.height]="n.h" [class.cpg-near]="isNear(n.id)"
+                           (mouseenter)="hover(n.id)" (mouseleave)="hover(null)">
+              @if (n.type === 'wf') {
+                <div class="cpg-node cpg-wf" [ngClass]="'cpg-os-' + n.wf.stateClass"
+                     [class.cpg-wf-missing]="n.wf.stateClass === 'missing'" [class.cpg-wf-needed]="n.wf.missing"
+                     [class.cpg-wf-blocked]="n.wf.blocked" [class.cpg-wf-match]="n.wf.match" [class.cpg-new]="isFresh(n.id)">
+                  <div class="cpg-line">
+                    <span nz-icon nzType="apartment" nzTheme="outline" class="cpg-icon"></span>
+                    <a class="cpg-name" [appRichTooltip]="n.wf.path" (click)="workflowClick.emit(n.wf.path)">{{ n.wf.label }}</a>
+                    @if (n.wf.orders > 0) {
+                      <button type="button" class="cpg-badge" (click)="ordersClick.emit(n.wf.path)"
+                              [appRichTooltip]="'dailyPlan.tooltip.viewOrders' | translate">{{ n.wf.orders }}</button>
+                    }
+                  </div>
+                  <div class="cpg-sub">
+                    <span class="cpg-dot"></span>
+                    <span class="cpg-step">{{ 'dailyPlan.dependencies.label.step' | translate }} {{ n.wf.stage }}</span>
+                    <span class="cpg-sep">·</span>
+                    <span class="cpg-state">{{ n.wf.stateKey | translate }}</span>
+                  </div>
+                </div>
+              } @else if (n.type === 'fold') {
+                <div class="cpg-node cpg-fold" [class.cpg-fold-has-match]="n.fold.matches > 0">
+                  <div class="cpg-line">
+                    <span nz-icon nzType="more" nzTheme="outline" class="cpg-icon"></span>
+                    <span class="cpg-fold-title">{{ plural('dailyPlan.dependencies.graph.fold', n.fold.count) | translate: {count: n.fold.count} }}</span>
+                    @if (n.fold.matches > 0) {
+                      <span class="cpg-fold-matches">{{ plural('dailyPlan.dependencies.graph.foldMatches', n.fold.matches) | translate: {count: n.fold.matches} }}</span>
+                    }
+                  </div>
+                  <div class="cpg-sub">
+                    <span>{{ 'dailyPlan.dependencies.graph.foldSteps' | translate: {from: n.fold.from, to: n.fold.to} }}</span>
+                    @if (n.fold.boards > 0) {
+                      <span class="cpg-sep">·</span>
+                      <span>{{ 'dailyPlan.dependencies.graph.foldBoards' | translate: {count: n.fold.boards} }}</span>
+                    }
+                  </div>
+                  <div class="cpg-fold-actions">
+                    <button type="button" class="btn btn-grey btn-xs" (click)="showMore()">
+                      {{ 'dailyPlan.dependencies.graph.showMore' | translate: {count: n.fold.more} }}
+                    </button>
+                    @if (n.fold.count > n.fold.more) {
+                      <button type="button" class="btn btn-grey btn-xs" (click)="showAll()">
+                        {{ 'dailyPlan.dependencies.graph.showAll' | translate }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              } @else if (n.type === 'cluster') {
+                <div class="cpg-node cpg-board cpg-cluster" role="button" tabindex="0" [class.cpg-cluster-open]="n.cluster.open"
+                     (click)="toggleCluster(n.cluster.workflow)" (keydown.enter)="toggleCluster(n.cluster.workflow)">
+                  <div class="cpg-line">
+                    <span nz-icon [nzType]="n.cluster.open ? 'minus-square' : 'plus-square'" nzTheme="outline" class="cpg-icon"></span>
+                    <span class="cpg-fold-title">{{ (n.cluster.open ? 'dailyPlan.dependencies.graph.clusterHide' : 'dailyPlan.dependencies.graph.cluster') | translate: {count: n.cluster.count} }}</span>
+                  </div>
+                </div>
+              } @else {
+                <div class="cpg-node cpg-board" [ngClass]="'cpg-board-' + boardClass(n.board)" [class.cpg-new]="isFresh(n.id)">
+                  <div class="cpg-line">
+                    @if (n.board.canPost) {
+                      <label nz-checkbox class="cpg-post-check" [nzChecked]="isSelected(n.board.name)"
+                             (nzCheckedChange)="boardSelect.emit({board: n.board.name, checked: $event})"
+                             [appRichTooltip]="'dailyPlan.dependencies.tooltip.selectToPost' | translate"></label>
+                    }
+                    <span nz-icon nzType="pushpin" nzTheme="outline" class="cpg-icon"></span>
+                    <a class="cpg-name" [appRichTooltip]="n.board.name" (click)="boardClick.emit(n.board.name)">{{ n.board.label }}</a>
+                  </div>
+                  <div class="cpg-sub">
+                    <span class="cpg-state">{{ boardStateKey(n.board) | translate }}</span>
+                    @if (n.foldedReceivers > 0) {
+                      <span class="cpg-sep">·</span>
+                      <span class="cpg-folded-note"
+                            [appRichTooltip]="plural('dailyPlan.dependencies.graph.alsoFoldedTip', n.foldedReceivers) | translate: {count: n.foldedReceivers}">{{ 'dailyPlan.dependencies.graph.alsoFolded' | translate: {count: n.foldedReceivers} }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            </foreignObject>
+            }
+          }
+        </g>
+      </svg>
+    </div>
+  }
+</div>
