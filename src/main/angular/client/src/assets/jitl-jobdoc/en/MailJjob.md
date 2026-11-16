@@ -1,10 +1,10 @@
 # Job: MailJob
-<summary id="summary">
-The job template is used to send mail.
+<summary>
+The job is used to send mail.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 All *mail.\** properties for Java Mail can be used, see [JavaMail](https://javaee.github.io/javamail/docs/api/javax/mail/package-summary.html).
 
@@ -143,4 +143,4 @@ Specifies the password used for the user account in case that the mail server re
 
 # Return Variables
 
-The job template does not provide return variables.
+The job does not provide return variables.

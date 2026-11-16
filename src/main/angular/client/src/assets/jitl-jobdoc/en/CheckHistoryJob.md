@@ -1,10 +1,10 @@
 # Job: CheckHistoryJob
-<summary id="summary">
+<summary>
 The job checks the Order History or Task History for execution of predecessor workflows or jobs.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 ## What is the purpose of the job?
 

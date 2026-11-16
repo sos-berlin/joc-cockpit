@@ -1,0 +1,21 @@
+{
+  "job": {
+    "name": "JS7RESTClientJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.rest.JS7RESTClientJob"
+  },
+  "arguments": [
+    {
+      "name": "request",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "return_variable",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": []
+}

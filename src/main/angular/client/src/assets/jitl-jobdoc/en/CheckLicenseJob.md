@@ -1,12 +1,12 @@
 # Job: CheckLicenseJob
-<summary id="summary">
+<summary>
 The job checks the expiration date of the JS7 license used by JOC Cockpit.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
-Users of the commercial license receive warnings and errors about license expiration from the JOC Cockpit GUI. Users who whish to receive e-mail notification about upcoming license expiration and expired licenses can make use of the job template.            
+Users of the commercial license receive warnings and errors about license expiration from the JOC Cockpit GUI. Users who whish to receive e-mail notification about upcoming license expiration and expired licenses can make use of the job.            
 
 Return Codes:
 
