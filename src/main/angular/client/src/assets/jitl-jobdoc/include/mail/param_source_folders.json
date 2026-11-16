@@ -1,0 +1,6 @@
+{
+  "name": "mail_source_folders",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "INBOX"
+}

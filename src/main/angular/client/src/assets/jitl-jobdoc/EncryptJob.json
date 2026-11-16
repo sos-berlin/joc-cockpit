@@ -1,0 +1,39 @@
+{
+  "documentation": {
+    "job": {
+      "name": "EncryptJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.encrypt.EncryptJob"
+    },
+    "arguments": [
+      {
+        "name": "in",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "infile",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "outfile",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "encipherment_certificate",
+        "required": true,
+        "dataType": "STRING"
+      }
+    ],
+    "returnVariables": [
+      {
+        "name": "js7EncryptedValue",
+        "required": false,
+        "dataType": "STRING"
+      }
+    ]
+  }
+}

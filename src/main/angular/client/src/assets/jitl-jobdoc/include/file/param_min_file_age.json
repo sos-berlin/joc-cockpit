@@ -1,0 +1,6 @@
+{
+  "name": "min_file_age",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER",
+  "defaultValue": "0"
+}

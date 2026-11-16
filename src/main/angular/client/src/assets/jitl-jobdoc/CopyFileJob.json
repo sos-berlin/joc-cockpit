@@ -1,0 +1,76 @@
+﻿{
+  "documentation": {
+    "job": {
+      "name": "CopyFileJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.file.CopyFileJob"
+    },
+    "arguments": [
+        "$ref": "include/file/param_source_file.json",
+        "$ref": "include/file/param_target_file.json",
+      {
+        "$ref": "include/file/param_file_spec_fileop.json"
+      },
+      {
+        "$ref": "include/file/param_recursive.json"
+      },
+      {
+        "$ref": "include/file/param_max_file_age.json"
+      },
+      {
+        "$ref": "include/file/param_max_file_size.json"
+      },
+      {
+        "$ref": "include/file/param_min_file_age.json"
+      },
+      {
+        "$ref": "include/file/param_min_file_size.json"
+      },
+      {
+        "$ref": "include/file/param_skip_first_files.json"
+      },
+      {
+        "$ref": "include/file/param_skip_last_files.json"
+      },
+      {
+        "$ref": "include/file/param_create_dir.json"
+      },
+      {
+        "$ref": "include/file/param_gracious.json"
+      },
+      {
+        "$ref": "include/file/param_overwrite.json"
+      },
+      {
+        "$ref": "include/file/param_replacing.json"
+      },
+      {
+        "$ref": "include/file/param_replacement.json"
+      },
+      {
+        "$ref": "include/file/param_sort_order.json"
+      },
+      {
+        "$ref": "include/file/param_sort_criteria.json"
+      },
+      {
+        "$ref": "include/file/result_set/param_result_set_file.json"
+      },
+      {
+        "$ref": "include/file/result_set/param_expected_size_of_result_set.json"
+      },
+      {
+        "$ref": "include/file/result_set/param_raise_error_if_result_set_is.json"
+      }
+    ],
+    "returnVariables": [
+      {
+        "$ref": "include/file/return/param_fileoperations_result_set.json"
+      },
+      {
+        "$ref": "include/file/return/param_fileoperations_result_set_size.json"
+      }
+    ]
+  }
+}

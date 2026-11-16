@@ -1,0 +1,6 @@
+{
+  "name": "mail_post_action",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "mark_as_read"
+}

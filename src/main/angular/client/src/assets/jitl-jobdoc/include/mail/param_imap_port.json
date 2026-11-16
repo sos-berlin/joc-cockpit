@@ -1,0 +1,5 @@
+{
+  "name": "mail.imap.port",
+  "required": false,
+  "dataType": "POSITIVEINTEGER"
+}

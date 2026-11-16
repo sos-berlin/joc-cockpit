@@ -1,0 +1,6 @@
+{
+  "name": "expected_size_of_result_set",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER",
+  "defaultValue": "0"
+}

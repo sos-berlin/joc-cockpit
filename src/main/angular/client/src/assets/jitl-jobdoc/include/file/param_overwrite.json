@@ -1,0 +1,6 @@
+{
+  "name": "overwrite",
+  "required": false,
+  "dataType": "BOOLEAN",
+  "defaultValue": "false"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "mail_body_pattern",
+  "required": false,
+  "dataType": "STRING"
+}

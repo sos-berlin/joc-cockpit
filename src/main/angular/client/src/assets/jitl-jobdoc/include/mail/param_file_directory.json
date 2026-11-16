@@ -1,0 +1,5 @@
+{
+  "name": "mail_file_directory",
+  "required": false,
+  "dataType": "STRING"
+}

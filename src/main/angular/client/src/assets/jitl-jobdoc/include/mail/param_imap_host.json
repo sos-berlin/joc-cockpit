@@ -1,0 +1,5 @@
+{
+  "name": "mail.imap.host",
+  "required": false,
+  "dataType": "POSITIVEINTEGER"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "sort_criteria",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "name"
+}

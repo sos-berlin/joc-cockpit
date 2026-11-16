@@ -1,0 +1,6 @@
+{
+  "name": "sort_order",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "asc"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "mail.imap.ssl.enable",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

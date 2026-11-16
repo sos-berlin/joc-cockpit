@@ -1,0 +1,5 @@
+{
+  "name": "mail.pop3.ssl.enable",
+  "required": false,
+  "dataType": "BOOLEAN"
+}
