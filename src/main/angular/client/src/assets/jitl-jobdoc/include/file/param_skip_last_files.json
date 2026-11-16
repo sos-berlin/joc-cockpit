@@ -2,5 +2,5 @@
   "name": "skip_last_files",
   "required": false,
   "dataType": "NONNEGATIVEINTEGER",
-  "defaultValue": "0"
+  "defaultValue": 0
 }

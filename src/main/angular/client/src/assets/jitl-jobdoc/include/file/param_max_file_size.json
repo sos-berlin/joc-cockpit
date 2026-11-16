@@ -2,5 +2,5 @@
   "name": "max_file_size",
   "required": false,
   "dataType": "INTEGER",
-  "defaultValue": "-1"
+  "defaultValue": -1
 }

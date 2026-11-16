@@ -2,5 +2,5 @@
   "name": "overwrite",
   "required": false,
   "dataType": "BOOLEAN",
-  "defaultValue": "false"
+  "defaultValue": false
 }
