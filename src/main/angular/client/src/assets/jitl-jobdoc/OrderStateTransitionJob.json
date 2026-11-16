@@ -1,0 +1,63 @@
+{
+  "job": {
+    "name": "OrderStateTransitionJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.orderstatustransition.OrderStateTransitionJob"
+  },
+  "arguments": [
+    {
+      "name": "controller_id",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "states",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "transition",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "workflow_folders",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "workflow_search_patterns",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "order_search_patterns",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "batch_size",
+      "required": false,
+      "dataType": "POSITIVEiNTEGER",
+      "defaultValue": 10000
+    },
+    {
+      "name": "persist_duration",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "subject",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "body",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ]
+}
