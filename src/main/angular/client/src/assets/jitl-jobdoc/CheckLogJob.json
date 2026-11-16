@@ -1,80 +1,78 @@
 {
-  "documentation": {
-    "job": {
-      "name": "CheckLogJob",
-      "category": "JITL",
-      "language": "Java",
-      "class": "com.sos.jitl.jobs.checklog.CheckLogJob"
+  "job": {
+    "name": "CheckLogJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.checklog.CheckLogJob"
+  },
+  "arguments": [
+    {
+      "name": "job",
+      "required": true,
+      "dataType": "STRING"
     },
-    "arguments": [
-      {
-        "name": "job",
-        "required": true,
-        "dataType": "STRING"
-      },
-      {
-        "name": "label",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "pattern",
-        "required": true,
-        "dataType": "STRING"
-      },
-      {
-        "name": "separator",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "timeout",
-        "required": false,
-        "dataType": "DURATION",
-        "defaultValue": "15"
-      },
-      {
-        "name": "multiline",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "case_insensitive",
-        "required": false,
-        "dataType": "BOOLEAN"
-      },
-      {
-        "name": "unix_lines",
-        "required": false,
-        "dataType": "BOOLEAN"
-      }
-    ],
-    "returnVariables": [
-      {
-        "name": "js7CheckLogMatchedGroups",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckLogMatches",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckLogMatchCount",
-        "required": false,
-        "dataType": "NONNEGATIVEINTEGER"
-      },
-      {
-        "name": "js7CheckLogGroupsMatchesCount",
-        "required": false,
-        "dataType": "NONNEGATIVEINTEGER"
-      },
-      {
-        "name": "js7CheckLogGroupCount",
-        "required": false,
-        "dataType": "NONNEGATIVEINTEGER"
-      }
-    ]
-  }
+    {
+      "name": "label",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "pattern",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "separator",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "timeout",
+      "required": false,
+      "dataType": "DURATION",
+      "defaultValue": 15
+    },
+    {
+      "name": "multiline",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "case_insensitive",
+      "required": false,
+      "dataType": "BOOLEAN"
+    },
+    {
+      "name": "unix_lines",
+      "required": false,
+      "dataType": "BOOLEAN"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "js7CheckLogMatchedGroups",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckLogMatches",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckLogMatchCount",
+      "required": false,
+      "dataType": "NONNEGATIVEINTEGER"
+    },
+    {
+      "name": "js7CheckLogGroupsMatchesCount",
+      "required": false,
+      "dataType": "NONNEGATIVEINTEGER"
+    },
+    {
+      "name": "js7CheckLogGroupCount",
+      "required": false,
+      "dataType": "NONNEGATIVEINTEGER"
+    }
+  ]
 }
