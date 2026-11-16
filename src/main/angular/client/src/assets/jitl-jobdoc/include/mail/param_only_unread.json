@@ -1,0 +1,6 @@
+{
+  "name": "only_unread_mails",
+  "required": false,
+  "dataType": "BOOLEAN",
+  "defaultValue": "true"
+}

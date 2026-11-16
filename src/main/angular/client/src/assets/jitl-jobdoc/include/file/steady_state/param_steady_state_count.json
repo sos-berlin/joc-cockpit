@@ -1,0 +1,6 @@
+{
+  "name": "steady_state_count",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER",
+  "defaultValue": "0"
+}

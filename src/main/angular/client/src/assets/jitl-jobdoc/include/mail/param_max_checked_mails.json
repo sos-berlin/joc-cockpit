@@ -1,0 +1,6 @@
+{
+  "name": "max_processed_mails",
+  "required": false,
+  "dataType": "POSITIVEINTEGER",
+  "defaultValue": "1000"
+}

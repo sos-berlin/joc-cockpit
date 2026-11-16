@@ -1,0 +1,5 @@
+{
+  "name": "attachment_file_name_pattern",
+  "required": false,
+  "dataType": "STRING"
+}

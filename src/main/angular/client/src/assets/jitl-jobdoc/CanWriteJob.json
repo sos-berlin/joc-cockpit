@@ -1,0 +1,22 @@
+{
+  "documentation": {
+    "job": {
+      "name": "CanWriteJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.file.CanWriteJob"
+    },
+    "arguments": [
+      {
+        "$ref": "include/file/param_source_file.json"
+      },
+      {
+        "$ref": "include/file/param_file_spec_fileop.json"
+      },
+      {
+        "$ref": "include/file/param_gracious.json"
+      }
+    ],
+    "returnVariables": []
+  }
+}

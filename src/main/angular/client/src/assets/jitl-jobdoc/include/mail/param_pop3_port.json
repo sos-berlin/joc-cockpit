@@ -1,0 +1,6 @@
+{
+  "name": "mail.pop3.port",
+  "required": false,
+  "dataType": "POSITIVEINTEGER",
+  "defaultValue": "110"
+}

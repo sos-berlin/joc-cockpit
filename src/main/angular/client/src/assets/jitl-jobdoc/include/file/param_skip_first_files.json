@@ -1,0 +1,6 @@
+{
+  "name": "skip_first_files",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER",
+  "defaultValue": "0"
+}

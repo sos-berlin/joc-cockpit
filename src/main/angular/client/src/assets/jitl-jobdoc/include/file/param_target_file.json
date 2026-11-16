@@ -1,0 +1,5 @@
+{
+  "name": "target_file",
+  "required": true,
+  "dataType": "STRING"
+}

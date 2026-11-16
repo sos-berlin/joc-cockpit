@@ -1,0 +1,6 @@
+{
+  "name": "steady_state_interval",
+  "required": false,
+  "dataType": "POSITIVEINTEGER",
+  "defaultValue": "1"
+}

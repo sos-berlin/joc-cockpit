@@ -1,0 +1,6 @@
+{
+  "name": "max_file_age",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER",
+  "defaultValue": "0"
+}

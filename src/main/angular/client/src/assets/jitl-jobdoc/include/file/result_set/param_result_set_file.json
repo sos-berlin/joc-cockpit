@@ -1,0 +1,5 @@
+{
+  "name": "result_set_file",
+  "required": false,
+  "dataType": "STRING"
+}

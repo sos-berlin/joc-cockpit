@@ -1,0 +1,5 @@
+{
+  "name": "mail.imap.user",
+  "required": false,
+  "dataType": "STRING"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "mail_subject_pattern",
+  "required": false,
+  "dataType": "STRING"
+}

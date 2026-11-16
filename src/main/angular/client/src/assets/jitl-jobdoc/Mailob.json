@@ -1,0 +1,130 @@
+{
+  "documentation": {
+    "job": {
+      "name": "MailJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.mail.MailJob"
+    },
+    "arguments": [
+      {
+        "name": "to",
+        "required": true,
+        "dataType": "STRING"
+      },
+      {
+        "name": "from",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "from_name",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "reply_to",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "cc",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "bcc",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "subject",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "body",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "body",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "content_type",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "text/plain"
+      },
+      {
+        "name": "encoding",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "7Bit"
+      },
+      {
+        "name": "charset",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "iso-8859-1"
+      },
+      {
+        "name": "attachment",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "attachment_content_type",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "application/octet-stream"
+      },
+      {
+        "name": "attachment_encoding",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "base64"
+      },
+      {
+        "name": "attachment_charset",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "iso-8859-1"
+      },
+      {
+        "name": "security_protocol",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "smtp"
+      },
+      {
+        "name": "mail.smtp.host",
+        "required": true,
+        "dataType": "STRING"
+      },
+      {
+        "name": "mail.smtp.port",
+        "required": false,
+        "dataType": "POSITIVEINTEGER",
+        "defaultValue": "application/octet-stream"
+      },
+      {
+        "name": "mail.smtp.user",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "mail.smtp.password",
+        "required": false,
+        "dataType": "STRING",
+        "defaultValue": "application/octet-stream"
+      },
+      {
+        "$ref": "include/common/params/params_credential_store.json"
+      }
+    ],
+    "returnVariables": []
+  }
+}

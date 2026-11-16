@@ -1,0 +1,5 @@
+{
+  "name": "file_operations_result_set_size",
+  "required": false,
+  "dataType": "NONNEGATIVEINTEGER"
+}

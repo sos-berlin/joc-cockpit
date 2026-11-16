@@ -1,0 +1,5 @@
+{
+  "name": "body_as_attachment",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

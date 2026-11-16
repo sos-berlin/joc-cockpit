@@ -1,0 +1,91 @@
+{
+  "documentation": {
+    "job": {
+      "name": "MailInboxJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.mail.MailInboxJob"
+    },
+    "arguments": [
+      {
+        "$ref": "include/mail/param_store_protocol.json"
+      },
+      {
+        "$ref": "include/mail/param_imap_host.json"
+      },
+      {
+        "$ref": "include/mail/param_imap_port.json"
+      },
+      {
+        "$ref": "include/mail/param_imap_user.json"
+      },
+      {
+        "$ref": "include/mail/param_imap_password.json"
+      },
+      {
+        "$ref": "include/mail/param_imap_ssl.json"
+      },
+      {
+        "$ref": "include/mail/param_pop3_host.json"
+      },
+      {
+        "$ref": "include/mail/param_pop3_port.json"
+      },
+      {
+        "$ref": "include/mail/param_pop3_user.json"
+      },
+      {
+        "$ref": "include/mail/param_pop3_password.json"
+      },
+      {
+        "$ref": "include/mail/param_pop3_ssl.json"
+      },
+      {
+        "$ref": "include/mail/param_source_folders.json"
+      },
+      {
+        "$ref": "include/mail/param_max_checked_mails.json"
+      },
+      {
+        "$ref": "include/mail/param_only_unread.json"
+      },
+      {
+        "$ref": "include/mail/param_min_mail_age.json"
+      },
+      {
+        "$ref": "include/mail/param_from_filter.json"
+      },
+      {
+        "$ref": "include/mail/param_subject_filter.json"
+      },
+      {
+        "$ref": "include/mail/param_body_pattern.json"
+      },
+      {
+        "$ref": "include/mail/param_action.json"
+      },
+      {
+        "$ref": "include/mail/param_file_directory.json"
+      },
+      {
+        "$ref": "include/mail/param_attachments_directory.json"
+      },
+      {
+        "$ref": "include/mail/param_body_as_attachment.json"
+      },
+      {
+        "$ref": "include/mail/param_attachment_file_name_pattern.json"
+      },
+      {
+        "$ref": "include/mail/param_post_action.json"
+      },
+      {
+        "$ref": "include/mail/param_mail_target_folder.json"
+      },
+      {
+        "$ref": "include/common/params/params_credential_store.json"
+      }
+    ],
+    "returnVariables": []
+  }
+}

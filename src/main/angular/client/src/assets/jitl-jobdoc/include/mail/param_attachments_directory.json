@@ -1,0 +1,5 @@
+{
+  "name": "mail_attachments_directory",
+  "required": false,
+  "dataType": "STRING"
+}

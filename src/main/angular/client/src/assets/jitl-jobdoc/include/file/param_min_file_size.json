@@ -1,0 +1,6 @@
+{
+  "name": "min_file_size",
+  "required": false,
+  "dataType": "INTEGER",
+  "defaultValue": "-1"
+}
