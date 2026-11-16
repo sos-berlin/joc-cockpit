@@ -93,6 +93,22 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>resolve refs in jitl-jobdoc</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>../deref.sh</executable>
+                            <arguments>
+                                <argument>${basedir}/target/angular/client/src/assets/jitl-jobdoc</argument>
+                            </arguments>
+                            <target>
+                                <echo message="resolve refs in jitl-jobdoc" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>exec</goal>
