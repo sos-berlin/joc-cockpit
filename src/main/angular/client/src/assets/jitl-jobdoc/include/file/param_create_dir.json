@@ -1,0 +1,5 @@
+{
+  "name": "create_dir",
+  "required": false,
+  "dataType": "BOOLEAN"
+}

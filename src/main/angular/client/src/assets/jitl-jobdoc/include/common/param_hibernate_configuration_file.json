@@ -1,0 +1,6 @@
+{
+  "name": "hibernate_configuration_file",
+  "required": false,
+  "dataType": "STRING",
+  "defaultValue": "config/hibernate.cfg.xml"
+}

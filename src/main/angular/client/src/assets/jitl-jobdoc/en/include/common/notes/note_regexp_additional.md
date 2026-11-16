@@ -1,0 +1,1 @@
+As an extension to regular expressions the `[date:]` placeholder is supported. When using this feature it is possible to create a regular expression which depends on the date that is specified with the date format string.

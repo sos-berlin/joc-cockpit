@@ -1,0 +1,6 @@
+{
+  "name": "remove_dir",
+  "required": false,
+  "dataType": "BOOLEAN",
+  "defaultValue": false
+}

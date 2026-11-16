@@ -1,0 +1,6 @@
+{
+  "name": "recursive",
+  "required": false,
+  "dataType": "BOOLEAN",
+  "defaultValue": "false"
+}

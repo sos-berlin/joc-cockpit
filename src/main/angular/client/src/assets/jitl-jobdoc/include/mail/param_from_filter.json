@@ -1,0 +1,5 @@
+{
+  "name": "mail_from_filter",
+  "required": false,
+  "dataType": "STRING"
+}

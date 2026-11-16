@@ -1,0 +1,5 @@
+{
+  "name": "mail.pop3.host",
+  "required": false,
+  "dataType": "STRING"
+}

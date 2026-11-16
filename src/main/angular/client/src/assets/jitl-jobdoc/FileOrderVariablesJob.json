@@ -1,0 +1,30 @@
+{
+  "documentation": {
+    "job": {
+      "name": "CheckLicenseJob",
+      "category": "JITL",
+      "language": "Java",
+      "class": "com.sos.jitl.jobs.checklicense.CheckLicenseJob"
+    },
+    "arguments": [
+      {
+        "name": "validity_days",
+        "required": false,
+        "dataType": "NONNEGATIVEINTEGER",
+        "defaultValue": "60"
+      }
+    ],
+    "returnVariables": [
+      {
+        "name": "subject",
+        "required": false,
+        "dataType": "STRING"
+      },
+      {
+        "name": "body",
+        "required": false,
+        "dataType": "STRING"
+      }
+    ]
+  }
+}

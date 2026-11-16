@@ -1,0 +1,5 @@
+{
+  "name": "raise_error_if_result_set_is",
+  "required": false,
+  "dataType": "STRING"
+}

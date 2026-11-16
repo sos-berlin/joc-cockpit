@@ -1,0 +1,5 @@
+{
+  "name": "mail_target_folder",
+  "required": false,
+  "dataType": "STRING"
+}
