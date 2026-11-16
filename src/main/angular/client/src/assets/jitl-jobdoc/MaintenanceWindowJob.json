@@ -1,0 +1,41 @@
+{
+  "job": {
+    "name": "MaintenanceWindowJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.maintenance.MaintenanceWindowJob"
+  },
+  "arguments": [
+    {
+      "name": "state",
+      "required": true,
+      "dataType": "STRING"
+    },
+    {
+      "name": "controller_id",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "controller_host",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "joc_host",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "subagent_ids",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "agent_ids",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": []
+}
