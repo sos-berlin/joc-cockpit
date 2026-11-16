@@ -1,28 +1,17 @@
 {
   "job": {
-    "name": "CheckLicenseJob",
+    "name": "FileOrderVariablesJob",
     "category": "JITL",
     "language": "Java",
-    "class": "com.sos.jitl.jobs.checklicense.CheckLicenseJob"
+    "class": "com.sos.jitl.jobs.fileordervariablesjob.FileOrderVariablesJob"
   },
   "arguments": [
     {
-      "name": "validity_days",
+      "name": "js7_source_file",
       "required": false,
-      "dataType": "NONNEGATIVEINTEGER",
-      "defaultValue": 60
+      "dataType": "STRING",
+      "defaultValue": "$file"
     }
   ],
-  "returnVariables": [
-    {
-      "name": "subject",
-      "required": false,
-      "dataType": "STRING"
-    },
-    {
-      "name": "body",
-      "required": false,
-      "dataType": "STRING"
-    }
-  ]
+  "returnVariables": []
 }

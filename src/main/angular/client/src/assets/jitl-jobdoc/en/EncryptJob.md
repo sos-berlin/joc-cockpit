@@ -1,10 +1,10 @@
 # Job: EncryptJob
-<summary id="summary">
+<summary>
 The job encrypts a secret (plain text string) or a file and returns variables holding information for later decryption.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 User jobs can make use of variables that hold secrets. Such variables should not be passed to jobs without encryption as their plain text value is exposed to logging.
 

@@ -1,10 +1,10 @@
 # Job: CanWriteJob
-<summary id="summary">
+<summary>
 Checks if a file is writable.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 The job checks if one or more files exist and are writeable.
 </detail>
@@ -17,4 +17,4 @@ The job checks if one or more files exist and are writeable.
 
 # Return Variables
 
-The job template does not provide return variables.
+The job does not provide return variables.

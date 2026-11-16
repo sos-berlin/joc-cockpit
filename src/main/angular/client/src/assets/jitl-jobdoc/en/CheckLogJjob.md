@@ -1,10 +1,10 @@
 # Job: CheckLogJob
-<summary id="summary">
+<summary>
 Checks task logs from regular expressions.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 The job is used to check logs of previous job executions for string patterns.
 
@@ -36,7 +36,7 @@ When the job occurs more than once in the workflow, the *label* argument must be
 
 Specifies the regular expression used to search log output for a pattern.
 
-### Example 1: get lines with errors
+### Example 1: Get Lines with Errors
 
 #### Arguments
 
@@ -51,7 +51,7 @@ Specifies the regular expression used to search log output for a pattern.
 - *js7CheckLogGroupCount*: `0`
 - *js7CheckLogGroupsMatchesCount*: `0`
 
-### Example 2: get event IDs
+### Example 2: Get Event IDs
 
 #### Arguments
 
@@ -67,7 +67,7 @@ Specifies the regular expression used to search log output for a pattern.
 - *js7CheckLogGroupCount*: `0`
 - *js7CheckLogGroupsMatchesCount*: `0`
 
-### Example 3: Get all dates
+### Example 3: Get all Dates
 
 #### Arguments
 

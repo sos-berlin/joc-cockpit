@@ -1,10 +1,10 @@
 ﻿# Job: FileExistsJob
-<summary id="summary">
+<summary>
 Checks if a file exists.
 </summary>
 
 # Purpose
-<detail id="detail">
+<detail>
 
 The job checks the existence of a file, of a directory or of files inside a directory.
 
@@ -30,9 +30,14 @@ The job checks the existence of a file, of a directory or of files inside a dire
 [](include:include/file/params/param_min_file_size.md)
 [](include:include/file/params/param_skip_first_files.md)
 [](include:include/file/params/param_skip_last_files.md)
-[](include:include/file/params/steady_state/main.md)
-[](include:include/file/params/result_set/main.md)
+[](include:include/file/params/steady_state/param_steady_state_count.md)
+[](include:include/file/params/steady_state/param_steady_state_interval.md)
+[](include:include/file/params/result_set/param_result_set_file.md)
+[](include:include/file/params/result_set/param_expected_size_of_result_set.md)
+[](include:include/file/params/result_set/param_raise_error_if_result_set_is.md)
+
 
 # Return Variables
 
-[](include:include/file/params/return/main.md)
+[](include:include/file/params/params/return/param_fileoperations_result_set.md)
+[](include:include/file/params/params/return/param_fileoperations_result_set_size.md)
