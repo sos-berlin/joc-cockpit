@@ -1,6 +1,6 @@
 {
   "name": "gracious",
   "required": false,
-  "defaultValue": "false",
-  "dataType": "BOOLEAN"
+  "dataType": "BOOLEAN",
+  "defaultValue": false
 }

@@ -2,5 +2,5 @@
   "name": "min_mail_age",
   "required": false,
   "dataType": "POSITIVEINTEGER",
-  "defaultValue": "0"
+  "defaultValue": 0
 }

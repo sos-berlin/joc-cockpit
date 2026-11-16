@@ -1,79 +1,77 @@
 {
-  "documentation": {
-    "job": {
-      "name": "CheckHistoryJob",
-      "category": "JITL",
-      "language": "Java",
-      "class": "com.sos.jitl.jobs.checkhistory.CheckHistoryJob"
+  "job": {
+    "name": "CheckHistoryJob",
+    "category": "JITL",
+    "language": "Java",
+    "class": "com.sos.jitl.jobs.checkhistory.CheckHistoryJob"
+  },
+  "arguments": [
+    {
+      "name": "query",
+      "required": true,
+      "dataType": "STRING"
     },
-    "arguments": [
-      {
-        "name": "query",
-        "required": true,
-        "dataType": "STRING"
-      },
-      {
-        "name": "workflow",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "job",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "controller_id",
-        "required": false,
-        "dataType": "STRING"
-      }
-    ],
-    "returnVariables": [
-      {
-        "name": "js7CheckHistoryResult",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryResultControllerId",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryResultWorkflow",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryResultJob",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryResultStarted",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryResultCompleted",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryQuery",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistorQueryWorkflow",
-        "required": false,
-        "dataType": "STRING"
-      },
-      {
-        "name": "js7CheckHistoryQueryJob",
-        "required": false,
-        "dataType": "STRING"
-      }
-    ]
-  }
+    {
+      "name": "workflow",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "job",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "controller_id",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ],
+  "returnVariables": [
+    {
+      "name": "js7CheckHistoryResult",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryResultControllerId",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryResultWorkflow",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryResultJob",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryResultStarted",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryResultCompleted",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryQuery",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistorQueryWorkflow",
+      "required": false,
+      "dataType": "STRING"
+    },
+    {
+      "name": "js7CheckHistoryQueryJob",
+      "required": false,
+      "dataType": "STRING"
+    }
+  ]
 }
